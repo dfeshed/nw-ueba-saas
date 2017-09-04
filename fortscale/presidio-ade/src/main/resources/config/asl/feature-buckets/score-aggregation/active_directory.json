@@ -31,7 +31,7 @@
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.active_directory.operationTypeHistogram.userIdSecuritySensitive.activeDirectory.score"
+        "scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
