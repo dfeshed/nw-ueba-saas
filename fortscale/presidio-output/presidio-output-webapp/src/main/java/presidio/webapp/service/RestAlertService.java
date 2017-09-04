@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RestAlertService {
 
-    Alert getAlertById(String id);
+    presidio.webapp.model.Alert getAlertById(String id);
 
     List<presidio.webapp.model.Alert> getAlerts(RestAlertQuery restAlertQuery);
 

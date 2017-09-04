@@ -26,7 +26,11 @@ public class AlertsController implements AlertsApi {
 
     @Override
     public ResponseEntity<Alert> alertsAlertIdGet(String alertId) {
-        return null;
+        Alert alert = restAlertService.getAlertById(alertId);
+        if (alert != null) {
+            return new ResponseEntity(alert, HttpStatus.OK);
+        }
+        return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
     }
 
     @Override

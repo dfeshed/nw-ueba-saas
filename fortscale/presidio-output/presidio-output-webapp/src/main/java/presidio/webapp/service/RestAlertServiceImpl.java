@@ -21,12 +21,12 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Alert getAlertById(String id) {
+    public presidio.webapp.model.Alert getAlertById(String id) {
         presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
 
-        Alert resultAlert = null;
+        presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
-            resultAlert = createResult(alertData);
+            resultAlert = createRestAlert(alertData);
         }
 
         return resultAlert;
