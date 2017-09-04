@@ -10,8 +10,12 @@ public class UserQuery {
     // filters
     private final List<String> filterByAlertClassifications;
     private final List<String> filterByIndicators;
+    private String filterByUserId;
+    private String filterByUserName;
+    private boolean isPrefix;
     private Integer minScore;
     private Integer maxScore;
+    private Boolean isAdmin;
 
     // sort
     private final Sort sort;
@@ -25,11 +29,26 @@ public class UserQuery {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
         this.sort = builder.sort;
-
-        this.pageNumber =  builder.pageNumber;
-        this.pageSize =  builder.pageSize;
+        this.pageNumber = builder.pageNumber;
+        this.pageSize = builder.pageSize;
         this.minScore = builder.minScore;
         this.maxScore = builder.maxScore;
+        this.filterByUserId = builder.filterByUserId;
+        this.filterByUserName = builder.filterByUserName;
+        this.isPrefix = builder.isPrefix;
+        this.isAdmin = builder.isAdmin;
+    }
+
+    public String getFilterByUserId() {
+        return filterByUserId;
+    }
+
+    public String getFilterByUserName() {
+        return filterByUserName;
+    }
+
+    public boolean isPrefix() {
+        return isPrefix;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -60,13 +79,21 @@ public class UserQuery {
         return maxScore;
     }
 
+    public Boolean getFilterByIsAdmin() {
+        return isAdmin;
+    }
+
     public static class UserQueryBuilder {
 
         // filters
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
+        private String filterByUserId;
+        private String filterByUserName;
+        private boolean isPrefix;
         private Integer minScore;
         private Integer maxScore;
+        private Boolean isAdmin;
 
 
         // sort
@@ -87,13 +114,13 @@ public class UserQuery {
         }
 
         public UserQueryBuilder sort(Sort sort) {
-            this.sort=sort;
+            this.sort = sort;
             return this;
         }
 
         public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            Sort.Direction dir=ascendingOrder? Sort.Direction.ASC: Sort.Direction.DESC;
-            Sort sort = new Sort(dir,sortField);
+            Sort.Direction dir = ascendingOrder ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Sort sort = new Sort(dir, sortField);
             return sort(sort);
         }
 
@@ -101,6 +128,27 @@ public class UserQuery {
             this.minScore = minScore;
             return this;
         }
+
+        public UserQueryBuilder filterByUserName(String filterByUserName) {
+            this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserNameWithPrefix(boolean prefixEnabled) {
+            this.isPrefix = prefixEnabled;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserId(String filterbyUserId) {
+            this.filterByUserId = filterbyUserId;
+            return this;
+        }
+
+        public UserQueryBuilder filterByUserAdmin(Boolean isAdmin) {
+            this.isAdmin = isAdmin;
+            return this;
+        }
+
 
         public UserQueryBuilder maxScore(Integer maxScore) {
             this.maxScore = maxScore;

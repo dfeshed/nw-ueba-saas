@@ -25,7 +25,7 @@ public class FeatureBucketStoreMongoConfig {
     private MongoDbUtilService mongoDbUtilService;
 
     @Bean
-    public FeatureBucketStore getFeatureBucketStore() {
+    public FeatureBucketStore featureBucketStore() {
         return new FeatureBucketStoreMongoImpl(mongoTemplate, mongoDbUtilService, DEFAULT_EXPIRE_AFTER_SECONDS);
     }
 }

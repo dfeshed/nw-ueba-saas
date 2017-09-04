@@ -2,6 +2,8 @@ package presidio.ade.domain.store.accumulator.smart;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
@@ -15,12 +17,13 @@ import java.util.stream.Collectors;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
-public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDataStore {
+public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDataStore, TtlServiceAware {
     private static final Logger logger = Logger.getLogger(SmartAccumulationDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final SmartAccumulatedDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
+    private TtlService ttlService;
 
     public SmartAccumulationDataStoreMongoImpl(MongoTemplate mongoTemplate, SmartAccumulatedDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -34,6 +37,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
+        ttlService.save(getStoreName(), collectionName);
     }
 
     /**
@@ -88,6 +92,24 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
 
         logger.debug("found distinct contexts: {}", Arrays.toString(distinctContexts.toArray()));
         return distinctContexts;
+    }
+
+
+    @Override
+    public void setTtlService(TtlService ttlService) {
+        this.ttlService = ttlService;
+    }
+
+    @Override
+    public void remove(String collectionName, Instant until) {
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public String getStoreName(){
+        return "smartAccumulationDataStore";
     }
 
 }

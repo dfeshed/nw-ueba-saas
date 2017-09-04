@@ -1,6 +1,8 @@
 package presidio.output.domain.records.alerts;
 
 
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 public class AlertQuery {
@@ -11,10 +13,16 @@ public class AlertQuery {
     private final String filterBySeverity;
     private final long filterByStartDate;
     private final long filterByEndDate;
+    private String filterByFeedback;
+    private double filterByMinScore;
+    private double filterByMaxScore;
+    private List<String> filterByTags;
+    private List<String> filterByAlertsIds;
+    private List<String> filterByIndicatorNams;
+    private final Boolean filterByIsUserAdmin;
 
     // sort
-    private final String sortField;
-    private final boolean ascendingOrder;
+    private final Sort sort;
 
     // paging
     private final int pageNumber;
@@ -28,12 +36,23 @@ public class AlertQuery {
         this.filterByUserName = builder.filterByUserName;
         this.filterBySeverity = builder.filterBySeverity;
         this.filterByStartDate = builder.filterByStartDate;
+        this.sort = builder.sort;
         this.filterByEndDate = builder.filterByEndDate;
-        this.sortField = builder.sortField;
-        this.ascendingOrder = builder.ascendingOrder;
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
         this.aggregateBySeverity = builder.aggregateBySeverity;
+        this.filterByFeedback = builder.filterByFeedback;
+        this.filterByMinScore = builder.filterByMinScore;
+        this.filterByMaxScore = builder.filterByMaxScore;
+        this.filterByTags = builder.filterByTags;
+        this.filterByAlertsIds = builder.filterByAlertsIds;
+        this.filterByIndicatorNams = builder.filterByIndicatorNams;
+        this.filterByIsUserAdmin = builder.filterByIsUserAdmin;
+    }
+
+    public Sort getSort() {
+        return sort;
+
     }
 
     public String getFilterByUserName() {
@@ -56,14 +75,6 @@ public class AlertQuery {
         return filterByEndDate;
     }
 
-    public String getSortField() {
-        return sortField;
-    }
-
-    public boolean isAscendingOrder() {
-        return ascendingOrder;
-    }
-
     public int getPageNumber() {
         return pageNumber;
     }
@@ -76,6 +87,10 @@ public class AlertQuery {
         return aggregateBySeverity;
     }
 
+    public Boolean getFilterByIsUserAdmin() {
+        return filterByIsUserAdmin;
+    }
+
     public static class AlertQueryBuilder {
 
         // filters
@@ -84,10 +99,16 @@ public class AlertQuery {
         private String filterBySeverity;
         private long filterByStartDate;
         private long filterByEndDate;
+        private String filterByFeedback;
+        private double filterByMinScore;
+        private double filterByMaxScore;
+        private List<String> filterByTags;
+        private List<String> filterByAlertsIds;
+        private List<String> filterByIndicatorNams;
+        private Boolean filterByIsUserAdmin;
 
         // sort
-        private String sortField;
-        private boolean ascendingOrder;
+        private Sort sort;
 
         // paging
         private int pageNumber = -1;
@@ -97,6 +118,36 @@ public class AlertQuery {
         private boolean aggregateBySeverity;
 
         public AlertQueryBuilder() {
+        }
+
+        public AlertQueryBuilder filterByIndicatorNams(List<String> filterByIndicatorNams) {
+            this.filterByIndicatorNams = filterByIndicatorNams;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByTags(List<String> filterByTags) {
+            this.filterByTags = filterByTags;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByAlertsIds(List<String> filterByAlertsIds) {
+            this.filterByAlertsIds = filterByAlertsIds;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByMinScore(double filterByMinScore) {
+            this.filterByMinScore = filterByMinScore;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByMaxScore(double filterByMaxScore) {
+            this.filterByMaxScore = filterByMaxScore;
+            return this;
+        }
+
+        public AlertQueryBuilder filterByFeedback(String filterByFeedback) {
+            this.filterByFeedback = filterByFeedback;
+            return this;
         }
 
         public AlertQueryBuilder filterByUserName(String filterBuUserName) {
@@ -124,9 +175,13 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            this.sortField = sortField;
-            this.ascendingOrder = ascendingOrder;
+        public AlertQueryBuilder filterByIsUserAdmin(Boolean filterByIsUserAdmin) {
+            this.filterByIsUserAdmin = filterByIsUserAdmin;
+            return this;
+        }
+
+        public AlertQueryBuilder sortField(Sort sort) {
+            this.sort = sort;
             return this;
         }
 

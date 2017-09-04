@@ -1,6 +1,7 @@
 package presidio.output.domain.services.users;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 
@@ -17,6 +18,10 @@ public interface UserPersistencyService {
     User findUserById(String id);
 
     Iterable<User> findAll();
+
+    Page<User> findByUserName(String userName, PageRequest pageRequest);
+
+    Page<User> findByUserId(String userId, PageRequest pageRequest);
 
     Page<User> find(UserQuery userQuery);
 }
