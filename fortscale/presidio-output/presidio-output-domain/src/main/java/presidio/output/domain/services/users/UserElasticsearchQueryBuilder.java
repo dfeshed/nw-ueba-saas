@@ -3,8 +3,8 @@ package presidio.output.domain.services.users;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
@@ -13,9 +13,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
-import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
-import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -48,6 +46,11 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             }
         }
 
+        // filter by isAdmin
+        if (userQuery.getFilterByIsAdmin() != null) {
+            boolQueryBuilder.must(matchQuery(User.IS_ADMIN_FIELD_NAME, userQuery.getFilterByIsAdmin()).operator(Operator.AND));
+        }
+
         if (boolQueryBuilder.hasClauses()) {
             super.withFilter(boolQueryBuilder);
         }
@@ -67,7 +70,6 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
 
     /**
      * Add all sort fields
-     *
      * @param userQuery
      */
     public void withSort(UserQuery userQuery) {

@@ -5,6 +5,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,8 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        User user = new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName());
-        return user;
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.isAdmin());
     }
 
     @Override
@@ -41,7 +41,8 @@ public class UserServiceImpl implements UserService {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
-        return new UserDetails(userName, userDisplayName, userId);
+        Boolean isAdmin = Boolean.valueOf(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN));
+        return new UserDetails(userName, userDisplayName, userId, isAdmin);
     }
 
     public void setClassification(User user, List<String> classification) {

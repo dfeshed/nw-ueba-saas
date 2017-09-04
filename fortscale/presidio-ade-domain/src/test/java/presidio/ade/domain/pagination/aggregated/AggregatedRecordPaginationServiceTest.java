@@ -4,6 +4,7 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,15 +17,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
-import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
-import presidio.ade.domain.store.aggr.AggregatedDataStore;
-import presidio.ade.domain.store.aggr.AggregatedDataStoreConfig;
+import presidio.ade.domain.store.aggr.*;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+import static org.mockito.Mockito.mock;
 import static presidio.ade.domain.record.aggregated.AggregatedFeatureType.FEATURE_AGGREGATION;
 import static presidio.ade.domain.record.aggregated.AggregatedFeatureType.SCORE_AGGREGATION;
 
@@ -73,6 +72,8 @@ public class AggregatedRecordPaginationServiceTest {
 
                 List<AdeAggregationRecord> scoreAggrRecords = generateUserScoreAggrRecord(context, enumeratedFeatureName, featureValue, AMOUNT_OF_RECORDS_PER_FEATURE, startInstant, endInstant);
                 addRecordsToPaginationParamsSet(scoreAggrRecords);
+                TtlService ttlService = mock(TtlService.class);
+                ((AggregatedDataStoreMongoImpl)aggregatedDataStore).setTtlService(ttlService);
                 aggregatedDataStore.store(scoreAggrRecords,SCORE_AGGREGATION);
             }
             for (int featureNameCnt = 0; featureNameCnt<AMOUNT_OF_FEATURE_AGGR_PER_CONTEXT; featureNameCnt++)

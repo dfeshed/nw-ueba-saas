@@ -23,7 +23,7 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         """
 
         default_args = full_flow_dag.default_args
-        data_sources = default_args.get("data_sources")
+        data_sources = [item.strip() for item in default_args.get("data_sources").split(',')]
         logging.info("populating the full flow dag, dag_id=%s for data sources:%s ", full_flow_dag.dag_id, data_sources)
 
         adapter_sub_dag = self._get_adapter_sub_dag_operator(data_sources, full_flow_dag)
@@ -67,3 +67,4 @@ class FullFlowDagBuilder(PresidioDagBuilder):
             task_id=presidio_core_dag_id,
             dag=full_flow_dag
         )
+

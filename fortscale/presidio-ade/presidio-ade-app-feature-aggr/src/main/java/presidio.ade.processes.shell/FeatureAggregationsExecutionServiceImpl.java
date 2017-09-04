@@ -8,6 +8,7 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
@@ -28,13 +29,15 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     private AggregatedDataStore scoredFeatureAggregatedStore;
     private int pageSize;
     private int maxGroupSize;
+    private TtlService ttlService;
 
     public FeatureAggregationsExecutionServiceImpl(BucketConfigurationService bucketConfigurationService,
                                                    EnrichedDataStore enrichedDataStore,
                                                    InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
                                                    FeatureAggregationScoringService featureAggregationScoringService,
                                                    AggregationRecordsCreator featureAggregationsCreator,
-                                                   AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
+                                                   AggregatedDataStore scoredFeatureAggregatedStore,
+                                                   TtlService ttlService, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureAggregationScoringService = featureAggregationScoringService;
@@ -43,6 +46,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
+        this.ttlService = ttlService;
     }
 
     //todo: data source should be event_type
@@ -52,6 +56,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());
+        ttlService.cleanupCollections(startDate);
     }
 
     @Override

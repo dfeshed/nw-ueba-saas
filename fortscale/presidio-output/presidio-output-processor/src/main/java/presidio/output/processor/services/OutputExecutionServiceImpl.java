@@ -27,10 +27,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public static int SMART_SCORE_THRESHOLD = 50;
+    private final UserScoreService userScoreService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
-    private final UserScoreService userScoreService;
     private final int smartThreshold;
     private final int smartPageSize;
 
@@ -53,7 +54,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      * 2. Enrich alerts with information from Input component (fields which were not part of the ADE schema)
      * 3. Alerts classification (rule based semantics)
      * 4. Calculates supporting information
-     *
      * @param startDate
      * @param endDate
      * @throws Exception
@@ -101,6 +101,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private void storeUsers(List<User> users) {
         if (CollectionUtils.isNotEmpty(users)) {
             userService.save(users);
+            this.userScoreService.updateSeveritiesForUsersList(users,true);
         }
         logger.debug("{} output users were generated", users.size());
     }
