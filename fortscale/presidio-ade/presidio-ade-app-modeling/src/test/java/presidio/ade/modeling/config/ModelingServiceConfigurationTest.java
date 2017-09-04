@@ -26,14 +26,17 @@ public class ModelingServiceConfigurationTest {
 		properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
 		// Model conf service
 		properties.put("presidio.ade.modeling.enriched.records.group.name", "enriched-record-models");
-		properties.put("presidio.ade.modeling.enriched.records.base.configuration.path", "classpath*:config/asl/models/enriched-records/*.json");
+		properties.put("presidio.ade.modeling.enriched.records.base.configuration.path", "classpath:config/asl/models/enriched-record-test/");
 		properties.put("presidio.ade.modeling.feature.aggregation.records.group.name", "feature-aggregation-record-models");
-		properties.put("presidio.ade.modeling.feature.aggregation.records.base.configuration.path", "classpath*:config/asl/models/feature-aggregation-records/*.json");
+		properties.put("presidio.ade.modeling.feature.aggregation.records.base.configuration.path", "classpath*:config/asl/models/feature-aggregation-records/");
 		properties.put("presidio.ade.modeling.smart.records.group.name", "smart-record-models");
-		properties.put("presidio.ade.modeling.smart.records.base.configuration.path", "classpath*:config/asl/models/smart-records/*.json");
+		properties.put("presidio.ade.modeling.smart.records.base.configuration.path", "classpath*:config/asl/models/smart-records/");
 		// Additional properties
 		properties.put("presidio.ade.modeling.feature.buckets.default.expire.after.seconds", 7776000);
 		properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
+		properties.put("presidio.application.name", "test-app-name");
+		properties.put("presidio.default.ttl.duration", "PT48H");
+		properties.put("presidio.default.cleanup.interval", "PT24H");
 		return new TestPropertiesPlaceholderConfigurer(properties);
 	}
 }

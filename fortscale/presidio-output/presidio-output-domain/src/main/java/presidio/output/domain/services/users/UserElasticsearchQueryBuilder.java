@@ -1,17 +1,23 @@
 package presidio.output.domain.services.users;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -22,25 +28,70 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
     public void withFilter(UserQuery userQuery) {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-        // filter by alert classifications
-        if (! userQuery.getFilterByAlertClassifications().isEmpty()) {
-            boolQueryBuilder.must(matchQuery(User.ALERT_CLASSIFICATOINS_FIELD_NAME, userQuery.getFilterByAlertClassifications()));
+
+        // filter by username
+        if (StringUtils.isNotEmpty(userQuery.getFilterByUserName())) {
+            if (userQuery.isPrefix()) {
+                boolQueryBuilder.must(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()));
+            } else {
+                boolQueryBuilder.must(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()).operator(Operator.AND));
+            }
         }
 
-        if (boolQueryBuilder.hasClauses()) {
-            super.withFilter(boolQueryBuilder);
+
+
+        // filter by alert classifications
+        if (!CollectionUtils.isEmpty(userQuery.getFilterByAlertClassifications()) && !(userQuery.getFilterByAlertClassifications()).isEmpty()) {
+            for (String classification : userQuery.getFilterByAlertClassifications()) {
+                boolQueryBuilder.should(matchQuery(User.ALERT_CLASSIFICATOINS_FIELD_NAME, classification).operator(Operator.OR));
+            }
         }
+
+        // filter by isAdmin
+        if (userQuery.getFilterByIsAdmin() != null) {
+            boolQueryBuilder.must(matchQuery(User.IS_ADMIN_FIELD_NAME, userQuery.getFilterByIsAdmin()).operator(Operator.AND));
+        }
+
+
+
 
         if (userQuery.getMinScore() != null || userQuery.getMaxScore() != null){
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
-            if (userQuery.getMinScore()>0) {
+            if (userQuery.getMinScore()!=null && userQuery.getMinScore()>0) {
                 rangeQuery.gte(userQuery.getMinScore());
             }
-            if (userQuery.getMaxScore()>0) {
+            if (userQuery.getMaxScore()!=null && userQuery.getMaxScore()>0) {
                 rangeQuery.lte(userQuery.getMaxScore());
             }
 
             boolQueryBuilder.must(rangeQuery);
+        }
+
+
+
+
+        if (userQuery.getFilterByUserIds()!=null && userQuery.getFilterByUserIds().size()>0){
+            final BoolQueryBuilder boolIdQueryBuilder = new BoolQueryBuilder();
+            for (String id : userQuery.getFilterByUserIds()) {
+                boolIdQueryBuilder.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(boolIdQueryBuilder);
+
+        }
+
+        if (userQuery.getFilterByNotHaveAnyOfUserIds()!=null && userQuery.getFilterByNotHaveAnyOfUserIds().size()>0){
+            final BoolQueryBuilder boolIdQueryBuilder = new BoolQueryBuilder();
+            for (String id : userQuery.getFilterByNotHaveAnyOfUserIds()) {
+                boolIdQueryBuilder.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+            }
+            boolQueryBuilder.mustNot(boolIdQueryBuilder);
+
+        }
+
+
+
+        if (boolQueryBuilder.hasClauses()) {
+            super.withFilter(boolQueryBuilder);
         }
     }
 
@@ -49,15 +100,14 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
      * @param userQuery
      */
     public void withSort(UserQuery userQuery) {
-        if (userQuery.getSort()!=null) {
+        if (!ObjectUtils.isEmpty(userQuery.getSort())) {
 
-            userQuery.getSort().forEach(order->{
+            userQuery.getSort().forEach(order -> {
                 FieldSortBuilder sortBuilder = new FieldSortBuilder(order.getProperty());
-                SortOrder direction = order.getDirection().name().equals(SortOrder.ASC.name())? SortOrder.ASC: SortOrder.DESC;
+                SortOrder direction = order.getDirection().name().equals(SortOrder.ASC.name()) ? SortOrder.ASC : SortOrder.DESC;
                 sortBuilder.order(direction);
                 super.withSort(sortBuilder);
             });
-
         }
     }
 

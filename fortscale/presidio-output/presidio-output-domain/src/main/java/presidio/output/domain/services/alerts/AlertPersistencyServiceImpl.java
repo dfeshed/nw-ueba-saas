@@ -41,6 +41,10 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         return alertRepository.findByUserName(userName, pageRequest);
     }
 
+    public Page<Alert> findByUserId(String userId, PageRequest pageRequest) {
+        return alertRepository.findByUserName(userId, pageRequest);
+    }
+
     public Page<Alert> find(AlertQuery alertQuery) {
         return alertRepository.search(new AlertElasticsearchQueryBuilder(alertQuery).build());
     }

@@ -17,7 +17,9 @@ import java.util.List;
 		@JsonSubTypes.Type(value = AccumulatedAggregatedFeatureValueRetrieverConf.class, name = AccumulatedAggregatedFeatureValueRetrieverConf.ACCUMULATED_AGGREGATED_FEATURE_VALUE_RETRIEVER),
 		@JsonSubTypes.Type(value = AggregatedFeatureEventUnreducedScoreRetrieverConf.class, name = AggregatedFeatureEventUnreducedScoreRetrieverConf.AGGREGATED_FEATURE_EVENT_UNREDUCED_SCORE_RETRIEVER),
 		@JsonSubTypes.Type(value = ModelRetrieverConf.class, name = ModelRetrieverConf.MODEL_RETRIEVER),
-		@JsonSubTypes.Type(value = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.class, name = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.AGGREGATED_FEATURE_PERSONAL_THRESHOLD_MODEL_BUILDER_DATA_RETRIEVER)
+		@JsonSubTypes.Type(value = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.class, name = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.AGGREGATED_FEATURE_PERSONAL_THRESHOLD_MODEL_BUILDER_DATA_RETRIEVER),
+		@JsonSubTypes.Type(value = AccumulatedSmartDataRetrieverConf.class, name = AccumulatedSmartDataRetrieverConf.ACCUMULATED_SMART_DATA_RETRIEVER_FACTORY_NAME),
+		@JsonSubTypes.Type(value = AccumulatedSmartValueRetrieverConf.class, name = AccumulatedSmartValueRetrieverConf.ACCUMULATED_SMART_VALUE_RETRIEVER_FACTORY_NAME)
 })
 @JsonAutoDetect(
 		fieldVisibility = JsonAutoDetect.Visibility.ANY,
@@ -29,7 +31,6 @@ import java.util.List;
 public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	private long timeRangeInSeconds;
 	private List<JSONObject> functions;
-	private PatternReplacementConf patternReplacementConf;
 
 	public AbstractDataRetrieverConf(long timeRangeInSeconds, List<JSONObject> functions) {
 		Assert.isTrue(timeRangeInSeconds > 0, "timeRangeInSeconds must be greater than 0.");
@@ -37,7 +38,6 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 
 		this.timeRangeInSeconds = timeRangeInSeconds;
 		this.functions = functions;
-		this.patternReplacementConf = null;
 	}
 
 	public long getTimeRangeInSeconds() {
@@ -46,13 +46,5 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 
 	public List<JSONObject> getFunctionConfs() {
 		return functions;
-	}
-
-	public PatternReplacementConf getPatternReplacementConf() {
-		return patternReplacementConf;
-	}
-
-	public void setPatternReplacementConf(PatternReplacementConf patternReplacementConf) {
-		this.patternReplacementConf = patternReplacementConf;
 	}
 }

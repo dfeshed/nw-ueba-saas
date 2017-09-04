@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,13 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
 
     @Field(RESULT_CODE_FIELD_NAME)
     protected String resultCode;
+
+    {
+        // TODO: remove as soon as the adapter can populate this field
+        additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", Boolean.toString(false));
+    }
+
 
     public AbstractInputDocument(AbstractInputDocument other) {
         super(other);

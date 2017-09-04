@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserScoreService;
@@ -32,15 +33,20 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
+    private final int smartThreshold;
+    private final int smartPageSize;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
-                                      UserScoreService userScoreService) {
+                                      UserScoreService userScoreService,
+                                      int smartThreshold, int smartPageSize) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
         this.userScoreService = userScoreService;
+        this.smartPageSize = smartPageSize;
+        this.smartThreshold = smartThreshold;
     }
 
     /**
@@ -56,42 +62,43 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void run(Instant startDate, Instant endDate) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), smartThreshold);
 
-        //1. Get SMARTs from ADE and generate alerts
-        //TODO- change page size and score threshold (configurable)
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(new TimeRange(startDate, endDate), 100, SMART_SCORE_THRESHOLD);
-
-        //2. For each smart: generate Alert entity and User
         List<Alert> alerts = new ArrayList<Alert>();
         List<User> users = new ArrayList<User>();
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
-
             smarts.stream().forEach(smart -> {
                 //TODO change this after new SMART POJO is ready
-                //TODO- user id should be taken from SMART POJO directly
-                String userId = smart.getAggregationRecords().get(0).getContext().get("userId");
+                String userId = smart.getId();
                 User userEntity = userService.findUserById(userId);
-                if (userEntity==null) {
+                if (userEntity == null) {
                     userEntity = userService.createUserEntity(userId);
                 }
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
-                userEntity.addAlertClassifications(alertEntity.getClassifications());
-
                 if (alertEntity != null) {
+                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), null);//TODO:change null to indicators when alert pojo will have indicators
                     alerts.add(alertEntity);
                 }
 
                 users.add(userEntity);
             });
-            break; //TODO !!! remove this once ADE Team will implement SmartPageIterator.hasNext(). currently only one page is returned.
         }
 
         storeAlerts(alerts);
         storeUsers(users);
-        this.userScoreService.updateSeveritiesForUsersList(users,true);
+        this.userScoreService.updateSeveritiesForUsersList(users, true);
 
 
+    }
+
+    public void recalculateUserScore() throws Exception{
+        logger.info("Start Recalculating User Score");
+        this.userScoreService.updateAllUsersScores();
+        logger.info("Finish Recalculating User Score");
+        logger.info("Start Updating UserSeverity");
+        this.userScoreService.updateSeverities();
+        logger.info("Finish Updating Users Severity");
     }
 
     private void storeAlerts(List<Alert> alerts) {
@@ -104,6 +111,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private void storeUsers(List<User> users) {
         if (CollectionUtils.isNotEmpty(users)) {
             userService.save(users);
+            this.userScoreService.updateSeveritiesForUsersList(users,true);
         }
         logger.debug("{} output users were generated", users.size());
     }

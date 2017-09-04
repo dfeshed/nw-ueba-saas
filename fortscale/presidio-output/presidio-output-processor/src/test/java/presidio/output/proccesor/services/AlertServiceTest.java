@@ -17,15 +17,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.records.alerts.Alert;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 import presidio.output.processor.spring.AlertEnumsConfig;
@@ -92,20 +91,15 @@ public class AlertServiceTest {
         }
 
         List<ContextIdToNumOfItems> contextIdToNumOfItems = Collections.singletonList(new ContextIdToNumOfItems(contextId, smartListSize));
-        Mockito.when(smartDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class),eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(contextIdToNumOfItems);
+        Mockito.when(smartDataReader.aggregateContextIdToNumOfEvents(any(SmartRecordsMetadata.class), eq(50))).thenReturn(contextIdToNumOfItems);
         Set<String> contextIds = new HashSet<>();
         contextIds.add(contextId);
-        Mockito.when(smartDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(OutputExecutionServiceImpl.SMART_SCORE_THRESHOLD))).thenReturn(smarts);
-
-        Set<String> confNames = new HashSet<>();
-        confNames.add(configurationName);
-        Mockito.when(smartDataReader.getAllSmartConfigurationNames()).thenReturn(confNames);
-
+        Mockito.when(smartDataReader.readRecords(any(SmartRecordsMetadata.class), eq(contextIds), eq(0), eq(1000), eq(50))).thenReturn(smarts);
     }
 
     @Test
     public void generateAlertWithLowSmartScore() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), false);
         Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity);
         assertTrue(alert == null);
     }
@@ -113,7 +107,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertTest() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>());
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), false);
         SmartRecord smart = generateSingleSmart(60);
         Alert alert = alertService.generateAlert(smart, userEntity);
         assertEquals(alert.getUserId(), userEntity.getUserId());
@@ -134,9 +128,9 @@ public class AlertServiceTest {
         List<FeatureScore> feature_scores = new ArrayList<FeatureScore>();
         Map<String, String> context = new HashMap<String, String>();
         List<AdeAggregationRecord> aggregated_feature_events = new ArrayList<>();
-        TimeRange timeRange = new TimeRange(Instant.now(),Instant.now());
+        TimeRange timeRange = new TimeRange(Instant.now(), Instant.now());
         SmartRecord smart = new SmartRecord(timeRange, contextId, featureName, FixedDurationStrategy.HOURLY,
-                5.0, score, feature_scores,aggregated_feature_events);
+                5.0, score, feature_scores, aggregated_feature_events);
 
         return smart;
     }

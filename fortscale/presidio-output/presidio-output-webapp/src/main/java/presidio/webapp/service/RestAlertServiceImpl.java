@@ -7,6 +7,9 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.restquery.RestAlertQuery;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
 
@@ -43,11 +46,12 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Page<presidio.output.domain.records.alerts.Alert> getAlerts(RestAlertQuery restAlertQuery) {
+    public List<presidio.webapp.model.Alert> getAlerts(RestAlertQuery restAlertQuery) {
         AlertQuery alertQuery = createQuery(restAlertQuery);
         Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(alertQuery);
-
-        return alerts;
+        List restAlerts = new ArrayList();
+        alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+        return restAlerts;
     }
 
     private AlertQuery createQuery(RestAlertQuery restAlertQuery) {
@@ -57,8 +61,30 @@ public class RestAlertServiceImpl implements RestAlertService {
         alertQueryBuilder.filterByStartDate(restAlertQuery.getStartDate());
         alertQueryBuilder.filterByEndDate(restAlertQuery.getEndDate());
         alertQueryBuilder.filterBySeverity(restAlertQuery.getSeverity());
-        alertQueryBuilder.sortField(restAlertQuery.getSortField(), restAlertQuery.isAscendingOrder());
+        alertQueryBuilder.sortField(restAlertQuery.getSort());
+        alertQueryBuilder.filterByAlertsIds(restAlertQuery.getAlertsIds());
+        alertQueryBuilder.filterByFeedback(restAlertQuery.getFeedback());
+        alertQueryBuilder.filterByMaxScore(restAlertQuery.getMaxScore());
+        alertQueryBuilder.filterByMinScore(restAlertQuery.getMinScore());
+        alertQueryBuilder.filterByTags(restAlertQuery.getTags());
+        alertQueryBuilder.filterByIndicatorNams(restAlertQuery.getIndicatorNams());
         AlertQuery alertQuery = alertQueryBuilder.build();
         return alertQuery;
+    }
+
+    @Override
+    public Page<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
+        return null;
+    }
+
+    private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
+        presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
+        restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
+        restAlert.setEndDate(Long.valueOf(alert.getEndDate()).intValue());
+        restAlert.setStartDate(Long.valueOf(alert.getStartDate()).intValue());
+        restAlert.setId(alert.getId());
+        restAlert.setClassifiation(alert.getClassifications());
+        restAlert.setUsername(alert.getUserName());
+        return restAlert;
     }
 }

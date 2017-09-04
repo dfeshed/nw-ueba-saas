@@ -10,13 +10,10 @@ dags:
       hourly_smart_events_confs:
       - userId_hourly
       command: run
-      data_sources:
-      - AUTHENTICATION
-      - FILE
-      - ACTIVE_DIRECTORY
+      data_sources: AUTHENTICATION,FILE,ACTIVE_DIRECTORY
       schedule_interval: timedelta(hours=1)
-      start_date: '2017-01-01 10:00:00'
-      end_date: '2017-01-01 11:00:00'
+    start_date: '2017-01-01 10:00:00'
+    end_date: '2017-01-01 11:00:00'
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
@@ -85,8 +82,8 @@ dags:
         xms: 70
     SmartModelOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/test-mock-project-0.0.1-SNAPSHOT.jar
-        main_class: com.fortscale.test.TestMockProjectApplication
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
 components:

@@ -9,7 +9,6 @@
   },
   "dataPipeline": {
     "schemas": [
-      "file","active directory"
     ],
     "startTime": "2017-01-01 08:00:00"
   }

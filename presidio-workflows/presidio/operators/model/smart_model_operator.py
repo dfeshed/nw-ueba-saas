@@ -28,8 +28,10 @@ class SmartModelOperator(ModelOperator):
 
         self._smart_events_conf = smart_events_conf
 
-        super(SmartModelOperator, self).__init__(command=command,session_id=session_id, group_name=SMART_MODEL_GROUP_NAME,task_id=task_id,*args,**kwargs)
+        super(SmartModelOperator, self).__init__(command=command,session_id=session_id, group_name=self.get_group_name(),task_id=task_id,*args,**kwargs)
 
+    def get_group_name(self):
+        return '{}.{}'.format(SMART_MODEL_GROUP_NAME, self._smart_events_conf)
 
     def get_task_id(self):
         """

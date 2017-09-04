@@ -27,4 +27,10 @@ public interface UserScoreService {
      * @param alert
      */
     void increaseUserScoreWithoutSaving(Alert alert, User user);
+
+    /**
+     * Recalculate all user scores in the last X days
+     * @return
+     */
+    boolean updateAllUsersScores();
 }
