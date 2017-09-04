@@ -30,6 +30,8 @@ public class ModelingServiceApplicationModuleTestConfig extends ModelingServiceC
         // Additional properties
         properties.put("presidio.ade.modeling.feature.buckets.default.expire.after.seconds", 7776000);
         properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
+        properties.put("presidio.default.ttl.duration", "PT1000H");
+        properties.put("presidio.default.cleanup.interval", "PT2000H");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
