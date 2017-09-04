@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.ActiveDirectoryInputToAdeConverter;
@@ -44,7 +46,8 @@ public class InputCoreConfiguration {
         ObjectMapper mapper = new ObjectMapper();
         Map operationTypeToCategoryMapping = new HashMap();
         try {
-            operationTypeToCategoryMapping = mapper.readValue(new File("/home/presidio/dev-projects/presidio-core/fortscale/presidio-input/presidio-input-core/src/main/resources/operation-type-category-mapping.json"), Map.class);
+            Resource resource = new ClassPathResource("operation-type-category-mapping.json");
+            operationTypeToCategoryMapping = mapper.readValue(new File(resource.getURI().getPath()), Map.class);
             return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
         } catch (IOException e) {
             e.printStackTrace();
