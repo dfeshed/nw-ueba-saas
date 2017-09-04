@@ -41,10 +41,6 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                         .getContextSelectorConf() != null ?
                         getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
                 .collect(Collectors.toList());
-        Set<String> featureNames = dataRetriever.getEventFeatureNames();
-
-        // Currently in this implementation we use only single feature per model.
-        String featureName = featureNames.iterator().next();
 
         return new SMARTValuesModelScorer(
                 scorerConf.getName(),

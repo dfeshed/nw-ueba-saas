@@ -1,0 +1,29 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "smart_userId_hourly",
+      "scorers": [
+        {
+          "type": "smart-values-model-scorer",
+          "name": "smart.userId.hourly.scorer",
+          "model": {
+            "name": "smart.userId.hourly"
+          },
+          "additional-models": [{
+            "name": "smart.global.prior.userId.hourly"
+          }],
+          "number-of-samples-to-influence-enough": 30,
+          "use-certainty-to-calculate-score": true,
+          "base-scorer": {
+            "type": "smart-weights-model-scorer",
+            "name": "smart.userId.smart_value.hourly.scorer",
+            "model": {
+              "name": "smart.global.weights.userId.hourly"
+            }
+          },
+          "global-influence": 20
+        }
+      ]
+    }
+  ]
+}

@@ -8,9 +8,7 @@ import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * This service uses a generic {@link ScoringService} to score {@link SmartRecord}s. For each smart record,
@@ -48,12 +46,8 @@ public class SmartScoringService {
 
 	private void score(SmartRecord smartRecord) {
 		AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(smartRecord);
-		// List<FeatureScore> levelOneFeatureScores = scoringService.score(adeRecordReader);
-		// TODO: Remove following code and uncomment previous one once alphas and betas model is implemented
-		Random random = new Random();
-		List<FeatureScore> levelOneFeatureScores = Collections.singletonList(
-				new FeatureScore("score", (double)random.nextInt(101), Collections.singletonList(
-				new FeatureScore("value", 1.0 / (random.nextInt(100) + 1), Collections.emptyList()))));
+		List<FeatureScore> levelOneFeatureScores = scoringService.score(adeRecordReader);
+
 
 		if (levelOneFeatureScores.size() == 1) {
 			FeatureScore smartScore = levelOneFeatureScores.get(0);
