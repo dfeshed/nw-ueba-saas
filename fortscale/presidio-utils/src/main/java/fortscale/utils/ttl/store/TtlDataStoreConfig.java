@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 public class TtlDataStoreConfig {
     @Autowired
     private TtlDataRecordsStore ttlDataRecordsStore;
-    @Value("${presidio.application.name}")
+    @Value("${spring.application.name}")
     private String appName;
 
     @Bean

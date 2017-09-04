@@ -128,7 +128,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsServiceTestProp() {
             Properties properties = new Properties();
             properties.put("fortscale.model.aggregation.bucket.conf.json.file.name", "classpath:config/asl/model/buckets/model_buckets_test.json");
-            properties.put("presidio.application.name", "test-app-name");
+            properties.put("spring.application.name", "test-app-name");
             properties.put("presidio.default.ttl.duration", "PT48H");
             properties.put("presidio.default.cleanup.interval", "PT24H");
             return new TestPropertiesPlaceholderConfigurer(properties);

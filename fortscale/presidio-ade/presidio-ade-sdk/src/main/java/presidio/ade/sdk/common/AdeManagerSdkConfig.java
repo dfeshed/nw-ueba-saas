@@ -30,7 +30,8 @@ import presidio.ade.sdk.smart_records.SmartRecordConfServiceConfig;
         AggregatedFeatureEventsConfServiceConfig.class,
         FeatureBucketStoreMongoConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
-        SmartRecordConfServiceConfig.class
+        SmartRecordConfServiceConfig.class,
+        TtlServiceSdkConfig.class
 })
 public class AdeManagerSdkConfig {
     @Autowired
