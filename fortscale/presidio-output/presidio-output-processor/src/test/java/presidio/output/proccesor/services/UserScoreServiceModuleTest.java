@@ -249,14 +249,7 @@ public class UserScoreServiceModuleTest {
 
         );
 
-//        for (int i=0; i<1_000;i++){
-//            AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[100];
-//            for (int j=0; j<100;j++){
-//                severities[j]= AlertEnums.AlertSeverity.HIGH;
-//            }
-//            generateUserAndAlerts("userId"+i,"username"+i,severities);
-//
-//        }
+
         List<User> userList = new ArrayList<>();
         List<LocalDateTime> dates =  getListOfLastXdays(DAYS_COUNT);
 

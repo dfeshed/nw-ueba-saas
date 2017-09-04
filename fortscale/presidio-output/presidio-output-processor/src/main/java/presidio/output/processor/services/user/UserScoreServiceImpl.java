@@ -185,15 +185,14 @@ public class UserScoreServiceImpl implements UserScoreService{
      * @param excludedUsersIds is the list of users which should
      */
     private void clearUserScoreForUsersThatShouldNotHaveScore(Set<String> excludedUsersIds) {
-        log.info("Check if there are users without relevant alert and score higher then 0");
+        log.debug("Check if there are users without relevant alert and score higher then 0");
 
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1)
-//                                                                                        .filterByNotHaveAnyOfUserIds(excludedUsersIds)
                                                                                         .pageSize(defaultUsersBatchSize)
                                                                                         .pageNumber(1);
         Page<User> usersPage = userPersistencyService.find(userQueryBuilder.build());
 
-        log.info("found "+ usersPage.getTotalElements()+" users which score that should be reset");
+        log.debug("found "+ usersPage.getTotalElements()+" users which score that should be reset");
         List<User> clearedUsersList = new ArrayList<>();
         while (usersPage!=null && usersPage.hasContent()){
             usersPage.getContent().forEach(user-> {
@@ -217,9 +216,8 @@ public class UserScoreServiceImpl implements UserScoreService{
      * @return map of each user to his new score
      */
     private Map<String,Double> calculateUserScores() {
-//        LocalDate fromDate = LocalDate.now().minusDays(this.alertEffectiveDurationInDays);
-        List<LocalDateTime> days = getListOfLastXdays(this.alertEffectiveDurationInDays);
 
+        List<LocalDateTime> days = getListOfLastXdays(this.alertEffectiveDurationInDays);
 
         Map<String, Double> aggregatedUserScore = new HashMap<>() ;
         //TODO: alsom filter by status >
