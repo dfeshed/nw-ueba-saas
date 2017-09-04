@@ -101,7 +101,7 @@ public class UserQuery {
         private Integer minScore;
         private Integer maxScore;
         private String filterByUserName;
-        private boolean isPrefix;
+        private boolean isPrefix = false;
         private Boolean isAdmin;
 
 

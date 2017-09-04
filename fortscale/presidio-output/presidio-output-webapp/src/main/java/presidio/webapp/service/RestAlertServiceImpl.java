@@ -1,6 +1,7 @@
 package presidio.webapp.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -21,12 +22,11 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Alert getAlertById(String id) {
+    public presidio.webapp.model.Alert getAlertById(String id) {
         presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
-
-        Alert resultAlert = null;
+        presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
-            resultAlert = createResult(alertData);
+            resultAlert = createRestAlert(alertData);
         }
 
         return resultAlert;
@@ -73,7 +73,13 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Page<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
+    public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(0, 10));
+        if (alerts.hasContent()) {
+            List restAlerts = new ArrayList();
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            return restAlerts;
+        }
         return null;
     }
 

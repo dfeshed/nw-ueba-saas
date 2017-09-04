@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -40,14 +42,14 @@ public class RestAlertServiceTest {
         alert.setId("id");
         when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
 
-        presidio.webapp.dto.Alert alertById = restAlertService.getAlertById("id");
+        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id");
         Assert.assertEquals(alert.getUserName(), alertById.getUsername());
     }
 
     @Test
     public void getAlertById_getNull() {
         when(alertService.findOne(anyString())).thenReturn(null);
-        presidio.webapp.dto.Alert alertById = restAlertService.getAlertById("id");
+        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id");
         Assert.assertNull(alertById);
     }
 

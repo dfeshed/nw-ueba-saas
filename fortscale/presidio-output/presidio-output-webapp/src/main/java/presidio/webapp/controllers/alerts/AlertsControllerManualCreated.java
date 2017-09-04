@@ -40,7 +40,7 @@ public class AlertsControllerManualCreated implements AlertsApi {
     public AlertSingleEntityResponseBean getAlertById(@ApiParam(name = "alertId", value = "The ID of the alert") @PathVariable String alertId) {
         AlertSingleEntityResponseBean responseBean = new AlertSingleEntityResponseBean();
         try {
-            responseBean.setData(restAlertService.getAlertById(alertId));
+            //responseBean.setData(restAlertService.getAlertById(alertId));
             responseBean.setStatus(HttpStatus.SC_OK);
 
         } catch (Exception e) {
