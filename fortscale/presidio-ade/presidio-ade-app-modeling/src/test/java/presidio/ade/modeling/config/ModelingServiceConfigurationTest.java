@@ -34,7 +34,7 @@ public class ModelingServiceConfigurationTest {
 		// Additional properties
 		properties.put("presidio.ade.modeling.feature.buckets.default.expire.after.seconds", 7776000);
 		properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
-		properties.put("presidio.application.name", "test-app-name");
+		properties.put("spring.application.name", "test-app-name");
 		properties.put("presidio.default.ttl.duration", "PT48H");
 		properties.put("presidio.default.cleanup.interval", "PT24H");
 		return new TestPropertiesPlaceholderConfigurer(properties);

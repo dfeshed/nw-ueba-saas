@@ -22,7 +22,7 @@ public class AccumulateAggregationsConfigurationTest extends AccumulateAggregati
         properties.put("streaming.event.field.type.aggr_event", "aggr_event");
         properties.put("feature.aggregation.pageIterator.pageSize", 1000);
         properties.put("feature.aggregation.pageIterator.maxGroupSize", 100);
-        properties.put("presidio.application.name", "test-app-name");
+        properties.put("spring.application.name", "test-app-name");
         properties.put("presidio.default.ttl.duration", "PT48H");
         properties.put("presidio.default.cleanup.interval", "PT24H");
 

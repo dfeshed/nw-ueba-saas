@@ -111,7 +111,6 @@ public class AdeManagerSdkTest {
             SystemDateServiceImplForcedConfig.class,
             MockedEnrichedRecordGeneratorConfig.class,
             ScoredEnrichedFileGeneratorConfig.class,
-            TtlServiceConfig.class
     })
     public static class springConfig {
         @Bean
@@ -119,9 +118,7 @@ public class AdeManagerSdkTest {
             Properties properties = new Properties();
             properties.put("streaming.event.field.type.aggr_event", "aggr_event");
             properties.put("streaming.aggr_event.field.context", "context");
-            properties.put("presidio.application.name", "test-app-name");
-            properties.put("presidio.default.ttl.duration", "PT48H");
-            properties.put("presidio.default.cleanup.interval", "PT24H");
+            properties.put("spring.application.name", "test-app-name");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
