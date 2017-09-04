@@ -32,7 +32,7 @@ public class FlumeConfigurationUtil {
     }
 
     public String createExecutionConfFile(Schema schema, Instant startDate, Instant endDate) throws IOException {
-        Properties props = new OrderedProperties();
+        Properties props = new OrderedProperties<>(String.class);
         FileInputStream in = null;
         FileOutputStream out = null;
 
@@ -175,7 +175,19 @@ public class FlumeConfigurationUtil {
         return CONF_FILE_PATH_FLAG + " " + flumeExecutionConfFilePath;
     }
 
-    private static class OrderedProperties extends Properties {
+    /**
+     * This class is a {@link Properties} implementation that reads and writes in a sorted manner (according to the <i>natural ordering</i> of its
+     * elements).
+     */
+    @SuppressWarnings("unused")
+    private static class OrderedProperties<T extends Comparable> extends Properties {
+
+        private final Class<T> keyType; //in order to keep the key type a comparable (POLA principle)
+
+        private OrderedProperties(Class<T> keyType) {
+            this.keyType = keyType;
+        }
+
         @Override
         @SuppressWarnings("NullableProblems") //due to intellij bug
         public Set<Object> keySet() {
