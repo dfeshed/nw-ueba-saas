@@ -84,12 +84,15 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                              "source count: {0}, "
                              "sink count: {1}".format(source_counter_property, sink_count))
 
-            return source_is_ready and source_count <= sink_count
+            hour_is_ready = source_is_ready and source_count <= sink_count
+            if hour_is_ready:
+                self.remove_counter_property(source_properties_file)
+                self.remove_counter_property(sink_properties_file)
+            return hour_is_ready
         except Exception as exception:
             logging.error("HourIsReadySensorOperator for schema: {0} and hour_end_time: {1} "
                           "has Failed.".format(self._schema_name, self._hour_end_time), exc_info=True)
             return False
 
     def get_counter_property(self, properties_file):
-        key = self._hour_end_time.replace(":", "\\:")  # java-props escapes char ':' and python just reads it as string
-        return load_and_get_property(key, properties_file)
+        return load_and_get_property(self._hour_end_time, properties_file)
