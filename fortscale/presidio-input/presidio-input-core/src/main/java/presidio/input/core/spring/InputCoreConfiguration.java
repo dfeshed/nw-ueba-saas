@@ -28,7 +28,9 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,10 +40,16 @@ import java.util.Map;
 public class InputCoreConfiguration {
 
     @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() throws IOException {
+    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping(){
         ObjectMapper mapper = new ObjectMapper();
-        Map operationTypeToCategoryMapping = mapper.readValue("operation-type-category-mapping.json", Map.class);
-        return operationTypeToCategoryMapping;
+        Map operationTypeToCategoryMapping = new HashMap();
+        try {
+            operationTypeToCategoryMapping = mapper.readValue(new File("/home/presidio/dev-projects/presidio-core/fortscale/presidio-input/presidio-input-core/src/main/resources/operation-type-category-mapping.json"), Map.class);
+            return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return operationTypeToCategoryMapping;
+        }
     }
 
     @Autowired
@@ -83,19 +91,19 @@ public class InputCoreConfiguration {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager();
+        return new ActiveDirectoryTransformationManager(getOperationTypeToCategoryMapping());
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager();
+        return new AuthenticationTransformerManager(getOperationTypeToCategoryMapping());
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager();
+        return new FileTransformerManager(getOperationTypeToCategoryMapping());
     }
 
     @Bean(name = "FILE.input-output-converter")
@@ -133,10 +141,4 @@ public class InputCoreConfiguration {
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
     }
-
-//    public InputCoreConfiguration() {
-//        ObjectMapper mapper = new ObjectMapper();
-//        SupporingInformationConfig config = mapper.readValue(new File("C:\\presidio\\presidio-core\\fortscale\\presidio-output\\presidio-output-processor\\src\\main\\resources\\supporting_information_config.yml"), SupporingInformationConfig.class);
-//        System.out.println(config.getMapping().get(0).getName());
-//    }
 }

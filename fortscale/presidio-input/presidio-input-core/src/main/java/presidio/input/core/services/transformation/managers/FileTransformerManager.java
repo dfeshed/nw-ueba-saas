@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation.managers;
 
+import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.services.transformation.FolderPathTransformer;
 import presidio.input.core.services.transformation.OperationTypeCategoryTransformer;
@@ -18,6 +19,11 @@ public class FileTransformerManager implements TransformationManager {
     @Value("${folder.operation.types}")
     private String[] folderOperationTypes;
     private List<Transformer> transformers;
+    private Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping;
+
+    public FileTransformerManager(Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping) {
+        this.operationTypeToCategoryMapping = operationTypeToCategoryMapping;
+    }
 
     @Override
     public List<Transformer> getTransformers() {
@@ -29,8 +35,7 @@ public class FileTransformerManager implements TransformationManager {
                     FileTransformedEvent.SRC_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
             transformers.add(new FolderPathTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
                     FileTransformedEvent.DST_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
-            Map<String, List<String>> operationTypeCategoryMapping = null;
-            transformers.add(new OperationTypeCategoryTransformer(operationTypeCategoryMapping));
+            transformers.add(new OperationTypeCategoryTransformer(operationTypeToCategoryMapping.get(Schema.FILE.toString())));
         }
         return transformers;
     }

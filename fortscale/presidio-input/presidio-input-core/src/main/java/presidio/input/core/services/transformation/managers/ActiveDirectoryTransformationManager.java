@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation.managers;
 
+import fortscale.common.general.Schema;
 import presidio.input.core.services.transformation.OperationTypeCategoryTransformer;
 import presidio.input.core.services.transformation.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -11,13 +12,17 @@ import java.util.Map;
 public class ActiveDirectoryTransformationManager implements TransformationManager {
 
     private List<Transformer> transformers;
+    private Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping;
+
+    public ActiveDirectoryTransformationManager(Map<Schema, Map<String, List<String>>> operationTypeToCategoryMapping) {
+        this.operationTypeToCategoryMapping = operationTypeToCategoryMapping;
+    }
 
     @Override
     public List<Transformer> getTransformers() {
         if (transformers == null) {
             transformers = new ArrayList<>();
-            Map<String, List<String>> operationTypeCategoryMapping = null;
-            transformers.add(new OperationTypeCategoryTransformer(operationTypeCategoryMapping));
+            transformers.add(new OperationTypeCategoryTransformer(operationTypeToCategoryMapping.get(Schema.ACTIVE_DIRECTORY.toString())));
         }
         return transformers;
     }

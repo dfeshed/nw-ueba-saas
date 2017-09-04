@@ -4,6 +4,7 @@ import presidio.input.core.services.transformation.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TransformationManager {
     List<Transformer> getTransformers();

@@ -1,7 +1,9 @@
 package presidio.input.core.services.transformation;
 
+import org.apache.commons.collections.CollectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,13 @@ public class OperationTypeCategoryTransformer implements Transformer {
         documents.forEach(abstractInputDocument -> {
             String operationType = abstractInputDocument.getOperationType();
             List<String> operationTypeCategories = operationTypeCategoryMapping.get(operationType);
-            abstractInputDocument.getOperationTypeCategory().addAll(operationTypeCategories);
+
+            if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
+                if (abstractInputDocument.getOperationTypeCategory() == null) {
+                    abstractInputDocument.setOperationTypeCategory(new ArrayList<>());
+                }
+                abstractInputDocument.getOperationTypeCategory().addAll(operationTypeCategories);
+            }
         });
 
         return documents;
