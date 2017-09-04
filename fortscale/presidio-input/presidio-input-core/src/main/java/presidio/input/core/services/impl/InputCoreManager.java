@@ -20,6 +20,7 @@ public class InputCoreManager {
     private static final Logger logger = Logger.getLogger(InputCoreManager.class);
 
     private final int DEFAULT_PAGE_SIZE = 1000;
+    private final int SINGLE_PAGE_SIZE = 1;
 
     private final PresidioInputPersistencyService persistencyService;
     private final AdeDataService adeDataService;
@@ -40,23 +41,44 @@ public class InputCoreManager {
     }
 
     public void run(Schema schema, Instant startDate, Instant endDate) {
-        if (pageSize == null){
+        if (pageSize == null) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
 
         while (rawEventsPageIterator.hasNext()) {
-            List nextEvents = rawEventsPageIterator.next();
-
-            logger.debug("Processing {} events", nextEvents.size());
-
-            List transformedEvents = transformationService.run(nextEvents, schema);
-            storeToAde(schema, startDate, endDate, transformedEvents);
             try {
-                storeToOutput(transformedEvents, schema);
-            } catch (Exception e) {
-                logger.error("Error storing transformed data to output ", e);
+                List nextEvents = rawEventsPageIterator.next();
+
+                logger.debug("Processing {} events", nextEvents.size());
+
+                List transformedEvents = transformationService.run(nextEvents, schema);
+                storeToAde(schema, startDate, endDate, transformedEvents);
+                try {
+                    storeToOutput(transformedEvents, schema);
+                } catch (Exception e) {
+                    logger.error("Error storing transformed data to output ", e);
+                }
+            } catch (IllegalArgumentException ex) {
+                //TODO: there should be beter way to handle this scenario
+                logger.error("Error reading events from repository.", ex);
+                int num = rawEventsPageIterator.getPageSize();
+                rawEventsPageIterator.setPageSize(SINGLE_PAGE_SIZE);
+                for (int i = 0; i < num; i++) {
+                    try {
+                        List nextEvent = rawEventsPageIterator.next();
+                        List transformedEvent = transformationService.run(nextEvent, schema);
+                        storeToAde(schema, startDate, endDate, transformedEvent);
+                        try {
+                            storeToOutput(transformedEvent, schema);
+                        } catch (Exception e) {
+                            logger.error("Error storing transformed data to output ", e);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        logger.error("Bad argument in repository.", ex);
+                    }
+                }
+
             }
         }
     }

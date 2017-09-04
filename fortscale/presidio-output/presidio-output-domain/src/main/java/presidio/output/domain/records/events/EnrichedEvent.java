@@ -33,6 +33,8 @@ public class EnrichedEvent {
     public static final String USER_ID_FIELD = "userId";
     public static final String START_INSTANT_FIELD = "eventDate";
 
+    public static final String IS_USER_ADMIN = "isUserAdmin";
+
     @Id
     @Indexed
     @Field
@@ -76,9 +78,10 @@ public class EnrichedEvent {
     private String resultCode;
 
     @Field(ADDITIONAL_INFO)
-    private Map<String,String> additionalnfo;
+    private Map<String, String> additionalInfo;
 
-    public EnrichedEvent() {}
+    public EnrichedEvent() {
+    }
 
     public EnrichedEvent(Instant createdDate,
                          Instant eventDate,
@@ -92,7 +95,7 @@ public class EnrichedEvent {
                          List<String> operationTypeCategories,
                          EventResult result,
                          String resultCode,
-                         Map<String, String> additionalnfo) {
+                         Map<String, String> additionalInfo) {
         this.createdDate = createdDate;
         this.eventDate = eventDate;
         this.eventId = eventId;
@@ -105,7 +108,7 @@ public class EnrichedEvent {
         this.operationTypeCategories = operationTypeCategories;
         this.result = result;
         this.resultCode = resultCode;
-        this.additionalnfo = additionalnfo;
+        this.additionalInfo = additionalInfo;
     }
 
     public String getEventId() {
@@ -184,16 +187,16 @@ public class EnrichedEvent {
         this.resultCode = resultCode;
     }
 
-    public void setAdditionalnfo(Map<String, String> additionalnfo) {
-        this.additionalnfo = additionalnfo;
+    public void setAdditionalInfo(Map<String, String> additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public Map<String, String> getAdditionalnfo() {
-        return additionalnfo;
+    public Map<String, String> getAdditionalInfo() {
+        return additionalInfo;
     }
 
     public void setUserId(String userId) {

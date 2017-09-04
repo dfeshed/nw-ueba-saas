@@ -48,8 +48,16 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
     public List<U> next() {
         int numOfItemsToSkip = this.currentPage * this.pageSize;
         this.currentPage++;
+        List<U> records = this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize);
 
-        return this.presidioInputPersistencyService.readRecords(this.schema, this.startDate, this.endDate, numOfItemsToSkip, this.pageSize);
+        return records;
     }
 
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
 }

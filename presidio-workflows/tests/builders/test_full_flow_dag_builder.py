@@ -33,7 +33,7 @@ def test_valid_build():
         'retry_delay': timedelta(minutes=5),
         'hourly_smart_events_confs': '',
         'daily_smart_events_confs': '',
-        'data_sources': ['dlpfile'],
+        'data_sources': 'dlpfile',
     }
 
     dag = DAG(

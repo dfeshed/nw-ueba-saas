@@ -32,10 +32,10 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     private final String START_TIME_UNVALID_MESSAGE = "dataPipeline startTime format is invalid. Allowed format is: yyyy-mm-ddThh:mm:ss.ffZ";
     private final String SCHEMA_UNVALID_MESSAGE = "dataPipeline schema %s field is not supported. Allowed values:%s";
     private final String START_TIME_FUTRE_DATE_MESSAGE = "dataPipeline startTime date is in the future.";
-    private final String FILE = "file";
-    private final String ACTIVE_DIRACTORY = "active directory";
-    private final String AUTHENTICATION = "authentication ";
-    private final List<String> schemas = new ArrayList<String>(Arrays.asList(FILE, ACTIVE_DIRACTORY, AUTHENTICATION));
+    private final String FILE = "FILE";
+    private final String ACTIVE_DIRECTORY = "ACTIVE_DIRECTORY";
+    private final String AUTHENTICATION = "AUTHENTICATION";
+    private final List<String> schemas = new ArrayList<String>(Arrays.asList(FILE, ACTIVE_DIRECTORY, AUTHENTICATION));
 
     @Override
     public boolean applyConfiguration() {

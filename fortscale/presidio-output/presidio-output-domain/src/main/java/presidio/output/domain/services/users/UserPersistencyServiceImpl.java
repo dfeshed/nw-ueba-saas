@@ -2,10 +2,12 @@ package presidio.output.domain.services.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.repositories.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +25,11 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
 
     @Override
     public Iterable<User> save(List<User> users) {
-        return userRepository.save(users);
+        if (users !=null && users.size()>0) {
+            return userRepository.save(users);
+        } else {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     @Override
@@ -35,6 +41,15 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
     public Iterable<User> findAll() {
         return userRepository.findAll();
     }
+
+    public Page<User> findByUserName(String userName, PageRequest pageRequest) {
+        return userRepository.findByUserName(userName, pageRequest);
+    }
+
+    public Page<User> findByUserId(String userId, PageRequest pageRequest) {
+        return userRepository.findByUserId(userId, pageRequest);
+    }
+
 
     @Override
     public Page<User> find(UserQuery userQuery) {

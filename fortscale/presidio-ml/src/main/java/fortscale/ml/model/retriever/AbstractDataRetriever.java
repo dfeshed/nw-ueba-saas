@@ -17,7 +17,6 @@ public abstract class AbstractDataRetriever {
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
-	protected PatternReplacement patternReplacement;
 
 	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		this.dataRetrieverConf = dataRetrieverConf;
@@ -35,17 +34,6 @@ public abstract class AbstractDataRetriever {
 			} catch (Exception e) {
 				logger.error(String.format("Could not deserialize function JSON %s", functionConfAsString), e);
 			}
-		}
-
-		patternReplacement = dataRetrieverConf.getPatternReplacementConf() == null ?
-				null : new PatternReplacement(dataRetrieverConf.getPatternReplacementConf());
-	}
-
-	public String replacePattern(String original) {
-		if (patternReplacement != null) {
-			return patternReplacement.replacePattern(original);
-		} else {
-			return original;
 		}
 	}
 
