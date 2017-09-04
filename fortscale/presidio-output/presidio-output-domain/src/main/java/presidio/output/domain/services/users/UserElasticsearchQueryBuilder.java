@@ -3,6 +3,7 @@ package presidio.output.domain.services.users;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -13,6 +14,9 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
+import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
@@ -34,10 +38,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             }
         }
 
-        // filter by userId
-        if (StringUtils.isNotEmpty(userQuery.getFilterByUserId())) {
-            boolQueryBuilder.must(matchQuery(User.USER_ID_FIELD_NAME, userQuery.getFilterByUserId()).operator(Operator.AND));
-        }
+
 
         // filter by alert classifications
         if (!CollectionUtils.isEmpty(userQuery.getFilterByAlertClassifications()) && !(userQuery.getFilterByAlertClassifications()).isEmpty()) {
@@ -51,20 +52,46 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             boolQueryBuilder.must(matchQuery(User.IS_ADMIN_FIELD_NAME, userQuery.getFilterByIsAdmin()).operator(Operator.AND));
         }
 
-        if (boolQueryBuilder.hasClauses()) {
-            super.withFilter(boolQueryBuilder);
-        }
 
-        if (userQuery.getMinScore() != null || userQuery.getMaxScore() != null) {
+
+
+        if (userQuery.getMinScore() != null || userQuery.getMaxScore() != null){
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
-            if (userQuery.getMinScore() > 0) {
+            if (userQuery.getMinScore()!=null && userQuery.getMinScore()>0) {
                 rangeQuery.gte(userQuery.getMinScore());
             }
-            if (userQuery.getMaxScore() > 0) {
+            if (userQuery.getMaxScore()!=null && userQuery.getMaxScore()>0) {
                 rangeQuery.lte(userQuery.getMaxScore());
             }
 
             boolQueryBuilder.must(rangeQuery);
+        }
+
+
+
+
+        if (userQuery.getFilterByUserIds()!=null && userQuery.getFilterByUserIds().size()>0){
+            final BoolQueryBuilder boolIdQueryBuilder = new BoolQueryBuilder();
+            for (String id : userQuery.getFilterByUserIds()) {
+                boolIdQueryBuilder.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(boolIdQueryBuilder);
+
+        }
+
+        if (userQuery.getFilterByNotHaveAnyOfUserIds()!=null && userQuery.getFilterByNotHaveAnyOfUserIds().size()>0){
+            final BoolQueryBuilder boolIdQueryBuilder = new BoolQueryBuilder();
+            for (String id : userQuery.getFilterByNotHaveAnyOfUserIds()) {
+                boolIdQueryBuilder.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+            }
+            boolQueryBuilder.mustNot(boolIdQueryBuilder);
+
+        }
+
+
+
+        if (boolQueryBuilder.hasClauses()) {
+            super.withFilter(boolQueryBuilder);
         }
     }
 
@@ -81,7 +108,6 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
                 sortBuilder.order(direction);
                 super.withSort(sortBuilder);
             });
-
         }
     }
 

@@ -2,6 +2,7 @@ package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -97,6 +98,7 @@ public class UserPersistencyServiceTest {
         indicators.add("indicator");
         return new User(userId, userName, displayName, score, classifications, indicators, false);
     }
+    
 
     @Test
     public void testFindOne() {
@@ -159,6 +161,78 @@ public class UserPersistencyServiceTest {
         assertTrue(foundUsers.iterator().next().getUserScore() == 70d);
     }
 
+    @Test
+    public void testFindByListOfIds(){
+
+        User user1 = new User("userId1", "userName", "displayName", 0d, null, null,false);
+        User user2 = new User("userId2", "userName", "displayName", 0d, null, null,false);
+        User user3 = new User("userId3", "userName", "displayName", 0d, null, null,false);
+        User user4 = new User("userId4", "userName", "displayName", 0d, null, null,false);
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        Iterable<User> createdUsers = userPersistencyService.save(userList);
+        List<String> userIds = new ArrayList<>();
+        userIds.add(user1.getUserId());
+        userIds.add(user2.getUserId());
+        userIds.add("userId5");
+
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByUsersIds(userIds);
+        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(2,usersPageResult.getContent().size());
+        Assert.assertEquals(user1.getUserId(),usersPageResult.getContent().get(0).getUserId());
+        Assert.assertEquals(user2.getUserId(),usersPageResult.getContent().get(1).getUserId());
+    }
+
+    @Test
+    public void testFindByListOfExculdedIds(){
+        User user1 = new User("userId1", "userName", "displayName", 0d, null, null,false);
+        User user2 = new User("userId2", "userName", "displayName", 0d, null, null,false);
+        User user3 = new User("userId3", "userName", "displayName", 0d, null, null,false);
+        User user4 = new User("userId4", "userName", "displayName", 0d, null, null,false);
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        Iterable<User> createdUsers = userPersistencyService.save(userList);
+        List<String> excludedUserIds = new ArrayList<>();
+        excludedUserIds.add(user1.getUserId());
+        excludedUserIds.add(user2.getUserId());
+        excludedUserIds.add("userId5");
+
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByNotHaveAnyOfUserIds(excludedUserIds);
+        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(2,usersPageResult.getContent().size());
+        Assert.assertEquals(user3.getUserId(),usersPageResult.getContent().get(0).getUserId());
+        Assert.assertEquals(user4.getUserId(),usersPageResult.getContent().get(1).getUserId());
+    }
+
+    @Test
+    public void testFindByUserScore(){
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null,false);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null,false);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null,false);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null,false);
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        Iterable<User> createdUsers = userPersistencyService.save(userList);
+
+
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).minScore(10).maxScore(20);
+        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(2,usersPageResult.getContent().size());
+        Assert.assertEquals(user2.getUserId(),usersPageResult.getContent().get(0).getUserId());
+        Assert.assertEquals(user3.getUserId(),usersPageResult.getContent().get(1).getUserId());
+    }
 
     @Test
     public void testFindByIsUserAdmin_True() {

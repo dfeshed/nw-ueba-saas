@@ -42,8 +42,7 @@ import static java.util.stream.Collectors.toList;
 @ContextConfiguration(classes = ModelingServiceConfigurationTest.class)
 public class ModelingServiceApplicationTest {
 	private static final String ENRICHED_RECORDS_LINE = "process --group_name enriched-record-models --session_id test-run --end_date 2017-01-01T00:00:00Z";
-	private static final String FEATURE_AGGREGATION_RECORDS_LINE = "process --group_name feature-aggregation-record-models --session_id test-run --end_date 2017-01-01T00:00:00Z";
-	private static final String SMART_RECORDS_LINE = "process --group_name smart-record-models --session_id test-run --end_date 2017-01-01T00:00:00Z";
+
 
 	@Autowired
 	private BootShim bootShim;
@@ -55,16 +54,6 @@ public class ModelingServiceApplicationTest {
 	private ModelStore modelStore;
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
-	@Test
-	public void modeling_service_application_test() {
-		CommandResult commandResult = bootShim.getShell().executeCommand(ENRICHED_RECORDS_LINE);
-		Assert.assertTrue(commandResult.isSuccess());
-		commandResult = bootShim.getShell().executeCommand(FEATURE_AGGREGATION_RECORDS_LINE);
-		Assert.assertTrue(commandResult.isSuccess());
-		commandResult = bootShim.getShell().executeCommand(SMART_RECORDS_LINE);
-		Assert.assertTrue(commandResult.isSuccess());
-	}
 
 	@Test
 	public void continuous_data_model_test() {
