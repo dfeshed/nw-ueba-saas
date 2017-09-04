@@ -92,7 +92,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				GenericHistogram histogram = (GenericHistogram)aggregatedFeatures.get(featureName).getValue();
-				if (patternReplacement != null) histogram = doReplacePattern(histogram);
 				if (featureValue != null) histogram = doFilter(histogram, featureValue);
 
 				for (IDataRetrieverFunction function : functions) {
@@ -108,14 +107,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		} else {
 			return new ModelBuilderData(reductionHistogram);
 		}
-	}
-
-	private GenericHistogram doReplacePattern(GenericHistogram original) {
-		metrics.replacePattern++;
-		GenericHistogram result = new GenericHistogram();
-		for (Map.Entry<String, Double> entry : original.getHistogramMap().entrySet())
-			result.add(patternReplacement.replacePattern(entry.getKey()), entry.getValue());
-		return result;
 	}
 
 	private void validate(ContextHistogramRetrieverConf config) {
