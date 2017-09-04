@@ -1,6 +1,8 @@
 package presidio.input.core.spring;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,21 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 @Configuration
 @ComponentScan()
 @Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class, MonitoringConfiguration.class})
 public class InputCoreConfiguration {
+
+    @Bean
+    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Map operationTypeToCategoryMapping = mapper.readValue("operation-type-category-mapping.json", Map.class);
+        return operationTypeToCategoryMapping;
+    }
 
     @Autowired
     private PresidioInputPersistencyService presidioInputPersistencyService;
@@ -120,4 +133,10 @@ public class InputCoreConfiguration {
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
     }
+
+//    public InputCoreConfiguration() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        SupporingInformationConfig config = mapper.readValue(new File("C:\\presidio\\presidio-core\\fortscale\\presidio-output\\presidio-output-processor\\src\\main\\resources\\supporting_information_config.yml"), SupporingInformationConfig.class);
+//        System.out.println(config.getMapping().get(0).getName());
+//    }
 }
