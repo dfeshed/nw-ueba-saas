@@ -92,7 +92,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             if (isControlDoneMessage) {
                 break;
             }
-            sinkCounter.incrementEventDrainAttemptCount();
+//            sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;
             final String eventBody = new String(flumeEvent.getBody());
             try {
@@ -115,7 +115,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         final int size = records.size();
         if (allSavedSuccessfully) {
             logger.info("{} were saved successfully.", size);
-            sinkCounter.addToEventDrainSuccessCount(size);
+//            sinkCounter.addToEventDrainSuccessCount(size);
         } else {
             logger.warn("Not all records out of {} total records were saved successfully", size);
         }

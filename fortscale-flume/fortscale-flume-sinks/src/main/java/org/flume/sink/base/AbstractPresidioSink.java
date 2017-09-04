@@ -3,7 +3,6 @@ package org.flume.sink.base;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
-import org.apache.flume.instrumentation.SinkCounter;
 import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSink.class);
 
-    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
+//    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
     protected boolean isBatch;
     protected boolean isDone;
@@ -29,15 +28,15 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     @Override
     public void start() {
-        if (sinkCounter.getStartTime() == 0L) { //if wasn't started yet
-            sinkCounter.start();
-        }
+//        if (sinkCounter.getStartTime() == 0L) { //if wasn't started yet
+//            sinkCounter.start();
+//        }
         super.start();
     }
 
     @Override
     public void stop() {
-        sinkCounter.stop();
+//        sinkCounter.stop();
         super.stop();
     }
 

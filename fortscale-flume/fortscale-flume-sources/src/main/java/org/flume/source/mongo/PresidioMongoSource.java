@@ -13,7 +13,6 @@ import org.apache.flume.EventDrivenSource;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
-import org.apache.flume.instrumentation.SourceCounter;
 import org.apache.flume.source.AbstractBatchableEventDrivenSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
@@ -49,7 +48,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    private final SourceCounter sourceCounter = new SourceCounter("mongo-source-counter");
+//    private final SourceCounter sourceCounter = new SourceCounter("mongo-source-counter");
 
     private SourceMongoRepository sourceMongoRepository;
 
@@ -110,7 +109,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
 
     @Override
     public void start() {
-        sourceCounter.start();
+//        sourceCounter.start();
         super.start();
     }
 
@@ -118,7 +117,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
     protected void doStart() throws FlumeException {
         logger.debug("{} is processing events for {}: {}, {}: {}.",
                 getName(), START_DATE, END_DATE, startDate, endDate);
-        sourceCounter.start();
+//        sourceCounter.start();
 
         try {
             int pageNum = 0;// first page
@@ -154,7 +153,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
 
     @Override
     public void stop() {
-        sourceCounter.stop();
+//        sourceCounter.stop();
         super.stop();
     }
 
@@ -171,7 +170,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
     }
 
     private void processEvent(AbstractDocument event) throws JsonProcessingException {
-        sourceCounter.incrementEventAcceptedCount();
+//        sourceCounter.incrementEventAcceptedCount();
         final String eventAsString;
         eventAsString = mapper.writeValueAsString(event);
         final Event flumeEvent = EventBuilder.withBody(eventAsString, Charset.defaultCharset());
@@ -180,7 +179,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
     }
 
     private void processPage(List<AbstractDocument> pageEvents) throws Exception {
-        sourceCounter.addToEventReceivedCount(pageEvents.size());
+//        sourceCounter.addToEventReceivedCount(pageEvents.size());
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);

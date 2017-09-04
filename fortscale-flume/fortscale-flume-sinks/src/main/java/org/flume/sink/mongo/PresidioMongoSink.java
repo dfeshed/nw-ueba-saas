@@ -129,8 +129,8 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             if (isControlDoneMessage) {
                 break;
             }
-
-            sinkCounter.incrementEventDrainAttemptCount();
+//
+//            sinkCounter.incrementEventDrainAttemptCount();
 
             T parsedEvent;
             final Class<T> recordType = this.recordType;
@@ -152,10 +152,10 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
                 sinkMongoRepository.save(eventsToSave.get(0), collectionName);
                 numOfSavedEvents = 1;
-                sinkCounter.incrementEventDrainSuccessCount();
+//                sinkCounter.incrementEventDrainSuccessCount();
             } else {
                 numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
-                sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
+//                sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
             }
         }
 
