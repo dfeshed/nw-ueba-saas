@@ -2,9 +2,9 @@ package presidio.ade.modeling.config;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoImpl;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.mongodb.util.MongoDbUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,13 +24,13 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStoreCon
 		SmartAccumulationDataStoreConfig.class,
 })
 public class ModelingServiceDependencies {
-	@Value("${presidio.ade.modeling.feature.buckets.default.expire.after.seconds}")
-	private long featureBucketsDefaultExpireAfterSeconds;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+	@Autowired
+	private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
 	/*******************************
 	 * Feature bucket related beans.
@@ -40,8 +40,7 @@ public class ModelingServiceDependencies {
 	public FeatureBucketReader featureBucketReader() {
 		return new FeatureBucketStoreMongoImpl(
 				mongoTemplate,
-				mongoDbUtilService,
-				featureBucketsDefaultExpireAfterSeconds);
+				mongoDbBulkOpUtil);
 	}
 
 	/*****************************

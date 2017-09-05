@@ -59,10 +59,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
 
         for(Map.Entry<String,List<FeatureBucket>> entry: confnameToFeatureBucketsMap.entrySet()){
             FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
-            //todo add batch implementation to the feature bucket store
-            for(FeatureBucket featureBucket: entry.getValue()){
-                featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
-            }
+            featureBucketStore.storeFeatureBucket(featureBucketConf, entry.getValue());
         }
     }
 

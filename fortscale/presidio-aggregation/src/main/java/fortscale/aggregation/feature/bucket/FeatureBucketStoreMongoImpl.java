@@ -1,22 +1,18 @@
 package fortscale.aggregation.feature.bucket;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.mongodb.util.MongoDbUtilService;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.TtlService;
 import fortscale.utils.ttl.TtlServiceAware;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -27,25 +23,21 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServiceAware {
 	private static final Logger logger = Logger.getLogger(FeatureBucketStoreMongoImpl.class);
 	public static final String COLLECTION_NAME_PREFIX = "aggr_";
+	private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
 	private MongoTemplate mongoTemplate;
-	private MongoDbUtilService mongoDbUtilService;
-	private long defaultExpireAfterSeconds;
 	private TtlService ttlService;
 
 	/**
 	 * C'tor.
-	 *
 	 * @param mongoTemplate             the {@link MongoTemplate}
-	 * @param mongoDbUtilService        the {@link MongoDbUtilService}
-	 * @param defaultExpireAfterSeconds the default TTL of the {@link FeatureBucket} documents
+	 * @param mongoDbBulkOpUtil
 	 */
 	public FeatureBucketStoreMongoImpl(
-			MongoTemplate mongoTemplate, MongoDbUtilService mongoDbUtilService, long defaultExpireAfterSeconds) {
+			MongoTemplate mongoTemplate, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
 
 		this.mongoTemplate = mongoTemplate;
-		this.mongoDbUtilService = mongoDbUtilService;
-		this.defaultExpireAfterSeconds = defaultExpireAfterSeconds;
+		this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
 	}
 
 	/**
@@ -85,51 +77,18 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServi
 	}
 
 	/**
-	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, FeatureBucket)
+	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, List)
 	 */
 	@Override
-	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) {
-		String collectionName = ensureCollectionExists(featureBucketConf);
-
-		try {
-			mongoTemplate.save(featureBucket, collectionName);
-			ttlService.save(getStoreName(), collectionName);
-		} catch (Exception e) {
-			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBucket, collectionName, e);
-		}
-	}
-
-	private String ensureCollectionExists(FeatureBucketConf featureBucketConf) {
+	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets) {
 		String collectionName = getCollectionName(featureBucketConf);
 
-		if (!mongoDbUtilService.collectionExists(collectionName)) {
-			mongoDbUtilService.createCollection(collectionName);
-
-			// Start time index
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
-
-			// Context ID + start time index
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
-					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
-
-			// Bucket ID (unique)
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.BUCKET_ID_FIELD, Direction.ASC)
-					.unique());
-
-			long expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ?
-					featureBucketConf.getExpireAfterSeconds() :
-					defaultExpireAfterSeconds;
-
-			// Created at (TTL)
-			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-					.on(FeatureBucket.CREATED_AT_FIELD, Direction.ASC)
-					.expire(expireAfterSeconds, TimeUnit.SECONDS));
+		try {
+			mongoDbBulkOpUtil.insertUnordered(featureBuckets,collectionName);
+			ttlService.save(getStoreName(), collectionName);
+		} catch (Exception e) {
+			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBuckets, collectionName, e);
 		}
-
-		return collectionName;
 	}
 
 	private static String getCollectionName(String featureBucketConfName) {
