@@ -1,4 +1,4 @@
-package fortscale.ml.model.selector.factories;
+package fortscale.ml.model.selector.factories.smart;
 
 import fortscale.ml.model.selector.AccumulatedSmartContextSelector;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;

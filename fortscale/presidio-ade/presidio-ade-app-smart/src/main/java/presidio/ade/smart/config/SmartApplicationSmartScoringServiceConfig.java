@@ -20,7 +20,7 @@ import presidio.ade.smart.SmartScoringService;
  * @author Lior Govrin
  */
 @Configuration
-@Import({AdeRecordReaderFactoriesConfig.class, TransformationConfig.class, RecordReaderFactoryServiceConfig.class})
+@Import({AdeRecordReaderFactoriesConfig.class, TransformationConfig.class, RecordReaderFactoryServiceConfig.class, SmartApplicationSmartScorersFactoryConfig.class})
 public class SmartApplicationSmartScoringServiceConfig {
 	@Value("${presidio.ade.scorer.base.configurations.path}")
 	private String scorerBaseConfigurationsPath;
@@ -44,12 +44,6 @@ public class SmartApplicationSmartScoringServiceConfig {
 				scorerBaseConfigurationsPath,
 				scorerOverridingConfigurationsPath,
 				scorerAdditionalConfigurationsPath);
-	}
-
-	@Bean
-	public FactoryService<Scorer> scorerFactoryService() {
-		// TODO: Should register to factory service smart related scorer factories
-		return new FactoryService<>();
 	}
 
 	@Bean
