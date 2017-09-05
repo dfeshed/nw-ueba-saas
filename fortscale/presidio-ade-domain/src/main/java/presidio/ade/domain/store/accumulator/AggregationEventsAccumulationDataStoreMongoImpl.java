@@ -13,7 +13,6 @@ import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecor
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -112,12 +111,8 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
-                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
 
-    @Override
-    public String getStoreName(){
-        return "aggrAccumulationDataStore";
-    }
 }

@@ -6,7 +6,6 @@ import fortscale.utils.ttl.store.TtlDataStore;
 import fortscale.utils.ttl.store.TtlDataStoreConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,6 +22,8 @@ import java.util.Collection;
 })
 public class TtlServiceSdkConfig {
 
+    @Value("${spring.application.name}")
+    private String appName;
     @Autowired
     private Collection<TtlServiceAware> ttlServiceAwares;
     @Autowired
@@ -32,11 +33,9 @@ public class TtlServiceSdkConfig {
     @Value("#{T(java.time.Duration).parse('${presidio.default.cleanup.interval:P60D}')}")
     private Duration defaultCleanupInterval;
 
-    @Autowired
-    ApplicationContext ctx;
 
     @Bean
     public TtlService ttlService(){
-        return new TtlService(ttlServiceAwares, ttlDataStore, defaultTtl, defaultCleanupInterval);
+        return new TtlService(appName, ttlServiceAwares, defaultTtl, defaultCleanupInterval, ttlDataStore);
     }
 }

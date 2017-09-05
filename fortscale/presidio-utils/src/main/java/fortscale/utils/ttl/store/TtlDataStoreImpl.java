@@ -8,26 +8,26 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.List;
 
 
-public class TtlDataRecordsStoreImpl implements TtlDataRecordsStore {
+public class TtlDataStoreImpl implements TtlDataStore {
 
     private MongoTemplate mongoTemplate;
-    private static final String TTL_TABLE_PREFIX = "management_ttl";
+    private static final String MANAGEMENT_TTL_TABLE = "management_ttl";
 
-    public TtlDataRecordsStoreImpl(MongoTemplate mongoTemplate) {
+    public TtlDataStoreImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
 
     @Override
-    public List<TtlData> findTtlData(String appName) {
+    public List<TtlData> getTtlDataList(String appName) {
         Criteria appNameFilter = Criteria.where(TtlData.APPLICATION_NAME_FIELD).is(appName);
         Query query = new Query().addCriteria(appNameFilter);
-        return mongoTemplate.find(query, TtlData.class, TTL_TABLE_PREFIX);
+        return mongoTemplate.find(query, TtlData.class, MANAGEMENT_TTL_TABLE);
     }
 
     @Override
     public void save(TtlData ttlData) {
-        mongoTemplate.save(ttlData, TTL_TABLE_PREFIX);
+        mongoTemplate.save(ttlData, MANAGEMENT_TTL_TABLE);
     }
 
 

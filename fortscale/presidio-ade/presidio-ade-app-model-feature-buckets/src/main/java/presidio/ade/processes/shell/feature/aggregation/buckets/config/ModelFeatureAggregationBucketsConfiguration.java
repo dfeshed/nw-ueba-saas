@@ -36,7 +36,6 @@ public class ModelFeatureAggregationBucketsConfiguration {
     private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
     @Autowired
     private FeatureBucketStore featureBucketStore;
-    private int maxGroupSize;
     @Autowired
     private TtlService ttlService;
 

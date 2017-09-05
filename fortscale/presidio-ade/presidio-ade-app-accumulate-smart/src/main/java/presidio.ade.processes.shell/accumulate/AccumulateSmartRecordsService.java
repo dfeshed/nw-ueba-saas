@@ -5,6 +5,7 @@ import fortscale.accumulator.smart.SmartAccumulatorService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import presidio.ade.domain.pagination.smart.SmartPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
@@ -24,17 +25,19 @@ public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor 
     private int maxGroupSize;
     private SmartAccumulationsCache smartAccumulationsCache;
     private SmartAccumulationDataStore smartAccumulationDataStore;
+    private TtlService ttlService;
 
     public AccumulateSmartRecordsService(FixedDurationStrategy accumulationStrategy, SmartDataReader reader,
                                          int pageSize, int maxGroupSize,
                                          SmartAccumulationsCache smartAccumulationsCache,
-                                         SmartAccumulationDataStore smartAccumulationDataStore) {
+                                         SmartAccumulationDataStore smartAccumulationDataStore, TtlService ttlService) {
         super(accumulationStrategy);
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.smartAccumulationsCache = smartAccumulationsCache;
         this.reader = reader;
         this.smartAccumulationDataStore = smartAccumulationDataStore;
+        this.ttlService = ttlService;
     }
 
 
@@ -50,11 +53,11 @@ public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor 
                 List<SmartRecord> smartRecords = pageIterator.next();
                 smartAccumulatorService.accumulate(smartRecords);
             }
-
             List<AccumulatedSmartRecord> accumulationsRecords = getAccumulatedSmartRecords();
-
             smartAccumulationDataStore.store(accumulationsRecords, configurationName);
         }
+
+        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     /**

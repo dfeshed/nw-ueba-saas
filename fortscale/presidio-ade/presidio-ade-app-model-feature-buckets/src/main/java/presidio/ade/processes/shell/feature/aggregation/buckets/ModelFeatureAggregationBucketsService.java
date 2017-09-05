@@ -6,6 +6,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -22,15 +23,17 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
     private FeatureBucketStore featureBucketStore;
+    private TtlService ttlService;
 
     public ModelFeatureAggregationBucketsService(BucketConfigurationService bucketConfigurationService,
                                                  EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator featureBucketAggregator,
-                                                 FeatureBucketStore featureBucketStore) {
+                                                 FeatureBucketStore featureBucketStore, TtlService ttlService) {
         super(FixedDurationStrategy.DAILY);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureBucketAggregator = featureBucketAggregator;
         this.featureBucketStore = featureBucketStore;
+        this.ttlService = ttlService;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
             List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator,contextTypes, createFeatureBucketStrategyData(timeRange));
             storeFeatureBuckets(featureBucketsToInsert);
         }
+        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     private void storeFeatureBuckets(List<FeatureBucket> featureBucketList){

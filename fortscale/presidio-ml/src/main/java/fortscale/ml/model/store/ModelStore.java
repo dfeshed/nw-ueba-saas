@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.util.CollectionUtils;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -108,8 +107,4 @@ public class ModelStore implements TtlServiceAware {
 		mongoTemplate.remove(query, collectionName);
 	}
 
-	@Override
-	public String getStoreName(){
-		return "modelStore";
-	}
 }
