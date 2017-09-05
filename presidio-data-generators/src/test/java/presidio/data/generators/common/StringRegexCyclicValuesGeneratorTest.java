@@ -3,6 +3,9 @@ package presidio.data.generators.common;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by barak_schuster on 9/4/17.
  */
@@ -19,11 +22,11 @@ public class StringRegexCyclicValuesGeneratorTest {
         int expectedIterationsTillRepeat = amountOfCharsInAbc * amountOfCyclicNumbers;
         String currentGeneratedValue = "";
         int generatedValuesCounter;
-
+        Set<String> generatedValues = new HashSet<>();
         for (generatedValuesCounter = 0; generatedValuesCounter < expectedIterationsTillRepeat; generatedValuesCounter++) {
-            String previousValue = currentGeneratedValue;
             currentGeneratedValue = generator.getNext();
-            Assert.assertNotEquals(previousValue, currentGeneratedValue,"cyclic values should not repeat");
+            Assert.assertFalse(generatedValues.contains(currentGeneratedValue),"cyclic values should not repeat");
+            generatedValues.add(currentGeneratedValue);
         }
 
         Assert.assertEquals(generatedValuesCounter, expectedIterationsTillRepeat,"not enough generated values for given pattern");
