@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -43,6 +44,14 @@ public interface Segmentor {
 					.append(rightMean)
 					.append(models)
   					.hashCode();
+		}
+
+		/**
+		 * @return ToString you know...
+		 */
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this);
 		}
 	}
 

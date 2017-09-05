@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
@@ -87,6 +88,14 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		public double getRightMean() {
 			return segment.rightMean;
 		}
+
+		/**
+		 * @return ToString you know...
+		 */
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this);
+		}
 	}
 
 	private List<ContinuousDataModel> sortedModels;
@@ -121,5 +130,13 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 				})
 				.filter(Objects::nonNull)
 				.iterator();
+	}
+
+	/**
+	 * @return ToString you know...
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }
