@@ -6,11 +6,11 @@
       "dataAvailabilityStrategy": "time-heuristic",
       "dataAvailbilityConf": [
         {
-          "schema": "active directory",
+          "schema": "ACTIVE_DIRECTORY",
           "delay": 3600000
         },
         {
-          "schema": "file",
+          "schema": "FILE",
           "delay": 3600000
         }
       ],

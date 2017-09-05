@@ -62,7 +62,8 @@ public class ModelStore implements TtlServiceAware {
 		Aggregation aggregation = Aggregation.newAggregation(
 				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(Date.from(eventEpochtime))),
 				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).push(Aggregation.ROOT).as(modelDaosGroupName));
-		AggregationResults<DBObject> results = mongoTemplate.aggregate(aggregation, getCollectionName(modelConf), DBObject.class);
+		String collectionName = getCollectionName(modelConf);
+		AggregationResults<DBObject> results = mongoTemplate.aggregate(aggregation, collectionName, DBObject.class);
 		return StreamUtils.createStreamFromIterator(results.iterator())
 				.map(modelDaoDbObjects -> {
 					ModelDAO[] modelDaos = mongoTemplate.getConverter().read(ModelDAO[].class, (DBObject)modelDaoDbObjects.get(modelDaosGroupName));
