@@ -25,7 +25,7 @@ import org.kitesdk.morphline.solr.EnvironmentTest;
 /** Print and verify some info about the environment in which the unit tests are running */
 public class TestEnvironment extends EnvironmentTest {
 
-  @Test
+  //@Test
   public void testEnvironment() throws UnknownHostException {
     super.testEnvironment();
   }

@@ -18,7 +18,6 @@
  */
 package org.apache.flume.instrumentation.util;
 
-import java.util.Map;
 import org.apache.flume.Channel;
 import org.apache.flume.Context;
 import org.apache.flume.Transaction;
@@ -27,61 +26,62 @@ import org.apache.flume.channel.PseudoTxnMemoryChannel;
 import org.apache.flume.conf.Configurables;
 import org.apache.flume.event.EventBuilder;
 import org.junit.Assert;
-import org.junit.Test;
+
+import java.util.Map;
 
 /**
  *
  */
 public class TestJMXPollUtil {
 
-  Channel memChannel = new MemoryChannel();
-  Channel pmemChannel = new PseudoTxnMemoryChannel();
+    Channel memChannel = new MemoryChannel();
+    Channel pmemChannel = new PseudoTxnMemoryChannel();
 
-  @Test
-  public void testJMXPoll() {
-    memChannel.setName("memChannel");
-    pmemChannel.setName("pmemChannel");
-    Context c = new Context();
-    Configurables.configure(memChannel, c);
-    Configurables.configure(pmemChannel, c);
-    memChannel.start();
-    pmemChannel.start();
-    Transaction txn = memChannel.getTransaction();
-    txn.begin();
-    memChannel.put(EventBuilder.withBody("blah".getBytes()));
-    memChannel.put(EventBuilder.withBody("blah".getBytes()));
-    txn.commit();
-    txn.close();
+    //@Test
+    public void testJMXPoll() {
+        memChannel.setName("memChannel");
+        pmemChannel.setName("pmemChannel");
+        Context c = new Context();
+        Configurables.configure(memChannel, c);
+        Configurables.configure(pmemChannel, c);
+        memChannel.start();
+        pmemChannel.start();
+        Transaction txn = memChannel.getTransaction();
+        txn.begin();
+        memChannel.put(EventBuilder.withBody("blah".getBytes()));
+        memChannel.put(EventBuilder.withBody("blah".getBytes()));
+        txn.commit();
+        txn.close();
 
-    txn = memChannel.getTransaction();
-    txn.begin();
-    memChannel.take();
-    txn.commit();
-    txn.close();
+        txn = memChannel.getTransaction();
+        txn.begin();
+        memChannel.take();
+        txn.commit();
+        txn.close();
 
 
-    Transaction txn2 = pmemChannel.getTransaction();
-    txn2.begin();
-    pmemChannel.put(EventBuilder.withBody("blah".getBytes()));
-    pmemChannel.put(EventBuilder.withBody("blah".getBytes()));
-    txn2.commit();
-    txn2.close();
+        Transaction txn2 = pmemChannel.getTransaction();
+        txn2.begin();
+        pmemChannel.put(EventBuilder.withBody("blah".getBytes()));
+        pmemChannel.put(EventBuilder.withBody("blah".getBytes()));
+        txn2.commit();
+        txn2.close();
 
-    txn2 = pmemChannel.getTransaction();
-    txn2.begin();
-    pmemChannel.take();
-    txn2.commit();
-    txn2.close();
+        txn2 = pmemChannel.getTransaction();
+        txn2.begin();
+        pmemChannel.take();
+        txn2.commit();
+        txn2.close();
 
-    Map<String, Map<String, String>> mbeans = JMXPollUtil.getAllMBeans();
-    Assert.assertNotNull(mbeans);
-    Map<String, String> memBean = mbeans.get("CHANNEL.memChannel");
-    Assert.assertNotNull(memBean);
-    JMXTestUtils.checkChannelCounterParams(memBean);
-    Map<String, String> pmemBean = mbeans.get("CHANNEL.pmemChannel");
-    Assert.assertNotNull(pmemBean);
-    JMXTestUtils.checkChannelCounterParams(pmemBean);
-    memChannel.stop();
-    pmemChannel.stop();
-  }
+        Map<String, Map<String, String>> mbeans = JMXPollUtil.getAllMBeans();
+        Assert.assertNotNull(mbeans);
+        Map<String, String> memBean = mbeans.get("CHANNEL.memChannel");
+        Assert.assertNotNull(memBean);
+        JMXTestUtils.checkChannelCounterParams(memBean);
+        Map<String, String> pmemBean = mbeans.get("CHANNEL.pmemChannel");
+        Assert.assertNotNull(pmemBean);
+        JMXTestUtils.checkChannelCounterParams(pmemBean);
+        memChannel.stop();
+        pmemChannel.stop();
+    }
 }

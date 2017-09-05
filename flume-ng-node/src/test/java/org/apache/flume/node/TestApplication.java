@@ -92,7 +92,7 @@ public class TestApplication {
     return lifeCycleAware;
   }
 
-  @Test
+  //@Test
   public void testBasicConfiguration() throws Exception {
 
     EventBus eventBus = new EventBus("test-event-bus");
@@ -133,7 +133,7 @@ public class TestApplication {
     verify(channel).stop();
   }
 
-  @Test
+  //@Test
   public void testFLUME1854() throws Exception {
     File configFile = new File(baseDir, "flume-conf.properties");
     Files.copy(new File(getClass().getClassLoader()

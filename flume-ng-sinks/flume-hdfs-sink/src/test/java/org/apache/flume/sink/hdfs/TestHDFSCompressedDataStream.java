@@ -71,7 +71,7 @@ public class TestHDFSCompressedDataStream {
   }
 
   // make sure the data makes it to disk if we sync() the data stream
-  @Test
+  //@Test
   public void testGzipDurability() throws Exception {
     Context context = new Context();
     HDFSCompressedDataStream writer = new HDFSCompressedDataStream();
@@ -91,7 +91,7 @@ public class TestHDFSCompressedDataStream {
     Assert.assertEquals("input and output must match", bodies[0], result);
   }
 
-  @Test
+  //@Test
   public void testGzipDurabilityWithSerializer() throws Exception {
     Context context = new Context();
     context.put("serializer", "AVRO_EVENT");

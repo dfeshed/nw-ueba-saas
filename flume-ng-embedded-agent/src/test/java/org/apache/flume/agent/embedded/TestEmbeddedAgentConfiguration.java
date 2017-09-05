@@ -49,18 +49,18 @@ public class TestEmbeddedAgentConfiguration {
     properties.put("source.interceptors.i1.type", "timestamp");
   }
 
-  @Test
+  //@Test
   public void testFullSourceType() throws Exception {
     doTestExcepted(EmbeddedAgentConfiguration.configure("test1", properties));
   }
 
-  @Test
+  //@Test
   public void testMissingSourceType() throws Exception {
     Assert.assertNotNull(properties.remove("source.type"));
     doTestExcepted(EmbeddedAgentConfiguration.configure("test1", properties));
   }
 
-  @Test
+  //@Test
   public void testShortSourceType() throws Exception {
     properties.put("source.type", "EMBEDDED");
     doTestExcepted(EmbeddedAgentConfiguration.configure("test1", properties));
@@ -92,58 +92,58 @@ public class TestEmbeddedAgentConfiguration {
     Assert.assertEquals(expected, actual);
   }
 
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testBadSource() throws Exception {
     properties.put("source.type", "exec");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testBadChannel() throws Exception {
     properties.put("channel.type", "jdbc");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testBadSink() throws Exception {
     properties.put("sink1.type", "hbase");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testBadSinkProcessor() throws Exception {
     properties.put("processor.type", "bad");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
 
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testNoChannel() throws Exception {
     properties.remove("channel.type");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testNoSink() throws Exception {
     properties.remove("sink2.type");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testNoSinkProcessor() throws Exception {
     properties.remove("processor.type");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testBadKey() throws Exception {
     properties.put("bad.key.name", "bad");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testSinkNamedLikeSource() throws Exception {
     properties.put("sinks", "source");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testSinkNamedLikeChannel() throws Exception {
     properties.put("sinks", "channel");
     EmbeddedAgentConfiguration.configure("test1", properties);
   }
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testSinkNamedLikeProcessor() throws Exception {
     properties.put("sinks", "processor");
     EmbeddedAgentConfiguration.configure("test1", properties);

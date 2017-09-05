@@ -50,7 +50,7 @@ public class TestBLOBHandler {
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Test
+  //@Test
   public void testCSVData() throws Exception {
     Map requestParameterMap = new HashMap();
     requestParameterMap.put("param1", new String[] { "value1" });
@@ -82,7 +82,7 @@ public class TestBLOBHandler {
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Test
+  //@Test
   public void testTabData() throws Exception {
     Map requestParameterMap = new HashMap();
     requestParameterMap.put("param1", new String[] { "value1" });
@@ -112,7 +112,7 @@ public class TestBLOBHandler {
   }
 
   @SuppressWarnings({ "rawtypes" })
-  @Test(expected = IllegalArgumentException.class)
+  //@Test(expected = IllegalArgumentException.class)
   public void testMissingParameters() throws Exception {
     Map requestParameterMap = new HashMap();
 

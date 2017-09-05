@@ -116,7 +116,7 @@ public class TestHiveWriter {
     serializer.configure(ctx);
   }
 
-  @Test
+  //@Test
   public void testInstantiate() throws Exception {
     HiveEndPoint endPoint = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);
     SinkCounter sinkCounter = new SinkCounter(this.getClass().getName());
@@ -126,7 +126,7 @@ public class TestHiveWriter {
     writer.close();
   }
 
-  @Test
+  //@Test
   public void testWriteBasic() throws Exception {
     HiveEndPoint endPoint = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);
     SinkCounter sinkCounter = new SinkCounter(this.getClass().getName());
@@ -139,7 +139,7 @@ public class TestHiveWriter {
     checkRecordCountInTable(3);
   }
 
-  @Test
+  //@Test
   public void testWriteMultiFlush() throws Exception {
     HiveEndPoint endPoint = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);
     SinkCounter sinkCounter = new SinkCounter(this.getClass().getName());
@@ -174,7 +174,7 @@ public class TestHiveWriter {
     checkRecordCountInTable(3);
   }
 
-  @Test
+  //@Test
   public void testTxnBatchConsumption() throws Exception {
     // get a small txn batch and consume it, then roll to new batch, very
     // the number of remaining txns to ensure Txns are not accidentally skipped
@@ -217,7 +217,7 @@ public class TestHiveWriter {
    * Also sets the separator on serde to be same as i/p field separator
    * @throws Exception
    */
-  @Test
+  //@Test
   public void testInOrderWrite() throws Exception {
     HiveEndPoint endPoint = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);
     SinkCounter sinkCounter = new SinkCounter(this.getClass().getName());
@@ -244,7 +244,7 @@ public class TestHiveWriter {
     writer.close();
   }
 
-  @Test
+  //@Test
   public void testSerdeSeparatorCharParsing() throws Exception {
     HiveEndPoint endPoint = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);
     SinkCounter sinkCounter = new SinkCounter(this.getClass().getName());
@@ -282,7 +282,7 @@ public class TestHiveWriter {
 
   }
 
-  @Test
+  //@Test
   public void testSecondWriterBeforeFirstCommits() throws Exception {
     // here we open a new writer while the first is still writing (not committed)
     HiveEndPoint endPoint1 = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);
@@ -310,7 +310,7 @@ public class TestHiveWriter {
     writer2.close();
   }
 
-  @Test
+  //@Test
   public void testSecondWriterAfterFirstCommits() throws Exception {
     // here we open a new writer after the first writer has committed one txn
     HiveEndPoint endPoint1 = new HiveEndPoint(metaStoreURI, dbName, tblName, partVals);

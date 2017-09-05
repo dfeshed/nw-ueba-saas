@@ -18,55 +18,52 @@
  */
 package org.apache.flume.channel.file;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import junit.framework.Assert;
 
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
 
 public class TestLogRecord {
 
 
-  @Test
-  public void testConstructor() {
-    long now = System.currentTimeMillis();
-    Commit commit = new Commit(now, now + 1);
-    LogRecord logRecord = new LogRecord(1, 2, commit);
-    Assert.assertTrue(now == commit.getTransactionID());
-    Assert.assertTrue(now + 1 == commit.getLogWriteOrderID());
-    Assert.assertTrue(1 == logRecord.getFileID());
-    Assert.assertTrue(2 == logRecord.getOffset());
-    Assert.assertTrue(commit == logRecord.getEvent());
-  }
-
-  @Test
-  public void testSortOrder() {
-    // events should sort in the reverse order we put them on
-    long now = System.currentTimeMillis();
-    List<LogRecord> records = Lists.newArrayList();
-    for (int i = 0; i < 3; i++) {
-      Commit commit = new Commit((long)i, now - i);
-      LogRecord logRecord = new LogRecord(1, i, commit);
-      records.add(logRecord);
+    //@Test
+    public void testConstructor() {
+        long now = System.currentTimeMillis();
+        Commit commit = new Commit(now, now + 1);
+        LogRecord logRecord = new LogRecord(1, 2, commit);
+        Assert.assertTrue(now == commit.getTransactionID());
+        Assert.assertTrue(now + 1 == commit.getLogWriteOrderID());
+        Assert.assertTrue(1 == logRecord.getFileID());
+        Assert.assertTrue(2 == logRecord.getOffset());
+        Assert.assertTrue(commit == logRecord.getEvent());
     }
-    LogRecord logRecord;
 
-    logRecord = Collections.min(records);
-    Assert.assertTrue(String.valueOf(logRecord.getOffset()),
-        2 == logRecord.getOffset());
-    records.remove(logRecord);
+    //@Test
+    public void testSortOrder() {
+        // events should sort in the reverse order we put them on
+        long now = System.currentTimeMillis();
+        List<LogRecord> records = Lists.newArrayList();
+        for (int i = 0; i < 3; i++) {
+            Commit commit = new Commit((long) i, now - i);
+            LogRecord logRecord = new LogRecord(1, i, commit);
+            records.add(logRecord);
+        }
+        LogRecord logRecord;
 
-    logRecord = Collections.min(records);
-    Assert.assertTrue(String.valueOf(logRecord.getOffset()),
-        1 == logRecord.getOffset());
-    records.remove(logRecord);
+        logRecord = Collections.min(records);
+        Assert.assertTrue(String.valueOf(logRecord.getOffset()),
+                2 == logRecord.getOffset());
+        records.remove(logRecord);
 
-    logRecord = Collections.min(records);
-    Assert.assertTrue(String.valueOf(logRecord.getOffset()),
-        0 == logRecord.getOffset());
-    records.remove(logRecord);
-  }
+        logRecord = Collections.min(records);
+        Assert.assertTrue(String.valueOf(logRecord.getOffset()),
+                1 == logRecord.getOffset());
+        records.remove(logRecord);
+
+        logRecord = Collections.min(records);
+        Assert.assertTrue(String.valueOf(logRecord.getOffset()),
+                0 == logRecord.getOffset());
+        records.remove(logRecord);
+    }
 }
