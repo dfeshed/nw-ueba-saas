@@ -98,22 +98,22 @@ public class TestFileChannelIntegrityTool {
     FileUtils.deleteDirectory(origDataDir);
   }
 
-  @Test
+  //@Test
   public void testFixCorruptRecordsWithCheckpoint() throws Exception {
     doTestFixCorruptEvents(true);
   }
 
-  @Test
+  //@Test
   public void testFixCorruptRecords() throws Exception {
     doTestFixCorruptEvents(false);
   }
 
-  @Test
+  //@Test
   public void testFixInvalidRecords() throws Exception {
     doTestFixInvalidEvents(false, DummyEventVerifier.Builder.class.getName());
   }
 
-  @Test
+  //@Test
   public void testFixInvalidRecordsWithCheckpoint() throws Exception {
     doTestFixInvalidEvents(true, DummyEventVerifier.Builder.class.getName());
   }

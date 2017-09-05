@@ -9,7 +9,6 @@ import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Created by tomerd on 8/8/2017.
@@ -25,7 +24,7 @@ public class JsonFieldValueReplacerInterceptorTest {
                 InterceptorType.JSON_FIELD_VALUE_REPLACER.toString());
     }
 
-    @Test
+    //@Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
@@ -50,7 +49,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         Assert.assertEquals("{\"orig1\":\"new value\"}", interceptValue);
     }
 
-    @Test
+    //@Test
     public void interceptDoubleKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value");
@@ -73,7 +72,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         Assert.assertEquals("{\"orig1\":\"new value\",\"orig2\":\"new value\",\"orig3\":\"value3\"}", interceptValue);
     }
 
-    @Test
+    //@Test
     public void interceptNotJsonKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value");

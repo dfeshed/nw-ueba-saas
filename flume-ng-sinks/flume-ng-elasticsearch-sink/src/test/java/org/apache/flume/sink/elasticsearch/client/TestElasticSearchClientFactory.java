@@ -40,7 +40,7 @@ public class TestElasticSearchClientFactory {
     factory = new ElasticSearchClientFactory();
   }
 
-  @Test
+  //@Test
   public void shouldReturnTransportClient() throws Exception {
     String[] hostNames = { "127.0.0.1" };
     Object o = factory.getClient(ElasticSearchClientFactory.TransportClient,
@@ -48,7 +48,7 @@ public class TestElasticSearchClientFactory {
     assertThat(o, instanceOf(ElasticSearchTransportClient.class));
   }
 
-  @Test
+  //@Test
   public void shouldReturnRestClient() throws NoSuchClientTypeException {
     String[] hostNames = { "127.0.0.1" };
     Object o = factory.getClient(ElasticSearchClientFactory.RestClient,
@@ -56,7 +56,7 @@ public class TestElasticSearchClientFactory {
     assertThat(o, instanceOf(ElasticSearchRestClient.class));
   }
 
-  @Test(expected = NoSuchClientTypeException.class)
+  //@Test(expected = NoSuchClientTypeException.class)
   public void shouldThrowNoSuchClientTypeException() throws NoSuchClientTypeException {
     String[] hostNames = { "127.0.0.1" };
     factory.getClient("not_existing_client", hostNames, "test", null, null);

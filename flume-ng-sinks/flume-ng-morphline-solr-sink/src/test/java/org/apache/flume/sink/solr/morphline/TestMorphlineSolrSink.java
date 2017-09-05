@@ -211,7 +211,7 @@ public class TestMorphlineSolrSink extends SolrTestCaseJ4 {
     }
   }
 
-  @Test
+  //@Test
   public void testDocumentTypes() throws Exception {
     String path = RESOURCES_DIR + "/test-documents";
     String[] files = new String[] {
@@ -235,7 +235,7 @@ public class TestMorphlineSolrSink extends SolrTestCaseJ4 {
     testDocumentTypesInternal(files);
   }
 
-  @Test
+  //@Test
   public void testDocumentTypes2() throws Exception {
     String path = RESOURCES_DIR + "/test-documents";
     String[] files = new String[] {
@@ -294,7 +294,7 @@ public class TestMorphlineSolrSink extends SolrTestCaseJ4 {
     testDocumentTypesInternal(files);
   }
 
-  @Test
+  //@Test
   public void testAvroRoundTrip() throws Exception {
     String file = RESOURCES_DIR + "/test-documents" + "/sample-statuses-20120906-141433.avro";
     testDocumentTypesInternal(file);
@@ -353,7 +353,7 @@ public class TestMorphlineSolrSink extends SolrTestCaseJ4 {
     LOGGER.trace("sink: ", sink);
   }
 
-//  @Test
+//  //@Test
   public void benchmarkDocumentTypes() throws Exception {
     int iters = 200;
     

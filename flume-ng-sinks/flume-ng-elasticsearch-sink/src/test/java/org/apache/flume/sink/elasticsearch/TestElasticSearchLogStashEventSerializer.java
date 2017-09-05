@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TestElasticSearchLogStashEventSerializer {
 
-  @Test
+  //@Test
   public void testRoundTrip() throws Exception {
     ElasticSearchLogStashEventSerializer fixture = new ElasticSearchLogStashEventSerializer();
     Context context = new Context();
@@ -80,7 +80,7 @@ public class TestElasticSearchLogStashEventSerializer {
     assertEquals(parser.parse(expected.string()),parser.parse(actual.string()));
   }
 
-  @Test
+  //@Test
   public void shouldHandleInvalidJSONDuringComplexParsing() throws Exception {
     ElasticSearchLogStashEventSerializer fixture = new ElasticSearchLogStashEventSerializer();
     Context context = new Context();

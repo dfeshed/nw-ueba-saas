@@ -31,7 +31,7 @@ public class RoundRobinListTest {
     fixture = new RoundRobinList<String>(Arrays.asList("test1", "test2"));
   }
 
-  @Test
+  //@Test
   public void shouldReturnNextElement() {
     assertEquals("test1", fixture.get());
     assertEquals("test2", fixture.get());

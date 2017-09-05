@@ -67,7 +67,7 @@ public class TestPollingPropertiesFileConfigurationProvider  {
     provider.stop();
   }
 
-  @Test
+  //@Test
   public void testPolling() throws Exception {
 
     // let first event fire

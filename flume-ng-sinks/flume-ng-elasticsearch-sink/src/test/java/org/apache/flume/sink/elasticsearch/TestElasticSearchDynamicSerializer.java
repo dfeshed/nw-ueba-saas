@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TestElasticSearchDynamicSerializer {
 
-  @Test
+  //@Test
   public void testRoundTrip() throws Exception {
     ElasticSearchDynamicSerializer fixture = new ElasticSearchDynamicSerializer();
     Context context = new Context();

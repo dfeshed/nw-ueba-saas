@@ -171,7 +171,7 @@ public class TestIntegrationActiveMQ {
     connection.close();
   }
 
-  @Test
+  //@Test
   public void testQueueLocatedWithJndi() throws Exception {
     context.put(JMSSourceConfiguration.DESTINATION_NAME,
             JNDI_PREFIX + DESTINATION_NAME);
@@ -180,7 +180,7 @@ public class TestIntegrationActiveMQ {
     testQueue();
   }
 
-  @Test
+  //@Test
   public void testQueue() throws Exception {
     context.put(JMSSourceConfiguration.DESTINATION_TYPE,
         JMSSourceConfiguration.DESTINATION_TYPE_QUEUE);
@@ -208,7 +208,7 @@ public class TestIntegrationActiveMQ {
     Assert.assertEquals(expected, actual);
   }
 
-  @Test
+  //@Test
   public void testTopic() throws Exception {
     context.put(JMSSourceConfiguration.DESTINATION_TYPE,
         JMSSourceConfiguration.DESTINATION_TYPE_TOPIC);

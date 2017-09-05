@@ -47,13 +47,13 @@ public class TestEmbeddedAgentState {
     properties.put("processor.type", "load_balance");
   }
 
-  @Test(expected = FlumeException.class)
+  //@Test(expected = FlumeException.class)
   public void testConfigureWithBadSourceType() {
     properties.put(EmbeddedAgentConfiguration.SOURCE_TYPE, "bad");
     agent.configure(properties);
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testConfigureWhileStarted() {
     try {
       agent.configure(properties);
@@ -64,13 +64,13 @@ public class TestEmbeddedAgentState {
     agent.configure(properties);
   }
 
-  @Test
+  //@Test
   public void testConfigureMultipleTimes() {
     agent.configure(properties);
     agent.configure(properties);
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testStartWhileStarted() {
     try {
       agent.configure(properties);
@@ -81,17 +81,17 @@ public class TestEmbeddedAgentState {
     agent.start();
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testStartUnconfigured() {
     agent.start();
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testStopBeforeConfigure() {
     agent.stop();
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testStoppedWhileStopped() {
     try {
       agent.configure(properties);
@@ -101,7 +101,7 @@ public class TestEmbeddedAgentState {
     agent.stop();
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testStopAfterStop() {
     try {
       agent.configure(properties);
@@ -113,7 +113,7 @@ public class TestEmbeddedAgentState {
     agent.stop();
   }
 
-  @Test(expected = IllegalStateException.class)
+  //@Test(expected = IllegalStateException.class)
   public void testStopAfterConfigure() {
     try {
       agent.configure(properties);

@@ -58,7 +58,7 @@ public class TestUseRawLocalFileSystem {
     FileUtils.deleteQuietly(baseDir);
   }
 
-  @Test
+  //@Test
   public void testTestFile() throws Exception {
     String file = testFile.getCanonicalPath();
     HDFSDataStream stream = new HDFSDataStream();
@@ -69,7 +69,7 @@ public class TestUseRawLocalFileSystem {
     stream.sync();
     Assert.assertTrue(testFile.length() > 0);
   }
-  @Test
+  //@Test
   public void testCompressedFile() throws Exception {
     String file = testFile.getCanonicalPath();
     HDFSCompressedDataStream stream = new HDFSCompressedDataStream();
@@ -80,7 +80,7 @@ public class TestUseRawLocalFileSystem {
     stream.sync();
     Assert.assertTrue(testFile.length() > 0);
   }
-  @Test
+  //@Test
   public void testSequenceFile() throws Exception {
     String file = testFile.getCanonicalPath();
     HDFSSequenceFile stream = new HDFSSequenceFile();

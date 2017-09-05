@@ -44,7 +44,7 @@ public class TestTimestampRoundDownUtil {
    * Tests if the timestamp with the default timezone is properly rounded down
    * to 60 seconds.
    */
-  @Test
+  //@Test
   public void testRoundDownTimeStampSeconds() {
     Calendar cal = BASE_CALENDAR_WITH_DEFAULT_TIMEZONE;
     Calendar cal2 = createCalendar(2012, 5, 15, 15, 12, 0, 0, null);
@@ -60,7 +60,7 @@ public class TestTimestampRoundDownUtil {
    * Tests if the timestamp with the custom timezone is properly rounded down
    * to 60 seconds.
    */
-  @Test
+  //@Test
   public void testRoundDownTimeStampSecondsWithTimeZone() {
     Calendar cal = BASE_CALENDAR_WITH_CUSTOM_TIMEZONE;
     Calendar cal2 = createCalendar(2012, 5, 15, 15, 12, 0, 0, CUSTOM_TIMEZONE);
@@ -79,7 +79,7 @@ public class TestTimestampRoundDownUtil {
    * Tests if the timestamp with the default timezone is properly rounded down
    * to 5 minutes.
    */
-  @Test
+  //@Test
   public void testRoundDownTimeStampMinutes() {
     Calendar cal = BASE_CALENDAR_WITH_DEFAULT_TIMEZONE;
     Calendar cal2 = createCalendar(2012, 5, 15, 15, 10, 0, 0, null);
@@ -95,7 +95,7 @@ public class TestTimestampRoundDownUtil {
    * Tests if the timestamp with the custom timezone is properly rounded down
    * to 5 minutes.
    */
-  @Test
+  //@Test
   public void testRoundDownTimeStampMinutesWithTimeZone() {
     Calendar cal = BASE_CALENDAR_WITH_CUSTOM_TIMEZONE;
     Calendar cal2 = createCalendar(2012, 5, 15, 15, 10, 0, 0, CUSTOM_TIMEZONE);
@@ -114,7 +114,7 @@ public class TestTimestampRoundDownUtil {
    * Tests if the timestamp with the default timezone is properly rounded down
    * to 2 hours.
    */
-  @Test
+  //@Test
   public void testRoundDownTimeStampHours() {
     Calendar cal = BASE_CALENDAR_WITH_DEFAULT_TIMEZONE;
     Calendar cal2 = createCalendar(2012, 5, 15, 14, 0, 0, 0, null);
@@ -130,7 +130,7 @@ public class TestTimestampRoundDownUtil {
    * Tests if the timestamp with the custom timezone is properly rounded down
    * to 2 hours.
    */
-  @Test
+  //@Test
   public void testRoundDownTimeStampHoursWithTimeZone() {
     Calendar cal = BASE_CALENDAR_WITH_CUSTOM_TIMEZONE;
     Calendar cal2 = createCalendar(2012, 5, 15, 14, 0, 0, 0, CUSTOM_TIMEZONE);
