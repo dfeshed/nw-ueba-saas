@@ -28,7 +28,7 @@ public class CountersUtil {
     public static final String HOUR_IS_READY_MARKER = "READY";
 
     public CountersUtil() {
-        propertyTimeout = 7L * 24 * 60 * 60 * 1000; //1 week
+        propertyTimeout = 12L * 30 * 24 * 60 * 60 * 1000; //1 year
     }
 
 
