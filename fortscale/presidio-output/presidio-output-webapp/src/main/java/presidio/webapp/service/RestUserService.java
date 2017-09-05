@@ -1,9 +1,9 @@
 package presidio.webapp.service;
 
 
-import presidio.output.domain.records.users.UserQuery;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.User;
+import presidio.webapp.model.UserQuery;
 
 import java.util.List;
 

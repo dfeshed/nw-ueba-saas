@@ -1,12 +1,13 @@
 package presidio.webapp.service;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
-import presidio.webapp.restquery.RestAlertQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,30 +47,47 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlerts(RestAlertQuery restAlertQuery) {
-        AlertQuery alertQuery = createQuery(restAlertQuery);
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(alertQuery);
+    public List<presidio.webapp.model.Alert> getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
+        AlertQuery convertedAlertQuery = createQuery(alertQuery);
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
         List restAlerts = new ArrayList();
         alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
         return restAlerts;
     }
 
-    private AlertQuery createQuery(RestAlertQuery restAlertQuery) {
+    private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
-        alertQueryBuilder.filterByUserName(restAlertQuery.getUserName());
-        alertQueryBuilder.filterByClassification(restAlertQuery.getClassification());
-        alertQueryBuilder.filterByStartDate(restAlertQuery.getStartDate());
-        alertQueryBuilder.filterByEndDate(restAlertQuery.getEndDate());
-        alertQueryBuilder.filterBySeverity(restAlertQuery.getSeverity());
-        alertQueryBuilder.sortField(restAlertQuery.getSort());
-        alertQueryBuilder.filterByAlertsIds(restAlertQuery.getAlertsIds());
-        alertQueryBuilder.filterByFeedback(restAlertQuery.getFeedback());
-        alertQueryBuilder.filterByMaxScore(restAlertQuery.getMaxScore());
-        alertQueryBuilder.filterByMinScore(restAlertQuery.getMinScore());
-        alertQueryBuilder.filterByTags(restAlertQuery.getTags());
-        alertQueryBuilder.filterByIndicatorNams(restAlertQuery.getIndicatorNams());
-        AlertQuery alertQuery = alertQueryBuilder.build();
-        return alertQuery;
+        alertQueryBuilder.filterByClassification(alertQuery.getClassification());
+        alertQueryBuilder.filterByAlertsIds(alertQuery.getAlertIds());
+        alertQueryBuilder.filterByMaxScore(alertQuery.getMaxScore());
+        alertQueryBuilder.filterByMinScore(alertQuery.getMinScore());
+        alertQueryBuilder.filterByTags(alertQuery.getTags());
+        alertQueryBuilder.filterByIndicatorNams(alertQuery.getIndicatorsType());
+        alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
+        alertQueryBuilder.filterByStartDate(Integer.toUnsignedLong(alertQuery.getStartTimeFrom().intValue()));
+        alertQueryBuilder.filterByEndDate(Integer.toUnsignedLong(alertQuery.getStartTimeTo().intValue()));
+        List<String> severity = new ArrayList<>();
+        alertQuery.getSeverity().forEach(severityParam -> {
+            severity.add(severityParam.toString());
+        });
+        alertQueryBuilder.filterBySeverity(severity);
+        List<String> feedback = new ArrayList<>();
+        alertQuery.getSort().forEach(feedbackParam -> {
+            feedback.add(feedbackParam.toString());
+        });
+        alertQueryBuilder.filterByFeedback(feedback);
+        if (!CollectionUtils.isEmpty(alertQuery.getSort())) {
+            List<Sort.Order> orders = new ArrayList<>();
+            alertQuery.getSort().forEach(s -> {
+                String[] params = s.split(":");
+                Sort.Direction direction = Sort.Direction.fromString(params[0]);
+                orders.add(new Sort.Order(direction, params[1]));
+
+            });
+            alertQueryBuilder.sortField(new Sort(orders));
+        }
+        AlertQuery convertedAlertQuery = alertQueryBuilder.build();
+        return convertedAlertQuery;
     }
 
     @Override

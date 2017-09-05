@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.restquery.RestAlertQuery;
+import presidio.webapp.model.AlertQuery;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 
 import java.time.Instant;
@@ -61,8 +61,8 @@ public class RestAlertServiceTest {
         Page<Alert> page = new PageImpl<>(resultList);
         when(alertService.find(anyObject())).thenReturn(page);
 
-        RestAlertQuery restAlertQuery = new RestAlertQuery();
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        AlertQuery alertQuery = new AlertQuery();
+        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(1, alerts.size());
     }
 
@@ -74,9 +74,10 @@ public class RestAlertServiceTest {
         Page<Alert> page = new PageImpl<>(resultList);
         when(alertService.find(anyObject())).thenReturn(page);
 
-        RestAlertQuery restAlertQuery = new RestAlertQuery();
-        restAlertQuery.setUserName(firstAlert.getUserName());
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        AlertQuery alertQuery = new AlertQuery();
+
+        alertQuery.setUsersId(new ArrayList<>(Arrays.asList(firstAlert.getUserName())));
+        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(1, alerts.size());
     }
 
@@ -86,9 +87,9 @@ public class RestAlertServiceTest {
         Page<Alert> page = new PageImpl<>(resultList);
         when(alertService.find(anyObject())).thenReturn(page);
 
-        RestAlertQuery restAlertQuery = new RestAlertQuery();
-        restAlertQuery.setUserName("someUserName");
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(restAlertQuery);
+        AlertQuery alertQuery = new AlertQuery();
+        alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
+        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
         Assert.assertEquals(0, alerts.size());
     }
 

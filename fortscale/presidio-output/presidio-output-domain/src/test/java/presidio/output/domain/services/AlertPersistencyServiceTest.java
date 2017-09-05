@@ -24,7 +24,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
@@ -186,8 +188,8 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .filterByUserName("normalized_username_ipusr3")
-                        .filterBySeverity(AlertSeverity.HIGH.name())
+                        .filterByUserName(new ArrayList<>(Arrays.asList("normalized_username_ipusr3")))
+                        .filterBySeverity(new ArrayList<>(Arrays.asList(AlertSeverity.HIGH.name())))
                         .filterByStartDate(startDate)
                         .filterByEndDate(endDate + 1)
                         .sortField(sort)

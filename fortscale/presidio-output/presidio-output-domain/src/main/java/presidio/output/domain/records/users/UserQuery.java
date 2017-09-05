@@ -52,6 +52,7 @@ public class UserQuery {
     public List<String> getFilterByIndicators() {
         return filterByIndicators;
     }
+
     public String getFilterByUserName() {
         return filterByUserName;
     }
@@ -79,6 +80,7 @@ public class UserQuery {
     public Integer getMaxScore() {
         return maxScore;
     }
+
     public Collection<String> getFilterByUserIds() {
         return filterByUserIds;
     }
@@ -137,10 +139,9 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            Sort.Direction dir = ascendingOrder ? Sort.Direction.ASC : Sort.Direction.DESC;
-            Sort sort = new Sort(dir, sortField);
-            return sort(sort);
+        public UserQueryBuilder sortField(Sort sort) {
+            this.sort = sort;
+            return this;
         }
 
         public UserQueryBuilder minScore(Integer minScore) {
