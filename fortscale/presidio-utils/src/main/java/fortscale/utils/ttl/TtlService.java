@@ -29,8 +29,9 @@ public class TtlService {
     }
 
     /**
-     *
-     * @param ttlServiceAwares
+     * Build store to ttlServiceAware map.
+     * Set the ttlService for each ttlServiceAware.
+     * @param ttlServiceAwares ttlServiceAware stores
      */
     private void buildStoreToTtlServiceAwareMap(Collection<TtlServiceAware> ttlServiceAwares) {
         storeToTtlServiceAware = new HashMap<>();
