@@ -37,7 +37,7 @@ export default Component.extend({
 
   _getListDataForSave() {
     return this.get('model.list').filter((listObj) => {
-      return listObj.enabled != listObj.initialEnabled || !listObj.id;
+      return (typeof listObj.initialEnabled === 'undefined') ? listObj.enabled : (listObj.enabled != listObj.initialEnabled || !listObj.id);
     }).map((listObj) => {
       return {
         deleteEntry: listObj.initialEnabled ? listObj.entryId : [],
