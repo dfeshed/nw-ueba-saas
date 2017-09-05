@@ -48,7 +48,7 @@ public class RestUserServiceImpl implements RestUserService {
     }
 
     @Override
-    public Page<Alert> getAlertsByUserId(String userId) {
+    public List<Alert> getAlertsByUserId(String userId) {
         return restAlertService.getAlertsByUserId(userId);
     }
 }

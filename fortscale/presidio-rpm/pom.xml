@@ -9,7 +9,7 @@
         <rpm-maven-plugin.script>
             ${rpm-maven-plugin.directory}/installation-scripts/infrastructure/deploy/manager/deploy_manager.py
         </rpm-maven-plugin.script>
-        <rpm_name>presidio</rpm_name>
+        <rpm_name>presidio-core</rpm_name>
         <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core
         </rpm-maven-plugin.deployment_target_directory>
         <rpm-maven-plugin.script.system_user>presidio</rpm-maven-plugin.script.system_user>
@@ -22,8 +22,6 @@
         </rpm-maven-plugin.workflows_packages_directory>
         <rpm-maven-plugin.workflows-build-script-path>${project.basedir}/build-scripts/build-workflows.sh
         </rpm-maven-plugin.workflows-build-script-path>
-        <exclude.rpm>presidio-quest-ca</exclude.rpm>
-        <exclude.rpm2>flume-presidio</exclude.rpm2>
         <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
     </properties>
     <parent>
@@ -154,9 +152,9 @@
                     <script>
                         echo "Creating temp version file"
                         <!-- pre installation commands: -->
-                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f2 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
-                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f2 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
-                        rpm -qa | grep ${rpm_name} | grep -v ${exclude.rpm} | grep -v ${exclude.rpm2} | cut -d"-" -f3 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                        rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                         <!-- end of post installation -->
                     </script>
                 </preinstallScriptlet>

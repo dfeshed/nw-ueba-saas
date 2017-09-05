@@ -1,14 +1,13 @@
 package presidio.input.core.services.transformation;
 
 import fortscale.utils.logging.Logger;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.utils.ReflectionUtils;
 
-import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FolderPathTransformer implements Transformer {
 
@@ -18,6 +17,7 @@ public class FolderPathTransformer implements Transformer {
     private final String operationTypeFieldName;
     private final String folderPathFieldName;
     private final List<String> folderOperations;
+    private final Pattern pattern;
 
     public FolderPathTransformer(String inputPathFieldName, String filePathFieldName, String folderPathFieldName, String operationTypeFieldName, List<String> folderOperations) {
         this.inputPathFieldName = inputPathFieldName;
@@ -25,6 +25,7 @@ public class FolderPathTransformer implements Transformer {
         this.folderPathFieldName = folderPathFieldName;
         this.operationTypeFieldName = operationTypeFieldName;
         this.folderOperations = folderOperations;
+        pattern = Pattern.compile(".*\\\\(?!.*\\\\)|.*\\/(?!.*\\/)");
     }
 
     @Override
@@ -33,16 +34,16 @@ public class FolderPathTransformer implements Transformer {
         documents.forEach((AbstractInputDocument document) -> {
 
                     String filePathValue = (String) ReflectionUtils.getFieldValue(document, inputPathFieldName);
-                    String outputFilePath;
-                    String outputFolderPath;
+                    String outputFilePath = null;
+                    String outputFolderPath = null;
                     if (isFolderOperation(document)) {
-                        outputFilePath = null;
                         outputFolderPath = filePathValue;
                     } else {
-
-                        String[] splitFilePath = filePathValue.split(File.separator);
-                        outputFolderPath = StringUtils.join(ArrayUtils.remove(splitFilePath, splitFilePath.length - 1), File.separator);
-                        outputFilePath = filePathValue;
+                        Matcher matcher = pattern.matcher(filePathValue);
+                        if (matcher.find()) {
+                            outputFolderPath = matcher.group();
+                            outputFilePath = filePathValue;
+                        }
                     }
                     try {
                         ReflectionUtils.setFieldValue(document, filePathFieldName, outputFilePath);

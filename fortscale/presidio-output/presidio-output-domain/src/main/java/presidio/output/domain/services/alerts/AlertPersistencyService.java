@@ -21,6 +21,10 @@ public interface AlertPersistencyService {
 
     Page<Alert> findByUserName(String userName, PageRequest pageRequest);
 
+    Page<Alert> findByUserId(String userId, PageRequest pageRequest);
+
+    Page<Alert> findById(String id, PageRequest pageRequest);
+
     Page<Alert> find(AlertQuery alertQuery);
 
 }

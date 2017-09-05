@@ -1,5 +1,5 @@
 {
-  "authenticationId": "88d50a05-ab3b-474f-b5c8-7a5280c8355a",
+  "authorizationId": "88d50a05-ab3b-474f-b5c8-7a5280c8355a",
   "webhookConfiguration": {
     "connector": {
       "connectorStrategy": "quest-webhook",

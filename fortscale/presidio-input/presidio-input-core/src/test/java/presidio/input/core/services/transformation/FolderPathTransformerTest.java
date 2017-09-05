@@ -19,8 +19,8 @@ import java.util.List;
 public class FolderPathTransformerTest {
 
     @Test
-    public void testFolderPathTransformation_FileOperation() {
-        String filePath = String.format("C%sfolder%sfile.txt", File.separator, File.separator);
+    public void testFolderPathTransformation_windows_FileOperation() {
+        String filePath = "C:\\Users\\alexp\\Desktop\\file.txt";
         FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
                 "operationType", null, EventResult.SUCCESS, "userName",
                 "displayName", null, filePath, false,
@@ -32,7 +32,25 @@ public class FolderPathTransformerTest {
 
         List<AbstractInputDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
-        Assert.assertEquals(String.format("C%sfolder", File.separator), ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+        Assert.assertEquals(String.format("C:\\Users\\alexp\\Desktop\\", File.separator), ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+        Assert.assertEquals(filePath, ((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
+    }
+
+    @Test
+    public void testFolderPathTransformation_linux_FileOperation() {
+        String filePath = String.format("%sfolder%sfile.txt", "/", "/");
+        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
+                "operationType", null, EventResult.SUCCESS, "userName",
+                "displayName", null, filePath, false,
+                filePath, false, 0l, "resultCode");
+
+        List<String> folderOperations = new ArrayList<>();
+        FolderPathTransformer folderPathTransformer = new FolderPathTransformer("srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
+
+        List<AbstractInputDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+
+        Assert.assertEquals(String.format("/folder/", File.separator), ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
         Assert.assertEquals(filePath, ((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
     }
 

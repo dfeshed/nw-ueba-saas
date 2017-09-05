@@ -16,14 +16,12 @@ import java.util.Map;
  * cleaning up collections based on ttl and cleanupInterval.
  */
 public class TtlService {
-    private String appName;
     private TtlDataStore ttlDataStore;
     private Duration defaultTtl;
     private Duration defaultCleanupInterval;
     private Map<String, TtlServiceAware> storeToTtlServiceAware;
 
-    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, TtlDataStore ttlDataStore, Duration defaultTtl, Duration defaultCleanupInterval) {
-        this.appName = appName;
+    public TtlService(Collection<TtlServiceAware> ttlServiceAwares, TtlDataStore ttlDataStore, Duration defaultTtl, Duration defaultCleanupInterval) {
         this.ttlDataStore = ttlDataStore;
         this.defaultTtl = defaultTtl;
         this.defaultCleanupInterval = defaultCleanupInterval;

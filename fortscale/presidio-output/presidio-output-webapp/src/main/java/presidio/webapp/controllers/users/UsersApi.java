@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.model.Patch;
 import presidio.webapp.model.User;
 import presidio.webapp.model.UsersWrapper;
 
 import java.util.List;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-03T07:54:56.866Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-04T14:26:45.695Z")
 
 @Api(value = "users", description = "the users API")
 public interface UsersApi {
@@ -41,22 +41,23 @@ public interface UsersApi {
                                                   @ApiParam(value = "The fields to sort by. Sort directions can optionally be appended to the sort key, separated by the ‘:’ character. Sort fieds should be seperated with comma. I.E. sort=field1:ASC,field2:DESC.") @RequestParam(value = "sort", required = false) List<String> sort,
                                                   @ApiParam(value = "Classification of the alert (exact match)") @RequestParam(value = "classification", required = false) List<String> classification,
                                                   @ApiParam(value = "Alert includes indicators with this name (exact match)") @RequestParam(value = "indicatorsType", required = false) List<String> indicatorsType,
-                                                  @ApiParam(value = "User Severity", allowableValues = "CRITICAL, HIGH, MEDIUM, LOW") @RequestParam(value = "severity", required = false) String severity) {
+                                                  @ApiParam(value = "User Severity", allowableValues = "CRITICAL, HIGH, MEDIUM, LOW") @RequestParam(value = "severity", required = false) String severity,
+                                                  @ApiParam(value = "Indicate to search users that param name is prefix to there names.") @RequestParam(value = "isPrefix", required = false) Boolean isPrefix) {
         // do some magic!
         return new ResponseEntity<UsersWrapper>(HttpStatus.OK);
     }
 
 
-    @ApiOperation(value = "Use this endpoint to get the alerts of a single user", notes = "Users endpoint", response = Alert.class, tags = {"users",})
+    @ApiOperation(value = "Use this endpoint to get the alerts of a single user", notes = "Users endpoint", response = AlertsWrapper.class, tags = {"users",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Alert.class)})
+            @ApiResponse(code = 200, message = "OK", response = AlertsWrapper.class)})
     @RequestMapping(value = "/users/{userId}/alerts",
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<Alert> usersUserIdAlertsGet(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId) {
+    default ResponseEntity<AlertsWrapper> usersUserIdAlertsGet(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId) {
         // do some magic!
-        return new ResponseEntity<Alert>(HttpStatus.OK);
+        return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
 
 
