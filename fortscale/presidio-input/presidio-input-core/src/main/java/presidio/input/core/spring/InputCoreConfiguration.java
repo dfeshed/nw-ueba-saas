@@ -30,7 +30,6 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -42,12 +41,12 @@ import java.util.Map;
 public class InputCoreConfiguration {
 
     @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping(){
+    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
         ObjectMapper mapper = new ObjectMapper();
         Map operationTypeToCategoryMapping = new HashMap();
         try {
             Resource resource = new ClassPathResource("operation-type-category-mapping.json");
-            operationTypeToCategoryMapping = mapper.readValue(new File(resource.getURI().getPath()), Map.class);
+            operationTypeToCategoryMapping = mapper.readValue(resource.getFile(), Map.class);
             return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
         } catch (IOException e) {
             e.printStackTrace();
