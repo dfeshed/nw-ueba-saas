@@ -7,6 +7,8 @@ import presidio.data.domain.event.activedirectory.ACTIVEDIRECTORY_OP_TYPE_CATEGO
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOpGeneratorTemplateFactory;
+import presidio.data.generators.activedirectoryop.ActiveDirectoryOpTypeCategoriesGenerator;
+import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
@@ -112,4 +114,25 @@ public class ActiveDirectoryEventsGeneratorTest {
 
         Assert.assertTrue(events.get(0).getOperation().getOperationTypeCategories().contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value));
     }
+
+    @Test
+    public void SensitiveGroupMembershipOperationTest () throws GeneratorException {
+
+        ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
+        ActiveDirectoryOperationGenerator adOperationsGenerator = new ActiveDirectoryOperationGenerator();
+
+        ActiveDirectoryOpTypeCategoriesGenerator opTypeCategoriesGenerator = new ActiveDirectoryOpTypeCategoriesGenerator(
+                new String[] {ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value,
+                        ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP.value}
+        );
+        adOperationsGenerator.setOperationTypeCategoriesGenerator(opTypeCategoriesGenerator);
+        generator.setActiveDirOperationGenerator(adOperationsGenerator);
+        events = generator.generate();
+
+        List<String> opCategories = events.get(0).getOperation().getOperationTypeCategories();
+        Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value));
+        Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP.value));
+
+    }
+
 }
