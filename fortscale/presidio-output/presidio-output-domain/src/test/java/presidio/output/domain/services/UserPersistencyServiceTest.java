@@ -133,7 +133,7 @@ public class UserPersistencyServiceTest {
     }
 
     @Test
-    public void testFindByQueryFilterByIndicatorsAndClassifications() {
+    public void testFindByQueryFilterByClassificationsAndSortByScoreAscending() {
         List<String> indicators = new ArrayList<String>();
 
         user3.setIndicators(indicators);
@@ -161,7 +161,7 @@ public class UserPersistencyServiceTest {
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 70d);
+        assertTrue(foundUsers.iterator().next().getUserScore() == 50d);
     }
 
     @Test
@@ -183,36 +183,9 @@ public class UserPersistencyServiceTest {
         userIds.add(user2.getUserId());
         userIds.add("userId5");
 
-        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10);
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByUsersIds(userIds);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(2, usersPageResult.getContent().size());
-        Assert.assertEquals(user1.getUserId(), usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals(user2.getUserId(), usersPageResult.getContent().get(1).getUserId());
-    }
-
-    @Test
-    public void testFindByListOfExculdedIds() {
-        User user1 = new User("userId1", "userName", "displayName", 0d, null, null, false);
-        User user2 = new User("userId2", "userName", "displayName", 0d, null, null, false);
-        User user3 = new User("userId3", "userName", "displayName", 0d, null, null, false);
-        User user4 = new User("userId4", "userName", "displayName", 0d, null, null, false);
-
-        List<User> userList = new ArrayList<>();
-        userList.add(user1);
-        userList.add(user2);
-        userList.add(user3);
-        userList.add(user4);
-        Iterable<User> createdUsers = userPersistencyService.save(userList);
-        List<String> excludedUserIds = new ArrayList<>();
-        excludedUserIds.add(user1.getUserId());
-        excludedUserIds.add(user2.getUserId());
-        excludedUserIds.add("userId5");
-
-        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10);
-        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
-        Assert.assertEquals(2, usersPageResult.getContent().size());
-        Assert.assertEquals(user3.getUserId(), usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals(user4.getUserId(), usersPageResult.getContent().get(1).getUserId());
     }
 
     @Test
@@ -233,8 +206,6 @@ public class UserPersistencyServiceTest {
         UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).minScore(10).maxScore(20);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(2, usersPageResult.getContent().size());
-        Assert.assertEquals(user2.getUserId(), usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals(user3.getUserId(), usersPageResult.getContent().get(1).getUserId());
     }
 
     @Test

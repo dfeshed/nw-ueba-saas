@@ -31,7 +31,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         }
 
         // filter by severity
-        if (CollectionUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
+        if (!CollectionUtils.isEmpty(alertQuery.getFilterBySeverity())) {
             boolQueryBuilder.should(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.OR));
         }
 
