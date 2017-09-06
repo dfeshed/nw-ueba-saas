@@ -30,17 +30,13 @@
         {{context-panel/live-connect/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
       {{/if}}
       {{#each lcColumnList as |columns|}}
-        {{#if (get contextData  columns.dataStore)}}
+        {{#if (gt (get contextData columns.header) -1)}}
           <div class="rsa-application-layout-panel rsa-context-panel__liveconnect__heading">
             {{t columns.title}}&#40;
-            {{#if (get contextData columns.header)}}
-              {{get contextData columns.header}}
-            {{else}}
-              0
-            {{/if}} &#41;
+            {{check-null (get contextData columns.header) 0}} &#41;
           </div>
           <div class="rsa-context-panel__liveconnect__related-entity-error">
-            {{empty-related-entity-msg columns.dataStore contextData i18n}}
+            {{empty-related-entity-msg columns.dataStore (get contextData columns.header) i18n}}
           </div>
           {{context-panel/data-table contextData=(get contextData columns.dataStore) dSDetails=columns}}
         {{/if}}
