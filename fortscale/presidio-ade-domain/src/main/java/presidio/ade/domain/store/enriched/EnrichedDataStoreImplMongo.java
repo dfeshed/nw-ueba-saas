@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.ReflectionUtils;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -215,13 +214,9 @@ public class EnrichedDataStoreImplMongo implements EnrichedDataStore, TtlService
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
-                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
 
-    @Override
-    public String getStoreName(){
-        return "enrichedDataStore";
-    }
 
 }

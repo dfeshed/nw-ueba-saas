@@ -19,13 +19,15 @@ public interface TtlServiceAware {
      * Remove collection
      *
      * @param collectionName collectionName to remove
-     * @param until          remove collection until given instant.
+     * @param until          remove collection records until given instant.
      */
     void remove(String collectionName, Instant until);
 
     /**
      * @return get store name
      */
-    String getStoreName();
+    default String getStoreName(){
+        return getClass().getSimpleName();
+    }
 }
 

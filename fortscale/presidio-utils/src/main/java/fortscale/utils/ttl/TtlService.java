@@ -1,6 +1,7 @@
 package fortscale.utils.ttl;
 
 import fortscale.utils.ttl.record.TtlData;
+import fortscale.utils.ttl.store.AppSpecificTtlDataStore;
 import fortscale.utils.ttl.store.TtlDataStore;
 
 import java.time.Duration;
@@ -16,16 +17,16 @@ import java.util.Map;
  * cleaning up collections based on ttl and cleanupInterval.
  */
 public class TtlService {
-    private TtlDataStore ttlDataStore;
+    private AppSpecificTtlDataStore appSpecificTtlDataStore;
     private Duration defaultTtl;
     private Duration defaultCleanupInterval;
     private Map<String, TtlServiceAware> storeToTtlServiceAware;
 
-    public TtlService(Collection<TtlServiceAware> ttlServiceAwares, TtlDataStore ttlDataStore, Duration defaultTtl, Duration defaultCleanupInterval) {
-        this.ttlDataStore = ttlDataStore;
+    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataStore ttlDataStore) {
         this.defaultTtl = defaultTtl;
         this.defaultCleanupInterval = defaultCleanupInterval;
-        buildStoreToTtlServiceAwareMap(ttlServiceAwares);
+        appSpecificTtlDataStore = new AppSpecificTtlDataStore(appName, ttlDataStore);
+        buildStoreNameToTtlServiceAwareMap(ttlServiceAwares);
     }
 
     /**
@@ -33,7 +34,7 @@ public class TtlService {
      * Set the ttlService for each ttlServiceAware.
      * @param ttlServiceAwares ttlServiceAware stores
      */
-    private void buildStoreToTtlServiceAwareMap(Collection<TtlServiceAware> ttlServiceAwares) {
+    private void buildStoreNameToTtlServiceAwareMap(Collection<TtlServiceAware> ttlServiceAwares) {
         storeToTtlServiceAware = new HashMap<>();
 
         ttlServiceAwares.forEach((ttlServiceAware) -> {
@@ -50,7 +51,7 @@ public class TtlService {
      * @param cleanupInterval clean up interval
      */
     public void save(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
-        ttlDataStore.save(storeName, collectionName, ttl, cleanupInterval);
+        appSpecificTtlDataStore.save(storeName, collectionName, ttl, cleanupInterval);
     }
 
     /**
@@ -59,18 +60,21 @@ public class TtlService {
      * @param collectionName collection name
      */
     public void save(String storeName, String collectionName) {
-        ttlDataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval);
+        appSpecificTtlDataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval);
     }
 
     /**
      * Remove collections based on ttl and cleanupInterval.
-     * (e.g: cleanupInterval = PT24H => Remove collections every 24 hours.
-     * ttl = PT48H => records stored for 48 hours).
+     * e.g:
+     * 1. cleanupInterval = PT24H => Remove collections every 24 logical hours.
+     * 2. ttl = PT48H => records of 48 logical hours are stored.
      *
-     * @param instant (startInstant, endInstant)
+     * @param instant logical time, which store use to remove records until the instant minus ttl.
+     *                e.g: startInstant => store remove all records, where startInstant is less than (startInstant - tll)
+     *                e.g: endInstant => store remove all records, where endInstant is less or equal than (endInstant - tll)
      */
     public void cleanupCollections(Instant instant) {
-        List<TtlData> ttlDataList = ttlDataStore.getTtlDataList();
+        List<TtlData> ttlDataList = appSpecificTtlDataStore.getTtlDataList();
         ttlDataList.forEach(ttlData -> {
                     TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(ttlData.getStoreName());
                     String collectionName = ttlData.getCollectionName();

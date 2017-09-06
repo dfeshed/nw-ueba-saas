@@ -10,6 +10,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
@@ -41,6 +42,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private List<String> aggregationContext;
     private BucketConfigurationService bucketConfigurationService;
+    private TtlService ttlService;
 
     /**
      * C'tor
@@ -55,7 +57,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService, TtlService ttlService) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -64,6 +66,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.bucketConfigurationService = bucketConfigurationService;
+        this.ttlService = ttlService;
         this.aggregationContext = getAggregationContext();
     }
 
@@ -87,6 +90,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
+        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     private List<String> getAggregationContext() {

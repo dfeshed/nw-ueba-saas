@@ -13,9 +13,8 @@ import java.time.Instant;
 /**
  * Created by maria_dorohin on 8/30/17.
  */
-@Document
 public class TtlData {
-    public static final String APPLICATION_NAME_FIELD = "application_name";
+    public static final String APPLICATION_NAME_FIELD = "applicationName";
 
     @Id
     private String id;
