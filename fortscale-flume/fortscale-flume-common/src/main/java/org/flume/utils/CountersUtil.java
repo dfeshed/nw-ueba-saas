@@ -18,14 +18,14 @@ public class CountersUtil {
 
     private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
 
-    private static final Object sourceLock = new Object();
-    private static final Object sinkLock = new Object();
 
-    private long propertyTimeout;
-
+    public static final String LATEST_READY_HOUR_MARKER = "LATEST_READY_HOUR";
     public static final String SINK_COUNTERS_FOLDER_NAME = "sink";
     public static final String SOURCE_COUNTERS_FOLDER_NAME = "source";
-    public static final String HOUR_IS_READY_MARKER = "READY";
+
+    private static final Object sourceLock = new Object();
+    private static final Object sinkLock = new Object();
+    private long propertyTimeout;
 
     public CountersUtil() {
         propertyTimeout = 12L * 30 * 24 * 60 * 60 * 1000; //1 year
@@ -93,7 +93,7 @@ public class CountersUtil {
             countProperties.load(in);
 
             /* update count properties */
-            newCount = updateCountProperties(timeDetected, canClosePreviousHour, countProperties, amount);
+            newCount = updateCountProperties(timeDetected, canClosePreviousHour, countProperties, amount, flumeComponentType);
 
             if (propertyTimeout > 0) {
                 countProperties = removeTimedOutProperties(flumeComponentType, countProperties);
@@ -127,8 +127,17 @@ public class CountersUtil {
             final Instant propertyAsTime;
             final String propertyAsString;
             try {
-                propertyAsString = (String) key;
-                propertyAsTime = Instant.parse(propertyAsString);
+                if (key instanceof String) {
+                    propertyAsString = (String) key;
+                    if (!propertyAsString.equals(LATEST_READY_HOUR_MARKER)) {
+                        propertyAsTime = Instant.parse(propertyAsString);
+                    } else {
+                        continue;
+                    }
+                } else {
+                    propertyAsTime = (Instant) key;
+                    propertyAsString = propertyAsTime.toString();
+                }
             } catch (Exception e) {
                 logger.warn("Invalid property {}. This is an invalid state but the system can keep working."); //should not happen
                 return countProperties;
@@ -161,19 +170,43 @@ public class CountersUtil {
         return file;
     }
 
+
+    private int updateCountProperties(Instant timeDetected, boolean canClosePreviousHour, Properties properties, int amount, String flumeComponentType) throws IllegalStateException {
+        final Instant endOfHour = DateUtils.ceiling(timeDetected, ChronoUnit.HOURS);
+        String newCount = updateHourProperty(timeDetected, properties, amount, endOfHour);
+
+        if (flumeComponentType.equals(SOURCE_COUNTERS_FOLDER_NAME)) {
+            updateLatestReadyHourProperty(properties, endOfHour, canClosePreviousHour);
+        }
+
+
+        return Integer.parseInt(newCount);
+    }
+
+
+    private void updateLatestReadyHourProperty(Properties properties, Instant endOfHour, boolean canClosePreviousHour) {
+        Instant latestReadyHour;
+        if (canClosePreviousHour) {
+            latestReadyHour = endOfHour;
+        } else {
+            latestReadyHour = endOfHour.minus(1, ChronoUnit.HOURS);
+        }
+
+        final boolean hasLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER) != null;
+        if (hasLatestReadyHourProperty) {
+            properties.replace(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
+        } else {
+            properties.setProperty(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
+        }
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private int updateCountProperties(Instant timeDetected, boolean canClosePreviousHour, Properties properties, int amount) throws IllegalStateException {
-        final String endOfHour = DateUtils.ceiling(timeDetected, ChronoUnit.HOURS).toString();
-        String currCount = properties.getProperty(endOfHour);
+    private String updateHourProperty(Instant timeDetected, Properties properties, int amount, Instant endOfHour) {
+        String currCount = properties.getProperty(endOfHour.toString());
         final boolean firstCountForHour = currCount == null;
         if (firstCountForHour) { // first edit for this hour
             currCount = "0";
         } else {
-            if (currCount.startsWith(HOUR_IS_READY_MARKER)) { //for sanity
-                final String errorMessage = "Invalid state, can't add to counter of an already done event! " + timeDetected;
-                logger.error(errorMessage);
-                throw new IllegalStateException(errorMessage);
-            }
             try {
                 Integer.parseInt(currCount); //make sure the current is an int, just for sanity
             } catch (NumberFormatException e) {
@@ -184,14 +217,12 @@ public class CountersUtil {
         }
 
         String newCount = String.valueOf(Integer.parseInt(currCount) + amount);
-        final String toWrite = canClosePreviousHour ? HOUR_IS_READY_MARKER + "_" + newCount : newCount;
         if (firstCountForHour) {
-            properties.put(endOfHour, toWrite);
+            properties.put(endOfHour.toString(), newCount);
         } else {
-            properties.replace(endOfHour, toWrite);
+            properties.replace(endOfHour.toString(), newCount);
         }
-
-        return Integer.parseInt(newCount);
+        return newCount;
     }
 
     /**
@@ -199,11 +230,11 @@ public class CountersUtil {
      * elements).
      */
     @SuppressWarnings("unused")
-    private static class OrderedProperties<T extends Comparable> extends Properties {
+    protected static class OrderedProperties<T extends Comparable> extends Properties {
 
         private final Class<T> keyType; //in order to keep the key type a comparable (POLA principle)
 
-        private OrderedProperties(Class<T> keyType) {
+        protected OrderedProperties(Class<T> keyType) {
             this.keyType = keyType;
         }
 
