@@ -93,7 +93,7 @@ public class CountersUtil {
             countProperties.load(in);
 
             /* update count properties */
-            newCount = updateCountProperties(timeDetected, canClosePreviousHour, countProperties, amount);
+            newCount = updateCountProperties(timeDetected, canClosePreviousHour, countProperties, amount, flumeComponentType);
 
             if (propertyTimeout > 0) {
                 countProperties = removeTimedOutProperties(flumeComponentType, countProperties);
@@ -171,11 +171,13 @@ public class CountersUtil {
     }
 
 
-    private int updateCountProperties(Instant timeDetected, boolean canClosePreviousHour, Properties properties, int amount) throws IllegalStateException {
+    private int updateCountProperties(Instant timeDetected, boolean canClosePreviousHour, Properties properties, int amount, String flumeComponentType) throws IllegalStateException {
         final Instant endOfHour = DateUtils.ceiling(timeDetected, ChronoUnit.HOURS);
         String newCount = updateHourProperty(timeDetected, properties, amount, endOfHour);
 
-        updateLatestReadyHourProperty(properties, endOfHour, canClosePreviousHour);
+        if (flumeComponentType.equals(SOURCE_COUNTERS_FOLDER_NAME)) {
+            updateLatestReadyHourProperty(properties, endOfHour, canClosePreviousHour);
+        }
 
 
         return Integer.parseInt(newCount);
@@ -228,11 +230,11 @@ public class CountersUtil {
      * elements).
      */
     @SuppressWarnings("unused")
-    private static class OrderedProperties<T extends Comparable> extends Properties {
+    protected static class OrderedProperties<T extends Comparable> extends Properties {
 
         private final Class<T> keyType; //in order to keep the key type a comparable (POLA principle)
 
-        private OrderedProperties(Class<T> keyType) {
+        protected OrderedProperties(Class<T> keyType) {
             this.keyType = keyType;
         }
 
