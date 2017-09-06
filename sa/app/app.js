@@ -9,7 +9,7 @@ const App = Application.extend({
   Resolver,
 
   engines: {
-    investigate: {
+    investigateEvents: {
       dependencies: {
         services: [
           '-document',
@@ -20,7 +20,10 @@ const App = Application.extend({
           'timezone',
           'i18n',
           'flashMessages'
-        ]
+        ],
+        externalRoutes: {
+          protected: 'protected'
+        }
       }
     },
     respond: {

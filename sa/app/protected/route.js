@@ -3,7 +3,6 @@
  * Container for all sub-routes that require authentication.
  * @public
  */
-import Ember from 'ember';
 import Route from 'ember-route';
 import RSVP from 'rsvp';
 import service from 'ember-service/inject';
@@ -11,8 +10,8 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 import config from '../config/environment';
 
 const {
-  Logger
-} = Ember;
+  console
+} = window;
 
 const contextAddToListModalId = 'addToList';
 
@@ -84,7 +83,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
           this.set('accessControl.roles', response.data);
           resolve();
         }).catch((error) => {
-          Logger.error('Error loading permissions', error);
+          console.error('Error loading permissions', error);
           reject(error);
         });
       });
@@ -98,7 +97,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
           this.set('timezone.options', response.data);
           resolve();
         }).catch((error) => {
-          Logger.error('Error loading timezones', error);
+          console.error('Error loading timezones', error);
           reject(error);
         });
       });
@@ -134,13 +133,13 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
           resolve();
         }).catch((error) => {
-          Logger.error('Error loading preferences', error);
+          console.error('Error loading preferences', error);
           reject(error);
         });
       });
 
       return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
-        Logger.error('There was an issue loading your profile. Please try again.');
+        console.error('There was an issue loading your profile. Please try again.');
       });
     }
   },
@@ -153,6 +152,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         entityType: type
       });
     },
+
     closeContextPanel() {
       this.get('controller').setProperties({
         entityId: undefined,
@@ -160,7 +160,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
       });
     },
 
-    // Actions to open & close the Context addon's "Add To List" application dialog.
+    // Actions to open & close the Context addon's
+    // "Add To List" application dialog.
     openContextAddToList(entity) {
       const { type, id } = entity || {};
       const eventName = (type && id) ?
@@ -169,6 +170,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
       this.get('controller').set('entityToAddToList', entity);
       this.get('eventBus').trigger(eventName);
     },
+
     closeContextAddToList() {
       this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
       this.get('controller').set('entityToAddToList', undefined);

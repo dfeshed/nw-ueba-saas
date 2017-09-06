@@ -32,7 +32,9 @@ Router.map(function() {
     }
 
     if (config.featureFlags['show-investigate-route']) {
-      this.mount('investigate');
+      this.route('investigate', function() {
+        this.mount('investigate-events', { path: 'events' });
+      });
     }
   });
 

@@ -8,21 +8,26 @@ const { Application } = Ember;
 const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver
-  // ,
-  // engines: {
-  //   investigateEvents: {
-  //     dependencies: {
-  //       services: [
-  //         '-document',
-  //         'dateFormat',
-  //         'timeFormat',
-  //         'timezone',
-  //         'i18n'
-  //       ]
-  //     }
-  //   }
-  // }
+  Resolver,
+  engines: {
+    investigateEvents: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages'
+        ],
+        externalRoutes: {
+          protected: 'protected'
+        }
+      }
+    }
+  }
 });
 
 loadInitializers(App, config.modulePrefix);

@@ -35,13 +35,10 @@
     {{/if}}
 
     {{#if features.showInvestigateRoute}}
-      {{!-- TODO: uncomment this when we want to link to the new investigate in the nav bar}}
-      {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
-        {{t "investigate.title"}}
-      {{/link-to}}
-      {{--}}
       {{#if accessControl.hasInvestigateAccess}}
-        <a href="/investigation" class="rsa-header-nav-investigate js-test-nav-investigate-link">{{t "investigate.title"}}</a>
+        {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
+          {{t "investigate.title"}}
+        {{/link-to}}
       {{/if}}
     {{/if}}
 

@@ -1,0 +1,36 @@
+<article class="rsa-investigate-index">
+  <section class="rsa-investigate-index__body {{model.services.status}}">
+    {{#with model.services.status as |status|}}
+      {{#if (is-equal status 'rejected')}}
+        {{#rsa-panel-message message=(t 'investigate.services.error.description')}}
+          {{#rsa-form-button}}
+            <span {{action (route-action 'servicesGet' true)}}>
+              {{t 'investigate.tryAgain'}}
+            </span>
+          {{/rsa-form-button}}
+        {{/rsa-panel-message}}
+      {{else if (is-equal status 'wait')}}
+        {{rsa-loader
+          size='large'
+          label=(t 'investigate.services.loading')
+        }}
+      {{else if (is-equal status 'resolved')}}
+        {{#unless model.services.data.length}}
+          {{#rsa-panel-message message=(t 'investigate.services.empty.description')}}
+            {{#rsa-form-button}}
+              <span {{action (route-action 'servicesGet' true)}}>
+                {{t 'investigate.tryAgain'}}
+              </span>
+            {{/rsa-form-button}}
+          {{/rsa-panel-message}}
+        {{else}}
+          {{query-bar
+            services=model.services.data
+            servicesStatus=model.services.status
+            onSubmit=(route-action 'submitQuery')
+          }}
+        {{/unless}}
+      {{/if}}
+    {{/with}}
+  </section>
+</article>

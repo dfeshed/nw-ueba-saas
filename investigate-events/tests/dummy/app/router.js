@@ -1,15 +1,15 @@
-import Ember from 'ember';
+import Router from 'ember-router';
 import config from './config/environment';
 
-const { Router: ERouter } = Ember;
-
-const Router = ERouter.extend({
+const DummyRouter = Router.extend({
   location: config.locationType,
   rootURL: config.rootURL
 });
 
-Router.map(function() {
-  this.mount('investigate-events');
+DummyRouter.map(function() {
+  this.mount('investigate-events', { path: 'investigate' });
+  this.route('not-found', { path: '*invalidinvestigatepath' });
+  this.route('protected');
 });
 
-export default Router;
+export default DummyRouter;

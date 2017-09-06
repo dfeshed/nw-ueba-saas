@@ -4,7 +4,6 @@ const ALL_SUBMODULES = [
   'packager',
   'recon',
   'investigate-events',
-  'investigate',
   'respond',
   'sa',
   'streaming-data',
@@ -20,7 +19,6 @@ const saModuleDependants = {
     'recon',
     'sa',
     'style-guide',
-    'investigate',
     'investigate-events',
     'packager',
     'respond',
@@ -30,28 +28,22 @@ const saModuleDependants = {
   'mock-server': [
     'streaming-data',
     'recon',
-    'investigate',
     'investigate-events',
     'packager',
     'respond',
     'context'
   ],
-  'investigate-events': [
-    'sa',
-    'investigate'
-  ],
+  'investigate-events': ['sa'],
   packager: ['sa'],
   recon: [
     'sa',
-    'investigate'
+    'investigate-events'
   ],
   sa: [], // sa is an end state app, nothing depends on it
-  investigate: ['sa'],
   respond: ['sa'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
-    'investigate',
     'investigate-events',
     'packager',
     'respond',
@@ -86,7 +78,6 @@ const saModuleDependencies = {
   sa: [
     'component-lib',
     'streaming-data',
-    'investigate',
     'recon',
     'context',
     'respond',
@@ -94,11 +85,6 @@ const saModuleDependencies = {
     'packager'
   ],
   'investigate-events': [
-    'component-lib',
-    'streaming-data',
-    'mock-server'
-  ],
-  investigate: [
     'component-lib',
     'streaming-data',
     'recon',

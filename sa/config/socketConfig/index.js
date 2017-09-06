@@ -1,7 +1,7 @@
 /* eslint-env node */
 
 const common = require('../../../common');
-const investigateConfigGen = require('../../../investigate').socketRouteGenerator;
+const investigateConfigGen = require('../../../investigate-events').socketRouteGenerator;
 const contextConfigGen = require('../../../context').socketRouteGenerator;
 const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const adminConfigGen = require('./administration');

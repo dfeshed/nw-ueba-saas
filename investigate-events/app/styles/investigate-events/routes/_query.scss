@@ -1,0 +1,309 @@
+$investigateReconWidth: 50%;
+$investigateReconExpandedWidth: 75%;
+$investigateReconFullWidth: 100%;
+
+@mixin recon-sizing($reconWidth) {
+  .rsa-investigate-query__body {
+    &-master {
+      right: $reconWidth;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    }
+    &-slave {
+      width: $reconWidth;
+    }
+  }
+}
+
+.rsa-investigate-query {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: rsa-color(white);
+  @include rsa-col(justify,fill);
+
+  &__header {
+    background-color: rsa-color(gray, darkest, $rsa-translucent);
+    border-bottom: 1px solid rsa-color(black);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    padding: rsa-whitespace(least) rsa-whitespace();
+    .rsa-investigate-breadcrumb {
+      .rsa-investigate-query-input {
+        @include rsa-vendor-prefix(flex-grow, 1);
+        height: 2rem;
+        margin-right: rsa-whitespace(least);
+      }
+    }
+  }
+
+  &__body {
+    position: relative;   /* enables positioning of children */
+    @include rsa-vendor-prefix(flex-grow, 1);
+
+    &-status {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      @include rsa-col(center, middle);
+      text-align: center;
+    }
+    &-master {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transition-property: background-color right;
+      transition-duration: 0.3s;
+      @include rsa-row(justify,fill);
+    }
+    &-slave {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      transition: width .3s;
+      overflow: hidden;
+    }
+
+    &.recon-is-open {
+      @include recon-sizing($investigateReconWidth)
+    }
+
+    &.recon-is-expanded {
+      @include recon-sizing($investigateReconExpandedWidth)
+    }
+
+    &.recon-is-full {
+      @include recon-sizing($investigateReconFullWidth);
+      .rsa-investigate-query__body-master-aside {
+        min-width: 0;
+      }
+    }
+
+    &-master-aside,
+    &-master-main {
+      transition: all 0.3s;
+      overflow-x: hidden;
+      position: relative;
+    }
+    &-master-main {
+      @include rsa-vendor-prefix(flex-grow,1);
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    }
+    &-master-aside {
+      @include rsa-vendor-prefix(flex-shrink,0);
+      @include rsa-vendor-prefix(flex-basis,25%);
+      min-width: 40px;
+    }
+
+    /* meta vs events: default arrangement */
+    &.meta-panel-size-default {
+      .rsa-investigate-query__body {
+        &-master-aside:hover,
+        &-master-main:hover {
+          z-index: 2;
+        }
+      }
+    }
+
+    /* meta vs events: meta minimized */
+    &.meta-panel-size-min {
+      .rsa-investigate-query__body {
+        &-master-aside {
+          @include rsa-vendor-prefix(flex-basis,0);
+          background-color: rsa-color(black,base,$rsa-nearly-transparent);
+          z-index: 1;
+        }
+        &-master-main {
+          z-index: 2;
+        }
+      }
+    }
+
+    /* meta vs events: meta minimized */
+    &.meta-panel-size-max {
+      .rsa-investigate-query__body {
+        &-master-aside {
+          @include rsa-vendor-prefix(flex-basis,100%);
+          z-index: 2;
+        }
+        &-master-main {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__aside,
+  &__footer {
+    display: none;
+  }
+
+  .rsa-investigate-meta {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 1px;
+    background-color: rsa-color(black,base,$rsa-nearly-transparent);
+
+    &__header {
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    }
+
+    .rsa-list-button {
+      color: rsa-color(white,base, $rsa-nearly-opaque);
+      &::after {
+        color: rsa-color(white,base, $rsa-nearly-transparent);
+      }
+      &:hover {
+        color: rsa-color(white,base, $rsa-opaque);
+        &::after {
+          color: rsa-color(white,base, $rsa-translucent);
+        }
+      }
+    }
+
+    &-key-values {
+      border-bottom: 1px solid rsa-color(gray, base, $rsa-nearly-transparent);
+      color: rsa-color(grey,lightest);
+      &:last-child {
+        h2,
+        .meta-size {
+          color: rsa-color(gray,light);
+        }
+      }
+      &__value {
+        border: 1px solid rsa-color(white, base, $rsa-nearly-transparent);
+        border-radius: 2px;
+        &.selected,
+        &:hover {
+          background-color: rsa-color(blue);
+          border-color: rsa-color(blue);
+        }
+      }
+    }
+  }
+
+  .rsa-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .rsa-investigate-timeline {
+    height: 2.5rem;
+    &.is-expanded {
+      height: 250px;
+    }
+
+    .hover-data {
+      height: 1.5rem;
+      line-height: 2rem;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      position: absolute;
+      top: 2.5rem;
+      left: 0;
+      right: 0;
+      padding-left: 35px;
+      @include rsa-font(light, small);
+      .rsa-content-datetime {
+        color: rsa-color(grey,light);
+      }
+      // We'll need to create some sort of color service that can generate consistent
+      // colors for multi-series data. For now, I'll just hardcode a few in. These
+      // are the same colors from _rsa_chart.scss.
+      .series-0 {
+        color: rsa-color(blue);
+      }
+      .series-1 {
+        color: rsa-color(blue, darker);
+      }
+      .series-2 {
+        color: rsa-color(blue, darkest);
+      }
+    }
+
+    .rsa-icon {
+      position: absolute;
+      right: 0;
+      padding: 7px 9px;
+      background-color: rsa-color(black,base,$rsa-translucent);
+    }
+
+    .timestamp {
+      @include rsa-font(light);
+      position: absolute;
+      width: 185px;
+      height: 1rem;
+      padding: 0.75rem 0;
+      text-align: center;
+      color: rsa-color(grey,light);
+      background-color: rsa-color(black,base,$rsa-translucent);
+      &.right {
+        right: 39px;
+      }
+      span {
+        @include rsa-font();
+        color: white;
+      }
+    }
+
+    .rsa-chart {
+      margin: 0;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      &.master {
+        left: 185px;
+        right: 224px;
+        height: 2.5rem;
+      }
+      &.detail {
+        top: 4rem;
+        left: 0;
+        right: 0;
+        .domain,
+        .tick line {
+          stroke: rsa-color(black,base,$rsa-translucent);
+        }
+        .tick text {
+          stroke-width: 0;
+        }
+      }
+    }
+  }
+
+  .rsa-investigate-events-table {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .recon-event-wrapper {
+    border-top: 1px solid rsa-color(blue);
+    flex: 1 1 auto;
+  }
+
+  .recon-container {
+    margin-left: 1px; /* let a sliver of background shows thru as a border */
+  }
+
+  .recon-meta-content {
+    margin-left: 1px; /* let a sliver of background shows thru as a border */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+  }
+}

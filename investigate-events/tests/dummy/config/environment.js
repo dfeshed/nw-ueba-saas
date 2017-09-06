@@ -1,6 +1,7 @@
 /* eslint-env node */
 
 const socketRouteGenerator = require('../../../config/socketRoutes');
+const common = require('../../../../common');
 
 module.exports = function(environment) {
   const ENV = {
@@ -8,6 +9,14 @@ module.exports = function(environment) {
     environment,
     rootURL: '/',
     locationType: 'auto',
+    flashMessageDefaults: {
+      timeout: 5000,
+      extendedTimeout: 0,
+      iconSize: 'larger',
+      iconStyle: 'lined',
+      type: 'info',
+      types: ['info', 'success', 'warning', 'error']
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -18,6 +27,8 @@ module.exports = function(environment) {
         Date: false
       }
     },
+
+    featureFlags: common.addFeatureFlags(environment),
 
     APP: {
       // Here you can pass flags/options to your application instance
@@ -35,6 +46,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.roles = ['investigate-server.*'];
   }
 
   if (environment === 'test') {

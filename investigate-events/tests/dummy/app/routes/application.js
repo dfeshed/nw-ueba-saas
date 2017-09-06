@@ -1,22 +1,15 @@
-import Ember from 'ember';
+import Route from 'ember-route';
+import getOwner from 'ember-owner/get';
+import service from 'ember-service/inject';
+
 import config from 'dummy/config/environment';
 
-const {
-  Route,
-  getOwner,
-  inject: {
-    service
-  }
-} = Ember;
-
 export default Route.extend({
-
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
 
   model() {
-
     // When running in sa, these are set as part of protected route,
     // just setting defaults here so preferences exist
     this.setProperties({
@@ -39,10 +32,7 @@ export default Route.extend({
     if (!config.mock) {
       const applicationInstance = getOwner(this);
       const auth = applicationInstance.lookup('authenticator:oauth-authenticator');
-
-      // model hook returning promise, then ensures
-      // log in occurs before engine loads
-      return auth.authenticate('local', 'investigate-events');
+      return auth.authenticate('local', 'changeMe');
     }
   }
 });
