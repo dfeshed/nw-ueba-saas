@@ -20,7 +20,7 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
 
     private static final Logger logger = Logger.getLogger(CountingPresidioMongoSink.class);
 
-    protected CountersUtil countersUtil = new CountersUtil(7L * 24 * 60 * 60 * 1000); //1 week = default
+    protected CountersUtil countersUtil = new CountersUtil(12L * 30 * 24 * 60 * 60 * 1000); //1 year = default
 
 
     public CountingPresidioMongoSink() {
