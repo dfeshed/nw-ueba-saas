@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "numberOfFailedAuthenticationsChangeUserIdAuthenticationHourly",
+      "name": "numberOfFailedAuthenticationsUserIdAuthenticationHourly",
       "type": "F",
       "bucketConfName": "failedAuthenticationHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
@@ -119,6 +119,5 @@
         "includeValues": false
       }
     }
-
   ]
 }

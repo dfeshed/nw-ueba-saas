@@ -43,7 +43,7 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfFailedAuthenticationsChangeUserIdAuthenticationHourly",
+      "ade-event-type": "aggr_event.numberOfFailedAuthenticationsUserIdAuthenticationHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
