@@ -58,7 +58,6 @@ public class RestAlertServiceImpl implements RestAlertService {
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
         alertQueryBuilder.filterByClassification(alertQuery.getClassification());
-        alertQueryBuilder.filterByAlertsIds(alertQuery.getAlertIds());
         alertQueryBuilder.filterByMaxScore(alertQuery.getMaxScore());
         alertQueryBuilder.filterByMinScore(alertQuery.getMinScore());
         alertQueryBuilder.filterByTags(alertQuery.getTags());

@@ -45,12 +45,7 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<UsersWrapper> getUsers(presidio.webapp.model.UserQuery userQuery) {
-        List<User> users = restUserService.getUsers(userQuery);
-        UsersWrapper usersWrapper = new UsersWrapper();
-        if (users != null) {
-            usersWrapper.users(users);
-        }
-        return new ResponseEntity(usersWrapper, HttpStatus.OK);
+        return new ResponseEntity(new UsersWrapper().users(restUserService.getUsers(userQuery)), HttpStatus.OK);
     }
 
     @Override

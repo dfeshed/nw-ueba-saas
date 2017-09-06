@@ -183,7 +183,7 @@ public class UserPersistencyServiceTest {
         userIds.add(user2.getUserId());
         userIds.add("userId5");
 
-        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByUsersIds(userIds);
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(2, usersPageResult.getContent().size());
         Assert.assertEquals(user1.getUserId(), usersPageResult.getContent().get(0).getUserId());
@@ -208,7 +208,7 @@ public class UserPersistencyServiceTest {
         excludedUserIds.add(user2.getUserId());
         excludedUserIds.add("userId5");
 
-        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByNotHaveAnyOfUserIds(excludedUserIds);
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(2, usersPageResult.getContent().size());
         Assert.assertEquals(user3.getUserId(), usersPageResult.getContent().get(0).getUserId());

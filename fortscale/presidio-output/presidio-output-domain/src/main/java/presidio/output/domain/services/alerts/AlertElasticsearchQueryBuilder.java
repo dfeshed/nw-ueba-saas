@@ -41,7 +41,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         }
 
         // filter by date range
-        if (alertQuery.getFilterByStartDate() > 0 || alertQuery.getFilterByEndDate() > 0) {
+        if (alertQuery.getFilterByStartDate() > 0 && alertQuery.getFilterByEndDate() > 0 && alertQuery.getFilterByStartDate() < alertQuery.getFilterByEndDate()) {
             RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
             if (alertQuery.getFilterByStartDate() > 0) {
                 rangeQuery.from(alertQuery.getFilterByStartDate());

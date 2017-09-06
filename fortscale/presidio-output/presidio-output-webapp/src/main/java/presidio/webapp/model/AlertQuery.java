@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * AlertQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-05T15:51:24.812Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
 
 public class AlertQuery {
     @JsonProperty("pageSize")
@@ -74,8 +74,8 @@ public class AlertQuery {
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
-    @JsonProperty("alertIds")
-    private List<String> alertIds = new ArrayList<String>();
+    @JsonProperty("userName")
+    private List<String> userName = new ArrayList<String>();
 
     @JsonProperty("classification")
     private List<String> classification = new ArrayList<String>();
@@ -289,28 +289,28 @@ public class AlertQuery {
         this.tags = tags;
     }
 
-    public AlertQuery alertIds(List<String> alertIds) {
-        this.alertIds = alertIds;
+    public AlertQuery userName(List<String> userName) {
+        this.userName = userName;
         return this;
     }
 
-    public AlertQuery addAlertIdsItem(String alertIdsItem) {
-        this.alertIds.add(alertIdsItem);
+    public AlertQuery addUserNameItem(String userNameItem) {
+        this.userName.add(userNameItem);
         return this;
     }
 
     /**
-     * Get alertIds
+     * Get userName
      *
-     * @return alertIds
+     * @return userName
      **/
     @ApiModelProperty(value = "")
-    public List<String> getAlertIds() {
-        return alertIds;
+    public List<String> getUserName() {
+        return userName;
     }
 
-    public void setAlertIds(List<String> alertIds) {
-        this.alertIds = alertIds;
+    public void setUserName(List<String> userName) {
+        this.userName = userName;
     }
 
     public AlertQuery classification(List<String> classification) {
@@ -451,7 +451,7 @@ public class AlertQuery {
                 Objects.equals(this.startTimeTo, alertQuery.startTimeTo) &&
                 Objects.equals(this.feedback, alertQuery.feedback) &&
                 Objects.equals(this.tags, alertQuery.tags) &&
-                Objects.equals(this.alertIds, alertQuery.alertIds) &&
+                Objects.equals(this.userName, alertQuery.userName) &&
                 Objects.equals(this.classification, alertQuery.classification) &&
                 Objects.equals(this.indicatorsType, alertQuery.indicatorsType) &&
                 Objects.equals(this.usersId, alertQuery.usersId) &&
@@ -461,7 +461,7 @@ public class AlertQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, alertIds, classification, indicatorsType, usersId, sort, severity);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsType, usersId, sort, severity);
     }
 
     @Override
@@ -477,7 +477,7 @@ public class AlertQuery {
         sb.append("    startTimeTo: ").append(toIndentedString(startTimeTo)).append("\n");
         sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    alertIds: ").append(toIndentedString(alertIds)).append("\n");
+        sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
         sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
         sb.append("    indicatorsType: ").append(toIndentedString(indicatorsType)).append("\n");
         sb.append("    usersId: ").append(toIndentedString(usersId)).append("\n");

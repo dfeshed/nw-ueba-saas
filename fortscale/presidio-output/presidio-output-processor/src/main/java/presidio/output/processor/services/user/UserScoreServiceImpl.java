@@ -285,7 +285,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     private List<User> updateUserScoreForBatch(Map<String, Double> aggregatedUserScore, Set<String> usersIDForBatch) {
         log.info("Updating user batch (without persistence)- batch contain: " + usersIDForBatch.size() + " users");
         List<User> changedUsers = new ArrayList<>();
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(usersIDForBatch)
+        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds((List<String>) usersIDForBatch)
                 .pageNumber(0)
                 .pageSize(usersIDForBatch.size());
         UserQuery userQuery = userQueryBuilder.build();

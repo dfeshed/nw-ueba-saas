@@ -10,7 +10,7 @@ import java.util.List;
 public interface RestUserService {
     User getUserById(String userId);
 
-    List<User> getUsers(UserQuery userQurey);
+    List<User> getUsers(UserQuery userQuery);
 
     User createResult(presidio.output.domain.records.users.User user);
 

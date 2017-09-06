@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  * UserQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-05T15:51:24.812Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
 
 public class UserQuery {
     @JsonProperty("userName")
@@ -30,6 +30,9 @@ public class UserQuery {
 
     @JsonProperty("maxScore")
     private Integer maxScore = null;
+
+    @JsonProperty("isPrefix")
+    private Boolean isPrefix = null;
 
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
@@ -176,6 +179,25 @@ public class UserQuery {
         this.maxScore = maxScore;
     }
 
+    public UserQuery isPrefix(Boolean isPrefix) {
+        this.isPrefix = isPrefix;
+        return this;
+    }
+
+    /**
+     * Get isPrefix
+     *
+     * @return isPrefix
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean getIsPrefix() {
+        return isPrefix;
+    }
+
+    public void setIsPrefix(Boolean isPrefix) {
+        this.isPrefix = isPrefix;
+    }
+
     public UserQuery tags(List<String> tags) {
         this.tags = tags;
         return this;
@@ -311,6 +333,7 @@ public class UserQuery {
                 Objects.equals(this.pageNumber, userQuery.pageNumber) &&
                 Objects.equals(this.minScore, userQuery.minScore) &&
                 Objects.equals(this.maxScore, userQuery.maxScore) &&
+                Objects.equals(this.isPrefix, userQuery.isPrefix) &&
                 Objects.equals(this.tags, userQuery.tags) &&
                 Objects.equals(this.classification, userQuery.classification) &&
                 Objects.equals(this.indicatorsType, userQuery.indicatorsType) &&
@@ -320,7 +343,7 @@ public class UserQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, tags, classification, indicatorsType, sort, severity);
+        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, classification, indicatorsType, sort, severity);
     }
 
     @Override
@@ -333,6 +356,7 @@ public class UserQuery {
         sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
         sb.append("    minScore: ").append(toIndentedString(minScore)).append("\n");
         sb.append("    maxScore: ").append(toIndentedString(maxScore)).append("\n");
+        sb.append("    isPrefix: ").append(toIndentedString(isPrefix)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
         sb.append("    indicatorsType: ").append(toIndentedString(indicatorsType)).append("\n");
