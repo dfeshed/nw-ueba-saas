@@ -207,9 +207,9 @@ public class CountersUtil {
 
         String newCount = String.valueOf(Integer.parseInt(currCount) + amount);
         if (firstCountForHour) {
-            properties.put(endOfHour, newCount);
+            properties.put(endOfHour.toString(), newCount);
         } else {
-            properties.replace(endOfHour, newCount);
+            properties.replace(endOfHour.toString(), newCount);
         }
         return newCount;
     }
