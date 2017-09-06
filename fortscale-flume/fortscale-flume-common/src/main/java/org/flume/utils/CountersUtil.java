@@ -127,8 +127,17 @@ public class CountersUtil {
             final Instant propertyAsTime;
             final String propertyAsString;
             try {
-                propertyAsString = (String) key;
-                propertyAsTime = Instant.parse(propertyAsString);
+                if (key instanceof String) {
+                    propertyAsString = (String) key;
+                    if (!propertyAsString.equals(LATEST_READY_HOUR_MARKER)) {
+                        propertyAsTime = Instant.parse(propertyAsString);
+                    } else {
+                        continue;
+                    }
+                } else {
+                    propertyAsTime = (Instant) key;
+                    propertyAsString = propertyAsTime.toString();
+                }
             } catch (Exception e) {
                 logger.warn("Invalid property {}. This is an invalid state but the system can keep working."); //should not happen
                 return countProperties;
