@@ -3,8 +3,7 @@ import os
 from airflow.operators.sensors import BaseSensorOperator
 from presidio.utils.connector.properties_loader import load_and_get_property
 
-HOUR_IS_READY_MARKER = "READY"
-HOUR_IS_READY_DELIM = "_"
+LATEST_READY_HOUR_MARKER = "LATEST_READY_HOUR"
 
 
 class HourIsReadySensorOperator(BaseSensorOperator):
@@ -56,17 +55,17 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 logging.debug("No count file for sink in path {0}".format(sink_properties_file))
                 return False
 
-            source_counter_property = self.get_counter_property(source_properties_file)
+            source_counter_property = self.get_counter_property(self._hour_end_time, source_properties_file)
             if source_counter_property is None:
                 return False
-            if HOUR_IS_READY_DELIM in source_counter_property:
-                source_is_ready = source_counter_property.split(HOUR_IS_READY_DELIM)[0] == HOUR_IS_READY_MARKER
-                source_count = source_counter_property.split(HOUR_IS_READY_DELIM)[1]
-            else:
-                source_is_ready = False
-                source_count = source_counter_property
+            latest_ready_hour = self.get_counter_property(LATEST_READY_HOUR_MARKER, source_properties_file)
+            if latest_ready_hour is None:
+                raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
-            sink_count = self.get_counter_property(sink_properties_file)
+            source_is_ready = latest_ready_hour is self._hour_end_time
+            source_count = source_counter_property
+
+            sink_count = self.get_counter_property(self._hour_end_time, sink_properties_file)
             if sink_count is None:
                 return False
 
@@ -94,5 +93,6 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                           "has Failed.".format(self._schema_name, self._hour_end_time), exc_info=True)
             return False
 
-    def get_counter_property(self, properties_file):
-        return load_and_get_property(self._hour_end_time, properties_file)
+    @staticmethod
+    def get_counter_property(property_to_get, properties_file):
+        return load_and_get_property(property_to_get, properties_file)
