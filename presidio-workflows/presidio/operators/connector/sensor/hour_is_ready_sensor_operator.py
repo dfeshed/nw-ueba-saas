@@ -1,5 +1,7 @@
 import logging
 import os
+import time
+import datetime
 from airflow.operators.sensors import BaseSensorOperator
 from presidio.utils.connector.properties_loader import load_and_get_property
 
@@ -63,11 +65,15 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
             logging.info("latest_ready_hour = " + latest_ready_hour)
-            logging.info("source_count = " + sink_properties_file)
+            logging.info("source_count = " +  str(source_count))
             logging.info("is = " + latest_ready_hour is self._hour_end_time)
             logging.info("shave shave = " + latest_ready_hour == self._hour_end_time)
 
-            source_is_ready = latest_ready_hour is self._hour_end_time or latest_ready_hour == self._hour_end_time
+
+            #Convert the datetimes to epoch representation -    # 2017-06-27T19\:00\:00Z - 1498579200.0
+            end_time_seconds=time.mktime(datetime.datetime.strptime(self._hour_end_time.replace("\\", ""), "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            latest_ready_hour_seconds=time.mktime(datetime.datetime.strptime(latest_ready_hour.replace("\\", ""), "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            source_is_ready=end_time_seconds<=latest_ready_hour_seconds
 
             sink_count = self.get_counter_property(self._hour_end_time, sink_properties_file)
             if sink_count is None:
