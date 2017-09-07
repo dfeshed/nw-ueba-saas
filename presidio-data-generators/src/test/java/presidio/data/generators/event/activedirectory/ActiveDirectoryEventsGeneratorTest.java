@@ -6,10 +6,7 @@ import org.junit.Test;
 import presidio.data.domain.event.activedirectory.ACTIVEDIRECTORY_OP_TYPE_CATEGORIES;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
-import presidio.data.generators.activedirectoryop.ActiveDirectoryOpGeneratorTemplateFactory;
-import presidio.data.generators.activedirectoryop.ActiveDirectoryOpTypeCategoriesGenerator;
-import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
-import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
+import presidio.data.generators.activedirectoryop.*;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 
@@ -133,6 +130,22 @@ public class ActiveDirectoryEventsGeneratorTest {
         Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value));
         Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP.value));
 
+    }
+
+    @Test
+    public void CustomOperationtypeTest () throws GeneratorException {
+
+        ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
+        ActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOperationGenerator();
+
+        ActiveDirOperationTypeCyclicGenerator opTypeGenerator = new ActiveDirOperationTypeCyclicGenerator(new String[] {"custom_type_x", "custom_type_y"});
+        opGenerator.setOperationTypeGenerator(opTypeGenerator);
+
+        generator.setActiveDirOperationGenerator(opGenerator);
+        events = generator.generate();
+
+        Assert.assertTrue(events.get(0).getOperation().getOperationType().contains("custom_type_x"));
+        Assert.assertTrue(events.get(1).getOperation().getOperationType().contains("custom_type_y"));
     }
 
 }
