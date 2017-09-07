@@ -94,9 +94,9 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                              "sink count: {1}".format(source_count, sink_count))
 
             hour_is_ready = source_is_ready and source_count <= sink_count
-            if hour_is_ready:
-                self.remove_counter_property(source_properties_file)
-                self.remove_counter_property(sink_properties_file)
+            # if hour_is_ready:
+            #     self.remove_counter_property(self._hour_end_time, source_properties_file)
+            #     self.remove_counter_property(self._hour_end_time, sink_properties_file)
             return hour_is_ready
         except Exception as exception:
             logging.error("HourIsReadySensorOperator for schema: {0} and hour_end_time: {1} "
@@ -106,3 +106,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
     @staticmethod
     def get_counter_property(property_to_get, properties_file):
         return load_and_get_property(property_to_get, properties_file)
+
+    @staticmethod
+    def remove_counter_property(property_to_remove, properties_file):
+        return load_and_get_property(property_to_remove, properties_file)
