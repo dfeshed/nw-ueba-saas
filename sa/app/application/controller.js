@@ -12,7 +12,7 @@ export default Controller.extend({
   authenticatedAndPageFound: computed('session.isAuthenticated', 'currentPath', function() {
     const path = this.get('currentPath');
 
-    if (!this.get('session.isAuthenticated') || path === 'not-found') {
+    if (!this.get('session.isAuthenticated') || path === 'not-found' || path === 'internal-error') {
       return false;
     } else {
       return true;

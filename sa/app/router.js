@@ -23,6 +23,7 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route('login');
+  this.route('internal-error');
 
   this.route('protected', { path: '/' }, function() {
     this.route('monitor');
@@ -38,7 +39,6 @@ Router.map(function() {
     }
   });
 
-  this.route('error', { path: '/error' });
   this.route('not-found', { path: '/*path' });
 });
 

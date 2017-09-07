@@ -52,9 +52,8 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     clearFatalErrorQueue() {
       this.get('fatalErrors').clearQueue();
     },
-    error(message) {
-      this.get('fatalErrors').logError(message);
-      this.transitionTo('not-found');
+    error() {
+      this.transitionTo('internal-error');
     },
     logout() {
       this.set('persistStateOnLogout', false);

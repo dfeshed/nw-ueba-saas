@@ -6,6 +6,15 @@
     margin: rsa-whitespace() 0;
   }
 
+  p, li {
+    @include rsa-font(paragraph, small);
+  }
+
+  li {
+    margin-left: rsa-whitespace();
+    list-style: disc;
+  }
+
   .bottom-links {
     color: rsa-color(blue);
     box {
@@ -20,6 +29,10 @@
     h3 {
       @include rsa-font(header, base, true);
       color: rsa-color(gray, light);
+    }
+
+    p {
+      margin-bottom: rsa-whitespace();
     }
   }
 

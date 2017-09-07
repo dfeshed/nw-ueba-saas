@@ -1,18 +1,23 @@
 <box xs="5">
   <vbox>
-    <h1 class="title">{{title}}</h1>
-    {{#if subtitle}}
-      <h2 class="subtitle">{{subtitle}}</h2>
+    {{#if title}}
+      <h1 class="title">{{title}}</h1>
+      {{#if subtitle}}
+        <h2 class="subtitle">{{subtitle}}</h2>
+      {{/if}}
+    {{else}}
+      <h1 class="title">{{subtitle}}</h1>
     {{/if}}
   </vbox>
 
   <vbox>
     <hbox class="error-description">
       <box xs="12">
-        <h3>Error Description</h3>
+        <h3>{{t 'errorPages.errorLabel'}}</h3>
       </box>
       <box xs="12">
-        {{errorDescription}}
+        <p>{{errorDescription}}</p>
+        {{yield}}
       </box>
     </hbox>
   </vbox>
@@ -20,7 +25,7 @@
   <vbox>
     <hbox>
       <box>
-        View online documentation for details about the error.
+        <p>{{t 'errorPages.viewOnlineDocs'}}</p>
       </box>
     </hbox>
   </vbox>
@@ -28,16 +33,16 @@
   <vbox>
     <hbox class="bottom-links">
       <box fit {{action "back"}}>
-        <span>{{rsa-icon name="arrow-left-9"}} Back</span>
+        <span>{{rsa-icon name="arrow-left-9"}}{{t 'errorPages.back'}}</span>
       </box>
       <box fit>
         <a href="https://community.rsa.com/docs/DOC-40370" target="_blank">
-          <span>{{rsa-icon name="help-circle" style="lined"}} Documentation</span>
+          <span>{{rsa-icon name="help-circle" style="lined"}}{{t 'errorPages.documentation'}}</span>
         </a>
       </box>
       <box fit>
         <a href="https://community.rsa.com/docs/DOC-1294" target="_blank">
-          <span>{{rsa-icon name="headphone"}} Support</span>
+          <span>{{rsa-icon name="headphone"}}{{t 'errorPages.support'}}</span>
         </a>
       </box>
     </hbox>

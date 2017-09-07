@@ -7,15 +7,21 @@ export default {
     copyright: 'ja_&copy;2015 RSA Security LLC. All rights reserved.'
   },
   errorPages: {
+    errorLabel: 'ja_Error Description',
+    back: 'ja_Back',
+    support: 'ja_Support',
+    documentation: 'ja_Documentation',
+    viewOnlineDocs: 'ja_View online documentation for details about the error.',
     notFound: {
       errorDescription: 'ja_Oops! The requested link was not found.',
       subtitle: 'ja_Page Not Found',
       title: 'ja_404'
     },
     error: {
-      errorDescription: 'ja_We\'ve encountered an internal error and cannot proceed. Please contact an admin for further assistance.',
-      subtitle: 'ja_Internal Error',
-      title: 'ja_500'
+      errorDescription: 'ja_We\'ve encountered an internal error and cannot proceed. Here are some reasons why you might be seeing this error page:',
+      bulletA: 'ja_The Legacy NetWitness UI may still be starting up. Please wait a few minutes and try again.',
+      bulletB: 'ja_If after a few minutes you are still receiving this message, please check to make sure that the NetWitness Legacy UI is properly running. ',
+      subtitle: 'ja_Internal Server Error'
     }
   },
   monitor: {
