@@ -40,7 +40,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             logging.info(
                 'Poking for the following: '
                 'schema_name = {self._schema_name}, '
-                'time = hour_start_time-{self._hour_end_time}.'.format(**locals()))
+                'time = self._hour_end_time-{self._hour_end_time}.'.format(**locals()))
             presidio_home = os.environ.get("PRESIDIO_HOME")
             if presidio_home is None:
                 user = os.environ.get("USER")
@@ -65,9 +65,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
             logging.info("latest_ready_hour = " + latest_ready_hour)
-            logging.info("source_count = " +  str(source_count))
-            logging.info("is = " + latest_ready_hour is self._hour_end_time)
-            logging.info("shave shave = " + latest_ready_hour == self._hour_end_time)
+            logging.info("source_count = " + str(source_count))
 
 
             #Convert the datetimes to epoch representation -    # 2017-06-27T19\:00\:00Z - 1498579200.0
@@ -97,6 +95,8 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             # if hour_is_ready:
             #     self.remove_counter_property(self._hour_end_time, source_properties_file)
             #     self.remove_counter_property(self._hour_end_time, sink_properties_file)
+            if hour_is_ready:
+                logging.info("Hour {0} is ready!".format(self._hour_end_time))
             return hour_is_ready
         except Exception as exception:
             logging.error("HourIsReadySensorOperator for schema: {0} and hour_end_time: {1} "
