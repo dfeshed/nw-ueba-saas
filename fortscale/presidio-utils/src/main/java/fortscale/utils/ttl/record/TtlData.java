@@ -3,6 +3,8 @@ package fortscale.utils.ttl.record;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -14,6 +16,7 @@ import java.time.Instant;
  * Created by maria_dorohin on 8/30/17.
  */
 @Document(collection = "management_ttl")
+@CompoundIndexes(@CompoundIndex(name="managementTtlCompoundIndex", def = "{'applicationName':1, 'storeName':1, 'collectionName':1}", unique = true))
 public class TtlData {
     public static final String APPLICATION_NAME_FIELD = "applicationName";
 
