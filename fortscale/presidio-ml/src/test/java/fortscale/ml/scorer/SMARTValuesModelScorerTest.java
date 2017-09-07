@@ -9,6 +9,7 @@ import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.utils.factory.FactoryService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -56,7 +57,7 @@ public class SMARTValuesModelScorerTest {
     @Autowired
     private EventModelsCacheService eventModelsCacheService;
 
-    private SMARTValuesModelScorer createScorer(List<String> additionalModelNames, int globalInfluence, double baseScore) throws Exception {
+    private SMARTValuesModelScorer createScorer(String globalModelName, int globalInfluence, double baseScore) throws Exception {
         Scorer baseScorer = Mockito.mock(Scorer.class);
         Mockito.when(baseScorer.calculateScore(Mockito.any(AdeRecordReader.class)))
                 .thenReturn(new FeatureScore("featureName", baseScore));
@@ -66,11 +67,7 @@ public class SMARTValuesModelScorerTest {
         return new SMARTValuesModelScorer(
                 "scorerName",
                 "modelName",
-                additionalModelNames,
-                Collections.singletonList("contextFieldName"),
-                additionalModelNames.stream()
-                        .map(additionalModelName -> Collections.singletonList("contextFieldName"))
-                        .collect(Collectors.toList()),
+                globalModelName,
                 1,
                 1,
                 false,
@@ -81,41 +78,32 @@ public class SMARTValuesModelScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailToCreateIfNotGivenAdditionalModelName() throws Exception {
-        createScorer(Collections.emptyList(), 0, 50D);
+        createScorer(null, 0, 50D);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailToCreateIfGivenTwoAdditionalModelNames() throws Exception {
-        createScorer(Arrays.asList("model 1", "model 2"), 0, 50D);
-    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailToScoreIfGivenWrongModelType() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0, 50D);
-        scorer.calculateScore(new CategoryRarityModel(), Collections.singletonList(new SMARTValuesModel()), Mockito.mock(AdeRecordReader.class));
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
+        scorer.calculateScore(new CategoryRarityModel(), new SMARTValuesModel(), Mockito.mock(AdeRecordReader.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailToScoreIfNotGivenAdditionalModel() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0, 50D);
-        scorer.calculateScore(new SMARTValuesModel(), Collections.emptyList(), Mockito.mock(AdeRecordReader.class));
+    public void shouldGiveZeroScoreIfNotGivenAdditionalModel() throws Exception {
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
+        FeatureScore featureScore = scorer.calculateScore(new SMARTValuesModel(), null, Mockito.mock(AdeRecordReader.class));
+        Assert.assertEquals(0.0,featureScore.getScore(),0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailToScoreIfGivenWrongAdditionalModel() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0, 50D);
-        scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new CategoryRarityModel()), Mockito.mock(AdeRecordReader.class));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailToScoreIfGivenTwoAdditionalModels() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0, 50D);
-        scorer.calculateScore(new SMARTValuesModel(), Arrays.asList(new SMARTValuesModel(), new SMARTValuesModel()), Mockito.mock(AdeRecordReader.class));
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
+        scorer.calculateScore(new SMARTValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class));
     }
 
     @Test
     public void shouldGiveScoreWhenEverythingIsOk() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0, 50D);
-        scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new SMARTValuesPriorModel()), Mockito.mock(AdeRecordReader.class));
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
+        scorer.calculateScore(new SMARTValuesModel(), new SMARTValuesPriorModel(), Mockito.mock(AdeRecordReader.class));
     }
 }

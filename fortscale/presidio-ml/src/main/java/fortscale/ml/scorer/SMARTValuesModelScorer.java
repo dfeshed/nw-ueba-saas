@@ -1,26 +1,35 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.feature.FeatureNumericValue;
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.domain.feature.score.ModelFeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.ml.scorer.config.ModelScorerConf;
 import fortscale.utils.factory.FactoryService;
+import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 
+import java.util.Collections;
 import java.util.List;
 
-public class SMARTValuesModelScorer extends AbstractModelInternalUniScorer {
+public class SMARTValuesModelScorer extends AbstractScorer {
     private SMARTValuesModelScorerAlgorithm algorithm;
+    protected Scorer baseScorer;
+    private String modelName;
+    private String globalModelName;
+    private int minNumOfSamplesToInfluence = ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    private int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
+    protected final EventModelsCacheService eventModelsCacheService;
 
     public SMARTValuesModelScorer(String scorerName,
                                   String modelName,
-                                  List<String> additionalModelNames,
-                                  List<String> contextFieldNames,
-                                  List<List<String>> additionalContextFieldNames,
+                                  String globalModelName,
                                   int minNumOfSamplesToInfluence,
                                   int enoughNumOfSamplesToInfluence,
                                   boolean isUseCertaintyToCalculateScore,
@@ -29,35 +38,135 @@ public class SMARTValuesModelScorer extends AbstractModelInternalUniScorer {
                                   FactoryService<Scorer> factoryService,
                                   EventModelsCacheService eventModelsCacheService) {
 
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, baseScorerConf,
-                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, factoryService, eventModelsCacheService);
+        super(scorerName);
+        Assert.hasText(modelName, "model name must be provided and cannot be empty or blank.");
+        Assert.hasText(globalModelName, "global model name must be provided and cannot be empty or blank.");
 
-        if (additionalModelNames.size() != 1) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");
-        }
+        Assert.notNull(baseScorerConf, "base scorer should not be null");
+        Assert.notNull(factoryService, "factory service should not be null");
+        baseScorer = factoryService.getProduct(baseScorerConf);
+
+        assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
+        assertEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+
+
+        setMinNumOfSamplesToInfluence(minNumOfSamplesToInfluence);
+        setEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+        setUseCertaintyToCalculateScore(isUseCertaintyToCalculateScore);
+        this.eventModelsCacheService = eventModelsCacheService;
+
+        this.modelName = modelName;
+        this.globalModelName = globalModelName;
 
         algorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
     }
 
+    protected Model getMainModel(AdeRecordReader adeRecordReader) {
+        return getModel(adeRecordReader, modelName, Collections.singletonList(SmartRecord.CONTEXT_ID_FIELD));
+    }
+
+    protected Model getGlobalModel(AdeRecordReader adeRecordReader) {
+        return getModel(adeRecordReader, globalModelName, Collections.emptyList());
+    }
+
+    protected Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
+        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextFieldNames);
+    }
+
     @Override
-    protected FeatureScore calculateScore(double baseScore,
+    public FeatureScore calculateScore(AdeRecordReader adeRecordReader){
+        Model model = getMainModel(adeRecordReader);
+        Model globalModel = getGlobalModel(adeRecordReader);
+        FeatureScore featureScore = calculateScore(model, globalModel, adeRecordReader);
+        if (featureScore == null) {
+            return new ModelFeatureScore(getName(), 0d, 0d);
+        }
+        double certainty = calculateCertainty(model);
+        if (isUseCertaintyToCalculateScore) {
+            featureScore.setScore(featureScore.getScore() * certainty);
+        } else {
+            featureScore = new ModelFeatureScore(
+                    featureScore.getName(),
+                    featureScore.getScore(),
+                    featureScore.getFeatureScores(),
+                    certainty
+            );
+        }
+        return featureScore;
+    }
+
+    final protected FeatureScore calculateScore(Model model,
+                                                Model globalModel,
+                                                AdeRecordReader adeRecordReader){
+        FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
+        List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
+        if (model == null || globalModel == null) {
+            return new ModelFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
+        }
+        FeatureScore featureScore = calculateScore(baseScore.getScore(), model, globalModel);
+        featureScore.setFeatureScores(baseFeatureScores);
+        return featureScore;
+    }
+
+    private FeatureScore calculateScore(double baseScore,
                                           Model model,
-                                          List<Model> additionalModels,
-                                          AdeRecordReader adeRecordReader) {
+                                          Model globalModel) {
         if (!(model instanceof SMARTValuesModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".calculateScore expects to get a model of type " + SMARTValuesModel.class.getSimpleName());
         }
 
-        if (additionalModels.size() != 1 || !(additionalModels.get(0) instanceof SMARTValuesPriorModel)) {
+        if (!(globalModel instanceof SMARTValuesPriorModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
-                    ".calculateScore expects to get one additional model of type " + SMARTValuesPriorModel.class.getSimpleName());
+                    ".calculateScore expects to get global model of type " + SMARTValuesPriorModel.class.getSimpleName());
         }
 
         return new FeatureScore(getName(), algorithm.calculateScore(
                 baseScore,
                 (SMARTValuesModel) model,
-                (SMARTValuesPriorModel) additionalModels.get(0)
+                (SMARTValuesPriorModel) globalModel
         ));
+    }
+
+    protected double calculateCertainty(Model model){
+        if (enoughNumOfSamplesToInfluence <= 1 || model == null) {
+            return 1;
+        }
+
+        long numOfSamples = model.getNumOfSamples();
+        double certainty = 0;
+        if (numOfSamples >= enoughNumOfSamplesToInfluence) {
+            certainty = 1;
+        } else if (numOfSamples >= minNumOfSamplesToInfluence) {
+            certainty = ((double) (numOfSamples - minNumOfSamplesToInfluence + 1)) / (enoughNumOfSamplesToInfluence - minNumOfSamplesToInfluence + 1);
+        }
+        return certainty;
+    }
+
+
+    static public void assertMinNumOfSamplesToInfluenceValue(int minNumOfSamplesToInfluence) {
+        Assert.isTrue(minNumOfSamplesToInfluence >= 1, String.format(
+                "minNumOfSamplesToInfluence (%d) must be >= 1", minNumOfSamplesToInfluence));
+    }
+
+    static public void assertEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
+        Assert.isTrue(enoughNumOfSamplesToInfluence >= 1, String.format(
+                "enoughNumOfSamplesToInfluence (%d) must be >=1", enoughNumOfSamplesToInfluence));
+    }
+
+    public SMARTValuesModelScorer setMinNumOfSamplesToInfluence(int minNumOfSamplesToInfluence) {
+        assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
+        this.minNumOfSamplesToInfluence = minNumOfSamplesToInfluence;
+        return this;
+    }
+
+    public SMARTValuesModelScorer setEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
+        this.enoughNumOfSamplesToInfluence = Math.max(enoughNumOfSamplesToInfluence, minNumOfSamplesToInfluence);
+        return this;
+    }
+
+    public SMARTValuesModelScorer setUseCertaintyToCalculateScore(boolean useCertaintyToCalculateScore) {
+        isUseCertaintyToCalculateScore = useCertaintyToCalculateScore;
+        return this;
     }
 }
