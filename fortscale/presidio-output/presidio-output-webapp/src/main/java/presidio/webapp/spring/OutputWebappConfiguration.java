@@ -1,6 +1,7 @@
 package presidio.webapp.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -34,9 +35,15 @@ public class OutputWebappConfiguration {
         return new RestAlertServiceImpl(alertService);
     }
 
+    @Value("${default.page.size.for.rest}")
+    private int pageSize;
+
+    @Value("${default.page.number.for.rest}")
+    private int pageNumber;
+
     @Bean
     RestUserService restUserService() {
-        return new RestUserServiceImpl(restAlertService(), userService);
+        return new RestUserServiceImpl(restAlertService(), userService, pageSize, pageNumber);
     }
 
     @Bean

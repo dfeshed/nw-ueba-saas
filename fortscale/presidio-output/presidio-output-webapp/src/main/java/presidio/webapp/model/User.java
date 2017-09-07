@@ -1,7 +1,9 @@
 package presidio.webapp.model;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.Objects;
 /**
  * User
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-31T11:27:51.258Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
 
 public class User {
     @JsonProperty("id")
@@ -20,11 +22,52 @@ public class User {
     @JsonProperty("username")
     private String username = null;
 
+    @JsonProperty("userDisplayName")
+    private String userDisplayName = null;
+
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
     @JsonProperty("score")
     private Integer score = null;
+
+    /**
+     * Gets or Sets userSeverity
+     */
+    public enum UserSeverityEnum {
+        CRITICAL("CRITICAL"),
+
+        HIGH("HIGH"),
+
+        MEDIUM("MEDIUM"),
+
+        LOW("LOW");
+
+        private String value;
+
+        UserSeverityEnum(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static UserSeverityEnum fromValue(String text) {
+            for (UserSeverityEnum b : UserSeverityEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
+    @JsonProperty("userSeverity")
+    private UserSeverityEnum userSeverity = null;
 
     @JsonProperty("alerts")
     private List<Alert> alerts = new ArrayList<Alert>();
@@ -65,6 +108,25 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public User userDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+        return this;
+    }
+
+    /**
+     * Get userDisplayName
+     *
+     * @return userDisplayName
+     **/
+    @ApiModelProperty(example = "Moshe@someBigCompany.com", value = "")
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
     }
 
     public User tags(List<String> tags) {
@@ -111,6 +173,25 @@ public class User {
         this.score = score;
     }
 
+    public User userSeverity(UserSeverityEnum userSeverity) {
+        this.userSeverity = userSeverity;
+        return this;
+    }
+
+    /**
+     * Get userSeverity
+     *
+     * @return userSeverity
+     **/
+    @ApiModelProperty(value = "")
+    public UserSeverityEnum getUserSeverity() {
+        return userSeverity;
+    }
+
+    public void setUserSeverity(UserSeverityEnum userSeverity) {
+        this.userSeverity = userSeverity;
+    }
+
     public User alerts(List<Alert> alerts) {
         this.alerts = alerts;
         return this;
@@ -147,14 +228,16 @@ public class User {
         User user = (User) o;
         return Objects.equals(this.id, user.id) &&
                 Objects.equals(this.username, user.username) &&
+                Objects.equals(this.userDisplayName, user.userDisplayName) &&
                 Objects.equals(this.tags, user.tags) &&
                 Objects.equals(this.score, user.score) &&
+                Objects.equals(this.userSeverity, user.userSeverity) &&
                 Objects.equals(this.alerts, user.alerts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, tags, score, alerts);
+        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alerts);
     }
 
     @Override
@@ -164,8 +247,10 @@ public class User {
 
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
         sb.append("    username: ").append(toIndentedString(username)).append("\n");
+        sb.append("    userDisplayName: ").append(toIndentedString(userDisplayName)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
+        sb.append("    userSeverity: ").append(toIndentedString(userSeverity)).append("\n");
         sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
         sb.append("}");
         return sb.toString();
@@ -182,5 +267,4 @@ public class User {
         return o.toString().replace("\n", "\n    ");
     }
 }
-
 

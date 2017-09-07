@@ -6,11 +6,12 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 @ApiModel("AlertQuery")
+@Deprecated
 public class RestAlertQuery {
     // filters
     private String userName;
     private List<String> classification;
-    private String severity;
+    private List<String> severity;
     private long startDate;
     private long endDate;
     private String feedback;
@@ -43,11 +44,11 @@ public class RestAlertQuery {
         this.classification = classification;
     }
 
-    public String getSeverity() {
+    public List<String> getSeverity() {
         return severity;
     }
 
-    public void setSeverity(String severity) {
+    public void setSeverity(List<String> severity) {
         this.severity = severity;
     }
 
