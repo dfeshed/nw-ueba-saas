@@ -67,10 +67,10 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
 
         if (userQuery.getMinScore() != null || userQuery.getMaxScore() != null) {
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
-            if (userQuery.getMinScore() != null && userQuery.getMinScore() >= 0 && userQuery.getMinScore() <= 100) {
+            if (userQuery.getMinScore() != null) {
                 rangeQuery.gte(userQuery.getMinScore());
             }
-            if (userQuery.getMaxScore() != null && userQuery.getMaxScore() >= 0 && userQuery.getMaxScore() <= 100) {
+            if (userQuery.getMaxScore() != null) {
                 rangeQuery.lte(userQuery.getMaxScore());
             }
 
@@ -101,7 +101,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
     }
 
     public void withPageable(UserQuery userQuery) {
-        if (userQuery.getPageNumber() > -1 && userQuery.getPageSize() > -1) {
+        if (userQuery.getPageNumber() >= 0 && userQuery.getPageSize() > 0) {
             PageRequest pageRequest = new PageRequest(userQuery.getPageNumber(), userQuery.getPageSize());
             super.withPageable(pageRequest);
         }
