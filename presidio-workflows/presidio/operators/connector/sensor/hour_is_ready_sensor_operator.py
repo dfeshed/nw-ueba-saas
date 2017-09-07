@@ -65,7 +65,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
             logging.info("latest_ready_hour = " + latest_ready_hour)
-            logging.info("source_count = ", source_count)
+            logging.info("source_count = " +  str(source_count))
             logging.info("is = " + latest_ready_hour is self._hour_end_time)
             logging.info("shave shave = " + latest_ready_hour == self._hour_end_time)
 
