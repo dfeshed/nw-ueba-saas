@@ -69,9 +69,11 @@ class HourIsReadySensorOperator(BaseSensorOperator):
 
 
             #Convert the datetimes to epoch representation -    # 2017-06-27T19\:00\:00Z - 1498579200.0
-            end_time_seconds=time.mktime(datetime.datetime.strptime(self._hour_end_time.replace("\\", ""), "%Y-%m-%dT%H:%M:%SZ").timetuple())
-            latest_ready_hour_seconds=time.mktime(datetime.datetime.strptime(latest_ready_hour.replace("\\", ""), "%Y-%m-%dT%H:%M:%SZ").timetuple())
-            source_is_ready=end_time_seconds<=latest_ready_hour_seconds
+            end_time_seconds = time.mktime(datetime.datetime.strptime(self._hour_end_time.replace("\\", ""),
+                                                                      "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            latest_ready_hour_seconds = time.mktime(datetime.datetime.strptime(latest_ready_hour.replace("\\", ""),
+                                                                               "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            source_is_ready = end_time_seconds <= latest_ready_hour_seconds
 
             sink_count = self.get_counter_property(self._hour_end_time, sink_properties_file)
             if sink_count is None:
@@ -106,7 +108,3 @@ class HourIsReadySensorOperator(BaseSensorOperator):
     @staticmethod
     def get_counter_property(property_to_get, properties_file):
         return load_and_get_property(property_to_get, properties_file)
-
-    @staticmethod
-    def remove_counter_property(property_to_remove, properties_file):
-        return load_and_get_property(property_to_remove, properties_file)
