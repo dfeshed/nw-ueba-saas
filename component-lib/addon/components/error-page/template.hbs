@@ -1,4 +1,4 @@
-<box xs="5">
+<box xs="12">
   <vbox>
     {{#if title}}
       <h1 class="title">{{title}}</h1>
@@ -33,16 +33,16 @@
   <vbox>
     <hbox class="bottom-links">
       <box fit {{action "back"}}>
-        <span>{{rsa-icon name="arrow-left-9"}}{{t 'errorPages.back'}}</span>
+        <span>{{rsa-icon name="arrow-left-9"}} {{t 'errorPages.back'}}</span>
       </box>
       <box fit>
         <a href="https://community.rsa.com/docs/DOC-40370" target="_blank">
-          <span>{{rsa-icon name="help-circle" style="lined"}}{{t 'errorPages.documentation'}}</span>
+          <span>{{rsa-icon name="help-circle" style="lined"}} {{t 'errorPages.documentation'}}</span>
         </a>
       </box>
       <box fit>
         <a href="https://community.rsa.com/docs/DOC-1294" target="_blank">
-          <span>{{rsa-icon name="headphone"}}{{t 'errorPages.support'}}</span>
+          <span>{{rsa-icon name="headphone"}} {{t 'errorPages.support'}}</span>
         </a>
       </box>
     </hbox>

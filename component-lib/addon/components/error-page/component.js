@@ -1,5 +1,4 @@
 import Component from 'ember-component';
-import { assert } from 'ember-metal/utils';
 import layout from './template';
 
 export default Component.extend({
@@ -16,15 +15,10 @@ export default Component.extend({
    */
   subtitle: undefined,
   /**
-   * The title of the error, e.g. "404". This is required
+   * The title of the error, e.g. "404".
    * @public
    */
   title: undefined,
-  init() {
-    this._super(...arguments);
-
-    assert('{{error-page}} requires a title.', this.get('title') !== undefined);
-  },
   actions: {
     back() {
       this.back();
