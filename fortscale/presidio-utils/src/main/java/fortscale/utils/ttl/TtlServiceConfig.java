@@ -1,7 +1,6 @@
 package fortscale.utils.ttl;
 
 import fortscale.utils.ttl.store.TtlDataRepository;
-//import fortscale.utils.ttl.store.TtlDataStoreConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +14,7 @@ import java.util.Collection;
  * Created by maria_dorohin on 8/31/17.
  */
 @Configuration
-@EnableMongoRepositories(basePackages = "fortscale.utils.ttl.store")
+@EnableMongoRepositories(basePackageClasses = fortscale.utils.ttl.store.TtlDataRepository.class)
 public class TtlServiceConfig {
 
     @Value("${spring.application.name}")

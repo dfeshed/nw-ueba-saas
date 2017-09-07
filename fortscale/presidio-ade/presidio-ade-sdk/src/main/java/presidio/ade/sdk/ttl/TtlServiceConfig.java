@@ -16,7 +16,7 @@ import java.util.Collection;
  * Created by maria_dorohin on 8/31/17.
  */
 @Configuration
-@EnableMongoRepositories(basePackages = "fortscale.utils.ttl.store")
+@EnableMongoRepositories(basePackageClasses = fortscale.utils.ttl.store.TtlDataRepository.class)
 public class TtlServiceConfig {
 
     @Value("${spring.application.name}")

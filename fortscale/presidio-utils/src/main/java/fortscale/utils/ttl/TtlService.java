@@ -101,7 +101,7 @@ public class TtlService {
      * @param cleanupInterval cleanup interval
      */
     public void cleanupCollections(String StoreName, Instant instant, Duration ttl, Duration cleanupInterval) {
-        List<TtlData> ttlDataList = ttlDataRepository.findByStoreNameIn(StoreName);
+        List<TtlData> ttlDataList = ttlDataRepository.findByStoreName(StoreName);
         TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(StoreName);
         ttlDataList.forEach(ttlData -> {
                     String collectionName = ttlData.getCollectionName();

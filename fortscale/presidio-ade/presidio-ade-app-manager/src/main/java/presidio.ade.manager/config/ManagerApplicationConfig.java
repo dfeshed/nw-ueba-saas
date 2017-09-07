@@ -24,7 +24,7 @@ public class ManagerApplicationConfig {
     private AdeManagerSdk adeManagerSdk;
     @Value("#{T(java.time.Duration).parse('${presidio.enriched.ttl.duration}')}")
     private Duration ttl;
-    @Value("#{T(java.time.Duration).parse('${presidio.enriched.cleanup.duration}')}")
+    @Value("#{T(java.time.Duration).parse('${presidio.enriched.cleanup.interval}')}")
     private Duration cleanup;
 
 

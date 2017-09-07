@@ -13,13 +13,13 @@ public interface TtlDataRepository extends MongoRepository<TtlData, String> {
      * @param applicationName application name
      * @return List<TtlData>
      */
-    List<TtlData> findByApplicationNameIn(String applicationName);
+    List<TtlData> findByApplicationName(String applicationName);
 
     /**
      * Get TtlData records by store name
      * @param storeName application name
      * @return List<TtlData>
      */
-    List<TtlData> findByStoreNameIn(String storeName);
+    List<TtlData> findByStoreName(String storeName);
 }
 
