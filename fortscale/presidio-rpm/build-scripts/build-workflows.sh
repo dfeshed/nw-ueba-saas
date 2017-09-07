@@ -4,5 +4,5 @@
 #---
 echo "building presidio-workflows"
 cd ../../presidio-workflows/
-python setup.py bdist_egg --dist-dir ../fortscale/target/eggs
+python setup.py bdist_egg --dist-dir ../fortscale/target/eggs --build_number=$1
 echo "finished building presidio-workflows"
