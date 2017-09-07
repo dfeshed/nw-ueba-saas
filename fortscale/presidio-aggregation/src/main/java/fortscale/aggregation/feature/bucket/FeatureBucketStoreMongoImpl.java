@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
 import java.util.Date;
@@ -149,13 +148,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServi
 	@Override
 	public void remove(String collectionName, Instant until) {
 		Query query = new Query()
-				.addCriteria(where(FeatureBucket.START_TIME_FIELD).lte(until));
+				.addCriteria(where(FeatureBucket.START_TIME_FIELD).lt(until));
 		mongoTemplate.remove(query, collectionName);
-	}
-
-	@Override
-	public String getStoreName(){
-		return "featureBucketStore";
 	}
 
 }

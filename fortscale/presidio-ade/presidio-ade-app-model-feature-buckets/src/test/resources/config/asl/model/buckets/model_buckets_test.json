@@ -177,10 +177,10 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.wasClassified == 'true')]"
+            "jsonPath": "[?(@.wasClassified == true)]"
           }
         }
       ]
     }
-      ]
+  ]
 }

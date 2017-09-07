@@ -10,28 +10,29 @@ import org.springframework.context.annotation.Import;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Created by maria_dorohin on 8/31/17.
  */
 @Configuration
 @Import({
-        TtlDataStoreConfig.class,
+        TtlDataStoreConfig.class
 })
 public class TtlServiceConfig {
 
+    @Value("${spring.application.name}")
+    private String appName;
     @Autowired
     private Collection<TtlServiceAware> ttlServiceAwares;
-    @Autowired
-    private TtlDataStore ttlDataStore;
     @Value("#{T(java.time.Duration).parse('${presidio.default.ttl.duration}')}")
     private Duration defaultTtl;
     @Value("#{T(java.time.Duration).parse('${presidio.default.cleanup.interval}')}")
     private Duration defaultCleanupInterval;
+    @Autowired
+    private TtlDataStore ttlDataStore;
 
     @Bean
     public TtlService ttlService(){
-        return new TtlService(ttlServiceAwares, ttlDataStore, defaultTtl, defaultCleanupInterval);
+        return new TtlService(appName, ttlServiceAwares, defaultTtl, defaultCleanupInterval, ttlDataStore);
     }
 }

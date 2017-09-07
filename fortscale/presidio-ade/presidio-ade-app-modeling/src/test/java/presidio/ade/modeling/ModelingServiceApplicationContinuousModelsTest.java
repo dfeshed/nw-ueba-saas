@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 @RunWith(SpringRunner.class)
-public class ModelingServiceApplicationContinousModels {
+public class ModelingServiceApplicationContinuousModelsTest {
     private static final String GENERATOR_CONTEXT_ID_PATTERN = "userId\\#[a-g]{1}[1-2]{1}";
     private static final int GENERATOR_END_HOUR_OF_DAY = 16;
     private static final int GENERATOR_START_HOUR_OF_DAY = 5;
