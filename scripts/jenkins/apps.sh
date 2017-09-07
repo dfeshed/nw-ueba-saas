@@ -19,15 +19,6 @@ function doTestApp {
   echo $_need
 }
 
-function doInstallApp {
-  local _need="false"
-  if [[ $submodulesToInstall =~ "|$1|" ]]
-  then
-    _need="true"
-  fi
-  echo $_need
-}
-
 # Turn strings into arrays
 # cannot export arrays at command line
 IFS=', ' read -r -a TESTEM_PORTS_ARRAY <<< "$TESTEM_PORTS"
@@ -136,16 +127,7 @@ function buildEmberApp {
 
 function buildMockServer {
   cd mock-server
-
-  # Yarn install all mock-server dependencies
-  local shouldInstallApp=$(doInstallApp mock-server)
-  if [[ "$shouldInstallApp" == "false" ]]
-  then
-    info "No reason to test mock-server, skipping it"
-  else
-    info "Installing mock-server dependencies"
-    yarn
-  fi
+  yarn
 
   # Run eslint/tests on mock-server code
   local shouldTestApp=$(doTestApp mock-server)
@@ -172,9 +154,12 @@ info "***********************"
 info "Building apps"
 
 # install node scripts deps
+info "Running install for node build utilities"
 cd scripts/node
 yarn
+
 # install all UI depedencies
+info "Running install for all application node packages"
 cd ../..
 yarn
 cd $CWD

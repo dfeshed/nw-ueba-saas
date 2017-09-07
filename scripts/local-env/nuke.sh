@@ -8,15 +8,15 @@ red $scriptDir
 red "Nuking your environment from orbit..."
 red "...it's the only way to be sure.\n"
 
-info "If this is your first time setting up environment, this part will be fast."
-
 function nukeNode {
   info "Removing $1 node_modules"
+  unlink $scriptDir/../$1/node_modules
+
+  # keeping this around to handle cases where
+  # bouncing between 11.0 and 11.1 and node_modules
+  # is an actual directory
   rm -rf $scriptDir/../$1/node_modules
 }
-
-info "Cleaning NPM cache"
-npm cache clean
 
 rm -rf $scriptDir/../node_modules
 touch node_modules/.metadata_never_index
@@ -59,6 +59,5 @@ red "                               ________________
 
 
 red "You've been NUKED!"
-info "Now setting up environment and apps..."
 
 cd $CWD

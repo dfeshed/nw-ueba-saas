@@ -8,6 +8,7 @@ scriptDir="$(dirname "$0")"
 
 . $scriptDir/local-env/nuke.sh
 
+info "Now setting up environment and apps..."
 info "Get comfy, this might take awhile!\n"
 info "Performing initial setup"
 

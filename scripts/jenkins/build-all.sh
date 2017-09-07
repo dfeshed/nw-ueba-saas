@@ -31,8 +31,6 @@
 #   Sets web application features to false. To set multiple features, comma-delimit
 #   feature names.
 
-
-
 # turns off noisy jenkins output
 # comment this out to debug problematic build
 set +x
@@ -102,16 +100,9 @@ fi
 submodulesToTest=$(node $scriptDir/../node/determine-apps-to-test.js $files)
 checkError "Error occurred attempting to build list of submodules to test"
 
-submodulesToInstall=$(node $scriptDir/../node/determine-apps-to-install.js $files)
-checkError "Error occurred attempting to build list of submodules to install"
-
 echo "*** BEGIN SUBMODULES TO TEST"
 echo $submodulesToTest | tr " " "\n"
 echo "*** END SUBMODULES TO TEST"
-
-echo "*** BEGIN SUBMODULES TO INSTALL"
-echo $submodulesToInstall | tr " " "\n"
-echo "*** END SUBMODULES TO INSTALL"
 
 #### Build Apps ####
 . $scriptDir/apps.sh
