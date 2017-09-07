@@ -1,6 +1,6 @@
 package presidio.output.domain.services.alerts;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -26,24 +26,22 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         // filter by username
-        if (StringUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
-            boolQueryBuilder.must(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.AND));
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
+            boolQueryBuilder.should(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.OR));
         }
 
         // filter by severity
-        if (StringUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
-            boolQueryBuilder.must(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.AND));
+        if (!CollectionUtils.isEmpty(alertQuery.getFilterBySeverity())) {
+            boolQueryBuilder.should(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.OR));
         }
 
         // filter by classification
         if (alertQuery.getFilterByClassification() != null && !(alertQuery.getFilterByClassification()).isEmpty()) {
-            for (String classification : alertQuery.getFilterByClassification()) {
-                boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATIONS, classification).operator(Operator.OR));
-            }
+            boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATIONS, alertQuery.getFilterByClassification()).operator(Operator.OR));
         }
 
         // filter by date range
-        if (alertQuery.getFilterByStartDate() > 0 || alertQuery.getFilterByEndDate() > 0) {
+        if (alertQuery.getFilterByStartDate() > 0 && alertQuery.getFilterByEndDate() > 0 && alertQuery.getFilterByStartDate() < alertQuery.getFilterByEndDate()) {
             RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
             if (alertQuery.getFilterByStartDate() > 0) {
                 rangeQuery.from(alertQuery.getFilterByStartDate());
