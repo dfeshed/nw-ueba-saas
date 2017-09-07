@@ -19,13 +19,13 @@ public class AppSpecificTtlDataStore {
     //Map<storeName, Map<collectionName, TtlData>>
     private Map<String, Map<String, TtlData>> ttlDataMap;
     private String appName;
-    private TtlDataStore ttlDataStore;
+    private TtlDataRepository ttlDataRepository;
 
 
-    public AppSpecificTtlDataStore(String appName, TtlDataStore ttlDataStore) {
+    public AppSpecificTtlDataStore(String appName, TtlDataRepository ttlDataRepository) {
         this.appName = appName;
-        this.ttlDataStore = ttlDataStore;
-        List<TtlData> ttlDataList = ttlDataStore.getTtlDataList(appName);
+        this.ttlDataRepository = ttlDataRepository;
+        List<TtlData> ttlDataList = ttlDataRepository.findByApplicationNameIn(appName);
         ttlDataMap = ttlDataList.stream().collect(groupingBy(ttlData -> ttlData.getStoreName(), toMap(ttlData -> ttlData.getCollectionName(), ttlData -> ttlData)));
     }
 
@@ -47,12 +47,12 @@ public class AppSpecificTtlDataStore {
                     if (!ttlData.getTtlDuration().equals(ttl) || !ttlData.getCleanupInterval().equals(cleanupInterval)) {
                         ttlData.setTtlDuration(ttl);
                         ttlData.setCleanupInterval(cleanupInterval);
-                        ttlDataStore.save(ttlData);
+                        ttlDataRepository.save(ttlData);
                     }
                 } else {
                     ttlData = new TtlData(appName, storeName, collectionName, ttl, cleanupInterval);
                     ttlDataMap.get(storeName).put(collectionName, ttlData);
-                    ttlDataStore.save(ttlData);
+                    ttlDataRepository.save(ttlData);
                 }
             } else {
                 //create new record if store is not exist in the Map.
@@ -87,7 +87,7 @@ public class AppSpecificTtlDataStore {
         Map<String, TtlData> collectionToTtlData = new HashMap<>();
         collectionToTtlData.put(collectionName, ttlData);
         ttlDataMap.put(storeName, collectionToTtlData);
-        ttlDataStore.save(ttlData);
+        ttlDataRepository.save(ttlData);
     }
 
 }

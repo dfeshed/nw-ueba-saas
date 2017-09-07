@@ -13,6 +13,7 @@ import java.time.Instant;
 /**
  * Created by maria_dorohin on 8/30/17.
  */
+@Document(collection = "management_ttl")
 public class TtlData {
     public static final String APPLICATION_NAME_FIELD = "applicationName";
 
