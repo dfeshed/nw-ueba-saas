@@ -55,24 +55,23 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 logging.debug("No count file for sink in path {0}".format(sink_properties_file))
                 return False
 
-            source_counter_property = self.get_counter_property(self._hour_end_time, source_properties_file)
-            if source_counter_property is None:
-                return False
+            source_count = self.get_counter_property(self._hour_end_time, source_properties_file)
+            if source_count is None:
+                source_count = 0
             latest_ready_hour = self.get_counter_property(LATEST_READY_HOUR_MARKER, source_properties_file)
             if latest_ready_hour is None:
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
             source_is_ready = latest_ready_hour is self._hour_end_time
-            source_count = source_counter_property
 
             sink_count = self.get_counter_property(self._hour_end_time, sink_properties_file)
             if sink_count is None:
-                return False
+                sink_count = 0
 
             logging.debug("Source count for schema {0} and time {1} is : {2}".format(
                 self._schema_name,
                 self._hour_end_time,
-                source_counter_property))
+                source_count))
             logging.debug("Sink count for schema {0} and time {1} is : {2}".format(
                 self._schema_name,
                 self._hour_end_time,
@@ -81,7 +80,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             if sink_count > source_count:
                 logging.warn("Sink count is larger than the source count. This is an invalid state!. "
                              "source count: {0}, "
-                             "sink count: {1}".format(source_counter_property, sink_count))
+                             "sink count: {1}".format(source_count, sink_count))
 
             hour_is_ready = source_is_ready and source_count <= sink_count
             if hour_is_ready:

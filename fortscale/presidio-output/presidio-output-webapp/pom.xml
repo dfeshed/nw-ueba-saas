@@ -22,6 +22,7 @@
         <swagger-annotations-version>1.5.8</swagger-annotations-version>
         <jersey-version>2.22.2</jersey-version>
         <exec-maven-plugin>1.2.1</exec-maven-plugin>
+        <tomcat.web.scope>provided</tomcat.web.scope>
 
     </properties>
     <dependencies>
@@ -123,6 +124,18 @@
             <artifactId>migbase64</artifactId>
             <version>2.2</version>
         </dependency>
+
+        <dependency> <!-- 3) Add dependency with the relevant scope. The default value is provided, so for regular compilation this dependency only provided, but for profile bootwar its compile -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>${tomcat.web.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
+
     </dependencies>
     <profiles>
         <profile>
@@ -147,8 +160,15 @@
                 <script.extension>.sh</script.extension>
             </properties>
         </profile>
+        <profile>
+            <id>bootwar</id>
+            <properties>
+                <tomcat.web.scope>compile</tomcat.web.scope>
+            </properties>
+        </profile>
     </profiles>
     <build>
+        <finalName>presidio-output-webapp</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -2,19 +2,18 @@ package presidio.output.domain.records.alerts;
 
 
 import org.springframework.data.domain.Sort;
-import presidio.output.domain.records.users.UserQuery;
 
 import java.util.List;
 
 public class AlertQuery {
 
     // filters
-    private final String filterByUserName;
+    private final List<String> filterByUserName;
     private final List<String> filterByClassification;
-    private final String filterBySeverity;
+    private final List<String> filterBySeverity;
     private final long filterByStartDate;
     private final long filterByEndDate;
-    private String filterByFeedback;
+    private List<String> filterByFeedback;
     private double filterByMinScore;
     private double filterByMaxScore;
     private List<String> filterByTags;
@@ -56,7 +55,7 @@ public class AlertQuery {
 
     }
 
-    public String getFilterByUserName() {
+    public List<String> getFilterByUserName() {
         return filterByUserName;
     }
 
@@ -64,7 +63,7 @@ public class AlertQuery {
         return filterByClassification;
     }
 
-    public String getFilterBySeverity() {
+    public List<String> getFilterBySeverity() {
         return filterBySeverity;
     }
 
@@ -95,12 +94,12 @@ public class AlertQuery {
     public static class AlertQueryBuilder {
 
         // filters
-        private String filterByUserName;
+        private List<String> filterByUserName;
         private List<String> filterByClassification;
-        private String filterBySeverity;
+        private List<String> filterBySeverity;
         private long filterByStartDate;
         private long filterByEndDate;
-        private String filterByFeedback;
+        private List<String> filterByFeedback;
         private double filterByMinScore;
         private double filterByMaxScore;
         private List<String> filterByTags;
@@ -146,12 +145,12 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterByFeedback(String filterByFeedback) {
+        public AlertQueryBuilder filterByFeedback(List<String> filterByFeedback) {
             this.filterByFeedback = filterByFeedback;
             return this;
         }
 
-        public AlertQueryBuilder filterByUserName(String filterBuUserName) {
+        public AlertQueryBuilder filterByUserName(List<String> filterBuUserName) {
             this.filterByUserName = filterBuUserName;
             return this;
         }
@@ -161,7 +160,7 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder filterBySeverity(String filterBySeverity) {
+        public AlertQueryBuilder filterBySeverity(List<String> filterBySeverity) {
             this.filterBySeverity = filterBySeverity;
             return this;
         }
