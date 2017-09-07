@@ -1,0 +1,23 @@
+.list-filter {
+  &__content {
+    min-width: 8rem !important;
+    .body {
+      min-width: 5rem;
+      max-width: 20rem;
+      &__input {
+        padding-left: rsa-whitespace();
+      }
+      .select-option {
+        padding-top: 10px;
+      }
+    }
+  }
+}
+
+.filter-file-size {
+  @include rsa-layer(above)
+}
+
+.ember-tether {
+  @include rsa-layer(modals)
+}

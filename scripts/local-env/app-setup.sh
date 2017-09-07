@@ -44,6 +44,7 @@ prepareApp packager
 prepareApp recon
 prepareApp style-guide
 prepareApp investigate-events
+prepareApp investigate-files
 prepareApp respond
 prepareApp context
 prepareApp sa

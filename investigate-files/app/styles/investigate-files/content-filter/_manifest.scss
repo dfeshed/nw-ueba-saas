@@ -1,0 +1,61 @@
+@import "text-filter";
+@import "number-filter";
+@import "list-filter";
+
+.filter-ellipsis {
+  max-width: 15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.content-filter {
+  .filter-control-extended {
+    padding: rsa-whitespace() 0 0;
+  }
+  .filter-content-holder {
+    .rsa-button-group {
+      display: inline-table;
+    }
+    width: 80vw;
+  }
+  .rsa-form-button-wrapper {
+    .rsa-form-button {
+      padding: rsa-whitespace(less) rsa-whitespace(less);
+      &:hover {
+        cursor: pointer;
+        border: 1px solid;
+      }
+      .rsa-icon-remove-circle-2 {
+        font-size: .9rem;
+        margin: 0 calc(#{rsa-whitespace(least)} * -1) 0 rsa-whitespace(least);
+      }
+    }
+    &:not(.is-icon-only) {
+      .rsa-form-button {
+        i:not(.rsa-icon-arrow-down-12) {
+          margin: 0 calc(#{rsa-whitespace(least)} * -1) 0 rsa-whitespace(least);
+        }
+      }
+    }
+    &.is-standard:not(.is-disabled):not(.is-icon-only) {
+      .rsa-form-button {
+        border-color: transparent;
+      }
+      &:hover, &.is-active {
+        .rsa-form-button {
+          border: 1px solid $formButtonHoverBorderColor;
+        }
+      }
+      &:active, &.is-active {
+        background-color: transparent;
+      }
+    }
+
+  }
+}
+
+#list-filter-content .rsa-form-checkbox-label::before {
+  top: 8px;
+}

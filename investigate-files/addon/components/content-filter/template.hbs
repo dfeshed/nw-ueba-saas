@@ -1,0 +1,28 @@
+{{#each appliedFilters as |control|}}
+  {{component control.filterControl config=control}}
+{{/each}}
+{{content-filter/filter-trigger panelId='moreOptions' filterLabel=(t 'investigateFiles.filter.addMore')}}
+{{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='moreOptions'}}
+  <section class="column-chooser-input">
+    {{rsa-form-input value=searchTerm placeholder=(t 'tables.columnChooser.filterPlaceHolder')}}
+  </section>
+  <ul class="rsa-dropdown-action-list">
+    {{#each filterList as |option|}}
+      <li>
+        <label class="rsa-form-checkbox-label {{if option.selected 'checked'}}">
+          {{rsa-form-checkbox
+            checked=option.selected
+            change=(action 'onSelection' option)}}
+          {{t option.label}}
+        </label>
+      </li>
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}
+{{#rsa-form-button defaultAction=(action 'resetFilters')}}
+  Reset
+{{/rsa-form-button}}
+
+
+
+

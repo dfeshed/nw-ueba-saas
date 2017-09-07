@@ -1,0 +1,54 @@
+.rsa-files-toolbar {
+  background-color: rsa-color(black);
+  .selection-count {
+    padding-right: rsa-whitespace();
+  }
+
+  .toolbar-button {
+    padding: rsa-whitespace(less);
+    font-size: 20px;
+    width: 23px;
+    color: rsa-color(gray, lighter);
+    margin-right: rsa-whitespace(least);
+    cursor: pointer;
+  }
+
+  &.more-filters-active {
+    .more-filters-button {
+      color: rsa-color(green);
+      border-bottom: 2px solid rsa-color(green);
+    }
+  }
+
+
+  &__filters {
+    @include rsa-row(left, middle);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 1);
+  }
+
+  &__views,
+  &__btns {
+    @include rsa-row(right, middle);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 0);
+  }
+
+  &__views {
+    margin-right: rsa-whitespace(more);
+  }
+
+
+  .ember-power-select-trigger {
+    border-bottom: 1px solid transparent;
+    .rsa-view-mode-option .text {
+      display: none;
+    }
+  }
+
+  .rsa-power-select-label {
+    vertical-align: middle;
+    padding-right: 10px;
+  }
+}
+

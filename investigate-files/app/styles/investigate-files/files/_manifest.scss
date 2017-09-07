@@ -1,0 +1,113 @@
+$zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
+$filterPanelMinWidth: 200px;
+
+page.investigate-files-engine {
+  min-height: 100vh;
+  color: rsa-color(gray, lightest);
+}
+
+.rsa-investigate-files {
+  overflow: hidden;
+  @include rsa-vendor-prefix(transition-property, background-color, color);
+  @include rsa-vendor-prefix(transition-duration, 0.3s);
+
+  .main-zone {
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+
+  .rsa-application-layout-panel-header .filters {
+    padding: 0 0 0 calc((1rem + .25rem + .5rem) - 1px);
+  }
+
+  .favourite-filters {
+    padding: rsa-whitespace();
+  }
+
+  .filter-list {
+    padding: rsa-whitespace() 0 0;
+  }
+
+  .filter-list__item {
+    cursor: pointer;
+    font-weight: 700;
+    color: rsa-color(gray);
+    line-height: 30px;
+    &.is-active {
+      color: white;
+      transition: color 0.5s ease;
+    }
+  }
+
+  .filter-list__item:hover {
+    color: white;
+    transition: color 0.5s ease;
+  }
+
+  .filter-list__item-label {
+    padding-left: rsa-whitespace();
+  }
+
+  .toolbar-zone {
+    border-bottom: 1px solid $zoneBorderColor;
+  }
+  .add-filter {
+    padding: rsa-whitespace() 0;
+  }
+
+  .filter-zone {
+    hr {
+      width: 100%;
+    }
+    h2 {
+      margin: rsa-whitespace() 0;
+      font-style: normal;
+      font-size: 1.725rem;
+      font-weight: 100;
+    }
+    border-right: 1px solid $zoneBorderColor;
+    max-width: 25%;
+    min-width: $filterPanelMinWidth;
+    padding: rsa-whitespace(less);
+    overflow: auto;
+    overflow-x: hidden;
+    opacity: $rsa-opaque;
+    @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
+    @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
+  }
+  .files-zone {
+    width: calc(100vw - #{$filterPanelMinWidth});
+  }
+  .files-footer {
+    max-height: 2rem;
+    background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
+    color: rsa-color(gray, lightest);
+    border-top: 1px solid $zoneBorderColor;
+  }
+
+  .toolbar-button {
+    padding: rsa-whitespace(less);
+    font-size: 20px;
+    width: 23px;
+    color: rsa-color(gray, lighter);
+    margin-right: rsa-whitespace(least);
+    cursor: pointer;
+  }
+
+  .file-list, .rsa-data-table {
+    height: 100%;
+  }
+  .rsa-data-table-header {
+    border-bottom: 1px solid rsa-color(gray, dark);
+  }
+  .rsa-data-table-header-cell {
+    button {
+      cursor: pointer;
+      &.column-sort {
+        position: absolute;
+        right: 7px;
+      }
+    }
+  }
+}
+

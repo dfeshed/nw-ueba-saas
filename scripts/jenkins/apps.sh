@@ -179,6 +179,7 @@ buildEmberApp recon false true
 buildEmberApp context false true
 buildEmberApp style-guide true
 buildEmberApp investigate-events false true
+buildEmberApp investigate-files false true
 buildEmberApp respond false true
 buildEmberApp sa true
 

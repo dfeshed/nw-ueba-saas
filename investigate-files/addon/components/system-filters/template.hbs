@@ -1,0 +1,3 @@
+{{#each filterList as |filter|}}
+  {{system-filters/list-item reset=isFilterReset filter=filter activeFilter=activeFilter applyFilter=(action 'applyFilter')}}
+{{/each}}

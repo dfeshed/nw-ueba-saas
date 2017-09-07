@@ -1,0 +1,27 @@
+{{content-filter/filter-trigger
+  panelId=config.panelId
+  propertyName=config.propertyName
+  showRemoveButton=config.showRemoveButton
+  filterLabel=filterLabel}}
+{{#rsa-content-tethered-panel
+  anchorWidth=anchorWidth
+  isPopover=true
+  displayCloseButton=false
+  position='bottom-right'
+  panelId=config.panelId}}
+  <section class="list-filter__content">
+    <ul id="list-filter-content" class="list-filter-lists">
+      {{#each checkBoxOptions as |option|}}
+        <li>
+          <label class="rsa-form-checkbox-label {{if option.selected 'checked'}}">
+            {{rsa-form-checkbox
+              checked=option.selected
+              change=(action 'onSelection' option)}}
+            {{option.name}}
+          </label>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+{{/rsa-content-tethered-panel}}
+

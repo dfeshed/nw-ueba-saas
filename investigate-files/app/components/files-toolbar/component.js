@@ -1,0 +1,1 @@
+export { default } from 'investigate-files/components/file-toolbar/component';

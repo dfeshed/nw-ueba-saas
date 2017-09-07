@@ -4,6 +4,7 @@ const ALL_SUBMODULES = [
   'packager',
   'recon',
   'investigate-events',
+  'investigate-files',
   'respond',
   'sa',
   'streaming-data',
@@ -20,6 +21,7 @@ const saModuleDependants = {
     'sa',
     'style-guide',
     'investigate-events',
+    'investigate-files',
     'packager',
     'respond',
     'context'
@@ -29,11 +31,13 @@ const saModuleDependants = {
     'streaming-data',
     'recon',
     'investigate-events',
+    'investigate-files',
     'packager',
     'respond',
     'context'
   ],
   'investigate-events': ['sa'],
+  'investigate-files': ['sa'],
   packager: ['sa'],
   recon: [
     'sa',
@@ -45,6 +49,7 @@ const saModuleDependants = {
   'streaming-data': [
     'recon',
     'investigate-events',
+    'investigate-files',
     'packager',
     'respond',
     'sa',

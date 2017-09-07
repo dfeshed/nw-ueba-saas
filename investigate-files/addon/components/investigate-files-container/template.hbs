@@ -1,0 +1,34 @@
+<vbox class="filter-zone">
+  <h2>{{t 'investigateFiles.filter.filters'}}</h2>
+  <hr>
+  <section class="favourite-filters">
+    {{t 'investigateFiles.filter.favouriteFilters'}}
+    {{system-filters}}
+  </section>
+  <div class="add-filter">
+    {{#rsa-form-button isFullWidth=true defaultAction=(action 'resetFilters')}}
+      Reset
+    {{/rsa-form-button}}
+  </div>
+</vbox>
+<vbox class="files-zone">
+  <box fit class="toolbar-zone">
+    {{files-toolbar}}
+  </box>
+  <box class="files-body">
+    {{#if (eq areFilesLoading 'wait')}}
+      <centered>
+        {{rsa-loader size='larger'}}
+      </centered>
+    {{else}}
+      {{#if isSchemaLoaded}}
+        {{file-list}}
+      {{/if}}
+    {{/if}}
+  </box>
+  <box class="files-footer">
+    {{file-pager}}
+  </box>
+</vbox>
+
+

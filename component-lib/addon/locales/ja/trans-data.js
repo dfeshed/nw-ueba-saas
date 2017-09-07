@@ -1435,5 +1435,105 @@ export default {
     },
     autoUninstall: 'ja_Auto Uninstall',
     forceOverwrite: 'ja_Force Overwrite'
+  },
+  investigateFiles: {
+    title: 'ja_Files',
+    message: {
+      noResultsMessage: 'ja_No matching files were found'
+    },
+    footer: 'ja_{{count}} of {{total}} {{label}}',
+    filter: {
+      filters: 'ja_Filters',
+      newFilter: 'ja_New Filter',
+      windows: 'ja_WINDOWS',
+      mac: 'ja_MAC',
+      linux: 'ja_LINUX',
+      favouriteFilters: 'ja_Favourite Filters',
+      addMore: 'ja_Add More',
+      restrictionType: {
+        moreThan: 'ja_Greater than',
+        lessThan: 'ja_Less than',
+        between: 'ja_Between',
+        equals: 'ja_Equals',
+        contains: 'ja_Contains'
+      }
+    },
+    fields: {
+      id: 'ja_ID',
+      companyName: 'ja_Company Name',
+      checksumMd5: 'ja_MD5',
+      checksumSha1: 'ja_SHA1',
+      checksumSha256: 'ja_SHA256',
+      machineOsType: 'ja_Operating System',
+      elf: {
+        classType: 'ja_ELF.Class Type',
+        data: 'ja_ELF.Data',
+        entryPoint: 'ja_ELF.Entry Point',
+        features: 'ja_ELF.Features',
+        type: 'ja_ELF.Type',
+        sectionNames: 'ja_ELF.Section Names',
+        importedLibraries: 'ja_ELF.Imported Libraries'
+      },
+      pe: {
+        timeStamp: 'ja_PE.Timestamp',
+        imageSize: 'ja_PE.Image Size',
+        numberOfExportedFunctions: 'ja_PE.Exported Functions',
+        numberOfNamesExported: 'ja_PE.Exported Names',
+        numberOfExecuteWriteSections: 'ja_PE.Execute Write Sections',
+        features: 'ja_PE.Features',
+        sectionNames: 'ja_PE.Section Names',
+        importedLibraries: 'ja_PE.Imported Librabries',
+        resources: {
+          originalFileName: 'ja_PE.Resources.File Name',
+          company: 'ja_PE.Resources.Company',
+          description: 'ja_PE.Resources.Description',
+          version: 'ja_PE.Resources.Version'
+        }
+      },
+      macho: {
+        uuid: 'ja_MachO.Uuid',
+        identifier: 'ja_MachO.Identifier',
+        minOsxVersion: 'ja_MachO.Osx Version',
+        features: 'ja_MachO.Features',
+        flags: 'ja_MachO.Flags',
+        numberOfLoadCommands: 'ja_MachO.Loaded Commands',
+        version: 'ja_MachO.Version',
+        sectionNames: 'ja_MachO.Section Names',
+        importedLibraries: 'ja_MachO.Imported Libraries'
+      },
+      signature: {
+        timeStamp: 'ja_Signature.Timestamp',
+        thumbprint: 'ja_Signature.Thumbprint',
+        features: 'ja_Signature',
+        signer: 'ja_Signer'
+      },
+      owner: {
+        userName: 'ja_Owner',
+        groupName: 'ja_Owner Group'
+      },
+      rpm: {
+        packageName: 'ja_Package'
+      },
+      path: 'ja_Path',
+      entropy: 'ja_Entropy',
+      fileName: 'ja_FileName',
+      firstFileName: 'ja_FileName',
+      timeCreated: 'ja_Created',
+      format: 'ja_Format',
+      sectionNames: 'ja_Section Names',
+      importedLibraries: 'ja_Imported Libraries',
+      size: 'ja_Size'
+
+    },
+    sort: {
+      fileNameDescending: 'ja_File Name (descending)',
+      fileNameAscending: 'ja_File Name (ascending)',
+      sizeAscending: 'ja_Size (ascending)',
+      sizeDescending: 'ja_Size (descending)',
+      formatAscending: 'ja_Format (ascending)',
+      formatDescending: 'ja_Format (descending)',
+      signatureAscending: 'ja_Signature (ascending)',
+      signatureDescending: 'ja_Signature (descending)'
+    }
   }
 };

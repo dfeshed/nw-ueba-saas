@@ -1,0 +1,11 @@
+{{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=panelId}}
+  <button class="rsa-form-button filter-trigger-button" disabled={{isDisabled}}>
+    <span class="filter-ellipsis">
+      {{filterLabel}}
+    </span>
+    {{rsa-icon name="arrow-down-12"}}
+    {{#if showRemoveButton}}
+      <span {{action 'removeFilter' propertyName}}>{{rsa-icon name="remove-circle-2"}}</span>
+    {{/if}}
+  </button>
+{{/rsa-content-tethered-panel-trigger}}
