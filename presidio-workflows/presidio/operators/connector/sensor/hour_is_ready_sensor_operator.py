@@ -108,3 +108,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
     @staticmethod
     def get_counter_property(property_to_get, properties_file):
         return load_and_get_property(property_to_get, properties_file)
+
+    @staticmethod
+    def remove_counter_property(property_to_remove, properties_file):
+        return load_and_get_property(property_to_remove, properties_file)
