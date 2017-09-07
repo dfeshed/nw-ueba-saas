@@ -2,7 +2,7 @@ package fortscale.utils.ttl;
 
 import fortscale.utils.ttl.record.TtlData;
 import fortscale.utils.ttl.store.AppSpecificTtlDataStore;
-import fortscale.utils.ttl.store.TtlDataStore;
+import fortscale.utils.ttl.store.TtlDataRepository;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -21,11 +21,13 @@ public class TtlService {
     private Duration defaultTtl;
     private Duration defaultCleanupInterval;
     private Map<String, TtlServiceAware> storeToTtlServiceAware;
+    private TtlDataRepository ttlDataRepository;
 
-    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataStore ttlDataStore) {
+    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataRepository ttlDataRepository) {
         this.defaultTtl = defaultTtl;
         this.defaultCleanupInterval = defaultCleanupInterval;
-        appSpecificTtlDataStore = new AppSpecificTtlDataStore(appName, ttlDataStore);
+        this.ttlDataRepository = ttlDataRepository;
+        appSpecificTtlDataStore = new AppSpecificTtlDataStore(appName, ttlDataRepository);
         buildStoreNameToTtlServiceAwareMap(ttlServiceAwares);
     }
 
@@ -69,7 +71,7 @@ public class TtlService {
      * 1. cleanupInterval = PT24H => Remove collections every 24 logical hours.
      * 2. ttl = PT48H => records of 48 logical hours are stored.
      *
-     * @param instant logical time, which store use to remove records until the instant minus ttl.
+     * @param instant remove records until the given instant according to ttl and cleanupInterval.
      *                e.g: startInstant => store remove all records, where startInstant is less than (startInstant - tll)
      *                e.g: endInstant => store remove all records, where endInstant is less or equal than (endInstant - tll)
      */
@@ -82,6 +84,27 @@ public class TtlService {
                     Duration ttl = ttlData.getTtlDuration();
                     Duration cleanupInterval = ttlData.getCleanupInterval();
 
+                    if (instant.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
+                        ttlServiceAware.remove(collectionName, instant.minus(ttl));
+                    }
+                }
+        );
+    }
+
+
+    /**
+     * Cleanup all collections of the given Store until the given instant according to ttl and cleanupInterval.
+     *
+     * @param StoreName store name
+     * @param instant remove records until the given instant according to ttl and cleanupInterval.
+     * @param ttl logical duration to store records
+     * @param cleanupInterval cleanup interval
+     */
+    public void cleanupCollections(String StoreName, Instant instant, Duration ttl, Duration cleanupInterval) {
+        List<TtlData> ttlDataList = ttlDataRepository.findByStoreName(StoreName);
+        TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(StoreName);
+        ttlDataList.forEach(ttlData -> {
+                    String collectionName = ttlData.getCollectionName();
                     if (instant.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
                         ttlServiceAware.remove(collectionName, instant.minus(ttl));
                     }

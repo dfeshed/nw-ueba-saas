@@ -8,6 +8,8 @@ import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.smart.MultipleSmartCollectionsPaginationService;
@@ -24,6 +26,8 @@ import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +50,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private SmartRecordConfService smartRecordConfService;
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
     private Map<String, String> aggregationNameToFeatureBucketConfName;
+    private TtlService ttlService;
 
     public AdeManagerSdkImpl(
             EnrichedDataStore enrichedDataStore,
@@ -54,7 +59,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
             FeatureBucketReader featureBucketReader,
             AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader,
-            SmartRecordConfService smartRecordConfService) {
+            SmartRecordConfService smartRecordConfService,
+            TtlService ttlService) {
 
         this.enrichedDataStore = enrichedDataStore;
         this.smartDataReader = smartDataReader;
@@ -63,6 +69,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         this.featureBucketReader = featureBucketReader;
         this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
         this.smartRecordConfService = smartRecordConfService;
+        this.ttlService = ttlService;
     }
 
     @Override
@@ -254,5 +261,11 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     @Override
     public void setDirtyDataMarkers(Set<DirtyDataMarker> dirtyDataMarkers) {
         // TODO: Implement
+    }
+
+    @Override
+    public void cleanupEnrichedCollections(Instant instant, Duration ttl, Duration cleanupInterval) {
+        String storeName = ((TtlServiceAware)enrichedDataStore).getStoreName();
+        ttlService.cleanupCollections(storeName, instant, ttl, cleanupInterval);
     }
 }

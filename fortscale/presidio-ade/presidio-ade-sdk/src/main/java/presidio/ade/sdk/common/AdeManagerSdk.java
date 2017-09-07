@@ -7,6 +7,7 @@ import presidio.ade.sdk.historical_runs.HistoricalRunsManagerSdk;
 import presidio.ade.sdk.online_run.OnlineRunManagerSdk;
 import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
 import presidio.ade.sdk.smart_records.SmartRecordsManagerSdk;
+import presidio.ade.sdk.ttl.TtlServiceSdk;
 
 import java.util.Set;
 
@@ -24,7 +25,8 @@ public interface AdeManagerSdk extends
         EnrichedRecordsManagerSdk,
         ScoredEnrichedRecordsManagerSdk,
         AggregationRecordsManagerSdk,
-        SmartRecordsManagerSdk {
+        SmartRecordsManagerSdk,
+        TtlServiceSdk{
 
     /**
      * @return The data characteristics that mark records as dirty.
