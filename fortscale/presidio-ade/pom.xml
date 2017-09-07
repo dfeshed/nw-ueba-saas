@@ -43,6 +43,7 @@
         <module>presidio-ade-app-modeling</module>
         <module>presidio-ade-app-model-feature-buckets</module>
         <module>presidio-ade-app-feature-aggr</module>
+        <module>presidio-ade-app-manager</module>
         <module>presidio-ade-app-accumulate-aggr</module>
         <module>presidio-ade-app-accumulate-smart</module>
         <module>presidio-ade-app-smart</module>
