@@ -19,9 +19,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-/**
- * Created by barak_schuster on 7/30/17.
- */
+
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 public class ManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
@@ -56,8 +54,8 @@ public class ManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
     }
 
     /**
-     * Generate enriched file records.
-     * remove records until UNTIL_DATE acording to ttl and cleanup interval
+     * 1. Generate enriched file records.
+     * 2. Remove enriched file records until UNTIL_DATE according to ttl and cleanup interval
      */
     @Override
     protected void assertSanityTest() {

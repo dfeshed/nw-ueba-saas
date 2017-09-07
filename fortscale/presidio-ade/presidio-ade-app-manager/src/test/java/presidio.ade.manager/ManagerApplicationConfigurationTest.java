@@ -9,9 +9,7 @@ import presidio.ade.manager.config.ManagerApplicationConfig;
 
 import java.util.Properties;
 
-/**
- * Created by barak_schuster on 7/30/17.
- */
+
 @Configuration
 @Import({MongodbTestConfig.class})
 public class ManagerApplicationConfigurationTest extends ManagerApplicationConfig {
