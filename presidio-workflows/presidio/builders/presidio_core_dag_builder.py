@@ -7,6 +7,7 @@ from presidio.builders.ade.anomaly_detection_engine_dag_builder import AnomalyDe
 from presidio.builders.input.input_dag_builder import InputDagBuilder
 from presidio.builders.output.output_dag_builder import OutputDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
 class PresidioCoreDagBuilder(PresidioDagBuilder):
@@ -35,10 +36,13 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
         logging.info("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
 
+        task_sensor_service = TaskSensorService()
+
         input_sub_dag_operator = self._get_input_sub_dag_operator(
             self.data_sources,
             presidio_core_dag
         )
+        task_sensor_service.add_task_sequential_sensor(input_sub_dag_operator)
 
         ade_sub_dag_operator = self._get_ade_sub_dag_operator(self.data_sources, presidio_core_dag)
 

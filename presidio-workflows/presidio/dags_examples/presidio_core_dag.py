@@ -1,0 +1,26 @@
+from datetime import datetime, timedelta
+
+from airflow import DAG
+
+from presidio.builders.presidio_core_dag_builder import PresidioCoreDagBuilder
+
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime(2015, 6, 1),
+    'email': ['airflow@airflow.com'],
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 0,
+    'retry_delay': timedelta(minutes=5),
+    'daily_smart_events_confs':[],
+    'hourly_smart_events_confs':['userId_hourly'],
+    # 'queue': 'bash_queue',
+    # 'pool': 'backfill',
+    # 'priority_weight': 10,
+    # 'end_date': datetime(2016, 1, 1),
+}
+dag = DAG('presidio_core_dag_example', start_date=datetime(2015, 7, 1, 23), schedule_interval=timedelta(minutes=60), default_args=default_args)
+#dag_builder = AnomalyDetectionEngineDagBuilder(['dlpfile','dlpmail'],['hourly_smart','hourly_exfiltration'],['daily_smart'])
+dag_builder = PresidioCoreDagBuilder(['FILE','ACTIVE_DIRECTORY','AUTHENTICATION'])
+dag_builder.build(dag)
