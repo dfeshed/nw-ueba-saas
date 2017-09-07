@@ -23,7 +23,7 @@ class TaskSensorService(object):
         self._task_sensors_dict = {}
         self._task_short_circuit_operators_dict = {}
 
-    def add_task_sequential_sensor(self, task, poke_interval=120):
+    def add_task_sequential_sensor(self, task, poke_interval=10):
         '''
         ensure that task instances of a task are running sequentially even when few dag instances may run in parallel.
         The sensor checks every poked interval if all the previous task instances ran already
