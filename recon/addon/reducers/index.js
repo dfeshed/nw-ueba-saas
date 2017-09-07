@@ -1,5 +1,4 @@
-import redux from 'redux';
-
+import { combineReducers } from 'redux';
 import data from './data-reducer';
 import dictionaries from './dictionaries/reducer';
 import files from './files/reducer';
@@ -11,7 +10,7 @@ import text from './text/reducer';
 import visuals from './visuals/reducer';
 
 export default {
-  recon: redux.combineReducers({
+  recon: combineReducers({
     data,
     dictionaries,
     files,

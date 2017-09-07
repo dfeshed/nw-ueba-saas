@@ -1,5 +1,6 @@
+import { combineReducers } from 'redux';
 import respond from './respond/index';
 
-export default {
+export default combineReducers({
   ...respond
-};
+});

@@ -1,4 +1,4 @@
-import redux from 'redux';
+import { combineReducers } from 'redux';
 import incidents from './incidents';
 import alerts from './alerts';
 import alert from './alert';
@@ -8,7 +8,7 @@ import dictionaries from './dictionaries';
 import remediationTasks from './remediation-tasks';
 
 export default {
-  respond: redux.combineReducers({
+  respond: combineReducers({
     incidents,
     incident,
     users,

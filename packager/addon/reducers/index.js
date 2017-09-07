@@ -1,5 +1,6 @@
+import { combineReducers } from 'redux';
 import packager from './packager';
 
-export default {
+export default combineReducers({
   packager
-};
+});

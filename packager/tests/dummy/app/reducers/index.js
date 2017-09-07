@@ -1,5 +1,3 @@
 import packager from 'packager/reducers/index';
 
-export default {
-  ...packager
-};
+export default packager;

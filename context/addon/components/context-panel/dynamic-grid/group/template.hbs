@@ -1,6 +1,6 @@
 {{rsa-content-definition label=(t title)}}
 <div>
-  {{#if displayType 'inline'}}
+  {{#if (eq displayType 'inline')}}
     {{#each groupDataArray as |cellData |}}
       <div class="rsa-context-panel__grid__host-details__field-value">
         {{cellData}}

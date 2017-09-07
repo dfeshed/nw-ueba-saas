@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
+import { connect } from 'ember-redux';
 import { pageFirst, pagePrevious, pageNext, pageLast } from 'recon/actions/data-creators';
 import { packetTotal } from 'recon/reducers/header/selectors';
 

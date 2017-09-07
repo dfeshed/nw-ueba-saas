@@ -1,5 +1,6 @@
+import { combineReducers } from 'redux';
 import recon from 'recon/reducers/index';
 
-export default {
+export default combineReducers({
   ...recon
-};
+});
