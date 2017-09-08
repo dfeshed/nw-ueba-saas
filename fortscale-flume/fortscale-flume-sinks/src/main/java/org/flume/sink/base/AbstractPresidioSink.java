@@ -80,12 +80,6 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         final boolean isControlDoneMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
         if (isControlDoneMessage) {
             logger.debug("Sink {} got a control DONE message.", getName());
-            if (isBatch) {
-                isDone = true;
-            }
-            if (this.getChannel().take() != null) {
-                logger.error("Got a control message DONE while there are still more records to process. This is not a valid state!");
-            }
         }
 
         return isControlDoneMessage;

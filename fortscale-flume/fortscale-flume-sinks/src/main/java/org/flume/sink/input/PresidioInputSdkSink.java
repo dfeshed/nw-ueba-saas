@@ -88,10 +88,8 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 logger.trace("No events to sink...");
                 break;
             }
-            final boolean isControlDoneMessage = isGotControlDoneMessage(flumeEvent);
-            if (isControlDoneMessage) {
-                break;
-            }
+            isDone = isBatch && isGotControlDoneMessage(flumeEvent);
+
 //            sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;
             final String eventBody = new String(flumeEvent.getBody());
@@ -106,6 +104,10 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             eventsToSave.add(parsedEvent);
         }
 
+        if (isDone && this.getChannel().take() != null) {
+            logger.error("Got a control message DONE while there are still more records to process. This is not a valid state!");
+        }
+
         return eventsToSave;
     }
 
@@ -114,7 +116,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         final boolean allSavedSuccessfully = presidioInputPersistencyService.store(schema, records);
         final int size = records.size();
         if (allSavedSuccessfully) {
-            logger.info("{} were saved successfully.", size);
+            logger.info("{} events were saved successfully.", size);
 //            sinkCounter.addToEventDrainSuccessCount(size);
         } else {
             logger.warn("Not all records out of {} total records were saved successfully", size);
