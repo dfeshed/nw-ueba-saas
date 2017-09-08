@@ -16,12 +16,13 @@ import java.util.List;
 public class DataServiceImpl implements DataService {
 
     private static final Logger logger = Logger.getLogger(DataServiceImpl.class);
+    public static final String INVALID_DOCUMENTS_COLLECTION_NAME = "input_invalid_raw_events";
 
     private final DataSourceRepository dataSourceRepository;
-    private final ToCollectionNameTranslator toCollectionNameTranslator;
+    private final ToCollectionNameTranslator<Schema> toCollectionNameTranslator;
     private final ValidationManager validationManager;
 
-    public DataServiceImpl(DataSourceRepository dataSourceRepository, ToCollectionNameTranslator toCollectionNameTranslator, ValidationManager validationManager) {
+    public DataServiceImpl(DataSourceRepository dataSourceRepository, ToCollectionNameTranslator<Schema> toCollectionNameTranslator, ValidationManager validationManager) {
         this.dataSourceRepository = dataSourceRepository;
         this.toCollectionNameTranslator = toCollectionNameTranslator;
         this.validationManager = validationManager;
@@ -30,17 +31,18 @@ public class DataServiceImpl implements DataService {
     @Override
     public boolean store(List<? extends AbstractAuditableDocument> documents, Schema schema) {
         logger.debug("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
-        List<? extends AbstractAuditableDocument> validDocuments = validationManager.validate(documents);
-        dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(schema), validDocuments);
+        final ValidationManager.ValidationResults validationResults = validationManager.validate(documents);
+        dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(schema), validationResults.validDocuments);
+        dataSourceRepository.insertDataSource(INVALID_DOCUMENTS_COLLECTION_NAME, validationResults.invalidDocuments);
         return true;
     }
 
     @Override
-    public List<AbstractAuditableDocument> find(Instant startDate, Instant endDate, Schema schema) {
+    public List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate, Schema schema) {
         logger.debug("Finding dlpfile records between {}:{} and {}:{}.",
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return (List<AbstractAuditableDocument>) dataSourceRepository.getDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
+        return dataSourceRepository.getDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
     }
 
     @Override
