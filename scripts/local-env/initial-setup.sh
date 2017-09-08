@@ -6,7 +6,6 @@
 # NODE_VERSION
 # YARN_VERSION
 # EMBER_CLI_VERSION
-# BOWER_VERSION
 # PHANTOMJS_VERSION
 scriptDir="$(dirname "$0")"
 source $scriptDir/versions
