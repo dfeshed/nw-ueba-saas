@@ -1348,6 +1348,7 @@ export default {
       noData: 'ja_No context data is available for this DataSource.',
       listDuplicateName: 'ja_List name already exists!',
       listValidName: 'ja_Enter valid list name (Max length is 255 characters).',
+      'mongo.error': 'ja_Unexpected database error occurred.',
       'total.entries.exceed.max': 'ja_List size exceeds the limit 100000.',
       'admin.error': 'ja_Admin service is not reachable. Check your service connectivity.',
       'datasource.disk.usage.high': 'ja_Low disk space. Delete unwanted data to free up space.',
