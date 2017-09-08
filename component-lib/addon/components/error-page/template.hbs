@@ -32,9 +32,11 @@
 
   <vbox>
     <hbox class="bottom-links">
-      <box fit {{action "back"}}>
-        <span>{{rsa-icon name="arrow-left-9"}} {{t 'errorPages.back'}}</span>
-      </box>
+      {{#if back}}
+        <box fit {{action "back"}}>
+          <span>{{rsa-icon name="arrow-left-9"}} {{t 'errorPages.back'}}</span>
+        </box>
+      {{/if}}
       <box fit>
         <a href="https://community.rsa.com/docs/DOC-40370" target="_blank">
           <span>{{rsa-icon name="help-circle" style="lined"}} {{t 'errorPages.documentation'}}</span>
