@@ -48,13 +48,9 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
         final String originTimestamp = eventBodyAsJson.get(originField).getAsString();
-        final int timezoneOffset;
-        if (timezoneOffsetField == null) {
-            timezoneOffset = 0;
-        } else {
-            timezoneOffset = eventBodyAsJson.get(timezoneOffsetField).getAsInt();
-        }
 
+//        final int timezoneOffset = eventBodyAsJson.get(timezoneOffsetField).getAsInt();
+        final int timezoneOffset = 0;
         final String newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
         eventBodyAsJson.addProperty(destinationField, newTimestamp);
         if (removeOriginField) {
@@ -66,6 +62,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             logger.trace("Removing timezone offset field {}.", timezoneOffsetField);
             eventBodyAsJson.remove(timezoneOffsetField);
         }
+
 
         event.setBody(eventBodyAsJson.toString().getBytes());
         return event;
@@ -124,7 +121,6 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
         @Override
         public void configure(Context context) {
-
             originField = context.getString(ORIGIN_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(originField), ORIGIN_FIELD_CONF_NAME + " can not be empty.");
 
@@ -132,8 +128,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             Preconditions.checkArgument(StringUtils.isNotEmpty(originFormat), ORIGIN_FORMAT_CONF_NAME + " can not be empty.");
 
             timezoneOffsetField = context.getString(TIMEZONE_OFFSET_FIELD_CONF_NAME, null);
-            logger.info("timezoneOffsetField = " + timezoneOffsetField);
-//            Preconditions.checkArgument(timezoneOffsetField == null || !timezoneOffsetField.equals(""), TIMEZONE_OFFSET_FIELD_CONF_NAME + " can not be empty.");
+            Preconditions.checkArgument(!timezoneOffsetField.equals(""), TIMEZONE_OFFSET_FIELD_CONF_NAME + " can not be empty.");
 
             destinationField = context.getString(DESTINATION_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(destinationField), DESTINATION_FIELD_CONF_NAME + " can not be empty.");
