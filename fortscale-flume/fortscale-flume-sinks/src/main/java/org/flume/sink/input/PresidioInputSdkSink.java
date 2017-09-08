@@ -89,10 +89,12 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 break;
             }
             final boolean gotControlDoneMessage = isControlDoneMessage(flumeEvent);
+            isDone = isBatch && gotControlDoneMessage;
             if (gotControlDoneMessage) {
                 logger.debug("Got control message. Finishing batch and closing.");
+                continue;
             }
-            isDone = isBatch && gotControlDoneMessage;
+
 
 //            sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;
