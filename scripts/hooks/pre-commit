@@ -1,21 +1,21 @@
-# ln -s -f ../../scripts/hooks/pre-commit .git/hooks/pre-commit
+ln -s -f ../../scripts/hooks/pre-commit .git/hooks/pre-commit
 #!/bin/sh
-# files=$(git diff --name-only --no-renames --staged)
-# scriptDir="$(dirname "$0")"
-# isPackageWithNoYarn=$(node $scriptDir/../../scripts/node/package-with-no-yarn-check.js $files)
-# if [[ "$isPackageWithNoYarn" == "true" ]]
-# then
-#  RED="\033[0;31m"
-#  NC="\033[0m"
-#  echo "${RED}\n*** git pre-commit hook fail ***\n"
-#  echo "You are attempting to commit a package.json update without a"
-#  echo "corresponding yarn.lock update. Please address this.\n"
-#  echo "If this is intentional, please re-execute your commit using"
-#  echo "the --no-verify flag to skip this check."
-#  echo "ex: git commit --no-verify -m \"commit message\""
-#  echo "${NC}"
-#  exit 1
-# else
-#  exit 0
-# fi
+files=$(git diff --name-only --no-renames --staged)
+scriptDir="$(dirname "$0")"
+isPackageWithNoYarn=$(node $scriptDir/../../scripts/node/package-with-no-yarn-check.js $files)
+if [[ "$isPackageWithNoYarn" == "true" ]]
+then
+  RED="\033[0;31m"
+  NC="\033[0m"
+  echo "${RED}\n*** git pre-commit hook fail ***\n"
+  echo "You are attempting to commit a package.json update without a"
+  echo "corresponding yarn.lock update. Please address this.\n"
+  echo "If this is intentional, please re-execute your commit using"
+  echo "the --no-verify flag to skip this check."
+  echo "ex: git commit --no-verify -m \"commit message\""
+  echo "${NC}"
+  exit 1
+else
+  exit 0
+fi
 
