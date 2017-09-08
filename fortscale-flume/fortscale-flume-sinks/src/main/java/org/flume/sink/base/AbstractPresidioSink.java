@@ -76,7 +76,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     protected abstract List<T> getEvents() throws Exception;
 
-    protected boolean isGotControlDoneMessage(Event flumeEvent) {
+    protected boolean isControlDoneMessage(Event flumeEvent) {
         final boolean isControlDoneMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));
         if (isControlDoneMessage) {
             logger.debug("Sink {} got a control DONE message.", getName());

@@ -125,7 +125,11 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 logger.trace("No events to sink...");
                 break;
             }
-            isDone = isBatch && isGotControlDoneMessage(flumeEvent);
+            final boolean gotControlDoneMessage = isControlDoneMessage(flumeEvent);
+            if (gotControlDoneMessage) {
+                logger.debug("Got control message. Finishing batch and closing.");
+            }
+            isDone = isBatch && gotControlDoneMessage;
 //
 //            sinkCounter.incrementEventDrainAttemptCount();
 
@@ -138,7 +142,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         }
 
         if (isDone && this.getChannel().take() != null) {
-            logger.error("Got a control message DONE while there are still more records to process. This is not a valid state!");
+            logger.warn("Got a control message DONE while there are still more records to process. This is not a valid state!");
         }
 
         return eventsToSave;
