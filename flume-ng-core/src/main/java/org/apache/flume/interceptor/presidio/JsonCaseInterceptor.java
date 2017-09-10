@@ -26,6 +26,8 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
     private static final String UPPERCASE = "TO_UPPERCASE";
     private static final String LOWERCASE = "TO_LOWERCASE";
 
+    protected static final List<String> SUPPORTED_OPERATIONS = Arrays.asList(UPPERCASE, LOWERCASE);
+
     private final List<String> originFields;
     private final List<String> operation;
 
@@ -43,7 +45,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
 
 
         String currField;
-        String currNamingConvention;
+        String currOperation;
         JsonElement jsonElement;
         for (int i = 0; i < originFields.size(); i++) {
             currField = originFields.get(i);
@@ -51,8 +53,8 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
             if (jsonElement == null) {
                 logger.warn("Can't find value for key: {}", currField);
             } else {
-                currNamingConvention = operation.get(i);
-                switch (currNamingConvention) {
+                currOperation = operation.get(i);
+                switch (currOperation) {
                     case UPPERCASE:
                         eventBodyAsJson.addProperty(currField, jsonElement.getAsString().toUpperCase());
                         break;
@@ -60,7 +62,8 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
                         eventBodyAsJson.addProperty(currField, jsonElement.getAsString().toLowerCase());
                         break;
                     default:
-                        logger.warn("Unsupported naming convention value: {}", currNamingConvention);
+                        logger.warn("Unsupported operation value: {}. Supported values: {}.",
+                                currOperation, SUPPORTED_OPERATIONS);
                         break;
                 }
             }
@@ -77,7 +80,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
     public static class Builder implements Interceptor.Builder {
 
         static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
-        static final String OPERATION_CONF_NAME = "operationList";
+        static final String OPERATIONS_CONF_NAME = "operationsList";
         static final String DELIMITER_CONF_NAME = "delimiter";
 
         private static final String DEFAULT_DELIMITER_VALUE = ",";
@@ -91,7 +94,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
 
             final String[] originFields = getStringArrayFromConfiguration(context, ORIGIN_FIELDS_CONF_NAME, delimiter);
-            final String[] operations = getStringArrayFromConfiguration(context, OPERATION_CONF_NAME, delimiter);
+            final String[] operations = getStringArrayFromConfiguration(context, OPERATIONS_CONF_NAME, delimiter);
 
             Preconditions.checkArgument(originFields.length == operations.length,
                     "originFieldsList length is not equal to operations length. originFieldsList: %s operations: %s",
@@ -110,7 +113,9 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
 
                 currOperation = operations[i];
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currOperation), "currOperation(index=%s) can not be empty. %s=%s.",
-                        i, OPERATION_CONF_NAME, Arrays.toString(operations));
+                        i, OPERATIONS_CONF_NAME, Arrays.toString(operations));
+                Preconditions.checkArgument(JsonCaseInterceptor.SUPPORTED_OPERATIONS.contains(currOperation),
+                        String.format( "Unsupported operation value: %s. Supported values: %s.", currOperation, SUPPORTED_OPERATIONS));
                 this.operations.add(currOperation);
             }
 
@@ -119,7 +124,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
         @Override
         public Interceptor build() {
             logger.info("Creating JsonCaseInterceptor: {}={}, {}={}",
-                    ORIGIN_FIELDS_CONF_NAME, originFields, OPERATION_CONF_NAME, operations);
+                    ORIGIN_FIELDS_CONF_NAME, originFields, OPERATIONS_CONF_NAME, operations);
             return new JsonCaseInterceptor(originFields, operations);
         }
 

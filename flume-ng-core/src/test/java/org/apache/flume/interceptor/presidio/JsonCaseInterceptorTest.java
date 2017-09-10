@@ -30,7 +30,7 @@ public class JsonCaseInterceptorTest {
 
         Context ctx = new Context();
         ctx.put(JsonCaseInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1");
-        ctx.put(JsonCaseInterceptor.Builder.OPERATION_CONF_NAME, "TO_UPPERCASE");
+        ctx.put(JsonCaseInterceptor.Builder.OPERATIONS_CONF_NAME, "TO_UPPERCASE");
         ctx.put(JsonCaseInterceptor.Builder.DELIMITER_CONF_NAME, ",");
 
         builder.configure(ctx);
@@ -54,7 +54,7 @@ public class JsonCaseInterceptorTest {
 
         Context ctx = new Context();
         ctx.put(JsonCaseInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1");
-        ctx.put(JsonCaseInterceptor.Builder.OPERATION_CONF_NAME, "TO_LOWERCASE");
+        ctx.put(JsonCaseInterceptor.Builder.OPERATIONS_CONF_NAME, "TO_LOWERCASE");
         ctx.put(JsonCaseInterceptor.Builder.DELIMITER_CONF_NAME, ",");
 
         builder.configure(ctx);
@@ -79,7 +79,7 @@ public class JsonCaseInterceptorTest {
 
         Context ctx = new Context();
         ctx.put(JsonCaseInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1,orig2");
-        ctx.put(JsonCaseInterceptor.Builder.OPERATION_CONF_NAME, "TO_LOWERCASE,TO_LOWERCASE");
+        ctx.put(JsonCaseInterceptor.Builder.OPERATIONS_CONF_NAME, "TO_LOWERCASE,TO_LOWERCASE");
         ctx.put(JsonCaseInterceptor.Builder.DELIMITER_CONF_NAME, ",");
 
         builder.configure(ctx);
@@ -103,7 +103,7 @@ public class JsonCaseInterceptorTest {
 
         Context ctx = new Context();
         ctx.put(JsonCaseInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "nonexistsfield");
-        ctx.put(JsonCaseInterceptor.Builder.OPERATION_CONF_NAME, "TO_LOWERCASE");
+        ctx.put(JsonCaseInterceptor.Builder.OPERATIONS_CONF_NAME, "TO_LOWERCASE");
         ctx.put(JsonCaseInterceptor.Builder.DELIMITER_CONF_NAME, ",");
 
         builder.configure(ctx);
