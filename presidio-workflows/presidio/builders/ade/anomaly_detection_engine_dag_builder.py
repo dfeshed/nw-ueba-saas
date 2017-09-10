@@ -165,7 +165,7 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
 
     @staticmethod
     def _get_smart_model_sub_dag_operator(fixed_duration_strategy, smart_events_conf, anomaly_detection_engine_dag):
-        smart_model_dag_id = '{}_smart_model'.format(smart_events_conf)
+        smart_model_dag_id = '{}_smart_model_sub_dag'.format(smart_events_conf)
 
         return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(
             SmartModelDagBuilder(fixed_duration_strategy, smart_events_conf), smart_model_dag_id,
