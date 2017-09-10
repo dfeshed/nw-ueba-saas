@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
+import presidio.webapp.model.AlertSeverity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,18 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
+        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
+            alertQueryBuilder.filterByUserId(alertQuery.getUsersId());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getUserName())) {
+            alertQueryBuilder.filterByUserName(alertQuery.getUserName());
+        }
+        if (alertQuery.getPageSize() != null) {
+            alertQueryBuilder.setPageSize(alertQuery.getPageSize());
+        }
+        if (alertQuery.getPageNumber() != null) {
+            alertQueryBuilder.setPageNumber(alertQuery.getPageNumber());
+        }
         if (CollectionUtils.isNotEmpty(alertQuery.getClassification())) {
             alertQueryBuilder.filterByClassification(alertQuery.getClassification());
         }
@@ -70,7 +83,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertQueryBuilder.filterByTags(alertQuery.getTags());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsType())) {
-            alertQueryBuilder.filterByIndicatorNams(alertQuery.getIndicatorsType());
+            alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsType());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
             alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
@@ -128,6 +141,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
+        restAlert.setUserId(alert.getUserId());
+        // TODO: do we need 2 enums?
+        restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         return restAlert;
     }
 }
