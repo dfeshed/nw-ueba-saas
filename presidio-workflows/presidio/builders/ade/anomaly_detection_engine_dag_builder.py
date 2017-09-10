@@ -105,38 +105,39 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         # Iterate all smart configurations and
         # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
         for smart_events_conf in smart_events_confs:
-            # Create the smart events operator for the configuration
-            smart_events_operator = SmartEventsOperator(
-                command=SmartEventsOperator.liors_special_run_command,
-                fixed_duration_strategy=fixed_duration_strategy,
-                smart_events_conf=smart_events_conf,
-                dag=anomaly_detection_engine_dag
-            )
-            task_sensor_service.add_task_sequential_sensor(smart_events_operator)
-            task_sensor_service.add_task_short_circuit(smart_events_operator, smart_short_circuit_operator)
+            if smart_events_conf:
+                # Create the smart events operator for the configuration
+                smart_events_operator = SmartEventsOperator(
+                    command=SmartEventsOperator.liors_special_run_command,
+                    fixed_duration_strategy=fixed_duration_strategy,
+                    smart_events_conf=smart_events_conf,
+                    dag=anomaly_detection_engine_dag
+                )
+                task_sensor_service.add_task_sequential_sensor(smart_events_operator)
+                task_sensor_service.add_task_short_circuit(smart_events_operator, smart_short_circuit_operator)
 
-            # The hourly smart events operator should start after all hourly aggregations subDAG operators are finished
-            for aggregations_sub_dag_operator in aggregations_sub_dag_operator_list:
-                aggregations_sub_dag_operator.set_downstream(smart_events_operator)
+                # The hourly smart events operator should start after all hourly aggregations subDAG operators are finished
+                for aggregations_sub_dag_operator in aggregations_sub_dag_operator_list:
+                    aggregations_sub_dag_operator.set_downstream(smart_events_operator)
 
-            # Create the smart model sub dag for the configuration
-            smart_model_sub_dag_operator = self._get_smart_model_sub_dag_operator(fixed_duration_strategy,
-                                                                                  smart_events_conf,
-                                                                                  anomaly_detection_engine_dag)
-            task_sensor_service.add_task_sequential_sensor(smart_model_sub_dag_operator)
-            smart_model_short_circuit_operator = ShortCircuitOperator(
-                task_id='{}_{}'.format(smart_model_sub_dag_operator.task_id, 'short_circuit'),
-                dag=anomaly_detection_engine_dag,
-                python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
-                                                                         FIX_DURATION_STRATEGY_DAILY,
-                                                                         anomaly_detection_engine_dag.schedule_interval),
-                provide_context=True
-            )
-            task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator, smart_model_short_circuit_operator)
+                # Create the smart model sub dag for the configuration
+                smart_model_sub_dag_operator = self._get_smart_model_sub_dag_operator(fixed_duration_strategy,
+                                                                                      smart_events_conf,
+                                                                                      anomaly_detection_engine_dag)
+                task_sensor_service.add_task_sequential_sensor(smart_model_sub_dag_operator)
+                smart_model_short_circuit_operator = ShortCircuitOperator(
+                    task_id='{}_{}'.format(smart_model_sub_dag_operator.task_id, 'short_circuit'),
+                    dag=anomaly_detection_engine_dag,
+                    python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                             FIX_DURATION_STRATEGY_DAILY,
+                                                                             anomaly_detection_engine_dag.schedule_interval),
+                    provide_context=True
+                )
+                task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator, smart_model_short_circuit_operator)
 
 
-            # The smart event operator should be followed by the smart model sub dag
-            smart_events_operator.set_downstream(smart_model_short_circuit_operator)
+                # The smart event operator should be followed by the smart model sub dag
+                smart_events_operator.set_downstream(smart_model_short_circuit_operator)
 
     @staticmethod
     def _get_aggregations_sub_dag_operator(fixed_duration_strategy, data_source, anomaly_detection_engine_dag):
