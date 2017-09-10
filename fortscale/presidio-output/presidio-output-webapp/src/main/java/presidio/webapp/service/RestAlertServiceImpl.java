@@ -57,25 +57,45 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
-        alertQueryBuilder.filterByClassification(alertQuery.getClassification());
-        alertQueryBuilder.filterByMaxScore(alertQuery.getMaxScore());
-        alertQueryBuilder.filterByMinScore(alertQuery.getMinScore());
-        alertQueryBuilder.filterByTags(alertQuery.getTags());
-        alertQueryBuilder.filterByIndicatorNams(alertQuery.getIndicatorsType());
-        alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
-        alertQueryBuilder.filterByStartDate(Integer.toUnsignedLong(alertQuery.getStartTimeFrom().intValue()));
-        alertQueryBuilder.filterByEndDate(Integer.toUnsignedLong(alertQuery.getStartTimeTo().intValue()));
-        List<String> severity = new ArrayList<>();
-        alertQuery.getSeverity().forEach(severityParam -> {
-            severity.add(severityParam.toString());
-        });
-        alertQueryBuilder.filterBySeverity(severity);
-        List<String> feedback = new ArrayList<>();
-        alertQuery.getSort().forEach(feedbackParam -> {
-            feedback.add(feedbackParam.toString());
-        });
-        alertQueryBuilder.filterByFeedback(feedback);
-        if (!CollectionUtils.isEmpty(alertQuery.getSort())) {
+        if (CollectionUtils.isNotEmpty(alertQuery.getClassification())) {
+            alertQueryBuilder.filterByClassification(alertQuery.getClassification());
+        }
+        if (alertQuery.getMaxScore() != null) {
+            alertQueryBuilder.filterByMaxScore(alertQuery.getMaxScore());
+        }
+        if (alertQuery.getMinScore() != null) {
+            alertQueryBuilder.filterByMinScore(alertQuery.getMinScore());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
+            alertQueryBuilder.filterByTags(alertQuery.getTags());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsType())) {
+            alertQueryBuilder.filterByIndicatorNams(alertQuery.getIndicatorsType());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
+            alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
+        }
+        if (alertQuery.getStartTimeFrom() != null) {
+            alertQueryBuilder.filterByStartDate(Integer.toUnsignedLong(alertQuery.getStartTimeFrom().intValue()));
+        }
+        if (alertQuery.getStartTimeTo() != null) {
+            alertQueryBuilder.filterByEndDate(Integer.toUnsignedLong(alertQuery.getStartTimeTo().intValue()));
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getSeverity())) {
+            List<String> severity = new ArrayList<>();
+            alertQuery.getSeverity().forEach(severityParam -> {
+                severity.add(severityParam.toString());
+            });
+            alertQueryBuilder.filterBySeverity(severity);
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getFeedback())) {
+            List<String> feedback = new ArrayList<>();
+            alertQuery.getSort().forEach(feedbackParam -> {
+                feedback.add(feedbackParam.toString());
+            });
+            alertQueryBuilder.filterByFeedback(feedback);
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getSort())) {
             List<Sort.Order> orders = new ArrayList<>();
             alertQuery.getSort().forEach(s -> {
                 String[] params = s.split(":");

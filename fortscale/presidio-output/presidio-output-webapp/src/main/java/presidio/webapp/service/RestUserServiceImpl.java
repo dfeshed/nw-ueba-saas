@@ -54,7 +54,9 @@ public class RestUserServiceImpl implements RestUserService {
         User convertedUser = new User();
         convertedUser.setId(user.getId());
         convertedUser.setUserDisplayName(user.getUserDisplayName());
-        convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
+        if (user.getUserSeverity() != null) {
+            convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
+        }
         convertedUser.setScore((int) user.getUserScore());
         if (user.getAdmin())
             convertedUser.setTags(new ArrayList<>(Arrays.asList(TAG_ADMIN)));
@@ -70,23 +72,41 @@ public class RestUserServiceImpl implements RestUserService {
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
         presidio.output.domain.records.users.UserQuery.UserQueryBuilder builder = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder();
-        builder.filterByAlertClassifications(userQuery.getClassification());
-        builder.filterByUserName(userQuery.getUserName());
-        builder.maxScore(userQuery.getMaxScore());
-        builder.minScore(userQuery.getMinScore());
-        builder.filterByIndicators(userQuery.getIndicatorsType());
-        builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
-        builder.pageSize(userQuery.getPageSize());
-        builder.pageNumber(userQuery.getPageNumber());
-        builder.filterByUserNameWithPrefix(userQuery.getIsPrefix());
-        if (!CollectionUtils.isEmpty(userQuery.getTags())) {
+        if (CollectionUtils.isNotEmpty(userQuery.getClassification())) {
+            builder.filterByAlertClassifications(userQuery.getClassification());
+        }
+        if (userQuery.getUserName() != null) {
+            builder.filterByUserName(userQuery.getUserName());
+        }
+        if (userQuery.getMaxScore() != null) {
+            builder.maxScore(userQuery.getMaxScore());
+        }
+        if (userQuery.getMinScore() != null) {
+            builder.minScore(userQuery.getMinScore());
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getIndicatorsType())) {
+            builder.filterByIndicators(userQuery.getIndicatorsType());
+        }
+        if (userQuery.getSeverity() != null) {
+            builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
+        }
+        if (userQuery.getPageSize() != null) {
+            builder.pageSize(userQuery.getPageSize());
+        }
+        if (userQuery.getPageNumber() != null) {
+            builder.pageNumber(userQuery.getPageNumber());
+        }
+        if (userQuery.getIsPrefix() != null) {
+            builder.filterByUserNameWithPrefix(userQuery.getIsPrefix());
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getTags())) {
             userQuery.getTags().forEach(tag -> {
                 if (tag.equals(TAG_ADMIN)) {
                     builder.filterByUserAdmin(true);
                 }
             });
         }
-        if (!CollectionUtils.isEmpty(userQuery.getSort())) {
+        if (CollectionUtils.isNotEmpty(userQuery.getSort())) {
             try {
                 List<Sort.Order> orders = new ArrayList<>();
                 userQuery.getSort().forEach(s -> {
