@@ -12,8 +12,8 @@ public class UserQuery {
     private final List<String> filterByIndicators;
     private List<UserSeverity> filterBySeverities;
     private List<String> filterByUsersIds;
-    private int minScore = -1;
-    private int maxScore = -1;
+    private int minScore;
+    private int maxScore;
     private boolean isPrefix;
     private Boolean isAdmin;
     private String filterByUserName;
