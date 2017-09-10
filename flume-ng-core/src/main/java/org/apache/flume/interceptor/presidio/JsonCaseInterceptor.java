@@ -51,7 +51,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
             currField = originFields.get(i);
             jsonElement = eventBodyAsJson.get(currField);
             if (jsonElement == null) {
-                logger.warn("Can't find value for key: {}", currField);
+                logger.warn("Field does not exist: {}", currField);
             } else {
                 currOperation = operation.get(i);
                 switch (currOperation) {
