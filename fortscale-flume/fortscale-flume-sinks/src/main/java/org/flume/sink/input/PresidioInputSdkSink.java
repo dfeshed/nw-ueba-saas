@@ -19,6 +19,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 
@@ -103,7 +104,8 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 final Class<T> recordType = this.recordType;
                 parsedEvent = mapper.readValue(eventBody, recordType);
             } catch (Exception e) {
-                final String errorMessage = String.format("Failed to sink event. event is not of correct type. expected type:%s, actual event body:%s.", recordType, eventBody);
+                final Map<String, String> eventHeaders = flumeEvent.getHeaders();
+                final String errorMessage = String.format("Failed to sink event. event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);
                 throw new Exception(errorMessage, e);
             }
