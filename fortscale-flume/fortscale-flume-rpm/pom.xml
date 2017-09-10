@@ -79,7 +79,7 @@
                     <postremoveScriptlet>
                         <script>
                             <!-- post remove commands -->
-                            rm -v -rf ${flume_home_directory}
+                            
                         </script>
                     </postremoveScriptlet>
                 </configuration>
