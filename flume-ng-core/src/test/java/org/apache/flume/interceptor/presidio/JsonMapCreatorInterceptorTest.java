@@ -30,6 +30,7 @@ public class JsonMapCreatorInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_JOIN_CONF_NAME, "name,ip");
         ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
 
         builder.configure(ctx);
 
