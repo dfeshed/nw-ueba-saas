@@ -104,7 +104,7 @@ public class RestUserServiceImpl implements RestUserService {
         return builder.build();
     }
 
-    private List<UserSeverity> convertSeverities(List<UserQuery.SeverityEnum> severityEnumList) {
+    private List<UserSeverity> convertSeverities(List<presidio.webapp.model.UserSeverity> severityEnumList) {
         List<UserSeverity> userSeverity = new ArrayList<>();
         severityEnumList.forEach(severity -> {
             userSeverity.add(UserSeverity.valueOf(severity.toString()));
@@ -112,8 +112,8 @@ public class RestUserServiceImpl implements RestUserService {
         return userSeverity;
     }
 
-    private User.UserSeverityEnum convertUserSeverity(UserSeverity userSeverity) {
-        return User.UserSeverityEnum.valueOf(userSeverity.name());
+    private presidio.webapp.model.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
+        return presidio.webapp.model.UserSeverity.valueOf(userSeverity.name());
     }
 
 
