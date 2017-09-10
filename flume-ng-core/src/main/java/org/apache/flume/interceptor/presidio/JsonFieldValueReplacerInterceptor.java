@@ -113,7 +113,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
     /**
      * Builder which builds new instance of the JsonFieldValueReplacerInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String REPLACEMENTS_CONF_NAME = "replacements";
         static final String REMOVE_ESCAPE_CHARS = "remove_escape_chars";

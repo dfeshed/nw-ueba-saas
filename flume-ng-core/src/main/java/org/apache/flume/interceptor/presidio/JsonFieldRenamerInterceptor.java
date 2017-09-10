@@ -63,7 +63,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
     /**
      * Builder which builds new instance of the JsonFilterInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
         static final String DESTINATION_FIELDS_CONF_NAME = "destinationFieldsList";
@@ -117,12 +117,5 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
             return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields);
         }
 
-        private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
-            String arrayAsString = context.getString(key, "");
-            Preconditions.checkArgument(StringUtils.isNotEmpty(arrayAsString),
-                    key + " can not be empty.");
-
-            return arrayAsString.split(delimiter);
-        }
     }
 }

@@ -46,6 +46,6 @@ public class JsonTimestampWithOffsetFormatterInterceptorTest {
         Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
 
 
-        Assert.assertEquals("{\"destTime\":\"2017-07-25T04:34:35\"}", interceptValue);
+        Assert.assertEquals("{\"destTime\":\"2017-07-25T05:34:35\"}", interceptValue);
     }
 }

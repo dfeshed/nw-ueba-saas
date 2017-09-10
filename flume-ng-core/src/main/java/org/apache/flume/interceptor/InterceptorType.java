@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,30 +22,31 @@ import org.apache.flume.interceptor.presidio.*;
 
 public enum InterceptorType {
 
-  TIMESTAMP(org.apache.flume.interceptor.TimestampInterceptor.Builder.class),
-  HOST(org.apache.flume.interceptor.HostInterceptor.Builder.class),
-  STATIC(org.apache.flume.interceptor.StaticInterceptor.Builder.class),
-  REGEX_FILTER(
-      org.apache.flume.interceptor.RegexFilteringInterceptor.Builder.class),
-  REGEX_EXTRACTOR(org.apache.flume.interceptor.RegexExtractorInterceptor.Builder.class),
-  SEARCH_REPLACE(org.apache.flume.interceptor.SearchAndReplaceInterceptor.Builder.class),
-  JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
-  JSON_FILTER(JsonFilterInterceptor.Builder.class),
-  JSON_FIELD_JOINER(JsonFieldJoinerInterceptor.Builder.class),
-  JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class),
-  JSON_MAP_CREATOR(JsonMapCreatorInterceptor.Builder.class),
-  JSON_REGEX_PREDICATOR(JsonRegexPredicatorInterceptor.Builder.class),
-  JSON_CASE(JsonCaseInterceptor.Builder.class),
-  JSON_TIMESTAMP_WITH_OFFSET(JsonTimestampWithOffsetFormatterInterceptor.Builder.class);
+    TIMESTAMP(org.apache.flume.interceptor.TimestampInterceptor.Builder.class),
+    HOST(org.apache.flume.interceptor.HostInterceptor.Builder.class),
+    STATIC(org.apache.flume.interceptor.StaticInterceptor.Builder.class),
+    REGEX_FILTER(
+            org.apache.flume.interceptor.RegexFilteringInterceptor.Builder.class),
+    REGEX_EXTRACTOR(org.apache.flume.interceptor.RegexExtractorInterceptor.Builder.class),
+    SEARCH_REPLACE(org.apache.flume.interceptor.SearchAndReplaceInterceptor.Builder.class),
+    JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
+    JSON_FILTER(JsonFilterInterceptor.Builder.class),
+    JSON_FIELD_JOINER(JsonFieldJoinerInterceptor.Builder.class),
+    JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class),
+    JSON_MAP_CREATOR(JsonMapCreatorInterceptor.Builder.class),
+    JSON_REGEX_PREDICATOR(JsonRegexPredicatorInterceptor.Builder.class),
+    JSON_CASE(JsonCaseInterceptor.Builder.class),
+    JSON_TIMESTAMP_WITH_OFFSET(JsonTimestampWithOffsetFormatterInterceptor.Builder.class),
+    JSON_SEARCH_AND_REPLACE(JsonSearchAndReplaceInterceptor.Builder.class);
 
-  private final Class<? extends Interceptor.Builder> builderClass;
+    private final Class<? extends Interceptor.Builder> builderClass;
 
-  private InterceptorType(Class<? extends Interceptor.Builder> builderClass) {
-    this.builderClass = builderClass;
-  }
+    private InterceptorType(Class<? extends Interceptor.Builder> builderClass) {
+        this.builderClass = builderClass;
+    }
 
-  public Class<? extends Interceptor.Builder> getBuilderClass() {
-    return builderClass;
-  }
+    public Class<? extends Interceptor.Builder> getBuilderClass() {
+        return builderClass;
+    }
 
 }

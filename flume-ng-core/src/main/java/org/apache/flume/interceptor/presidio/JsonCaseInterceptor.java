@@ -77,7 +77,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
     /**
      * Builder which builds new instance of the JsonFilterInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
         static final String OPERATIONS_CONF_NAME = "operationsList";
@@ -115,7 +115,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currOperation), "currOperation(index=%s) can not be empty. %s=%s.",
                         i, OPERATIONS_CONF_NAME, Arrays.toString(operations));
                 Preconditions.checkArgument(JsonCaseInterceptor.SUPPORTED_OPERATIONS.contains(currOperation),
-                        String.format( "Unsupported operation value: %s. Supported values: %s.", currOperation, SUPPORTED_OPERATIONS));
+                        String.format("Unsupported operation value: %s. Supported values: %s.", currOperation, SUPPORTED_OPERATIONS));
                 this.operations.add(currOperation);
             }
 
@@ -128,12 +128,5 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
             return new JsonCaseInterceptor(originFields, operations);
         }
 
-        private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
-            String arrayAsString = context.getString(key, "");
-            Preconditions.checkArgument(StringUtils.isNotEmpty(arrayAsString),
-                    key + " can not be empty.");
-
-            return arrayAsString.split(delimiter);
-        }
     }
 }
