@@ -11,6 +11,7 @@ import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.model.Patch;
 import presidio.webapp.model.User;
 import presidio.webapp.model.UsersWrapper;
+import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestUserService;
 
