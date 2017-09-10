@@ -53,7 +53,7 @@ public class JsonFilterInterceptor extends AbstractInterceptor {
     /**
      * Builder which builds new instance of the JsonFilterInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String FIELDS_TO_FILTER_CONF_NAME = "fields_to_filter";
         static final String DELIMITER_CONF_NAME = "delimiter";

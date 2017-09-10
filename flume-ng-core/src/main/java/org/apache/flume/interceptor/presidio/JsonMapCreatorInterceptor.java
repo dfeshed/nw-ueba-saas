@@ -14,14 +14,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.*;
+import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME;
+import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.FIELDS_TO_JOIN_CONF_NAME;
+import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME;
 
 /**
  * This interceptor is used to join fields from the received JSON into a new object (map)
  * Returns the same JSON with a new map containing the values.
- * 
  */
-public class JsonMapCreatorInterceptor extends AbstractInterceptor{
+public class JsonMapCreatorInterceptor extends AbstractInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonMapCreatorInterceptor.class);
 
@@ -49,13 +50,12 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
                     logger.trace("Removing origin field {}.", fieldToPut);
                     eventBodyAsJson.remove(fieldToPut);
                 }
-            }
-            else {
+            } else {
                 logger.warn("The event does not contain field {}.", fieldToPut);
             }
         }
 
-        if (mapToAdd.entrySet().size() > 0){
+        if (mapToAdd.entrySet().size() > 0) {
             eventBodyAsJson.add(mapKeyName, mapToAdd);
         }
 
@@ -75,7 +75,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
     /**
      * Builder which builds new instance of the JsonMapCreatorInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String FIELDS_TO_JOIN_CONF_NAME = "fieldsToPut";
         static final String MAP_KEY_NAME_CONF_NAME = "mapKeyName";
@@ -90,7 +90,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor{
         @Override
         public void configure(Context context) {
             String fieldsToJoinArrayAsString = context.getString(FIELDS_TO_JOIN_CONF_NAME);
-            Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToJoinArrayAsString), FIELDS_TO_JOIN_CONF_NAME+ " can not be empty.");
+            Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToJoinArrayAsString), FIELDS_TO_JOIN_CONF_NAME + " can not be empty.");
 
             mapKey = context.getString(MAP_KEY_NAME_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(mapKey), MAP_KEY_NAME_CONF_NAME + " can not be empty.");

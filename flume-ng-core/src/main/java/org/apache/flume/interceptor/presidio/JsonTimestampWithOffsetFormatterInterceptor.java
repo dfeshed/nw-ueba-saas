@@ -101,7 +101,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
     /**
      * Builder which builds new instance of the JsonTimestampWithOffsetFormatterInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String ORIGIN_FIELD_CONF_NAME = "originField";
         static final String ORIGIN_FORMAT_CONF_NAME = "originFormat";

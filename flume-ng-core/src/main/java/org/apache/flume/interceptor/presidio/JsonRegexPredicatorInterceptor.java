@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 /**
  * This interceptor is used to indicate whether a field's value matches a regex.
  * Returns the same JSON with additional predicate.
- *
  */
 public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(JsonRegexPredicatorInterceptor.class);
@@ -60,7 +59,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
                 // This workaround will return the correct value. 
                 fieldValue = eventBodyAsJson.get(currValueField).getAsJsonPrimitive().toString();
                 fieldValue = fieldValue.substring(1, fieldValue.length() - 1);
-                
+
                 pattern = Pattern.compile(currRegexField);
                 matcher = pattern.matcher(fieldValue);
                 eventBodyAsJson.addProperty(currPredicatorField, matcher.matches());
@@ -81,7 +80,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
     /**
      * Builder which builds new instance of the JsonRegexPredicatorInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String VALUE_FIELDS_CONF_NAME = "valueFieldsList";
         static final String PREDICATOR_FIELDS_CONF_NAME = "predicatorFieldsList";
@@ -131,12 +130,12 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
 
                 currPredicatorFilter = predicatorFields[i];
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currPredicatorFilter), "%s(index=%s) can not be empty. %s=%s.",
-                        PREDICATOR_FIELDS_CONF_NAME,i, PREDICATOR_FIELDS_CONF_NAME, Arrays.toString(predicatorFields));
+                        PREDICATOR_FIELDS_CONF_NAME, i, PREDICATOR_FIELDS_CONF_NAME, Arrays.toString(predicatorFields));
                 this.predicatorFields.add(currPredicatorFilter);
 
                 currRegexFilter = regexFields[i];
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currRegexFilter), "%s(index=%s) can not be empty. %s=%s.",
-                        REGEX_CONF_NAME,i, REGEX_CONF_NAME, Arrays.toString(regexFields));
+                        REGEX_CONF_NAME, i, REGEX_CONF_NAME, Arrays.toString(regexFields));
                 this.regexList.add(currRegexFilter);
             }
 
@@ -149,13 +148,6 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
                     REGEX_CONF_NAME, regexList);
             return new JsonRegexPredicatorInterceptor(valueFields, predicatorFields, regexList, deleteFields);
         }
-
-        private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
-            String arrayAsString = context.getString(key, "");
-            Preconditions.checkArgument(StringUtils.isNotEmpty(arrayAsString),
-                    key + " can not be empty.");
-
-            return arrayAsString.split(delimiter);
-        }
+        
     }
 }

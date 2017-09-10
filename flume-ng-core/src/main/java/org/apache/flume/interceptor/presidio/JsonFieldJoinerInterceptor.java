@@ -96,11 +96,10 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
     }
 
 
-
     /**
      * Builder which builds new instance of the JsonFieldAppenderInterceptor.
      */
-    public static class Builder implements Interceptor.Builder {
+    public static class Builder extends AbstractPresidioInterceptorBuilder {
 
         static final String BASE_FIELD_CONF_NAME = "base_field";
         static final String TO_APPEND_FIELD_CONF_NAME = "to_append_field";
