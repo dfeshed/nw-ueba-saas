@@ -23,15 +23,15 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonCaseInterceptor.class);
-    private static final String UPPERCASE = "UPPERCASE";
-    private static final String LOWERCASE = "LOWERCASE";
+    private static final String UPPERCASE = "TO_UPPERCASE";
+    private static final String LOWERCASE = "TO_LOWERCASE";
 
     private final List<String> originFields;
-    private final List<String> namingConvention;
+    private final List<String> operation;
 
-    JsonCaseInterceptor(List<String> originFields, List<String> namingConvetion) {
+    JsonCaseInterceptor(List<String> originFields, List<String> operation) {
         this.originFields = originFields;
-        this.namingConvention = namingConvetion;
+        this.operation = operation;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
             if (jsonElement == null) {
                 logger.warn("Can't find value for key: {}", currField);
             } else {
-                currNamingConvention = namingConvention.get(i);
+                currNamingConvention = operation.get(i);
                 switch (currNamingConvention) {
                     case UPPERCASE:
                         eventBodyAsJson.addProperty(currField, jsonElement.getAsString().toUpperCase());
@@ -77,13 +77,13 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
     public static class Builder implements Interceptor.Builder {
 
         static final String ORIGIN_FIELDS_CONF_NAME = "originFieldsList";
-        static final String NAMING_CONVENTION = "namingConventionList";
+        static final String OPERATION_CONF_NAME = "operationList";
         static final String DELIMITER_CONF_NAME = "delimiter";
 
         private static final String DEFAULT_DELIMITER_VALUE = ",";
 
         private List<String> originFields;
-        private List<String> namingConvention;
+        private List<String> operations;
 
 
         @Override
@@ -91,27 +91,27 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
 
             final String[] originFields = getStringArrayFromConfiguration(context, ORIGIN_FIELDS_CONF_NAME, delimiter);
-            final String[] namingConvention = getStringArrayFromConfiguration(context, NAMING_CONVENTION, delimiter);
+            final String[] operations = getStringArrayFromConfiguration(context, OPERATION_CONF_NAME, delimiter);
 
-            Preconditions.checkArgument(originFields.length == namingConvention.length,
-                    "originFieldsList length is not equals destinationFieldsList length. originFieldsList: %s destinationFieldsList: %s",
-                    originFields, namingConvention);
+            Preconditions.checkArgument(originFields.length == operations.length,
+                    "originFieldsList length is not equal to operations length. originFieldsList: %s operations: %s",
+                    originFields, operations);
 
 
             String currOriginFilter;
-            String currDestinationFilter;
+            String currOperation;
             this.originFields = new ArrayList<>();
-            this.namingConvention = new ArrayList<>();
+            this.operations = new ArrayList<>();
             for (int i = 0; i < originFields.length; i++) {
                 currOriginFilter = originFields[i];
                 Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginFilter), "originFieldsList(index=%s) can not be empty. %s=%s.",
                         i, ORIGIN_FIELDS_CONF_NAME, Arrays.toString(originFields));
                 this.originFields.add(currOriginFilter);
 
-                currDestinationFilter = namingConvention[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currDestinationFilter), "currDestinationFilter(index=%s) can not be empty. %s=%s.",
-                        i, NAMING_CONVENTION, Arrays.toString(namingConvention));
-                this.namingConvention.add(currDestinationFilter);
+                currOperation = operations[i];
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currOperation), "currOperation(index=%s) can not be empty. %s=%s.",
+                        i, OPERATION_CONF_NAME, Arrays.toString(operations));
+                this.operations.add(currOperation);
             }
 
         }
@@ -119,8 +119,8 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
         @Override
         public Interceptor build() {
             logger.info("Creating JsonCaseInterceptor: {}={}, {}={}",
-                    ORIGIN_FIELDS_CONF_NAME, originFields, NAMING_CONVENTION, namingConvention);
-            return new JsonCaseInterceptor(originFields, namingConvention);
+                    ORIGIN_FIELDS_CONF_NAME, originFields, OPERATION_CONF_NAME, operations);
+            return new JsonCaseInterceptor(originFields, operations);
         }
 
         private String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
