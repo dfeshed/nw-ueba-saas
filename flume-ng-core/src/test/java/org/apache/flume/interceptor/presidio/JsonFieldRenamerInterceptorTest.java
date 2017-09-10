@@ -9,6 +9,7 @@ import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by tomerd on 8/8/2017.
@@ -24,7 +25,7 @@ public class JsonFieldRenamerInterceptorTest {
     }
 
 
-    //@Test
+    @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
@@ -48,7 +49,7 @@ public class JsonFieldRenamerInterceptorTest {
         Assert.assertEquals("{\"dest1\":\"value\"}", interceptValue);
     }
 
-    //@Test
+    @Test
     public void interceptDoubleKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
@@ -71,7 +72,7 @@ public class JsonFieldRenamerInterceptorTest {
         Assert.assertEquals("{\"orig3\":\"value3\",\"dest1\":\"value1\",\"dest2\":\"value2\"}", interceptValue);
     }
 
-    //@Test
+    @Test
     public void interceptNotJsonKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
