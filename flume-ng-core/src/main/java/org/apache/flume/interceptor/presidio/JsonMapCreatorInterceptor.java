@@ -45,7 +45,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
 
         for (String fieldToPut : fieldsToPut) {
             if (eventBodyAsJson.has(fieldToPut)) {
-                mapToAdd.addProperty(fieldToPut, eventBodyAsJson.get(fieldToPut).toString());
+                mapToAdd.addProperty(fieldToPut, eventBodyAsJson.get(fieldToPut).getAsString());
                 if (deleteFields) {
                     logger.trace("Removing origin field {}.", fieldToPut);
                     eventBodyAsJson.remove(fieldToPut);

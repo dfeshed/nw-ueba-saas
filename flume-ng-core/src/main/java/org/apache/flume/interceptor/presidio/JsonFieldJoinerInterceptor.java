@@ -59,7 +59,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
                 logger.debug("Base field: '{}' doesn't exist. Appending empty String", this.toAppendField);
             }
         } else {
-            baseValue = baseFieldValue.toString();
+            baseValue = baseFieldValue.getAsString();
         }
 
         if (toAppendFieldValue == null || toAppendFieldValue.toString().equals("null")) {
@@ -70,7 +70,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
                 logger.debug("To append field: '{}' doesn't exist. Appending empty String", this.toAppendField);
             }
         } else {
-            toAppendValue = toAppendFieldValue.toString();
+            toAppendValue = toAppendFieldValue.getAsString();
         }
 
         final String result = baseValue + toAppendValue;

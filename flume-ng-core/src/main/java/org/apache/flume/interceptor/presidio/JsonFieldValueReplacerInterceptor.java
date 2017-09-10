@@ -60,7 +60,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
             }
             final JsonElement realValueForField = eventBodyAsJson.get(currField);
             if (realValueForField != null) {
-                final String realValueAsString = realValueForField.toString();
+                final String realValueAsString = realValueForField.getAsString();
                 if (Pattern.compile(currValueToReplaceRegexValue).matcher(realValueAsString).matches()) {
                     eventBodyAsJson.addProperty(currField, currNewValue);
                     logger.trace("Field {} was replaced from {} to {}.", currField, currValueToReplaceRegexValue, currNewValue);
