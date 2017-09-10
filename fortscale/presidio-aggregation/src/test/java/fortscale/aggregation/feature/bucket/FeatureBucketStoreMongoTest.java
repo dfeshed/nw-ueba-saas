@@ -2,7 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import fortscale.utils.mongodb.util.MongoDbUtilService;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,20 +20,21 @@ import java.util.stream.Collectors;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.*;
 
 public class FeatureBucketStoreMongoTest {
 	private static final long DEFAULT_EXPIRE_AFTER_SECONDS = TimeUnit.DAYS.toSeconds(90);
 
 	private MongoTemplate mongoTemplate;
-	private MongoDbUtilService mongoDbUtilService;
+	private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 	private FeatureBucketStoreMongoImpl store;
 
 	@Before
 	public void before() {
 		mongoTemplate = mock(MongoTemplate.class);
-		mongoDbUtilService = mock(MongoDbUtilService.class);
-		store = new FeatureBucketStoreMongoImpl(mongoTemplate, mongoDbUtilService, DEFAULT_EXPIRE_AFTER_SECONDS);
+		mongoDbBulkOpUtil = mock(MongoDbBulkOpUtil.class);
+		store = new FeatureBucketStoreMongoImpl(mongoTemplate, mongoDbBulkOpUtil);
 	}
 
 	@Test
@@ -50,7 +51,7 @@ public class FeatureBucketStoreMongoTest {
 		verify(featureBucketConf, times(1)).getName();
 		verify(mongoTemplate, times(1)).getCollection(anyString());
 		verify(dbCollection, times(1)).distinct(eq(FeatureBucket.CONTEXT_ID_FIELD), any(DBObject.class));
-		verifyNoMoreInteractions(mongoTemplate, mongoDbUtilService, featureBucketConf, dbCollection);
+		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf, dbCollection);
 	}
 
 	@Test
@@ -63,21 +64,19 @@ public class FeatureBucketStoreMongoTest {
 
 		Assert.assertEquals(expected, actual);
 		verify(mongoTemplate, times(1)).find(any(Query.class), eq(FeatureBucket.class), anyString());
-		verifyNoMoreInteractions(mongoTemplate, mongoDbUtilService);
+		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil);
 	}
 
 	@Test
 	public void test_store_feature_bucket() {
 		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
 		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
-		when(mongoDbUtilService.collectionExists(anyString())).thenReturn(true);
 		FeatureBucket featureBucket = new FeatureBucket();
 		store.storeFeatureBucket(featureBucketConf, featureBucket);
 
 		verify(featureBucketConf, times(1)).getName();
-		verify(mongoDbUtilService, times(1)).collectionExists(anyString());
-		verify(mongoTemplate, times(1)).save(eq(featureBucket), anyString());
-		verifyNoMoreInteractions(mongoTemplate, mongoDbUtilService, featureBucketConf);
+		verify(mongoDbBulkOpUtil, times(1)).insertUnordered(anyList(),anyString());
+		verifyNoMoreInteractions(mongoTemplate, mongoDbBulkOpUtil, featureBucketConf);
 	}
 
 	private static List<String> getListOfContextIds() {

@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.common.feature.Feature;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
 
 import java.time.Instant;
 import java.util.Date;
@@ -14,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE,isGetterVisibility = Visibility.NONE, setterVisibility=Visibility.NONE)
-public class FeatureBucket {
+@Document
+@CompoundIndexes({@CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}")})public class FeatureBucket {
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
 	public static final String FEATURE_BUCKET_CONF_NAME_FIELD = "featureBucketConfName";
@@ -29,6 +33,7 @@ public class FeatureBucket {
 	private String id;
 
 	@Field(START_TIME_FIELD)
+	@Indexed
 	private Instant startTime;
 	@Field(END_TIME_FIELD)
 	private Instant endTime;
@@ -43,6 +48,7 @@ public class FeatureBucket {
 	@Field(CONTEXT_ID_FIELD)
 	private String contextId;
 	@Field(BUCKET_ID_FIELD)
+	@Indexed(unique = true)
 	private String bucketId;
 	@Field(CREATED_AT_FIELD)
 	private Date createdAt;
