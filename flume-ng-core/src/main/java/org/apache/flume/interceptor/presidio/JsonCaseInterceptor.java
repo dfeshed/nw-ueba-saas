@@ -56,10 +56,10 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
                 currOperation = operation.get(i);
                 switch (currOperation) {
                     case UPPERCASE:
-                        eventBodyAsJson.addProperty(currField, jsonElement.getAsString().toUpperCase());
+                        eventBodyAsJson.addProperty(currField, jsonElement.toString().toUpperCase());
                         break;
                     case LOWERCASE:
-                        eventBodyAsJson.addProperty(currField, jsonElement.getAsString().toLowerCase());
+                        eventBodyAsJson.addProperty(currField, jsonElement.toString().toLowerCase());
                         break;
                     default:
                         logger.warn("Unsupported operation value: {}. Supported values: {}.",

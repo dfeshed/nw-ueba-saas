@@ -47,7 +47,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
-        final String originTimestamp = eventBodyAsJson.get(originField).getAsString();
+        final String originTimestamp = eventBodyAsJson.get(originField).toString();
 
 //        final int timezoneOffset = eventBodyAsJson.get(timezoneOffsetField).getAsInt();
         final int timezoneOffset = 0;
