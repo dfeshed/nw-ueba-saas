@@ -1,10 +1,11 @@
 import logging
 import os
+import time
+import datetime
 from airflow.operators.sensors import BaseSensorOperator
 from presidio.utils.connector.properties_loader import load_and_get_property
 
-HOUR_IS_READY_MARKER = "READY"
-HOUR_IS_READY_DELIM = "_"
+LATEST_READY_HOUR_MARKER = "LATEST_READY_HOUR"
 
 
 class HourIsReadySensorOperator(BaseSensorOperator):
@@ -39,7 +40,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             logging.info(
                 'Poking for the following: '
                 'schema_name = {self._schema_name}, '
-                'time = hour_start_time-{self._hour_end_time}.'.format(**locals()))
+                'time = self._hour_end_time-{self._hour_end_time}.'.format(**locals()))
             presidio_home = os.environ.get("PRESIDIO_HOME")
             if presidio_home is None:
                 user = os.environ.get("USER")
@@ -56,24 +57,32 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 logging.debug("No count file for sink in path {0}".format(sink_properties_file))
                 return False
 
-            source_counter_property = self.get_counter_property(source_properties_file)
-            if source_counter_property is None:
-                return False
-            if HOUR_IS_READY_DELIM in source_counter_property:
-                source_is_ready = source_counter_property.split(HOUR_IS_READY_DELIM)[0] == HOUR_IS_READY_MARKER
-                source_count = source_counter_property.split(HOUR_IS_READY_DELIM)[1]
-            else:
-                source_is_ready = False
-                source_count = source_counter_property
+            source_count = self.get_counter_property(self._hour_end_time, source_properties_file)
+            if source_count is None:
+                source_count = 0
+            latest_ready_hour = self.get_counter_property(LATEST_READY_HOUR_MARKER, source_properties_file)
+            if latest_ready_hour is None:
+                raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
-            sink_count = self.get_counter_property(sink_properties_file)
+            logging.info("latest_ready_hour = " + latest_ready_hour)
+            logging.info("source_count = " + str(source_count))
+
+
+            #Convert the datetimes to epoch representation -    # 2017-06-27T19\:00\:00Z - 1498579200.0
+            end_time_seconds = time.mktime(datetime.datetime.strptime(self._hour_end_time.replace("\\", ""),
+                                                                      "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            latest_ready_hour_seconds = time.mktime(datetime.datetime.strptime(latest_ready_hour.replace("\\", ""),
+                                                                               "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            source_is_ready = end_time_seconds <= latest_ready_hour_seconds
+
+            sink_count = self.get_counter_property(self._hour_end_time, sink_properties_file)
             if sink_count is None:
-                return False
+                sink_count = 0
 
             logging.debug("Source count for schema {0} and time {1} is : {2}".format(
                 self._schema_name,
                 self._hour_end_time,
-                source_counter_property))
+                source_count))
             logging.debug("Sink count for schema {0} and time {1} is : {2}".format(
                 self._schema_name,
                 self._hour_end_time,
@@ -82,17 +91,20 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             if sink_count > source_count:
                 logging.warn("Sink count is larger than the source count. This is an invalid state!. "
                              "source count: {0}, "
-                             "sink count: {1}".format(source_counter_property, sink_count))
+                             "sink count: {1}".format(source_count, sink_count))
 
             hour_is_ready = source_is_ready and source_count <= sink_count
+            # if hour_is_ready:
+            #     self.remove_counter_property(self._hour_end_time, source_properties_file)
+            #     self.remove_counter_property(self._hour_end_time, sink_properties_file)
             if hour_is_ready:
-                self.remove_counter_property(source_properties_file)
-                self.remove_counter_property(sink_properties_file)
+                logging.info("Hour {0} is ready!".format(self._hour_end_time))
             return hour_is_ready
         except Exception as exception:
             logging.error("HourIsReadySensorOperator for schema: {0} and hour_end_time: {1} "
                           "has Failed.".format(self._schema_name, self._hour_end_time), exc_info=True)
             return False
 
-    def get_counter_property(self, properties_file):
-        return load_and_get_property(self._hour_end_time, properties_file)
+    @staticmethod
+    def get_counter_property(property_to_get, properties_file):
+        return load_and_get_property(property_to_get, properties_file)

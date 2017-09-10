@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.users.User;
@@ -22,7 +23,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @Ignore
@@ -98,7 +101,7 @@ public class UserPersistencyServiceTest {
         indicators.add("indicator");
         return new User(userId, userName, displayName, score, classifications, indicators, false);
     }
-    
+
 
     @Test
     public void testFindOne() {
@@ -130,7 +133,7 @@ public class UserPersistencyServiceTest {
     }
 
     @Test
-    public void testFindByQueryFilterByIndicatorsAndClassifications() {
+    public void testFindByQueryFilterByClassificationsAndSortByScoreAscending() {
         List<String> indicators = new ArrayList<String>();
 
         user3.setIndicators(indicators);
@@ -153,21 +156,21 @@ public class UserPersistencyServiceTest {
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
-                        .sortField(User.SCORE_FIELD_NAME, false)
+                        .sortField(new Sort(new Sort.Order(User.SCORE_FIELD_NAME)))
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 70d);
+        assertTrue(foundUsers.iterator().next().getUserScore() == 50d);
     }
 
     @Test
-    public void testFindByListOfIds(){
+    public void testFindByListOfIds() {
 
-        User user1 = new User("userId1", "userName", "displayName", 0d, null, null,false);
-        User user2 = new User("userId2", "userName", "displayName", 0d, null, null,false);
-        User user3 = new User("userId3", "userName", "displayName", 0d, null, null,false);
-        User user4 = new User("userId4", "userName", "displayName", 0d, null, null,false);
+        User user1 = new User("userId1", "userName", "displayName", 0d, null, null, false);
+        User user2 = new User("userId2", "userName", "displayName", 0d, null, null, false);
+        User user3 = new User("userId3", "userName", "displayName", 0d, null, null, false);
+        User user4 = new User("userId4", "userName", "displayName", 0d, null, null, false);
 
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -182,42 +185,15 @@ public class UserPersistencyServiceTest {
 
         UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByUsersIds(userIds);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
-        Assert.assertEquals(2,usersPageResult.getContent().size());
-        Assert.assertEquals(user1.getUserId(),usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals(user2.getUserId(),usersPageResult.getContent().get(1).getUserId());
+        Assert.assertEquals(2, usersPageResult.getContent().size());
     }
 
     @Test
-    public void testFindByListOfExculdedIds(){
-        User user1 = new User("userId1", "userName", "displayName", 0d, null, null,false);
-        User user2 = new User("userId2", "userName", "displayName", 0d, null, null,false);
-        User user3 = new User("userId3", "userName", "displayName", 0d, null, null,false);
-        User user4 = new User("userId4", "userName", "displayName", 0d, null, null,false);
-
-        List<User> userList = new ArrayList<>();
-        userList.add(user1);
-        userList.add(user2);
-        userList.add(user3);
-        userList.add(user4);
-        Iterable<User> createdUsers = userPersistencyService.save(userList);
-        List<String> excludedUserIds = new ArrayList<>();
-        excludedUserIds.add(user1.getUserId());
-        excludedUserIds.add(user2.getUserId());
-        excludedUserIds.add("userId5");
-
-        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByNotHaveAnyOfUserIds(excludedUserIds);
-        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
-        Assert.assertEquals(2,usersPageResult.getContent().size());
-        Assert.assertEquals(user3.getUserId(),usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals(user4.getUserId(),usersPageResult.getContent().get(1).getUserId());
-    }
-
-    @Test
-    public void testFindByUserScore(){
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, null,false);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, null,false);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, null,false);
-        User user4 = new User("userId4", "userName", "displayName", 21d, null, null,false);
+    public void testFindByUserScore() {
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, false);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, false);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, false);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, false);
 
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -229,9 +205,7 @@ public class UserPersistencyServiceTest {
 
         UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).minScore(10).maxScore(20);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
-        Assert.assertEquals(2,usersPageResult.getContent().size());
-        Assert.assertEquals(user2.getUserId(),usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals(user3.getUserId(),usersPageResult.getContent().get(1).getUserId());
+        Assert.assertEquals(2, usersPageResult.getContent().size());
     }
 
     @Test

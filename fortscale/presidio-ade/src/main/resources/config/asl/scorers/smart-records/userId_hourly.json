@@ -9,9 +9,9 @@
           "model": {
             "name": "smart.userId.hourly"
           },
-          "additional-models": [{
+          "global-model": {
             "name": "smart.global.prior.userId.hourly"
-          }],
+          },
           "number-of-samples-to-influence-enough": 30,
           "use-certainty-to-calculate-score": true,
           "base-scorer": {

@@ -30,7 +30,7 @@ public class TtlServiceAwareStoreTest implements TtlServiceAware {
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
-                .addCriteria(where(TtlServiceRecordTest.START_FIELD).lte(until));
+                .addCriteria(where(TtlServiceRecordTest.END_FIELD).lte(until));
         mongoTemplate.remove(query, collectionName);
     }
 
@@ -42,11 +42,6 @@ public class TtlServiceAwareStoreTest implements TtlServiceAware {
     public void saveWithDefaultTtl(TtlServiceRecordTest ttlServiceRecordTest, String collectionName) {
         mongoTemplate.insert(ttlServiceRecordTest,collectionName);
         ttlService.save(getStoreName(), collectionName);
-    }
-
-    @Override
-    public String getStoreName() {
-        return "testStoreName";
     }
 
 }

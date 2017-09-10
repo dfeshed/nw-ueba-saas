@@ -3,7 +3,6 @@ package presidio.output.domain.records.users;
 
 import org.springframework.data.domain.Sort;
 
-import java.util.Collection;
 import java.util.List;
 
 public class UserQuery {
@@ -11,10 +10,10 @@ public class UserQuery {
     // filters
     private final List<String> filterByAlertClassifications;
     private final List<String> filterByIndicators;
+    private List<UserSeverity> filterBySeverities;
+    private List<String> filterByUsersIds;
     private Integer minScore;
     private Integer maxScore;
-    private Collection<String> filterByUserIds;
-    private Collection<String> filterByNotHaveAnyOfUserIds;
     private boolean isPrefix;
     private Boolean isAdmin;
     private String filterByUserName;
@@ -30,8 +29,8 @@ public class UserQuery {
     public UserQuery(UserQueryBuilder builder) {
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
-        this.filterByNotHaveAnyOfUserIds = builder.filterByNotHaveAnyOfUserIds;
-        this.filterByUserIds = builder.filterByUserIds;
+        this.filterBySeverities = builder.filterBySeverities;
+        this.filterByUsersIds = builder.filterByUsersIds;
 
         //Sort
         this.sort = builder.sort;
@@ -45,6 +44,11 @@ public class UserQuery {
         this.isAdmin = builder.isAdmin;
     }
 
+    public List<String> getFilterByUsersIds() {
+        return filterByUsersIds;
+    }
+
+
     public List<String> getFilterByAlertClassifications() {
         return filterByAlertClassifications;
     }
@@ -52,6 +56,11 @@ public class UserQuery {
     public List<String> getFilterByIndicators() {
         return filterByIndicators;
     }
+
+    public List<UserSeverity> getFilterBySeverities() {
+        return filterBySeverities;
+    }
+
     public String getFilterByUserName() {
         return filterByUserName;
     }
@@ -79,13 +88,7 @@ public class UserQuery {
     public Integer getMaxScore() {
         return maxScore;
     }
-    public Collection<String> getFilterByUserIds() {
-        return filterByUserIds;
-    }
 
-    public Collection<String> getFilterByNotHaveAnyOfUserIds() {
-        return filterByNotHaveAnyOfUserIds;
-    }
 
     public Boolean getFilterByIsAdmin() {
         return isAdmin;
@@ -96,8 +99,9 @@ public class UserQuery {
         // filters
         private List<String> filterByAlertClassifications;
         private List<String> filterByIndicators;
-        private Collection<String> filterByUserIds;
-        private Collection<String> filterByNotHaveAnyOfUserIds;
+        private List<UserSeverity> filterBySeverities;
+        private List<String> filterByUsersIds;
+
         private Integer minScore;
         private Integer maxScore;
         private String filterByUserName;
@@ -112,8 +116,18 @@ public class UserQuery {
         private int pageNumber = -1;
         private int pageSize = -1;
 
+        public UserQueryBuilder filterByUsersIds(List<String> filterByUsersIds) {
+            this.filterByUsersIds = filterByUsersIds;
+            return this;
+        }
+
         public UserQueryBuilder filterByAlertClassifications(List<String> filterByAlertClassifications) {
             this.filterByAlertClassifications = filterByAlertClassifications;
+            return this;
+        }
+
+        public UserQueryBuilder filterBySeverities(List<UserSeverity> filterBySeverities) {
+            this.filterBySeverities = filterBySeverities;
             return this;
         }
 
@@ -122,25 +136,14 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder filterByUsersIds(Collection<String> filterByUserIds) {
-            this.filterByUserIds = filterByUserIds;
-            return this;
-        }
-
-        public UserQueryBuilder filterByNotHaveAnyOfUserIds(Collection<String> filterByNotHaveAnyOfUserIds) {
-            this.filterByNotHaveAnyOfUserIds = filterByNotHaveAnyOfUserIds;
-            return this;
-        }
-
         public UserQueryBuilder sort(Sort sort) {
             this.sort = sort;
             return this;
         }
 
-        public UserQueryBuilder sortField(String sortField, boolean ascendingOrder) {
-            Sort.Direction dir = ascendingOrder ? Sort.Direction.ASC : Sort.Direction.DESC;
-            Sort sort = new Sort(dir, sortField);
-            return sort(sort);
+        public UserQueryBuilder sortField(Sort sort) {
+            this.sort = sort;
+            return this;
         }
 
         public UserQueryBuilder minScore(Integer minScore) {

@@ -45,7 +45,8 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		List<ContinuousDataModel> models = castModelBuilderData(modelBuilderData);
 		models = getModelsWithEnoughSamples(models);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
-		for (LearningSegments.Segment segment : new LearningSegments(models, segmentCenters, segmentor)) {
+		LearningSegments segments = new LearningSegments(models, segmentCenters, segmentor);
+		for (LearningSegments.Segment segment : segments) {
 			Double priorAtMean = priorBuilder.calcPrior(
 					segment.getModels(),
 					segment.getCenter()

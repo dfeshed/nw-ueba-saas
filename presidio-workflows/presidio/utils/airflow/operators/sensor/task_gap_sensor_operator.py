@@ -33,6 +33,9 @@ class TaskGapSensorOperator(BaseSensorOperator):
 
         self._execution_delta = execution_delta
         self._external_dag_id = external_dag_id
+        self._root_external_dag_id = external_dag_id.split(".", 1)[0]
+        self._gapped_root_dag_run = None
+        self._gapped_dag_run = None
         self._external_task_id = external_task_id
 
     def poke(self, context):
@@ -40,48 +43,95 @@ class TaskGapSensorOperator(BaseSensorOperator):
 
         @return: bool - whether there are tasks to wait for.
         '''
-
-        execution_date_lt = context['execution_date'] - self._execution_delta
+        session = settings.Session()
+        if(self._gapped_root_dag_run == None):
+            self._init_gapped_root_dag_run(context['execution_date'],session)
+            if(self._gapped_root_dag_run == None):
+                #The start time of the external gapped dag run is more recent than the needed gap.
+                #so there is nothing to sense here.
+                return True
 
         logging.info(
             'Poking for the following'
             '{self._external_dag_id}.'
             '{self._external_task_id} on '
-            '{execution_date_lt} ... '.format(**locals()))
+            '{self._gapped_root_dag_run.execution_date} ... '.format(**locals()))
 
-        is_finished_wait_for_tasks = True
-        if(self.get_num_of_dag_runs_to_wait_for(execution_date_lt) > 0):
-            is_finished_wait_for_tasks = self.get_num_of_task_instances_to_wait_for(execution_date_lt) == 0
 
-        return is_finished_wait_for_tasks
+        self._gapped_root_dag_run.refresh_from_db(session=session)
+        is_finished_wait_for_gapped_task = True
+        root_state = self._gapped_root_dag_run.get_state()
+        if(root_state == State.RUNNING):
+            is_finished_wait_for_gapped_task = False
+            self._refresh_gapped_dag_run(session)
+            if(self._gapped_dag_run != None):
+                gapped_dag_run_state = self._gapped_dag_run.get_state()
+                if(gapped_dag_run_state == State.RUNNING):
+                    external_task_instance = self._gapped_dag_run.get_task_instance(task_id= self._external_task_id, session=session)
+                    if(external_task_instance == None):
+                        logging.info(
+                            'Still poking since the dag run is still running and the gapped task instance still have not started: '
+                            'dag_id: {self._gapped_dag_run.dag_id} '
+                            'run_id: {self._gapped_dag_run.run_id} '
+                            'state: {gapped_dag_run_state} '.format(**locals()))
+                    elif(external_task_instance.end_date == None):
+                        logging.info(
+                            'Still poking since the gapped task instance is still running: '
+                            'dag_id: {self._gapped_dag_run.dag_id} '
+                            'run_id: {self._gapped_dag_run.run_id} '
+                            'start_date: {external_task_instance.start_date} '
+                            'end_date: {external_task_instance.end_date} '
+                            'task_state: {external_task_instance.state} '.format(**locals()))
+                    else:
+                        is_finished_wait_for_gapped_task = True
+                        logging.info(
+                            'Finish poking since the gapped task instance is not running any more: '
+                            'dag_id: {self._gapped_dag_run.dag_id} '
+                            'run_id: {self._gapped_dag_run.run_id} '
+                            'start_date: {external_task_instance.start_date} '
+                            'end_date: {external_task_instance.end_date} '
+                            'task_state: {external_task_instance.state} '.format(**locals()))
+                else:
+                    is_finished_wait_for_gapped_task = True
+                    logging.info(
+                        'Finish poking since the gapped dag run is not running any more: '
+                        'dag_id: {self._gapped_dag_run.dag_id} '
+                        'run_id: {self._gapped_dag_run.run_id} '
+                        'state: {gapped_dag_run_state} '.format(**locals()))
+            else:
+                logging.info(
+                    'Still poking since the root dag is still running and the gapped dag run does not exist: '
+                    'dag_id: {self._gapped_root_dag_run.dag_id} '
+                    'run_id: {self._gapped_root_dag_run.run_id} '
+                    'state: {root_state} '.format(**locals()))
+        else:
+            logging.info(
+                'Finish poking since the root dag is not running any more: '
+                'dag_id: {self._gapped_root_dag_run.dag_id} '
+                'run_id: {self._gapped_root_dag_run.run_id} '
+                'state: {root_state} '.format(**locals()))
 
-    def get_num_of_dag_runs_to_wait_for(self, execution_date_lt):
-        session = settings.Session()
-        num_of_dag_runs_to_wait_for = session.query(DagRun).filter(
-            DagRun.dag_id == self._external_dag_id,
+        return is_finished_wait_for_gapped_task
+
+    def _init_gapped_root_dag_run(self, execution_date, session):
+        execution_date_lt = execution_date - self._execution_delta
+
+        self._gapped_root_dag_run = session.query(DagRun).filter(
+            DagRun.dag_id == self._root_external_dag_id,
             DagRun.execution_date < execution_date_lt,
             DagRun.state == State.RUNNING,
-        ).count()
+        ).order_by(
+            DagRun.execution_date.desc()
+        ).first()
 
-        session.commit()
-        session.close()
-        return num_of_dag_runs_to_wait_for
-
-    def get_num_of_task_instances_to_wait_for(self, execution_date_lt):
-        TI = TaskInstance
-
-        session = settings.Session()
-        num_of_task_instances_to_wait_for = session.query(TI).filter(
-            TI.dag_id == self._external_dag_id,
-            TI.task_id == self._external_task_id,
-            TI.end_date.is_(None),
-            TI.execution_date < execution_date_lt,
-        ).count()
-
-        session.commit()
-        session.close()
-
-        return num_of_task_instances_to_wait_for
+    def _refresh_gapped_dag_run(self, session):
+        if(self._gapped_dag_run == None):
+            self._gapped_dag_run = session.query(DagRun).filter(
+                DagRun.dag_id == self._external_dag_id,
+                DagRun.execution_date == self._gapped_root_dag_run.execution_date,
+            ).one()
+        else:
+            self._gapped_dag_run.refresh_from_db(session=session)
 
     def get_external_dag_id(self):
         return self._external_dag_id

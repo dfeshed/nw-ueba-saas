@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Alert
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-03T07:32:57.308Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
 
 public class Alert {
     @JsonProperty("id")
@@ -77,9 +77,6 @@ public class Alert {
     @JsonProperty("userScoreContribution")
     private BigDecimal userScoreContribution = null;
 
-    @JsonProperty("userScoreContributionFlag")
-    private Boolean userScoreContributionFlag = null;
-
     /**
      * Gets or Sets timeframe
      */
@@ -114,8 +111,46 @@ public class Alert {
     @JsonProperty("timeframe")
     private TimeframeEnum timeframe = null;
 
-    @JsonProperty("feedbackHistory")
-    private List<AlertFeedbackHistory> feedbackHistory = new ArrayList<AlertFeedbackHistory>();
+    /**
+     * Gets or Sets severity
+     */
+    public enum SeverityEnum {
+        CRITICAL("CRITICAL"),
+
+        HIGH("HIGH"),
+
+        MEDIUM("MEDIUM"),
+
+        LOW("LOW");
+
+        private String value;
+
+        SeverityEnum(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static SeverityEnum fromValue(String text) {
+            for (SeverityEnum b : SeverityEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
+    @JsonProperty("severity")
+    private SeverityEnum severity = null;
+
+    @JsonProperty("userId")
+    private String userId = null;
 
     public Alert id(String id) {
         this.id = id;
@@ -300,25 +335,6 @@ public class Alert {
         this.userScoreContribution = userScoreContribution;
     }
 
-    public Alert userScoreContributionFlag(Boolean userScoreContributionFlag) {
-        this.userScoreContributionFlag = userScoreContributionFlag;
-        return this;
-    }
-
-    /**
-     * Get userScoreContributionFlag
-     *
-     * @return userScoreContributionFlag
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean getUserScoreContributionFlag() {
-        return userScoreContributionFlag;
-    }
-
-    public void setUserScoreContributionFlag(Boolean userScoreContributionFlag) {
-        this.userScoreContributionFlag = userScoreContributionFlag;
-    }
-
     public Alert timeframe(TimeframeEnum timeframe) {
         this.timeframe = timeframe;
         return this;
@@ -338,28 +354,42 @@ public class Alert {
         this.timeframe = timeframe;
     }
 
-    public Alert feedbackHistory(List<AlertFeedbackHistory> feedbackHistory) {
-        this.feedbackHistory = feedbackHistory;
-        return this;
-    }
-
-    public Alert addFeedbackHistoryItem(AlertFeedbackHistory feedbackHistoryItem) {
-        this.feedbackHistory.add(feedbackHistoryItem);
+    public Alert severity(SeverityEnum severity) {
+        this.severity = severity;
         return this;
     }
 
     /**
-     * Get feedbackHistory
+     * Get severity
      *
-     * @return feedbackHistory
+     * @return severity
      **/
     @ApiModelProperty(value = "")
-    public List<AlertFeedbackHistory> getFeedbackHistory() {
-        return feedbackHistory;
+    public SeverityEnum getSeverity() {
+        return severity;
     }
 
-    public void setFeedbackHistory(List<AlertFeedbackHistory> feedbackHistory) {
-        this.feedbackHistory = feedbackHistory;
+    public void setSeverity(SeverityEnum severity) {
+        this.severity = severity;
+    }
+
+    public Alert userId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    /**
+     * Get userId
+     *
+     * @return userId
+     **/
+    @ApiModelProperty(value = "")
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 
@@ -381,14 +411,14 @@ public class Alert {
                 Objects.equals(this.score, alert.score) &&
                 Objects.equals(this.feedback, alert.feedback) &&
                 Objects.equals(this.userScoreContribution, alert.userScoreContribution) &&
-                Objects.equals(this.userScoreContributionFlag, alert.userScoreContributionFlag) &&
                 Objects.equals(this.timeframe, alert.timeframe) &&
-                Objects.equals(this.feedbackHistory, alert.feedbackHistory);
+                Objects.equals(this.severity, alert.severity) &&
+                Objects.equals(this.userId, alert.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, classifiation, startDate, endDate, username, indicators, score, feedback, userScoreContribution, userScoreContributionFlag, timeframe, feedbackHistory);
+        return Objects.hash(id, classifiation, startDate, endDate, username, indicators, score, feedback, userScoreContribution, timeframe, severity, userId);
     }
 
     @Override
@@ -405,9 +435,9 @@ public class Alert {
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
         sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
         sb.append("    userScoreContribution: ").append(toIndentedString(userScoreContribution)).append("\n");
-        sb.append("    userScoreContributionFlag: ").append(toIndentedString(userScoreContributionFlag)).append("\n");
         sb.append("    timeframe: ").append(toIndentedString(timeframe)).append("\n");
-        sb.append("    feedbackHistory: ").append(toIndentedString(feedbackHistory)).append("\n");
+        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+        sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
         sb.append("}");
         return sb.toString();
     }
