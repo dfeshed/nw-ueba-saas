@@ -3,6 +3,7 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
 
@@ -60,7 +61,7 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(TIMEFRAME)
     private AlertEnums.AlertTimeframe timeframe;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
