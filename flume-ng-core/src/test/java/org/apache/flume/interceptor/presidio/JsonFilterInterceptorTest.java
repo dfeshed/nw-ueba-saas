@@ -9,6 +9,7 @@ import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by tomerd on 8/8/2017.
@@ -24,7 +25,7 @@ public class JsonFilterInterceptorTest {
                 InterceptorType.JSON_FILTER.toString());
     }
 
-    //@Test
+    @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
@@ -47,7 +48,7 @@ public class JsonFilterInterceptorTest {
         Assert.assertEquals("{}", interceptValue);
     }
 
-    //@Test
+    @Test
     public void interceptDoubleKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFilterInterceptor.Builder.FIELDS_TO_FILTER_CONF_NAME, "orig1;orig2");
@@ -68,7 +69,7 @@ public class JsonFilterInterceptorTest {
         Assert.assertEquals("{\"orig3\":\"value3\"}", interceptValue);
     }
 
-    //@Test
+    @Test
     public void interceptNotJsonKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFilterInterceptor.Builder.FIELDS_TO_FILTER_CONF_NAME, "orig1;orig2");

@@ -9,6 +9,7 @@ import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by tomerd on 8/14/2017.
@@ -23,7 +24,7 @@ public class JsonMapCreatorInterceptorTest {
                 InterceptorType.JSON_MAP_CREATOR.toString());
     }
 
-    //@Test
+    @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();

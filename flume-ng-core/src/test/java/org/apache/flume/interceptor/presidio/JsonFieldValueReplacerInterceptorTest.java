@@ -24,7 +24,7 @@ public class JsonFieldValueReplacerInterceptorTest {
                 InterceptorType.JSON_FIELD_VALUE_REPLACER.toString());
     }
 
-    //@Test
+    @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
@@ -49,8 +49,8 @@ public class JsonFieldValueReplacerInterceptorTest {
         Assert.assertEquals("{\"orig1\":\"new value\"}", interceptValue);
     }
 
-    //@Test
     public void interceptDoubleKey() throws Exception {
+    @Test
         Context ctx = new Context();
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.FIELD_DELIMITER_CONF_NAME, "#");
@@ -72,7 +72,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         Assert.assertEquals("{\"orig1\":\"new value\",\"orig2\":\"new value\",\"orig3\":\"value3\"}", interceptValue);
     }
 
-    //@Test
+    @Test
     public void interceptNotJsonKey() throws Exception {
         Context ctx = new Context();
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value");
