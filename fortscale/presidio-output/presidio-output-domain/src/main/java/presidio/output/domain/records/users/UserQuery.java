@@ -12,8 +12,8 @@ public class UserQuery {
     private final List<String> filterByIndicators;
     private List<UserSeverity> filterBySeverities;
     private List<String> filterByUsersIds;
-    private Integer minScore;
-    private Integer maxScore;
+    private int minScore = -1;
+    private int maxScore = -1;
     private boolean isPrefix;
     private Boolean isAdmin;
     private String filterByUserName;
@@ -81,11 +81,11 @@ public class UserQuery {
         return pageSize;
     }
 
-    public Integer getMinScore() {
+    public int getMinScore() {
         return minScore;
     }
 
-    public Integer getMaxScore() {
+    public int getMaxScore() {
         return maxScore;
     }
 
@@ -102,8 +102,8 @@ public class UserQuery {
         private List<UserSeverity> filterBySeverities;
         private List<String> filterByUsersIds;
 
-        private Integer minScore;
-        private Integer maxScore;
+        private int minScore = -1;
+        private int maxScore = -1;
         private String filterByUserName;
         private boolean isPrefix = false;
         private Boolean isAdmin;
@@ -146,7 +146,7 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder minScore(Integer minScore) {
+        public UserQueryBuilder minScore(int minScore) {
             this.minScore = minScore;
             return this;
         }
@@ -168,7 +168,7 @@ public class UserQuery {
         }
 
 
-        public UserQueryBuilder maxScore(Integer maxScore) {
+        public UserQueryBuilder maxScore(int maxScore) {
             this.maxScore = maxScore;
             return this;
         }
