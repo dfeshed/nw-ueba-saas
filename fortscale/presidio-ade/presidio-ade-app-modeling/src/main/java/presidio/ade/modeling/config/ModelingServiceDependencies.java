@@ -3,6 +3,7 @@ package presidio.ade.modeling.config;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoImpl;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStoreCon
 		ModelingServiceSmartRecordConfServiceConfig.class,
 		AggregationEventsAccumulationDataReaderConfig.class,
 		SmartAccumulationDataStoreConfig.class,
+        MongoDbBulkOpUtilConfig.class
 })
 public class ModelingServiceDependencies {
 
