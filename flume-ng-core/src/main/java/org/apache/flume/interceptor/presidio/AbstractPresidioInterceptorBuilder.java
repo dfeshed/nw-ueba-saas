@@ -15,4 +15,13 @@ public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.
 
         return arrayAsString.split(delimiter);
     }
+
+    protected String[] getStringArrayFromConfiguration(Context context, String key, String delimiter, String defaultValue) {
+        String arrayAsString = context.getString(key, "");
+        if (arrayAsString.equals("")) {
+            arrayAsString = defaultValue;
+        }
+
+        return arrayAsString.split(delimiter);
+    }
 }
