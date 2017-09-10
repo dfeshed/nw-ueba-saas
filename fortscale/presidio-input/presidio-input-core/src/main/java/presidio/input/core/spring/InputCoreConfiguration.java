@@ -6,10 +6,11 @@ import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
@@ -30,7 +31,6 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -41,13 +41,19 @@ import java.util.Map;
 @Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class, MonitoringConfiguration.class})
 public class InputCoreConfiguration {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Value("${operation.type.category.mapping.file.path}")
+    private String operationTypeCategoryMappingFilePath;
+
     @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping(){
+    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
         ObjectMapper mapper = new ObjectMapper();
         Map operationTypeToCategoryMapping = new HashMap();
         try {
-            Resource resource = new ClassPathResource("operation-type-category-mapping.json");
-            operationTypeToCategoryMapping = mapper.readValue(new File(resource.getURI().getPath()), Map.class);
+            Resource resource = applicationContext.getResources(operationTypeCategoryMappingFilePath)[0];
+            operationTypeToCategoryMapping = mapper.readValue(resource.getFile(), Map.class);
             return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
         } catch (IOException e) {
             e.printStackTrace();
