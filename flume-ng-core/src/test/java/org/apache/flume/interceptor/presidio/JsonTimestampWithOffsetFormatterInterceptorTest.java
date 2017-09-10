@@ -9,6 +9,7 @@ import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 
 public class JsonTimestampWithOffsetFormatterInterceptorTest {
@@ -22,7 +23,7 @@ public class JsonTimestampWithOffsetFormatterInterceptorTest {
                 InterceptorType.JSON_TIMESTAMP_WITH_OFFSET.toString());
     }
 
-    //@Test
+    @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();

@@ -9,6 +9,7 @@ import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by tomerd on 8/14/2017.
@@ -23,12 +24,13 @@ public class JsonMapCreatorInterceptorTest {
                 InterceptorType.JSON_MAP_CREATOR.toString());
     }
 
-    //@Test
+    @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
         ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_JOIN_CONF_NAME, "name,ip");
         ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
 
         builder.configure(ctx);
 
