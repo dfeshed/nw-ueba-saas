@@ -1,6 +1,7 @@
 package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
@@ -45,10 +46,15 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
 
         for (String fieldToPut : fieldsToPut) {
             if (eventBodyAsJson.has(fieldToPut)) {
-                mapToAdd.addProperty(fieldToPut, eventBodyAsJson.get(fieldToPut).getAsString());
-                if (deleteFields) {
-                    logger.trace("Removing origin field {}.", fieldToPut);
-                    eventBodyAsJson.remove(fieldToPut);
+                final JsonElement jsonElement = eventBodyAsJson.get(fieldToPut);
+                if (jsonElement == null) {
+                    logger.info("Field {} does not exist: Can't put in map", fieldToPut);
+                } else {
+                    mapToAdd.addProperty(fieldToPut, jsonElement.getAsString());
+                    if (deleteFields) {
+                        logger.trace("Removing origin field {}.", fieldToPut);
+                        eventBodyAsJson.remove(fieldToPut);
+                    }
                 }
             } else {
                 logger.warn("The event does not contain field {}.", fieldToPut);
