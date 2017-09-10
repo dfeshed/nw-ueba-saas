@@ -165,7 +165,7 @@ public class SmartWeightsModelScorerTest {
 
     private void prepareSmartWeightModel(List<ClusterConf> clusterConfs){
         SmartWeightsModel model = new SmartWeightsModel();
-        model.init(clusterConfs);
+        model.setClusterConfs(clusterConfs);
         prepareModel(model);
     }
 
