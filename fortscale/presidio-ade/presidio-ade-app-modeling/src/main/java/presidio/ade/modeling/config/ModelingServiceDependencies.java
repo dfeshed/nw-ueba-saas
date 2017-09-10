@@ -3,7 +3,6 @@ package presidio.ade.modeling.config;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoImpl;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
-import fortscale.utils.mongodb.util.MongoDbUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +26,6 @@ public class ModelingServiceDependencies {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	@Autowired
-	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
 	private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
