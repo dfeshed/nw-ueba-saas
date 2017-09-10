@@ -3,7 +3,6 @@ package fortscale.utils.ttl;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.ttl.record.TtlData;
-import fortscale.utils.ttl.store.AppSpecificTtlDataStore;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,8 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.annotation.Annotation;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -38,7 +39,6 @@ public class TtlServiceTest {
 
     private final static String COLLECTION_NAME_TEST = "collectionNameTest";
     private final static String COLLECTION_NAME_DEFAULT_TTL_TEST = "collectionNameDefaultTTlTest";
-    private final static String COLLECTION_NAME_MANAGEMENT_TTL = "management_ttl";
 
     /**
      * Create 5 records and 2 collections(collectionNameTest, collectionNameDefaultTTlTest) .
@@ -85,10 +85,10 @@ public class TtlServiceTest {
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
         // 3 collections: collectionNameTest, collectionNameDefaultTTlTest, management_ttl.
         Assert.assertTrue(collectionNames.size() == 3);
-        List<TtlData> ttlDataList = mongoTemplate.findAll(TtlData.class, COLLECTION_NAME_MANAGEMENT_TTL);
-        assertTtlData(ttlDataList, numOfTtlDataRecords);
 
-        TtlServiceCleanupTest();
+        String collectionName = TtlData.class.getAnnotation(Document.class).collection();
+        List<TtlData> ttlDataList = mongoTemplate.findAll(TtlData.class, collectionName);
+        assertTtlData(ttlDataList, numOfTtlDataRecords);
     }
 
 

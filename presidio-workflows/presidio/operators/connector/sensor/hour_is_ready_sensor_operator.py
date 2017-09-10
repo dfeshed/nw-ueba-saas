@@ -40,7 +40,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
             logging.info(
                 'Poking for the following: '
                 'schema_name = {self._schema_name}, '
-                'time = hour_start_time-{self._hour_end_time}.'.format(**locals()))
+                'time = self._hour_end_time-{self._hour_end_time}.'.format(**locals()))
             presidio_home = os.environ.get("PRESIDIO_HOME")
             if presidio_home is None:
                 user = os.environ.get("USER")
@@ -65,15 +65,15 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
             logging.info("latest_ready_hour = " + latest_ready_hour)
-            logging.info("source_count = " +  str(source_count))
-            logging.info("is = " + latest_ready_hour is self._hour_end_time)
-            logging.info("shave shave = " + latest_ready_hour == self._hour_end_time)
+            logging.info("source_count = " + str(source_count))
 
 
             #Convert the datetimes to epoch representation -    # 2017-06-27T19\:00\:00Z - 1498579200.0
-            end_time_seconds=time.mktime(datetime.datetime.strptime(self._hour_end_time.replace("\\", ""), "%Y-%m-%dT%H:%M:%SZ").timetuple())
-            latest_ready_hour_seconds=time.mktime(datetime.datetime.strptime(latest_ready_hour.replace("\\", ""), "%Y-%m-%dT%H:%M:%SZ").timetuple())
-            source_is_ready=end_time_seconds<=latest_ready_hour_seconds
+            end_time_seconds = time.mktime(datetime.datetime.strptime(self._hour_end_time.replace("\\", ""),
+                                                                      "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            latest_ready_hour_seconds = time.mktime(datetime.datetime.strptime(latest_ready_hour.replace("\\", ""),
+                                                                               "%Y-%m-%dT%H:%M:%SZ").timetuple())
+            source_is_ready = end_time_seconds <= latest_ready_hour_seconds
 
             sink_count = self.get_counter_property(self._hour_end_time, sink_properties_file)
             if sink_count is None:
@@ -94,9 +94,11 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                              "sink count: {1}".format(source_count, sink_count))
 
             hour_is_ready = source_is_ready and source_count <= sink_count
+            # if hour_is_ready:
+            #     self.remove_counter_property(self._hour_end_time, source_properties_file)
+            #     self.remove_counter_property(self._hour_end_time, sink_properties_file)
             if hour_is_ready:
-                self.remove_counter_property(source_properties_file)
-                self.remove_counter_property(sink_properties_file)
+                logging.info("Hour {0} is ready!".format(self._hour_end_time))
             return hour_is_ready
         except Exception as exception:
             logging.error("HourIsReadySensorOperator for schema: {0} and hour_end_time: {1} "

@@ -22,6 +22,8 @@
         </rpm-maven-plugin.workflows_packages_directory>
         <rpm-maven-plugin.workflows-build-script-path>${project.basedir}/build-scripts/build-workflows.sh
         </rpm-maven-plugin.workflows-build-script-path>
+        <rpm-maven-plugin.workflows-upgrade-script-path>${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
+        </rpm-maven-plugin.workflows-upgrade-script-path>
         <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
     </properties>
     <parent>
@@ -46,6 +48,11 @@
                     </goals>
                     <configuration>
                         <executable>${rpm-maven-plugin.workflows-build-script-path}</executable>
+                        <arguments>
+                            <argument>
+                                ${rpm.version.build}
+                            </argument>
+                        </arguments>
                     </configuration>
                 </execution>
             </executions>
@@ -168,15 +175,19 @@
                         echo "Writing env variable PRESIDIO_HOME to /etc/profile"
                         echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile
                         <!-- deploy presidio-workflows lib-->
-                        echo "Running Python project"
+                        echo "Running Python migration project"
                         <!-- post installation commands: -->
                         ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+
                         <!--changing ownership of project main folder -->
                         #echo "Changing ownership of /project main repository"
                         chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
+                        <!--always upgrade presidio-workflows python package-->
+                        echo "Running upgrading presidio workflows"
+                        bash ${rpm-maven-plugin.workflows-upgrade-script-path}
                         #echo "Removing temporary files"
                         rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
-                        echo "Retarting Tomcat"
+                        echo "Restarting Tomcat"
                         systemctl restart tomcat.service
                         <!--end of post installation -->"
                     </script>

@@ -19,13 +19,13 @@ public class AppSpecificTtlDataStore {
     //Map<storeName, Map<collectionName, TtlData>>
     private Map<String, Map<String, TtlData>> ttlDataMap;
     private String appName;
-    private TtlDataStore ttlDataStore;
+    private TtlDataRepository ttlDataRepository;
 
 
-    public AppSpecificTtlDataStore(String appName, TtlDataStore ttlDataStore) {
+    public AppSpecificTtlDataStore(String appName, TtlDataRepository ttlDataRepository) {
         this.appName = appName;
-        this.ttlDataStore = ttlDataStore;
-        List<TtlData> ttlDataList = ttlDataStore.getTtlDataList(appName);
+        this.ttlDataRepository = ttlDataRepository;
+        List<TtlData> ttlDataList = ttlDataRepository.findByApplicationName(appName);
         ttlDataMap = ttlDataList.stream().collect(groupingBy(ttlData -> ttlData.getStoreName(), toMap(ttlData -> ttlData.getCollectionName(), ttlData -> ttlData)));
     }
 
@@ -38,28 +38,24 @@ public class AppSpecificTtlDataStore {
      * @param cleanupInterval cleanup interval
      */
     public void save(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
-        if (!ttlDataMap.isEmpty()) {
-            Map<String, TtlData> storeNameToTtlData = ttlDataMap.get(storeName);
-            if (storeNameToTtlData != null) {
-                TtlData ttlData = storeNameToTtlData.get(collectionName);
-                if (ttlData != null) {
-                    //update exist ttlData if ttl or cleanupInterval changed
-                    if (!ttlData.getTtlDuration().equals(ttl) || !ttlData.getCleanupInterval().equals(cleanupInterval)) {
-                        ttlData.setTtlDuration(ttl);
-                        ttlData.setCleanupInterval(cleanupInterval);
-                        ttlDataStore.save(ttlData);
-                    }
-                } else {
-                    ttlData = new TtlData(appName, storeName, collectionName, ttl, cleanupInterval);
-                    ttlDataMap.get(storeName).put(collectionName, ttlData);
-                    ttlDataStore.save(ttlData);
+        Map<String, TtlData> storeNameToTtlData = ttlDataMap.get(storeName);
+        if (storeNameToTtlData != null) {
+            TtlData ttlData = storeNameToTtlData.get(collectionName);
+            if (ttlData != null) {
+                //update exist ttlData if ttl or cleanupInterval changed
+                if (!ttlData.getTtlDuration().equals(ttl) || !ttlData.getCleanupInterval().equals(cleanupInterval)) {
+                    ttlData.setTtlDuration(ttl);
+                    ttlData.setCleanupInterval(cleanupInterval);
+                    ttlDataRepository.save(ttlData);
                 }
             } else {
-                //create new record if store is not exist in the Map.
-                createNewTtlData(storeName, collectionName, ttl, cleanupInterval);
+                //create new ttlData if collection is not exist
+                ttlData = new TtlData(appName, storeName, collectionName, ttl, cleanupInterval);
+                storeNameToTtlData.put(collectionName, ttlData);
+                ttlDataRepository.save(ttlData);
             }
         } else {
-            //create new record if ttlDataMap is empty
+            //create new record if store is not exist in the Map.
             createNewTtlData(storeName, collectionName, ttl, cleanupInterval);
         }
     }
@@ -87,7 +83,7 @@ public class AppSpecificTtlDataStore {
         Map<String, TtlData> collectionToTtlData = new HashMap<>();
         collectionToTtlData.put(collectionName, ttlData);
         ttlDataMap.put(storeName, collectionToTtlData);
-        ttlDataStore.save(ttlData);
+        ttlDataRepository.save(ttlData);
     }
 
 }

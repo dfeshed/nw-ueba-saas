@@ -1,6 +1,8 @@
 package fortscale.ml.scorer.factory.smart;
 
 import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.SMARTValuesModelScorer;
@@ -8,7 +10,9 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.ml.scorer.config.SMARTValuesModelScorerConf;
 import fortscale.ml.scorer.factory.AbstractModelScorerFactory;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,36 +22,31 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @Component
-public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
+public class SMARTValuesModelScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
+
+    @Autowired
+    protected ModelConfService modelConfService;
+
+    @Autowired
+    protected EventModelsCacheService eventModelsCacheService;
+
     @Override
     public String getFactoryName() {
         return SMARTValuesModelScorerConf.SCORER_TYPE;
     }
 
+
+
     @Override
     public Scorer getProduct(FactoryConfig factoryConfig) {
-        // TODO: All this code (which is duplicated in CategoryRarityModelScorerFactory and ContinuousValuesModelScorerFactory) should be refactored.
         SMARTValuesModelScorerConf scorerConf = (SMARTValuesModelScorerConf) factoryConfig;
-        super.validateModelScorerConf(scorerConf);
+        validateModelConf(scorerConf.getModelInfo());
+        validateModelConf(scorerConf.getGlobalModelInfo());
         String modelName = scorerConf.getModelInfo().getModelName();
-        List<String> additionalModelNames = scorerConf.getAdditionalModelInfos().stream()
-                .map(ModelInfo::getModelName)
-                .collect(Collectors.toList());
-        AbstractDataRetriever dataRetriever = getDataRetriever(modelName);
-        List<String> contextFieldNames = dataRetriever.getContextFieldNames();
-        List<List<String>> additionalContextFieldNames = additionalModelNames.stream()
-                .map(additionalModelName -> modelConfService
-                        .getModelConf(additionalModelName)
-                        .getContextSelectorConf() != null ?
-                        getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
-                .collect(Collectors.toList());
-
         return new SMARTValuesModelScorer(
                 scorerConf.getName(),
-                modelName,
-                additionalModelNames,
-                contextFieldNames,
-                additionalContextFieldNames,
+                scorerConf.getModelInfo().getModelName(),
+                scorerConf.getGlobalModelInfo().getModelName(),
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
@@ -57,9 +56,11 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                 eventModelsCacheService);
     }
 
-    private AbstractDataRetriever getDataRetriever(String modelName) {
-        ModelConf modelConf = modelConfService.getModelConf(modelName);
-        AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
-        return dataRetrieverFactoryService.getProduct(dataRetrieverConf);
+    protected void validateModelConf(ModelInfo modelInfo) {
+        if (modelConfService.getModelConf(modelInfo.getModelName()) == null) {
+            throw new IllegalArgumentException(String.format(
+                    "Model conf service does not contain a model conf named %s.",
+                    modelInfo.getModelName()));
+        }
     }
 }
