@@ -3,17 +3,14 @@ package presidio.webapp.controllers.users;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Patch;
-import presidio.webapp.model.User;
-import presidio.webapp.model.UsersWrapper;
+import org.springframework.stereotype.Controller;
+import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestUserService;
 
 import java.util.List;
 
-
+@Controller
 public class UsersApiController implements UsersApi {
 
     private final RestUserService restUserService;

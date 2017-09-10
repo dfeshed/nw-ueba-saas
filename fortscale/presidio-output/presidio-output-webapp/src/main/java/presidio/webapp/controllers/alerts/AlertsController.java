@@ -3,17 +3,13 @@ package presidio.webapp.controllers.alerts;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQuery;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.InlineResponse200;
-import presidio.webapp.model.InlineResponse2001;
-import presidio.webapp.model.Patch;
+import org.springframework.stereotype.Controller;
+import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 
 import java.util.List;
 
-
+@Controller
 public class AlertsController implements AlertsApi {
 
     private final RestAlertService restAlertService;
