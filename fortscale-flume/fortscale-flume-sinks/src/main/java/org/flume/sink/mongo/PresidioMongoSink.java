@@ -153,16 +153,15 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     protected int saveEvents(List<T> eventsToSave) throws Exception {
         final int numOfEventsToSave = eventsToSave.size();
         int numOfSavedEvents = 0;
-        if (numOfEventsToSave != 0) {
-            if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
-                sinkMongoRepository.save(eventsToSave.get(0), collectionName);
-                numOfSavedEvents = 1;
+        if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
+            sinkMongoRepository.save(eventsToSave.get(0), collectionName);
+            numOfSavedEvents = 1;
 //                sinkCounter.incrementEventDrainSuccessCount();
-            } else {
-                numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
+        } else {
+            numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
 //                sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
-            }
         }
+
 
         return numOfSavedEvents;
     }

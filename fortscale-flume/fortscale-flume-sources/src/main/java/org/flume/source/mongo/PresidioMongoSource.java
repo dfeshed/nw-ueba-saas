@@ -144,7 +144,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
             this.stop();
 
         } catch (Exception e) {
-            logger.error("{} has failed to process events for }: {}, {}: {}.",
+            logger.error("{} has failed to process events for {}: {}, {}: {}.",
                     getName(), START_DATE, startDate, END_DATE, endDate);
             logger.error(e.getMessage());
             this.stop();
