@@ -1,4 +1,4 @@
-package presidio.ade.test.utils.generators;
+package presidio.ade.test.utils.generators.models;
 
 import fortscale.ml.model.Model;
 import fortscale.ml.model.store.ModelDAO;
@@ -15,9 +15,11 @@ import java.util.List;
 
 
 /**
+ * Generates {@link ModelDAO} for each of the generated context by {@link this#contextIdGenerator} for each time (by default once a day)
  * Created by barak_schuster on 9/10/17.
  */
 public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
+    private static final String DEFAULT_MODEL_SESSION = "testSession";
     private CyclicValuesGenerator<String> contextIdGenerator;
     private IStringGenerator sessionIdGenerator;
     private ITimeGenerator endTimeGenerator;
@@ -25,10 +27,11 @@ public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
     private int modelsNumberOfDaysBack;
 
     public ModelDaoGenerator(IModelGenerator modelGenerator) throws GeneratorException {
-        contextIdGenerator = new StringRegexCyclicValuesGenerator("testUser[1-3]{1}");
-        sessionIdGenerator= new CustomStringGenerator("testSession");
-        endTimeGenerator = new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), 1440, 3, 3);
-        modelsNumberOfDaysBack = 30;
+        this.contextIdGenerator = new StringRegexCyclicValuesGenerator("userId\\#\\#\\#testUser[1-2]{0,1}");
+        this.sessionIdGenerator= new CustomStringGenerator(DEFAULT_MODEL_SESSION);
+        this.endTimeGenerator = new TimeGenerator(LocalTime.of(0,0),LocalTime.of(23,59),1440,30,1);
+        this.modelsNumberOfDaysBack = 30;
+        this.modelGenerator = modelGenerator;
     }
 
     @Override
@@ -39,12 +42,11 @@ public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
             String sessionId = sessionIdGenerator.getNext();
             Instant endTime = endTimeGenerator.getNext();
             Instant startTime = endTime.minus(Duration.ofDays(modelsNumberOfDaysBack));
-            ModelDAO modelDAO = null;
             for (String contextId : contextIdGenerator.getValues()) {
                 Model model = modelGenerator.getNext();
-                modelDAO = new ModelDAO(sessionId, contextId, model, startTime, endTime);
+                ModelDAO modelDAO = new ModelDAO(sessionId, contextId, model, startTime, endTime);
+                evList.add(modelDAO);
             }
-            evList.add(modelDAO);
         }
 
         return evList;

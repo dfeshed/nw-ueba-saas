@@ -1,4 +1,4 @@
-package presidio.ade.test.utils.generators;
+package presidio.ade.test.utils.generators.models;
 
 import fortscale.ml.model.Model;
 

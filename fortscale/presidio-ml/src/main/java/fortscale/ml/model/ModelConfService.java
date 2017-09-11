@@ -2,6 +2,7 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationServiceBase;
+import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.springframework.core.io.Resource;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ModelConfService extends AslConfigurationServiceBase {
 	private static final Logger logger = Logger.getLogger(ModelConfService.class);
@@ -90,6 +92,11 @@ public class ModelConfService extends AslConfigurationServiceBase {
 	public List<ModelConf> getModelConfs() {
 		return modelConfs;
 	}
+
+	public List<ModelConf> getModelConfsByBuilderConfType(Class<? extends IModelBuilderConf> type) {
+		return modelConfs.stream().filter(x -> type.isInstance(x.getModelBuilderConf())).collect(Collectors.toList());
+	}
+
 
 	public ModelConf getModelConf(String modelConfName) {
 		return nameToModelConfMap.get(modelConfName);
