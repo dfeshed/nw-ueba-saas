@@ -22,6 +22,8 @@ public class UserServiceImpl implements UserService {
     private final EventPersistencyService eventPersistencyService;
     private final UserPersistencyService userPersistencyService;
     private final UserScoreService userScoreService;
+    private final String TAG_ADMIN = "admin";
+
 
     private int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
     public int defaultUsersBatchSize;
@@ -41,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.isAdmin());
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
     }
 
     @Override
@@ -58,8 +60,11 @@ public class UserServiceImpl implements UserService {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
-        Boolean isAdmin = Boolean.valueOf(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN));
-        return new UserDetails(userName, userDisplayName, userId, isAdmin);
+        List<String> tags = new ArrayList<>();
+        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null) {
+            tags.add(TAG_ADMIN);
+        }
+        return new UserDetails(userName, userDisplayName, userId, tags);
     }
 
     public void setClassification(User user, List<String> classification) {

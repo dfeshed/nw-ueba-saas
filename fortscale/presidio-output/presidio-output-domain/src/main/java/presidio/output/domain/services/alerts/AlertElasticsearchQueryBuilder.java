@@ -27,22 +27,34 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
 
         // filter by username
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
-            boolQueryBuilder.should(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.OR));
+            BoolQueryBuilder userNameQuery = new BoolQueryBuilder();
+            for (String userName : alertQuery.getFilterByUserName()) {
+                userNameQuery.should(matchQuery(Alert.USER_NAME, userName));
+            }
+            boolQueryBuilder.must(userNameQuery);
         }
 
         // filter by user id
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserId())) {
-            boolQueryBuilder.should(matchQuery(Alert.USER_ID, alertQuery.getFilterByUserId()).operator(Operator.OR));
+            BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
+            for (String userId : alertQuery.getFilterByUserId()) {
+                userIdQuery.should(matchQuery(Alert.USER_ID, userId));
+            }
+            boolQueryBuilder.must(userIdQuery);
         }
 
         // filter by severity
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
-            boolQueryBuilder.should(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.OR));
+            boolQueryBuilder.must(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.OR));
         }
 
         // filter by classification
-        if (alertQuery.getFilterByClassification() != null && !(alertQuery.getFilterByClassification()).isEmpty()) {
-            boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATIONS, alertQuery.getFilterByClassification()).operator(Operator.OR));
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByClassification())) {
+            BoolQueryBuilder classificationQuery = new BoolQueryBuilder();
+            for (String classification : alertQuery.getFilterByClassification()) {
+                classificationQuery.should(matchQuery(Alert.CLASSIFICATIONS, classification));
+            }
+            boolQueryBuilder.must(classificationQuery);
         }
 
         // filter by start date
@@ -55,9 +67,13 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(rangeQuery(Alert.START_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
         }
 
-        // filter by is user admin
-        if (alertQuery.getFilterByIsUserAdmin() != null) {
-            boolQueryBuilder.must(matchQuery(Alert.IS_USER_ADMIN_FIELD_NAME, alertQuery.getFilterByIsUserAdmin()).operator(Operator.AND));
+        // filter by tags
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByTags())) {
+            BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
+            for (String tag : alertQuery.getFilterByTags()) {
+                tagsQuery.should(matchQuery(Alert.USER_TAGS_FIELD_NAME, tag).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(tagsQuery);
         }
 
         // filter by min or max score
@@ -72,7 +88,6 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
 
             boolQueryBuilder.must(rangeQuery);
         }
-
 
         if (boolQueryBuilder.hasClauses()) {
             super.withFilter(boolQueryBuilder);

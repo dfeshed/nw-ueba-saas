@@ -8,11 +8,11 @@ import presidio.webapp.model.UserQuery;
 import java.util.List;
 
 public interface RestUserService {
-    User getUserById(String userId);
+    User getUserById(String userId, boolean expand);
 
     List<User> getUsers(UserQuery userQuery);
 
-    User createResult(presidio.output.domain.records.users.User user);
+    User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts);
 
     List<Alert> getAlertsByUserId(String userId);
 
