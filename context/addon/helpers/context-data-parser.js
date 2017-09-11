@@ -35,7 +35,9 @@ const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
     contextDataForDS.errorMessage = dataSourceData.errorMessage;
   }
   if (!isEmpty(results) && isEmpty(contextDataForDS.errorMessage)) {
-    set(contextDataForDS, 'dataSourceLastModifiedOn', contextDataForDS.dataSourceLastModifiedOn > contextDataForDS.contentLastModifiedOn ? contextDataForDS.dataSourceLastModifiedOn : contextDataForDS.contentLastModifiedOn);
+    const latestUpdatedDate = dataSourceData.dataSourceLastModifiedOn > dataSourceData.contentLastModifiedOn ? dataSourceData.dataSourceLastModifiedOn : dataSourceData.contentLastModifiedOn;
+    set(contextDataForDS, 'dataSourceLastModifiedOn', contextDataForDS.dataSourceLastModifiedOn > latestUpdatedDate ? contextDataForDS.dataSourceLastModifiedOn : latestUpdatedDate);
+    dataSourceData.dataSourceLastModifiedOn = latestUpdatedDate;
     contextDataForDS.resultList = contextDataForDS.resultList.concat([dataSourceData]);
   }
   return contextDataForDS;
