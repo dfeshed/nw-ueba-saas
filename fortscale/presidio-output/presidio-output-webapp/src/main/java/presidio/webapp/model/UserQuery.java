@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * UserQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T14:54:02.996Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
 
 public class UserQuery {
     @JsonProperty("userName")

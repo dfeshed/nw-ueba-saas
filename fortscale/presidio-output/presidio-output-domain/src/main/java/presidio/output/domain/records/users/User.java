@@ -13,6 +13,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Created by efratn on 20/08/2017.
+ */
 @Document(indexName = AbstractElasticDocument.INDEX_NAME, type = User.USER_DOC_TYPE)
 public class User extends AbstractElasticDocument {
 
@@ -26,6 +29,7 @@ public class User extends AbstractElasticDocument {
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
+    public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
 
 
     @Field(type = FieldType.String, store = true)
@@ -61,13 +65,10 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(TAGS_FIELD_NAME)
     private List<String> tags;
 
-    public UserSeverity getUserSeverity() {
-        return userSeverity;
-    }
+    @Field(type = FieldType.Integer, store = true)
+    @JsonProperty(ALERTS_COUNT_FIELD_NAME)
+    private int alertsCount;
 
-    public void setUserSeverity(UserSeverity userSeverity) {
-        this.userSeverity = userSeverity;
-    }
 
     public User() {
         // empty const for JSON deserialization
@@ -76,7 +77,8 @@ public class User extends AbstractElasticDocument {
         this.tags = new ArrayList<>();
     }
 
-    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity userSeverity) {
+    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity userSeverity,
+                int alertsCount) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -86,6 +88,7 @@ public class User extends AbstractElasticDocument {
         this.indicators = indicators;
         this.tags = tags;
         this.userSeverity = userSeverity;
+        this.alertsCount = alertsCount;
     }
 
     public User(String userId, String userName, String userDisplayName, List<String> tags) {
@@ -94,6 +97,14 @@ public class User extends AbstractElasticDocument {
         this.userName = userName;
         this.userDisplayName = userDisplayName;
         this.tags = tags;
+    }
+
+    public UserSeverity getUserSeverity() {
+        return userSeverity;
+    }
+
+    public void setUserSeverity(UserSeverity userSeverity) {
+        this.userSeverity = userSeverity;
     }
 
     public void setUserId(String userId) {
@@ -136,6 +147,14 @@ public class User extends AbstractElasticDocument {
         return indicators;
     }
 
+    public int getAlertsCount() {
+        return alertsCount;
+    }
+
+    public void setAlertsCount(int alertsCount) {
+        this.alertsCount = alertsCount;
+    }
+
     public void setAlertClassifications(List<String> alertClassifications) {
         this.alertClassifications = alertClassifications;
     }
@@ -172,5 +191,13 @@ public class User extends AbstractElasticDocument {
     @Override
     public int hashCode() {
         return userId.hashCode();
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 }

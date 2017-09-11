@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * User
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T14:54:02.996Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
 
 public class User {
     @JsonProperty("id")
@@ -38,7 +38,7 @@ public class User {
     private List<Alert> alerts = new ArrayList<Alert>();
 
     @JsonProperty("alertClassifications")
-    private List<String> alertclassifications = new ArrayList<String>();
+    private List<String> alertClassifications = new ArrayList<String>();
 
     public User id(String id) {
         this.id = id;
@@ -203,13 +203,13 @@ public class User {
         this.alerts = alerts;
     }
 
-    public User alertclassifications(List<String> alertclassifications) {
-        this.alertclassifications = alertclassifications;
+    public User alertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
         return this;
     }
 
-    public User addAlertclassificationsItem(String alertclassificationsItem) {
-        this.alertclassifications.add(alertclassificationsItem);
+    public User addAlertClassificationsItem(String alertClassificationsItem) {
+        this.alertClassifications.add(alertClassificationsItem);
         return this;
     }
 
@@ -219,12 +219,12 @@ public class User {
      * @return alertClassifications
      **/
     @ApiModelProperty(value = "")
-    public List<String> getAlertclassifications() {
-        return alertclassifications;
+    public List<String> getAlertClassifications() {
+        return alertClassifications;
     }
 
-    public void setAlertclassifications(List<String> alertclassifications) {
-        this.alertclassifications = alertclassifications;
+    public void setAlertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
     }
 
 
@@ -245,12 +245,12 @@ public class User {
                 Objects.equals(this.userSeverity, user.userSeverity) &&
                 Objects.equals(this.alertsNum, user.alertsNum) &&
                 Objects.equals(this.alerts, user.alerts) &&
-                Objects.equals(this.alertclassifications, user.alertclassifications);
+                Objects.equals(this.alertClassifications, user.alertClassifications);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alertsNum, alerts, alertclassifications);
+        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alertsNum, alerts, alertClassifications);
     }
 
     @Override
@@ -266,7 +266,7 @@ public class User {
         sb.append("    userSeverity: ").append(toIndentedString(userSeverity)).append("\n");
         sb.append("    alertsNum: ").append(toIndentedString(alertsNum)).append("\n");
         sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
-        sb.append("    alertClassifications: ").append(toIndentedString(alertclassifications)).append("\n");
+        sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
         sb.append("}");
         return sb.toString();
     }

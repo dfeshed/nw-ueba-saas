@@ -12,6 +12,7 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -33,8 +34,12 @@ public class RestUserServiceImpl implements RestUserService {
     }
 
     @Override
-    public User getUserById(String userId) {
-        return createResult(userPersistencyService.findUserById(userId));
+    public User getUserById(String userId, boolean expand) {
+        List<Alert> alert = null;
+        presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
+        if (expand)
+            alert = restAlertService.getAlertsByUserId(userId);
+        return createResult(user, alert);
     }
 
     @Override
@@ -42,15 +47,20 @@ public class RestUserServiceImpl implements RestUserService {
         Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
         List<User> restUsers = new ArrayList<>();
         for (presidio.output.domain.records.users.User user : users) {
-            restUsers.add(createResult(user));
+            List<Alert> alert = null;
+            if (userQuery.getExpand())
+                alert = restAlertService.getAlertsByUserId(user.getId());
+            restUsers.add(createResult(user, alert));
         }
         return restUsers;
     }
 
     @Override
-    public User createResult(presidio.output.domain.records.users.User user) {
+    public User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts) {
         User convertedUser = new User();
         convertedUser.setId(user.getId());
+        if (CollectionUtils.isNotEmpty(alerts))
+            convertedUser.setAlerts(alerts);
         convertedUser.setUserDisplayName(user.getUserDisplayName());
         if (user.getUserSeverity() != null) {
             convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
