@@ -4,6 +4,8 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by shays on 27/08/2017.
@@ -14,6 +16,10 @@ public interface UserScoreService {
      * Iterate all users and re-calculate the severity - read users from DB and update severities in DB
      */
     void updateSeverities();
+
+    void clearUserScoreForUsersThatShouldNotHaveScore(Set<String> excludedUsersIds);
+
+    Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays);
 
     /**
      * Update severities for specific list of users
@@ -27,10 +33,4 @@ public interface UserScoreService {
      * @param alert
      */
     void increaseUserScoreWithoutSaving(Alert alert, User user);
-
-    /**
-     * Recalculate all user scores in the last X days
-     * @return
-     */
-    boolean updateAllUsersScores();
 }

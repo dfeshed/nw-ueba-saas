@@ -28,7 +28,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static int SMART_SCORE_THRESHOLD = 50;
     private final UserScoreService userScoreService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;

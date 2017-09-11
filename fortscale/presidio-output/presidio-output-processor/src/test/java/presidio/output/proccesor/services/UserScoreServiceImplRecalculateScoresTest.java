@@ -16,6 +16,7 @@ import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
@@ -170,9 +171,9 @@ public class UserScoreServiceImplRecalculateScoresTest {
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
         List<User> usersWithOldScore = Arrays.asList(
-                new User("user1", null, null, 50, null, null, false),
-                new User("user2", null, null, 50, null, null, false),
-                new User("user3", null, null, 50, null, null, false)
+                new User("user1", null, null, 50, null, null, false, UserSeverity.CRITICAL, 0),
+                new User("user2", null, null, 50, null, null, false, UserSeverity.CRITICAL, 0),
+                new User("user3", null, null, 50, null, null, false, UserSeverity.CRITICAL, 0)
         );
 
         Pageable pageable1 = new PageRequest(0, 3);
