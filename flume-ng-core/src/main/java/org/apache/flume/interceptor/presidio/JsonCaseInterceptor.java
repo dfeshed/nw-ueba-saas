@@ -50,7 +50,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
         for (int i = 0; i < originFields.size(); i++) {
             currField = originFields.get(i);
             jsonElement = eventBodyAsJson.get(currField);
-            if (jsonElement == null) {
+            if (jsonElement == null || jsonElement.isJsonNull()) {
                 logger.warn("Field does not exist: {}", currField);
             } else {
                 currOperation = operation.get(i);

@@ -47,7 +47,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         for (String fieldToPut : fieldsToPut) {
             if (eventBodyAsJson.has(fieldToPut)) {
                 final JsonElement jsonElement = eventBodyAsJson.get(fieldToPut);
-                if (jsonElement == null) {
+                if (jsonElement == null || jsonElement.isJsonNull()) {
                     logger.info("Field {} does not exist: Can't put in map", fieldToPut);
                 } else {
                     mapToAdd.addProperty(fieldToPut, jsonElement.getAsString());

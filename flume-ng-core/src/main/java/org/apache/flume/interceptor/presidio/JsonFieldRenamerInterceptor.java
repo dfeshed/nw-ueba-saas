@@ -44,7 +44,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
             currField = originFields.get(i);
             JsonElement jsonElement = eventBodyAsJson.get(currField);
             if (eventBodyAsJson.has(currField)) {
-                if (jsonElement.isJsonNull()) {
+                if (jsonElement == null || jsonElement.isJsonNull()) {
                     if (deleteNullFields) {
                         eventBodyAsJson.remove(currField);
                     }

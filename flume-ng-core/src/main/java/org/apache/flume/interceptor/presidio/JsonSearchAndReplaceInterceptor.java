@@ -49,7 +49,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractInterceptor {
             String currReplaceString = replaceStrings.get(i);
 
             originalValue = eventBodyAsJson.get(currField);
-            if (originalValue.isJsonNull()) {
+            if (originalValue == null || originalValue.isJsonNull()) {
                 logger.warn("Field does not exist: {}", currField);
             } else {
                 final String originalValueAsString = originalValue.getAsString();
