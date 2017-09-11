@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.shell.CommandLine;
 import org.springframework.shell.ShellException;
 import org.springframework.shell.SimpleShellCommandLineOptions;
+import org.springframework.shell.core.CommandResult;
 import org.springframework.shell.core.ExitShellRequest;
 import org.springframework.shell.core.JLineShellComponent;
 
@@ -75,9 +76,12 @@ public class BootShim {
 
             for (int i$ = 0; i$ < len$; ++i$) {
                 String cmd = arr$[i$];
-                successful = shell.executeCommand(cmd).isSuccess();
+                CommandResult commandResult = shell.executeCommand(cmd);
+
+                successful = commandResult.isSuccess();
                 if (!successful) {
-                    break;
+                    logger.error("got exception while processing command={}",cmd,commandResult.getException());
+                    throw new RuntimeException(commandResult.getException());
                 }
             }
 
