@@ -57,7 +57,7 @@ public class RestUserServiceImpl implements RestUserService {
         if (user.getUserSeverity() != null) {
             convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
         }
-        convertedUser.setScore((int) user.getUserScore());
+        convertedUser.setScore((int) user.getScore());
         if (user.getAdmin())
             convertedUser.setTags(new ArrayList<>(Arrays.asList(TAG_ADMIN)));
         convertedUser.setUsername(user.getUserName());
