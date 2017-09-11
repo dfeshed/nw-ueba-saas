@@ -35,8 +35,12 @@ public class RestUserServiceImpl implements RestUserService {
     }
 
     @Override
-    public User getUserById(String userId) {
-        return createResult(userPersistencyService.findUserById(userId));
+    public User getUserById(String userId, boolean expand) {
+        List<Alert> alert = null;
+        presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
+        if (expand)
+            alert = restAlertService.getAlertsByUserId(userId);
+        return createResult(user, alert);
     }
 
     @Override
@@ -44,15 +48,20 @@ public class RestUserServiceImpl implements RestUserService {
         Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
         List<User> restUsers = new ArrayList<>();
         for (presidio.output.domain.records.users.User user : users) {
-            restUsers.add(createResult(user));
+            List<Alert> alert = null;
+            if (userQuery.getExpand())
+                alert = restAlertService.getAlertsByUserId(user.getId());
+            restUsers.add(createResult(user, alert));
         }
         return restUsers;
     }
 
     @Override
-    public User createResult(presidio.output.domain.records.users.User user) {
+    public User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts) {
         User convertedUser = new User();
         convertedUser.setId(user.getId());
+        if (CollectionUtils.isNotEmpty(alerts))
+            convertedUser.setAlerts(alerts);
         convertedUser.setUserDisplayName(user.getUserDisplayName());
         if (user.getUserSeverity() != null) {
             convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
@@ -71,8 +80,8 @@ public class RestUserServiceImpl implements RestUserService {
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
         presidio.output.domain.records.users.UserQuery.UserQueryBuilder builder = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder();
-        if (CollectionUtils.isNotEmpty(userQuery.getClassification())) {
-            builder.filterByAlertClassifications(userQuery.getClassification());
+        if (CollectionUtils.isNotEmpty(userQuery.getAlertclassifications())) {
+            builder.filterByAlertClassifications(userQuery.getAlertclassifications());
         }
         if (userQuery.getUserName() != null) {
             builder.filterByUserName(userQuery.getUserName());
@@ -83,8 +92,8 @@ public class RestUserServiceImpl implements RestUserService {
         if (userQuery.getMinScore() != null) {
             builder.minScore(userQuery.getMinScore());
         }
-        if (CollectionUtils.isNotEmpty(userQuery.getIndicatorsType())) {
-            builder.filterByIndicators(userQuery.getIndicatorsType());
+        if (CollectionUtils.isNotEmpty(userQuery.getIndicatorsName())) {
+            builder.filterByIndicators(userQuery.getIndicatorsName());
         }
         if (userQuery.getSeverity() != null) {
             builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
