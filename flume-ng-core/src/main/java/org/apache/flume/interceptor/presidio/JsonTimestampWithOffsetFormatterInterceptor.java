@@ -9,6 +9,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
+import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,14 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
 
 //        final int timezoneOffset = eventBodyAsJson.get(timezoneOffsetField).getAsInt();
         final int timezoneOffset = 0;
-        final String newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
+        final String newTimestamp;
+        try {
+            newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
+        } catch (Exception e) {
+            logger.warn("Failed to get timestamp for event {}. interceptor configuration: {}", event, this, e);
+            PresidioFilteredEventsMongoRepository.saveFailedEvents(event);
+            return null;
+        }
         eventBodyAsJson.addProperty(destinationField, newTimestamp);
         if (removeOriginField) {
             logger.trace("Removing origin field {}.", originField);

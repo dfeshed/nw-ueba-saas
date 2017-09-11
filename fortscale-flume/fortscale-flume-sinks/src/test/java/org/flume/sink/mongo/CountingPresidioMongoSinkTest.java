@@ -3,7 +3,7 @@ package org.flume.sink.mongo;
 import com.mongodb.DBObject;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
-import org.flume.sink.mongo.persistency.SinkMongoRepository;
+import org.apache.flume.persistency.mongo.SinkMongoRepository;
 import org.flume.utils.CountersUtil;
 import org.junit.Assert;
 import org.junit.Before;

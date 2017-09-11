@@ -1,8 +1,9 @@
-package org.flume.sink.mongo.persistency;
+package org.apache.flume.persistency.mongo;
 
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;
 import fortscale.domain.core.AbstractDocument;
+import org.apache.flume.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.BulkOperationException;
@@ -46,6 +47,11 @@ public class SinkMongoRepositoryImpl<T extends AbstractDocument> implements Sink
 
     @Override
     public void save(T event, String collectionName) {
+        mongoTemplate.save(event, collectionName);
+    }
+
+    @Override
+    public void saveFlumeEvent(Event event, String collectionName) {
         mongoTemplate.save(event, collectionName);
     }
 }
