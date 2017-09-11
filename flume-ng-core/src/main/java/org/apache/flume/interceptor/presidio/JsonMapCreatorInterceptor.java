@@ -48,7 +48,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
             if (eventBodyAsJson.has(fieldToPut)) {
                 final JsonElement jsonElement = eventBodyAsJson.get(fieldToPut);
                 if (jsonElement == null || jsonElement.isJsonNull()) {
-                    logger.info("Field {} does not exist: Can't put in map", fieldToPut);
+                    logger.trace("Field {} does not exist: Can't put in map", fieldToPut);
                 } else {
                     mapToAdd.addProperty(fieldToPut, jsonElement.getAsString());
                 }
@@ -57,7 +57,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
                     eventBodyAsJson.remove(fieldToPut);
                 }
             } else {
-                logger.warn("The event does not contain field {}.", fieldToPut);
+                logger.trace("The event does not contain field {}.", fieldToPut);
             }
         }
 

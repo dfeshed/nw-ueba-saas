@@ -68,7 +68,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
                     logger.debug("Field {} exists but real value [{}] doesn't match the given valueToReplaceRegex value [{}]. Replacement [{}]. No replacement made", currField, realValueAsString, currValueToReplaceRegexValue, replacement);
                 }
             } else {
-                logger.info("Field {} doesn't exist. Replacement [{}]. No replacement made", currField, replacement);
+                logger.trace("Field {} doesn't exist. Replacement [{}]. No replacement made", currField, replacement);
             }
         }
 
