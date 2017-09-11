@@ -193,11 +193,4 @@ public class User extends AbstractElasticDocument {
         return userId.hashCode();
     }
 
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
 }
