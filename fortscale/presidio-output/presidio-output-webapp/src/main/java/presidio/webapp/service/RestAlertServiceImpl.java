@@ -143,7 +143,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
         restAlert.setUserId(alert.getUserId());
-        // TODO: do we need 2 enums?
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));

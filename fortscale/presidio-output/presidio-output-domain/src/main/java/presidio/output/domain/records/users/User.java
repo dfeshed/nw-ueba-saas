@@ -29,6 +29,7 @@ public class User extends AbstractElasticDocument {
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String IS_ADMIN_FIELD_NAME = "isAdmin";
+    public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
 
 
     @Field(type = FieldType.String, store = true)
@@ -55,26 +56,34 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(INDICATORS_FIELD_NAME)
     private List<String> indicators;
 
+    @Field(type = FieldType.Boolean, store = true)
+    @JsonProperty(IS_ADMIN_FIELD_NAME)
+    private Boolean isAdmin;
+
     @Field(type = FieldType.String, store = true)
     @Enumerated(EnumType.STRING)
     @JsonProperty(USER_SEVERITY_FIELD_NAME)
     private UserSeverity userSeverity;
 
-    public UserSeverity getUserSeverity() {
-        return userSeverity;
-    }
+    @Field(type = FieldType.Integer, store = true)
+    @JsonProperty(ALERTS_COUNT_FIELD_NAME)
+    private int alertsCount;
 
-    public void setUserSeverity(UserSeverity userSeverity) {
-        this.userSeverity = userSeverity;
-    }
-
-    public User() {
+    public User(){
         // empty const for JSON deserialization
         this.indicators = new ArrayList<String>();
         this.alertClassifications = new ArrayList<String>();
     }
 
-    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, Boolean isAdmin) {
+    public User(String userId,
+                String userName,
+                String userDisplayName,
+                double score,
+                List<String> alertClassifications,
+                List<String> indicators,
+                Boolean isAdmin,
+                UserSeverity userSeverity,
+                int alertsCount) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -83,6 +92,8 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
         this.isAdmin = isAdmin;
+        this.userSeverity = userSeverity;
+        this.alertsCount = alertsCount;
     }
 
     public User(String userId, String userName, String userDisplayName, Boolean isAdmin) {
@@ -91,6 +102,14 @@ public class User extends AbstractElasticDocument {
         this.userName = userName;
         this.userDisplayName = userDisplayName;
         this.isAdmin = isAdmin;
+    }
+
+    public UserSeverity getUserSeverity() {
+        return userSeverity;
+    }
+
+    public void setUserSeverity(UserSeverity userSeverity) {
+        this.userSeverity = userSeverity;
     }
 
     public void setUserId(String userId) {
@@ -125,17 +144,20 @@ public class User extends AbstractElasticDocument {
         return score;
     }
 
-    @Field(type = FieldType.Boolean, store = true)
-    @JsonProperty(IS_ADMIN_FIELD_NAME)
-    private Boolean isAdmin;
-
-
     public List<String> getAlertClassifications() {
         return alertClassifications;
     }
 
     public List<String> getIndicators() {
         return indicators;
+    }
+
+    public int getAlertsCount() {
+        return alertsCount;
+    }
+
+    public void setAlertsCount(int alertsCount) {
+        this.alertsCount = alertsCount;
     }
 
     public void setAlertClassifications(List<String> alertClassifications) {

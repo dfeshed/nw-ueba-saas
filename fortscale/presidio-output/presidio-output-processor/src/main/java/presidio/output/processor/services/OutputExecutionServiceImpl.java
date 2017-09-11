@@ -69,7 +69,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
             smarts.stream().forEach(smart -> {
-                //TODO change this after new SMART POJO is ready
                 String userId = smart.getId();
                 User userEntity = userService.findUserById(userId);
                 if (userEntity == null) {
