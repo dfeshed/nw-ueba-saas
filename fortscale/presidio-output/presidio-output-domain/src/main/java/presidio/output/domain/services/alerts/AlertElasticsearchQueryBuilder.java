@@ -45,24 +45,15 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATIONS, alertQuery.getFilterByClassification()).operator(Operator.OR));
         }
 
-        // filter by date range
-//        if (alertQuery.getFilterByStartDate() > 0 && alertQuery.getFilterByEndDate() > 0 && alertQuery.getFilterByStartDate() < alertQuery.getFilterByEndDate()) {
-//            RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
-//            if (alertQuery.getFilterByStartDate() > 0) {
-//                rangeQuery.from(alertQuery.getFilterByStartDate());
-//            }
-//            if (alertQuery.getFilterByEndDate() > 0) {
-//                rangeQuery.to(alertQuery.getFilterByEndDate());
-//            }
-//            boolQueryBuilder.must(rangeQuery);
-//        }
+        // filter by start date
+        if (alertQuery.getFilterByStartDate() > 0) {
+            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
+        }
 
-//        if (alertQuery.getFilterByStartDate() > 0) {
-//            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
-//        }
-//        if (alertQuery.getFilterByEndDate() > 0) {
-//            boolQueryBuilder.must(rangeQuery(Alert.END_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
-//        }
+        // filter by end date
+        if (alertQuery.getFilterByEndDate() > 0) {
+            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
+        }
 
         // filter by is user admin
         if (alertQuery.getFilterByIsUserAdmin() != null) {

@@ -90,10 +90,10 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
         }
         if (alertQuery.getStartTimeFrom() != null) {
-            alertQueryBuilder.filterByStartDate(Integer.toUnsignedLong(alertQuery.getStartTimeFrom().intValue()));
+            alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());
         }
         if (alertQuery.getStartTimeTo() != null) {
-            alertQueryBuilder.filterByEndDate(Integer.toUnsignedLong(alertQuery.getStartTimeTo().intValue()));
+            alertQueryBuilder.filterByEndDate(alertQuery.getStartTimeTo().longValue());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getSeverity())) {
             List<String> severity = new ArrayList<>();
