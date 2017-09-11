@@ -27,9 +27,9 @@ public class JsonSearchAndReplaceInterceptorTest {
     public void interceptMultipleKey() throws Exception {
 
         Context ctx = new Context();
-        ctx.put(JsonSearchAndReplaceInterceptor.Builder.FIELDS_CONF_NAME, "field1;field2");
-        ctx.put(JsonSearchAndReplaceInterceptor.Builder.SEARCH_PATTERNS_CONF_NAME, "old; ;");
-        ctx.put(JsonSearchAndReplaceInterceptor.Builder.REPLACE_STRINGS_CONF_NAME, "new;_;");
+        ctx.put(JsonSearchAndReplaceInterceptor.Builder.FIELDS_CONF_NAME, "field1");
+        ctx.put(JsonSearchAndReplaceInterceptor.Builder.SEARCH_PATTERNS_CONF_NAME, "[ ]");
+        ctx.put(JsonSearchAndReplaceInterceptor.Builder.REPLACE_STRINGS_CONF_NAME, "_");
         ctx.put(JsonSearchAndReplaceInterceptor.Builder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);

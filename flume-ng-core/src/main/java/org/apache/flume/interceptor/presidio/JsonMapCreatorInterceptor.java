@@ -51,10 +51,10 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
                     logger.info("Field {} does not exist: Can't put in map", fieldToPut);
                 } else {
                     mapToAdd.addProperty(fieldToPut, jsonElement.getAsString());
-                    if (deleteFields) {
-                        logger.trace("Removing origin field {}.", fieldToPut);
-                        eventBodyAsJson.remove(fieldToPut);
-                    }
+                }
+                if (deleteFields) {
+                    logger.trace("Removing origin field {}.", fieldToPut);
+                    eventBodyAsJson.remove(fieldToPut);
                 }
             } else {
                 logger.warn("The event does not contain field {}.", fieldToPut);

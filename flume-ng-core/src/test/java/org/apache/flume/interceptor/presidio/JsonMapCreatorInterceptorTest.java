@@ -48,4 +48,6 @@ public class JsonMapCreatorInterceptorTest {
         Assert.assertEquals("{\"additionalInfo\":{\"name\":\"user\",\"ip\":\"127.0.0.1\"}}", interceptValue);
     }
 
+
+
 }
