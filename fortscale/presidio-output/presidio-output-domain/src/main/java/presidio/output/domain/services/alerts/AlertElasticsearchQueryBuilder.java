@@ -30,8 +30,13 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.should(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.OR));
         }
 
+        // filter by user id
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserId())) {
+            boolQueryBuilder.should(matchQuery(Alert.USER_ID, alertQuery.getFilterByUserId()).operator(Operator.OR));
+        }
+
         // filter by severity
-        if (!CollectionUtils.isEmpty(alertQuery.getFilterBySeverity())) {
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
             boolQueryBuilder.should(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.OR));
         }
 
@@ -41,21 +46,42 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         }
 
         // filter by date range
-        if (alertQuery.getFilterByStartDate() > 0 && alertQuery.getFilterByEndDate() > 0 && alertQuery.getFilterByStartDate() < alertQuery.getFilterByEndDate()) {
-            RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
-            if (alertQuery.getFilterByStartDate() > 0) {
-                rangeQuery.from(alertQuery.getFilterByStartDate());
-            }
-            if (alertQuery.getFilterByEndDate() > 0) {
-                rangeQuery.to(alertQuery.getFilterByEndDate());
-            }
-            boolQueryBuilder.must(rangeQuery);
-        }
+//        if (alertQuery.getFilterByStartDate() > 0 && alertQuery.getFilterByEndDate() > 0 && alertQuery.getFilterByStartDate() < alertQuery.getFilterByEndDate()) {
+//            RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
+//            if (alertQuery.getFilterByStartDate() > 0) {
+//                rangeQuery.from(alertQuery.getFilterByStartDate());
+//            }
+//            if (alertQuery.getFilterByEndDate() > 0) {
+//                rangeQuery.to(alertQuery.getFilterByEndDate());
+//            }
+//            boolQueryBuilder.must(rangeQuery);
+//        }
+
+//        if (alertQuery.getFilterByStartDate() > 0) {
+//            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
+//        }
+//        if (alertQuery.getFilterByEndDate() > 0) {
+//            boolQueryBuilder.must(rangeQuery(Alert.END_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
+//        }
 
         // filter by is user admin
         if (alertQuery.getFilterByIsUserAdmin() != null) {
             boolQueryBuilder.must(matchQuery(Alert.IS_USER_ADMIN_FIELD_NAME, alertQuery.getFilterByIsUserAdmin()).operator(Operator.AND));
         }
+
+        // filter by min or max score
+        if (alertQuery.getFilterByMinScore() > 0 || alertQuery.getFilterByMaxScore() > 0) {
+            RangeQueryBuilder rangeQuery = rangeQuery(Alert.SCORE);
+            if (alertQuery.getFilterByMinScore() > 0) {
+                rangeQuery.gte(alertQuery.getFilterByMinScore());
+            }
+            if (alertQuery.getFilterByMaxScore() > 0) {
+                rangeQuery.lte(alertQuery.getFilterByMaxScore());
+            }
+
+            boolQueryBuilder.must(rangeQuery);
+        }
+
 
         if (boolQueryBuilder.hasClauses()) {
             super.withFilter(boolQueryBuilder);

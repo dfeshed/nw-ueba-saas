@@ -17,14 +17,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -243,8 +236,8 @@ public class UserScoreServiceImpl implements UserScoreService {
                         .filterByStartDate(startTime)
                         .filterByEndDate(endTime)
                         .sortField(Alert.START_DATE, true)
-                        .pageSize(this.defaultAlertsBatchSize)
-                        .pageNumber(0);
+                        .setPageSize(this.defaultAlertsBatchSize)
+                        .setPageNumber(0);
 
                 AlertQuery alertQuery = alertQueryBuilder.build();
 
@@ -359,7 +352,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     private Page<Alert> getNextAlertPage(AlertQuery.AlertQueryBuilder alertQueryBuilder, Page<Alert> page) {
         if (page.hasNext()) {
             Pageable pageable = page.nextPageable();
-            alertQueryBuilder.pageNumber(pageable.getPageNumber());
+            alertQueryBuilder.setPageNumber(pageable.getPageNumber());
             page = alertPersistencyService.find(alertQueryBuilder.build());
 
         } else {
