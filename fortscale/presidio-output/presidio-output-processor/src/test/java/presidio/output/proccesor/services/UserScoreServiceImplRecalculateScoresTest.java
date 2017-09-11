@@ -53,7 +53,6 @@ public class UserScoreServiceImplRecalculateScoresTest {
         userScoreService = new UserScoreServiceImpl(mockUserPresistency,
                 mockAlertPresistency,
                 1000,
-                1000,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS,
                 75,
                 50,
@@ -171,9 +170,9 @@ public class UserScoreServiceImplRecalculateScoresTest {
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
         List<User> usersWithOldScore = Arrays.asList(
-                new User("user1", null, null, 50, null, null, false, UserSeverity.CRITICAL, 0),
-                new User("user2", null, null, 50, null, null, false, UserSeverity.CRITICAL, 0),
-                new User("user3", null, null, 50, null, null, false, UserSeverity.CRITICAL, 0)
+                new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
+                new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
+                new User("user3", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0)
         );
 
         Pageable pageable1 = new PageRequest(0, 3);
