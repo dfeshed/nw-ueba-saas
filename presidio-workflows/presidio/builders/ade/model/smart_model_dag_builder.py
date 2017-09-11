@@ -58,15 +58,15 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             command=PresidioDagBuilder.presidio_command,
             smart_events_conf=self._smart_events_conf,
             dag=smart_model_dag)
-        accumulate_short_circuit_operator = ShortCircuitOperator(
-            task_id='accumulate_short_circuit',
+        smart_accumulate_short_circuit_operator = ShortCircuitOperator(
+            task_id='smart_accumulate_short_circuit',
             dag=smart_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._accumulate_interval,
                                                                      smart_model_dag.schedule_interval),
             provide_context=True
         )
-        task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, accumulate_short_circuit_operator)
+        task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, smart_accumulate_short_circuit_operator)
 
         #defining the smart model
         smart_model_operator = SmartModelOperator(smart_events_conf=self._smart_events_conf,

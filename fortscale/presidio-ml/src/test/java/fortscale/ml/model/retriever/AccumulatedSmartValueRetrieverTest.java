@@ -73,7 +73,7 @@ public class AccumulatedSmartValueRetrieverTest {
 
         String featureName = "featureName";
         double weight = 1.0;
-        SmartWeightsModel smartWeightsModel = new SmartWeightsModel().init(Collections.singletonList(new ClusterConf(Collections.singletonList(featureName), weight)));
+        SmartWeightsModel smartWeightsModel = new SmartWeightsModel().setClusterConfs(Collections.singletonList(new ClusterConf(Collections.singletonList(featureName), weight)));
 
         ModelConf smartWeightsModelConf = mock(ModelConf.class);
 
