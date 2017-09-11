@@ -85,6 +85,12 @@ dags:
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
+    ManagerOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-1.0.0-SNAPSHOT.jar
+        main_class: presidio.ade.manager.ManagerApplication
+        xmx: 500
+        xms: 70
 components:
   adapter:
     jvm_args:
