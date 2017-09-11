@@ -43,10 +43,10 @@ public class PresidioShellableApplication {
         configurationClass.add(FSHistoryFileNameProvider.class);
         configurationClass.add(FSPromptProvider.class);
         configurationClass.add(BootShimConfig.class);
-
-        ConfigurableApplicationContext context = SpringApplication.run(configurationClass.toArray(), args);
+        ConfigurableApplicationContext context = null;
         int exitCode=0;
         try {
+            context = SpringApplication.run(configurationClass.toArray(), args);
             context.registerShutdownHook();
             ExitShellRequest exitShellRequest = run(context);
             exitCode = exitShellRequest.getExitCode();
@@ -56,7 +56,9 @@ public class PresidioShellableApplication {
             exitCode=1;
         }
         finally {
-            context.close();
+            if (context!=null) {
+                context.close();
+            }
             Thread.currentThread().interrupt();
             System.exit(exitCode);
         }

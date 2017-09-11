@@ -34,7 +34,7 @@ public class WeightsModelBuilder implements IModelBuilder {
     public Model build(Object modelBuilderData) {
         logger.debug("building {} for {}", SmartWeightsModel.class.getSimpleName(), smartRecordConf.getName());
         SmartWeightsModelBuilderData smartWeightsModelBuilderData = castModelBuilderData(modelBuilderData);
-        return new SmartWeightsModel().init(algorithm.createWeightsClusterConfs(
+        return new SmartWeightsModel().setClusterConfs(algorithm.createWeightsClusterConfs(
                 smartRecordConf.getClusterConfs(),
                 smartWeightsModelBuilderData.getSmartAggregatedRecordDataContainers(),
                 smartWeightsModelBuilderData.getNumOfContexts(),
