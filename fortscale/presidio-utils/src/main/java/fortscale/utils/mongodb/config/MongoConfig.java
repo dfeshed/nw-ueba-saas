@@ -1,5 +1,6 @@
 package fortscale.utils.mongodb.config;
 
+import com.google.common.collect.Lists;
 import com.mongodb.*;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
@@ -19,6 +20,7 @@ import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -92,9 +94,8 @@ public class MongoConfig extends AbstractMongoConfiguration {
     }
 
     @Override
-    protected String getMappingBasePackage() {
-        // todo : replace with spring mongo beans package name
-        return "fortscale";
+    protected Collection<String> getMappingBasePackages() {
+        return Lists.newArrayList("fortscale","presidio");
     }
 
     @Bean
