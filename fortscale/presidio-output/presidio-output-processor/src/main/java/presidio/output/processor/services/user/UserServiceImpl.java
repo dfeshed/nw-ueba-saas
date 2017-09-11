@@ -15,6 +15,8 @@ public class UserServiceImpl implements UserService {
 
     private final EventPersistencyService eventPersistencyService;
     private final UserPersistencyService userPersistencyService;
+    private final String TAG_ADMIN = "admin";
+
 
     public UserServiceImpl(EventPersistencyService eventPersistencyService, UserPersistencyService userPersistencyService) {
         this.eventPersistencyService = eventPersistencyService;
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.isAdmin());
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
     }
 
     @Override
@@ -41,8 +43,11 @@ public class UserServiceImpl implements UserService {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
-        Boolean isAdmin = Boolean.valueOf(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN));
-        return new UserDetails(userName, userDisplayName, userId, isAdmin);
+        List<String> tags = new ArrayList<>();
+        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null) {
+            tags.add(TAG_ADMIN);
+        }
+        return new UserDetails(userName, userDisplayName, userId, tags);
     }
 
     public void setClassification(User user, List<String> classification) {

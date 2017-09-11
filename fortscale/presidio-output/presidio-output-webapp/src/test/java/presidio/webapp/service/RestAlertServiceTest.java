@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @Ignore
@@ -99,6 +97,6 @@ public class RestAlertServiceTest {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("userId", classifications, "username",
                 Instant.parse("2017-01-01T00:00:00Z").toEpochMilli(), Instant.parse("2017-01-01T11:00:00Z").toEpochMilli(),
-                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, false);
+                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null);
     }
 }

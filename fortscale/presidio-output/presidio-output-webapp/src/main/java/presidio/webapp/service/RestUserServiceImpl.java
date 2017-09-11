@@ -12,7 +12,6 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -25,7 +24,6 @@ public class RestUserServiceImpl implements RestUserService {
     private final UserPersistencyService userPersistencyService;
     private final int pageNumber;
     private final int pageSize;
-    private final String TAG_ADMIN = "admin";
 
     public RestUserServiceImpl(RestAlertService restAlertService, UserPersistencyService userPersistencyService, int pageSize, int pageNumber) {
         this.pageNumber = pageNumber;
@@ -58,9 +56,9 @@ public class RestUserServiceImpl implements RestUserService {
             convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
         }
         convertedUser.setScore((int) user.getScore());
-        if (user.getAdmin())
-            convertedUser.setTags(new ArrayList<>(Arrays.asList(TAG_ADMIN)));
+        convertedUser.setTags(user.getTags());
         convertedUser.setUsername(user.getUserName());
+        convertedUser.setAlertclassifications(user.getAlertClassifications());
         return convertedUser;
     }
 
@@ -71,8 +69,8 @@ public class RestUserServiceImpl implements RestUserService {
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
         presidio.output.domain.records.users.UserQuery.UserQueryBuilder builder = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder();
-        if (CollectionUtils.isNotEmpty(userQuery.getClassification())) {
-            builder.filterByAlertClassifications(userQuery.getClassification());
+        if (CollectionUtils.isNotEmpty(userQuery.getAlertClassifications())) {
+            builder.filterByAlertClassifications(userQuery.getAlertClassifications());
         }
         if (userQuery.getUserName() != null) {
             builder.filterByUserName(userQuery.getUserName());
@@ -82,9 +80,6 @@ public class RestUserServiceImpl implements RestUserService {
         }
         if (userQuery.getMinScore() != null) {
             builder.minScore(userQuery.getMinScore());
-        }
-        if (CollectionUtils.isNotEmpty(userQuery.getIndicatorsType())) {
-            builder.filterByIndicators(userQuery.getIndicatorsType());
         }
         if (userQuery.getSeverity() != null) {
             builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
@@ -99,11 +94,7 @@ public class RestUserServiceImpl implements RestUserService {
             builder.filterByUserNameWithPrefix(userQuery.getIsPrefix());
         }
         if (CollectionUtils.isNotEmpty(userQuery.getTags())) {
-            userQuery.getTags().forEach(tag -> {
-                if (tag.equals(TAG_ADMIN)) {
-                    builder.filterByUserAdmin(true);
-                }
-            });
+            builder.filterByUserTags(userQuery.getTags());
         }
         if (CollectionUtils.isNotEmpty(userQuery.getSort())) {
             try {

@@ -13,22 +13,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by efratn on 20/08/2017.
- */
 @Document(indexName = AbstractElasticDocument.INDEX_NAME, type = User.USER_DOC_TYPE)
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
 
-    public static final String ALERT_CLASSIFICATOINS_FIELD_NAME = "alertClassifications";
+    public static final String ALERT_CLASSIFICATIONS = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
     public static final String USER_SEVERITY_FIELD_NAME = "userSeverity";
     public static final String SCORE_FIELD_NAME = "score";
     public static final String USER_ID_FIELD_NAME = "userId";
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
-    public static final String IS_ADMIN_FIELD_NAME = "isAdmin";
+    public static final String TAGS_FIELD_NAME = "tags";
 
 
     @Field(type = FieldType.String, store = true)
@@ -48,7 +45,7 @@ public class User extends AbstractElasticDocument {
     private double score;
 
     @Field(type = FieldType.String, store = true)
-    @JsonProperty(ALERT_CLASSIFICATOINS_FIELD_NAME)
+    @JsonProperty(ALERT_CLASSIFICATIONS)
     private List<String> alertClassifications;
 
     @Field(type = FieldType.String, store = true)
@@ -60,6 +57,10 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(USER_SEVERITY_FIELD_NAME)
     private UserSeverity userSeverity;
 
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(TAGS_FIELD_NAME)
+    private List<String> tags;
+
     public UserSeverity getUserSeverity() {
         return userSeverity;
     }
@@ -70,11 +71,12 @@ public class User extends AbstractElasticDocument {
 
     public User() {
         // empty const for JSON deserialization
-        this.indicators = new ArrayList<String>();
-        this.alertClassifications = new ArrayList<String>();
+        this.indicators = new ArrayList<>();
+        this.alertClassifications = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
-    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, Boolean isAdmin) {
+    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity userSeverity) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -82,15 +84,16 @@ public class User extends AbstractElasticDocument {
         this.score = score;
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
-        this.isAdmin = isAdmin;
+        this.tags = tags;
+        this.userSeverity = userSeverity;
     }
 
-    public User(String userId, String userName, String userDisplayName, Boolean isAdmin) {
+    public User(String userId, String userName, String userDisplayName, List<String> tags) {
         super();
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
-        this.isAdmin = isAdmin;
+        this.tags = tags;
     }
 
     public void setUserId(String userId) {
@@ -125,11 +128,6 @@ public class User extends AbstractElasticDocument {
         return score;
     }
 
-    @Field(type = FieldType.Boolean, store = true)
-    @JsonProperty(IS_ADMIN_FIELD_NAME)
-    private Boolean isAdmin;
-
-
     public List<String> getAlertClassifications() {
         return alertClassifications;
     }
@@ -142,9 +140,8 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
     }
 
-
     public void addAlertClassifications(List<String> alertClassifications) {
-        Set<String> newAlertClassifications = new HashSet<String>(this.alertClassifications);
+        Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
         this.alertClassifications = new ArrayList<>();
         this.alertClassifications.addAll(newAlertClassifications);
@@ -152,6 +149,14 @@ public class User extends AbstractElasticDocument {
 
     public void setIndicators(List<String> indicators) {
         this.indicators = indicators;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     @Override
@@ -167,13 +172,5 @@ public class User extends AbstractElasticDocument {
     @Override
     public int hashCode() {
         return userId.hashCode();
-    }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
     }
 }
