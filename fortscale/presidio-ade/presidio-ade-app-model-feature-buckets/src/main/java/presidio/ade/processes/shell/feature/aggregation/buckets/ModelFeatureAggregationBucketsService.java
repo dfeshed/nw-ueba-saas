@@ -23,17 +23,15 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
     private FeatureBucketStore featureBucketStore;
-    private TtlService ttlService;
 
     public ModelFeatureAggregationBucketsService(BucketConfigurationService bucketConfigurationService,
                                                  EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator featureBucketAggregator,
-                                                 FeatureBucketStore featureBucketStore, TtlService ttlService) {
+                                                 FeatureBucketStore featureBucketStore) {
         super(FixedDurationStrategy.DAILY);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureBucketAggregator = featureBucketAggregator;
         this.featureBucketStore = featureBucketStore;
-        this.ttlService = ttlService;
     }
 
     @Override
@@ -47,7 +45,6 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
             List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator,contextTypes, createFeatureBucketStrategyData(timeRange));
             storeFeatureBuckets(featureBucketsToInsert);
         }
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     private void storeFeatureBuckets(List<FeatureBucket> featureBucketList){
