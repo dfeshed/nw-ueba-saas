@@ -34,8 +34,8 @@ public class UserQuery {
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
-    @JsonProperty("alertclassifications")
-    private List<String> alertclassifications = new ArrayList<String>();
+    @JsonProperty("alertClassifications")
+    private List<String> alertClassifications = new ArrayList<String>();
 
     @JsonProperty("indicatorsName")
     private List<String> indicatorsName = new ArrayList<String>();
@@ -187,28 +187,28 @@ public class UserQuery {
         this.tags = tags;
     }
 
-    public UserQuery alertclassifications(List<String> alertclassifications) {
-        this.alertclassifications = alertclassifications;
+    public UserQuery alertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
         return this;
     }
 
-    public UserQuery addAlertclassificationsItem(String alertclassificationsItem) {
-        this.alertclassifications.add(alertclassificationsItem);
+    public UserQuery addAlertClassificationsItem(String alertClassificationsItem) {
+        this.alertClassifications.add(alertClassificationsItem);
         return this;
     }
 
     /**
-     * Get alertclassifications
+     * Get alertClassifications
      *
-     * @return alertclassifications
+     * @return alertClassifications
      **/
     @ApiModelProperty(value = "")
-    public List<String> getAlertclassifications() {
-        return alertclassifications;
+    public List<String> getAlertClassifications() {
+        return alertClassifications;
     }
 
-    public void setAlertclassifications(List<String> alertclassifications) {
-        this.alertclassifications = alertclassifications;
+    public void setAlertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
     }
 
     public UserQuery indicatorsName(List<String> indicatorsName) {
@@ -319,7 +319,7 @@ public class UserQuery {
                 Objects.equals(this.maxScore, userQuery.maxScore) &&
                 Objects.equals(this.isPrefix, userQuery.isPrefix) &&
                 Objects.equals(this.tags, userQuery.tags) &&
-                Objects.equals(this.alertclassifications, userQuery.alertclassifications) &&
+                Objects.equals(this.alertClassifications, userQuery.alertClassifications) &&
                 Objects.equals(this.indicatorsName, userQuery.indicatorsName) &&
                 Objects.equals(this.sort, userQuery.sort) &&
                 Objects.equals(this.severity, userQuery.severity) &&
@@ -328,7 +328,7 @@ public class UserQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertclassifications, indicatorsName, sort, severity, expand);
+        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sort, severity, expand);
     }
 
     @Override
@@ -343,7 +343,7 @@ public class UserQuery {
         sb.append("    maxScore: ").append(toIndentedString(maxScore)).append("\n");
         sb.append("    isPrefix: ").append(toIndentedString(isPrefix)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    alertclassifications: ").append(toIndentedString(alertclassifications)).append("\n");
+        sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
@@ -363,3 +363,4 @@ public class UserQuery {
         return o.toString().replace("\n", "\n    ");
     }
 }
+
