@@ -8,15 +8,12 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
-import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
-import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -89,8 +86,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
      * @param userQuery
      */
     public void withSort(UserQuery userQuery) {
-        if (!ObjectUtils.isEmpty(userQuery.getSort())) {
-
+        if (userQuery.getSort() != null) {
             userQuery.getSort().forEach(order -> {
                 FieldSortBuilder sortBuilder = new FieldSortBuilder(order.getProperty());
                 SortOrder direction = order.getDirection().name().equals(SortOrder.ASC.name()) ? SortOrder.ASC : SortOrder.DESC;

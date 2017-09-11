@@ -8,7 +8,10 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by efratn on 20/08/2017.
@@ -21,7 +24,7 @@ public class User extends AbstractElasticDocument {
     public static final String ALERT_CLASSIFICATOINS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
     public static final String USER_SEVERITY_FIELD_NAME = "userSeverity";
-    public static final String SCORE_FIELD_NAME = "userScore";
+    public static final String SCORE_FIELD_NAME = "score";
     public static final String USER_ID_FIELD_NAME = "userId";
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
@@ -42,7 +45,7 @@ public class User extends AbstractElasticDocument {
 
     @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE_FIELD_NAME)
-    private double userScore;
+    private double score;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(ALERT_CLASSIFICATOINS_FIELD_NAME)
@@ -65,18 +68,18 @@ public class User extends AbstractElasticDocument {
         this.userSeverity = userSeverity;
     }
 
-    public User(){
+    public User() {
         // empty const for JSON deserialization
         this.indicators = new ArrayList<String>();
         this.alertClassifications = new ArrayList<String>();
     }
 
-    public User(String userId, String userName, String userDisplayName, double userScore, List<String> alertClassifications, List<String> indicators, Boolean isAdmin) {
+    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, Boolean isAdmin) {
         super();
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
-        this.userScore = userScore;
+        this.score = score;
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
         this.isAdmin = isAdmin;
@@ -102,8 +105,8 @@ public class User extends AbstractElasticDocument {
         this.userDisplayName = userDisplayName;
     }
 
-    public void setUserScore(double userScore) {
-        this.userScore = userScore;
+    public void setScore(double score) {
+        this.score = score;
     }
 
     public String getUserId() {
@@ -118,8 +121,8 @@ public class User extends AbstractElasticDocument {
         return userDisplayName;
     }
 
-    public double getUserScore() {
-        return userScore;
+    public double getScore() {
+        return score;
     }
 
     @Field(type = FieldType.Boolean, store = true)
@@ -143,7 +146,7 @@ public class User extends AbstractElasticDocument {
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<String>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications=new ArrayList<>();
+        this.alertClassifications = new ArrayList<>();
         this.alertClassifications.addAll(newAlertClassifications);
     }
 

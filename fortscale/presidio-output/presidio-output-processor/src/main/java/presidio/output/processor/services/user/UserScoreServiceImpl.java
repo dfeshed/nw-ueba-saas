@@ -84,9 +84,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         AlertEnums.AlertSeverity alertSeverity = alert.getSeverity();
         double userScoreContribution = this.alertSeverityToScoreContribution.get(alertSeverity);
 
-        double userScore = user.getUserScore();
+        double userScore = user.getScore();
         userScore += userScoreContribution;
-        user.setUserScore(userScore);
+        user.setScore(userScore);
 
     }
 
@@ -198,7 +198,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         while (usersPage != null && usersPage.hasContent()) {
             usersPage.getContent().forEach(user -> {
                 if (!excludedUsersIds.contains(user.getUserId())) {
-                    user.setUserScore(0D);
+                    user.setScore(0D);
                     user.setUserSeverity(null);
                     clearedUsersList.add(user);
                 }
@@ -285,8 +285,8 @@ public class UserScoreServiceImpl implements UserScoreService {
         Page<User> users = userPersistencyService.find(userQuery);
         users.forEach(user -> {
             double newUserScore = aggregatedUserScore.get(user.getUserId());
-            if (user.getUserScore() != newUserScore) {
-                user.setUserScore(newUserScore);
+            if (user.getScore() != newUserScore) {
+                user.setScore(newUserScore);
                 changedUsers.add(user);
             }
         });
@@ -308,7 +308,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             return;
         }
         users.forEach(user -> {
-            double userScore = user.getUserScore();
+            double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getSeverity(userScore);
 
             log.debug("Updating user severity for userId: " + user.getUserId());
@@ -378,7 +378,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         while (page != null && page.hasContent()) {
             page.getContent().forEach(user -> {
-                scores[courser.getAndAdd(1)] = user.getUserScore();
+                scores[courser.getAndAdd(1)] = user.getScore();
             });
             page = getNextUserPage(userQueryBuilder, page);
 

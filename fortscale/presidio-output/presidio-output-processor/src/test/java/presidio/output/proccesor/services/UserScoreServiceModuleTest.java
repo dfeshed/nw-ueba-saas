@@ -89,7 +89,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(0, usersPageResult.getContent().get(0).getUserScore(), 0.00001);
+        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
         userScoreService.updateAllUsersScores();
@@ -99,7 +99,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(40, usersPageResult.getContent().get(0).getUserScore(), 0.00001);
+        Assert.assertEquals(40, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
     }
@@ -128,7 +128,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(0, usersPageResult.getContent().get(0).getUserScore(), 0.00001);
+        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
         userScoreService.updateAllUsersScores();
@@ -138,7 +138,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(20, usersPageResult.getContent().get(0).getUserScore(), 0.00001);
+        Assert.assertEquals(20, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
     }
@@ -167,7 +167,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(0, usersPageResult.getContent().get(0).getUserScore(), 0.00001);
+        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
         userScoreService.updateAllUsersScores();
@@ -177,7 +177,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(0, usersPageResult.getContent().get(0).getUserScore(), 0.00001);
+        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
 
 
     }
@@ -204,16 +204,16 @@ public class UserScoreServiceModuleTest {
 
 
         User user0 = getUserById("userId0");
-        Assert.assertEquals(15D, user0.getUserScore(), 0.00001); //one medium alert
+        Assert.assertEquals(15D, user0.getScore(), 0.00001); //one medium alert
         Assert.assertEquals(UserSeverity.LOW, user0.getUserSeverity());
 
         User user60 = getUserById("userId60");
-        Assert.assertEquals(915D, user60.getUserScore(), 0.00001); //61 medium alert
+        Assert.assertEquals(915D, user60.getScore(), 0.00001); //61 medium alert
         Assert.assertEquals(UserSeverity.HIGH, user60.getUserSeverity());
 
 
         User user99 = getUserById("userId99");
-        Assert.assertEquals(1500D, user99.getUserScore(), 0.00001); //100 Medium Alerts
+        Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
         Assert.assertEquals(UserSeverity.CRITICAL, user99.getUserSeverity());
 
 

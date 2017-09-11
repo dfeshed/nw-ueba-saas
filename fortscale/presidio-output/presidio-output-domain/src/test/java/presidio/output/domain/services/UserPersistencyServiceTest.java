@@ -23,9 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 @Ignore
@@ -79,7 +77,7 @@ public class UserPersistencyServiceTest {
         assertEquals(createdUser.getId(), user.getId());
         assertEquals(createdUser.getUserName(), user.getUserName());
         assertEquals(createdUser.getUserDisplayName(), user.getUserDisplayName());
-        assertTrue(createdUser.getUserScore() == user.getUserScore());
+        assertTrue(createdUser.getScore() == user.getScore());
         assertEquals(createdUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(createdUser.getIndicators().size(), user.getIndicators().size());
     }
@@ -114,7 +112,7 @@ public class UserPersistencyServiceTest {
         assertEquals(foundUser.getId(), user.getId());
         assertEquals(foundUser.getUserName(), user.getUserName());
         assertEquals(foundUser.getUserDisplayName(), user.getUserDisplayName());
-        assertTrue(foundUser.getUserScore() == user.getUserScore());
+        assertTrue(foundUser.getScore() == user.getScore());
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
 
@@ -161,7 +159,7 @@ public class UserPersistencyServiceTest {
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 50d);
+        assertTrue(foundUsers.iterator().next().getScore() == 50d);
     }
 
     @Test
