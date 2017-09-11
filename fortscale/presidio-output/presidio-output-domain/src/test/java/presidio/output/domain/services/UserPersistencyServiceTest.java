@@ -194,10 +194,10 @@ public class UserPersistencyServiceTest {
 
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, false, UserSeverity.CRITICAL, 0);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, false, UserSeverity.CRITICAL, 0);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, false, UserSeverity.CRITICAL, 0);
-        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, false, UserSeverity.CRITICAL, 0);
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0);
 
 
         List<User> userList = new ArrayList<>();
