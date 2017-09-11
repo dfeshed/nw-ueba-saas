@@ -48,7 +48,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     @Override
     public Status process() throws EventDeliveryException {
-        logger.debug("{} is starting...", getName());
+        logger.trace("{} is starting...", getName());
         Status result = Status.READY;
         Channel channel = getChannel();
         Transaction transaction = channel.getTransaction();
@@ -56,7 +56,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
             transaction.begin();
             final List<T> eventsToSave = getEvents();
 
-            if (!eventsToSave.isEmpty()) {
+            if (eventsToSave.isEmpty()) {
                 logger.trace("{} has finished processing 0 events.", getName());
             } else {
                 final int numOfSavedEvents = saveEvents(eventsToSave);

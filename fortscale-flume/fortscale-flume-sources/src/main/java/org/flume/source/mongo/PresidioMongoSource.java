@@ -136,8 +136,13 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
                     pageNum++;
                 }
             }
-            logger.debug("{} has finished processing events for {}: {}, {}: {}.",
-                    getName(), START_DATE, startDate, END_DATE, endDate);
+            if (currentPage.isEmpty()) {
+                logger.trace("{} has finished processing events for {}: {}, {}: {}.",
+                        getName(), START_DATE, startDate, END_DATE, endDate);
+            } else {
+                logger.debug("{} has finished processing events for {}: {}, {}: {}.",
+                        getName(), START_DATE, startDate, END_DATE, endDate);
+            }
             startDate = endDate; // advance the cursor
 
             sendDoneControlMessage();
