@@ -100,7 +100,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithLowSmartScore() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), false, UserSeverity.CRITICAL, 0);
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity);
         assertTrue(alert == null);
     }
@@ -108,7 +108,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertTest() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), false, UserSeverity.CRITICAL, 0);
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
         Alert alert = alertService.generateAlert(smart, userEntity);
         assertEquals(alert.getUserId(), userEntity.getUserId());

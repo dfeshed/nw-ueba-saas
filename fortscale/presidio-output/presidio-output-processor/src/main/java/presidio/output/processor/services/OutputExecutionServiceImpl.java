@@ -91,8 +91,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     public void recalculateUserScore() throws Exception{
-        logger.info("Start Recalculating User Score");
-        this.userScoreService.updateAllUsersScores();
+        logger.info("Start Recalculating User Alert Data");
+        this.userService.updateAllUsersAlertData();
         logger.info("Finish Recalculating User Score");
         logger.info("Start Updating UserSeverity");
         this.userScoreService.updateSeverities();
