@@ -30,7 +30,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<AlertsWrapper> getAlertsByUser(String userId) {
+    public ResponseEntity<AlertsWrapper> getAlertsByUser(String userId, presidio.webapp.model.UserAlertsQuery userAlertsQuery) {
         List<Alert> alerts = restAlertService.getAlertsByUserId(userId);
         AlertsWrapper alertsWrapper = new AlertsWrapper();
         if (!CollectionUtils.isEmpty(alerts)) {
