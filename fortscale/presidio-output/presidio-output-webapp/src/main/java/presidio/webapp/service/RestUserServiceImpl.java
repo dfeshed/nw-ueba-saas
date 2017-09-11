@@ -61,7 +61,6 @@ public class RestUserServiceImpl implements RestUserService {
         if (user.getAdmin())
             convertedUser.setTags(new ArrayList<>(Arrays.asList(TAG_ADMIN)));
         convertedUser.setUsername(user.getUserName());
-        convertedUser.setAlerts(restAlertService.getAlertsByUserId(user.getUserId()));
         return convertedUser;
     }
 

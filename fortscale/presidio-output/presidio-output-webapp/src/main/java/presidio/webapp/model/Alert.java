@@ -1,18 +1,19 @@
 package presidio.webapp.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Alert
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T10:33:22.473Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
 
 public class Alert   {
   @JsonProperty("id")
@@ -22,16 +23,19 @@ public class Alert   {
   private List<String> classifiation = new ArrayList<String>();
 
   @JsonProperty("startDate")
-  private Integer startDate = null;
+  private BigDecimal startDate = null;
 
   @JsonProperty("endDate")
-  private Integer endDate = null;
+  private BigDecimal endDate = null;
 
   @JsonProperty("username")
   private String username = null;
 
-  @JsonProperty("indicators")
-  private List<Indicator> indicators = new ArrayList<Indicator>();
+  @JsonProperty("indicatorsName")
+  private List<String> indicatorsName = new ArrayList<String>();
+
+  @JsonProperty("indicatorsNum")
+  private Integer indicatorsNum = null;
 
   @JsonProperty("score")
   private Integer score = null;
@@ -47,7 +51,7 @@ public class Alert   {
    */
   public enum TimeframeEnum {
     HOURLY("hourly"),
-    
+
     DAILY("daily");
 
     private String value;
@@ -87,10 +91,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get id
    * @return id
-  **/
+   **/
   @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
   public String getId() {
     return id;
@@ -110,10 +114,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get classifiation
    * @return classifiation
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getClassifiation() {
     return classifiation;
@@ -123,39 +127,39 @@ public class Alert   {
     this.classifiation = classifiation;
   }
 
-  public Alert startDate(Integer startDate) {
+  public Alert startDate(BigDecimal startDate) {
     this.startDate = startDate;
     return this;
   }
 
-   /**
+  /**
    * Get startDate
    * @return startDate
-  **/
+   **/
   @ApiModelProperty(value = "")
-  public Integer getStartDate() {
+  public BigDecimal getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(Integer startDate) {
+  public void setStartDate(BigDecimal startDate) {
     this.startDate = startDate;
   }
 
-  public Alert endDate(Integer endDate) {
+  public Alert endDate(BigDecimal endDate) {
     this.endDate = endDate;
     return this;
   }
 
-   /**
+  /**
    * Get endDate
    * @return endDate
-  **/
+   **/
   @ApiModelProperty(value = "")
-  public Integer getEndDate() {
+  public BigDecimal getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(Integer endDate) {
+  public void setEndDate(BigDecimal endDate) {
     this.endDate = endDate;
   }
 
@@ -164,10 +168,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get username
    * @return username
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getUsername() {
     return username;
@@ -177,27 +181,45 @@ public class Alert   {
     this.username = username;
   }
 
-  public Alert indicators(List<Indicator> indicators) {
-    this.indicators = indicators;
+  public Alert indicatorsName(List<String> indicatorsName) {
+    this.indicatorsName = indicatorsName;
     return this;
   }
 
-  public Alert addIndicatorsItem(Indicator indicatorsItem) {
-    this.indicators.add(indicatorsItem);
+  public Alert addIndicatorsNameItem(String indicatorsNameItem) {
+    this.indicatorsName.add(indicatorsNameItem);
     return this;
   }
 
-   /**
-   * Get indicators
-   * @return indicators
-  **/
+  /**
+   * Get indicatorsName
+   * @return indicatorsName
+   **/
   @ApiModelProperty(value = "")
-  public List<Indicator> getIndicators() {
-    return indicators;
+  public List<String> getIndicatorsName() {
+    return indicatorsName;
   }
 
-  public void setIndicators(List<Indicator> indicators) {
-    this.indicators = indicators;
+  public void setIndicatorsName(List<String> indicatorsName) {
+    this.indicatorsName = indicatorsName;
+  }
+
+  public Alert indicatorsNum(Integer indicatorsNum) {
+    this.indicatorsNum = indicatorsNum;
+    return this;
+  }
+
+  /**
+   * Get indicatorsNum
+   * @return indicatorsNum
+   **/
+  @ApiModelProperty(value = "")
+  public Integer getIndicatorsNum() {
+    return indicatorsNum;
+  }
+
+  public void setIndicatorsNum(Integer indicatorsNum) {
+    this.indicatorsNum = indicatorsNum;
   }
 
   public Alert score(Integer score) {
@@ -205,12 +227,12 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get score
    * minimum: 0
    * maximum: 100.0
    * @return score
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getScore() {
     return score;
@@ -225,10 +247,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get feedback
    * @return feedback
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Feedback getFeedback() {
     return feedback;
@@ -243,10 +265,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get userScoreContribution
    * @return userScoreContribution
-  **/
+   **/
   @ApiModelProperty(value = "")
   public BigDecimal getUserScoreContribution() {
     return userScoreContribution;
@@ -261,10 +283,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get timeframe
    * @return timeframe
-  **/
+   **/
   @ApiModelProperty(value = "")
   public TimeframeEnum getTimeframe() {
     return timeframe;
@@ -279,10 +301,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get severity
    * @return severity
-  **/
+   **/
   @ApiModelProperty(value = "")
   public AlertSeverity getSeverity() {
     return severity;
@@ -297,10 +319,10 @@ public class Alert   {
     return this;
   }
 
-   /**
+  /**
    * Get userId
    * @return userId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getUserId() {
     return userId;
@@ -321,35 +343,37 @@ public class Alert   {
     }
     Alert alert = (Alert) o;
     return Objects.equals(this.id, alert.id) &&
-        Objects.equals(this.classifiation, alert.classifiation) &&
-        Objects.equals(this.startDate, alert.startDate) &&
-        Objects.equals(this.endDate, alert.endDate) &&
-        Objects.equals(this.username, alert.username) &&
-        Objects.equals(this.indicators, alert.indicators) &&
-        Objects.equals(this.score, alert.score) &&
-        Objects.equals(this.feedback, alert.feedback) &&
-        Objects.equals(this.userScoreContribution, alert.userScoreContribution) &&
-        Objects.equals(this.timeframe, alert.timeframe) &&
-        Objects.equals(this.severity, alert.severity) &&
-        Objects.equals(this.userId, alert.userId);
+            Objects.equals(this.classifiation, alert.classifiation) &&
+            Objects.equals(this.startDate, alert.startDate) &&
+            Objects.equals(this.endDate, alert.endDate) &&
+            Objects.equals(this.username, alert.username) &&
+            Objects.equals(this.indicatorsName, alert.indicatorsName) &&
+            Objects.equals(this.indicatorsNum, alert.indicatorsNum) &&
+            Objects.equals(this.score, alert.score) &&
+            Objects.equals(this.feedback, alert.feedback) &&
+            Objects.equals(this.userScoreContribution, alert.userScoreContribution) &&
+            Objects.equals(this.timeframe, alert.timeframe) &&
+            Objects.equals(this.severity, alert.severity) &&
+            Objects.equals(this.userId, alert.userId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, classifiation, startDate, endDate, username, indicators, score, feedback, userScoreContribution, timeframe, severity, userId);
+    return Objects.hash(id, classifiation, startDate, endDate, username, indicatorsName, indicatorsNum, score, feedback, userScoreContribution, timeframe, severity, userId);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Alert {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    classifiation: ").append(toIndentedString(classifiation)).append("\n");
     sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
     sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
-    sb.append("    indicators: ").append(toIndentedString(indicators)).append("\n");
+    sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
+    sb.append("    indicatorsNum: ").append(toIndentedString(indicatorsNum)).append("\n");
     sb.append("    score: ").append(toIndentedString(score)).append("\n");
     sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
     sb.append("    userScoreContribution: ").append(toIndentedString(userScoreContribution)).append("\n");

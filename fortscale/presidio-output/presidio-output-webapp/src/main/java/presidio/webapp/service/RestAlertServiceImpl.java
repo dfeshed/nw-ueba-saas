@@ -9,6 +9,7 @@ import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,8 +124,8 @@ public class RestAlertServiceImpl implements RestAlertService {
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
-        restAlert.setEndDate(Long.valueOf(alert.getEndDate()).intValue());
-        restAlert.setStartDate(Long.valueOf(alert.getStartDate()).intValue());
+        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
+        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());

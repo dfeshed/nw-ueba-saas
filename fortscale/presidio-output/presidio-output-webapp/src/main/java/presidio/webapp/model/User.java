@@ -1,15 +1,16 @@
 package presidio.webapp.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T10:33:22.473Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
 
 public class User   {
   @JsonProperty("id")
@@ -30,8 +31,8 @@ public class User   {
   @JsonProperty("userSeverity")
   private UserSeverity userSeverity = null;
 
-  @JsonProperty("alerts")
-  private List<Alert> alerts = new ArrayList<Alert>();
+  @JsonProperty("numAlerts")
+  private Integer numAlerts = null;
 
   public User id(String id) {
     this.id = id;
@@ -147,32 +148,27 @@ public class User   {
     this.userSeverity = userSeverity;
   }
 
-  public User alerts(List<Alert> alerts) {
-    this.alerts = alerts;
-    return this;
-  }
-
-  public User addAlertsItem(Alert alertsItem) {
-    this.alerts.add(alertsItem);
+  public User numAlerts(Integer numAlerts) {
+    this.numAlerts = numAlerts;
     return this;
   }
 
    /**
-   * Get alerts
-   * @return alerts
+   * Get numAlerts
+   * @return numAlerts
   **/
   @ApiModelProperty(value = "")
-  public List<Alert> getAlerts() {
-    return alerts;
+  public Integer getNumAlerts() {
+    return numAlerts;
   }
 
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public void setNumAlerts(Integer numAlerts) {
+    this.numAlerts = numAlerts;
   }
 
 
   @Override
-  public boolean equals(java.lang.Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
@@ -186,12 +182,12 @@ public class User   {
         Objects.equals(this.tags, user.tags) &&
         Objects.equals(this.score, user.score) &&
         Objects.equals(this.userSeverity, user.userSeverity) &&
-        Objects.equals(this.alerts, user.alerts);
+        Objects.equals(this.numAlerts, user.numAlerts);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alerts);
+    return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, numAlerts);
   }
 
   @Override
@@ -205,7 +201,7 @@ public class User   {
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    score: ").append(toIndentedString(score)).append("\n");
     sb.append("    userSeverity: ").append(toIndentedString(userSeverity)).append("\n");
-    sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
+    sb.append("    numAlerts: ").append(toIndentedString(numAlerts)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -214,7 +210,7 @@ public class User   {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private String toIndentedString(Object o) {
     if (o == null) {
       return "null";
     }
