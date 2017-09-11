@@ -13,7 +13,9 @@ import presidio.webapp.model.UserQuery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class RestUserServiceImpl implements RestUserService {
@@ -47,13 +49,42 @@ public class RestUserServiceImpl implements RestUserService {
     public List<User> getUsers(UserQuery userQuery) {
         Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
         List<User> restUsers = new ArrayList<>();
-        for (presidio.output.domain.records.users.User user : users) {
-            List<Alert> alert = null;
-            if (userQuery.getExpand())
-                alert = restAlertService.getAlertsByUserId(user.getId());
-            restUsers.add(createResult(user, alert));
+        List<Alert> alerts = null;
+        if (userQuery.getExpand()) {
+            Map<String, List<Alert>> map;
+            List<String> usersIds = new ArrayList<>();
+            for (presidio.output.domain.records.users.User user : users) {
+                usersIds.add(user.getUserId());
+            }
+            alerts = restAlertService.getAlertsByUsersIds(usersIds);
+            map = userIdsToAlerts(alerts, usersIds);
+            for (presidio.output.domain.records.users.User user : users) {
+                restUsers.add(createResult(user, map.get(user.getId())));
+            }
+        } else {
+            for (presidio.output.domain.records.users.User user : users) {
+                restUsers.add(createResult(user, alerts));
+            }
         }
         return restUsers;
+    }
+
+    private Map<String, List<Alert>> userIdsToAlerts(List<Alert> alerts, List<String> usersIds) {
+        Map<String, List<Alert>> map = new HashMap<>();
+        List<Alert> tempAlerts;
+        for (String id : usersIds) {
+            tempAlerts = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(alerts)) {
+                for (Alert alert : alerts) {
+                    if (alert.getUserId().equals(id)) {
+                        tempAlerts.add(alert);
+                        alerts.remove(alert);
+                    }
+                }
+            }
+            map.put(id, tempAlerts);
+        }
+        return map;
     }
 
     @Override

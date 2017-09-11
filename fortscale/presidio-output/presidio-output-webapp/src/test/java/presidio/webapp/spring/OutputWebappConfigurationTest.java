@@ -15,7 +15,7 @@ public class OutputWebappConfigurationTest {
 
     @Bean
     RestAlertService restAlertService() {
-        return new RestAlertServiceImpl(alertService);
+        return new RestAlertServiceImpl(alertService, 0, 100);
     }
 
     @Bean
