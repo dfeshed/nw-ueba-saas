@@ -25,8 +25,8 @@ public class UserServiceImpl implements UserService {
     private final String TAG_ADMIN = "admin";
 
 
-    private int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
-    public int defaultUsersBatchSize;
+    private final int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
+    private final int defaultUsersBatchSize;
 
     public UserServiceImpl(EventPersistencyService eventPersistencyService,
                            UserPersistencyService userPersistencyService,
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        if(userDetails == null) {
+        if (userDetails == null) {
             return null;
         }
         return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDetails getUserDetails(String userId) {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
-        if(event == null) {
+        if (event == null) {
             log.error("no events were found for user {}", userId);
             return null;
         }
