@@ -16,20 +16,15 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
  * Created by efratn on 02/08/2017.
  */
 @Configuration
+@Import(MongoConfig.class)
 public class EventPersistencyServiceConfig {
-
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private OutputToCollectionNameTranslator toCollectionNameTranslator;
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
     @Bean
     public EventPersistencyService eventPersistencyService() {
-        return new EventPersistencyServiceImpl(eventRepository, toCollectionNameTranslator);
+        return new EventPersistencyServiceImpl(eventRepository(), outputToCollectionNameTranslator());
     }
 
     @Bean
