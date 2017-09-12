@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { load, persist } from './util/local-storage';
@@ -50,6 +51,6 @@ const incidentsReducers = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_SELECT_ALL_INCIDENTS]: explorerReducers.toggleSelectAll,
   [ACTION_TYPES.SORT_BY]: persistState(explorerReducers.sortBy)
 
-}, initialState);
+}, Immutable.from(initialState));
 
 export default incidentsReducers;

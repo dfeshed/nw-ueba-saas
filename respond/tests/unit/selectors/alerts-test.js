@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+import Immutable from 'seamless-immutable';
 import { getAlerts, getSelectedAlerts, hasSelectedAlertsBelongingToIncidents, getAlertNames } from 'respond/selectors/alerts';
 import data from '../../data/data';
 
@@ -70,6 +71,6 @@ test('getAlertNames() returns sorted array', function(assert) {
       }
     }
   };
-  const result = getAlertNames(state);
+  const result = getAlertNames(Immutable.from(state));
   assert.equal(result.join(','), '12Monkeys,Aardvark,beetle,human,Whale', 'The alert names are returned sorted by name');
 });

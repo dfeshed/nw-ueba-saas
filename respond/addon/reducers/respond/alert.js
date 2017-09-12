@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
@@ -56,69 +57,65 @@ const persistAlertState = (callback) => {
 
 const alertReducers = reduxActions.handleActions({
 
-  [ACTION_TYPES.INITIALIZE_ALERT]: (state, { payload }) => ({
-    // reset state for a new alert id, even if it matches the old alert id,
-    // because we don't want to reuse info, we want to reload it in case it may have changed on server
-    ...initialState,
-    id: payload,
+  [ACTION_TYPES.INITIALIZE_ALERT]: (state, { payload }) => {
+    return state.merge({
+      // reset state for a new alert id, even if it matches the old alert id,
+      // because we don't want to reuse info, we want to reload it in case it may have changed on server
+      id: payload,
 
-    // there are some visual properties (not server data) properties which should be preserved
-    // they should not be reset to initialState for every incident
-    inspectorWidth: state.inspectorWidth || initialState.inspectorWidth
+      // there are some visual properties (not server data) properties which should be preserved
+      // they should not be reset to initialState for every incident
+      inspectorWidth: state.inspectorWidth || initialState.inspectorWidth
+    });
+  },
+
+  [ACTION_TYPES.RESIZE_ALERT_INSPECTOR]: persistAlertState((state, { payload }) => {
+    return state.set('inspectorWidth', payload);
   }),
 
-  [ACTION_TYPES.RESIZE_ALERT_INSPECTOR]: persistAlertState((state, { payload }) => ({
-    ...state,
-    inspectorWidth: payload
-  })),
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STARTED]: (state) => {
+    return state.merge({
+      info: null,
+      infoStatus: 'streaming'
+    });
+  },
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_STARTED]: (state) => ({
-    ...state,
-    info: null,
-    infoStatus: 'streaming'
-  }),
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopInfoStream', payload),
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_STREAM_INITIALIZED]: (state, { payload }) => ({
-    ...state,
-    stopInfoStream: payload
-  }),
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_RETRIEVE_BATCH]: (state, { payload: { data } }) => state.set('info', data && data[0]),
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_RETRIEVE_BATCH]: (state, { payload: { data } }) => ({
-    ...state,
-    info: data && data[0]
-  }),
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_COMPLETED]: (state) => {
+    return state.merge({
+      infoStatus: 'complete',
+      stopInfoStream: null
+    });
+  },
 
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_COMPLETED]: (state) => ({
-    ...state,
-    infoStatus: 'complete',
-    stopInfoStream: null
-  }),
-
-  [ACTION_TYPES.FETCH_ALERT_DETAILS_ERROR]: (state) => ({
-    ...state,
-    infoStatus: 'error',
-    stopInfoStream: null
-  }),
+  [ACTION_TYPES.FETCH_ALERT_DETAILS_ERROR]: (state) => {
+    return state.merge({
+      infoStatus: 'error',
+      stopInfoStream: null
+    });
+  },
 
   [ACTION_TYPES.FETCH_ALERT_EVENTS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, events: null, eventsStatus: 'wait' }),
-      failure: (s) => ({ ...s, eventsStatus: 'error' }),
-      success: (s) => ({ ...s, events: fixNormalizedEvents(action.payload.data), eventsStatus: 'success' })
+      start: (s) => s.merge({ events: null, eventsStatus: 'wait' }),
+      failure: (s) => s.set('eventsStatus', 'error'),
+      success: (s) => s.merge({ events: fixNormalizedEvents(action.payload.data), eventsStatus: 'success' })
     });
   },
 
   [ACTION_TYPES.FETCH_ORIGINAL_ALERT]: (state, action) => (
     handle(state, action, {
-      start: (s) => ({ ...s, originalAlertStatus: 'wait', originalAlert: null }),
-      success: (s) => ({
-        ...s,
+      start: (s) => s.merge({ originalAlertStatus: 'wait', originalAlert: null }),
+      success: (s) => s.merge({
         originalAlert: action.payload.data,
         originalAlertStatus: 'complete'
       }),
-      failure: (s) => ({ ...s, originalAlertStatus: 'error' })
+      failure: (s) => s.set('originalAlertStatus', 'error')
     })
   )
-}, initialState);
+}, Immutable.from(initialState));
 
 export default alertReducers;

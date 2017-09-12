@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { load, persist } from './util/local-storage';
@@ -47,6 +48,6 @@ const remdiationTasks = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_SELECT_ALL_REMEDIATION_TASKS]: explorerReducers.toggleSelectAll,
   [ACTION_TYPES.REMEDIATION_TASK_SORT_BY]: persistState(explorerReducers.sortBy)
 
-}, initialState);
+}, Immutable.from(initialState));
 
 export default remdiationTasks;

@@ -47,14 +47,11 @@ const _handleUpdates = (action) => {
       const updatedEntity = entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
       // reset the focus item to the newly updated entity, if it exists
       if (state.focusedItem && state.focusedItem.id === updatedEntity.id) {
-        state.focusedItem = updatedEntity;
+        state.set('focusedItem', updatedEntity);
       }
       return updatedEntity;
     });
-    return {
-      ...state,
-      items: updatedEntities
-    };
+    return state.set('items', updatedEntities);
   };
 };
 
@@ -78,8 +75,7 @@ const _handleDeletes = (action) => {
     // Filter out newly deleted items from the main items array
     const updatedItems = items.filter((item) => (!removedItemIds.includes(item.id)));
 
-    return {
-      ...state,
+    return state.merge({
       items: updatedItems,
       itemsSelected: updatedItemsSelected,
       // if we have a focused item and it's one that's being deleted, reset focusedItem to null
@@ -87,127 +83,113 @@ const _handleDeletes = (action) => {
       // Update the itemsTotal count to account for the newly removed items
       itemsTotal: itemsTotal - removedItemIds.length,
       isSelectAll: false
-    };
+    });
   };
 };
 
 const fetchItems = (state, action) => (
   handle(state, action, {
-    start: (s) => ({ ...s, itemsStatus: 'wait', focusedItem: null }),
-    success: (s) => ({
-      ...s,
+    start: (s) => s.merge({ itemsStatus: 'wait', focusedItem: null }),
+    success: (s) => (s.merge({
       items: action.payload.data,
       itemsStatus: 'complete'
-    })
+    }))
   })
 );
 
-const fetchItemsStreamStarted = (state) => ({
-  ...state,
-  items: [],
-  itemsStatus: 'wait',
-  focusedItem: null,
-  itemsSelected: [],
-  isSelectAll: false
-});
+const fetchItemsStreamStarted = (state) => {
+  return state.merge({
+    items: [],
+    itemsStatus: 'wait',
+    focusedItem: null,
+    itemsSelected: [],
+    isSelectAll: false });
+};
 
-const fetchItemsStreamInitialized = (state, { payload }) => ({
-  ...state,
-  stopItemsStream: payload
-});
+const fetchItemsStreamInitialized = (state, { payload }) => {
+  return state.set('stopItemsStream', payload);
+};
 
 const fetchItemsStreamBatchRetrieved = (state, { payload: { data, meta } }) => {
   data = data || [];
-  return {
-    ...state,
+  return state.merge({
     items: [...state.items, ...data],
     itemsStatus: meta.complete ? 'complete' : 'streaming'
-  };
+  });
 };
 
-const fetchItemsStreamCompleted = (state) => ({
-  ...state,
-  stopItemsStream: null
-});
+const fetchItemsStreamCompleted = (state) => {
+  return state.set('stopItemsStream', null);
+};
 
-const fetchItemsStreamError = (state) => ({
-  ...state,
-  stopItemsStream: null
-});
+const fetchItemsStreamError = (state) => {
+  return state.set('stopItemsStream', null);
+};
 
 const fetchItemCount = (state, action) => (
   handle(state, action, {
-    start: (s) => ({ ...s, itemsTotal: '--' }),
-    success: (s) => ({
-      ...s,
-      itemsTotal: action.payload.meta ? action.payload.meta.total : action.payload.data
-    })
+    start: (s) => s.set('itemsTotal', '--'),
+    success: (s) => s.set('itemsTotal', action.payload.meta ? action.payload.meta.total : action.payload.data)
   })
 );
 
 const updateItem = (state, action) => (
   handle(state, action, {
-    start: (s) => ({ ...s, isTransactionUnderway: true }),
+    start: (s) => s.set('isTransactionUnderway', true),
     success: _handleUpdates(action),
-    failure: (s) => ({ ...s }),
-    finish: (s) => ({ ...s, isTransactionUnderway: false })
+    failure: (s) => s,
+    finish: (s) => s.set('isTransactionUnderway', false)
   })
 );
 
 const deleteItem = (state, action) => (
   handle(state, action, {
-    start: (s) => ({ ...s, isTransactionUnderway: true }),
+    start: (s) => s.set('isTransactionUnderway', true),
     success: _handleDeletes(action),
-    failure: (s) => ({ ...s }),
-    finish: (s) => ({ ...s, isTransactionUnderway: false })
+    failure: (s) => s,
+    finish: (s) => s.set('isTransactionUnderway', false)
   })
 );
 
-const updateFilter = (state, { payload }) => (
-  {
-    ...state,
-    itemsFilters: {
-      ...state.itemsFilters,
-      ...payload
-    }
-  }
-);
+const updateFilter = (state, { payload }) => {
+  return state.set('itemsFilters', {
+    ...state.itemsFilters,
+    ...payload
+  });
+};
 
-const toggleFilterPanel = (state) => ({
-  ...state,
-  isFilterPanelOpen: !state.isFilterPanelOpen
-});
+const toggleFilterPanel = (state) => {
+  return state.set('isFilterPanelOpen', !state.isFilterPanelOpen);
+};
 
 const toggleCustomDateRestriction = (state) => {
-  return {
-    ...state,
+  return state.merge({
     hasCustomDateRestriction: !state.hasCustomDateRestriction,
     itemsFilters: {
       ...state.itemsFilters,
       [state.defaultDateFilterField]: !state.hasCustomDateRestriction ? defaultCustomDateRange() : defaultDateRange(state)
     }
-  };
+  });
 };
 
-const resetFilters = (state) => (
-  {
-    ...state,
+const resetFilters = (state) => {
+  return state.merge({
     itemsFilters: itemsFilters(state),
     hasCustomDateRestriction: false
-  }
-);
+  });
+};
 
-const toggleFocusItem = (state, { payload: item }) => ({
-  ...state,
-  // if item toggled is currently focused, remove from focus, otherwise set new item to focus
-  focusedItem: state.focusedItem === item ? null : item
-});
+const toggleFocusItem = (state, { payload: item }) => {
+  return state.merge({
+    // if item toggled is currently focused, remove from focus, otherwise set new item to focus
+    focusedItem: state.focusedItem === item ? null : item
+  });
+};
 
-const clearFocusItem = (state) => ({
-  ...state,
+const clearFocusItem = (state) => {
   // if item toggled is currently focused, remove from focus, otherwise set new item to focus
-  focusedItem: null
-});
+  return state.set('focusedItem', null);
+};
 
 const toggleSelectItem = (state, { payload: item }) => {
   let itemDeselected = false;
@@ -225,27 +207,26 @@ const toggleSelectItem = (state, { payload: item }) => {
     itemsSelected.pushObject(item);
   }
 
-  return {
-    ...state,
+  return state.merge({
     // if one item was deselected when in select all state, reset isSelectAll to false
     isSelectAll: state.isSelectAll && itemDeselected ? false : state.isSelectAll,
     itemsSelected
-  };
+  });
 };
 
 const toggleSelectAll = (state) => {
-  return {
-    ...state,
+  return state.merge({
     isSelectAll: !state.isSelectAll,
     itemsSelected: !state.isSelectAll ? state.items.map((item) => item.id) : []
-  };
+  });
 };
 
-const sortBy = (state, { payload: { sortField, isSortDescending } }) => ({
-  ...state,
-  sortField,
-  isSortDescending
-});
+const sortBy = (state, { payload: { sortField, isSortDescending } }) => {
+  return state.merge({
+    sortField,
+    isSortDescending
+  });
+};
 
 export default {
   itemsFilters,

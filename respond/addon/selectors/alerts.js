@@ -45,7 +45,7 @@ export const hasSelectedAlertsBelongingToIncidents = createSelector(
  */
 export const getAlertNames = createSelector(
   dictionaryState,
-  (dictionaryState) => (dictionaryState.alertNames.sort((a, b) => {
+  (dictionaryState) => (dictionaryState.alertNames.asMutable().sort((a, b) => {
     return a.localeCompare(b);
   }))
 );

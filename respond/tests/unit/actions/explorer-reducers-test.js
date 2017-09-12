@@ -1,16 +1,14 @@
-import Ember from 'ember';
+import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import initialState from 'respond/reducers/respond/util/explorer-reducer-initial-state';
 import reducers from 'respond/reducers/respond/util/explorer-reducer-fns';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
 
-const { copy } = Ember;
-
 module('Unit | Utility | Explorer Reducers');
 
 test('The toggleFilterPanel() reducer toggles the isFilterPanelOpen state', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const isFilterPanelOpen = false;
   const expectedEndState = {
     ...initState,
@@ -21,7 +19,7 @@ test('The toggleFilterPanel() reducer toggles the isFilterPanelOpen state', func
 });
 
 test('The updateFilter() reducer updates itemsFilters object', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const priority = ['LOW', 'CRITICAL'];
   const expectedEndState = {
     ...initState,
@@ -38,7 +36,7 @@ test('The updateFilter() reducer updates itemsFilters object', function(assert) 
 });
 
 test('The toggleFocusItem() reducer sets the item into focus and removes on alternate calls', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const focusedItem = {
     test: 'test'
   };
@@ -55,15 +53,15 @@ test('The toggleFocusItem() reducer sets the item into focus and removes on alte
     focusedItem: null
   };
   // calling toggleFocusItem again with the same value will set the focusedItem back to null/empty
-  const toggledEndState = reducers.toggleFocusItem(endState, { payload: focusedItem });
+  const toggledEndState = reducers.toggleFocusItem(endState, { payload: endState.focusedItem });
   assert.deepEqual(toggledEndState, toggledExpectedEndState);
 });
 
 test('The clearFocusItem() reducer updates removes any focusedItem', function(assert) {
-  const initState = {
-    ...copy(initialState),
+  const initState = Immutable.from({
+    ...initialState,
     focusedItem: { test: 'test' }
-  };
+  });
   const expectedEndState = {
     ...initState,
     focusedItem: null
@@ -73,7 +71,7 @@ test('The clearFocusItem() reducer updates removes any focusedItem', function(as
 });
 
 test('The fetchItems() reducer updates the status property on startup', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const expectedEndState = {
     ...initState,
     itemsStatus: 'wait'
@@ -84,7 +82,7 @@ test('The fetchItems() reducer updates the status property on startup', function
 });
 
 test('The fetchItems() reducer updates the items property on successful completion', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const items = [{ test: '1' }];
   const expectedEndState = {
     ...initState,
@@ -97,7 +95,7 @@ test('The fetchItems() reducer updates the items property on successful completi
 });
 
 test('The fetchItemCount() reducer updates the itemsTotal property on startup', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const expectedEndState = {
     ...initState,
     itemsTotal: '--'
@@ -108,7 +106,7 @@ test('The fetchItemCount() reducer updates the itemsTotal property on startup', 
 });
 
 test('The fetchItemCount() reducer updates the itemsTotal property on successful completion', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
 
   const expectedEndState = {
     ...initState,
@@ -120,7 +118,7 @@ test('The fetchItemCount() reducer updates the itemsTotal property on successful
 });
 
 test('The updateItem() reducer sets the "isTransactionUnderway" property to true at startup', function(assert) {
-  const initState = copy(initialState);
+  const initState = Immutable.from(initialState);
   const expectedEndState = {
     ...initState,
     isTransactionUnderway: true

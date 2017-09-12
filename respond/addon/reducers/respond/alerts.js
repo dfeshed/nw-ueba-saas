@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
@@ -54,26 +55,22 @@ const alertsReducers = reduxActions.handleActions({
   [ACTION_TYPES.ALERT_SORT_BY]: persistState(explorerReducers.sortBy),
   [ACTION_TYPES.CREATE_INCIDENT]: (state, action) => (
     handle(state, action, {
-      start: (s) => ({ ...s, isTransactionUnderway: true }),
+      start: (s) => s.set('isTransactionUnderway', true),
       success: (s) => {
         const { payload: { data: { id }, request: { data: { associated } } } } = action;
         const alertIds = associated.map((association) => (association.id));
-        return {
-          ...s,
-          // Update the alerts (items) that now have an associated incident
-          items: s.items.map((alert) => {
-            if (alertIds.includes(alert.id)) {
-              return { ...alert, incidentId: id, partOfIncident: true };
-            }
-            return alert;
-          })
-        };
+        return s.set('items', s.items.map((alert) => { // Update the alerts (items) that now have an associated incident
+          if (alertIds.includes(alert.id)) {
+            return { ...alert, incidentId: id, partOfIncident: true };
+          }
+          return alert;
+        }));
       },
-      failure: (s) => ({ ...s }),
-      finish: (s) => ({ ...s, isTransactionUnderway: false })
+      failure: (s) => s,
+      finish: (s) => s.set('isTransactionUnderway', false)
     })
   )
 
-}, initialState);
+}, Immutable.from(initialState));
 
 export default alertsReducers;

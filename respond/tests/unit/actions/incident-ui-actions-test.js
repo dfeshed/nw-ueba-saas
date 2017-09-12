@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import incidentReducer from 'respond/reducers/respond/incident';
 import ACTION_TYPES from 'respond/actions/types';
 
-const { copy } = Ember;
-
-const initialState = {
+const initialState = Immutable.from({
   viewMode: 'overview',
   selection: {
     type: '',
@@ -13,19 +11,18 @@ const initialState = {
   },
   defaultSearchTimeFrameName: null,
   defaultSearchEntityType: null
-};
+});
 
 module('Unit | Utility | Incident UI Actions - Reducers');
 
 test('The SET_VIEW_MODE action properly modifies the viewMode app state property', function(assert) {
-  const initState = copy(initialState);
   const viewMode = 'storyline';
   const expectedEndState = {
-    ...initState,
+    ...initialState,
     viewMode
   };
 
-  const endState = incidentReducer(initState, {
+  const endState = incidentReducer(initialState, {
     type: ACTION_TYPES.SET_VIEW_MODE,
     payload: viewMode
   });
@@ -34,16 +31,14 @@ test('The SET_VIEW_MODE action properly modifies the viewMode app state property
 });
 
 test('The SET_INCIDENT_SELECTION action property modifies the app state', function(assert) {
-  const initState = copy(initialState);
-
   // Set the selection to some non-empty value.
   const type1 = 'foo';
   const id1 = 'id1';
   const expectedEndState = {
-    ...initState,
+    ...initialState,
     selection: { type: type1, ids: [ id1 ] }
   };
-  const endState = incidentReducer(initState, {
+  const endState = incidentReducer(initialState, {
     type: ACTION_TYPES.SET_INCIDENT_SELECTION,
     payload: { type: type1, id: id1 }
   });
@@ -81,9 +76,8 @@ test('The TOGGLE_INCIDENT_SELECTION action properly modifies the app state', fun
   const id1 = 'id1';
   const id2 = 'id2';
   const id3 = 'id3';
-  let initState = copy(initialState);
-  initState = {
-    ...initState,
+  const initState = {
+    ...initialState,
     selection: {
       type,
       ids: [ id1, id2, id3 ]
@@ -95,7 +89,7 @@ test('The TOGGLE_INCIDENT_SELECTION action properly modifies the app state', fun
     ...initState,
     selection: { type, ids: [ id1, id3 ] }
   };
-  const endState = incidentReducer(initState, {
+  const endState = incidentReducer(Immutable.from(initState), {
     type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION,
     payload: { type, id: id2 }
   });
@@ -114,33 +108,33 @@ test('The TOGGLE_INCIDENT_SELECTION action properly modifies the app state', fun
 });
 
 test('The CLEAR_INCIDENT_SELECTION action properly modifies the app state', function(assert) {
-  const initState = copy(initialState);
-
   // Set the initial selection to some non-empty value.
   const type1 = 'foo';
   const id1 = 'id1';
-  initState.selection = { type: type1, ids: [id1] };
+  const initState = {
+    ...initialState,
+    selection: { type: type1, ids: [id1] }
+  };
 
   const expectedEndState = {
     ...initState,
     selection: { type: '', ids: [] }
   };
 
-  const endState = incidentReducer(initState, {
+  const endState = incidentReducer(Immutable.from(initState), {
     type: ACTION_TYPES.CLEAR_INCIDENT_SELECTION
   });
   assert.deepEqual(endState, expectedEndState);
 });
 
 test('The SET_DEFAULT_SEARCH_TIME_FRAME_NAME action properly modifies the app state', function(assert) {
-  const initState = copy(initialState);
   const defaultSearchTimeFrameName = 'LAST_24_HOURS';
   const expectedEndState = {
-    ...initState,
+    ...initialState,
     defaultSearchTimeFrameName
   };
 
-  const endState = incidentReducer(initState, {
+  const endState = incidentReducer(initialState, {
     type: ACTION_TYPES.SET_DEFAULT_SEARCH_TIME_FRAME_NAME,
     payload: defaultSearchTimeFrameName
   });
@@ -149,14 +143,13 @@ test('The SET_DEFAULT_SEARCH_TIME_FRAME_NAME action properly modifies the app st
 });
 
 test('The SET_DEFAULT_SEARCH_ENTITY_TYPE action properly modifies the app state', function(assert) {
-  const initState = copy(initialState);
   const defaultSearchEntityType = 'MAC_ADDRESS';
   const expectedEndState = {
-    ...initState,
+    ...initialState,
     defaultSearchEntityType
   };
 
-  const endState = incidentReducer(initState, {
+  const endState = incidentReducer(initialState, {
     type: ACTION_TYPES.SET_DEFAULT_SEARCH_ENTITY_TYPE,
     payload: defaultSearchEntityType
   });

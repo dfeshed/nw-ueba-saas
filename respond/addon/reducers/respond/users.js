@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
@@ -40,18 +41,18 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_ALL_ENABLED_USERS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, enabledUsers: [], enabledUsersStatus: 'wait' }),
-      failure: (s) => ({ ...s, enabledUsersStatus: 'error' }),
-      success: (s) => ({ ...s, enabledUsers: remapDisabledProperty(action.payload.data), enabledUsersStatus: 'completed' })
+      start: (s) => s.merge({ enabledUsers: [], enabledUsersStatus: 'wait' }),
+      failure: (s) => s.set('enabledUsersStatus', 'error'),
+      success: (s) => s.merge({ enabledUsers: remapDisabledProperty(action.payload.data), enabledUsersStatus: 'completed' })
     });
   },
 
   [ACTION_TYPES.FETCH_ALL_USERS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => ({ ...s, allUsers: [], allUsersStatus: 'wait' }),
-      failure: (s) => ({ ...s, allUsersStatus: 'error' }),
-      success: (s) => ({ ...s, allUsers: remapDisabledProperty(action.payload.data), allUsersStatus: 'completed' })
+      start: (s) => s.merge({ allUsers: [], allUsersStatus: 'wait' }),
+      failure: (s) => s.set('allUsersStatus', 'error'),
+      success: (s) => s.merge({ allUsers: remapDisabledProperty(action.payload.data), allUsersStatus: 'completed' })
     });
   }
 
-}, initialState);
+}, Immutable.from(initialState));
