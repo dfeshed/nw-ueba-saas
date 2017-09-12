@@ -37,7 +37,6 @@ public class UserScoreServiceImplTest {
         userScoreService = new UserScoreServiceImpl(mockPresistency,
                 null,
                 1000,
-                1000,
                 90,
                 75,
                 50,

@@ -8,6 +8,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.repositories.AlertRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -53,4 +54,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         return alertRepository.search(new AlertElasticsearchQueryBuilder(alertQuery).build());
     }
 
+    @Override
+    public Page<Alert> findByUserIdIn(Collection<String> userId, PageRequest pageRequest) {
+        return alertRepository.findByUserIdIn(userId, pageRequest);
+    }
 }

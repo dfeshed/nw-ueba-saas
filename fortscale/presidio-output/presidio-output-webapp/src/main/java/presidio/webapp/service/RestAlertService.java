@@ -2,6 +2,7 @@ package presidio.webapp.service;
 
 import presidio.webapp.dto.Alert;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface RestAlertService {
@@ -13,4 +14,6 @@ public interface RestAlertService {
     Alert createResult(presidio.output.domain.records.alerts.Alert alertData);
 
     List<presidio.webapp.model.Alert> getAlertsByUserId(String userId);
+
+    List<presidio.webapp.model.Alert> getAlertsByUsersIds(Collection<String> userId);
 }

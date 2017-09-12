@@ -12,6 +12,7 @@ import presidio.webapp.model.AlertSeverity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -19,8 +20,12 @@ public class RestAlertServiceImpl implements RestAlertService {
 
 
     private final AlertPersistencyService elasticAlertService;
+    private final int pageNumber;
+    private final int pageSize;
 
-    public RestAlertServiceImpl(AlertPersistencyService elasticAlertService) {
+    public RestAlertServiceImpl(AlertPersistencyService elasticAlertService, int pageNumber, int pageSize) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
         this.elasticAlertService = elasticAlertService;
     }
 
@@ -121,7 +126,18 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(0, 10));
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
+        if (alerts.hasContent()) {
+            List restAlerts = new ArrayList();
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            return restAlerts;
+        }
+        return null;
+    }
+
+    @Override
+    public List<presidio.webapp.model.Alert> getAlertsByUsersIds(Collection<String> userId) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserIdIn(userId, new PageRequest(pageNumber, pageSize));
         if (alerts.hasContent()) {
             List restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));

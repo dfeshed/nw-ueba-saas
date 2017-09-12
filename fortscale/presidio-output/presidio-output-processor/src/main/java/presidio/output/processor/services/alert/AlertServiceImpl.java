@@ -53,6 +53,7 @@ public class AlertServiceImpl implements AlertService {
 
         Alert alert = new Alert(user.getUserId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity, user.getTags());
         userScoreService.increaseUserScoreWithoutSaving(alert, user);
+
         return alert;
     }
 

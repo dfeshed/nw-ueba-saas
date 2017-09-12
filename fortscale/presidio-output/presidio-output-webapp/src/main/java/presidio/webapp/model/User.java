@@ -31,8 +31,8 @@ public class User {
     @JsonProperty("userSeverity")
     private UserSeverity userSeverity = null;
 
-    @JsonProperty("alertsNum")
-    private Integer alertsNum = null;
+    @JsonProperty("alertsCount")
+    private Integer alertsCount = null;
 
     @JsonProperty("alerts")
     private List<Alert> alerts = new ArrayList<Alert>();
@@ -161,22 +161,22 @@ public class User {
     }
 
     public User alertsNum(Integer alertsNum) {
-        this.alertsNum = alertsNum;
+        this.alertsCount = alertsNum;
         return this;
     }
 
     /**
-     * Get alertsNum
+     * Get alertsCount
      *
-     * @return alertsNum
+     * @return alertsCount
      **/
     @ApiModelProperty(value = "")
-    public Integer getAlertsNum() {
-        return alertsNum;
+    public Integer getAlertsCount() {
+        return alertsCount;
     }
 
-    public void setAlertsNum(Integer alertsNum) {
-        this.alertsNum = alertsNum;
+    public void setAlertsCount(Integer alertsCount) {
+        this.alertsCount = alertsCount;
     }
 
     public User alerts(List<Alert> alerts) {
@@ -243,14 +243,14 @@ public class User {
                 Objects.equals(this.tags, user.tags) &&
                 Objects.equals(this.score, user.score) &&
                 Objects.equals(this.userSeverity, user.userSeverity) &&
-                Objects.equals(this.alertsNum, user.alertsNum) &&
+                Objects.equals(this.alertsCount, user.alertsCount) &&
                 Objects.equals(this.alerts, user.alerts) &&
                 Objects.equals(this.alertClassifications, user.alertClassifications);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alertsNum, alerts, alertClassifications);
+        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alertsCount, alerts, alertClassifications);
     }
 
     @Override
@@ -264,7 +264,7 @@ public class User {
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
         sb.append("    userSeverity: ").append(toIndentedString(userSeverity)).append("\n");
-        sb.append("    alertsNum: ").append(toIndentedString(alertsNum)).append("\n");
+        sb.append("    alertsCount: ").append(toIndentedString(alertsCount)).append("\n");
         sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
         sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
         sb.append("}");
