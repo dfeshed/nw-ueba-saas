@@ -196,7 +196,7 @@ public class SinkRunner implements LifecycleAware {
                     } catch (InterruptedException e) {
                             //do nothing
                     }
-                    System.exit(status);
+                    System.exit(0);
                 }
             }.start();
         }
