@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
 
-import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.utils.recordreader.RecordReaderFactory;
@@ -21,9 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.AdeRecordReaderFactory;
-import presidio.ade.domain.record.enriched.dlpfile.AdeEnrichedDlpFileContext;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.record.enriched.dlpfile.AdeScoredDlpFileRecord;
+import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 
 import java.time.Instant;
 import java.util.*;

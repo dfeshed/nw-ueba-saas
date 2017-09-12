@@ -14,7 +14,10 @@ import java.util.Map;
  * @see AggregatedFeatureType
  */
 @Document
-@CompoundIndexes({@CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}")})
+@CompoundIndexes({
+        @CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}"),
+        @CompoundIndex(name = "value_threshold_query", def = "{'contextId': -1, 'startInstant': -1, 'featureValue': -1}")
+})
 public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event";
     public static final String FEATURE_VALUE_FIELD_NAME = "featureValue";

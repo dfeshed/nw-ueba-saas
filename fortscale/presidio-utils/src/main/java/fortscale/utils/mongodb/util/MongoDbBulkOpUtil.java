@@ -2,6 +2,8 @@ package fortscale.utils.mongodb.util;
 
 import com.mongodb.BulkWriteResult;
 import fortscale.utils.mongodb.index.DynamicIndexApplicationListener;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.data.auditing.IsNewAwareAuditingHandler;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -12,6 +14,7 @@ import java.util.List;
  * Created by barak_schuster on 7/19/17.
  */
 public class MongoDbBulkOpUtil {
+    private final ObjectFactory<IsNewAwareAuditingHandler> auditingHandlerFactory;
     private DynamicIndexApplicationListener dynamicIndexApplicationListener;
     private MongoTemplate mongoTemplate;
 
@@ -19,10 +22,12 @@ public class MongoDbBulkOpUtil {
      * C'tor
      * @param dynamicIndexApplicationListener a utility that creates indexes to collection by annotations regardless to pre-configured collection name
      * @param mongoTemplate you know...
+     * @param auditingHandlerFactory
      */
-    public MongoDbBulkOpUtil(DynamicIndexApplicationListener dynamicIndexApplicationListener, MongoTemplate mongoTemplate) {
+    public MongoDbBulkOpUtil(DynamicIndexApplicationListener dynamicIndexApplicationListener, MongoTemplate mongoTemplate, ObjectFactory<IsNewAwareAuditingHandler> auditingHandlerFactory) {
         this.dynamicIndexApplicationListener = dynamicIndexApplicationListener;
         this.mongoTemplate = mongoTemplate;
+        this.auditingHandlerFactory = auditingHandlerFactory;
     }
 
     /**
@@ -43,6 +48,7 @@ public class MongoDbBulkOpUtil {
         {
             return null;
         }
+        records.forEach(record -> auditingHandlerFactory.getObject().markAudited(record));
         dynamicIndexApplicationListener.createCollectionIndexesForClass(collectionName,records.get(0).getClass());
         result = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED,collectionName).insert(records).execute();
 

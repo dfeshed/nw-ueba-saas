@@ -1,14 +1,12 @@
 from datetime import timedelta
+
 from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.model.aggr_model_accumulate_aggregation_operator import AggrModelAccumulateAggregationsOperator
 from presidio.operators.model.aggr_model_operator import AggrModelOperator
-from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY, is_execution_date_valid
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
-
-
-
+from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY, is_execution_date_valid
 
 
 class AggrModelDagBuilder(PresidioDagBuilder):
@@ -58,15 +56,15 @@ class AggrModelDagBuilder(PresidioDagBuilder):
             command=PresidioDagBuilder.presidio_command,
             data_source=self._data_source,
             dag=aggr_model_dag)
-        accumulate_short_circuit_operator = ShortCircuitOperator(
-            task_id='accumulate_short_circuit',
+        aggr_accumulate_short_circuit_operator = ShortCircuitOperator(
+            task_id='aggr_accumulate_short_circuit',
             dag=aggr_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._accumulate_interval,
                                                                      aggr_model_dag.schedule_interval),
             provide_context=True
         )
-        task_sensor_service.add_task_short_circuit(aggr_model_accumulate_aggregations_operator, accumulate_short_circuit_operator)
+        task_sensor_service.add_task_short_circuit(aggr_model_accumulate_aggregations_operator, aggr_accumulate_short_circuit_operator)
 
         #defining the model operator
         aggr_model_operator = AggrModelOperator(data_source=self._data_source,

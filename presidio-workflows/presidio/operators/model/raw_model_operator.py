@@ -1,8 +1,6 @@
-from datetime import timedelta
 from airflow.utils.decorators import apply_defaults
-from presidio.utils.exceptions import UnsupportedFixedDurationStrategyError
-from presidio.operators.model.model_operator import ModelOperator
 
+from presidio.operators.model.model_operator import ModelOperator
 
 RAW_MODEL_GROUP_NAME = "enriched-record-models"
 
@@ -37,6 +35,6 @@ class RawModelOperator(ModelOperator):
         """
         :return: The task id 
         """
-        return '{}_{}'.format(self.data_source, 'raw_model')
+        return '{}_{}'.format(self.data_source, 'raw_model_task')
 
 

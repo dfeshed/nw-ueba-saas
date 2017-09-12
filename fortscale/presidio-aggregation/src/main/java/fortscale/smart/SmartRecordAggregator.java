@@ -5,6 +5,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.*;
@@ -21,6 +22,7 @@ public class SmartRecordAggregator {
 	private SmartRecordConf smartRecordConf;
 	private FixedDurationStrategy fixedDurationStrategy;
 	private TimeRange timeRange;
+	private Double threshold;
 	private Map<String, SmartRecord> contextIdToSmartRecordMap;
 
 	/**
@@ -29,11 +31,14 @@ public class SmartRecordAggregator {
 	 * @param smartRecordConf       the configuration of the {@link SmartRecord}s that are created
 	 * @param fixedDurationStrategy the expected {@link FixedDurationStrategy} of the {@link AdeAggregationRecord}s
 	 * @param timeRange             the expected {@link TimeRange} of the {@link AdeAggregationRecord}s
+	 * @param threshold             only {@link AdeAggregationRecord}s whose values / scores are larger
+	 *                              than this threshold will be included in the {@link SmartRecord}s
 	 */
 	public SmartRecordAggregator(
 			SmartRecordConf smartRecordConf,
 			FixedDurationStrategy fixedDurationStrategy,
-			TimeRange timeRange) {
+			TimeRange timeRange,
+			Double threshold) {
 
 		if (!timeRange.getStart().plus(fixedDurationStrategy.toDuration()).equals(timeRange.getEnd())) {
 			String msg = String.format("Fixed duration strategy %s does not fit with time range %s.",
@@ -45,6 +50,7 @@ public class SmartRecordAggregator {
 		this.smartRecordConf = smartRecordConf;
 		this.fixedDurationStrategy = fixedDurationStrategy;
 		this.timeRange = timeRange;
+		this.threshold = threshold;
 		this.contextIdToSmartRecordMap = new HashMap<>();
 	}
 
@@ -66,7 +72,9 @@ public class SmartRecordAggregator {
 					smartRecord.setAggregationRecords(existingAggregationRecords);
 				}
 
-				existingAggregationRecords.add(newAggregationRecord);
+				if (doesAggregationRecordPassThreshold(newAggregationRecord)) {
+					existingAggregationRecords.add(newAggregationRecord);
+				}
 			} else {
 				logger.error("Ignoring aggregation record {} with start instant {} " +
 						"and end instant {}, because the expected time range is {}.", newAggregationRecord,
@@ -89,5 +97,17 @@ public class SmartRecordAggregator {
 
 	private SmartRecord getSmartRecord(String contextId) {
 		return new SmartRecord(timeRange, contextId, smartRecordConf.getName(), fixedDurationStrategy);
+	}
+
+	private boolean doesAggregationRecordPassThreshold(AdeAggregationRecord aggregationRecord) {
+		if (threshold != null) {
+			if (aggregationRecord.getClass().equals(AdeAggregationRecord.class)) {
+				return aggregationRecord.getFeatureValue() > threshold;
+			} else if (aggregationRecord.getClass().equals(ScoredFeatureAggregationRecord.class)) {
+				return ((ScoredFeatureAggregationRecord)aggregationRecord).getScore() > threshold;
+			}
+		}
+
+		return true;
 	}
 }
