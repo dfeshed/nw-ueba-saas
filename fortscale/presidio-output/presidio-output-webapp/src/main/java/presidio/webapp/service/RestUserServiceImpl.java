@@ -104,6 +104,7 @@ public class RestUserServiceImpl implements RestUserService {
         convertedUser.setTags(user.getTags());
         convertedUser.setUsername(user.getUserName());
         convertedUser.setAlertClassifications(user.getAlertClassifications());
+        convertedUser.setAlertsCount(user.getAlertsCount());
         return convertedUser;
     }
 

@@ -1,6 +1,5 @@
 package presidio.output.processor.services.user;
 
-import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Page;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -95,7 +94,6 @@ public class UserServiceImpl implements UserService {
         Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(alertEffectiveDurationInDays);
 
         //Get users in batches and update the score only if it changed, and add to changesUsers
-
         Set<String> usersIDForBatch = new HashSet<>();
         List<User> changedUsers = new ArrayList<>();
         for (Map.Entry<String, UsersAlertData> entry : aggregatedUserScore.entrySet()) {
@@ -105,7 +103,7 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
             //Update user score batch
-            changedUsers.addAll(updateUserScoreForBatch(aggregatedUserScore, usersIDForBatch));
+            changedUsers.addAll(updateUserAlertDataForBatch(aggregatedUserScore, usersIDForBatch));
 
 
             //After batch calculation, reset the set
@@ -115,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
         if (!usersIDForBatch.isEmpty()) {
             //there is leftover smaller then batch size
-            changedUsers.addAll(updateUserScoreForBatch(aggregatedUserScore, usersIDForBatch));
+            changedUsers.addAll(updateUserAlertDataForBatch(aggregatedUserScore, usersIDForBatch));
         }
 
         //Persist users that the score changed
@@ -139,7 +137,7 @@ public class UserServiceImpl implements UserService {
      * @param usersIDForBatch     - only the ids in the current handled batch
      * @return List of updated users
      */
-    public List<User> updateUserScoreForBatch(Map<String, UsersAlertData> aggregatedUserScore, Set<String> usersIDForBatch) {
+    public List<User> updateUserAlertDataForBatch(Map<String, UsersAlertData> aggregatedUserScore, Set<String> usersIDForBatch) {
         log.info("Updating user batch (without persistence)- batch contain: " + usersIDForBatch.size() + " users");
         List<User> changedUsers = new ArrayList<>();
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(new ArrayList<>(usersIDForBatch))
