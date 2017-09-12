@@ -80,7 +80,6 @@ public class SinkRunner implements LifecycleAware {
         policy.start();
 
         runner = new PollingRunner();
-        runner.setSinkRunner(this);
 
         runner.policy = policy;
         runner.counterGroup = counterGroup;
@@ -112,7 +111,7 @@ public class SinkRunner implements LifecycleAware {
             }
         }
 
-        getPolicy().stop();
+ 
         lifecycleState = LifecycleState.STOP;
     }
 
@@ -188,12 +187,17 @@ public class SinkRunner implements LifecycleAware {
             shouldStop.set(true);
             final Option agentName = LifecycleSupervisor.options.getOption("name");
             logger.info("Flume agent {} is closing...", agentName);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                //do nothing
-            }
-            System.exit(0);
+            new Thread("App-exit") {
+                @Override
+                public void run() {
+                    try {
+                    Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                            //do nothing
+                    }
+                    System.exit(status);
+                }
+            }.start();
         }
 
         public void setSinkRunner(SinkRunner sinkRunner) {
