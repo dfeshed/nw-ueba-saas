@@ -168,7 +168,8 @@ public class UserScoreServiceImpl implements UserScoreService {
         //TODO: alsom filter by status >
 
         if (days != null && days.size() > 0) {
-            days.forEach(startOfDay -> {
+            for (LocalDateTime startOfDay: days) {
+
                 log.info("Start Calculate user score for day " + startOfDay + " (Calculation, without persistency");
                 long startTime = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();
                 LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
@@ -190,21 +191,18 @@ public class UserScoreServiceImpl implements UserScoreService {
                         String userId = alert.getUserId();
                         AlertEnums.AlertSeverity severity = alert.getSeverity();
                         double userScoreContribution = this.alertSeverityToScoreContribution.get(severity);
-                        if(aggregatedUserScore.containsKey(userId)) {
+                        if (aggregatedUserScore.containsKey(userId)) {
                             UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
                             usersAlertData.incrementUserScore(userScoreContribution);
                             usersAlertData.incrementAlertsCount();
-                        }
-                        else {
-                            UsersAlertData usersAlertData = new UsersAlertData(userScoreContribution, 1);
-                            usersAlertData.incrementUserScore(userScoreContribution);
-                            usersAlertData.incrementAlertsCount();
+                        } else {
+                            aggregatedUserScore.put(userId, new UsersAlertData(userScoreContribution, 1));
                         }
 
                     });
                     alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
                 }
-            });
+            }
         }
         return aggregatedUserScore;
     }
