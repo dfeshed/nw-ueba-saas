@@ -127,7 +127,7 @@ public class RestUserServiceImpl implements RestUserService {
         if (userQuery.getMinScore() != null) {
             builder.minScore(userQuery.getMinScore());
         }
-        if (userQuery.getSeverity() != null) {
+        if (CollectionUtils.isNotEmpty(userQuery.getSeverity())) {
             builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
         }
         if (userQuery.getPageSize() != null) {
