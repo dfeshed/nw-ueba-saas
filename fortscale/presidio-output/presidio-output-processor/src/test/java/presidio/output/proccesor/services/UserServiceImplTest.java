@@ -42,7 +42,6 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
 
     private UserPersistencyService mockUserPresistency;
-    private AlertPersistencyService mockAlertPresistency;
     private EventPersistencyService mockEventPersistency;
     private UserScoreService mockUserScoreService;
 
@@ -52,7 +51,6 @@ public class UserServiceImplTest {
     @Before
     public void setup() {
         mockUserPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
-        mockAlertPresistency = Mockito.mock(AlertPersistencyService.class);
         mockEventPersistency = Mockito.mock(EventPersistencyService.class);
         mockUserScoreService = Mockito.mock(UserScoreService.class);
 
@@ -99,7 +97,6 @@ public class UserServiceImplTest {
         });
 
         List<User> changedUsers = Whitebox.invokeMethod(userService, "updateUserAlertDataForBatch", newUsersScore, usersIDForBatch);
-        final boolean b = userService.updateAllUsersAlertData();
         Assert.assertEquals(2, changedUsers.size());
         Assert.assertEquals(80D, changedUsers.get(0).getScore(), 0.00001);
         Assert.assertEquals(30D, changedUsers.get(1).getScore(), 0.00001);

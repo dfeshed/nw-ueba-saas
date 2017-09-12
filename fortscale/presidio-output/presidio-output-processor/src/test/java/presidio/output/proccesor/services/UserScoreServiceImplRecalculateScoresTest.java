@@ -159,54 +159,13 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
         Map<String, UsersAlertData> aggregatedUserScore = Whitebox.invokeMethod(userScoreService, "calculateUserScores", ALERT_EFFECTIVE_DURATION_IN_DAYS);
         Assert.assertEquals(3, aggregatedUserScore.size());
-        double user1Expected = 95D;
-        double user2Expected = 85D;
-        double user3Expected = 25D;
 
-        Assert.assertEquals(user1Expected, aggregatedUserScore.get("user1").getUserScore(), 0.1);
-        Assert.assertEquals(user2Expected, aggregatedUserScore.get("user2").getUserScore(), 0.1);
-        Assert.assertEquals(user3Expected, aggregatedUserScore.get("user3").getUserScore(), 0.1);
+        Assert.assertEquals(95D, aggregatedUserScore.get("user1").getUserScore(), 0.1);
+        Assert.assertEquals(6, aggregatedUserScore.get("user1").getAlertsCount());
+        Assert.assertEquals(85D, aggregatedUserScore.get("user2").getUserScore(), 0.1);
+        Assert.assertEquals(3, aggregatedUserScore.get("user2").getAlertsCount());
+        Assert.assertEquals(25D, aggregatedUserScore.get("user3").getUserScore(), 0.1);
+        Assert.assertEquals(1, aggregatedUserScore.get("user3").getAlertsCount());
+
     }
-
-//    @Test
-//    public void testUpdateUserScoreBatch() throws Exception {
-//        List<User> usersWithOldScore = Arrays.asList(
-//                new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
-//                new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
-//                new User("user3", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0)
-//        );
-//
-//        Pageable pageable1 = new PageRequest(0, 3);
-//        Page<User> usersPage = new PageImpl<>(usersWithOldScore, pageable1, 3);
-//
-//        Set<String> usersIDForBatch = new HashSet<>();
-//        usersIDForBatch.add("user1");
-//        usersIDForBatch.add("user2");
-//        usersIDForBatch.add("user3");
-//
-//        Map<String, Double> newUsersScore = new HashMap<>();
-//        newUsersScore.put("user1", 80D);
-//        newUsersScore.put("user2", 50D);
-//        newUsersScore.put("user3", 30D);
-//
-//        Mockito.when(this.mockUserPresistency.find(Mockito.any(UserQuery.class))).thenAnswer(new Answer<Page>() {
-//            @Override
-//            public Page answer(InvocationOnMock invocation) throws Throwable {
-//                UserQuery query = (UserQuery) invocation.getArguments()[0];
-//                if (query.getPageNumber() == 0) {
-//                    return usersPage;
-//                } else {
-//                    return null;
-//                }
-//            }
-//        });
-//
-//        List<User> changedUsers = Whitebox.invokeMethod(userScoreService, "updateUserAlertDataForBatch", newUsersScore, usersIDForBatch);
-//        Assert.assertEquals(2, changedUsers.size());
-//        Assert.assertEquals(80D, changedUsers.get(0).getScore(), 0.00001);
-//        Assert.assertEquals(30D, changedUsers.get(1).getScore(), 0.00001);
-//
-//
-//    }
-
 }
