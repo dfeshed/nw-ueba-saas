@@ -1,6 +1,7 @@
 package presidio.output.processor.services.user;
 
-import org.slf4j.Logger;
+import fortscale.utils.kafka.MetricsKafkaSynchronizer;
+import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Page;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -15,7 +16,7 @@ import java.util.*;
  */
 public class UserServiceImpl implements UserService {
 
-    private Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
+    private static Logger log = Logger.getLogger(UserServiceImpl.class);
 
     private static final int USERS_SAVE_PAGE_SIZE = 1000;
 
@@ -43,6 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
+        if(userDetails == null) {
+            return null;
+        }
         return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
     }
 
@@ -58,6 +62,10 @@ public class UserServiceImpl implements UserService {
 
     private UserDetails getUserDetails(String userId) {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
+        if(event == null) {
+            log.error("no events were found for user {}", userId);
+            return null;
+        }
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
         List<String> tags = new ArrayList<>();
