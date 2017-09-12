@@ -83,7 +83,8 @@ public class SmartService {
 				smartScoringService.score(records);
 				smartDataStore.storeSmartRecords(smartRecordConfName, records);
 			});
-			ttlService.cleanupCollections(timeRange.getStart());
 		}
+
+		ttlService.cleanupCollections(timeRange.getStart());
 	}
 }
