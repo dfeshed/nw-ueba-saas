@@ -16,7 +16,6 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
  * Created by efratn on 02/08/2017.
  */
 @Configuration
-@Import(MongoConfig.class)
 public class EventPersistencyServiceConfig {
 
     @Autowired
