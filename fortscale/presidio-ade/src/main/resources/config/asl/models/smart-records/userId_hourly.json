@@ -1,6 +1,19 @@
 {
   "ModelConfs": [
     {
+      "name": "smart.global.weights.userId.hourly",
+      "retriever": {
+        "type": "accumulated_smart_data_retriever",
+        "timeRangeInSeconds": 2592000,
+        "functions": [],
+        "smartRecordConfName": "userId_hourly"
+      },
+      "builder": {
+        "type": "weights_model_builder",
+        "smartRecordConfName": "userId_hourly"
+      }
+    },
+    {
       "name": "smart.userId.hourly",
       "selector": {
         "type": "accumulated_smart_context_selector",
@@ -28,19 +41,6 @@
       },
       "builder": {
         "type": "smart_values_prior_model_builder"
-      }
-    },
-    {
-      "name": "smart.global.weights.userId.hourly",
-      "retriever": {
-        "type": "accumulated_smart_data_retriever",
-        "timeRangeInSeconds": 2592000,
-        "functions": [],
-        "smartRecordConfName": "userId_hourly"
-      },
-      "builder": {
-        "type": "weights_model_builder",
-        "smartRecordConfName": "userId_hourly"
       }
     }
   ]

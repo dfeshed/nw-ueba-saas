@@ -1,5 +1,4 @@
 import logging
-
 from datetime import timedelta
 
 from airflow.operators.python_operator import ShortCircuitOperator
@@ -64,7 +63,7 @@ class OutputDagBuilder(PresidioDagBuilder):
 
         # Create daily short circuit operator to wire the output processing and the user score recalculation
         daily_short_circuit_operator = ShortCircuitOperator(
-            task_id='daily_short_circuit',
+            task_id='output_daily_short_circuit',
             dag=output_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,

@@ -1,6 +1,8 @@
 package presidio.ade.domain.record.aggregated;
 
 import fortscale.domain.feature.score.FeatureScore;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeScoredRecord;
@@ -13,6 +15,9 @@ import java.util.Map;
  * Created by mariad on 7/11/2017.
  */
 @Document
+@CompoundIndexes({
+        @CompoundIndex(name = "score_threshold_query", def = "{'contextId': -1, 'startInstant': -1, 'score': -1}")
+})
 public class ScoredFeatureAggregationRecord extends AdeAggregationRecord implements AdeScoredRecord {
 
     public static final String SCORE_FIELD_NAME = "score";
