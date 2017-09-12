@@ -1,0 +1,39 @@
+version: '2.1'
+services:
+  respond-data:
+      image: asoc-dtr2.rsa.lab.emc.com/rsa/respond-data:11.0
+
+  mongo:
+    image: asoc-dtr2.rsa.lab.emc.com/3rd/mongo
+    hostname: mongo
+    ports:
+      - "27017:27017"
+    volumes_from:
+      - respond-data
+
+  rabbitmq:
+    image: asoc-dtr2.rsa.lab.emc.com/3rd/rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  respond-server:
+    image: asoc-dtr2.rsa.lab.emc.com/rsa/respond-server:11.0.0-latest
+    ports:
+      - "7003:7003"
+    depends_on:
+      - rabbitmq
+      - mongo
+    environment:
+      rsa.service.password: changeMe
+      rsa.transport.bus.host: rabbitmq
+      rsa.data.control.servers[0]: mongo
+      rsa.data.application.servers[0]: mongo
+      rsa.process.shutdown-delay: 1s
+      rsa.security.authorization.remote-enabled: "false"
+      rsa.security.pki.use-deployment-trust: "false"
+      rsa.transport.bus.shutdown-timeout: 1ms
+      rsa.admin.security.settings.same-origin-required: "false"
+      rsa.transport.http.secure: "false"
+      rsa.security.oauth.auth-server: "true"
