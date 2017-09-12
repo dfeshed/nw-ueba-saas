@@ -42,14 +42,14 @@ public class RestAlertServiceTest {
         alert.setId("id");
         when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
 
-        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id");
+        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertEquals(alert.getUserName(), alertById.getUsername());
     }
 
     @Test
     public void getAlertById_getNull() {
         when(alertService.findOne(anyString())).thenReturn(null);
-        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id");
+        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertNull(alertById);
     }
 

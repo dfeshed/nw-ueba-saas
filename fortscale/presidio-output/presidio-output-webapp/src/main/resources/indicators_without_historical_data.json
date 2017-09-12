@@ -1,0 +1,57 @@
+  [
+    {
+      "id": "90575c32-ac7d-4d55-a60c-9bd90e66e3b5",
+      "name": "high_number_of_distinct_folders_opened_attempts",
+      "startDate": 1407859200,
+      "endDate": 1407862800,
+      "anomalyValue": "4.0",
+      "schema": "FILE",
+      "type": "FEATURE_AGGREGATION",
+      "score": 0,
+      "eventsNum": 0
+    },
+    {
+      "id": "df08fcf6-1edb-4c14-9f14-dcd2f4c03143",
+      "name": "high_number_of_successful_file_action_operations",
+      "startDate": 1407859200,
+      "endDate": 1407862800,
+      "anomalyValue": "3.0",
+      "schema": "FILE",
+      "type": "FEATURE_AGGREGATION",
+      "score": 0,
+      "eventsNum": 0
+    },
+    {
+      "id": "7e6251a7-7bf1-4e9f-bb61-c51d88fd530e",
+      "name": "abnormal_file_action_operation_type",
+      "startDate": 1407859200,
+      "endDate": 1407862800,
+      "anomalyValue": "FILE_MOVED",
+      "schema": "FILE",
+      "type": "SCORE_AGGREGATION",
+      "score": 10,
+      "eventsNum": 3
+    },
+    {
+      "id": "1b5198cd-774c-4b5e-8af2-78c89bb26bde",
+      "name": "high_number_of_failed_file_action_attempts",
+      "startDate": 1407859200,
+      "endDate": 1407862800,
+      "anomalyValue": "0.0",
+      "schema": "FILE",
+      "type": "FEATURE_AGGREGATION",
+      "score": 0,
+      "eventsNum": 0
+    },
+    {
+      "id": "7b9d4802-df67-4151-bc3e-d88c63dcf1f2",
+      "name": "abnormal_event_day_time",
+      "startDate": 1407859200,
+      "endDate": 1407862800,
+      "anomalyValue": "2014-08-12T16:00:00Z",
+      "schema": "FILE",
+      "type": "SCORE_AGGREGATION",
+      "score": 0,
+      "eventsNum": 0
+    }
+  ]

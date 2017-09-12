@@ -1,19 +1,18 @@
 package presidio.webapp.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * UserAlertsQuery
+ * EventQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
 
-public class UserAlertsQuery   {
+public class EventQuery   {
   @JsonProperty("pageSize")
   private Integer pageSize = null;
 
@@ -23,18 +22,15 @@ public class UserAlertsQuery   {
   @JsonProperty("sort")
   private List<String> sort = new ArrayList<String>();
 
-  @JsonProperty("expand")
-  private Boolean expand = false;
-
-  public UserAlertsQuery pageSize(Integer pageSize) {
+  public EventQuery pageSize(Integer pageSize) {
     this.pageSize = pageSize;
     return this;
   }
 
-  /**
+   /**
    * Get pageSize
    * @return pageSize
-   **/
+  **/
   @ApiModelProperty(value = "")
   public Integer getPageSize() {
     return pageSize;
@@ -44,15 +40,15 @@ public class UserAlertsQuery   {
     this.pageSize = pageSize;
   }
 
-  public UserAlertsQuery pageNumber(Integer pageNumber) {
+  public EventQuery pageNumber(Integer pageNumber) {
     this.pageNumber = pageNumber;
     return this;
   }
 
-  /**
+   /**
    * Get pageNumber
    * @return pageNumber
-   **/
+  **/
   @ApiModelProperty(value = "")
   public Integer getPageNumber() {
     return pageNumber;
@@ -62,20 +58,20 @@ public class UserAlertsQuery   {
     this.pageNumber = pageNumber;
   }
 
-  public UserAlertsQuery sort(List<String> sort) {
+  public EventQuery sort(List<String> sort) {
     this.sort = sort;
     return this;
   }
 
-  public UserAlertsQuery addSortItem(String sortItem) {
+  public EventQuery addSortItem(String sortItem) {
     this.sort.add(sortItem);
     return this;
   }
 
-  /**
+   /**
    * Get sort
    * @return sort
-   **/
+  **/
   @ApiModelProperty(value = "")
   public List<String> getSort() {
     return sort;
@@ -83,24 +79,6 @@ public class UserAlertsQuery   {
 
   public void setSort(List<String> sort) {
     this.sort = sort;
-  }
-
-  public UserAlertsQuery expand(Boolean expand) {
-    this.expand = expand;
-    return this;
-  }
-
-  /**
-   * Get expand
-   * @return expand
-   **/
-  @ApiModelProperty(value = "")
-  public Boolean getExpand() {
-    return expand;
-  }
-
-  public void setExpand(Boolean expand) {
-    this.expand = expand;
   }
 
 
@@ -112,27 +90,25 @@ public class UserAlertsQuery   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserAlertsQuery userAlertsQuery = (UserAlertsQuery) o;
-    return Objects.equals(this.pageSize, userAlertsQuery.pageSize) &&
-            Objects.equals(this.pageNumber, userAlertsQuery.pageNumber) &&
-            Objects.equals(this.sort, userAlertsQuery.sort) &&
-            Objects.equals(this.expand, userAlertsQuery.expand);
+    EventQuery eventQuery = (EventQuery) o;
+    return Objects.equals(this.pageSize, eventQuery.pageSize) &&
+        Objects.equals(this.pageNumber, eventQuery.pageNumber) &&
+        Objects.equals(this.sort, eventQuery.sort);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(pageSize, pageNumber, sort, expand);
+    return Objects.hash(pageSize, pageNumber, sort);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class UserAlertsQuery {\n");
-
+    sb.append("class EventQuery {\n");
+    
     sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
     sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
     sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
-    sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -148,3 +124,4 @@ public class UserAlertsQuery   {
     return o.toString().replace("\n", "\n    ");
   }
 }
+

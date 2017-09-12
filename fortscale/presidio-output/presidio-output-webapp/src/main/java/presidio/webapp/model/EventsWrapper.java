@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * AlertsWrapper
+ * EventsWrapper
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T11:15:54.772Z")
 
-public class AlertsWrapper   {
-  @JsonProperty("alerts")
-  private List<Alert> alerts = new ArrayList<Alert>();
+public class EventsWrapper   {
+  @JsonProperty("events")
+  private List<Event> events = new ArrayList<Event>();
 
   @JsonProperty("total")
   private Integer total = null;
@@ -22,39 +22,39 @@ public class AlertsWrapper   {
   @JsonProperty("page")
   private Integer page = null;
 
-  public AlertsWrapper alerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public EventsWrapper events(List<Event> events) {
+    this.events = events;
     return this;
   }
 
-  public AlertsWrapper addAlertsItem(Alert alertsItem) {
-    this.alerts.add(alertsItem);
+  public EventsWrapper addEventsItem(Event eventsItem) {
+    this.events.add(eventsItem);
     return this;
   }
 
-   /**
-   * Get alerts
-   * @return alerts
-  **/
+  /**
+   * Get events
+   * @return events
+   **/
   @ApiModelProperty(value = "")
-  public List<Alert> getAlerts() {
-    return alerts;
+  public List<Event> getEvents() {
+    return events;
   }
 
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public void setEvents(List<Event> events) {
+    this.events = events;
   }
 
-  public AlertsWrapper total(Integer total) {
+  public EventsWrapper total(Integer total) {
     this.total = total;
     return this;
   }
 
-   /**
+  /**
    * Get total
    * minimum: 0
    * @return total
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getTotal() {
     return total;
@@ -64,16 +64,16 @@ public class AlertsWrapper   {
     this.total = total;
   }
 
-  public AlertsWrapper page(Integer page) {
+  public EventsWrapper page(Integer page) {
     this.page = page;
     return this;
   }
 
-   /**
+  /**
    * Get page
    * minimum: 0
    * @return page
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getPage() {
     return page;
@@ -92,23 +92,23 @@ public class AlertsWrapper   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    AlertsWrapper alertsWrapper = (AlertsWrapper) o;
-    return Objects.equals(this.alerts, alertsWrapper.alerts) &&
-        Objects.equals(this.total, alertsWrapper.total) &&
-        Objects.equals(this.page, alertsWrapper.page);
+    EventsWrapper eventsWrapper = (EventsWrapper) o;
+    return Objects.equals(this.events, eventsWrapper.events) &&
+            Objects.equals(this.total, eventsWrapper.total) &&
+            Objects.equals(this.page, eventsWrapper.page);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(alerts, total, page);
+    return Objects.hash(events, total, page);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class AlertsWrapper {\n");
-    
-    sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
+    sb.append("class EventsWrapper {\n");
+
+    sb.append("    events: ").append(toIndentedString(events)).append("\n");
     sb.append("    total: ").append(toIndentedString(total)).append("\n");
     sb.append("    page: ").append(toIndentedString(page)).append("\n");
     sb.append("}");

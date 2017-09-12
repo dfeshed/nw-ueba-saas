@@ -2,18 +2,16 @@ package presidio.webapp.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * UserAlertsQuery
+ * IndicatorQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T02:53:18.177Z")
 
-public class UserAlertsQuery   {
+public class IndicatorQuery   {
   @JsonProperty("pageSize")
   private Integer pageSize = null;
 
@@ -26,7 +24,7 @@ public class UserAlertsQuery   {
   @JsonProperty("expand")
   private Boolean expand = false;
 
-  public UserAlertsQuery pageSize(Integer pageSize) {
+  public IndicatorQuery pageSize(Integer pageSize) {
     this.pageSize = pageSize;
     return this;
   }
@@ -44,7 +42,7 @@ public class UserAlertsQuery   {
     this.pageSize = pageSize;
   }
 
-  public UserAlertsQuery pageNumber(Integer pageNumber) {
+  public IndicatorQuery pageNumber(Integer pageNumber) {
     this.pageNumber = pageNumber;
     return this;
   }
@@ -62,12 +60,12 @@ public class UserAlertsQuery   {
     this.pageNumber = pageNumber;
   }
 
-  public UserAlertsQuery sort(List<String> sort) {
+  public IndicatorQuery sort(List<String> sort) {
     this.sort = sort;
     return this;
   }
 
-  public UserAlertsQuery addSortItem(String sortItem) {
+  public IndicatorQuery addSortItem(String sortItem) {
     this.sort.add(sortItem);
     return this;
   }
@@ -85,7 +83,7 @@ public class UserAlertsQuery   {
     this.sort = sort;
   }
 
-  public UserAlertsQuery expand(Boolean expand) {
+  public IndicatorQuery expand(Boolean expand) {
     this.expand = expand;
     return this;
   }
@@ -112,11 +110,11 @@ public class UserAlertsQuery   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserAlertsQuery userAlertsQuery = (UserAlertsQuery) o;
-    return Objects.equals(this.pageSize, userAlertsQuery.pageSize) &&
-            Objects.equals(this.pageNumber, userAlertsQuery.pageNumber) &&
-            Objects.equals(this.sort, userAlertsQuery.sort) &&
-            Objects.equals(this.expand, userAlertsQuery.expand);
+    IndicatorQuery indicatorQuery = (IndicatorQuery) o;
+    return Objects.equals(this.pageSize, indicatorQuery.pageSize) &&
+            Objects.equals(this.pageNumber, indicatorQuery.pageNumber) &&
+            Objects.equals(this.sort, indicatorQuery.sort) &&
+            Objects.equals(this.expand, indicatorQuery.expand);
   }
 
   @Override
@@ -127,7 +125,7 @@ public class UserAlertsQuery   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class UserAlertsQuery {\n");
+    sb.append("class IndicatorQuery {\n");
 
     sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
     sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
@@ -148,3 +146,6 @@ public class UserAlertsQuery   {
     return o.toString().replace("\n", "\n    ");
   }
 }
+
+
+

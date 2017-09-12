@@ -1,16 +1,17 @@
 package presidio.webapp.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * AlertQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T10:33:22.473Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
 public class AlertQuery   {
   @JsonProperty("pageSize")
@@ -43,8 +44,8 @@ public class AlertQuery   {
   @JsonProperty("classification")
   private List<String> classification = new ArrayList<String>();
 
-  @JsonProperty("indicatorsType")
-  private List<String> indicatorsType = new ArrayList<String>();
+  @JsonProperty("indicatorsName")
+  private List<String> indicatorsName = new ArrayList<String>();
 
   @JsonProperty("usersId")
   private List<String> usersId = new ArrayList<String>();
@@ -55,15 +56,18 @@ public class AlertQuery   {
   @JsonProperty("severity")
   private List<AlertSeverity> severity = new ArrayList<AlertSeverity>();
 
+  @JsonProperty("expand")
+  private Boolean expand = false;
+
   public AlertQuery pageSize(Integer pageSize) {
     this.pageSize = pageSize;
     return this;
   }
 
-   /**
+  /**
    * Get pageSize
    * @return pageSize
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getPageSize() {
     return pageSize;
@@ -78,10 +82,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get pageNumber
    * @return pageNumber
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getPageNumber() {
     return pageNumber;
@@ -96,10 +100,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get minScore
    * @return minScore
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getMinScore() {
     return minScore;
@@ -114,10 +118,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get maxScore
    * @return maxScore
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getMaxScore() {
     return maxScore;
@@ -132,10 +136,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get startTimeFrom
    * @return startTimeFrom
-  **/
+   **/
   @ApiModelProperty(value = "")
   public BigDecimal getStartTimeFrom() {
     return startTimeFrom;
@@ -150,10 +154,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get startTimeTo
    * @return startTimeTo
-  **/
+   **/
   @ApiModelProperty(value = "")
   public BigDecimal getStartTimeTo() {
     return startTimeTo;
@@ -173,10 +177,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get feedback
    * @return feedback
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<Feedback> getFeedback() {
     return feedback;
@@ -196,10 +200,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get tags
    * @return tags
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getTags() {
     return tags;
@@ -219,10 +223,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get userName
    * @return userName
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getUserName() {
     return userName;
@@ -242,10 +246,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get classification
    * @return classification
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getClassification() {
     return classification;
@@ -255,27 +259,27 @@ public class AlertQuery   {
     this.classification = classification;
   }
 
-  public AlertQuery indicatorsType(List<String> indicatorsType) {
-    this.indicatorsType = indicatorsType;
+  public AlertQuery indicatorsName(List<String> indicatorsName) {
+    this.indicatorsName = indicatorsName;
     return this;
   }
 
-  public AlertQuery addIndicatorsTypeItem(String indicatorsTypeItem) {
-    this.indicatorsType.add(indicatorsTypeItem);
+  public AlertQuery addIndicatorsNameItem(String indicatorsNameItem) {
+    this.indicatorsName.add(indicatorsNameItem);
     return this;
   }
 
-   /**
-   * Get indicatorsType
-   * @return indicatorsType
-  **/
+  /**
+   * Get indicatorsName
+   * @return indicatorsName
+   **/
   @ApiModelProperty(value = "")
-  public List<String> getIndicatorsType() {
-    return indicatorsType;
+  public List<String> getIndicatorsName() {
+    return indicatorsName;
   }
 
-  public void setIndicatorsType(List<String> indicatorsType) {
-    this.indicatorsType = indicatorsType;
+  public void setIndicatorsName(List<String> indicatorsName) {
+    this.indicatorsName = indicatorsName;
   }
 
   public AlertQuery usersId(List<String> usersId) {
@@ -288,10 +292,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get usersId
    * @return usersId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getUsersId() {
     return usersId;
@@ -311,10 +315,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get sort
    * @return sort
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getSort() {
     return sort;
@@ -334,10 +338,10 @@ public class AlertQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get severity
    * @return severity
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<AlertSeverity> getSeverity() {
     return severity;
@@ -345,6 +349,24 @@ public class AlertQuery   {
 
   public void setSeverity(List<AlertSeverity> severity) {
     this.severity = severity;
+  }
+
+  public AlertQuery expand(Boolean expand) {
+    this.expand = expand;
+    return this;
+  }
+
+  /**
+   * Get expand
+   * @return expand
+   **/
+  @ApiModelProperty(value = "")
+  public Boolean getExpand() {
+    return expand;
+  }
+
+  public void setExpand(Boolean expand) {
+    this.expand = expand;
   }
 
 
@@ -358,31 +380,32 @@ public class AlertQuery   {
     }
     AlertQuery alertQuery = (AlertQuery) o;
     return Objects.equals(this.pageSize, alertQuery.pageSize) &&
-        Objects.equals(this.pageNumber, alertQuery.pageNumber) &&
-        Objects.equals(this.minScore, alertQuery.minScore) &&
-        Objects.equals(this.maxScore, alertQuery.maxScore) &&
-        Objects.equals(this.startTimeFrom, alertQuery.startTimeFrom) &&
-        Objects.equals(this.startTimeTo, alertQuery.startTimeTo) &&
-        Objects.equals(this.feedback, alertQuery.feedback) &&
-        Objects.equals(this.tags, alertQuery.tags) &&
-        Objects.equals(this.userName, alertQuery.userName) &&
-        Objects.equals(this.classification, alertQuery.classification) &&
-        Objects.equals(this.indicatorsType, alertQuery.indicatorsType) &&
-        Objects.equals(this.usersId, alertQuery.usersId) &&
-        Objects.equals(this.sort, alertQuery.sort) &&
-        Objects.equals(this.severity, alertQuery.severity);
+            Objects.equals(this.pageNumber, alertQuery.pageNumber) &&
+            Objects.equals(this.minScore, alertQuery.minScore) &&
+            Objects.equals(this.maxScore, alertQuery.maxScore) &&
+            Objects.equals(this.startTimeFrom, alertQuery.startTimeFrom) &&
+            Objects.equals(this.startTimeTo, alertQuery.startTimeTo) &&
+            Objects.equals(this.feedback, alertQuery.feedback) &&
+            Objects.equals(this.tags, alertQuery.tags) &&
+            Objects.equals(this.userName, alertQuery.userName) &&
+            Objects.equals(this.classification, alertQuery.classification) &&
+            Objects.equals(this.indicatorsName, alertQuery.indicatorsName) &&
+            Objects.equals(this.usersId, alertQuery.usersId) &&
+            Objects.equals(this.sort, alertQuery.sort) &&
+            Objects.equals(this.severity, alertQuery.severity) &&
+            Objects.equals(this.expand, alertQuery.expand);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsType, usersId, sort, severity);
+    return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sort, severity, expand);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AlertQuery {\n");
-    
+
     sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
     sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
     sb.append("    minScore: ").append(toIndentedString(minScore)).append("\n");
@@ -393,10 +416,11 @@ public class AlertQuery   {
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
     sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
     sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
-    sb.append("    indicatorsType: ").append(toIndentedString(indicatorsType)).append("\n");
+    sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
     sb.append("    usersId: ").append(toIndentedString(usersId)).append("\n");
     sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
     sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+    sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,6 +1,10 @@
 package presidio.webapp.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.elasticsearch.rest.RestUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -9,6 +13,8 @@ import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.EventQuery;
+import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,11 +36,15 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public presidio.webapp.model.Alert getAlertById(String id) {
+    public presidio.webapp.model.Alert getAlertById(String id, boolean expand) {
         presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
         presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
             resultAlert = createRestAlert(alertData);
+        }
+        if (expand) {
+            List<Indicator> indicator = MockUtils.mockIndicators(false);
+            resultAlert.setIndicators(indicator);
         }
 
         return resultAlert;
@@ -58,7 +68,13 @@ public class RestAlertServiceImpl implements RestAlertService {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
         Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
         List restAlerts = new ArrayList();
-        alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+        for (presidio.output.domain.records.alerts.Alert alert:alerts) {
+            presidio.webapp.model.Alert restAlert = createRestAlert(alert);
+            if (alertQuery.getExpand().booleanValue()) {
+                restAlert.setIndicators(MockUtils.mockIndicators(false));
+            }
+            restAlerts.add(restAlert);
+        }
         return restAlerts;
     }
 
@@ -88,8 +104,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
             alertQueryBuilder.filterByTags(alertQuery.getTags());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsType())) {
-            alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsType());
+        if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsName())) {
+            alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsName());
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
             alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
@@ -129,13 +145,20 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
+    public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
         if (alerts.hasContent()) {
             List restAlerts = new ArrayList();
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            for (presidio.output.domain.records.alerts.Alert alert : alerts) {
+                presidio.webapp.model.Alert restAlert = createRestAlert(alert);
+                if (expand) {
+                    restAlert.setIndicators(MockUtils.mockIndicators(false));
+                }
+                restAlerts.add(restAlert);
+            }
             return restAlerts;
         }
+
         return null;
     }
 
@@ -149,6 +172,22 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         return null;
     }
+
+    @Override
+    public Indicator getIndicatorById(String indicatorId, boolean expand) {
+        // TEMPORARY CODE FOR THIS DROP - DO NOT REVIEW
+        Indicator restIndicator = MockUtils.mockIndicator(expand);
+        return restIndicator;
+    }
+
+    @Override
+    public List<presidio.webapp.model.Indicator> getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery) {
+        // TEMPORARY CODE FOR THIS DROP - DO NOT REVIEW
+        List<Indicator> restIndicators = MockUtils.mockIndicators(indicatorQuery.getExpand().booleanValue());
+        return restIndicators;
+    }
+
+
 
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
@@ -164,4 +203,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
+
+
+
 }

@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * AlertsWrapper
+ * IndicatorsWrapper
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T11:15:54.772Z")
 
-public class AlertsWrapper   {
-  @JsonProperty("alerts")
-  private List<Alert> alerts = new ArrayList<Alert>();
+public class IndicatorsWrapper   {
+  @JsonProperty("indicators")
+  private List<Indicator> indicators = new ArrayList<Indicator>();
 
   @JsonProperty("total")
   private Integer total = null;
@@ -22,39 +22,39 @@ public class AlertsWrapper   {
   @JsonProperty("page")
   private Integer page = null;
 
-  public AlertsWrapper alerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public IndicatorsWrapper indicators(List<Indicator> indicators) {
+    this.indicators = indicators;
     return this;
   }
 
-  public AlertsWrapper addAlertsItem(Alert alertsItem) {
-    this.alerts.add(alertsItem);
+  public IndicatorsWrapper addIndicatorsItem(Indicator indicatorsItem) {
+    this.indicators.add(indicatorsItem);
     return this;
   }
 
-   /**
-   * Get alerts
-   * @return alerts
-  **/
+  /**
+   * Get indicators
+   * @return indicators
+   **/
   @ApiModelProperty(value = "")
-  public List<Alert> getAlerts() {
-    return alerts;
+  public List<Indicator> getIndicators() {
+    return indicators;
   }
 
-  public void setAlerts(List<Alert> alerts) {
-    this.alerts = alerts;
+  public void setIndicators(List<Indicator> indicators) {
+    this.indicators = indicators;
   }
 
-  public AlertsWrapper total(Integer total) {
+  public IndicatorsWrapper total(Integer total) {
     this.total = total;
     return this;
   }
 
-   /**
+  /**
    * Get total
    * minimum: 0
    * @return total
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getTotal() {
     return total;
@@ -64,16 +64,16 @@ public class AlertsWrapper   {
     this.total = total;
   }
 
-  public AlertsWrapper page(Integer page) {
+  public IndicatorsWrapper page(Integer page) {
     this.page = page;
     return this;
   }
 
-   /**
+  /**
    * Get page
    * minimum: 0
    * @return page
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getPage() {
     return page;
@@ -92,23 +92,23 @@ public class AlertsWrapper   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    AlertsWrapper alertsWrapper = (AlertsWrapper) o;
-    return Objects.equals(this.alerts, alertsWrapper.alerts) &&
-        Objects.equals(this.total, alertsWrapper.total) &&
-        Objects.equals(this.page, alertsWrapper.page);
+    IndicatorsWrapper indicatorsWrapper = (IndicatorsWrapper) o;
+    return Objects.equals(this.indicators, indicatorsWrapper.indicators) &&
+            Objects.equals(this.total, indicatorsWrapper.total) &&
+            Objects.equals(this.page, indicatorsWrapper.page);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(alerts, total, page);
+    return Objects.hash(indicators, total, page);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class AlertsWrapper {\n");
-    
-    sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
+    sb.append("class IndicatorsWrapper {\n");
+
+    sb.append("    indicators: ").append(toIndentedString(indicators)).append("\n");
     sb.append("    total: ").append(toIndentedString(total)).append("\n");
     sb.append("    page: ").append(toIndentedString(page)).append("\n");
     sb.append("}");
