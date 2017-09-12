@@ -12,7 +12,6 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +99,7 @@ public class RestUserServiceImpl implements RestUserService {
         convertedUser.setTags(user.getTags());
         convertedUser.setUsername(user.getUserName());
         convertedUser.setAlertClassifications(user.getAlertClassifications());
+        convertedUser.setAlertsCount(user.getAlertsCount());
         return convertedUser;
     }
 
