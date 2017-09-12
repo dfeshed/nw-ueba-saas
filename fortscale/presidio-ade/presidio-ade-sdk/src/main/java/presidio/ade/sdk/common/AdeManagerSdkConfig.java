@@ -13,6 +13,7 @@ import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataRe
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 import presidio.ade.domain.store.smart.SmartDataReader;
@@ -37,9 +38,6 @@ import presidio.ade.sdk.ttl.TtlServiceConfig;
 })
 public class AdeManagerSdkConfig {
     @Autowired
-    private EnrichedDataStore enrichedDataStore;
-
-    @Autowired
     private SmartDataReader smartDataReader;
 
     @Autowired
@@ -60,10 +58,13 @@ public class AdeManagerSdkConfig {
     @Autowired
     private TtlService ttlService;
 
+    @Autowired
+    private EnrichedDataStoreImplMongo enrichedDataStoreImplMongo;
+
     @Bean
     public AdeManagerSdk adeManagerSdk() {
         return new AdeManagerSdkImpl(
-                enrichedDataStore,
+                enrichedDataStoreImplMongo,
                 smartDataReader,
                 scoredEnrichedDataStore,
                 aggregatedFeatureEventsConfService,
