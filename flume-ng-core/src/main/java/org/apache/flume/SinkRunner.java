@@ -80,6 +80,7 @@ public class SinkRunner implements LifecycleAware {
         policy.start();
 
         runner = new PollingRunner();
+        runner.setSetSinkRunner(this);
 
         runner.policy = policy;
         runner.counterGroup = counterGroup;
