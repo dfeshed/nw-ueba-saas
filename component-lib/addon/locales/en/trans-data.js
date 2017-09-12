@@ -1353,7 +1353,7 @@ export default {
       'admin.error': 'Admin service is not reachable. Check your service connectivity.',
       'datasource.disk.usage.high': 'Low disk space. Delete unwanted data to free up space.',
       'context.service.timeout': 'Context Hub service is not reachable. Check your service connectivity.',
-      'get.mongo.connect.failed': 'Database is not reachable. Check your database configuration.',
+      'get.mongo.connect.failed': 'Database is not reachable. Retry after sometime.',
       'datasource.query.not.supported': 'Context data lookup is not supported for this meta.',
       'transport.http.read.failed': 'Context data is not available as the data source is not reachable.',
       'transport.ad.read.failed': 'Context data is not available as the data source is not reachable.',

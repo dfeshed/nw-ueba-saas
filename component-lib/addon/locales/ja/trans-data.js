@@ -1353,7 +1353,7 @@ export default {
       'admin.error': 'ja_Admin service is not reachable. Check your service connectivity.',
       'datasource.disk.usage.high': 'ja_Low disk space. Delete unwanted data to free up space.',
       'context.service.timeout': 'ja_Context Hub service is not reachable. Check your service connectivity.',
-      'get.mongo.connect.failed': 'ja_Database is not reachable. Check your database configuration.',
+      'get.mongo.connect.failed': 'ja_Database is not reachable. Retry after sometime.',
       'datasource.query.not.supported': 'ja_Context data lookup is not supported for this meta.',
       'transport.http.read.failed': 'ja_Context data is not available as the data source is not reachable.',
       'transport.ad.read.failed': 'ja_Context data is not available as the data source is not reachable.',
