@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface AlertPersistencyService {
@@ -22,6 +23,8 @@ public interface AlertPersistencyService {
     Page<Alert> findByUserName(String userName, PageRequest pageRequest);
 
     Page<Alert> findByUserId(String userId, PageRequest pageRequest);
+
+    Page<Alert> findByUserIdIn(Collection<String> userId, PageRequest pageRequest);
 
     Page<Alert> findById(String id, PageRequest pageRequest);
 
