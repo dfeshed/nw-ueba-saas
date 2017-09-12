@@ -1,10 +1,8 @@
 package presidio.output.domain.spring;
 
-import fortscale.utils.mongodb.config.MongoConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
