@@ -43,6 +43,10 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     @Override
     public void configure(Context context) {
         isBatch = context.getBoolean(IS_BATCH, false);
+        int maxBackOffSleep = context.getInteger(IS_BATCH, -1);
+        if (maxBackOffSleep > 0) {
+            SinkRunner.maxBackoffSleep = maxBackOffSleep;
+        }
     }
 
 
@@ -58,6 +62,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
             if (eventsToSave.isEmpty()) {
                 logger.trace("{} has finished processing 0 events.", getName());
+                result = Status.BACKOFF;
             } else {
                 final int numOfSavedEvents = saveEvents(eventsToSave);
                 logger.debug("{} has finished processing {} events.", getName(), numOfSavedEvents);

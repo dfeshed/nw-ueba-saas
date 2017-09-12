@@ -46,8 +46,8 @@ public class SinkRunner implements LifecycleAware {
 
     private static final Logger logger = LoggerFactory
             .getLogger(SinkRunner.class);
-    private static final long backoffSleepIncrement = 1000;
-    private static final long maxBackoffSleep = 5000;
+    //    private static final long backoffSleepIncrement = 1000;
+    public static long maxBackoffSleep = 5000;
 
     private CounterGroup counterGroup;
     private PollingRunner runner;
@@ -175,11 +175,13 @@ public class SinkRunner implements LifecycleAware {
         }
 
         private void backoff() throws InterruptedException {
-            counterGroup.incrementAndGet("runner.backoffs");
+//            counterGroup.incrementAndGet("runner.backoffs");
 
-            Thread.sleep(Math.min(
-                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
-                            * backoffSleepIncrement, maxBackoffSleep));
+//            Thread.sleep(Math.min(
+//                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
+//                            * backoffSleepIncrement, maxBackoffSleep));
+            logger.info("Sink is backing off for {} millis", maxBackoffSleep);
+            Thread.sleep(maxBackoffSleep);
         }
 
         private void shutdownFlume() {
