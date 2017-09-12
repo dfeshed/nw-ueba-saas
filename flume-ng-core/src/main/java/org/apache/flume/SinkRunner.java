@@ -19,6 +19,7 @@
 
 package org.apache.flume;
 
+import org.apache.commons.cli.Option;
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.lifecycle.LifecycleSupervisor;
@@ -79,6 +80,7 @@ public class SinkRunner implements LifecycleAware {
         policy.start();
 
         runner = new PollingRunner();
+        runner.setSinkRunner(this);
 
         runner.policy = policy;
         runner.counterGroup = counterGroup;
@@ -135,6 +137,8 @@ public class SinkRunner implements LifecycleAware {
         private SinkProcessor policy;
         private AtomicBoolean shouldStop;
         private CounterGroup counterGroup;
+        private SinkRunner sinkRunner;
+
 
         @Override
         public void run() {
@@ -179,9 +183,20 @@ public class SinkRunner implements LifecycleAware {
         }
 
         private void shutdownFlume() {
-            logger.info("Flume agent execution with options {} is done. Shutting down Flume agent...", LifecycleSupervisor.options);
+            sinkRunner.lifecycleState = LifecycleState.STOP;
             shouldStop.set(true);
+            final Option agentName = LifecycleSupervisor.options.getOption("name");
+            logger.info("Flume agent {} is closing...", agentName);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                //do nothing
+            }
             System.exit(0);
+        }
+
+        public void setSinkRunner(SinkRunner sinkRunner) {
+            this.sinkRunner = sinkRunner;
         }
 
     }
