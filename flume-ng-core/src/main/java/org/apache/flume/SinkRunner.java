@@ -180,7 +180,6 @@ public class SinkRunner implements LifecycleAware {
 //            Thread.sleep(Math.min(
 //                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
 //                            * backoffSleepIncrement, maxBackoffSleep));
-            logger.info("Sink is backing off for {} millis", maxBackoffSleep);
             Thread.sleep(maxBackoffSleep);
         }
 
