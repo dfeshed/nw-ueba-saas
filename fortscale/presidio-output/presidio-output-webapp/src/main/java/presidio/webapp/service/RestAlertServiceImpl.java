@@ -83,9 +83,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
             alertQueryBuilder.filterByTags(alertQuery.getTags());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsType())) {
-            alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsType());
-        }
         if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
             alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
         }
@@ -112,9 +109,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getSort())) {
             List<Sort.Order> orders = new ArrayList<>();
             alertQuery.getSort().forEach(s -> {
-                String[] params = s.split(":");
-                Sort.Direction direction = Sort.Direction.fromString(params[0]);
-                orders.add(new Sort.Order(direction, params[1]));
+                Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
+                orders.add(new Sort.Order(direction, s.getFieldNames().name()));
 
             });
             alertQueryBuilder.sortField(new Sort(orders));

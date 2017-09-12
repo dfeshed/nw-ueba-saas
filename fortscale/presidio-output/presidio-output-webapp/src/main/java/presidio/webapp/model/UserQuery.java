@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * UserQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T19:39:01.299Z")
 
 public class UserQuery {
     @JsonProperty("userName")
@@ -41,7 +41,7 @@ public class UserQuery {
     private List<String> indicatorsName = new ArrayList<String>();
 
     @JsonProperty("sort")
-    private List<String> sort = new ArrayList<String>();
+    private List<UserQuerySort> sort = new ArrayList<UserQuerySort>();
 
     @JsonProperty("severity")
     private List<UserSeverity> severity = new ArrayList<UserSeverity>();
@@ -235,12 +235,12 @@ public class UserQuery {
         this.indicatorsName = indicatorsName;
     }
 
-    public UserQuery sort(List<String> sort) {
+    public UserQuery sort(List<UserQuerySort> sort) {
         this.sort = sort;
         return this;
     }
 
-    public UserQuery addSortItem(String sortItem) {
+    public UserQuery addSortItem(UserQuerySort sortItem) {
         this.sort.add(sortItem);
         return this;
     }
@@ -251,11 +251,11 @@ public class UserQuery {
      * @return sort
      **/
     @ApiModelProperty(value = "")
-    public List<String> getSort() {
+    public List<UserQuerySort> getSort() {
         return sort;
     }
 
-    public void setSort(List<String> sort) {
+    public void setSort(List<UserQuerySort> sort) {
         this.sort = sort;
     }
 
