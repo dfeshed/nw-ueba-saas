@@ -29,15 +29,13 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
     private FixedDurationStrategy featureBucketDuration;
     private AccumulateAggregationsBucketService accumulateAggregationsBucketService;
     private AccumulationsCache accumulationsCache;
-    private TtlService ttlService;
 
     public AccumulateAggregationsService(FixedDurationStrategy fixedDurationStrategy,
                                          BucketConfigurationService bucketConfigurationService,
                                          EnrichedDataStore enrichedDataStore,
                                          AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore, int pageSize, int maxGroupSize, FixedDurationStrategy featureBucketDuration,
                                          AccumulateAggregationsBucketService accumulateAggregationsBucketService,
-                                         AccumulationsCache accumulationsCache,
-                                         TtlService ttlService) {
+                                         AccumulationsCache accumulationsCache) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -47,7 +45,6 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
         this.featureBucketDuration = featureBucketDuration;
         this.accumulateAggregationsBucketService = accumulateAggregationsBucketService;
         this.accumulationsCache = accumulationsCache;
-        this.ttlService = ttlService;
     }
 
     @Override
@@ -70,8 +67,6 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
 
             aggregationEventsAccumulationDataStore.store(accumulatedRecords);
         }
-
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
 

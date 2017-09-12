@@ -42,7 +42,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private List<String> aggregationContext;
     private BucketConfigurationService bucketConfigurationService;
-    private TtlService ttlService;
 
     /**
      * C'tor
@@ -57,7 +56,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService, TtlService ttlService) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -66,7 +65,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.bucketConfigurationService = bucketConfigurationService;
-        this.ttlService = ttlService;
         this.aggregationContext = getAggregationContext();
     }
 
@@ -90,7 +88,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     private List<String> getAggregationContext() {
