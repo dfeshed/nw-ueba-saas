@@ -1,10 +1,19 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
 import com.mongodb.DBCollection;
+import fortscale.aggregation.configuration.AslConfigurationPaths;
+import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
+import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.ModelConfServiceBuilder;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.builder.TimeModelBuilderConf;
+import fortscale.ml.model.store.ModelDAO;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.AdeEventTypeScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -16,21 +25,32 @@ import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
 import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
+import presidio.ade.test.utils.generators.models.CategoryRarityModelGenerator;
+import presidio.ade.test.utils.generators.models.ModelDaoGenerator;
+import presidio.ade.test.utils.generators.models.TimeModelGenerator;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
+import presidio.data.generators.common.GeneratorException;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +63,6 @@ import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.EVENT_
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppTest {
-    public static final String EXECUTION_COMMAND2 = "run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
 
@@ -53,6 +72,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
     public static final String EXECUTION_COMMAND = String.format("run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s ", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 3600);
+    public static final String ENRICHED_RECORD_MODELS_GROUP_NAME = "enriched-record-models";
     @Autowired
     private ScorerConfService scorerConfService;
     @Autowired
@@ -63,6 +83,10 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     private FactoryService<Scorer> scorerFactoryService;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    @Autowired
+    private ModelStore modelStore;
+    @Autowired
+    private AslResourceFactory aslResourceFactory;
 
     @Before
     public void beforeTest() {
@@ -80,25 +104,14 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     }
 
     @Override
-    protected void assertSanityTest() {
-        AdeEventTypeScorerConfs adeEventTypeScorerConfs = scorerConfService.getAdeEventTypeScorerConfs(ADE_EVENT_TYPE.getName());
-        List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs().stream().filter(x -> x instanceof ScorerContainerConf).collect(Collectors.toList());
-        List<ScorerContainerConf> scorerContainerConfs = new ArrayList<>();
-        scorerConfs.forEach(scorerConf -> scorerContainerConfs.add(((ScorerContainerConf) scorerConf)));
-        scorerContainerConfs.forEach(
-                scorerContainerConf -> {
-                    List<IScorerConf> scorerConfList = scorerContainerConf.getScorerConfList();
-                    Assert.assertTrue("scorers conf should contain at least one configuration value",scorerConfList.size() > 0);
-                    scorerConfList.forEach(
-                            fileScorer -> {
-                                String scorerName = fileScorer.getName();
-                                String adeEventType = String.format("%s_%s_%s", EVENT_TYPE_PREFIX.toLowerCase(), ADE_EVENT_TYPE.getName(), scorerName);
-                                String collectionName = adeScoredEnrichedRecordToCollectionNameTranslator.toCollectionName(adeEventType);
-                                DBCollection collection = mongoTemplate.getCollection(collectionName);
-                                Assert.assertTrue(String.format("scored collection=%s must have at least one scored record",collectionName),collection.count() > 0);
-                            });
-                });
-        Assert.assertTrue(scorerContainerConfs.size() > 0);
+    protected void assertSanityTest() throws GeneratorException {
+        // process is executed without models. scores are expected to be zero
+        assertScoredEnrichedEventsCreated(-1D);
+
+        assertScoredAggregationCollectionsCreated(-1D);
+    }
+
+    private void assertScoredAggregationCollectionsCreated(Double featureValueGt) {
         List<AggregatedFeatureEventConf> hourlyScoreAggrConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(conf -> {
             boolean isScoreAggregationConf = AggregatedFeatureType.fromCodeRepresentation(conf.getType()).equals(AggregatedFeatureType.SCORE_AGGREGATION);
 
@@ -108,10 +121,77 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
         }).collect(Collectors.toList());
 
         hourlyScoreAggrConfs.forEach(conf -> {
-            String collectionName = aggrDataToCollectionNameTranslator.toCollectionName(new AggrRecordsMetadata(conf.getName(),AggregatedFeatureType.SCORE_AGGREGATION));
+            AggrRecordsMetadata metadata = new AggrRecordsMetadata(conf.getName(), AggregatedFeatureType.SCORE_AGGREGATION);
+
+            String collectionName = aggrDataToCollectionNameTranslator.toCollectionName(metadata);
             DBCollection collection = mongoTemplate.getCollection(collectionName);
-            Assert.assertTrue(String.format("scored aggr collection=%s must have at least one record",collectionName),collection.count() > 0);
+            Query query = new Query();
+            query.addCriteria(Criteria.where(AdeAggregationRecord.FEATURE_VALUE_FIELD_NAME).gt(featureValueGt));
+            Assert.assertTrue(String.format("scored aggr collection=%s must have at least one record with feature value greater than=%s", collectionName,featureValueGt.toString()), collection.count(query.getQueryObject()) > 0);
         });
+    }
+
+    private void assertScoredEnrichedEventsCreated(Double scoreGt) {
+        AdeEventTypeScorerConfs adeEventTypeScorerConfs = scorerConfService.getAdeEventTypeScorerConfs(ADE_EVENT_TYPE.getName());
+        List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs().stream().filter(x -> x instanceof ScorerContainerConf).collect(Collectors.toList());
+        List<ScorerContainerConf> scorerContainerConfs = new ArrayList<>();
+        scorerConfs.forEach(scorerConf -> scorerContainerConfs.add(((ScorerContainerConf) scorerConf)));
+        scorerContainerConfs.forEach(
+                scorerContainerConf -> {
+                    List<IScorerConf> scorerConfList = scorerContainerConf.getScorerConfList();
+                    Assert.assertTrue("scorers conf should contain at least one configuration value", scorerConfList.size() > 0);
+                    scorerConfList.forEach(
+                            fileScorer -> {
+                                String scorerName = fileScorer.getName();
+                                String adeEventType = String.format("%s_%s_%s", EVENT_TYPE_PREFIX.toLowerCase(), ADE_EVENT_TYPE.getName(), scorerName);
+                                String collectionName = adeScoredEnrichedRecordToCollectionNameTranslator.toCollectionName(adeEventType);
+                                DBCollection collection = mongoTemplate.getCollection(collectionName);
+                                Query query = new Query(Criteria.where(AdeScoredEnrichedRecord.SCORE_FIELD_NAME).gt(scoreGt));
+                                long amountOfDocumentsWithScoreGt = collection.count(query.getQueryObject());
+                                Assert.assertTrue(String.format("scored collection=%s must have at least one scored record with score greater than=%s", collectionName,scoreGt.toString()), amountOfDocumentsWithScoreGt > 0);
+                            });
+                });
+        Assert.assertTrue(scorerContainerConfs.size() > 0);
+    }
+
+    @Test
+    public void scoreEventsByModels() throws GeneratorException {
+        // generate all file category rarity models
+        generateEnrichedRawModels();
+        // sanity data should contain data that is related to feature operationType
+        eventsGenerator.generateAndPersistSanityData(getInterval());
+        // score enriched and build score aggregation
+        executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
+        // each scored enrich should contain at least one document with score>0
+        assertScoredEnrichedEventsCreated(0D);
+        // scored aggregations should contain records with values>0 sinces their are scored enriched events
+        assertScoredAggregationCollectionsCreated(0D);
+    }
+
+    private void generateEnrichedRawModels() throws GeneratorException {
+        Collection<AslConfigurationPaths> modelConfigurationPathsCollection = Arrays.asList(
+                new AslConfigurationPaths(ENRICHED_RECORD_MODELS_GROUP_NAME, "classpath*:config/asl/models/enriched-records/"));
+        ModelConfServiceBuilder modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection, aslResourceFactory);
+        ModelConfService modelConfService = modelConfServiceBuilder.buildModelConfService(ENRICHED_RECORD_MODELS_GROUP_NAME + "." + ADE_EVENT_TYPE.toString());
+        List<ModelConf> modelConfs = modelConfService.getModelConfs();
+
+        for (ModelConf conf :
+                modelConfs) {
+            ModelDaoGenerator modelDaoGenerator = null;
+            if (conf.getModelBuilderConf() instanceof CategoryRarityModelBuilderConf) {
+                CategoryRarityModelGenerator categoryRarityModelGenerator = new CategoryRarityModelGenerator((CategoryRarityModelBuilderConf) conf.getModelBuilderConf());
+                modelDaoGenerator = new ModelDaoGenerator(categoryRarityModelGenerator);
+            }
+            if (conf.getModelBuilderConf() instanceof TimeModelBuilderConf) {
+                TimeModelGenerator categoryRarityModelGenerator = new TimeModelGenerator((TimeModelBuilderConf) conf.getModelBuilderConf());
+                modelDaoGenerator = new ModelDaoGenerator(categoryRarityModelGenerator);
+            }
+            Assert.assertTrue("model builder conf is expected to have a matching model generator. are you trying to add new model builder without adding tests?! good luck. :)", modelDaoGenerator != null);
+
+            List<ModelDAO> modelDAOS = modelDaoGenerator.generate();
+            Assert.assertFalse("generator is expected to generate at least one model", modelDAOS.isEmpty());
+            modelDAOS.forEach(modelDAO -> modelStore.save(conf, modelDAO));
+        }
     }
 
     @Configuration
