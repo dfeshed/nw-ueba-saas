@@ -8,7 +8,11 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -25,8 +29,8 @@ public class UserServiceImpl implements UserService {
     private final String TAG_ADMIN = "admin";
 
 
-    private int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
-    public int defaultUsersBatchSize;
+    private final int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
+    private final int defaultUsersBatchSize;
 
     public UserServiceImpl(EventPersistencyService eventPersistencyService,
                            UserPersistencyService userPersistencyService,
@@ -40,10 +44,14 @@ public class UserServiceImpl implements UserService {
         this.defaultUsersBatchSize = defaultUsersBatchSize;
     }
 
+    public int getDefaultUsersBatchSize() {
+        return defaultUsersBatchSize;
+    }
+
     @Override
     public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
-        if(userDetails == null) {
+        if (userDetails == null) {
             return null;
         }
         return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
@@ -61,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     private UserDetails getUserDetails(String userId) {
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
-        if(event == null) {
+        if (event == null) {
             log.error("no events were found for user {}", userId);
             return null;
         }

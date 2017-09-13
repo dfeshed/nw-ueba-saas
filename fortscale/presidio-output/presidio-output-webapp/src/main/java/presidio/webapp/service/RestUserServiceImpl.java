@@ -52,7 +52,7 @@ public class RestUserServiceImpl implements RestUserService {
             Map<String, List<Alert>> map;
             List<String> usersIds = new ArrayList<>();
             for (presidio.output.domain.records.users.User user : users) {
-                usersIds.add(user.getUserId());
+                usersIds.add(user.getId());
             }
             alerts = restAlertService.getAlertsByUsersIds(usersIds);
             map = userIdsToAlerts(alerts, usersIds);
@@ -70,15 +70,20 @@ public class RestUserServiceImpl implements RestUserService {
     private Map<String, List<Alert>> userIdsToAlerts(List<Alert> alerts, List<String> usersIds) {
         Map<String, List<Alert>> map = new HashMap<>();
         List<Alert> tempAlerts;
+        List<Alert> removeAlerts;
         for (String id : usersIds) {
             tempAlerts = new ArrayList<>();
+            removeAlerts = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(alerts)) {
                 for (Alert alert : alerts) {
                     if (alert.getUserId().equals(id)) {
                         tempAlerts.add(alert);
-                        alerts.remove(alert);
+                        removeAlerts.add(alert);
                     }
                 }
+                removeAlerts.forEach(alert -> {
+                    alerts.remove(alert);
+                });
             }
             map.put(id, tempAlerts);
         }
@@ -122,7 +127,7 @@ public class RestUserServiceImpl implements RestUserService {
         if (userQuery.getMinScore() != null) {
             builder.minScore(userQuery.getMinScore());
         }
-        if (userQuery.getSeverity() != null) {
+        if (CollectionUtils.isNotEmpty(userQuery.getSeverity())) {
             builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
         }
         if (userQuery.getPageSize() != null) {
@@ -141,10 +146,8 @@ public class RestUserServiceImpl implements RestUserService {
             try {
                 List<Sort.Order> orders = new ArrayList<>();
                 userQuery.getSort().forEach(s -> {
-                    String[] params = s.split(":");
-                    Sort.Direction direction = Sort.Direction.fromString(params[0]);
-                    orders.add(new Sort.Order(direction, params[1]));
-
+                    Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
+                    orders.add(new Sort.Order(direction, s.getFieldNames().name()));
                 });
                 builder.sortField(new Sort(orders));
             } catch (Exception e) {

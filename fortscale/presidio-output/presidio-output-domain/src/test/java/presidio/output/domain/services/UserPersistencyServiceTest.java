@@ -213,25 +213,30 @@ public class UserPersistencyServiceTest {
         Assert.assertEquals(2, usersPageResult.getContent().size());
     }
 
-//    @Test
-//    public void testFindByIsUserAdmin_True() {
-//        user1.setAdmin(true);
-//        List<User> userList = new ArrayList<>();
-//        userList.add(user1);
-//        userList.add(user2);
-//        userPersistencyService.save(userList);
-//
-//        List<String> sortFields = new ArrayList<>();
-//        sortFields.add(User.SCORE_FIELD_NAME);
-//        sortFields.add(User.USER_ID_FIELD_NAME);
-//        UserQuery userQuery =
-//                new UserQuery.UserQueryBuilder()
-//                        .filterByUserAdmin(true)
-//                        .build();
-//
-//        Page<User> foundUsers = userPersistencyService.find(userQuery);
-//        assertThat(foundUsers.getTotalElements(), is(1L));
-//        assertTrue(foundUsers.iterator().next().getAdmin());
-//    }
+    @Test
+    public void testFindByIsUserAdmin_True() {
+        List<String> tags = new ArrayList<>();
+        tags.add("ADMIN");
+        user1.setTags(tags);
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userPersistencyService.save(userList);
+
+        List<String> sortFields = new ArrayList<>();
+        sortFields.add(User.SCORE_FIELD_NAME);
+        sortFields.add(User.USER_ID_FIELD_NAME);
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .filterByUserTags(tags)
+                        .build();
+
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(1L));
+        User foundUser = foundUsers.iterator().next();
+        assertNotNull(foundUser.getTags());
+        assertEquals(1, foundUser.getTags().size());
+        assertEquals(tags, foundUser.getTags());
+    }
 
 }

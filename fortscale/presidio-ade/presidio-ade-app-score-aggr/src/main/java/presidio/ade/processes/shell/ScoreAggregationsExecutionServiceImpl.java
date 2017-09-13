@@ -49,9 +49,10 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService, ttlService);
+				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
+		ttlService.cleanupCollections(startInstant);
 	}
 
 	@Override
