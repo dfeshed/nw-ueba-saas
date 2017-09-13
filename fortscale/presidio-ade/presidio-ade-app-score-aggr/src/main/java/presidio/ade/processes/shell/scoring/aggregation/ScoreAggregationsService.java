@@ -108,9 +108,12 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     public List<String> getDistinctContextTypes(String dataSource){
-        //todo: replace this implementation.
-        String confSuffix = dataSource+strategy;
-        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(x ->  StringUtils.endsWithIgnoreCase(x.getName(),confSuffix)).map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
+        //todo: fix this implementation.
+        //this implementation returns the distinct context over all data sources which might cause us to run on context which not exist for the specific data source.
+        // we should not fail in this case just work for nothing.
+        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
+//        String confSuffix = dataSource+strategy;
+//        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(x ->  StringUtils.endsWithIgnoreCase(x.getName(),confSuffix)).map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
         return ret;
     }
 }
