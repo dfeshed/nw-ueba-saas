@@ -30,7 +30,7 @@ public class PresidioFilteredEventsMongoRepository {
             //todo: take params from config server
             sinkMongoRepository = createRepository("presidio", "localhost", 27017, "presidio", "iYTLjyA0VryKhpkvBrMMLQ==");
         } catch (Exception e) {
-            logger.error("Failed to create PresidioFilteredEventsMongoRepository!!!");
+            logger.error("Failed to create PresidioFilteredEventsMongoRepository!!!", e);
         }
     }
 
