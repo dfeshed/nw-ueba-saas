@@ -59,6 +59,9 @@ public class AlertQuery {
     @JsonProperty("expand")
     private Boolean expand = false;
 
+    @JsonProperty("aggregateBySeverity")
+    private Boolean aggregateBySeverity;
+
     public AlertQuery pageSize(Integer pageSize) {
         this.pageSize = pageSize;
         return this;
@@ -384,6 +387,24 @@ public class AlertQuery {
         this.expand = expand;
     }
 
+    public AlertQuery aggregateBySeverity(Boolean aggregateBySeverity) {
+        this.aggregateBySeverity = aggregateBySeverity;
+        return this;
+    }
+
+    /**
+     * Get expand
+     *
+     * @return expand
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean getAggregateBySeverity() {
+        return aggregateBySeverity;
+    }
+
+    public void setAggregateBySeverity(Boolean aggregateBySeverity) {
+        this.aggregateBySeverity = aggregateBySeverity;
+    }
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -408,12 +429,13 @@ public class AlertQuery {
                 Objects.equals(this.usersId, alertQuery.usersId) &&
                 Objects.equals(this.sort, alertQuery.sort) &&
                 Objects.equals(this.severity, alertQuery.severity) &&
-                Objects.equals(this.expand, alertQuery.expand);
+                Objects.equals(this.expand, alertQuery.expand) &&
+                Objects.equals(this.aggregateBySeverity, alertQuery.aggregateBySeverity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sort, severity, expand);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sort, severity, expand, aggregateBySeverity);
     }
 
     @Override
@@ -436,6 +458,7 @@ public class AlertQuery {
         sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
+        sb.append("    aggregateBySeverity: ").append(toIndentedString(aggregateBySeverity)).append("\n");
         sb.append("}");
         return sb.toString();
     }
