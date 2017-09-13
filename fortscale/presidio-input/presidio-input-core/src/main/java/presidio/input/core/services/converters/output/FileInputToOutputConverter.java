@@ -27,6 +27,7 @@ public class FileInputToOutputConverter implements InputOutputConverter {
         outputEvent.setAbsoluteDstFolderFilePath(transformedEvent.getDstFolderPath());
         outputEvent.setDstDriveShared(transformedEvent.isDstDriveShared());
         outputEvent.setFileSize(transformedEvent.getFileSize());
+        outputEvent.setResultCode(transformedEvent.getResultCode());
         return outputEvent;
     }
 }
