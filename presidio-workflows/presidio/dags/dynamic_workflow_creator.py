@@ -13,6 +13,6 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 
 PresidioDagFactory()
 
-config_server_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
-dags = DagFactories.create_dags("PresidioDag", conf_reader=config_server_reader, name_space=globals(),
+config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+dags = DagFactories.create_dags("PresidioDag", conf_reader=config_reader, name_space=globals(),
                                 dag_builder=FullFlowDagBuilder())
