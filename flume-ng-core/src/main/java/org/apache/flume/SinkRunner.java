@@ -54,6 +54,7 @@ public class SinkRunner implements LifecycleAware {
     private Thread runnerThread;
     private LifecycleState lifecycleState;
     private SinkProcessor policy;
+    public static LifecycleSupervisor lifecycleSupervisor;
 
     public SinkRunner() {
         counterGroup = new CounterGroup();
@@ -112,7 +113,7 @@ public class SinkRunner implements LifecycleAware {
             }
         }
 
- 
+
         lifecycleState = LifecycleState.STOP;
     }
 
@@ -184,21 +185,20 @@ public class SinkRunner implements LifecycleAware {
         }
 
         private void shutdownFlume() {
-            sinkRunner.lifecycleState = LifecycleState.STOP;
-            shouldStop.set(true);
             final Option agentName = LifecycleSupervisor.options.getOption("name");
             logger.info("Flume agent {} is closing...", agentName);
+            sinkRunner.lifecycleState = LifecycleState.STOP;
+            shouldStop.set(true);
+            SinkRunner.lifecycleSupervisor.stop();
+
+            logger.warn("Flume was unable to gracefully stop. Shutting down forcibly");
             new Thread("App-exit") {
                 @Override
                 public void run() {
-                    try {
-                    Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                            //do nothing
-                    }
                     System.exit(0);
                 }
             }.start();
+
         }
 
         public void setSinkRunner(SinkRunner sinkRunner) {
