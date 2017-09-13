@@ -570,6 +570,13 @@ apis_metadata = [
     }
 ]
 
+def format_date(date):
+    """
+
+    :param date: 
+    :return: date string in utc iso format 
+    """
+    return (date.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z")
 
 # Function used to secure the REST ENDPOINT
 def http_token_secure(func):
@@ -593,7 +600,7 @@ def http_token_secure(func):
 class REST_API_Response_Util():
     # Gets the Base Response object with all required response fields included. To be used at the beginning of the REST Call.
     @staticmethod
-    def get_base_response(status="OK", http_response_code=200, call_time=datetime.now(), include_arguments=True):
+    def get_base_response(status="OK", http_response_code=200, call_time=format_date(datetime.utcnow()), include_arguments=True):
         base_response = {"status": status, "http_response_code": http_response_code, "call_time": call_time}
         if include_arguments:
             base_response["arguments"] = request.args
@@ -604,7 +611,7 @@ class REST_API_Response_Util():
     @staticmethod
     def _get_final_response(base_response, output=None, airflow_cmd=None, http_response_code=None, warning=None):
         final_response = base_response
-        final_response["response_time"] = datetime.now()
+        final_response["response_time"] = format_date(datetime.utcnow())
         if output:
             final_response["output"] = output
         if airflow_cmd:
@@ -1000,7 +1007,7 @@ class REST_API(BaseView):
                 api: "dag_execution_dates_for_state",
                     state: "running"
                 },
-                call_time: "Wed, 13 Sep 2017 11:34:52 GMT",
+                call_time: "2018-07-24T07:00:00.000Z",
                 http_response_code: 200,
                 output: [
                     {
@@ -1014,7 +1021,7 @@ class REST_API(BaseView):
                     }
                 ],
                 post_arguments: { },
-                response_time: "Wed, 13 Sep 2017 11:41:01 GMT",
+                response_time: "2017-07-24T10:00:00.000Z",
                 status: "OK"
             }
         """
@@ -1031,7 +1038,7 @@ class REST_API(BaseView):
             # group dags states and execution dates by dag id
             res = {}
             for item in non_sub_dag_dag_runs_by_state:
-                res.setdefault(item.dag_id, []).append(item.execution_date.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z")
+                res.setdefault(item.dag_id, []).append(format_date(item.execution_date))
             # create a payload response containing the execution dates for each dag_id
             payload = []
             for k, v in res.items():
