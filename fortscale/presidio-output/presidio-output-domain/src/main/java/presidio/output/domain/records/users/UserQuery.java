@@ -10,12 +10,12 @@ public class UserQuery {
     // filters
     private final List<String> filterByAlertClassifications;
     private final List<String> filterByIndicators;
-    private List<UserSeverity> filterBySeverities;
-    private List<String> filterByUsersIds;
+    private final List<UserSeverity> filterBySeverities;
+    private final List<String> filterByUserTags;
+    private final List<String> filterByUsersIds;
     private int minScore;
     private int maxScore;
     private boolean isPrefix;
-    private Boolean isAdmin;
     private String filterByUserName;
 
     // sort
@@ -27,21 +27,23 @@ public class UserQuery {
     private final int pageSize;
 
     public UserQuery(UserQueryBuilder builder) {
+        // filter
         this.filterByAlertClassifications = builder.filterByAlertClassifications;
         this.filterByIndicators = builder.filterByIndicators;
         this.filterBySeverities = builder.filterBySeverities;
         this.filterByUsersIds = builder.filterByUsersIds;
-
-        //Sort
-        this.sort = builder.sort;
-        this.pageNumber = builder.pageNumber;
-        this.pageSize = builder.pageSize;
+        this.filterByUserTags = builder.filterByUserTags;
+        this.filterByUserName = builder.filterByUserName;
+        this.isPrefix = builder.isPrefix;
         this.minScore = builder.minScore;
         this.maxScore = builder.maxScore;
 
-        this.filterByUserName = builder.filterByUserName;
-        this.isPrefix = builder.isPrefix;
-        this.isAdmin = builder.isAdmin;
+        //Sort
+        this.sort = builder.sort;
+
+        // page
+        this.pageNumber = builder.pageNumber;
+        this.pageSize = builder.pageSize;
     }
 
     public List<String> getFilterByUsersIds() {
@@ -89,9 +91,8 @@ public class UserQuery {
         return maxScore;
     }
 
-
-    public Boolean getFilterByIsAdmin() {
-        return isAdmin;
+    public List<String> getFilterByUserTags() {
+        return filterByUserTags;
     }
 
     public static class UserQueryBuilder {
@@ -101,13 +102,12 @@ public class UserQuery {
         private List<String> filterByIndicators;
         private List<UserSeverity> filterBySeverities;
         private List<String> filterByUsersIds;
+        private List<String> filterByUserTags;
 
         private int minScore = -1;
         private int maxScore = -1;
         private String filterByUserName;
         private boolean isPrefix = false;
-        private Boolean isAdmin;
-
 
         // sort
         private Sort sort;
@@ -136,6 +136,11 @@ public class UserQuery {
             return this;
         }
 
+        public UserQueryBuilder filterByUserTags(List<String> filterByUserTags) {
+            this.filterByUserTags = filterByUserTags;
+            return this;
+        }
+
         public UserQueryBuilder sort(Sort sort) {
             this.sort = sort;
             return this;
@@ -160,13 +165,6 @@ public class UserQuery {
             this.isPrefix = prefixEnabled;
             return this;
         }
-
-
-        public UserQueryBuilder filterByUserAdmin(Boolean isAdmin) {
-            this.isAdmin = isAdmin;
-            return this;
-        }
-
 
         public UserQueryBuilder maxScore(int maxScore) {
             this.maxScore = maxScore;

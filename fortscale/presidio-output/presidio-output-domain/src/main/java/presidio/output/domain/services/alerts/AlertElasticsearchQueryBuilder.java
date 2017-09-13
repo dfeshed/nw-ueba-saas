@@ -27,34 +27,71 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
 
         // filter by username
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
-            boolQueryBuilder.should(matchQuery(Alert.USER_NAME, alertQuery.getFilterByUserName()).operator(Operator.OR));
+            BoolQueryBuilder userNameQuery = new BoolQueryBuilder();
+            for (String userName : alertQuery.getFilterByUserName()) {
+                userNameQuery.should(matchQuery(Alert.USER_NAME, userName));
+            }
+            boolQueryBuilder.must(userNameQuery);
+        }
+
+        // filter by user id
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserId())) {
+            BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
+            for (String userId : alertQuery.getFilterByUserId()) {
+                userIdQuery.should(matchQuery(Alert.USER_ID, userId));
+            }
+            boolQueryBuilder.must(userIdQuery);
         }
 
         // filter by severity
-        if (!CollectionUtils.isEmpty(alertQuery.getFilterBySeverity())) {
-            boolQueryBuilder.should(matchQuery(Alert.SEVERITY, alertQuery.getFilterBySeverity()).operator(Operator.OR));
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterBySeverity())) {
+            BoolQueryBuilder severityQuery = new BoolQueryBuilder();
+            for (String severity : alertQuery.getFilterBySeverity()) {
+                severityQuery.should(matchQuery(Alert.SEVERITY, severity));
+            }
+
+            boolQueryBuilder.must(severityQuery);
         }
 
         // filter by classification
-        if (alertQuery.getFilterByClassification() != null && !(alertQuery.getFilterByClassification()).isEmpty()) {
-            boolQueryBuilder.should(matchQuery(Alert.CLASSIFICATIONS, alertQuery.getFilterByClassification()).operator(Operator.OR));
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByClassification())) {
+            BoolQueryBuilder classificationQuery = new BoolQueryBuilder();
+            for (String classification : alertQuery.getFilterByClassification()) {
+                classificationQuery.should(matchQuery(Alert.CLASSIFICATIONS, classification));
+            }
+            boolQueryBuilder.must(classificationQuery);
         }
 
-        // filter by date range
-        if (alertQuery.getFilterByStartDate() > 0 && alertQuery.getFilterByEndDate() > 0 && alertQuery.getFilterByStartDate() < alertQuery.getFilterByEndDate()) {
-            RangeQueryBuilder rangeQuery = rangeQuery(Alert.START_DATE);
-            if (alertQuery.getFilterByStartDate() > 0) {
-                rangeQuery.from(alertQuery.getFilterByStartDate());
+        // filter by start date
+        if (alertQuery.getFilterByStartDate() > 0) {
+            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
+        }
+
+        // filter by end date
+        if (alertQuery.getFilterByEndDate() > 0) {
+            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
+        }
+
+        // filter by tags
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByTags())) {
+            BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
+            for (String tag : alertQuery.getFilterByTags()) {
+                tagsQuery.should(matchQuery(Alert.USER_TAGS_FIELD_NAME, tag).operator(Operator.OR));
             }
-            if (alertQuery.getFilterByEndDate() > 0) {
-                rangeQuery.to(alertQuery.getFilterByEndDate());
+            boolQueryBuilder.must(tagsQuery);
+        }
+
+        // filter by min or max score
+        if (alertQuery.getFilterByMinScore() > 0 || alertQuery.getFilterByMaxScore() > 0) {
+            RangeQueryBuilder rangeQuery = rangeQuery(Alert.SCORE);
+            if (alertQuery.getFilterByMinScore() > 0) {
+                rangeQuery.gte(alertQuery.getFilterByMinScore());
             }
+            if (alertQuery.getFilterByMaxScore() > 0) {
+                rangeQuery.lte(alertQuery.getFilterByMaxScore());
+            }
+
             boolQueryBuilder.must(rangeQuery);
-        }
-
-        // filter by is user admin
-        if (alertQuery.getFilterByIsUserAdmin() != null) {
-            boolQueryBuilder.must(matchQuery(Alert.IS_USER_ADMIN_FIELD_NAME, alertQuery.getFilterByIsUserAdmin()).operator(Operator.AND));
         }
 
         if (boolQueryBuilder.hasClauses()) {

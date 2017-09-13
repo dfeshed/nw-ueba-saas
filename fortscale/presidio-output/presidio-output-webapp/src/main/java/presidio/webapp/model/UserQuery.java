@@ -1,9 +1,6 @@
 package presidio.webapp.model;
 
-
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.Objects;
 /**
  * UserQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T19:39:01.299Z")
 
 public class UserQuery {
     @JsonProperty("userName")
@@ -37,52 +34,20 @@ public class UserQuery {
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
 
-    @JsonProperty("classification")
-    private List<String> classification = new ArrayList<String>();
+    @JsonProperty("alertClassifications")
+    private List<String> alertClassifications = new ArrayList<String>();
 
-    @JsonProperty("indicatorsType")
-    private List<String> indicatorsType = new ArrayList<String>();
+    @JsonProperty("indicatorsName")
+    private List<String> indicatorsName = new ArrayList<String>();
 
     @JsonProperty("sort")
-    private List<String> sort = new ArrayList<String>();
-
-    /**
-     * Gets or Sets severity
-     */
-    public enum SeverityEnum {
-        CRITICAL("CRITICAL"),
-
-        HIGH("HIGH"),
-
-        MEDIUM("MEDIUM"),
-
-        LOW("LOW");
-
-        private String value;
-
-        SeverityEnum(String value) {
-            this.value = value;
-        }
-
-        @Override
-        @JsonValue
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static SeverityEnum fromValue(String text) {
-            for (SeverityEnum b : SeverityEnum.values()) {
-                if (String.valueOf(b.value).equals(text)) {
-                    return b;
-                }
-            }
-            return null;
-        }
-    }
+    private List<UserQuerySort> sort = new ArrayList<UserQuerySort>();
 
     @JsonProperty("severity")
-    private List<SeverityEnum> severity = new ArrayList<SeverityEnum>();
+    private List<UserSeverity> severity = new ArrayList<UserSeverity>();
+
+    @JsonProperty("expand")
+    private Boolean expand = false;
 
     public UserQuery userName(String userName) {
         this.userName = userName;
@@ -222,60 +187,60 @@ public class UserQuery {
         this.tags = tags;
     }
 
-    public UserQuery classification(List<String> classification) {
-        this.classification = classification;
+    public UserQuery alertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
         return this;
     }
 
-    public UserQuery addClassificationItem(String classificationItem) {
-        this.classification.add(classificationItem);
-        return this;
-    }
-
-    /**
-     * Get classification
-     *
-     * @return classification
-     **/
-    @ApiModelProperty(value = "")
-    public List<String> getClassification() {
-        return classification;
-    }
-
-    public void setClassification(List<String> classification) {
-        this.classification = classification;
-    }
-
-    public UserQuery indicatorsType(List<String> indicatorsType) {
-        this.indicatorsType = indicatorsType;
-        return this;
-    }
-
-    public UserQuery addIndicatorsTypeItem(String indicatorsTypeItem) {
-        this.indicatorsType.add(indicatorsTypeItem);
+    public UserQuery addAlertClassificationsItem(String alertClassificationsItem) {
+        this.alertClassifications.add(alertClassificationsItem);
         return this;
     }
 
     /**
-     * Get indicatorsType
+     * Get alertClassifications
      *
-     * @return indicatorsType
+     * @return alertClassifications
      **/
     @ApiModelProperty(value = "")
-    public List<String> getIndicatorsType() {
-        return indicatorsType;
+    public List<String> getAlertClassifications() {
+        return alertClassifications;
     }
 
-    public void setIndicatorsType(List<String> indicatorsType) {
-        this.indicatorsType = indicatorsType;
+    public void setAlertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
     }
 
-    public UserQuery sort(List<String> sort) {
+    public UserQuery indicatorsName(List<String> indicatorsName) {
+        this.indicatorsName = indicatorsName;
+        return this;
+    }
+
+    public UserQuery addIndicatorsNameItem(String indicatorsNameItem) {
+        this.indicatorsName.add(indicatorsNameItem);
+        return this;
+    }
+
+    /**
+     * Get indicatorsName
+     *
+     * @return indicatorsName
+     **/
+    @ApiModelProperty(value = "")
+    public List<String> getIndicatorsName() {
+        return indicatorsName;
+    }
+
+    public void setIndicatorsName(List<String> indicatorsName) {
+        this.indicatorsName = indicatorsName;
+    }
+
+    public UserQuery sort(List<UserQuerySort> sort) {
         this.sort = sort;
         return this;
     }
 
-    public UserQuery addSortItem(String sortItem) {
+    public UserQuery addSortItem(UserQuerySort sortItem) {
         this.sort.add(sortItem);
         return this;
     }
@@ -286,20 +251,20 @@ public class UserQuery {
      * @return sort
      **/
     @ApiModelProperty(value = "")
-    public List<String> getSort() {
+    public List<UserQuerySort> getSort() {
         return sort;
     }
 
-    public void setSort(List<String> sort) {
+    public void setSort(List<UserQuerySort> sort) {
         this.sort = sort;
     }
 
-    public UserQuery severity(List<SeverityEnum> severity) {
+    public UserQuery severity(List<UserSeverity> severity) {
         this.severity = severity;
         return this;
     }
 
-    public UserQuery addSeverityItem(SeverityEnum severityItem) {
+    public UserQuery addSeverityItem(UserSeverity severityItem) {
         this.severity.add(severityItem);
         return this;
     }
@@ -310,12 +275,31 @@ public class UserQuery {
      * @return severity
      **/
     @ApiModelProperty(value = "")
-    public List<SeverityEnum> getSeverity() {
+    public List<UserSeverity> getSeverity() {
         return severity;
     }
 
-    public void setSeverity(List<SeverityEnum> severity) {
+    public void setSeverity(List<UserSeverity> severity) {
         this.severity = severity;
+    }
+
+    public UserQuery expand(Boolean expand) {
+        this.expand = expand;
+        return this;
+    }
+
+    /**
+     * Get expand
+     *
+     * @return expand
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean getExpand() {
+        return expand;
+    }
+
+    public void setExpand(Boolean expand) {
+        this.expand = expand;
     }
 
 
@@ -335,15 +319,16 @@ public class UserQuery {
                 Objects.equals(this.maxScore, userQuery.maxScore) &&
                 Objects.equals(this.isPrefix, userQuery.isPrefix) &&
                 Objects.equals(this.tags, userQuery.tags) &&
-                Objects.equals(this.classification, userQuery.classification) &&
-                Objects.equals(this.indicatorsType, userQuery.indicatorsType) &&
+                Objects.equals(this.alertClassifications, userQuery.alertClassifications) &&
+                Objects.equals(this.indicatorsName, userQuery.indicatorsName) &&
                 Objects.equals(this.sort, userQuery.sort) &&
-                Objects.equals(this.severity, userQuery.severity);
+                Objects.equals(this.severity, userQuery.severity) &&
+                Objects.equals(this.expand, userQuery.expand);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, classification, indicatorsType, sort, severity);
+        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sort, severity, expand);
     }
 
     @Override
@@ -358,10 +343,11 @@ public class UserQuery {
         sb.append("    maxScore: ").append(toIndentedString(maxScore)).append("\n");
         sb.append("    isPrefix: ").append(toIndentedString(isPrefix)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
-        sb.append("    indicatorsType: ").append(toIndentedString(indicatorsType)).append("\n");
+        sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
+        sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+        sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
         sb.append("}");
         return sb.toString();
     }
