@@ -1,38 +1,28 @@
 package presidio.webapp.controllers.users;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Patch;
-import presidio.webapp.model.User;
-import presidio.webapp.model.UserQuery;
-import presidio.webapp.model.UsersWrapper;
+import org.springframework.web.bind.annotation.*;
+import presidio.webapp.model.*;
 
 import java.util.List;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-05T15:51:24.812Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
 
 @Api(value = "users", description = "the users API")
 public interface UsersApi {
 
     @ApiOperation(value = "Use this endpoint to get the alerts of a single user", notes = "Users endpoint", response = AlertsWrapper.class, tags = {"users",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = AlertsWrapper.class)})
+            @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class)})
     @RequestMapping(value = "/users/{userId}/alerts",
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId) {
+    default ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
+                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") @RequestBody UserAlertsQuery body) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
@@ -40,12 +30,13 @@ public interface UsersApi {
 
     @ApiOperation(value = "Use this endpoint to get details about single user", notes = "Users endpoint", response = User.class, tags = {"users",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = User.class)})
+            @ApiResponse(code = 200, message = "Single user", response = User.class)})
     @RequestMapping(value = "/users/{userId}",
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<User> getUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId) {
+    default ResponseEntity<User> getUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
+                                         @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
         // do some magic!
         return new ResponseEntity<User>(HttpStatus.OK);
     }
@@ -66,7 +57,7 @@ public interface UsersApi {
 
     @ApiOperation(value = "Use this method to update the user tags", notes = "", response = User.class, tags = {"users",})
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = User.class)})
+            @ApiResponse(code = 200, message = "Single user", response = User.class)})
     @RequestMapping(value = "/users/{userId}",
             produces = "application/json",
             consumes = "application/json",

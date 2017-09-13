@@ -210,7 +210,7 @@
                             <springmvc>true</springmvc>
                             <locations>
                                 <location>presidio.webapp.controllers</location>
-                                <location>presidio.webapp.dto</location>
+                                <location>presidio.webapp.model</location>
                             </locations>
                             <schemes>
                                 <scheme>http</scheme>

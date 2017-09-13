@@ -5,6 +5,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.FongoTestConfig;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
@@ -31,7 +33,14 @@ import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +52,7 @@ import static org.mockito.Matchers.eq;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, AlertEnumsConfig.class, AlertServiceTest.SpringConfig.class, FongoTestConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, AlertServiceTest.SpringConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
 
     @MockBean
@@ -99,7 +108,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithLowSmartScore() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), false);
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity);
         assertTrue(alert == null);
     }
@@ -107,7 +116,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertTest() {
-        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), false);
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
         Alert alert = alertService.generateAlert(smart, userEntity);
         assertEquals(alert.getUserId(), userEntity.getUserId());

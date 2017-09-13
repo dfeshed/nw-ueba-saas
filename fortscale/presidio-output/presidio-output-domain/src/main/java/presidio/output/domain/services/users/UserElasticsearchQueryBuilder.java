@@ -8,15 +8,12 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
-import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
-import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -27,7 +24,6 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
     public void withFilter(UserQuery userQuery) {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-
         // filter by username
         if (StringUtils.isNotEmpty(userQuery.getFilterByUserName())) {
             if (userQuery.isPrefix()) {
@@ -37,34 +33,43 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             }
         }
 
-
         // filter by alert classifications
-        if (!CollectionUtils.isEmpty(userQuery.getFilterByAlertClassifications())) {
+        if (CollectionUtils.isNotEmpty(userQuery.getFilterByAlertClassifications())) {
+            BoolQueryBuilder classificationQuery = new BoolQueryBuilder();
             for (String classification : userQuery.getFilterByAlertClassifications()) {
-                boolQueryBuilder.should(matchQuery(User.ALERT_CLASSIFICATOINS_FIELD_NAME, classification).operator(Operator.OR));
+                classificationQuery.should(matchQuery(User.ALERT_CLASSIFICATIONS_FIELD_NAME, classification).operator(Operator.OR));
             }
+            boolQueryBuilder.must(classificationQuery);
         }
 
         // filter by userIds
-        if (!CollectionUtils.isEmpty(userQuery.getFilterByUsersIds())) {
+        if (CollectionUtils.isNotEmpty(userQuery.getFilterByUsersIds())) {
+            BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
             for (String id : userQuery.getFilterByUsersIds()) {
-                boolQueryBuilder.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+                userIdQuery.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
             }
+            boolQueryBuilder.must(userIdQuery);
         }
 
-        // filter by user severitie
-        if (!CollectionUtils.isEmpty(userQuery.getFilterBySeverities())) {
+        // filter by user severity
+        if (CollectionUtils.isNotEmpty(userQuery.getFilterBySeverities())) {
+            BoolQueryBuilder severityQuery = new BoolQueryBuilder();
             for (UserSeverity severity : userQuery.getFilterBySeverities()) {
-                boolQueryBuilder.should(matchQuery(User.USER_SEVERITY_FIELD_NAME, severity.name()).operator(Operator.OR));
+                severityQuery.should(matchQuery(User.USER_SEVERITY_FIELD_NAME, severity.name()).operator(Operator.OR));
             }
+            boolQueryBuilder.must(severityQuery);
         }
 
-        // filter by isAdmin
-        if (userQuery.getFilterByIsAdmin() != null && userQuery.getFilterByIsAdmin()) {
-            boolQueryBuilder.must(matchQuery(User.IS_ADMIN_FIELD_NAME, userQuery.getFilterByIsAdmin()).operator(Operator.AND));
+        // filter by tags
+        if (CollectionUtils.isNotEmpty(userQuery.getFilterByUserTags())) {
+            BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
+            for (String tag : userQuery.getFilterByUserTags()) {
+                tagsQuery.should(matchQuery(User.TAGS_FIELD_NAME, tag).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(tagsQuery);
         }
 
-
+        // filter by min or max score
         if (userQuery.getMinScore() > 0 || userQuery.getMaxScore() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
             if (userQuery.getMinScore() > 0) {
@@ -77,7 +82,6 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             boolQueryBuilder.must(rangeQuery);
         }
 
-
         if (boolQueryBuilder.hasClauses()) {
             super.withFilter(boolQueryBuilder);
         }
@@ -89,8 +93,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
      * @param userQuery
      */
     public void withSort(UserQuery userQuery) {
-        if (!ObjectUtils.isEmpty(userQuery.getSort())) {
-
+        if (userQuery.getSort() != null) {
             userQuery.getSort().forEach(order -> {
                 FieldSortBuilder sortBuilder = new FieldSortBuilder(order.getProperty());
                 SortOrder direction = order.getDirection().name().equals(SortOrder.ASC.name()) ? SortOrder.ASC : SortOrder.DESC;
