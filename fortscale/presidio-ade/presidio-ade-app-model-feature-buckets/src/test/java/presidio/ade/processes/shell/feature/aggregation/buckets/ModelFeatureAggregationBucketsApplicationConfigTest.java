@@ -20,11 +20,13 @@ public class ModelFeatureAggregationBucketsApplicationConfigTest extends ModelFe
 
         //        end ASL paths configurations
 
-        properties.put("fortscale.model.cache.futureDiffBetweenCachedModelAndEvent", "PT48H");
+        properties.put("fortscale.model.cache.maxDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
         properties.put("spring.application.name", "test-app-name");
         properties.put("presidio.default.ttl.duration", "PT48H");
         properties.put("presidio.default.cleanup.interval", "PT24H");
+        properties.put("model-feature-aggregation.pageIterator.maxGroupSize",1000);
+        properties.put("model-feature-aggregation.pageIterator.pageSize",1000);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

@@ -29,13 +29,13 @@ public class ModelCacheServiceInMemoryConfig {
     public ModelStore modelStore;
     @Autowired
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
-    @Value("#{T(java.time.Duration).parse('${fortscale.model.cache.futureDiffBetweenCachedModelAndEvent}')}")
-    public Duration futureDiffBetweenCachedModelAndEvent;
+    @Value("#{T(java.time.Duration).parse('${fortscale.model.cache.maxDiffBetweenCachedModelAndEvent}')}")
+    public Duration maxDiffBetweenCachedModelAndEvent;
     @Value("${fortscale.model.cache.size}")
     public int cacheSize;
 
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
-        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, futureDiffBetweenCachedModelAndEvent, cacheSize);
+        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize);
     }
 }

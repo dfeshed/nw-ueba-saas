@@ -9,8 +9,6 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import org.apache.commons.lang.StringUtils;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
@@ -39,6 +37,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
+    private int pageSize;
+    private int maxGroupSize;
 
     /**
      * C'tor
@@ -48,11 +48,13 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
      * @param aggregationRecordsCreator
      * @param aggregatedDataStore
      * @param aggregatedFeatureEventsConfService
+     * @param pageSize
+     * @param maxGroupSize
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, int pageSize, int maxGroupSize) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -60,6 +62,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+        this.pageSize = pageSize;
+        this.maxGroupSize = maxGroupSize;
     }
 
 
@@ -70,7 +74,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         contextTypes.add(contextType);
         boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
 
-        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
+
+        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
