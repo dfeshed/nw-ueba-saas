@@ -44,7 +44,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     @Override
     public void configure(Context context) {
         isBatch = context.getBoolean(IS_BATCH, false);
-        int maxBackOffSleep = context.getInteger(MAX_BACK_OFF_SLEEP, 1000);
+        int maxBackOffSleep = context.getInteger(MAX_BACK_OFF_SLEEP, 5000);
         if (maxBackOffSleep > 0) {
             SinkRunner.maxBackoffSleep = maxBackOffSleep;
         }
