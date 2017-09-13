@@ -37,7 +37,7 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
         this.adeEnrichedScoredRecordBuilder = adeEnrichedScoredRecordBuilder;
     }
 
-    public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList) {
+    public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore) {
         if (enrichedRecordList.size() == 0) {
             logger.warn("got an empty enriched record list");
             return Collections.emptyList();
@@ -51,7 +51,9 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
             adeEnrichedScoredRecordBuilder.fill(scoredRecords, enrichedRecord, featureScoreList);
         }
 
-        scoredEnrichedDataStore.store(scoredRecords);
+        if(isStore) {
+            scoredEnrichedDataStore.store(scoredRecords);
+        }
         return scoredRecords;
     }
 }

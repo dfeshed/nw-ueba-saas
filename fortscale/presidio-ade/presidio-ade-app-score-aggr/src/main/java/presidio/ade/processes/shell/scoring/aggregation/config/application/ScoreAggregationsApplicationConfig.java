@@ -53,15 +53,13 @@ public class ScoreAggregationsApplicationConfig {
     private AggregatedDataStore aggregatedDataStore;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-    @Autowired
-    @Qualifier("modelBucketConfigService")
-    private BucketConfigurationService bucketConfigurationService;
+
     @Autowired
     private TtlService ttlService;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService, ttlService);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, ttlService);
     }
 }

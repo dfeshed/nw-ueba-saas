@@ -37,7 +37,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         if (CollectionUtils.isNotEmpty(userQuery.getFilterByAlertClassifications())) {
             BoolQueryBuilder classificationQuery = new BoolQueryBuilder();
             for (String classification : userQuery.getFilterByAlertClassifications()) {
-                classificationQuery.should(matchQuery(User.ALERT_CLASSIFICATIONS, classification).operator(Operator.OR));
+                classificationQuery.should(matchQuery(User.ALERT_CLASSIFICATIONS_FIELD_NAME, classification).operator(Operator.OR));
             }
             boolQueryBuilder.must(classificationQuery);
         }

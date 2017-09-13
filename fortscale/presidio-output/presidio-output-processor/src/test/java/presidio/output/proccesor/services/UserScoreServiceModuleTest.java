@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -18,21 +19,30 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
+import presidio.output.processor.services.user.UserService;
 
+import javax.print.attribute.standard.Severity;
+import javax.validation.constraints.AssertTrue;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
+@ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
 public class UserScoreServiceModuleTest {
 
     @Autowired
     private UserPersistencyService userPersistencyService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
@@ -91,14 +101,14 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
-//        userScoreService.updateAllUsersScores();
+        userService.updateAllUsersAlertData();
         userScoreService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-//        Assert.assertEquals(40, usersPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(40,usersPageResult.getContent().get(0).getScore(),0.00001);
         Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
     }
@@ -130,14 +140,14 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
-//        userScoreService.updateAllUsersScores();
+        userService.updateAllUsersAlertData();
         userScoreService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-//        Assert.assertEquals(20, usersPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertEquals(20,usersPageResult.getContent().get(0).getScore(),0.00001);
         Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
     }
@@ -169,15 +179,14 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
 
-//        userScoreService.updateAllUsersScores();
+        userService.updateAllUsersAlertData();
         userScoreService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-//        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
-
+        Assert.assertEquals(0,usersPageResult.getContent().get(0).getScore(),0.00001);
 
     }
 
@@ -197,22 +206,22 @@ public class UserScoreServiceModuleTest {
         Page<Alert> alerts = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().setPageSize(1).setPageNumber(0).build());
         Assert.assertEquals(5050, alerts.getTotalElements());
 
-//        userService.updateAllUsersScores();
+        userService.updateAllUsersAlertData();
 
         userScoreService.updateSeverities();
 
 
         User user0 = getUserById("userId0");
         Assert.assertEquals(15D, user0.getScore(), 0.00001); //one medium alert
-//        Assert.assertEquals(UserSeverity.LOW, user0.getUserSeverity());
+        Assert.assertEquals(UserSeverity.LOW, user0.getUserSeverity());
 
         User user60 = getUserById("userId60");
-//        Assert.assertEquals(915D, user60.getScore(), 0.00001); //61 medium alert
+        Assert.assertEquals(915D, user60.getScore(), 0.00001); //61 medium alert
         Assert.assertEquals(UserSeverity.HIGH, user60.getUserSeverity());
 
 
         User user99 = getUserById("userId99");
-//        Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
+        Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
         Assert.assertEquals(UserSeverity.CRITICAL, user99.getUserSeverity());
 
 
@@ -270,6 +279,7 @@ public class UserScoreServiceModuleTest {
 
         System.out.println("Finish Inserting data " + Instant.now().toString());
         long timeBefore = System.currentTimeMillis();
+        userService.updateAllUsersAlertData();
 
         userScoreService.updateSeverities();
         long timeAfter = System.currentTimeMillis();

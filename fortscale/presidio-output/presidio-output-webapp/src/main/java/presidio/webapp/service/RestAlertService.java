@@ -4,6 +4,7 @@ import presidio.webapp.dto.Alert;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface RestAlertService {
 
@@ -15,7 +16,7 @@ public interface RestAlertService {
 
     List<presidio.webapp.model.Alert> getAlertsByUserId(String userId, boolean expand);
 
-    List<presidio.webapp.model.Alert> getAlertsByUsersIds(Collection<String> userId);
+    Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userId);
 
     presidio.webapp.model.Indicator getIndicatorById(String indicatorId, boolean expand);
 

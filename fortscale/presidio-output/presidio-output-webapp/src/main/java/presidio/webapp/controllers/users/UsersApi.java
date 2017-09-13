@@ -1,24 +1,11 @@
 package presidio.webapp.controllers.users;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Patch;
-import presidio.webapp.model.User;
-import presidio.webapp.model.UserAlertsQuery;
-import presidio.webapp.model.UserQuery;
-import presidio.webapp.model.UsersWrapper;
+import org.springframework.web.bind.annotation.*;
+import presidio.webapp.model.*;
 
 import java.util.List;
 
@@ -49,7 +36,7 @@ public interface UsersApi {
             consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<User> getUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                         @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
+                                         @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
         // do some magic!
         return new ResponseEntity<User>(HttpStatus.OK);
     }
