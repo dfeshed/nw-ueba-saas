@@ -17,6 +17,8 @@ import java.time.Instant;
 
 public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionService {
 	private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+	private final int maxGroupSize;
+	private final int pageSize;
 	private EnrichedEventsScoringService enrichedEventsScoringService;
 	private EnrichedDataStore enrichedDataStore;
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
@@ -29,7 +31,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 			EnrichedDataStore enrichedDataStore,
 			ScoreAggregationsBucketService scoreAggregationsBucketService,
 			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
-			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService) {
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService, int pageSize, int maxGroupSize) {
 
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -39,6 +41,8 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		this.aggregatedDataStore = aggregatedDataStore;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
 		this.ttlService = ttlService;
+		this.pageSize = pageSize;
+		this.maxGroupSize = maxGroupSize;
 	}
 
 	@Override
@@ -46,7 +50,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService);
+				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
 		ttlService.cleanupCollections(startInstant);

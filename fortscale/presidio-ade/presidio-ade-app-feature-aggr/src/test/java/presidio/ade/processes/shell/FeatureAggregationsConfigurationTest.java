@@ -24,7 +24,7 @@ public class FeatureAggregationsConfigurationTest extends FeatureAggregationsCon
         properties.put("presidio.modeling.base.configurations.path", "classpath:config/asl/models/feature-aggregation-records/*.json");
         properties.put("fortscale.scorer.configurations.location.path", "classpath:config/asl/scorers/feature-aggregation-records/*.json");
         //        end ASL paths configurations
-        properties.put("fortscale.model.cache.futureDiffBetweenCachedModelAndEvent", "PT48H");
+        properties.put("fortscale.model.cache.maxDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
         properties.put("streaming.event.field.type.aggr_event","aggr_event");
         properties.put("feature.aggregation.pageIterator.pageSize",1000);
