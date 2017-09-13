@@ -72,8 +72,16 @@ public class SmartRecordAggregator {
 					smartRecord.setAggregationRecords(existingAggregationRecords);
 				}
 
-				if (doesAggregationRecordPassThreshold(newAggregationRecord)) {
+				if (doesAggregationRecordAlreadyExist(newAggregationRecord, existingAggregationRecords)) {
+					logger.error("Context ID {} already has an aggregation record of type {} between {}. " +
+							"Ignoring new aggregation record of same type between same time range.",
+							contextId, newAggregationRecord.getFeatureName(), timeRange);
+				} else if (doesAggregationRecordPassThreshold(newAggregationRecord)) {
 					existingAggregationRecords.add(newAggregationRecord);
+				} else {
+					logger.debug("Discarding aggregation record of type {} between {}, " +
+							"because it did not pass the threshold {}. Context ID = {}.",
+							newAggregationRecord.getFeatureName(), timeRange, threshold, contextId);
 				}
 			} else {
 				logger.error("Ignoring aggregation record {} with start instant {} " +
@@ -97,6 +105,14 @@ public class SmartRecordAggregator {
 
 	private SmartRecord getSmartRecord(String contextId) {
 		return new SmartRecord(timeRange, contextId, smartRecordConf.getName(), fixedDurationStrategy);
+	}
+
+	private boolean doesAggregationRecordAlreadyExist(
+			AdeAggregationRecord newAggregationRecord, List<AdeAggregationRecord> existingAggregationRecords) {
+
+		return existingAggregationRecords.stream()
+				.map(AdeAggregationRecord::getFeatureName)
+				.anyMatch(featureName -> featureName.equals(newAggregationRecord.getFeatureName()));
 	}
 
 	private boolean doesAggregationRecordPassThreshold(AdeAggregationRecord aggregationRecord) {
