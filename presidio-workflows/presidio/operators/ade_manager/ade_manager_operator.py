@@ -44,4 +44,4 @@ class AdeManagerOperator(SpringBootJarOperator):
         """
         :return: The task id
         """
-        return '{}'.format('ade_manager')
+        return 'ade_manager'
