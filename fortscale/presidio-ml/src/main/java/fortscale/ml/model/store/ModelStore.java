@@ -52,6 +52,10 @@ public class ModelStore implements TtlServiceAware {
 
 	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange) {
 		ModelDAO modelDao = new ModelDAO(sessionId, contextId, model, timeRange.getStart(), timeRange.getEnd());
+		save(modelConf, modelDao);
+	}
+
+	public void save(ModelConf modelConf, ModelDAO modelDao) {
 		String collectionName = getCollectionName(modelConf);
 		mongoTemplate.insert(modelDao, collectionName);
 		ttlService.save(getStoreName(), collectionName);
