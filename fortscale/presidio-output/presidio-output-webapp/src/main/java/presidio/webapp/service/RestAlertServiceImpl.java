@@ -69,10 +69,10 @@ public class RestAlertServiceImpl implements RestAlertService {
         List restAlerts = new ArrayList();
         if (alerts.getTotalElements() > 0)
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber());
+        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber() != null ? alertQuery.getPageNumber() : 0);
     }
 
-    private AlertsWrapper createAlertsWrapper(List restAlerts, int pageNumber, int totalNumberOfElements) {
+    private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, int pageNumber) {
         AlertsWrapper alertsWrapper = new AlertsWrapper();
         if (CollectionUtils.isNotEmpty(restAlerts)) {
             alertsWrapper.setAlerts(restAlerts);

@@ -76,11 +76,11 @@ public class RestUserServiceImpl implements RestUserService {
                 restUsers.add(createResult(user, alerts));
             }
         }
-        return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber());
+        return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber() != null ? userQuery.getPageNumber() : 0);
     }
 
     private UsersWrapper createUsersWrapper(List Users, int totalNumberOfElements, int pageNumber) {
-        UsersWrapper usersWrapper = null;
+        UsersWrapper usersWrapper = new UsersWrapper();
         if (CollectionUtils.isNotEmpty(Users)) {
             usersWrapper.setUsers(Users);
             usersWrapper.setTotal(totalNumberOfElements);

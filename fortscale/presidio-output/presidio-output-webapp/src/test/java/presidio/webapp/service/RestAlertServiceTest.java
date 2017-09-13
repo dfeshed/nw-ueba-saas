@@ -95,7 +95,7 @@ public class RestAlertServiceTest {
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
-        Assert.assertNull(alertsWrapper);
+        Assert.assertEquals(0, alertsWrapper.getAlerts().size());
     }
 
     private Alert createAlert() {
