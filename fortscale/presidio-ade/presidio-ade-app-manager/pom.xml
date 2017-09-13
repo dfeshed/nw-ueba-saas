@@ -12,7 +12,7 @@
     <artifactId>presidio-ade-app-manager</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <start-class>presidio.ade.manager.ManagerApplication</start-class>
+        <start-class>presidio.ade.manager.AdeManagerApplication</start-class>
     </properties>
     <dependencies>
         <dependency>

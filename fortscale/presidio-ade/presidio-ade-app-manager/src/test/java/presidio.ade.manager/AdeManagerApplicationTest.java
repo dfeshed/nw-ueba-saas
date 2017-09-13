@@ -22,13 +22,13 @@ import java.util.List;
 
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
-public class ManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
+public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
 
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant UNTIL_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(1)), DURATION);
     private static final String COLLECTION_NAME = "enriched_file";
 
-    public static final String EXECUTION_COMMAND = String.format("cleanup --until_date %s", UNTIL_DATE.toString());
+    public static final String EXECUTION_COMMAND = String.format("enriched_ttl_cleanup --until_date %s", UNTIL_DATE.toString());
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -70,8 +70,8 @@ public class ManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
 
 
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class, ManagerApplicationConfigurationTest.class, ManagerApplicationCommands.class, EnrichedFileGeneratorConfig.class})
-    protected static class ManagerApplicationTestConfig {
+    @Import({EnrichedSourceSpringConfig.class, AdeManagerApplicationConfigurationTest.class, AdeManagerApplicationCommands.class, EnrichedFileGeneratorConfig.class})
+    protected static class AdeManagerApplicationTestConfig {
 
     }
 
