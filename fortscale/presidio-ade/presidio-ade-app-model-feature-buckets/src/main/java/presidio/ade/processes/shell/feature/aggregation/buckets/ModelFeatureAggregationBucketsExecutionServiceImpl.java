@@ -34,8 +34,9 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
 	@Override
 	public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
 		ModelFeatureAggregationBucketsService service = new ModelFeatureAggregationBucketsService(
-				bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, ttlService);
+				bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore);
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
+		ttlService.cleanupCollections(startInstant);
 	}
 
 	@Override

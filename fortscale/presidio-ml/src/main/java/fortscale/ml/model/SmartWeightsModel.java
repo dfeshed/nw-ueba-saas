@@ -16,7 +16,10 @@ import java.util.List;
 public class SmartWeightsModel implements Model {
     private List<ClusterConf> clusterConfs;
 
-    public SmartWeightsModel init(List<ClusterConf> clusterConfs) {
+    //This empty constructor is needed for mongo
+    public SmartWeightsModel(){}
+
+    public SmartWeightsModel setClusterConfs(List<ClusterConf> clusterConfs) {
         clusterConfs.forEach(Assert::notNull);
         this.clusterConfs = clusterConfs;
         return this;

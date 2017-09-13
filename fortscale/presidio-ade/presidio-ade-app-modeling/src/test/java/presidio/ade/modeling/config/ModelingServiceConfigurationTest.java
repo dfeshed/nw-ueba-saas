@@ -21,7 +21,7 @@ public class ModelingServiceConfigurationTest {
 		// Feature bucket conf service
 		properties.put("presidio.ade.modeling.feature.bucket.confs.base.path", "classpath*:config/asl/feature-buckets/**/*.json");
 		// Feature aggregation event conf service
-		properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/*.json");
+		properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/**/*.json");
 		// Smart event conf service
 		properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
 		// Model conf service

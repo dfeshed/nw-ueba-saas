@@ -129,7 +129,7 @@ class TaskGapSensorOperator(BaseSensorOperator):
             self._gapped_dag_run = session.query(DagRun).filter(
                 DagRun.dag_id == self._external_dag_id,
                 DagRun.execution_date == self._gapped_root_dag_run.execution_date,
-            ).one()
+            ).first()
         else:
             self._gapped_dag_run.refresh_from_db(session=session)
 

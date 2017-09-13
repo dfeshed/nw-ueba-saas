@@ -17,7 +17,13 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -157,7 +163,7 @@ public class UserScoreServiceImpl implements UserScoreService {
      * Iterate on all alerts for users in the last alertEffectiveDurationInDays days,
      * and calculate the user score based on the effective alerts.
      *
-     * @return map of each user to his new score
+     * @return map of each userId to an object that contains the new score and number of alerts
      */
     @Override
     public Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays) {
@@ -168,7 +174,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         //TODO: alsom filter by status >
 
         if (days != null && days.size() > 0) {
-            for (LocalDateTime startOfDay: days) {
+            for (LocalDateTime startOfDay : days) {
 
                 log.info("Start Calculate user score for day " + startOfDay + " (Calculation, without persistency");
                 long startTime = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();

@@ -36,9 +36,11 @@ public class AccumulateSmartRecordsExecutionService {
     public void run(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
         //strategy for accumulations
         FixedDurationStrategy accumulationDuration = FixedDurationStrategy.fromSeconds(accumulationStrategy.longValue());
-        AccumulateSmartRecordsService accumulateSmartRecordsService = new AccumulateSmartRecordsService(accumulationDuration, smartDataReader, pageSize, maxGroupSize, smartAccumulationsCache, smartAccumulationDataStore, ttlService);
+        AccumulateSmartRecordsService accumulateSmartRecordsService = new AccumulateSmartRecordsService(accumulationDuration, smartDataReader, pageSize, maxGroupSize, smartAccumulationsCache, smartAccumulationDataStore);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         accumulateSmartRecordsService.execute(timeRange, configurationName);
+
+        ttlService.cleanupCollections(startDate);
     }
 
     public void clean(String configurationName, Instant startDate, Instant endDate) throws Exception {

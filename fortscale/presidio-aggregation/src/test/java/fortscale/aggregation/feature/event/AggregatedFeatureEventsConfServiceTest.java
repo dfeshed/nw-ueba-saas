@@ -1,8 +1,8 @@
 package fortscale.aggregation.feature.event;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.BucketConfigurationServiceConfig;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.config.BucketConfigurationServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import net.minidev.json.JSONObject;
 import org.json.JSONException;
