@@ -21,7 +21,7 @@ public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
 
-    public static final String ALERT_CLASSIFICATIONS = "alertClassifications";
+    public static final String ALERT_CLASSIFICATIONS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
     public static final String USER_SEVERITY_FIELD_NAME = "userSeverity";
     public static final String SCORE_FIELD_NAME = "score";
@@ -49,7 +49,7 @@ public class User extends AbstractElasticDocument {
     private double score;
 
     @Field(type = FieldType.String, store = true)
-    @JsonProperty(ALERT_CLASSIFICATIONS)
+    @JsonProperty(ALERT_CLASSIFICATIONS_FIELD_NAME)
     private List<String> alertClassifications;
 
     @Field(type = FieldType.String, store = true)
@@ -72,9 +72,6 @@ public class User extends AbstractElasticDocument {
 
     public User() {
         // empty const for JSON deserialization
-        this.indicators = new ArrayList<>();
-        this.alertClassifications = new ArrayList<>();
-        this.tags = new ArrayList<>();
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity userSeverity,

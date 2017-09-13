@@ -7,11 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Patch;
-import presidio.webapp.model.User;
-import presidio.webapp.model.UsersWrapper;
+import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestUserService;
 
@@ -43,7 +39,7 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> getUser(@ApiParam(name = "userId", value = "The UUID of the user to return", required = true) @PathVariable String userId,
-                                        @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
+                                        @ApiParam(value = "Expand response to get user alerts data", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
         User user = restUserService.getUserById(userId, expand);
         return new ResponseEntity(user, HttpStatus.OK);
     }
