@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static org.apache.flume.CommonStrings.IS_BATCH;
+import static org.apache.flume.CommonStrings.MAX_BACK_OFF_SLEEP;
 
 public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable {
 
@@ -43,7 +44,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     @Override
     public void configure(Context context) {
         isBatch = context.getBoolean(IS_BATCH, false);
-        int maxBackOffSleep = context.getInteger(IS_BATCH, -1);
+        int maxBackOffSleep = context.getInteger(MAX_BACK_OFF_SLEEP, -1);
         if (maxBackOffSleep > 0) {
             SinkRunner.maxBackoffSleep = maxBackOffSleep;
         }
