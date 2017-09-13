@@ -13,7 +13,9 @@ import presidio.webapp.model.AlertSeverity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -136,12 +138,12 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlertsByUsersIds(Collection<String> userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserIdIn(userId, new PageRequest(pageNumber, pageSize));
+    public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
         if (alerts.hasContent()) {
             List restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-            return restAlerts;
+            return userIdsToAlerts(restAlerts, (List) userIds);
         }
         return null;
     }
@@ -159,5 +161,23 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
+    }
+
+
+    private Map<String, List<presidio.webapp.model.Alert>> userIdsToAlerts(List<presidio.webapp.model.Alert> alerts, List<String> usersIds) {
+        Map<String, List<presidio.webapp.model.Alert>> usersIdsToAlertsMap = new HashMap<>();
+        List<presidio.webapp.model.Alert> tempAlerts;
+        for (String id : usersIds) {
+            tempAlerts = null;
+            for (presidio.webapp.model.Alert alert : alerts) {
+                if (alert.getUserId().equals(id)) {
+                    if (tempAlerts == null)
+                        tempAlerts = new ArrayList<>();
+                    tempAlerts.add(alert);
+                }
+            }
+            usersIdsToAlertsMap.put(id, tempAlerts);
+        }
+        return usersIdsToAlertsMap;
     }
 }

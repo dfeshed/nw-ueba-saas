@@ -12,7 +12,6 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +35,11 @@ public class RestUserServiceImpl implements RestUserService {
 
     @Override
     public User getUserById(String userId, boolean expand) {
-        List<Alert> alert = null;
+        List<Alert> alerts = null;
         presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
         if (expand)
-            alert = restAlertService.getAlertsByUserId(userId);
-        return createResult(user, alert);
+            alerts = restAlertService.getAlertsByUserId(userId);
+        return createResult(user, alerts);
     }
 
     @Override
@@ -49,15 +48,13 @@ public class RestUserServiceImpl implements RestUserService {
         List<User> restUsers = new ArrayList<>();
         List<Alert> alerts = null;
         if (userQuery.getExpand()) {
-            Map<String, List<Alert>> map;
             List<String> usersIds = new ArrayList<>();
             for (presidio.output.domain.records.users.User user : users) {
                 usersIds.add(user.getId());
             }
-            alerts = restAlertService.getAlertsByUsersIds(usersIds);
-            map = userIdsToAlerts(alerts, usersIds);
+            Map<String, List<Alert>> usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
             for (presidio.output.domain.records.users.User user : users) {
-                restUsers.add(createResult(user, map.get(user.getId())));
+                restUsers.add(createResult(user, usersIdsToAlertsMap.get(user.getId())));
             }
         } else {
             for (presidio.output.domain.records.users.User user : users) {
@@ -65,29 +62,6 @@ public class RestUserServiceImpl implements RestUserService {
             }
         }
         return restUsers;
-    }
-
-    private Map<String, List<Alert>> userIdsToAlerts(List<Alert> alerts, List<String> usersIds) {
-        Map<String, List<Alert>> map = new HashMap<>();
-        List<Alert> tempAlerts;
-        List<Alert> removeAlerts;
-        for (String id : usersIds) {
-            tempAlerts = new ArrayList<>();
-            removeAlerts = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(alerts)) {
-                for (Alert alert : alerts) {
-                    if (alert.getUserId().equals(id)) {
-                        tempAlerts.add(alert);
-                        removeAlerts.add(alert);
-                    }
-                }
-                removeAlerts.forEach(alert -> {
-                    alerts.remove(alert);
-                });
-            }
-            map.put(id, tempAlerts);
-        }
-        return map;
     }
 
     @Override
