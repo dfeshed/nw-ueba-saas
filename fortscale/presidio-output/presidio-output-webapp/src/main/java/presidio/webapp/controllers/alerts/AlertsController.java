@@ -1,12 +1,14 @@
 package presidio.webapp.controllers.alerts;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 
@@ -57,6 +59,21 @@ public class AlertsController implements AlertsApi {
             }
         }
         return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+    }
+
+
+    public ResponseEntity<EventsWrapper> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return",required=true ) @PathVariable("indicatorId") String indicatorId,
+                                                                    @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
+                                                                     EventQuery eventQuery) {
+        List<Event> events = restAlertService.getIndicatorEventsByIndicatorId(indicatorId, eventQuery);
+        if (events != null) {
+            EventsWrapper eventsWrapper = new EventsWrapper();
+            eventsWrapper.setEvents(events);
+            eventsWrapper.setTotal(events.size());
+            eventsWrapper.setPage(0);
+            return new ResponseEntity(eventsWrapper, HttpStatus.OK);
+        }
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @Override

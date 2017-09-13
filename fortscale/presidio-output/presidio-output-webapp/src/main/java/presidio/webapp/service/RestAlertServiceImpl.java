@@ -13,6 +13,7 @@ import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.Event;
 import presidio.webapp.model.EventQuery;
 import presidio.webapp.model.Indicator;
 
@@ -175,19 +176,24 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public Indicator getIndicatorById(String indicatorId, boolean expand) {
-        // TEMPORARY CODE FOR THIS DROP - DO NOT REVIEW
+        // TEMPORARY CODE - DO NOT REVIEW
         Indicator restIndicator = MockUtils.mockIndicator(indicatorId, expand);
         return restIndicator;
     }
 
     @Override
     public List<presidio.webapp.model.Indicator> getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery) {
-        // TEMPORARY CODE FOR THIS DROP - DO NOT REVIEW
+        // TEMPORARY CODE - DO NOT REVIEW
         List<Indicator> restIndicators = MockUtils.mockIndicators(indicatorQuery.getExpand().booleanValue());
         return restIndicators;
     }
 
-
+    @Override
+    public List<Event> getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
+        // TEMPORARY CODE - DO NOT REVIEW
+        List<Event> restEvents = MockUtils.mockEvents();
+        return restEvents;
+    }
 
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();

@@ -20,4 +20,6 @@ public interface RestAlertService {
     presidio.webapp.model.Indicator getIndicatorById(String indicatorId, boolean expand);
 
     List<presidio.webapp.model.Indicator> getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery);
+
+    List<presidio.webapp.model.Event> getIndicatorEventsByIndicatorId(String indicatorId, presidio.webapp.model.EventQuery eventQuery);
 }

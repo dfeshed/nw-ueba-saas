@@ -1,0 +1,89 @@
+[
+  {
+    "schema": "FILE",
+    "eventId": "EV-1270-input_testUser1",
+    "absoluteSrcFolderFilePath": "/usr/someuser/somesubdir/2",
+    "absoluteSrcFilePath": "/usr/someuser/somesubdir/2/File.tar",
+    "dstDriveShared": false,
+    "resultCode": null,
+    "userDisplayName": "ade_testuser3",
+    "userName": "ade_testuser3",
+    "userId": "ade_testuser3",
+    "result": "SUCCESS",
+    "absoluteDstFolderFilePath": "/usr/someuser/somesubdir/2",
+    "fileSize": 50331648,
+    "absoluteDstFilePath": "/usr/someuser/somesubdir/2/File.tar",
+    "operationTypeCategories": null,
+    "srcDriveShared": false,
+    "additionalInfo": {
+      "User": "TestUser_1",
+      "User Display": "TestUser _1",
+      "Description": "This is description"
+    },
+    "operationType": "FILE_MOVED",
+    "id": "599d9326f6b7cf32b3c26991",
+    "dataSource": "FileDS",
+    "eventDate": {
+      "epochSecond": 1407861000,
+      "nano": 0
+    }
+  },
+  {
+    "schema": "FILE",
+    "eventId": "EV-1358-input_testUser1",
+    "absoluteSrcFolderFilePath": "/usr/someuser/somesubdir/2",
+    "absoluteSrcFilePath": "/usr/someuser/somesubdir/2/File.sdf",
+    "dstDriveShared": false,
+    "resultCode": null,
+    "userDisplayName": "ade_testuser3",
+    "userName": "ade_testuser3",
+    "userId": "ade_testuser3",
+    "result": "SUCCESS",
+    "absoluteDstFolderFilePath": "/usr/someuser/somesubdir/2",
+    "fileSize": 48758784,
+    "absoluteDstFilePath": "/usr/someuser/somesubdir/2/File.sdf",
+    "operationTypeCategories": null,
+    "srcDriveShared": false,
+    "additionalInfo": {
+      "User": "TestUser_1",
+      "User Display": "TestUser _1",
+      "Description": "This is description"
+    },
+    "operationType": "FILE_MOVED",
+    "id": "599d934cf6b7cf33068aa93e",
+    "dataSource": "FileDS",
+    "eventDate": {
+      "epochSecond": 1407859800,
+      "nano": 0
+    }
+  },
+  {
+    "schema": "FILE",
+    "eventId": "EV-1259-input_testUser1",
+    "absoluteSrcFolderFilePath": "/usr/someuser/somesubdir/1",
+    "absoluteSrcFilePath": "/usr/someuser/somesubdir/1/File.myd",
+    "dstDriveShared": false,
+    "resultCode": null,
+    "userDisplayName": "ade_testuser3",
+    "userName": "ade_testuser3",
+    "userId": "ade_testuser3",
+    "result": "SUCCESS",
+    "absoluteDstFolderFilePath": "/usr/someuser/somesubdir/1",
+    "fileSize": 44564480,
+    "absoluteDstFilePath": "/usr/someuser/somesubdir/1/File.myd",
+    "operationTypeCategories": null,
+    "srcDriveShared": false,
+    "additionalInfo": {
+      "User": "TestUser_1",
+      "User Display": "TestUser _1",
+      "Description": "This is description"
+    },
+    "operationType": "FILE_MOVED",
+    "id": "599d9326f6b7cf32b3c26986",
+    "dataSource": "FileDS",
+    "eventDate": {
+      "epochSecond": 1407861600,
+      "nano": 0
+    }
+  }
+]

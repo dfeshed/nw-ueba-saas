@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.ClassPathResource;
+import presidio.webapp.model.Event;
 import presidio.webapp.model.Indicator;
 
 import java.util.ArrayList;
@@ -35,6 +36,12 @@ public class MockUtils {
             restIndicators = (List<presidio.webapp.model.Indicator>) mockJsonResponse("indicators_without_historical_data.json", indicatorsListTypeReference);
         }
         return restIndicators;
+    }
+
+    public static List<Event> mockEvents() {
+        TypeReference eventsListTypeReference = new TypeReference<List<Event>>() {};
+        List<Event> restEvents = (List<presidio.webapp.model.Event>) mockJsonResponse("events.json", eventsListTypeReference);
+        return restEvents;
     }
 
     // TEMPORARY CODE FOR THIS DROP - DO NOT REVIEW !!!!
