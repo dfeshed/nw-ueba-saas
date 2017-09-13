@@ -1,23 +1,14 @@
 package presidio.webapp.controllers.alerts;
 
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQuery;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.InlineResponse200;
-import presidio.webapp.model.InlineResponse2001;
-import presidio.webapp.model.Patch;
+import presidio.webapp.model.*;
 
 import java.util.List;
 
@@ -31,7 +22,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "OK", response = Alert.class)})
     @RequestMapping(value = "/alerts/{alertId}",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<Alert> getAlert(@ApiParam(value = "The UUID of the alert to return", required = true) @PathVariable("alertId") String alertId) {
         // do some magic!
@@ -44,9 +34,8 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class)})
     @RequestMapping(value = "/alerts",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> getAlerts(@ApiParam(value = "object that hold all the parameters for getting specific alerts") @RequestBody AlertQuery alertQuery) {
+    default ResponseEntity<AlertsWrapper> getAlerts(@ApiParam(value = "object that hold all the parameters for getting specific alerts") AlertQuery alertQuery) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
@@ -57,7 +46,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "Supporting infromation for charts", response = InlineResponse2001.class)})
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<List<InlineResponse2001>> getIndicatorByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") Integer indicatorId,
                                                                          @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") Integer alertId) {
@@ -71,7 +59,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of events", response = InlineResponse200.class)})
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}/events",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<List<InlineResponse200>> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") Integer indicatorId,
                                                                               @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") Integer alertId) {
@@ -85,7 +72,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of events", response = InlineResponse200.class)})
     @RequestMapping(value = "/alerts/{alertId}/indicators",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<List<InlineResponse200>> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") Integer alertId) {
         // do some magic!
