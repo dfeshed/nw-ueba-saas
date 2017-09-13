@@ -1,19 +1,20 @@
 __author__ = 'robertsanders'
 __version__ = "1.0.4"
 # taken from https://github.com/teamclairvoyant/airflow-rest-api-plugin
-import logging
-import socket
-import subprocess
-from datetime import datetime
-
-import airflow
-import os
-from airflow import configuration
 from airflow.models import DagBag, DagModel
 from airflow.plugins_manager import AirflowPlugin
+from airflow import configuration
 from airflow.www.app import csrf
+
 from flask import Blueprint, request, jsonify
 from flask_admin import BaseView, expose
+
+from datetime import datetime
+import airflow
+import logging
+import subprocess
+import os
+import socket
 
 """
 CLIs this REST API exposes are Defined here: http://airflow.incubator.apache.org/cli.html
