@@ -176,7 +176,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public Indicator getIndicatorById(String indicatorId, boolean expand) {
         // TEMPORARY CODE FOR THIS DROP - DO NOT REVIEW
-        Indicator restIndicator = MockUtils.mockIndicator(expand);
+        Indicator restIndicator = MockUtils.mockIndicator(indicatorId, expand);
         return restIndicator;
     }
 

@@ -1,0 +1,11 @@
+{
+  "id": "7e6251a7-7bf1-4e9f-bb61-c51d88fd530e",
+  "name": "abnormal_file_action_operation_type",
+  "startDate": 1407859200,
+  "endDate": 1407862800,
+  "anomalyValue": "FILE_MOVED",
+  "schema": "FILE",
+  "type": "SCORE_AGGREGATION",
+  "score": 99.7,
+  "eventsNum": 3
+}

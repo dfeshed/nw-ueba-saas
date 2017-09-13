@@ -3,9 +3,9 @@
   "name": "high_number_of_distinct_folders_opened_attempts",
   "startDate": 1407859200,
   "endDate": 1407862800,
-  "anomalyValue": "1.0",
+  "anomalyValue": "3.0",
   "schema": "FILE",
   "type": "FEATURE_AGGREGATION",
-  "score": 0,
+  "score": 85.0,
   "eventsNum": 10
 }

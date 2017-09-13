@@ -1,51 +1,14 @@
-[
-  {
-    "id": "7e6251a7-7bf1-4e9f-bb61-c51d88fd530e",
-    "name": "abnormal_file_action_operation_type",
-    "startDate": 1407859200,
-    "endDate": 1407862800,
-    "anomalyValue": "FILE_MOVED",
-    "schema": "FILE",
-    "type": "SCORE_AGGREGATION",
-    "score": 99.7,
-    "historicalData": {
-      "type": "COUNT_AGGRAGEATION",
-      "buckets": [
-        {
-          "key": "FILE_MOVED",
-          "value": 3
-        },
-        {
-          "key": "LOCAL_SHARE_PERMISSIONS_CHANGED",
-          "value": 1
-        },
-        {
-          "key": "FOLDER_CLASSIFICATION_CHANGED",
-          "value": 1
-        },
-        {
-          "key": "FILE_DELETED",
-          "value": 1
-        },
-        {
-          "key": "EMC_FOLDER_RENAMED",
-          "value": 1
-        }
-      ]
-    },
-    "eventsNum": 3
-  },
-  {
-    "id": "90575c32-ac7d-4d55-a60c-9bd90e66e3b5",
-    "name": "high_number_of_distinct_folders_opened_attempts",
-    "startDate": 1407859200,
-    "endDate": 1407862800,
-    "anomalyValue": "3.0",
-    "schema": "FILE",
-    "type": "FEATURE_AGGREGATION",
-    "score": 85.0,
-    "historicalData": {
-      "type": "TIME_AGGREGATION",
+{
+  "id": "90575c32-ac7d-4d55-a60c-9bd90e66e3b5",
+  "name": "high_number_of_distinct_folders_opened_attempts",
+  "startDate": 1407859200,
+  "endDate": 1407862800,
+  "anomalyValue": "3.0",
+  "schema": "FILE",
+  "type": "FEATURE_AGGREGATION",
+  "score": 85.0,
+  "historicalData": {
+    "type": "TIME_AGGREGATION",
       "buckets": [
         {
           "key": 1497240000,
@@ -408,7 +371,6 @@
           "value": 5
         }
       ]
-    },
-    "eventsNum": 9
-  }
-]
+  },
+  "eventsNum": 9
+}
