@@ -1,6 +1,7 @@
 package presidio.webapp.service;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,11 +12,7 @@ import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -121,6 +118,9 @@ public class RestAlertServiceImpl implements RestAlertService {
 
             });
             alertQueryBuilder.sortField(new Sort(orders));
+        }
+        if (BooleanUtils.isTrue(alertQuery.getAggregateBySeverity())) {
+            alertQueryBuilder.aggregateBySeverity(alertQuery.getAggregateBySeverity());
         }
         AlertQuery convertedAlertQuery = alertQueryBuilder.build();
         return convertedAlertQuery;
