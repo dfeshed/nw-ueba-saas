@@ -58,7 +58,16 @@ public class FileEntity {
     }
 
     public String getAbsoluteFilePath() {
-        return (isDirectory == null || isDirectory) ? fileName : (filePath + File.separator + fileName);
+        String separator = "/";
+        if(isDirectory == null || isDirectory){
+            return fileName;
+        } else {
+            if(filePath.contains("\\")){
+                separator = "\\";
+            }
+
+            return filePath + separator + fileName;
+        }
     }
 
     @Override
