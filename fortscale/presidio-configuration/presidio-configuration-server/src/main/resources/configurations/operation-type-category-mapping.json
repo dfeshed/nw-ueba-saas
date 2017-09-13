@@ -1,0 +1,323 @@
+{
+  "mapping": {
+    "ACTIVE_DIRECTORY": {
+      "OWNER_CHANGED_ON_GROUP_OBJECT": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "NESTED_MEMBER_REMOVED_FROM_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_REMOVED"
+      ],
+      "NESTED_MEMBER_ADDED_TO_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_ADD"
+      ],
+      "MEMBER_REMOVED_FROM_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_REMOVED"
+      ],
+      "MEMBER_ADDED_TO_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_ADD"
+      ],
+      "GROUP_SAM_ACCOUNT_NAME_CHANGED": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "GROUP_RENAMED": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "GROUP_OBJECT_REMOVED": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "GROUP_OBJECT_MOVED": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "GROUP_OBJECT_ADDED": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "GROUP_MEMBER_OF_REMOVED": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_REMOVED"
+      ],
+      "GROUP_MEMBER_OF_ADDED": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_ADD"
+      ],
+      "DACL_CHANGED_ON_GROUP_OBJECT": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_PASSWORD_CHANGED_BY_NON_OWNER": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_PASSWORD_CHANGED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_MEMBER_OF_REMOVED": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_REMOVED"
+      ],
+      "USER_MEMBER_OF_ADDED": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_ADD"
+      ],
+      "USER_DO_NOT_REQUIRE_KERBEROS_PREAUTHENTICATION_OPTION_CHANGED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_UNLOCKED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_TYPE_CHANGED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_RE_ENABLED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_LOCKED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_IS_TRUSTED_FOR_DELEGATION_OPTION_CHANGED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_IS_SENSITIVE_AND_CANNOT_BE_DELEGATED_OPTION_CHANGED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_ENABLED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "USER_ACCOUNT_DISABLED": [
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "PRIMARY_GROUP_ID_CHANGED_FOR_USER_OBJECT": [
+        "GROUP_MEMBERSHIP"
+      ],
+      "NESTED_MEMBER_REMOVED_FROM_CRITICAL_ENTERPRISE_GROUP": [
+        "SECURITY_SENSITIVE_OPERATION",
+        "GROUP_MEMBERSHIP_REMOVED"
+      ],
+      "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_ADD"
+      ],
+      "MEMBER_REMOVED_FROM_CRITICAL_ENTERPRISE_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "SECURITY_SENSITIVE_OPERATION",
+        "GROUP_MEMBERSHIP_REMOVED"
+      ],
+      "MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP": [
+        "GROUP_MEMBERSHIP",
+        "GROUP_MEMBERSHIP_ADD"
+      ],
+      "OU_GROUP_POLICY_ORDER_CHANGED": [
+        "GROUP_MEMBERSHIP"
+      ]
+    },
+    "FILE": {
+      "LOCAL_SHARE_REMOVED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "LOCAL_SHARE_PERMISSIONS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FOLDER_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FOLDER_OPENED": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_MOVED": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_DELETED": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_CREATED": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_CLASSIFICATION_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FOLDER_CENTRAL_ACCESS_POLICY_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FOLDER_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FILE_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "FILE_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FILE_OPENED": [
+        "FILE_ACTION"
+      ],
+      "FILE_MOVED": [
+        "FILE_ACTION"
+      ],
+      "FILE_DELETED": [
+        "FILE_ACTION"
+      ],
+      "FILE_CREATED": [
+        "FILE_ACTION"
+      ],
+      "FILE_CLASSIFICATION_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FILE_CENTRAL_ACCESS_POLICY_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FILE ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FAILED_SHARE_ACCESS_NTFS_PERMISSIONS": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FAILED_SHARE_ACCESS_CHANGE_AUDITOR_PROTECTION": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FAILED_FOLDER_ACCESS_NTFS_PERMISSIONS": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FAILED_FOLDER_ACCESS_CHANGE_AUDITOR_PROTECTION": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FAILED_FILE_ACCESS_NTFS_PERMISSIONS": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FAILED_FILE_ACCESS_CHANGE_AUDITOR_PROTECTION": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "NET_APP_FOLDER_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FOLDER_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "NET_APP_FOLDER_MOVED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FOLDER_DELETED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FOLDER_CREATED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FOLDER_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "NET_APP_FILE_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FILE_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "NET_APP_FILE_OPENED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FILE_MOVED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FILE_DELETED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FILE_CREATED": [
+        "FILE_ACTION"
+      ],
+      "NET_APP_FILE_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "EMC_FOLDER_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FOLDER_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "EMC_FOLDER_MOVED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FOLDER_DELETED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FOLDER_CREATED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FOLDER_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "EMC_FILE_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FILE_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "EMC_FILE_OPENED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FILE_MOVED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FILE_DELETED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FILE_CREATED": [
+        "FILE_ACTION"
+      ],
+      "EMC_FILE_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FLUIDFS_FOLDER_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FOLDER_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FLUIDFS_FOLDER_MOVED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FOLDER_DELETED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FOLDER_CREATED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FOLDER_AUDITING_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FLUIDFS_FOLDER_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FLUIDFS_FILE_RENAMED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FILE_OWNERSHIP_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FLUIDFS_FILE_OPENED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FILE_MOVED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FILE_DELETED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FILE_CREATED": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FILE_CONTENTS_WRITTEN": [
+        "FILE_ACTION"
+      ],
+      "FLUIDFS_FILE_ACCESS_RIGHTS_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ]
+    },
+    "AUTHENTICATION": {
+    }
+  }
+}

@@ -17,7 +17,7 @@ public class ModelingServiceApplicationModuleTestConfig extends ModelingServiceC
         // Feature bucket conf service
         properties.put("presidio.ade.modeling.feature.bucket.confs.base.path", "classpath*:config/asl/feature-buckets/**/*.json");
         // Feature aggregation event conf service
-        properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/*.json");
+        properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/**/*.json");
         // Smart event conf service
         properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
         // Model conf service
@@ -28,7 +28,6 @@ public class ModelingServiceApplicationModuleTestConfig extends ModelingServiceC
         properties.put("presidio.ade.modeling.smart.records.group.name", "smart-record-models");
         properties.put("presidio.ade.modeling.smart.records.base.configuration.path", "classpath*:config/asl/models/smart-records/");
         // Additional properties
-        properties.put("presidio.ade.modeling.feature.buckets.default.expire.after.seconds", 7776000);
         properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
         properties.put("presidio.default.ttl.duration", "PT1000H");
         properties.put("presidio.default.cleanup.interval", "PT2000H");

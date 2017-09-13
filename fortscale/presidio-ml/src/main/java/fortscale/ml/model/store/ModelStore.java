@@ -108,8 +108,4 @@ public class ModelStore implements TtlServiceAware {
 		mongoTemplate.remove(query, collectionName);
 	}
 
-	@Override
-	public String getStoreName(){
-		return "modelStore";
-	}
 }

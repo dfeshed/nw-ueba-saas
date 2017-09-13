@@ -75,15 +75,16 @@ public class SmartService {
 
 		for (TimeRange partition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy)) {
 			logger.info("Starting to process time range partition {}.", partition);
-
-			aggregatedDataReader.read(params, partition, aggregationRecordsThreshold).forEach(iterator -> {
-				SmartRecordAggregator aggregator = new SmartRecordAggregator(conf, strategy, partition);
+			aggregatedDataReader.read(params, partition).forEach(iterator -> {
+				SmartRecordAggregator aggregator = new SmartRecordAggregator(
+						conf, strategy, partition, aggregationRecordsThreshold);
 				while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 				Collection<SmartRecord> records = aggregator.getSmartRecords();
 				smartScoringService.score(records);
 				smartDataStore.storeSmartRecords(smartRecordConfName, records);
 			});
 		}
+
 		ttlService.cleanupCollections(timeRange.getStart());
 	}
 }

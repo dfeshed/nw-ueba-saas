@@ -1,9 +1,6 @@
 package presidio.webapp.model;
 
-
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.Objects;
 /**
  * User
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
 
 public class User {
     @JsonProperty("id")
@@ -31,46 +28,17 @@ public class User {
     @JsonProperty("score")
     private Integer score = null;
 
-    /**
-     * Gets or Sets userSeverity
-     */
-    public enum UserSeverityEnum {
-        CRITICAL("CRITICAL"),
-
-        HIGH("HIGH"),
-
-        MEDIUM("MEDIUM"),
-
-        LOW("LOW");
-
-        private String value;
-
-        UserSeverityEnum(String value) {
-            this.value = value;
-        }
-
-        @Override
-        @JsonValue
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static UserSeverityEnum fromValue(String text) {
-            for (UserSeverityEnum b : UserSeverityEnum.values()) {
-                if (String.valueOf(b.value).equals(text)) {
-                    return b;
-                }
-            }
-            return null;
-        }
-    }
-
     @JsonProperty("userSeverity")
-    private UserSeverityEnum userSeverity = null;
+    private UserSeverity userSeverity = null;
+
+    @JsonProperty("alertsCount")
+    private Integer alertsCount = null;
 
     @JsonProperty("alerts")
     private List<Alert> alerts = new ArrayList<Alert>();
+
+    @JsonProperty("alertClassifications")
+    private List<String> alertClassifications = new ArrayList<String>();
 
     public User id(String id) {
         this.id = id;
@@ -173,7 +141,7 @@ public class User {
         this.score = score;
     }
 
-    public User userSeverity(UserSeverityEnum userSeverity) {
+    public User userSeverity(UserSeverity userSeverity) {
         this.userSeverity = userSeverity;
         return this;
     }
@@ -184,12 +152,31 @@ public class User {
      * @return userSeverity
      **/
     @ApiModelProperty(value = "")
-    public UserSeverityEnum getUserSeverity() {
+    public UserSeverity getUserSeverity() {
         return userSeverity;
     }
 
-    public void setUserSeverity(UserSeverityEnum userSeverity) {
+    public void setUserSeverity(UserSeverity userSeverity) {
         this.userSeverity = userSeverity;
+    }
+
+    public User alertsNum(Integer alertsNum) {
+        this.alertsCount = alertsNum;
+        return this;
+    }
+
+    /**
+     * Get alertsCount
+     *
+     * @return alertsCount
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getAlertsCount() {
+        return alertsCount;
+    }
+
+    public void setAlertsCount(Integer alertsCount) {
+        this.alertsCount = alertsCount;
     }
 
     public User alerts(List<Alert> alerts) {
@@ -216,6 +203,30 @@ public class User {
         this.alerts = alerts;
     }
 
+    public User alertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
+        return this;
+    }
+
+    public User addAlertClassificationsItem(String alertClassificationsItem) {
+        this.alertClassifications.add(alertClassificationsItem);
+        return this;
+    }
+
+    /**
+     * Get alertClassifications
+     *
+     * @return alertClassifications
+     **/
+    @ApiModelProperty(value = "")
+    public List<String> getAlertClassifications() {
+        return alertClassifications;
+    }
+
+    public void setAlertClassifications(List<String> alertClassifications) {
+        this.alertClassifications = alertClassifications;
+    }
+
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -232,12 +243,14 @@ public class User {
                 Objects.equals(this.tags, user.tags) &&
                 Objects.equals(this.score, user.score) &&
                 Objects.equals(this.userSeverity, user.userSeverity) &&
-                Objects.equals(this.alerts, user.alerts);
+                Objects.equals(this.alertsCount, user.alertsCount) &&
+                Objects.equals(this.alerts, user.alerts) &&
+                Objects.equals(this.alertClassifications, user.alertClassifications);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alerts);
+        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alertsCount, alerts, alertClassifications);
     }
 
     @Override
@@ -251,7 +264,9 @@ public class User {
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
         sb.append("    userSeverity: ").append(toIndentedString(userSeverity)).append("\n");
+        sb.append("    alertsCount: ").append(toIndentedString(alertsCount)).append("\n");
         sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
+        sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
         sb.append("}");
         return sb.toString();
     }

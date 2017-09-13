@@ -6,6 +6,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
+import fortscale.utils.ttl.TtlService;
 import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -59,10 +60,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
 
         for(Map.Entry<String,List<FeatureBucket>> entry: confnameToFeatureBucketsMap.entrySet()){
             FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
-            //todo add batch implementation to the feature bucket store
-            for(FeatureBucket featureBucket: entry.getValue()){
-                featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
-            }
+            featureBucketStore.storeFeatureBucket(featureBucketConf, entry.getValue());
         }
     }
 

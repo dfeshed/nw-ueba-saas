@@ -43,21 +43,32 @@ public class PresidioShellableApplication {
         configurationClass.add(FSHistoryFileNameProvider.class);
         configurationClass.add(FSPromptProvider.class);
         configurationClass.add(BootShimConfig.class);
-
-        ConfigurableApplicationContext context = SpringApplication.run(configurationClass.toArray(), args);
+        ConfigurableApplicationContext context = null;
         int exitCode=0;
+        ExitShellRequest exitShellRequest = null;
         try {
+            context = SpringApplication.run(configurationClass.toArray(), args);
             context.registerShutdownHook();
-            ExitShellRequest exitShellRequest = run(context);
+            exitShellRequest = run(context);
             exitCode = exitShellRequest.getExitCode();
         } catch (RuntimeException e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
-            exitCode=1;
+            if (exitShellRequest == null) {
+                exitCode = 1;
+            } else {
+                exitCode = exitShellRequest.getExitCode();
+                if (exitCode == 0) {
+                    exitCode = 1;
+                }
+            }
         }
         finally {
-            context.close();
+            if (context!=null) {
+                context.close();
+            }
             Thread.currentThread().interrupt();
+            logger.info("system finished with exit code={}",exitCode);
             System.exit(exitCode);
         }
     }

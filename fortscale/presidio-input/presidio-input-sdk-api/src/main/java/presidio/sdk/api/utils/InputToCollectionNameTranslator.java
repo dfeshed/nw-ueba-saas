@@ -4,7 +4,7 @@ import fortscale.common.general.Schema;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 
 
-public class InputToCollectionNameTranslator implements ToCollectionNameTranslator<Schema>{
+public class InputToCollectionNameTranslator implements ToCollectionNameTranslator<Schema> {
 
     @Override
     public String toCollectionName(Schema schema) {

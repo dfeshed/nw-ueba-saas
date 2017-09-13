@@ -1,0 +1,38 @@
+{
+  "SmartRecordConfs": [
+    {
+      "name": "test_smart_record_conf_1",
+      "contexts": [
+        "userId"
+      ],
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "defaultWeight": 0.5
+    },
+    {
+      "name": "test_smart_record_conf_2",
+      "contexts": [
+        "userId",
+        "srcMachineId"
+      ],
+      "fixedDurationStrategy": "fixed_duration_daily",
+      "includeAllAggregationRecords": false,
+      "defaultWeight": 0.25,
+      "clusterConfs": [
+        {
+          "aggregationRecordNames": [
+            "featureAggregationRecord1",
+            "scoreAggregationRecord1"
+          ]
+        },
+        {
+          "aggregationRecordNames": [
+            "featureAggregationRecord2",
+            "scoreAggregationRecord2"
+          ],
+          "weight": 0.75
+        }
+      ]
+    }
+  ]
+}

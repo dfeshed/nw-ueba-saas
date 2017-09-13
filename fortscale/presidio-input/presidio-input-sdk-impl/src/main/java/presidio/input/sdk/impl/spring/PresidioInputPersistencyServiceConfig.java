@@ -1,5 +1,6 @@
 package presidio.input.sdk.impl.spring;
 
+import fortscale.common.general.Schema;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,7 @@ public class PresidioInputPersistencyServiceConfig {
     }
 
     @Bean
-    public ToCollectionNameTranslator toCollectionNameTranslator() {
+    public ToCollectionNameTranslator<Schema> toCollectionNameTranslator() {
         return new InputToCollectionNameTranslator();
     }
 

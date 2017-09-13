@@ -9,11 +9,11 @@ import java.time.Instant;
  */
 public class TtlServiceRecordTest {
 
-    public final static String START_FIELD = "start";
+    public final static String END_FIELD = "end";
 
-    @Field(START_FIELD)
-    private Instant start;
     @Field
+    private Instant start;
+    @Field(END_FIELD)
     private Instant end;
     @Field
     private String name;

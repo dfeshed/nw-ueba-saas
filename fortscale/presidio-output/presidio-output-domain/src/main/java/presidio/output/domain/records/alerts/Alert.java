@@ -26,7 +26,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
     public static final String USER_ID = "userId";
-    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
+    public static final String USER_TAGS_FIELD_NAME = "userTags";
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(CLASSIFICATIONS)
@@ -66,15 +66,15 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
 
-    @Field(type = FieldType.Boolean, store = true)
-    @JsonProperty(IS_USER_ADMIN_FIELD_NAME)
-    private Boolean isUserAdmin;
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(USER_TAGS_FIELD_NAME)
+    private List<String> userTags;
 
     public Alert() {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, Boolean isUserAdmin) {
+    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
         super();
         this.classifications = classifications;
         this.userId = userId;
@@ -85,7 +85,7 @@ public class Alert extends AbstractElasticDocument {
         this.indicatorsNum = indicatorsNum;
         this.timeframe = timeframe;
         this.severity = severity;
-        this.isUserAdmin = isUserAdmin;
+        this.userTags = userTags;
     }
 
     public String getUserId() {
@@ -160,11 +160,11 @@ public class Alert extends AbstractElasticDocument {
         this.severity = severity;
     }
 
-    public Boolean getAdmin() {
-        return isUserAdmin;
+    public List<String> getUserTags() {
+        return userTags;
     }
 
-    public void setAdmin(Boolean admin) {
-        isUserAdmin = admin;
+    public void setUserTags(List<String> userTags) {
+        this.userTags = userTags;
     }
 }

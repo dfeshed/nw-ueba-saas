@@ -39,6 +39,7 @@ public class AccumulateSmartRecordsExecutionService {
         AccumulateSmartRecordsService accumulateSmartRecordsService = new AccumulateSmartRecordsService(accumulationDuration, smartDataReader, pageSize, maxGroupSize, smartAccumulationsCache, smartAccumulationDataStore);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         accumulateSmartRecordsService.execute(timeRange, configurationName);
+
         ttlService.cleanupCollections(startDate);
     }
 

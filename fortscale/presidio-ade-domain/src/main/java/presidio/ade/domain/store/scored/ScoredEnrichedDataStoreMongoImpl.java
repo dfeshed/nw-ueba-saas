@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -102,12 +101,8 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
-                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lte(until));
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
 
-    @Override
-    public String getStoreName(){
-        return "scoredDataStore";
-    }
 }
