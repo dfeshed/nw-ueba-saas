@@ -32,4 +32,8 @@ public class CyclicValuesGenerator<T>{
     public void setValuesList(T[] valuesList) {
         this.values = valuesList;
     }
+
+    public T[] getValues() {
+        return values;
+    }
 }
