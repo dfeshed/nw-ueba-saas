@@ -106,6 +106,27 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
     }
 
+
+    @Override
+    public String readConfigurationAsJsonString(String moduleName, String profile) throws Exception {
+        String path = "/" + moduleName;
+        if (profile != null && profile.length() > 0) {
+            path += "-" + profile;
+        }
+        path += ".json";
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(configServerUri)
+                .path(path);
+
+        HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
+
+        return responseEntity.getBody();
+
+    }
+
     private HttpHeaders createBasicAuthenticationHeaders(String username, String password){
         final HttpHeaders httpHeaders = new HttpHeaders();
         String auth = String.format("%s:%s", username, password);
