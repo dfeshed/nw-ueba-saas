@@ -22,7 +22,7 @@ public interface UsersApi {
             consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<AlertsWrapper> getAlertsByUser(@ApiParam(value = "The UUID of the user to return", required = true) @PathVariable("userId") String userId,
-                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") @RequestBody UserAlertsQuery body) {
+                                                          @ApiParam(value = "object that hold all the parameters for getting alerts") UserAlertsQuery body) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public interface UsersApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<UsersWrapper> getUsers(@ApiParam(value = "object that hold all the parameters for getting specific alerts") @RequestBody UserQuery userQuery) {
+    default ResponseEntity<UsersWrapper> getUsers(@ApiParam(value = "object that hold all the parameters for getting specific alerts") UserQuery userQuery) {
         // do some magic!
         return new ResponseEntity<UsersWrapper>(HttpStatus.OK);
     }
