@@ -1,6 +1,8 @@
 package presidio.ade.domain.record.enriched.authentication;
 
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,6 +18,10 @@ import java.time.Instant;
  */
 @Document
 @AdeRecordMetadata(adeEventType = AdeAuthenticationRecord.AUTHENTICATION_STR)
+@CompoundIndexes({
+        @CompoundIndex(def = "{'startInstant': 1}")
+        // A compound index is created dynamically for every <'startInstant', 'contextType'> pair in use
+})
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
@@ -23,8 +29,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
     public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
     public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
-
-
 
 
     @Indexed

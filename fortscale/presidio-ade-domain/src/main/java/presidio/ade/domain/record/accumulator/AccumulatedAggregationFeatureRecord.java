@@ -1,6 +1,9 @@
 package presidio.ade.domain.record.accumulator;
 
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
@@ -11,8 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by maria_dorohin on 7/26/17.
+ * @author Maria Dorohin
  */
+@Document
+@CompoundIndexes({
+        @CompoundIndex(def = "{'startInstant': 1}"),
+        @CompoundIndex(def = "{'startInstant': 1, 'contextId': 1}", unique = true)
+})
 public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregatedRecord {
 
     private static final String ADE_ACCUMULATION_EVENT_TYPE_PREFIX = "accumulation_aggr_event";
@@ -29,7 +37,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     public AccumulatedAggregationFeatureRecord(Instant startInstant, Instant endInstant, String contextId, String featureName) {
         super(startInstant, endInstant, contextId);
         this.featureName = featureName;
-        this.aggregatedFeatureValues = new HashMap();
+        this.aggregatedFeatureValues = new HashMap<>();
     }
 
     /**
@@ -51,7 +59,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     /**
      * Set aggregated feature values
      *
-     * @param aggregatedFeatureValues
+     * @param aggregatedFeatureValues aggregated feature values
      */
     public void setAggregatedFeatureValues(Map<Integer,Double> aggregatedFeatureValues) {
         this.aggregatedFeatureValues = aggregatedFeatureValues;
@@ -70,7 +78,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     /**
      * Set feature name
      *
-     * @param featureName
+     * @param featureName feature name
      */
     public void setFeatureName(String featureName) {
         this.featureName = featureName;

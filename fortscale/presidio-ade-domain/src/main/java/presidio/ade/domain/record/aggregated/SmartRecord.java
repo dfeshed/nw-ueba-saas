@@ -3,6 +3,8 @@ package presidio.ade.domain.record.aggregated;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -17,6 +19,12 @@ import java.util.List;
  * @author Lior Govrin
  */
 @Document
+@CompoundIndexes({
+		@CompoundIndex(def = "{'startInstant': 1}"),
+		@CompoundIndex(def = "{'startInstant': 1, 'contextId': 1}", unique = true),
+		@CompoundIndex(def = "{'startInstant': 1, 'contextId': 1, 'smartScore': 1}"),
+		@CompoundIndex(def = "{'startInstant': 1, 'smartScore': 1}")
+})
 public class SmartRecord extends AdeContextualAggregatedRecord implements AdeScoredRecord {
 	private static final String ADE_EVENT_TYPE_PREFIX = "smart_";
 
@@ -25,6 +33,7 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	public static final String SMART_SCORE_FIELD = "smartScore";
 	public static final String FEATURE_SCORES_FIELD = "featureScores";
 	public static final String AGGREGATION_RECORDS_FIELD = "aggregationRecords";
+	public static final String FEATURE_NAME_FIELD = "featureName";
 
 	@Field(FIXED_DURATION_STRATEGY_FIELD)
 	private FixedDurationStrategy fixedDurationStrategy;
@@ -37,10 +46,10 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	private List<FeatureScore> featureScores;
 	@Field(AGGREGATION_RECORDS_FIELD)
 	private List<AdeAggregationRecord> aggregationRecords;
-	@Field
+	@Field(FEATURE_NAME_FIELD)
 	private String featureName;
 
-	public SmartRecord(){
+	public SmartRecord() {
 		super();
 	}
 
@@ -124,6 +133,14 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 		this.aggregationRecords = aggregationRecords;
 	}
 
+	public String getFeatureName() {
+		return featureName;
+	}
+
+	public void setFeatureName(String featureName) {
+		this.featureName = featureName;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
@@ -132,22 +149,5 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 				getClass().getSimpleName(), getStartInstant().toString(), getEndInstant().toString(),
 				getContextId(), getFeatureName(), getFixedDurationStrategy().toStrategyName(),
 				getSmartValue(), getScore());
-	}
-
-
-	/**
-	 * Set feature name
-	 * @param featureName
-	 */
-	public void setFeatureName(String featureName) {
-		this.featureName = featureName;
-	}
-
-	/**
-	 *
-	 * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
-	 */
-	public String getFeatureName() {
-		return featureName;
 	}
 }

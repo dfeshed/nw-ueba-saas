@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by mariad on 7/11/2017.
+ * @author Maria Dorohin
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "score_threshold_query", def = "{'contextId': -1, 'startInstant': -1, 'score': -1}")
+        @CompoundIndex(def = "{'startInstant': 1}"),
+        @CompoundIndex(def = "{'startInstant': 1, 'contextId': 1}", unique = true)
 })
 public class ScoredFeatureAggregationRecord extends AdeAggregationRecord implements AdeScoredRecord {
 
