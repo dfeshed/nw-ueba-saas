@@ -19,6 +19,7 @@
 
 package org.apache.flume;
 
+import org.apache.commons.cli.Option;
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.lifecycle.LifecycleSupervisor;
@@ -45,14 +46,15 @@ public class SinkRunner implements LifecycleAware {
 
     private static final Logger logger = LoggerFactory
             .getLogger(SinkRunner.class);
-    private static final long backoffSleepIncrement = 1000;
-    private static final long maxBackoffSleep = 5000;
+    //    private static final long backoffSleepIncrement = 1000;
+    public static long maxBackoffSleep = 5000;
 
     private CounterGroup counterGroup;
     private PollingRunner runner;
     private Thread runnerThread;
     private LifecycleState lifecycleState;
     private SinkProcessor policy;
+    public static LifecycleSupervisor lifecycleSupervisor;
 
     public SinkRunner() {
         counterGroup = new CounterGroup();
@@ -79,6 +81,7 @@ public class SinkRunner implements LifecycleAware {
         policy.start();
 
         runner = new PollingRunner();
+        runner.setSinkRunner(this);
 
         runner.policy = policy;
         runner.counterGroup = counterGroup;
@@ -110,7 +113,7 @@ public class SinkRunner implements LifecycleAware {
             }
         }
 
-        getPolicy().stop();
+
         lifecycleState = LifecycleState.STOP;
     }
 
@@ -135,6 +138,8 @@ public class SinkRunner implements LifecycleAware {
         private SinkProcessor policy;
         private AtomicBoolean shouldStop;
         private CounterGroup counterGroup;
+        private SinkRunner sinkRunner;
+
 
         @Override
         public void run() {
@@ -171,17 +176,33 @@ public class SinkRunner implements LifecycleAware {
         }
 
         private void backoff() throws InterruptedException {
-            counterGroup.incrementAndGet("runner.backoffs");
+//            counterGroup.incrementAndGet("runner.backoffs");
 
-            Thread.sleep(Math.min(
-                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
-                            * backoffSleepIncrement, maxBackoffSleep));
+//            Thread.sleep(Math.min(
+//                    counterGroup.incrementAndGet("runner.backoffs.consecutive")
+//                            * backoffSleepIncrement, maxBackoffSleep));
+            Thread.sleep(maxBackoffSleep);
         }
 
         private void shutdownFlume() {
-            logger.info("Flume agent execution with options {} is done. Shutting down Flume agent...", LifecycleSupervisor.options);
+            final Option agentName = LifecycleSupervisor.options.getOption("name");
+            logger.info("Flume agent {} is closing...", agentName);
+            sinkRunner.lifecycleState = LifecycleState.STOP;
             shouldStop.set(true);
-            System.exit(0);
+            SinkRunner.lifecycleSupervisor.stop();
+
+            logger.warn("Flume was unable to gracefully stop. Shutting down forcibly");
+            new Thread("App-exit") {
+                @Override
+                public void run() {
+                    System.exit(0);
+                }
+            }.start();
+
+        }
+
+        public void setSinkRunner(SinkRunner sinkRunner) {
+            this.sinkRunner = sinkRunner;
         }
 
     }
