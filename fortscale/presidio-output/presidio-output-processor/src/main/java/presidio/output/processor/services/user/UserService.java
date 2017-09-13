@@ -17,4 +17,13 @@ public interface UserService {
     User findUserById(String userId);
 
     void setUserAlertData(User user, List<String> classification, List<String> indicators);
+
+    List<User> findUserByVendorUserIds(List<String> vendorUserId);
+
+    /**
+     * Recalculate all alerts related data on the user for the last X days (configurable).
+     * Recalculating- user score, alerts count and classification
+     * @return
+     */
+    boolean updateAllUsersAlertData();
 }

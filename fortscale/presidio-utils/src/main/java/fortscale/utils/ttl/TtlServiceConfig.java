@@ -27,9 +27,11 @@ public class TtlServiceConfig {
     private Duration defaultCleanupInterval;
     @Autowired
     private TtlDataRepository ttlDataRepository;
+    @Value("${presidio.execute.cleanup:true}")
+    private Boolean executeCleanup;
 
     @Bean
     public TtlService ttlService(){
-        return new TtlService(appName, ttlServiceAwares, defaultTtl, defaultCleanupInterval, ttlDataRepository);
+        return new TtlService(appName, ttlServiceAwares, defaultTtl, defaultCleanupInterval, ttlDataRepository, executeCleanup);
     }
 }

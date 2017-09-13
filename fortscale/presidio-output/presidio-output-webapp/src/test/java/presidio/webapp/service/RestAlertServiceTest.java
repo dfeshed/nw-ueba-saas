@@ -1,7 +1,6 @@
 package presidio.webapp.service;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.AlertQuery;
+import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 
 import java.time.Instant;
@@ -26,7 +26,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-@Ignore
+
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = OutputWebappConfigurationTest.class)
@@ -60,12 +60,14 @@ public class RestAlertServiceTest {
         Alert alert = createAlert();
         List<Alert> resultList = new ArrayList<>();
         resultList.add(alert);
-        Page<Alert> page = new PageImpl<>(resultList);
+        Page<Alert> page = new PageImpl<>(resultList, null, 1);
         when(alertService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        List<presidio.webapp.model.Alert> alerts = alertsWrapper.getAlerts();
         Assert.assertEquals(1, alerts.size());
+        Assert.assertEquals(1, alertsWrapper.getTotal().intValue());
     }
 
     @Test
@@ -79,7 +81,8 @@ public class RestAlertServiceTest {
         AlertQuery alertQuery = new AlertQuery();
 
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList(firstAlert.getUserName())));
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        List<presidio.webapp.model.Alert> alerts = alertsWrapper.getAlerts();
         Assert.assertEquals(1, alerts.size());
     }
 
@@ -91,14 +94,14 @@ public class RestAlertServiceTest {
 
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
-        Assert.assertEquals(0, alerts.size());
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        Assert.assertEquals(0, alertsWrapper.getAlerts().size());
     }
 
     private Alert createAlert() {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("userId", classifications, "username",
                 Instant.parse("2017-01-01T00:00:00Z").toEpochMilli(), Instant.parse("2017-01-01T11:00:00Z").toEpochMilli(),
-                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, false);
+                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null);
     }
 }

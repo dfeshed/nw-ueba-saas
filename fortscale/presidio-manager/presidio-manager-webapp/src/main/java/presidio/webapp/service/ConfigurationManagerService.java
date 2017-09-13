@@ -28,7 +28,7 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
 
     @Override
     public boolean applyConfiguration() {
-        return CPSAirflow.applyConfiguration() && CPSAirflow.applyConfiguration();
+        return CPSAirflow.applyConfiguration() && CPSSecurityManager.applyConfiguration();
     }
 
     @Override

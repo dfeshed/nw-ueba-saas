@@ -85,4 +85,8 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
     public List<EnrichedFileRecord> generateAndPersistSanityData(int interval) throws GeneratorException {
         return generateAndPersist(interval);
     }
+
+    protected int getInterval() {
+        return 10;
+    }
 }

@@ -1,7 +1,6 @@
 package presidio.ade.processes.shell;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
@@ -18,7 +17,8 @@ import java.time.Instant;
 
 public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionService {
 	private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-	private final BucketConfigurationService bucketConfigurationService;
+	private final int maxGroupSize;
+	private final int pageSize;
 	private EnrichedEventsScoringService enrichedEventsScoringService;
 	private EnrichedDataStore enrichedDataStore;
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
@@ -31,7 +31,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 			EnrichedDataStore enrichedDataStore,
 			ScoreAggregationsBucketService scoreAggregationsBucketService,
 			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
-			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService, TtlService ttlService) {
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService, int pageSize, int maxGroupSize) {
 
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -40,8 +40,9 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		this.aggregationRecordsCreator = aggregationRecordsCreator;
 		this.aggregatedDataStore = aggregatedDataStore;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-		this.bucketConfigurationService = bucketConfigurationService;
 		this.ttlService = ttlService;
+		this.pageSize = pageSize;
+		this.maxGroupSize = maxGroupSize;
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, bucketConfigurationService);
+				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
 		ttlService.cleanupCollections(startInstant);

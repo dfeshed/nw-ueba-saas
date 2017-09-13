@@ -20,7 +20,6 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,8 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UserScoreServiceImpl implements UserScoreService {
     private UserPersistencyService userPersistencyService;
 
-    public int defaultUsersBatchSize;
-
     private int percentThresholdCritical;
 
     private int percentThresholdHigh;
@@ -48,30 +45,25 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-    private int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
     private int defaultAlertsBatchSize;
-
-    private static final int USERS_SAVE_PAGE_SIZE = 1000;
+    public int defaultUsersBatchSize;
 
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
-                                int defaultUsersBatchSize,
                                 int defaultAlertsBatchSize,
-                                int alertEffectiveDurationInDays,
+                                int defaultUsersBatchSize,
                                 int percentThresholdCritical,
                                 int percentThresholdHigh,
                                 int percentThresholdMedium,
                                 double alertContributionCritical,
                                 double alertContributionHigh,
                                 double alertContributionMedium,
-                                double alertContributionLow
-    ) {
+                                double alertContributionLow) {
         this.userPersistencyService = userPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
-        this.alertEffectiveDurationInDays = alertEffectiveDurationInDays;
 
-        this.defaultUsersBatchSize = defaultUsersBatchSize;
         this.defaultAlertsBatchSize = defaultAlertsBatchSize;
+        this.defaultUsersBatchSize = defaultUsersBatchSize;
 
         this.percentThresholdCritical = percentThresholdCritical;
         this.percentThresholdHigh = percentThresholdHigh;
@@ -91,10 +83,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         AlertEnums.AlertSeverity alertSeverity = alert.getSeverity();
         double userScoreContribution = this.alertSeverityToScoreContribution.get(alertSeverity);
 
-        double userScore = user.getUserScore();
+        double userScore = user.getScore();
         userScore += userScoreContribution;
-        user.setUserScore(userScore);
-
+        user.setScore(userScore);
     }
 
     /**
@@ -104,15 +95,9 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return map from score to severity
      */
     private UserScoreToSeverity getSeveritiesMap(double[] userScores) {
-
-
-        double value = 20;
         Percentile p = new Percentile();
 
         p.setData(userScores);
-
-
-        TreeMap<Double, UserSeverity> severitiesMap = new TreeMap<>();
 
         double ceilScoreForLowSeverity = p.evaluate(percentThresholdMedium); //The maximum score that user score still considered low
         double ceilScoreForMediumSeverity = p.evaluate(percentThresholdHigh);//The maximum score that user score still considered medium
@@ -141,58 +126,14 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
     }
 
-    public boolean updateAllUsersScores() {
-
-        //Get map of users ids to new score
-        Map<String, Double> aggregatedUserScore = calculateUserScores();
-
-        //Get users in batches and update the score only if it changed, and add to changesUsers
-
-        Set<String> usersIDForBatch = new HashSet<>();
-        List<User> changedUsers = new ArrayList<>();
-        for (Map.Entry<String, Double> entry : aggregatedUserScore.entrySet()) {
-
-            usersIDForBatch.add(entry.getKey());
-            if (usersIDForBatch.size() < defaultUsersBatchSize) {
-                continue;
-            }
-            //Update user score batch
-            changedUsers.addAll(updateUserScoreForBatch(aggregatedUserScore, usersIDForBatch));
-
-            //After batch calculation, reset the set
-            usersIDForBatch.clear();
-
-        }
-
-        if (!usersIDForBatch.isEmpty()) {
-            //there is leftover smaller then batch size
-            changedUsers.addAll(updateUserScoreForBatch(aggregatedUserScore, usersIDForBatch));
-        }
-
-        //Persist users that the score changed
-        log.info(changedUsers.size() + " users changed. Saving to database");
-
-        Double pages = Math.ceil(changedUsers.size() / (USERS_SAVE_PAGE_SIZE * 1D));
-        for (int i = 0; i < pages.intValue(); i++) {
-            List<User> page = changedUsers.subList(i * USERS_SAVE_PAGE_SIZE, Math.min((i + 1) * USERS_SAVE_PAGE_SIZE, changedUsers.size()));
-            userPersistencyService.save(page);
-        }
-        log.info(changedUsers.size() + " users saved to database");
-
-        //Clean users which not have alert in the last 90 days, but still have score
-        clearUserScoreForUsersThatShouldNotHaveScore(aggregatedUserScore.keySet());
-
-        return true;
-
-    }
-
     /**
      * Iterate all users which have score more then 0, and reset the score to 0.
      * Excluded user ids are users which should not be reset.
      *
      * @param excludedUsersIds is the list of users which should
      */
-    private void clearUserScoreForUsersThatShouldNotHaveScore(Set<String> excludedUsersIds) {
+    @Override
+    public void clearUserScoreForUsersThatShouldNotHaveScore(Set<String> excludedUsersIds) {
         log.debug("Check if there are users without relevant alert and score higher then 0");
 
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1)
@@ -205,7 +146,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         while (usersPage != null && usersPage.hasContent()) {
             usersPage.getContent().forEach(user -> {
                 if (!excludedUsersIds.contains(user.getUserId())) {
-                    user.setUserScore(0D);
+                    user.setScore(0D);
                     user.setUserSeverity(null);
                     clearedUsersList.add(user);
                 }
@@ -222,17 +163,19 @@ public class UserScoreServiceImpl implements UserScoreService {
      * Iterate on all alerts for users in the last alertEffectiveDurationInDays days,
      * and calculate the user score based on the effective alerts.
      *
-     * @return map of each user to his new score
+     * @return map of each userId to an object that contains the new score and number of alerts
      */
-    private Map<String, Double> calculateUserScores() {
+    @Override
+    public Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays) {
 
-        List<LocalDateTime> days = getListOfLastXdays(this.alertEffectiveDurationInDays);
+        List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays);
 
-        Map<String, Double> aggregatedUserScore = new HashMap<>();
+        Map<String, UsersAlertData> aggregatedUserScore = new HashMap<>();
         //TODO: alsom filter by status >
 
         if (days != null && days.size() > 0) {
-            days.forEach(startOfDay -> {
+            for (LocalDateTime startOfDay : days) {
+
                 log.info("Start Calculate user score for day " + startOfDay + " (Calculation, without persistency");
                 long startTime = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();
                 LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
@@ -243,8 +186,8 @@ public class UserScoreServiceImpl implements UserScoreService {
                         .filterByStartDate(startTime)
                         .filterByEndDate(endTime)
                         .sortField(Alert.START_DATE, true)
-                        .pageSize(this.defaultAlertsBatchSize)
-                        .pageNumber(0);
+                        .setPageSize(this.defaultAlertsBatchSize)
+                        .setPageNumber(0);
 
                 AlertQuery alertQuery = alertQueryBuilder.build();
 
@@ -254,14 +197,18 @@ public class UserScoreServiceImpl implements UserScoreService {
                         String userId = alert.getUserId();
                         AlertEnums.AlertSeverity severity = alert.getSeverity();
                         double userScoreContribution = this.alertSeverityToScoreContribution.get(severity);
-                        aggregatedUserScore.compute(userId, (userIdKey, value) -> {
-                            return value == null ? userScoreContribution : value + userScoreContribution;
-                        });
+                        if (aggregatedUserScore.containsKey(userId)) {
+                            UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
+                            usersAlertData.incrementUserScore(userScoreContribution);
+                            usersAlertData.incrementAlertsCount();
+                        } else {
+                            aggregatedUserScore.put(userId, new UsersAlertData(userScoreContribution, 1));
+                        }
 
                     });
                     alertsPage = getNextAlertPage(alertQueryBuilder, alertsPage);
                 }
-            });
+            }
         }
         return aggregatedUserScore;
     }
@@ -277,31 +224,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         return dates;
     }
 
-    /**
-     * @param aggregatedUserScore - all the users which have at least one alert in the last 3 month with the new score
-     * @param usersIDForBatch     - only the ids in the current handled batch
-     * @return List of updated users
-     */
-    private List<User> updateUserScoreForBatch(Map<String, Double> aggregatedUserScore, Set<String> usersIDForBatch) {
-        log.info("Updating user batch (without persistence)- batch contain: " + usersIDForBatch.size() + " users");
-        List<User> changedUsers = new ArrayList<>();
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(new ArrayList<>(usersIDForBatch))
-                .pageNumber(0)
-                .pageSize(usersIDForBatch.size());
-        UserQuery userQuery = userQueryBuilder.build();
-        Page<User> users = userPersistencyService.find(userQuery);
-        users.forEach(user -> {
-            double newUserScore = aggregatedUserScore.get(user.getUserId());
-            if (user.getUserScore() != newUserScore) {
-                user.setUserScore(newUserScore);
-                changedUsers.add(user);
-            }
-        });
-
-        return changedUsers;
-    }
-
-
     public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
         final double[] scores = getScoresArray();
         final UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
@@ -315,7 +237,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             return;
         }
         users.forEach(user -> {
-            double userScore = user.getUserScore();
+            double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getSeverity(userScore);
 
             log.debug("Updating user severity for userId: " + user.getUserId());
@@ -359,7 +281,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     private Page<Alert> getNextAlertPage(AlertQuery.AlertQueryBuilder alertQueryBuilder, Page<Alert> page) {
         if (page.hasNext()) {
             Pageable pageable = page.nextPageable();
-            alertQueryBuilder.pageNumber(pageable.getPageNumber());
+            alertQueryBuilder.setPageNumber(pageable.getPageNumber());
             page = alertPersistencyService.find(alertQueryBuilder.build());
 
         } else {
@@ -385,7 +307,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         while (page != null && page.hasContent()) {
             page.getContent().forEach(user -> {
-                scores[courser.getAndAdd(1)] = user.getUserScore();
+                scores[courser.getAndAdd(1)] = user.getScore();
             });
             page = getNextUserPage(userQueryBuilder, page);
 

@@ -16,7 +16,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.lang.annotation.Annotation;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;

@@ -32,18 +32,24 @@ public class OutputWebappConfiguration {
 
     @Bean
     RestAlertService restAlertService() {
-        return new RestAlertServiceImpl(alertService);
+        return new RestAlertServiceImpl(alertService, pageNumberAlert, pageSizeAlert);
     }
 
-    @Value("${default.page.size.for.rest}")
-    private int pageSize;
+    @Value("${default.page.size.for.rest.user}")
+    private int pageSizeUser;
 
-    @Value("${default.page.number.for.rest}")
-    private int pageNumber;
+    @Value("${default.page.number.for.rest.user}")
+    private int pageNumberUser;
+
+    @Value("${default.page.size.for.rest.alert}")
+    private int pageSizeAlert;
+
+    @Value("${default.page.number.for.rest.alert}")
+    private int pageNumberAlert;
 
     @Bean
     RestUserService restUserService() {
-        return new RestUserServiceImpl(restAlertService(), userService, pageSize, pageNumber);
+        return new RestUserServiceImpl(restAlertService(), userService, pageSizeUser, pageNumberUser);
     }
 
     @Bean

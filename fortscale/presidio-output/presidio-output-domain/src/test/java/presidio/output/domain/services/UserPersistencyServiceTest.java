@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.util.ArrayList;
@@ -23,9 +24,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 @Ignore
@@ -79,7 +78,7 @@ public class UserPersistencyServiceTest {
         assertEquals(createdUser.getId(), user.getId());
         assertEquals(createdUser.getUserName(), user.getUserName());
         assertEquals(createdUser.getUserDisplayName(), user.getUserDisplayName());
-        assertTrue(createdUser.getUserScore() == user.getUserScore());
+        assertTrue(createdUser.getScore() == user.getScore());
         assertEquals(createdUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(createdUser.getIndicators().size(), user.getIndicators().size());
     }
@@ -99,7 +98,7 @@ public class UserPersistencyServiceTest {
     private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
         ArrayList<String> indicators = new ArrayList<String>();
         indicators.add("indicator");
-        return new User(userId, userName, displayName, score, classifications, indicators, false);
+        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
 
@@ -114,7 +113,7 @@ public class UserPersistencyServiceTest {
         assertEquals(foundUser.getId(), user.getId());
         assertEquals(foundUser.getUserName(), user.getUserName());
         assertEquals(foundUser.getUserDisplayName(), user.getUserDisplayName());
-        assertTrue(foundUser.getUserScore() == user.getUserScore());
+        assertTrue(foundUser.getScore() == user.getScore());
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
 
@@ -161,16 +160,16 @@ public class UserPersistencyServiceTest {
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
-        assertTrue(foundUsers.iterator().next().getUserScore() == 50d);
+        assertTrue(foundUsers.iterator().next().getScore() == 50d);
     }
 
     @Test
     public void testFindByListOfIds() {
 
-        User user1 = new User("userId1", "userName", "displayName", 0d, null, null, false);
-        User user2 = new User("userId2", "userName", "displayName", 0d, null, null, false);
-        User user3 = new User("userId3", "userName", "displayName", 0d, null, null, false);
-        User user4 = new User("userId4", "userName", "displayName", 0d, null, null, false);
+        User user1 = new User("userId1", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId3", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
 
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -190,10 +189,16 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByUserScore() {
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, false);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, false);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, false);
-        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, false);
+        List<String> tags = new ArrayList<>();
+        tags.add("ADMIN");
+
+        List<String> classification = new ArrayList<>();
+        classification.add("a");
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0);
+
 
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -210,7 +215,9 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByIsUserAdmin_True() {
-        user1.setAdmin(true);
+        List<String> tags = new ArrayList<>();
+        tags.add("ADMIN");
+        user1.setTags(tags);
         List<User> userList = new ArrayList<>();
         userList.add(user1);
         userList.add(user2);
@@ -221,12 +228,15 @@ public class UserPersistencyServiceTest {
         sortFields.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
-                        .filterByUserAdmin(true)
+                        .filterByUserTags(tags)
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(1L));
-        assertTrue(foundUsers.iterator().next().getAdmin());
+        User foundUser = foundUsers.iterator().next();
+        assertNotNull(foundUser.getTags());
+        assertEquals(1, foundUser.getTags().size());
+        assertEquals(tags, foundUser.getTags());
     }
 
 }

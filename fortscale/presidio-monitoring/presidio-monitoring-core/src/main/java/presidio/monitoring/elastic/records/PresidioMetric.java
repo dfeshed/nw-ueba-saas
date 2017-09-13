@@ -33,7 +33,7 @@ public class PresidioMetric{
     @Field(type = FieldType.Date, store = true)
     private Date timestamp;
 
-    @Field(type = FieldType.Object, store = true)
+    @Field(type = FieldType.String, store = true)
     private Set<String> tags;
 
     @Field(type = FieldType.String, store = true)
