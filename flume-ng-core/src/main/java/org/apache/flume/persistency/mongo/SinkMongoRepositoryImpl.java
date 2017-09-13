@@ -1,4 +1,4 @@
-package org.flume.sink.mongo.persistency;
+package org.apache.flume.persistency.mongo;
 
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;

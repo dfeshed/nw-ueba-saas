@@ -1,4 +1,4 @@
-package org.flume.utils;
+package org.apache.flume.persistency.mongo;
 
 
 import com.mongodb.*;

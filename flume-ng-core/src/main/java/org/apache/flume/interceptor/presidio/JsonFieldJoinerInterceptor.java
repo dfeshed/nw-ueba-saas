@@ -7,8 +7,8 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.interceptor.Interceptor;
+import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,9 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
 
         if (baseFieldValue == null || baseFieldValue.isJsonNull() || baseFieldValue.toString().equals("null")) {
             if (filterOnMissingBaseField) {
-                throw new ConfigurationException("Failed to join fields. Base field doesn't exist.");
+                logger.warn("Failed to join fields. Base field doesn't exist. for event {}. interceptor configuration: {}", event, this);
+                PresidioFilteredEventsMongoRepository.saveFailedEvents(event);
+                return null;
             } else {
                 baseValue = "";
                 logger.debug("Base field: '{}' doesn't exist. Appending empty String", this.toAppendField);
@@ -64,7 +66,9 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
 
         if (toAppendFieldValue == null || toAppendFieldValue.toString().equals("null")) {
             if (filterOnMissingToAppendField) {
-                throw new ConfigurationException("Failed to join fields. To Append field doesn't exist.");
+                logger.warn("Failed to join fields. To Append field doesn't exist for event {}. interceptor configuration: {}", event, this);
+                PresidioFilteredEventsMongoRepository.saveFailedEvents(event);
+                return null;
             } else {
                 toAppendValue = "";
                 logger.debug("To append field: '{}' doesn't exist. Appending empty String", this.toAppendField);

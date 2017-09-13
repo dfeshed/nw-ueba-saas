@@ -1,4 +1,4 @@
-package org.flume.sink.mongo.persistency;
+package org.apache.flume.persistency.mongo;
 
 
 import com.mongodb.DBObject;
@@ -11,6 +11,4 @@ public interface SinkMongoRepository<T extends AbstractDocument> {
     int bulkSave(List<DBObject> events, String collectionName);
 
     void save(T event, String collectionName);
-
-
 }
