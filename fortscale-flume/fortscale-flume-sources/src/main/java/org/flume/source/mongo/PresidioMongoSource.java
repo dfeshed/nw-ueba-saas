@@ -17,7 +17,7 @@ import org.apache.flume.source.AbstractBatchableEventDrivenSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
-import org.flume.utils.MongoUtils;
+import org.apache.flume.persistency.mongo.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;

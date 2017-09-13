@@ -3,7 +3,7 @@ package org.flume.sink.mongo;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.logging.Logger;
-import org.flume.sink.mongo.persistency.SinkMongoRepository;
+import org.apache.flume.persistency.mongo.SinkMongoRepository;
 import org.flume.utils.CountersUtil;
 import org.flume.utils.DateUtils;
 
