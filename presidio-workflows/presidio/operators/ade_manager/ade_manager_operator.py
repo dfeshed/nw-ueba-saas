@@ -7,7 +7,7 @@ from presidio.utils.airflow.context_wrapper import ContextWrapper
 from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 
 
-class ManagerOperator(SpringBootJarOperator):
+class AdeManagerOperator(SpringBootJarOperator):
     """
     Runs a "ManagerOperator" task (JAR).
     The jar cleanup all the enriched collections.
@@ -22,7 +22,7 @@ class ManagerOperator(SpringBootJarOperator):
     @apply_defaults
     def __init__(self, command, *args, **kwargs):
         self.interval = kwargs.get('dag').schedule_interval
-        super(ManagerOperator, self).__init__(command=command, task_id=self.get_task_id(), *args, **kwargs)
+        super(AdeManagerOperator, self).__init__(command=command, task_id=self.get_task_id(), *args, **kwargs)
 
     def execute(self, context):
         """
@@ -36,8 +36,8 @@ class ManagerOperator(SpringBootJarOperator):
             'until_date': convert_to_utc(until_date),
         }
 
-        super(ManagerOperator, self).update_java_args(java_args)
-        super(ManagerOperator, self).execute(context)
+        super(AdeManagerOperator, self).update_java_args(java_args)
+        super(AdeManagerOperator, self).execute(context)
 
     @staticmethod
     def get_task_id():

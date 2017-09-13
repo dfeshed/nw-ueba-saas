@@ -7,7 +7,7 @@ from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuild
 from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
 from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.operators.manager.manager_operator import ManagerOperator
+from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string, \
@@ -154,8 +154,12 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
     @staticmethod
     def _build_manager_operator(anomaly_detection_engine_dag, enriched_data_customer_tasks, daily_short_circuit_operator):
         """
-        Create ManagerOperator in order to clean enriched data after all sub-dags finished to use it.
+        Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished to use it.
         Set daily_short_circuit in order to run ManagerOperator once a day.
+
+        AdeManagerOperator instances do not run sequentially (AdeManagerOperator does not use sequential sensor)
+         as a result of following assumption: AdeManagerOperator should run once a day (using daily_short_circuit),
+         all instances will get skip status except the last instance, therefore sequential sensor is unnecessary.
 
 
         :param anomaly_detection_engine_dag: The ADE DAG
@@ -164,15 +168,15 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         :param daily_short_circuit_operator: daily short_circuit
         """
 
-        manager_operator = ManagerOperator(
-            command=ManagerOperator.cleanup_command,
+        ade_manager_operator = AdeManagerOperator(
+            command=AdeManagerOperator.cleanup_command,
             dag=anomaly_detection_engine_dag
         )
 
-        daily_short_circuit_operator.set_downstream(manager_operator)
+        daily_short_circuit_operator.set_downstream(ade_manager_operator)
 
         for enriched_data_customer_task in enriched_data_customer_tasks:
-            enriched_data_customer_task.set_downstream(manager_operator)
+            enriched_data_customer_task.set_downstream(ade_manager_operator)
 
     @staticmethod
     def _get_aggregations_sub_dag_operator(fixed_duration_strategy, data_source, anomaly_detection_engine_dag):
