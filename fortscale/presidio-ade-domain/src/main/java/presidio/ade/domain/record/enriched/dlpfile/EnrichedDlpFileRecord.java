@@ -3,7 +3,6 @@ package presidio.ade.domain.record.enriched.dlpfile;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -37,7 +36,6 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String MALWARE_SCAN_RESULT_FIELD = "malwareScanResult";
     public static final String EXECUTING_APPLICATION_FIELD = "executingApplication";
 
-    @Indexed
     @Field(USER_ID_FIELD)
     private String userId;
     @Field(SRC_MACHINE_ID_FIELD)

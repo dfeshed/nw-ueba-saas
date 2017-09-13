@@ -3,7 +3,6 @@ package presidio.ade.domain.record.enriched.authentication;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -30,8 +29,6 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
     public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
 
-
-    @Indexed
     @Field(USER_ID_FIELD)
     private String userId;
     @Field(SRC_MACHINE_ID_FIELD)

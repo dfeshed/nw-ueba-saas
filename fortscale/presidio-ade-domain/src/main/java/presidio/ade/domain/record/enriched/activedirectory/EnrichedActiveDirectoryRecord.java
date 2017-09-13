@@ -3,7 +3,6 @@ package presidio.ade.domain.record.enriched.activedirectory;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -25,7 +24,6 @@ public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     public static final String IS_USER_ADMIN_FIELD = "isUserAdmin";
     public static final String OBJECT_ID = "objectId";
 
-    @Indexed
     @Field(USER_ID_FIELD)
     private String userId;
     @Field(IS_USER_ADMIN_FIELD)
