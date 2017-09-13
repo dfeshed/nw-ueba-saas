@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.webapp.controllers.alerts.AlertsControllerManualCreated;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestAlertServiceImpl;
 import presidio.webapp.service.RestUserService;
@@ -30,9 +29,4 @@ public class OutputWebappConfigurationTest {
         return new RestUserServiceImpl(restAlertService(), userService, 0, 100);
     }
 
-
-    @Bean
-    AlertsControllerManualCreated getAlertsController() {
-        return new AlertsControllerManualCreated(restAlertService());
-    }
 }
