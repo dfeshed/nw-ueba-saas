@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         MongoConfig.class
 })
-public class ManagerApplicationConfigurationProduction extends ManagerApplicationConfig {
+public class AdeManagerApplicationConfigurationProduction extends AdeManagerApplicationConfig {
 
 }
 

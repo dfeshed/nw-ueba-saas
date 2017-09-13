@@ -5,8 +5,8 @@ import fortscale.utils.logging.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.ade.manager.config.ManagerApplicationConfig;
-import presidio.ade.manager.config.ManagerApplicationConfigurationProduction;
+import presidio.ade.manager.config.AdeManagerApplicationConfig;
+import presidio.ade.manager.config.AdeManagerApplicationConfigurationProduction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ import java.util.List;
 
 @SpringBootApplication
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
-public class ManagerApplication {
+public class AdeManagerApplication {
 
-    private static final Logger logger = Logger.getLogger(ManagerApplicationConfig.class);
+    private static final Logger logger = Logger.getLogger(AdeManagerApplication.class);
 
     public static void main(String[] args) {
         List<Class> sources = new ArrayList<Class>();
         // The supported CLI commands for the application
-        sources.add(ManagerApplicationCommands.class);
+        sources.add(AdeManagerApplicationCommands.class);
         // The Spring configuration of the application
-        sources.add(ManagerApplicationConfigurationProduction.class);
+        sources.add(AdeManagerApplicationConfigurationProduction.class);
 
         PresidioShellableApplication.run(sources, args);
     }

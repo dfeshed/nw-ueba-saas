@@ -20,6 +20,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
@@ -41,7 +42,7 @@ import static java.util.stream.Collectors.toMap;
  * @author Barak Schuster
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
-    private EnrichedDataStore enrichedDataStore;
+    private EnrichedDataStoreImplMongo enrichedDataStoreImplMongo;
     private SmartDataReader smartDataReader;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
@@ -53,7 +54,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private TtlService ttlService;
 
     public AdeManagerSdkImpl(
-            EnrichedDataStore enrichedDataStore,
+            EnrichedDataStoreImplMongo enrichedDataStoreImplMongo,
             SmartDataReader smartDataReader,
             ScoredEnrichedDataStore scoredEnrichedDataStore,
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
@@ -62,7 +63,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
             SmartRecordConfService smartRecordConfService,
             TtlService ttlService) {
 
-        this.enrichedDataStore = enrichedDataStore;
+        this.enrichedDataStoreImplMongo = enrichedDataStoreImplMongo;
         this.smartDataReader = smartDataReader;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
@@ -192,7 +193,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records) {
-        enrichedDataStore.store(metadata, records);
+        enrichedDataStoreImplMongo.store(metadata, records);
     }
 
     @Override
@@ -264,8 +265,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public void cleanupEnrichedCollections(Instant instant, Duration ttl, Duration cleanupInterval) {
-        String storeName = ((TtlServiceAware)enrichedDataStore).getStoreName();
-        ttlService.cleanupCollections(storeName, instant, ttl, cleanupInterval);
+    public void cleanupEnrichedData(Instant until, Duration ttl, Duration cleanupInterval) {
+        String storeName = enrichedDataStoreImplMongo.getStoreName();
+        ttlService.cleanupCollections(storeName, until, ttl, cleanupInterval);
     }
 }
