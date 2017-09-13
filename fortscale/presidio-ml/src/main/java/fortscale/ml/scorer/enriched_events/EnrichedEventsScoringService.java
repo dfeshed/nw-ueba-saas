@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface EnrichedEventsScoringService {
 
-    List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList);
+    List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore);
 }

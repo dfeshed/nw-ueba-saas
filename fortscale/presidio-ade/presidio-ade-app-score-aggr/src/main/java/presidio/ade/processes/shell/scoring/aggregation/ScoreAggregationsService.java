@@ -19,8 +19,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +38,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final EnrichedEventsScoringService enrichedEventsScoringService;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     private TtlService ttlService;
+    private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
 
     /**
      * C'tor
@@ -69,13 +69,14 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);
+        boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
 
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
-                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
+                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords);
                 FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
                 scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextTypes, featureBucketStrategyData);
             }
@@ -84,6 +85,22 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
         ttlService.cleanupCollections(timeRange.getStart());
+    }
+
+    private boolean isStoreScoredEnrichedRecords(TimeRange timeRange, String dataSource){
+        boolean ret = false;
+        Set<TimeRange> storedTimeRangeSet = storedDataSourceToTimeRanges.get(dataSource);
+        if(storedTimeRangeSet == null){
+            storedTimeRangeSet = new HashSet<>();
+            storedDataSourceToTimeRanges.put(dataSource, storedTimeRangeSet);
+        }
+
+        if(!storedTimeRangeSet.contains(timeRange)){
+            storedTimeRangeSet.add(timeRange);
+            ret = true;
+        }
+
+        return ret;
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
