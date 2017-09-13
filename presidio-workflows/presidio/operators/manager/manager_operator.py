@@ -17,7 +17,7 @@ class ManagerOperator(SpringBootJarOperator):
     ui_color = '#1abc9c'
     ui_fgcolor = '#000000'
 
-    cleanup_command = "cleanup"
+    cleanup_command = "enriched_ttl_cleanup"
 
     @apply_defaults
     def __init__(self, command, *args, **kwargs):
@@ -44,4 +44,4 @@ class ManagerOperator(SpringBootJarOperator):
         """
         :return: The task id
         """
-        return '{}'.format('manager')
+        return '{}'.format('ade_manager')

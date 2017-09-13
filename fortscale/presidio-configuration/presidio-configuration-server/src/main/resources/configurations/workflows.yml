@@ -88,7 +88,7 @@ dags:
     ManagerOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-1.0.0-SNAPSHOT.jar
-        main_class: presidio.ade.manager.ManagerApplication
+        main_class: presidio.ade.manager.AdeManagerApplication
         xmx: 500
         xms: 70
 components:
