@@ -22,7 +22,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "OK", response = Alert.class)})
     @RequestMapping(value = "/alerts/{alertId}",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<Alert> getAlert(@ApiParam(value = "The UUID of the alert to return", required = true) @PathVariable("alertId") String alertId) {
         // do some magic!
@@ -35,7 +34,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class)})
     @RequestMapping(value = "/alerts",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<AlertsWrapper> getAlerts(@ApiParam(value = "object that hold all the parameters for getting specific alerts") AlertQuery alertQuery) {
         // do some magic!
@@ -48,7 +46,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "Supporting infromation for charts", response = InlineResponse2001.class)})
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<List<InlineResponse2001>> getIndicatorByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") Integer indicatorId,
                                                                          @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") Integer alertId) {
@@ -62,7 +59,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of events", response = InlineResponse200.class)})
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}/events",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<List<InlineResponse200>> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") Integer indicatorId,
                                                                               @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") Integer alertId) {
@@ -76,7 +72,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of events", response = InlineResponse200.class)})
     @RequestMapping(value = "/alerts/{alertId}/indicators",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<List<InlineResponse200>> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") Integer alertId) {
         // do some magic!
