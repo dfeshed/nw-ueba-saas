@@ -2,6 +2,7 @@ package presidio.output.domain.records.users;
 
 
 import org.springframework.data.domain.Sort;
+import presidio.output.domain.records.alerts.AlertQuery;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class UserQuery {
     // sort
     private final Sort sort;
 
+    // aggregation
+    private boolean aggregateBySeverity;
 
     // paging
     private final int pageNumber;
@@ -34,6 +37,7 @@ public class UserQuery {
         this.filterByUsersIds = builder.filterByUsersIds;
         this.filterByUserTags = builder.filterByUserTags;
         this.filterByUserName = builder.filterByUserName;
+        this.aggregateBySeverity = builder.aggregateBySeverity;
         this.isPrefix = builder.isPrefix;
         this.minScore = builder.minScore;
         this.maxScore = builder.maxScore;
@@ -50,6 +54,9 @@ public class UserQuery {
         return filterByUsersIds;
     }
 
+    public boolean isAggregateBySeverity() {
+        return aggregateBySeverity;
+    }
 
     public List<String> getFilterByAlertClassifications() {
         return filterByAlertClassifications;
@@ -112,6 +119,9 @@ public class UserQuery {
         // sort
         private Sort sort;
 
+        // aggregation
+        private boolean aggregateBySeverity;
+
         // paging
         private int pageNumber = -1;
         private int pageSize = -1;
@@ -158,6 +168,11 @@ public class UserQuery {
 
         public UserQueryBuilder filterByUserName(String filterByUserName) {
             this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQuery.UserQueryBuilder aggregateBySeverity(boolean aggregateBySeverity) {
+            this.aggregateBySeverity = aggregateBySeverity;
             return this;
         }
 
