@@ -10,7 +10,6 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserScoreService;
@@ -55,6 +54,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      * 2. Enrich alerts with information from Input component (fields which were not part of the ADE schema)
      * 3. Alerts classification (rule based semantics)
      * 4. Calculates supporting information
+     *
      * @param startDate
      * @param endDate
      * @throws Exception
@@ -78,11 +78,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 User userEntity = userService.findUserById(userId);
                 if (userEntity == null) {
                     userEntity = userService.createUserEntity(userId);
+                    if (userEntity == null) {
+                        logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
+                        continue;
+                    }
                 }
-                if(userEntity == null) {
-                    logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
-                    continue;
-                }
+
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity);
                 if (alertEntity != null) {
@@ -101,7 +102,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-    public void recalculateUserScore() throws Exception{
+    public void recalculateUserScore() throws Exception {
         logger.info("Start Recalculating User Alert Data");
         this.userService.updateAllUsersAlertData();
         logger.info("Finish Recalculating User Score");
@@ -120,7 +121,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private void storeUsers(List<User> users) {
         if (CollectionUtils.isNotEmpty(users)) {
             userService.save(users);
-            this.userScoreService.updateSeveritiesForUsersList(users,true);
+            this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("{} output users were generated", users.size());
     }

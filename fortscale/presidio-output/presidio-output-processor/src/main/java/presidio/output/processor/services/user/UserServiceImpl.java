@@ -8,7 +8,11 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -38,6 +42,10 @@ public class UserServiceImpl implements UserService {
         this.userScoreService = userScoreService;
         this.alertEffectiveDurationInDays = alertEffectiveDurationInDays;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
+    }
+
+    public int getDefaultUsersBatchSize() {
+        return defaultUsersBatchSize;
     }
 
     @Override
