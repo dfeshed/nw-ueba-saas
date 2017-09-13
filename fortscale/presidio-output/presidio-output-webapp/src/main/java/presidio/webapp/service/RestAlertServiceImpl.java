@@ -9,6 +9,7 @@ import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertsWrapper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -56,12 +57,19 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
+    public AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
         Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
         List restAlerts = new ArrayList();
         alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return restAlerts;
+        AlertsWrapper alertsWrapper = null;
+        if (CollectionUtils.isNotEmpty(restAlerts)) {
+            alertsWrapper = new AlertsWrapper();
+            alertsWrapper.setAlerts(restAlerts);
+            alertsWrapper.setTotal(Integer.valueOf(((Long) alerts.getTotalElements()).intValue()));
+            alertsWrapper.setPage(alertQuery.getPageNumber());
+        }
+        return alertsWrapper;
     }
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {

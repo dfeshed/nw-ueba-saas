@@ -17,6 +17,7 @@ import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.model.UserQuery;
+import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 
 import java.time.Instant;
@@ -73,12 +74,22 @@ public class RestUserServiceTest {
         User user1 = createUser(1);
         User user2 = createUser(2);
         User user3 = createUser(3);
-        Page<User> page = new PageImpl<User>(new ArrayList<>(Arrays.asList(user1, user2, user3)));
+        user3.setScore(90);
+        User user4 = createUser(4);
+        user4.setScore(90);
+        User user5 = createUser(5);
+        user5.setScore(90);
+        Page<User> page = new PageImpl<User>(new ArrayList<>(Arrays.asList(user3, user4, user5)), null, 5);
         when(userService.find(notNull(presidio.output.domain.records.users.UserQuery.class))).thenReturn(page);
         UserQuery userQuery = new UserQuery();
         userQuery.setExpand(false);
-        List<presidio.webapp.model.User> resultUser = restUserService.getUsers(userQuery);
+        userQuery.setMinScore(70);
+        userQuery.setMaxScore(100);
+        UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
+        List<presidio.webapp.model.User> resultUser = usersWrapper.getUsers();
+
         Assert.assertEquals(3, resultUser.size());
+        Assert.assertEquals(5, usersWrapper.getTotal().intValue());
     }
 
 
@@ -99,7 +110,7 @@ public class RestUserServiceTest {
         userQuery.setExpand(true);
         Page<Alert> page = new PageImpl<Alert>(new ArrayList<>(Arrays.asList(alert1, alert2, alert3)));
         when(alertService.findByUserIdIn(notNull(Collection.class), notNull(PageRequest.class))).thenReturn(page);
-        List<presidio.webapp.model.User> resultUser = restUserService.getUsers(userQuery);
+        List<presidio.webapp.model.User> resultUser = restUserService.getUsers(userQuery).getUsers();
         resultUser.forEach(user -> {
             if (user.getId().equals("useruser1"))
                 Assert.assertEquals(1, user.getAlerts().size());
@@ -110,19 +121,6 @@ public class RestUserServiceTest {
                     Assert.assertEquals(0, user.getAlerts().size());
             }
         });
-
-
-        /*
-        Assert.assertEquals(3, resultUser.size());
-
-
-        User user = createUser(1);
-        when(userService.findUserById(eq(user.getId()))).thenReturn(user);
-        presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", true);
-
-        Assert.assertEquals(1, resultUser.getAlerts().size());
-*/
-
     }
 
 

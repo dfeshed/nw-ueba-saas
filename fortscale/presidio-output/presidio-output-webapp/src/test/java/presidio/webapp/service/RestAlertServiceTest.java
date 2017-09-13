@@ -13,6 +13,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.AlertQuery;
+import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 
 import java.time.Instant;
@@ -59,12 +60,14 @@ public class RestAlertServiceTest {
         Alert alert = createAlert();
         List<Alert> resultList = new ArrayList<>();
         resultList.add(alert);
-        Page<Alert> page = new PageImpl<>(resultList);
+        Page<Alert> page = new PageImpl<>(resultList, null, 1);
         when(alertService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        List<presidio.webapp.model.Alert> alerts = alertsWrapper.getAlerts();
         Assert.assertEquals(1, alerts.size());
+        Assert.assertEquals(1, alertsWrapper.getTotal().intValue());
     }
 
     @Test
@@ -78,7 +81,8 @@ public class RestAlertServiceTest {
         AlertQuery alertQuery = new AlertQuery();
 
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList(firstAlert.getUserName())));
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        List<presidio.webapp.model.Alert> alerts = alertsWrapper.getAlerts();
         Assert.assertEquals(1, alerts.size());
     }
 
@@ -90,8 +94,8 @@ public class RestAlertServiceTest {
 
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
-        List<presidio.webapp.model.Alert> alerts = restAlertService.getAlerts(alertQuery);
-        Assert.assertEquals(0, alerts.size());
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        Assert.assertNull(alertsWrapper);
     }
 
     private Alert createAlert() {

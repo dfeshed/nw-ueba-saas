@@ -10,6 +10,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
+import presidio.webapp.model.UsersWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +44,11 @@ public class RestUserServiceImpl implements RestUserService {
     }
 
     @Override
-    public List<User> getUsers(UserQuery userQuery) {
+    public UsersWrapper getUsers(UserQuery userQuery) {
         Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
         List<User> restUsers = new ArrayList<>();
         List<Alert> alerts = null;
+        UsersWrapper usersWrapper = null;
         if (userQuery.getExpand()) {
             List<String> usersIds = new ArrayList<>();
             for (presidio.output.domain.records.users.User user : users) {
@@ -61,7 +63,13 @@ public class RestUserServiceImpl implements RestUserService {
                 restUsers.add(createResult(user, alerts));
             }
         }
-        return restUsers;
+        if (CollectionUtils.isNotEmpty(restUsers)) {
+            usersWrapper = new UsersWrapper();
+            usersWrapper.setUsers(restUsers);
+            usersWrapper.setTotal(Integer.valueOf(((Long) users.getTotalElements()).intValue()));
+            usersWrapper.setPage(userQuery.getPageNumber());
+        }
+        return usersWrapper;
     }
 
     @Override

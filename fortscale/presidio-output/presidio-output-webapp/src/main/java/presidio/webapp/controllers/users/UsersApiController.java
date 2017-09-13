@@ -7,7 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.Patch;
+import presidio.webapp.model.User;
+import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestUserService;
 
@@ -46,15 +50,7 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<UsersWrapper> getUsers(presidio.webapp.model.UserQuery userQuery) {
-        List<User> users = restUserService.getUsers(userQuery);
-        if (users != null) {
-            UsersWrapper usersWrapper = new UsersWrapper();
-            usersWrapper.setUsers(users);
-            usersWrapper.setTotal(users.size());
-            usersWrapper.setPage(userQuery.getPageNumber());
-            return new ResponseEntity(usersWrapper, HttpStatus.OK);
-        }
-        return new ResponseEntity(null, HttpStatus.OK);
+        return new ResponseEntity(restUserService.getUsers(userQuery), HttpStatus.OK);
     }
 
     @Override
