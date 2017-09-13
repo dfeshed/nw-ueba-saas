@@ -38,10 +38,10 @@ class SpringBootJarOperator(BashOperator):
     """
     ui_color = '#9EB9D4'
     java_args_prefix = '--'
-    conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+    conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
 # def __init__(self):
-    #     self.conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+    #     self.conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     @apply_defaults
     def __init__(self, command,jvm_args={}, java_args={}, *args, **kwargs):

@@ -1,14 +1,18 @@
 package presidio.manager.airlfow.service;
 
 
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.ArrayUtils;
+import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.DataPipeLineConfiguration;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.manager.api.service.ConfigurationProcessingService;
 
-import java.time.Instant;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,6 +23,7 @@ import java.util.List;
 
 public class ConfigurationAirflowServcie implements ConfigurationProcessingService {
 
+    private static final Logger logger = Logger.getLogger(ConfigurationAirflowServcie.class);
 
     private final String DATA_PIPE_LINE = "dataPipeline";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
@@ -39,10 +44,40 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     private final String AUTHENTICATION = "AUTHENTICATION";
     private final List<String> schemas = new ArrayList<String>(Arrays.asList(FILE, ACTIVE_DIRECTORY, AUTHENTICATION));
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final ConfigurationServerClientService configServerClient;
+    private final String moduleName;
+    private final List<String> activeProfiles;
+    private final String configurationFolderPath;
+
+    public ConfigurationAirflowServcie(ConfigurationServerClientService configServerClient, String moduleName, List<String> activeProfiles, String configurationFolderPath) {
+        this.configServerClient = configServerClient;
+        this.moduleName = moduleName;
+        this.activeProfiles = activeProfiles;
+        this.configurationFolderPath = configurationFolderPath;
+    }
 
     @Override
     public boolean applyConfiguration() {
-        return true;
+        try {
+            for (String profile: activeProfiles) {
+                String newConfJson = configServerClient.readConfigurationAsJsonString(moduleName, profile);
+                File dir = new File(configurationFolderPath);
+                dir.mkdirs();
+
+                String filePath = String.format("%s/%s-%s.json", configurationFolderPath, moduleName, profile);
+                logger.info("applying configuration path={}",filePath);
+                File file = new File(filePath);
+
+                FileWriter fileWriter = new FileWriter(file,false);
+                fileWriter.write(newConfJson);
+                fileWriter.close();
+            }
+            return true;
+        } catch (Exception e) {
+            String msg = "failed to apply configuration";
+            logger.error(msg,e);
+            return false;
+        }
     }
 
 
