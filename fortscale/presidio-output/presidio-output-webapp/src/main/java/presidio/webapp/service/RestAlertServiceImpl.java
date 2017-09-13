@@ -2,6 +2,7 @@ package presidio.webapp.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -59,15 +60,28 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.find(convertedAlertQuery);
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
         List restAlerts = new ArrayList();
-        alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        AlertsWrapper alertsWrapper = null;
+        if (alerts.getTotalElements() > 0)
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber());
+    }
+
+    private AlertsWrapper createAlertsWrapper(List restAlerts, int pageNumber, int totalNumberOfElements) {
+        AlertsWrapper alertsWrapper = new AlertsWrapper();
         if (CollectionUtils.isNotEmpty(restAlerts)) {
-            alertsWrapper = new AlertsWrapper();
             alertsWrapper.setAlerts(restAlerts);
-            alertsWrapper.setTotal(Integer.valueOf(((Long) alerts.getTotalElements()).intValue()));
-            alertsWrapper.setPage(alertQuery.getPageNumber());
+            alertsWrapper.setTotal(totalNumberOfElements);
+            alertsWrapper.setPage(pageNumber);
+        } else {
+            alertsWrapper.setAlerts(new ArrayList());
+            alertsWrapper.setTotal(0);
+            alertsWrapper.setPage(0);
         }
         return alertsWrapper;
     }
@@ -135,21 +149,29 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
-        if (alerts.hasContent()) {
-            List restAlerts = new ArrayList();
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-            return restAlerts;
+    public AlertsWrapper getAlertsByUserId(String userId) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
         }
-        return null;
+        List restAlerts = new ArrayList();
+        if (alerts.getTotalElements() > 0)
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), 0);
     }
 
     @Override
     public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
         List restAlerts;
-        if (alerts.hasContent()) {
+        if (alerts.getTotalElements() > 0) {
             restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
             return userIdsToAlerts(restAlerts, (List) userIds);

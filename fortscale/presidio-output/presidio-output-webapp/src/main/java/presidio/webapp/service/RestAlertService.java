@@ -15,7 +15,7 @@ public interface RestAlertService {
 
     Alert createResult(presidio.output.domain.records.alerts.Alert alertData);
 
-    List<presidio.webapp.model.Alert> getAlertsByUserId(String userId);
+    AlertsWrapper getAlertsByUserId(String userId);
 
     Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userId);
 }

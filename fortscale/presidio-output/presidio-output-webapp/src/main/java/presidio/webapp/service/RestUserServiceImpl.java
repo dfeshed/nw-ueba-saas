@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.model.Alert;
@@ -37,18 +38,27 @@ public class RestUserServiceImpl implements RestUserService {
     @Override
     public User getUserById(String userId, boolean expand) {
         List<Alert> alerts = null;
-        presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
+        presidio.output.domain.records.users.User user;
+        try {
+            user = userPersistencyService.findUserById(userId);
+        } catch (Exception ex) {
+            return createResult(null, null);
+        }
         if (expand)
-            alerts = restAlertService.getAlertsByUserId(userId);
+            alerts = restAlertService.getAlertsByUserId(userId).getAlerts();
         return createResult(user, alerts);
     }
 
     @Override
     public UsersWrapper getUsers(UserQuery userQuery) {
-        Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
+        Page<presidio.output.domain.records.users.User> users;
+        try {
+            users = userPersistencyService.find(convertUserQuery(userQuery));
+        } catch (Exception ex) {
+            return createUsersWrapper(null, 0, 0);
+        }
         List<User> restUsers = new ArrayList<>();
         List<Alert> alerts = null;
-        UsersWrapper usersWrapper = null;
         if (userQuery.getExpand()) {
             List<String> usersIds = new ArrayList<>();
             for (presidio.output.domain.records.users.User user : users) {
@@ -56,7 +66,7 @@ public class RestUserServiceImpl implements RestUserService {
             }
             Map<String, List<Alert>> usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
             for (presidio.output.domain.records.users.User user : users) {
-                if(usersIdsToAlertsMap==null)
+                if (usersIdsToAlertsMap == null)
                     restUsers.add(createResult(user, null));
                 else
                     restUsers.add(createResult(user, usersIdsToAlertsMap.get(user.getId())));
@@ -66,18 +76,29 @@ public class RestUserServiceImpl implements RestUserService {
                 restUsers.add(createResult(user, alerts));
             }
         }
-        if (CollectionUtils.isNotEmpty(restUsers)) {
-            usersWrapper = new UsersWrapper();
-            usersWrapper.setUsers(restUsers);
-            usersWrapper.setTotal(Integer.valueOf(((Long) users.getTotalElements()).intValue()));
-            usersWrapper.setPage(userQuery.getPageNumber());
+        return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber());
+    }
+
+    private UsersWrapper createUsersWrapper(List Users, int totalNumberOfElements, int pageNumber) {
+        UsersWrapper usersWrapper = null;
+        if (CollectionUtils.isNotEmpty(Users)) {
+            usersWrapper.setUsers(Users);
+            usersWrapper.setTotal(totalNumberOfElements);
+            usersWrapper.setPage(pageNumber);
+        } else {
+            usersWrapper.setUsers(new ArrayList());
+            usersWrapper.setTotal(0);
+            usersWrapper.setPage(0);
         }
+
         return usersWrapper;
     }
 
     @Override
     public User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts) {
         User convertedUser = new User();
+        if (ObjectUtils.isEmpty(user))
+            return null;
         convertedUser.setId(user.getId());
         if (CollectionUtils.isNotEmpty(alerts))
             convertedUser.setAlerts(alerts);
@@ -95,7 +116,7 @@ public class RestUserServiceImpl implements RestUserService {
 
     @Override
     public List<Alert> getAlertsByUserId(String userId) {
-        return restAlertService.getAlertsByUserId(userId);
+        return restAlertService.getAlertsByUserId(userId).getAlerts();
     }
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {

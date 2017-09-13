@@ -1,7 +1,6 @@
 package presidio.webapp.controllers.alerts;
 
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,13 +26,9 @@ public class AlertsController implements AlertsApi {
 
     @Override
     public ResponseEntity<Alert> getAlert(@ApiParam(value = "The UUID of the alert to return", required = true) @PathVariable("alertId") String alertId) {
-        if (!StringUtils.isEmpty(alertId)) {
-            Alert alert = restAlertService.getAlertById(alertId);
-            if (alert != null) {
-                return new ResponseEntity(alert, HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
+        Alert alert = restAlertService.getAlertById(alertId);
+        HttpStatus httpStatus = alert != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity(alert, httpStatus);
     }
 
     @Override
