@@ -37,7 +37,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final EnrichedDataStore enrichedDataStore;
     private final EnrichedEventsScoringService enrichedEventsScoringService;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-    private TtlService ttlService;
+
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
 
     /**
@@ -52,7 +52,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -60,7 +60,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-        this.ttlService = ttlService;
     }
 
 
@@ -84,7 +83,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     private boolean isStoreScoredEnrichedRecords(TimeRange timeRange, String dataSource){
