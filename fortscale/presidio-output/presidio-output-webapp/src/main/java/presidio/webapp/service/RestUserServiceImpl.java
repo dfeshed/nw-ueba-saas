@@ -56,7 +56,10 @@ public class RestUserServiceImpl implements RestUserService {
             }
             Map<String, List<Alert>> usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
             for (presidio.output.domain.records.users.User user : users) {
-                restUsers.add(createResult(user, usersIdsToAlertsMap.get(user.getId())));
+                if(usersIdsToAlertsMap==null)
+                    restUsers.add(createResult(user, null));
+                else
+                    restUsers.add(createResult(user, usersIdsToAlertsMap.get(user.getId())));
             }
         } else {
             for (presidio.output.domain.records.users.User user : users) {

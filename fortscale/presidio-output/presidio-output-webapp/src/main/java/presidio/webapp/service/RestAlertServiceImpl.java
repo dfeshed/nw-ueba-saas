@@ -148,8 +148,9 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
         Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
+        List restAlerts;
         if (alerts.hasContent()) {
-            List restAlerts = new ArrayList();
+            restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
             return userIdsToAlerts(restAlerts, (List) userIds);
         }
