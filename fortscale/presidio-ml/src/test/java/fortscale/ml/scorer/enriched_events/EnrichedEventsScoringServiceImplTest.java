@@ -60,7 +60,7 @@ public class EnrichedEventsScoringServiceImplTest {
     @Test
     public void testEmptyEnrichedRecordListAsInput() {
         List<EnrichedRecord> enrichedRecordList = new ArrayList<>();
-        List<AdeScoredEnrichedRecord> ret = enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList);
+        List<AdeScoredEnrichedRecord> ret = enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true);
         Assert.assertEquals(0, ret.size());
         verify(scoringService, times(0)).score(any());
         verify(adeEnrichedScoredRecordBuilder, times(0)).fill(any(), any(), any());
@@ -76,7 +76,7 @@ public class EnrichedEventsScoringServiceImplTest {
         List<FeatureScore> featureScoreList = mock(List.class);
         when(recordReaderFactoryService.getRecordReader(eq(mockedEnrichedRecord))).thenReturn(mockedAdeRecordReader);
         when(scoringService.score(eq(mockedAdeRecordReader))).thenReturn(featureScoreList);
-        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList);
+        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true);
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader));
         verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord), eq(featureScoreList));
         verify(scoredEnrichedDataStore, times(1)).store(any());
@@ -101,7 +101,7 @@ public class EnrichedEventsScoringServiceImplTest {
         List<FeatureScore> featureScoreList2 = mock(List.class);
         when(recordReaderFactoryService.getRecordReader(eq(mockedEnrichedRecord2))).thenReturn(mockedAdeRecordReader2);
         when(scoringService.score(eq(mockedAdeRecordReader2))).thenReturn(featureScoreList2);
-        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList);
+        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true);
 
         //verifying first enrich record processed
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader1));
