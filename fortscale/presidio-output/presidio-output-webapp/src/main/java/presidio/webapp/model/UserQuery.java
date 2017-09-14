@@ -3,6 +3,7 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Sort;
+import presidio.webapp.model.UserQueryEnums.UserQuerySortFieldName;
 
 import java.util.ArrayList;
 import java.util.List;
