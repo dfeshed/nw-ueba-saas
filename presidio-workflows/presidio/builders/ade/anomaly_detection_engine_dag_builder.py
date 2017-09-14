@@ -138,6 +138,8 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
 
                 # The smart event operator should be followed by the smart model sub dag
                 smart_events_operator.set_downstream(smart_model_short_circuit_operator)
+            else:
+                raise Exception("smart configuration is None or empty")
 
     @staticmethod
     def _get_aggregations_sub_dag_operator(fixed_duration_strategy, data_source, anomaly_detection_engine_dag):

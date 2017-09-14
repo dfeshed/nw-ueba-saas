@@ -2,9 +2,13 @@ package presidio.webapp.controllers.alerts;
 
 import io.swagger.annotations.*;
 
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import presidio.webapp.model.*;
 
 import java.util.List;
@@ -19,7 +23,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "Single Alert", response = Alert.class) })
     @RequestMapping(value = "/alerts/{alertId}",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<Alert> getAlert(@ApiParam(value = "The UUID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
                                            @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue="false") Boolean expand) {
@@ -33,9 +36,8 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of alerts and more general data", response = AlertsWrapper.class) })
     @RequestMapping(value = "/alerts",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<AlertsWrapper> getAlerts(@ApiParam(value = "object that hold all the parameters for getting specific alerts"  ) @RequestBody AlertQuery alertQuery) {
+    default ResponseEntity<AlertsWrapper> getAlerts(@ApiParam(value = "object that hold all the parameters for getting specific alerts") AlertQuery alertQuery) {
         // do some magic!
         return new ResponseEntity<AlertsWrapper>(HttpStatus.OK);
     }
@@ -46,7 +48,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "Single indicator", response = Indicator.class) })
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<Indicator> getIndicatorByAlert(@ApiParam(value = "The ID of the indicator to return",required=true ) @PathVariable("indicatorId") String indicatorId,
                                                           @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
@@ -61,7 +62,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of events and more general data", response = EventsWrapper.class) })
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}/events",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<EventsWrapper> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return",required=true ) @PathVariable("indicatorId") String indicatorId,
                                                                     @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
@@ -76,7 +76,6 @@ public interface AlertsApi {
             @ApiResponse(code = 200, message = "List of indicators and more general data", response = IndicatorsWrapper.class) })
     @RequestMapping(value = "/alerts/{alertId}/indicators",
             produces = "application/json",
-            consumes = "application/json",
             method = RequestMethod.GET)
     default ResponseEntity<IndicatorsWrapper> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
                                                                    @ApiParam(value = "object that hold all the parameters for getting indicators"  ) @RequestBody IndicatorQuery body) {

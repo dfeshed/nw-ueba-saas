@@ -51,7 +51,7 @@ public class AlertQuerySort {
      * the field names
      */
     public enum FieldNamesEnum {
-        SCORE("score");
+        SCORE("score"), START_DATE("startDate"), END_DATE("endDate");
 
         private String value;
 

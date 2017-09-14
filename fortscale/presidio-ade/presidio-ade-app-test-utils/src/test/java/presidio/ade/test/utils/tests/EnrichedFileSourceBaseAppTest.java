@@ -32,7 +32,7 @@ public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
 
     protected abstract String getSanityTestExecutionCommand();
 
-    protected abstract void assertSanityTest();
+    protected abstract void assertSanityTest() throws GeneratorException;
 
     @Import({BaseAppTest.springConfig.class})
     @Configuration

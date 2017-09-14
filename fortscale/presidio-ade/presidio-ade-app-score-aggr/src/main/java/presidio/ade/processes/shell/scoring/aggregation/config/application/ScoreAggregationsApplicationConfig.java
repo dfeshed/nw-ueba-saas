@@ -1,7 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
@@ -10,7 +9,7 @@ import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.ttl.TtlService;
 import fortscale.utils.ttl.TtlServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -41,6 +40,12 @@ import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAgg
         NullStatsServiceConfig.class, // todo: remove this
 })
 public class ScoreAggregationsApplicationConfig {
+
+    @Value("${score-aggregation.pageIterator.pageSize}")
+    private int pageSize;
+    @Value("${score-aggregation.pageIterator.maxGroupSize}")
+    private int maxGroupSize;
+
     @Autowired
     private EnrichedEventsScoringService enrichedEventsScoringService;
     @Autowired
@@ -60,6 +65,6 @@ public class ScoreAggregationsApplicationConfig {
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, ttlService);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, ttlService, pageSize, maxGroupSize);
     }
 }

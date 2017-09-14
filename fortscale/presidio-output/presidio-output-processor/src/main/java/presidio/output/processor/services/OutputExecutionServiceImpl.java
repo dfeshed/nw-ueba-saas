@@ -17,7 +17,9 @@ import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by shays on 17/05/2017.
@@ -75,13 +77,21 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     continue;
                 }
                 String userId = indicators.getContext().get("userId");//TODO- temporary fix, ADE team should provide user id on the smart pojo
-                User userEntity = userService.findUserById(userId);
+                User userEntity = getSingleUserEntityById(userId);
                 if (userEntity == null) {
-                    userEntity = userService.createUserEntity(userId);
-                    if (userEntity == null) {
-                        logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
-                        continue;
+                    //Check if user already created but not saved
+                    userEntity = isUserGoingToBeCreated(users, userId);
+                    if (userEntity ==null) {
+                        //Need to create user and add it to about to be created list
+                        userEntity = userService.createUserEntity(userId);
+
+                        users.add(userEntity);
+                        if (userEntity == null) {
+                            logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
+                            continue;
+                        }
                     }
+
                 }
 
 
@@ -90,16 +100,41 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), null);//TODO:change null to indicators when alert pojo will have indicators
                     alerts.add(alertEntity);
                 }
-
-                users.add(userEntity);
             }
         }
 
+
+        users = storeUsers(users); //Get the generated users with the new elasticsearch ID
         storeAlerts(alerts);
-        storeUsers(users);
-        this.userScoreService.updateSeveritiesForUsersList(users, true);
+
+        //Update the users severities
+        if (CollectionUtils.isNotEmpty(users)) {
+            this.userScoreService.updateSeveritiesForUsersList(users, true);
+        }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
+    }
+
+    private User getSingleUserEntityById(String userId) {
+        List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
+        if (CollectionUtils.isEmpty(userEntities)){
+            return null;
+        }
+        if (userEntities.size()>1){
+            logger.error("Cannot have vendor userId more then once {}",userId);
+            throw new RuntimeException("Cannot have vendor userId more then once");
+        }
+        return userEntities.get(0);
+    }
+
+    private User isUserGoingToBeCreated(List<User> users, String userVendorId) {
+        for (User user: users){
+            if (user.getUserId().equals(userVendorId)){
+                return user;
+            }
+
+        }
+        return null;
     }
 
     public void recalculateUserScore() throws Exception {
@@ -118,12 +153,16 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.info("{} output alerts were generated", alerts.size());
     }
 
-    private void storeUsers(List<User> users) {
+    private List<User> storeUsers(List<User> users) {
         if (CollectionUtils.isNotEmpty(users)) {
             userService.save(users);
-            this.userScoreService.updateSeveritiesForUsersList(users, true);
+            //Reload users to get the real new ID
+            List<String> userIds = users.stream().map(User::getUserId).collect(Collectors.toList());
+            users = userService.findUserByVendorUserIds(userIds);
+            logger.info("{} output users were generated", users.size());
         }
-        logger.info("{} output users were generated", users.size());
+        return users;
+
     }
 
     @Override
