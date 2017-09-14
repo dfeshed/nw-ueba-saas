@@ -28,7 +28,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String USER_ID = "userId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(CLASSIFICATIONS)
     private List<String> classifications;
 
