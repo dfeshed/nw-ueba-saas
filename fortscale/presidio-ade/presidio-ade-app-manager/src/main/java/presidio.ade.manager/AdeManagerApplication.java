@@ -5,7 +5,6 @@ import fortscale.utils.logging.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import presidio.ade.manager.config.AdeManagerApplicationConfig;
 import presidio.ade.manager.config.AdeManagerApplicationConfigurationProduction;
 
 import java.util.ArrayList;

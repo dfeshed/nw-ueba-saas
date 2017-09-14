@@ -5,15 +5,15 @@ import java.time.Duration;
 import java.time.Instant;
 
 /**
- * Cleanup enriched data
+ * Cleanup data
  */
 public interface TtlServiceSdk {
 	/**
 	 * cleanup enriched data until the given instant according to ttl and cleanupInterval.
 	 *
 	 * @param until remove records until the given instant according to ttl and cleanupInterval.
-	 * @param ttl records of tll logical duration are stored.
-	 * @param cleanupInterval cleanup interval
+	 * @param enrichedTtl records of tll logical duration are stored.
+	 * @param enrichedCleanupInterval cleanup interval
 	 */
-	void cleanupEnrichedData(Instant until, Duration ttl, Duration cleanupInterval);
+	void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval);
 }
