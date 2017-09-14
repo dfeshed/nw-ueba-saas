@@ -25,6 +25,8 @@
         <rpm-maven-plugin.workflows-upgrade-script-path>${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
         </rpm-maven-plugin.workflows-upgrade-script-path>
         <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
+        <common-conf-path>/home/presidio/presidio-core/configurations/airflow/</common-conf-path>
+        <presidio-conf-group>presidio-conf</presidio-conf-group>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -190,12 +192,12 @@
                         echo "Restarting Tomcat"
                         systemctl restart tomcat.service
                         echo "creating configuration group for common reads and writes"
-                        mkdir -p /home/presidio/presidio-core/configurations/airflow/
-                        groupadd presidio-conf
-                        usermod -a -G presidio-conf tomcat
-                        usermod -a -G presidio-conf presidio
-                        chgrp -R presidio-conf /home/presidio/presidio-core/configurations/airflow/
-                        chmod -R 770 /home/presidio/presidio-core/configurations/airflow/
+                        mkdir -p ${common-conf-path}
+                        groupadd ${presidio-conf-group}
+                        usermod -a -G ${presidio-conf-group} tomcat
+                        usermod -a -G ${presidio-conf-group} presidio
+                        chgrp -R ${presidio-conf-group} ${common-conf-path}
+                        chmod -R 770 ${common-conf-path}
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
