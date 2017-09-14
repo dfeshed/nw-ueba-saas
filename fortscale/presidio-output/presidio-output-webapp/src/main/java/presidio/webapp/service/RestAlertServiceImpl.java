@@ -108,9 +108,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
             alertQueryBuilder.filterByTags(alertQuery.getTags());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
-        }
         if (alertQuery.getStartTimeFrom() != null) {
             alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());
         }
