@@ -9,7 +9,7 @@ import java.util.Objects;
  * HistoricalData
  */
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = HistoricalDataCountAggregation.class, name = "COUNT_AGGREGATION"),
         @JsonSubTypes.Type(value = HistoricalDataTimeAggregation.class, name = "TIME_AGGREGATION"),
