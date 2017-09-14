@@ -148,17 +148,12 @@ public class RestUserServiceImpl implements RestUserService {
         if (CollectionUtils.isNotEmpty(userQuery.getTags())) {
             builder.filterByUserTags(userQuery.getTags());
         }
-        if (CollectionUtils.isNotEmpty(userQuery.getSort())) {
-            try {
-                List<Sort.Order> orders = new ArrayList<>();
-                userQuery.getSort().forEach(s -> {
-                    Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
-                    orders.add(new Sort.Order(direction, s.getFieldNames().name()));
-                });
-                builder.sortField(new Sort(orders));
-            } catch (Exception e) {
-                logger.error("Unable to pars sort list. the list to sort was {}, got exception {}", userQuery.getSort().toArray(), e);
-            }
+        if (CollectionUtils.isNotEmpty(userQuery.getSortFieldNames()) && userQuery.getSortDirection() != null) {
+            List<Sort.Order> orders = new ArrayList<>();
+            userQuery.getSortFieldNames().forEach(s -> {
+                orders.add(new Sort.Order(userQuery.getSortDirection(), s.toString()));
+            });
+            builder.sortField(new Sort(orders));
         }
 
         return builder.build();
