@@ -10,6 +10,7 @@ import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
 import org.apache.flume.Sink;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,8 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 parsedEvent = mapper.readValue(eventBody, recordType);
             } catch (Exception e) {
                 final Map<String, String> eventHeaders = flumeEvent.getHeaders();
-                final String errorMessage = String.format("Failed to sink event. event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
+                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                final String errorMessage = String.format("Failed to sink event. Can't getEvent since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);
                 throw new Exception(errorMessage, e);
             }

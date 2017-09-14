@@ -7,10 +7,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
-import org.flume.sink.base.AbstractPresidioSink;
+import org.apache.flume.persistency.mongo.MongoUtils;
 import org.apache.flume.persistency.mongo.SinkMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepositoryImpl;
-import org.apache.flume.persistency.mongo.MongoUtils;
+import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
@@ -26,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 import static org.apache.flume.CommonStrings.COLLECTION_NAME;
@@ -116,7 +116,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     }
 
     @Override
-    protected List<T> getEvents() throws IOException {
+    protected List<T> getEvents() throws Exception {
         Event flumeEvent;
         List<T> eventsToSave = new ArrayList<>();
         for (int i = 0; i < batchSize; i++) {
@@ -133,10 +133,18 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 //
 //            sinkCounter.incrementEventDrainAttemptCount();
 
-            T parsedEvent;
-            final Class<T> recordType = this.recordType;
 
-            parsedEvent = mapper.readValue(new String(flumeEvent.getBody()), recordType);
+            T parsedEvent;
+            final String eventBody = new String(flumeEvent.getBody());
+            try {
+                final Class<T> recordType = this.recordType;
+                parsedEvent = mapper.readValue(eventBody, recordType);
+            } catch (Exception e) {
+                final Map<String, String> eventHeaders = flumeEvent.getHeaders();
+                final String errorMessage = String.format("PresidioMongoSink failed to sink event. Can't get event since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
+                logger.error(errorMessage);
+                throw new Exception(errorMessage, e);
+            }
 
             eventsToSave.add(parsedEvent);
         }

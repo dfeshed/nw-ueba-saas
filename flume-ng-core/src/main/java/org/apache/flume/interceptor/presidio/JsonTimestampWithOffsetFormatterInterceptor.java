@@ -57,7 +57,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
         } catch (Exception e) {
             logger.warn("Failed to get timestamp for event {}. interceptor configuration: {}", event, this, e);
-            PresidioFilteredEventsMongoRepository.saveFailedEvents(event);
+            PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), "Failed to get timestamp", event);
             return null;
         }
         eventBodyAsJson.addProperty(destinationField, newTimestamp);

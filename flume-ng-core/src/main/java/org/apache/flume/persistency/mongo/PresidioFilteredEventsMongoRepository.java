@@ -40,15 +40,17 @@ public class PresidioFilteredEventsMongoRepository {
         return new SinkMongoRepositoryImpl<>(mongoTemplate);
     }
 
-    public static void saveFailedEvents(Event filteredFlumeEvent) {
+    public static void saveFailedFlumeEvent(String pointOfFailure, String reason, Event filteredFlumeEvent) {
         final JSONObject bodyAsJson = new JSONObject(new String(filteredFlumeEvent.getBody()));
         final Map<String, String> headers = filteredFlumeEvent.getHeaders();
-        FilteredEvent filteredEvent = new FilteredEvent(bodyAsJson, headers);
+        FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, bodyAsJson, headers);
         sinkMongoRepository.save(filteredEvent, COLLECTION_NAME);
         logger.debug("Saved filtered event {}", filteredEvent);
     }
 
     protected static class FilteredEvent extends AbstractDocument {
+        private String pointOfFailure;
+        private String reason;
         private JSONObject body;
         private Map<String, String> headers;
 
@@ -56,9 +58,27 @@ public class PresidioFilteredEventsMongoRepository {
         public FilteredEvent() {
         }
 
-        public FilteredEvent(JSONObject body, Map<String, String> headers) {
+        public FilteredEvent(String pointOfFailure, String reason, JSONObject body, Map<String, String> headers) {
+            this.pointOfFailure = pointOfFailure;
+            this.reason = reason;
             this.body = body;
             this.headers = headers;
+        }
+
+        public String getPointOfFailure() {
+            return pointOfFailure;
+        }
+
+        public void setPointOfFailure(String pointOfFailure) {
+            this.pointOfFailure = pointOfFailure;
+        }
+
+        public String getReason() {
+            return reason;
+        }
+
+        public void setReason(String reason) {
+            this.reason = reason;
         }
 
         public JSONObject getBody() {
@@ -81,19 +101,24 @@ public class PresidioFilteredEventsMongoRepository {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
             FilteredEvent that = (FilteredEvent) o;
-            return Objects.equals(body, that.body) &&
+            return Objects.equals(pointOfFailure, that.pointOfFailure) &&
+                    Objects.equals(reason, that.reason) &&
+                    Objects.equals(body, that.body) &&
                     Objects.equals(headers, that.headers);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(body, headers);
+            return Objects.hash(super.hashCode(), pointOfFailure, reason, body, headers);
         }
 
         @Override
         public String toString() {
             return new ToStringBuilder(this)
+                    .append("pointOfFailure", pointOfFailure)
+                    .append("reason", reason)
                     .append("body", body)
                     .append("headers", headers)
                     .toString();
