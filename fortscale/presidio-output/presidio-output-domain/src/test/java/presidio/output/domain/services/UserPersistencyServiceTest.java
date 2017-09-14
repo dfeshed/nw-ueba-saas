@@ -262,6 +262,7 @@ public class UserPersistencyServiceTest {
         userList.add(user2);
         userList.add(user3);
         userList.add(user4);
+        userPersistencyService.save(userList);
 
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()

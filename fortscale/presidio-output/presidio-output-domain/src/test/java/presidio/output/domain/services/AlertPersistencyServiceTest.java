@@ -183,9 +183,7 @@ public class AlertPersistencyServiceTest {
                 new Alert("userId5", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertList.add(
                 new Alert("userId6", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null));
-        for (Alert alert : alertList) {
-            alertPersistencyService.save(alert);
-        }
+        alertPersistencyService.save(alertList);
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
