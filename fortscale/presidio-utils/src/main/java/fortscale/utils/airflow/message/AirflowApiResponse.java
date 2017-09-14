@@ -1,4 +1,4 @@
-package fortscale.utils.airflow;
+package fortscale.utils.airflow.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Map;
 
 /**
+ * generic airflow rest api response
  * Created by barak_schuster on 9/13/17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -54,6 +55,10 @@ public abstract class AirflowApiResponse <T> implements Serializable{
         this.httpResponseCode = httpResponseCode;
     }
 
+    /**
+     *
+     * @return the interesting stuff
+     */
     public T getOutput() {
         return output;
     }

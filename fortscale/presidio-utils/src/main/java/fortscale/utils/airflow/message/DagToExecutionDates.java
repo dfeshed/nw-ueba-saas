@@ -1,4 +1,4 @@
-package fortscale.utils.airflow;
+package fortscale.utils.airflow.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
+ * POJO that describes what are all the execution dates for given dag_id
  * Created by barak_schuster on 9/13/17.
  */
 public class DagToExecutionDates {

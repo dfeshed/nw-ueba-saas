@@ -1,4 +1,4 @@
-package fortscale.utils.airflow;
+package fortscale.utils.airflow.message;
 
 /**
  * enum representing the different possibilities of Airflow DAG states
