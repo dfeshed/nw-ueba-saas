@@ -2,8 +2,6 @@ package fortscale.utils.airflow.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.JsonObject;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.time.Instant;

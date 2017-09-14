@@ -18,14 +18,14 @@ public interface AirflowApiClient {
     /**
      * Pauses a DAG
      *
-     * @param dagId
+     * @param dagId - The DAG ID of the DAG you want to pause
      */
     void pauseDAG(String dagId);
 
     /**
      * Resume a paused DAG
      *
-     * @param dagId
+     * @param dagId - The DAG ID of the DAG you want to resume
      */
     void unpauseDAG(String dagId);
 

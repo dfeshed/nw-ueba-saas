@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * spring config for {@link AirflowApiClient}
  * Created by barak_schuster on 9/14/17.
  */
 @Configuration
