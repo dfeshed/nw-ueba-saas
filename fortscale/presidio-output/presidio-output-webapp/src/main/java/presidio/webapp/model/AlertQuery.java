@@ -324,13 +324,13 @@ public class AlertQuery {
         this.usersId = usersId;
     }
 
-    public AlertQuery sort(List<AlertQuerySortFieldName> sort) {
-        this.sortFieldNames = sort;
+    public AlertQuery sortFieldNames(List<AlertQuerySortFieldName> sortFieldNames) {
+        this.sortFieldNames = sortFieldNames;
         return this;
     }
 
-    public AlertQuery addSortItem(AlertQuerySortFieldName sortItem) {
-        this.sortFieldNames.add(sortItem);
+    public AlertQuery addSortFieldNameItem(AlertQuerySortFieldName sortFieldName) {
+        this.sortFieldNames.add(sortFieldName);
         return this;
     }
 
@@ -459,7 +459,7 @@ public class AlertQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sortFieldNames, severity, expand, aggregateBySeverity);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sortFieldNames, severity, expand, sortDirection, aggregateBySeverity);
 
     }
 
