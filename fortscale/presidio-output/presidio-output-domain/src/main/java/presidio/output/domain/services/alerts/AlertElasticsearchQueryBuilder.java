@@ -122,5 +122,9 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         if (alertQuery.isAggregateBySeverity()) {
             super.addAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY));
         }
+
+        if (alertQuery.isAggregateByClasifications()) {
+            super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
+        }
     }
 }

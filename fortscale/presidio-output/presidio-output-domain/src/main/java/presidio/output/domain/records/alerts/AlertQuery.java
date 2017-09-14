@@ -30,6 +30,7 @@ public class AlertQuery {
 
     // aggregation
     private final boolean aggregateBySeverity;
+    private final boolean aggregateByClasifications;
 
     public AlertQuery(AlertQueryBuilder builder) {
         this.filterByClassification = builder.filterByClassification;
@@ -41,6 +42,7 @@ public class AlertQuery {
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
         this.aggregateBySeverity = builder.aggregateBySeverity;
+        this.aggregateByClasifications = builder.aggregateByClassifications;
         this.filterByFeedback = builder.filterByFeedback;
         this.filterByMinScore = builder.filterByMinScore;
         this.filterByMaxScore = builder.filterByMaxScore;
@@ -94,6 +96,10 @@ public class AlertQuery {
         return aggregateBySeverity;
     }
 
+    public boolean isAggregateByClasifications() {
+        return aggregateByClasifications;
+    }
+
     public Long getFilterByStartDate() {
         return filterByStartDate;
     }
@@ -139,6 +145,7 @@ public class AlertQuery {
 
         // aggregations
         private boolean aggregateBySeverity;
+        private boolean aggregateByClassifications;
 
         public AlertQueryBuilder() {
         }
@@ -226,6 +233,11 @@ public class AlertQuery {
 
         public AlertQueryBuilder aggregateBySeverity(boolean aggregateBySeverity) {
             this.aggregateBySeverity = aggregateBySeverity;
+            return this;
+        }
+
+        public AlertQueryBuilder aggregateByClassifications(boolean aggregateByClassifications) {
+            this.aggregateByClassifications = aggregateByClassifications;
             return this;
         }
 

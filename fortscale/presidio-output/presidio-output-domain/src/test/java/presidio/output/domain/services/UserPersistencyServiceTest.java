@@ -262,8 +262,7 @@ public class UserPersistencyServiceTest {
         userList.add(user2);
         userList.add(user3);
         userList.add(user4);
-        Iterable<User> createdUsers = userPersistencyService.save(userList);
-
+        userPersistencyService.save(userList);
 
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
@@ -276,7 +275,7 @@ public class UserPersistencyServiceTest {
         List<Terms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM
-        assertEquals(buckets.get(0).getDocCount(), 2L);
-        assertEquals(buckets.get(1).getDocCount(), 2L);
+        assertEquals(severityAgg.getBucketByKey("CRITICAL").getDocCount(), 2L);
+        assertEquals(severityAgg.getBucketByKey("MEDIUM").getDocCount(), 2L);
     }
 }
