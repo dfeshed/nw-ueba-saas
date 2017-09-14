@@ -4,8 +4,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.elasticsearch.search.aggregations.Aggregation;
-import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -91,7 +89,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
-                Map<String, Map<String, Long>> aggregations = convertAggregationsToMap(alertAggregations);
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
                 alertsWrapper.setAggregationData(aggregations);
             }
         } else {
@@ -100,19 +98,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(0);
         }
         return alertsWrapper;
-    }
-
-    private Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> alertAggregations) {
-        Map<String, Map<String, Long>> aggregations = new HashMap<>();
-        alertAggregations.forEach((s, aggregation) -> {
-            List<Terms.Bucket> buckets = ((StringTerms) aggregation).getBuckets();
-            Map<String, Long> bucketAsMap = new HashMap<>();
-            buckets.forEach(bucket -> {
-                bucketAsMap.put(bucket.getKeyAsString(), bucket.getDocCount());
-            });
-            aggregations.put(s, bucketAsMap);
-        });
-        return aggregations;
     }
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {

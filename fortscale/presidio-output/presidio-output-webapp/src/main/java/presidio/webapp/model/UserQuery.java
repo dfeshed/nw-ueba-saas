@@ -53,6 +53,9 @@ public class UserQuery {
     @JsonProperty("sortDirection")
     private Sort.Direction sortDirection = Sort.Direction.ASC;
 
+    @JsonProperty("aggregateBySeverity")
+    private Boolean aggregateBySeverity = false;
+
     public UserQuery userName(String userName) {
         this.userName = userName;
         return this;
@@ -239,13 +242,13 @@ public class UserQuery {
         this.indicatorsName = indicatorsName;
     }
 
-    public UserQuery sort(List<UserQuerySortFieldName> sort) {
-        this.sortFieldNames = sort;
+    public UserQuery sortFieldNames(List<UserQuerySortFieldName> sortFieldNames) {
+        this.sortFieldNames = sortFieldNames;
         return this;
     }
 
-    public UserQuery addSortItem(UserQuerySortFieldName sortItem) {
-        this.sortFieldNames.add(sortItem);
+    public UserQuery addSortFieldNameItem(UserQuerySortFieldName sortFieldName) {
+        this.sortFieldNames.add(sortFieldName);
         return this;
     }
 
@@ -325,6 +328,25 @@ public class UserQuery {
         this.sortDirection = sortDirection;
     }
 
+    public UserQuery aggregateBySeverity(Boolean aggregateBySeverity) {
+        this.aggregateBySeverity = aggregateBySeverity;
+        return this;
+    }
+
+    /**
+     * Get expand
+     *
+     * @return expand
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean getAggregateBySeverity() {
+        return aggregateBySeverity;
+    }
+
+    public void setAggregateBySeverity(Boolean aggregateBySeverity) {
+        this.aggregateBySeverity = aggregateBySeverity;
+    }
+
     @Override
     public boolean equals(java.lang.Object o) {
         if (this == o) {
@@ -346,12 +368,13 @@ public class UserQuery {
                 Objects.equals(this.sortFieldNames, userQuery.sortFieldNames) &&
                 Objects.equals(this.severity, userQuery.severity) &&
                 Objects.equals(this.expand, userQuery.expand) &&
-                Objects.equals(this.sortDirection, userQuery.sortDirection);
+                Objects.equals(this.sortDirection, userQuery.sortDirection) &&
+                Objects.equals(this.aggregateBySeverity, userQuery.aggregateBySeverity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection);
+        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection, aggregateBySeverity);
     }
 
     @Override
@@ -372,6 +395,7 @@ public class UserQuery {
         sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
+        sb.append("    aggregateBySeverity: ").append(toIndentedString(aggregateBySeverity)).append("\n");
         sb.append("}");
         return sb.toString();
     }
