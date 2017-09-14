@@ -22,13 +22,13 @@ public class TtlService {
     private Duration defaultCleanupInterval;
     private Map<String, TtlServiceAware> storeToTtlServiceAware;
     private TtlDataRepository ttlDataRepository;
-    private Boolean executeCleanup;
+    private Boolean executeTtlCleanup;
 
-    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataRepository ttlDataRepository, Boolean executeCleanup) {
+    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataRepository ttlDataRepository, Boolean executeTtlCleanup) {
         this.defaultTtl = defaultTtl;
         this.defaultCleanupInterval = defaultCleanupInterval;
         this.ttlDataRepository = ttlDataRepository;
-        this.executeCleanup =  executeCleanup;
+        this.executeTtlCleanup =  executeTtlCleanup;
         appSpecificTtlDataStore = new AppSpecificTtlDataStore(appName, ttlDataRepository);
         buildStoreNameToTtlServiceAwareMap(ttlServiceAwares);
     }
@@ -81,7 +81,7 @@ public class TtlService {
      *                e.g: endInstant => store remove all records, where endInstant is less or equal than (endInstant - tll)
      */
     public void cleanupCollections(Instant instant) {
-        if(executeCleanup) {
+        if(executeTtlCleanup) {
             List<TtlData> ttlDataList = appSpecificTtlDataStore.getTtlDataList();
             ttlDataList.forEach(ttlData -> {
                         TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(ttlData.getStoreName());
@@ -108,7 +108,7 @@ public class TtlService {
      * @param cleanupInterval cleanup interval
      */
     public void cleanupCollections(String storeName, Instant until, Duration ttl, Duration cleanupInterval) {
-        if(executeCleanup) {
+        if(executeTtlCleanup) {
             if (until.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
                 List<TtlData> ttlDataList = ttlDataRepository.findByStoreName(storeName);
                 TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(storeName);

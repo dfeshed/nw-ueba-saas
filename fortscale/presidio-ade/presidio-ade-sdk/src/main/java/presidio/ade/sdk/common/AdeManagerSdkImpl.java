@@ -266,8 +266,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
-    public void cleanupEnrichedData(Instant until, Duration ttl, Duration cleanupInterval) {
+    public void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval) {
         String storeName = ttlServiceAwareEnrichedDataStore.getStoreName();
-        ttlService.cleanupCollections(storeName, until, ttl, cleanupInterval);
+        ttlService.cleanupCollections(storeName, until, enrichedTtl, enrichedCleanupInterval);
     }
 }
