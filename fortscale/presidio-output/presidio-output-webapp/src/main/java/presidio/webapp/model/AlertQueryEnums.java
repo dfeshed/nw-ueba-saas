@@ -3,7 +3,7 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public class AlertEnums {
+public class AlertQueryEnums {
     public enum AlertQuerySortFieldName {
         SCORE("score"), START_DATE("startDate"), END_DATE("endDate");
 

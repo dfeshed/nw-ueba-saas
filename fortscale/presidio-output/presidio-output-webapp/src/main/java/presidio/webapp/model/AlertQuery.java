@@ -3,8 +3,8 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Sort;
-import presidio.webapp.model.AlertEnums.AlertQueryAggregationFieldName;
-import presidio.webapp.model.AlertEnums.AlertQuerySortFieldName;
+import presidio.webapp.model.AlertQueryEnums.AlertQueryAggregationFieldName;
+import presidio.webapp.model.AlertQueryEnums.AlertQuerySortFieldName;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
