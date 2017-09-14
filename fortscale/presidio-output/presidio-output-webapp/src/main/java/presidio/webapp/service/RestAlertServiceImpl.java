@@ -13,7 +13,11 @@ import presidio.webapp.model.AlertSeverity;
 import presidio.webapp.model.AlertsWrapper;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -32,12 +36,10 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public presidio.webapp.model.Alert getAlertById(String id) {
         presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
-        presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
-            resultAlert = createRestAlert(alertData);
+            return createRestAlert(alertData);
         }
-
-        return resultAlert;
+        return null;
     }
 
     @Override
@@ -56,16 +58,13 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
-        Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.find(convertedAlertQuery);
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
-        List restAlerts = new ArrayList();
-        if (alerts.getTotalElements() > 0)
+        Page<presidio.output.domain.records.alerts.Alert> alerts= elasticAlertService.find(convertedAlertQuery);
+        if (alerts.getTotalElements() > 0) {
+            List restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber() != null ? alertQuery.getPageNumber() : 0);
+            return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber() != null ? alertQuery.getPageNumber() : 0);
+        }
+        return createAlertsWrapper(new ArrayList(),0, 0);
     }
 
     private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, int pageNumber) {
