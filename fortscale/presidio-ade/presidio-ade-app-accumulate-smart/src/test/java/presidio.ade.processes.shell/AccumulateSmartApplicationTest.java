@@ -56,7 +56,7 @@ public class AccumulateSmartApplicationTest {
     private static final int NUM_OF_SMARTS_PER_HOUR = 5;
 
 
-    private static final int DAYS_BACK_FROM = 4;
+    private static final int DAYS_BACK_FROM = 5;
     private static final int DAYS_BACK_TO = 1;
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
@@ -103,7 +103,13 @@ public class AccumulateSmartApplicationTest {
                 double smartValue = 0.5;
                 double smartScore = 0;
                 List<FeatureScore> featureScores = Collections.emptyList();
-                List<AdeAggregationRecord> aggregationRecords = createAggregationRecord(start, end, featureName, smartScore + smartIndex * 10);
+                //The following if condition is to check the following 2 scenarios:
+                // - days that one of the smart don't contains aggregation records
+                // - a day that all of its smarts don't contain any aggregation record.
+                List<AdeAggregationRecord> aggregationRecords = Collections.emptyList();
+                if(days != 1 && smartIndex != days){
+                    aggregationRecords = createAggregationRecord(start, end, featureName, smartScore + smartIndex * 10);
+                }
 
                 SmartRecord smartRecord = new SmartRecord(timeRange, CONTEXT_ID, featureName, FixedDurationStrategy.HOURLY, smartValue, smartScore, featureScores, aggregationRecords);
                 smartRecords.add(smartRecord);
@@ -145,14 +151,19 @@ public class AccumulateSmartApplicationTest {
             Instant end = start.plus(DURATION);
             Map<String, Map<Integer, Double>> aggregatedFeatureEventsValues = accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap();
 
-            aggregatedFeatureEventsValues.forEach((k, value) -> {
-                value.forEach((hour, score) -> {
-                    //assert that score with zero did not store in map
-                    Assert.assertFalse(score.equals(0));
+            if(accumulatedSmartRecord.getStartInstant().equals(START_DATE)){
+                Assert.assertEquals(0, aggregatedFeatureEventsValues.size());
+            } else {
+                Assert.assertEquals(1, aggregatedFeatureEventsValues.size());
+                aggregatedFeatureEventsValues.forEach((k, value) -> {
+                    value.forEach((hour, score) -> {
+                        //assert that score with zero did not store in map
+                        Assert.assertFalse(score.equals(0));
+                    });
+                    //assert num of aggr (without aggr with score zero)
+                    Assert.assertTrue(value.size() == NUM_OF_SMARTS_PER_HOUR - 2);
                 });
-                //assert num of aggr (without aggr with score zero)
-                Assert.assertTrue(value.size() == NUM_OF_SMARTS_PER_HOUR - 1);
-            });
+            }
 
             //assert that score with zero store in activity time list.
             Assert.assertTrue(accumulatedSmartRecord.getActivityTime().size() == NUM_OF_SMARTS_PER_HOUR);
