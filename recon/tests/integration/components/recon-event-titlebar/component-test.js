@@ -3,7 +3,7 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
-import { clickTrigger, nativeMouseUp } from '../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 const { $ } = Ember;
@@ -67,7 +67,7 @@ test('calls action when reconstruction view is changed', function(assert) {
   this.render(hbs`{{recon-event-titlebar }}`);
   clickTrigger();
   assert.ok(dispatchSpy.callCount === 4);
-  nativeMouseUp('.ember-power-select-option:contains("File Analysis")');
+  selectChoose('.recon-event-titlebar', 'File Analysis');
   // many dispatches called, fourth one is dispatch for recon view change
   assert.ok(dispatchSpy.callCount === 5);
   assert.ok(typeof dispatchSpy.args[4][0] === 'function', 'Dispatch called with function (thunk)');

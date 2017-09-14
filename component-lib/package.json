@@ -44,7 +44,7 @@
     "ember-load": "0.0.11",
     "ember-lodash-shim": "2.0.5",
     "ember-math-helpers": "2.0.5",
-    "ember-power-select": "1.5.0-beta.0",
+    "ember-power-select": "1.9.6",
     "ember-radio-button": "1.1.1",
     "ember-redux-actions": "0.3.0",
     "ember-route-action-helper": "1.0.0",
