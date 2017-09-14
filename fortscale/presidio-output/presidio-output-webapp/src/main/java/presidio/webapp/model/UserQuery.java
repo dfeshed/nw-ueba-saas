@@ -2,6 +2,7 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +41,17 @@ public class UserQuery {
     @JsonProperty("indicatorsName")
     private List<String> indicatorsName = new ArrayList<String>();
 
-    @JsonProperty("sort")
-    private List<UserQuerySort> sort = new ArrayList<UserQuerySort>();
+    @JsonProperty("sortFieldNames")
+    private List<UserQuerySortFieldName> sortFieldNames = new ArrayList<UserQuerySortFieldName>();
 
     @JsonProperty("severity")
     private List<UserSeverity> severity = new ArrayList<UserSeverity>();
 
     @JsonProperty("expand")
     private Boolean expand = false;
+
+    @JsonProperty("sortDirection")
+    private Sort.Direction sortDirection = Sort.Direction.ASC;
 
     public UserQuery userName(String userName) {
         this.userName = userName;
@@ -235,28 +239,28 @@ public class UserQuery {
         this.indicatorsName = indicatorsName;
     }
 
-    public UserQuery sort(List<UserQuerySort> sort) {
-        this.sort = sort;
+    public UserQuery sort(List<UserQuerySortFieldName> sort) {
+        this.sortFieldNames = sort;
         return this;
     }
 
-    public UserQuery addSortItem(UserQuerySort sortItem) {
-        this.sort.add(sortItem);
+    public UserQuery addSortItem(UserQuerySortFieldName sortItem) {
+        this.sortFieldNames.add(sortItem);
         return this;
     }
 
     /**
-     * Get sort
+     * Get sortFieldNames
      *
-     * @return sort
+     * @return sortFieldNames
      **/
     @ApiModelProperty(value = "")
-    public List<UserQuerySort> getSort() {
-        return sort;
+    public List<UserQuerySortFieldName> getSortFieldNames() {
+        return sortFieldNames;
     }
 
-    public void setSort(List<UserQuerySort> sort) {
-        this.sort = sort;
+    public void setSortFieldNames(List<UserQuerySortFieldName> sortFieldNames) {
+        this.sortFieldNames = sortFieldNames;
     }
 
     public UserQuery severity(List<UserSeverity> severity) {
@@ -302,6 +306,24 @@ public class UserQuery {
         this.expand = expand;
     }
 
+    public UserQuery sortDirection(Sort.Direction sortDirection) {
+        this.sortDirection = sortDirection;
+        return this;
+    }
+
+    /**
+     * Get sortDirection
+     *
+     * @return sortDirection
+     **/
+    @ApiModelProperty(value = "")
+    public Sort.Direction getSortDirection() {
+        return sortDirection;
+    }
+
+    public void setSortDirection(Sort.Direction sortDirection) {
+        this.sortDirection = sortDirection;
+    }
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -321,14 +343,15 @@ public class UserQuery {
                 Objects.equals(this.tags, userQuery.tags) &&
                 Objects.equals(this.alertClassifications, userQuery.alertClassifications) &&
                 Objects.equals(this.indicatorsName, userQuery.indicatorsName) &&
-                Objects.equals(this.sort, userQuery.sort) &&
+                Objects.equals(this.sortFieldNames, userQuery.sortFieldNames) &&
                 Objects.equals(this.severity, userQuery.severity) &&
-                Objects.equals(this.expand, userQuery.expand);
+                Objects.equals(this.expand, userQuery.expand) &&
+                Objects.equals(this.sortDirection, userQuery.sortDirection);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sort, severity, expand);
+        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection);
     }
 
     @Override
@@ -345,7 +368,8 @@ public class UserQuery {
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
-        sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
+        sb.append("    sortFieldNames: ").append(toIndentedString(sortFieldNames)).append("\n");
+        sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
         sb.append("}");
