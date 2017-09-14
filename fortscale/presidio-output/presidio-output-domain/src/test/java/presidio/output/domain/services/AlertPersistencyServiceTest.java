@@ -145,6 +145,8 @@ public class AlertPersistencyServiceTest {
 
         Page<Alert> byName1 = alertPersistencyService.findByUserName("user1", new PageRequest(0, 10));
         assertThat(byName1.getTotalElements(), is(2L));
+        assertEquals("userId",byName1.getContent().get(0).getUserId());
+        assertEquals("smartId",byName1.getContent().get(0).getSmartId());
 
         Page<Alert> byName2 = alertPersistencyService.findByUserName("user2", new PageRequest(0, 10));
         assertThat(byName2.getTotalElements(), is(0L));

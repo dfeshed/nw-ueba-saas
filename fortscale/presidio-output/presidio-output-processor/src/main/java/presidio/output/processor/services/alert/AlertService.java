@@ -13,6 +13,7 @@ public interface AlertService {
 
     /**
      * Convert the received smarts into alerts and persist them
+     *
      * @param smart - ADE SMART to be converted into Presidio Alert
      * @param user- user entity related to the specified alert
      */

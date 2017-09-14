@@ -83,7 +83,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 if (userEntity == null) {
                     //Check if user already created but not saved
                     userEntity = isUserGoingToBeCreated(users, userId);
-                    if (userEntity ==null) {
+                    if (userEntity == null) {
                         //Need to create user and add it to about to be created list
                         userEntity = userService.createUserEntity(userId);
 
@@ -119,19 +119,19 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
-        if (CollectionUtils.isEmpty(userEntities)){
+        if (CollectionUtils.isEmpty(userEntities)) {
             return null;
         }
-        if (userEntities.size()>1){
-            logger.error("Cannot have vendor userId more then once {}",userId);
+        if (userEntities.size() > 1) {
+            logger.error("Cannot have vendor userId more then once {}", userId);
             throw new RuntimeException("Cannot have vendor userId more then once");
         }
         return userEntities.get(0);
     }
 
     private User isUserGoingToBeCreated(List<User> users, String userVendorId) {
-        for (User user: users){
-            if (user.getUserId().equals(userVendorId)){
+        for (User user : users) {
+            if (user.getUserId().equals(userVendorId)) {
                 return user;
             }
 

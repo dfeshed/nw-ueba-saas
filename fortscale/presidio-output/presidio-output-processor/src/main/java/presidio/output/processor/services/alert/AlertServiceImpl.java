@@ -39,7 +39,7 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public Alert generateAlert(SmartRecord smart, User user,int smartThresholdScoreForCreatingAlert) {
+    public Alert generateAlert(SmartRecord smart, User user, int smartThresholdScoreForCreatingAlert) {
         double score = smart.getScore();
         if (score < smartThresholdScoreForCreatingAlert) {
             return null;
