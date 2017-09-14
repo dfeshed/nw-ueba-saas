@@ -412,6 +412,11 @@ public class AlertQuery {
         this.expand = expand;
     }
 
+    public AlertQuery aggregateBy(List<AlertQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
+        return this;
+    }
+
     /**
      * Get expand
      *
