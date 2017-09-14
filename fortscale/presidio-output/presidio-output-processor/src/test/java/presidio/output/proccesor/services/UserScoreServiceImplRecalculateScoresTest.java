@@ -21,11 +21,11 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
+import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.*;
 
 /**
@@ -47,13 +47,12 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
 
     @Before
-    public void setup(){
-        mockUserPresistency= Mockito.mock(UserPersistencyServiceImpl.class);
-        mockAlertPresistency= Mockito.mock(AlertPersistencyService.class);
+    public void setup() {
+        mockUserPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
+        mockAlertPresistency = Mockito.mock(AlertPersistencyService.class);
 
         userScoreService = new UserScoreServiceImpl(mockUserPresistency,
                 mockAlertPresistency,
-                1000,
                 1000,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS,
                 75,
@@ -70,41 +69,40 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
     @Test
     public void testBasicScoreCalculation() throws Exception {
-        Pageable pageable1=new PageRequest(0,10);
+        Pageable pageable1 = new PageRequest(0, 10);
         List<Alert> mockAlerts;
 
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
         long startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant()).getTime();
 
-                mockAlerts = Arrays.asList(
-            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
-            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false),
-            new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
-            new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
-            new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false)
-         );
-        Page<Alert> alertPage1= new PageImpl<Alert>(mockAlerts,pageable1,5);
+        mockAlerts = Arrays.asList(
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null),
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.HIGH, null),
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.LOW, null),
+                new Alert("user2", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null),
+                new Alert("user2", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null)
+        );
+        Page<Alert> alertPage1 = new PageImpl<Alert>(mockAlerts, pageable1, 5);
         Mockito.when(this.mockAlertPresistency.find(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
-                AlertQuery query = (AlertQuery)invocation.getArguments()[0];
-                if (query.getFilterByStartDate()<=startTimeAWeekAgo && query.getFilterByEndDate()>=startTimeAWeekAgo) {
+                AlertQuery query = (AlertQuery) invocation.getArguments()[0];
+                if (query.getFilterByStartDate() <= startTimeAWeekAgo && query.getFilterByEndDate() >= startTimeAWeekAgo) {
                     return alertPage1;
-                }else {
+                } else {
                     return emptyAlertPage;
                 }
             }
         });
 
 
-
-        Map<String, Double> aggregatedUserScore = Whitebox.invokeMethod(userScoreService,  "calculateUserScores");
-        Assert.assertEquals(2,aggregatedUserScore.size());
-        double user1Expected=(ALERT_CONTRIBUTION_CRITICAL+ALERT_CONTRIBUTION_HIGH+ALERT_CONTRIBUTION_LOW)*1D;
-        double user2Expected=(ALERT_CONTRIBUTION_CRITICAL*2)*1D;
-        Assert.assertEquals(user1Expected,aggregatedUserScore.get("user1"),0.1);
-        Assert.assertEquals(user2Expected,aggregatedUserScore.get("user2"),0.1);
+        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(ALERT_EFFECTIVE_DURATION_IN_DAYS);
+        Assert.assertEquals(2, aggregatedUserScore.size());
+        double user1Expected = (ALERT_CONTRIBUTION_CRITICAL + ALERT_CONTRIBUTION_HIGH + ALERT_CONTRIBUTION_LOW) * 1D;
+        double user2Expected = (ALERT_CONTRIBUTION_CRITICAL * 2) * 1D;
+        Assert.assertEquals(user1Expected, aggregatedUserScore.get("user1").getUserScore(), 0.1);
+        Assert.assertEquals(user2Expected, aggregatedUserScore.get("user2").getUserScore(), 0.1);
     }
 
     @Test
@@ -116,37 +114,37 @@ public class UserScoreServiceImplRecalculateScoresTest {
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
         long startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant()).getTime();
-        long oldStartTime = LocalDate.now().minusDays(ALERT_EFFECTIVE_DURATION_IN_DAYS*2).toEpochDay();
+        long oldStartTime = LocalDate.now().minusDays(ALERT_EFFECTIVE_DURATION_IN_DAYS * 2).toEpochDay();
 
         mockAlertsPage1 = Arrays.asList(
 
                 //Page1-one user which 3 alerts one user with 2 alrrts
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false),
-                new Alert("user1",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
-                new Alert("user2",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false),
-                new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.CRITICAL,false)
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null),
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.HIGH, null),
+                new Alert("user1", null, null, oldStartTime, 0, 95, 0, null, AlertEnums.AlertSeverity.LOW, null),
+                new Alert("user2", null, null, oldStartTime, 0, 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null),
+                new Alert("user2", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null)
         );
 
         mockAlertsPage2 = Arrays.asList(
 
                 //Page2-3  alerts that should be counted, and 2 alerts which should not be counted
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
-                new Alert("user1",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
-                new Alert("user1",null,null,oldStartTime,0,95,0, null, AlertEnums.AlertSeverity.LOW,false),
-                new Alert("user2",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false),
-                new Alert("user3",null,null,startTimeAWeekAgo,0,95,0, null, AlertEnums.AlertSeverity.HIGH,false)
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.LOW, null),
+                new Alert("user1", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.LOW, null),
+                new Alert("user1", null, null, oldStartTime, 0, 95, 0, null, AlertEnums.AlertSeverity.LOW, null),
+                new Alert("user2", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.HIGH, null),
+                new Alert("user3", null, null, startTimeAWeekAgo, 0, 95, 0, null, AlertEnums.AlertSeverity.HIGH, null)
         );
-        Pageable pageable1=new PageRequest(0,5);
-        Page<Alert> alertPage1= new PageImpl<Alert>(mockAlertsPage1,pageable1,10);
+        Pageable pageable1 = new PageRequest(0, 5);
+        Page<Alert> alertPage1 = new PageImpl<Alert>(mockAlertsPage1, pageable1, 10);
 
-        Pageable pageable2=new PageRequest(1,5);
-        Page<Alert> alertPage2= new PageImpl<Alert>(mockAlertsPage2,pageable2,10);
+        Pageable pageable2 = new PageRequest(1, 5);
+        Page<Alert> alertPage2 = new PageImpl<Alert>(mockAlertsPage2, pageable2, 10);
         Mockito.when(this.mockAlertPresistency.find(Mockito.any(AlertQuery.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
-                AlertQuery query = (AlertQuery)invocation.getArguments()[0];
-                if (query.getFilterByStartDate()<=startTimeAWeekAgo && query.getFilterByEndDate()>=startTimeAWeekAgo) {
+                AlertQuery query = (AlertQuery) invocation.getArguments()[0];
+                if (query.getFilterByStartDate() <= startTimeAWeekAgo && query.getFilterByEndDate() >= startTimeAWeekAgo) {
                     if (query.getPageNumber() == 0) {
                         return alertPage1;
                     } else {
@@ -159,57 +157,15 @@ public class UserScoreServiceImplRecalculateScoresTest {
         });
 
 
+        Map<String, UsersAlertData> aggregatedUserScore = Whitebox.invokeMethod(userScoreService, "calculateUserScores", ALERT_EFFECTIVE_DURATION_IN_DAYS);
+        Assert.assertEquals(3, aggregatedUserScore.size());
 
-        Map<String, Double> aggregatedUserScore = Whitebox.invokeMethod(userScoreService,  "calculateUserScores");
-        Assert.assertEquals(3,aggregatedUserScore.size());
-        double user1Expected=95D;
-        double user2Expected=85D;
-        double user3Expected=25D;
-
-        Assert.assertEquals(user1Expected,aggregatedUserScore.get("user1"),0.1);
-        Assert.assertEquals(user2Expected,aggregatedUserScore.get("user2"),0.1);
-        Assert.assertEquals(user3Expected,aggregatedUserScore.get("user3"),0.1);
-    }
-
-    @Test
-    public void testUpdateUserScoreBatch() throws Exception {
-        List<User> usersWithOldScore= Arrays.asList(
-                new User("user1",null,null,50,null,null,false),
-                new User("user2",null,null,50,null,null,false),
-                new User("user3",null,null,50,null,null,false)
-        );
-
-        Pageable pageable1=new PageRequest(0,3);
-        Page<User> usersPage= new PageImpl<>(usersWithOldScore,pageable1,3);
-
-        Set<String> usersIDForBatch = new HashSet<>();
-        usersIDForBatch.add("user1");
-        usersIDForBatch.add("user2");
-        usersIDForBatch.add("user3");
-
-        Map<String, Double> newUsersScore=new HashMap<>();
-        newUsersScore.put("user1",80D);
-        newUsersScore.put("user2",50D);
-        newUsersScore.put("user3",30D);
-
-        Mockito.when(this.mockUserPresistency.find(Mockito.any(UserQuery.class))).thenAnswer(new Answer<Page>() {
-            @Override
-            public Page answer(InvocationOnMock invocation) throws Throwable {
-                UserQuery query = (UserQuery)invocation.getArguments()[0];
-                if (query.getPageNumber()==0){
-                    return usersPage;
-                } else {
-                    return null;
-                }
-            }
-        });
-
-        List<User> changedUsers = Whitebox.invokeMethod(userScoreService,  "updateUserScoreForBatch",newUsersScore,usersIDForBatch);
-        Assert.assertEquals(2, changedUsers.size());
-        Assert.assertEquals(80D, changedUsers.get(0).getUserScore(),0.00001);
-        Assert.assertEquals(30D, changedUsers.get(1).getUserScore(),0.00001);
-
+        Assert.assertEquals(95D, aggregatedUserScore.get("user1").getUserScore(), 0.1);
+        Assert.assertEquals(6, aggregatedUserScore.get("user1").getAlertsCount());
+        Assert.assertEquals(85D, aggregatedUserScore.get("user2").getUserScore(), 0.1);
+        Assert.assertEquals(3, aggregatedUserScore.get("user2").getAlertsCount());
+        Assert.assertEquals(25D, aggregatedUserScore.get("user3").getUserScore(), 0.1);
+        Assert.assertEquals(1, aggregatedUserScore.get("user3").getAlertsCount());
 
     }
-
 }

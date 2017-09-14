@@ -1,6 +1,7 @@
 package presidio.output.processor.services.alert;
 
 
+import org.apache.commons.lang.StringUtils;
 import presidio.output.domain.records.alerts.ClassificationPriority;
 
 import java.util.ArrayList;
@@ -68,7 +69,8 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
                 place++;
             }
             indicators.remove(remove);
-            tempClassificationByPriority.add(alertName);
+            if(StringUtils.isNotEmpty(alertName))
+                tempClassificationByPriority.add(alertName);
         }
         classificationByPriority.addAll(tempClassificationByPriority);
         return classificationByPriority;

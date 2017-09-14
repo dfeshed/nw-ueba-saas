@@ -4,16 +4,11 @@ import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.ttl.TtlService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Given a group name, this service creates the corresponding {@link ModelConfService}, that contains all the
@@ -31,11 +26,9 @@ import java.util.stream.Collectors;
 public class ModelingService {
 	private static final Logger logger = Logger.getLogger(ModelingService.class);
 
-	private Map<String, AslConfigurationPaths> groupNameToModelConfigurationPathsMap;
 	private ModelingEngineFactory modelingEngineFactory;
-	private AslResourceFactory aslResourceFactory;
 	private TtlService ttlService;
-
+	private ModelConfServiceBuilder modelConfServiceBuilder;
 	/**
 	 * C'tor.
 	 *
@@ -47,11 +40,8 @@ public class ModelingService {
 			Collection<AslConfigurationPaths> modelConfigurationPathsCollection,
 			ModelingEngineFactory modelingEngineFactory,
 			AslResourceFactory aslResourceFactory, TtlService ttlService) {
-
-		groupNameToModelConfigurationPathsMap = modelConfigurationPathsCollection.stream()
-				.collect(Collectors.toMap(AslConfigurationPaths::getGroupName, Function.identity()));
+		this.modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection,aslResourceFactory);
 		this.modelingEngineFactory = modelingEngineFactory;
-		this.aslResourceFactory = aslResourceFactory;
 		this.ttlService = ttlService;
 	}
 
@@ -90,42 +80,16 @@ public class ModelingService {
 	}
 
 	private List<ModelConf> getModelConfs(String groupName){
-		String[] groupNames = groupName.split("\\.");
-		Assert.isTrue(groupNames.length <= 2, "a group name is expected to contain at most root group and sub group.");
-		String rootGroupName = groupNames[0];
-		String subGroupName = groupNames.length < 2 ? "" : groupNames[1];
-
-		Assert.isTrue(groupNameToModelConfigurationPathsMap.containsKey(rootGroupName), String.format("Root group %s is not configured.", rootGroupName));
-
-		AslConfigurationPaths modelConfigurationPaths = groupNameToModelConfigurationPathsMap.get(rootGroupName);
-		ModelConfService modelConfService = new ModelConfService(
-				getResources(modelConfigurationPaths.getBaseConfigurationPath(), subGroupName),
-				getResources(modelConfigurationPaths.getOverridingConfigurationPath(), subGroupName),
-				getResources(modelConfigurationPaths.getAdditionalConfigurationPath(), subGroupName));
-		modelConfService.loadAslConfigurations();
+		ModelConfService modelConfService = modelConfServiceBuilder.buildModelConfService(groupName);
 		DynamicModelConfServiceContainer.setModelConfService(modelConfService);
 		List<ModelConf> modelConfs = modelConfService.getModelConfs();
 		logger.info("Created a modelConfService for group {} with {} modelConfs.", groupName, modelConfs.size());
 		return modelConfs;
 	}
 
-	private Resource[] getResources(String rootGroupPath, String subGroupName){
-		if(rootGroupPath == null){
-			return null;
-		}
-		Resource[] resources = aslResourceFactory.getResources(rootGroupPath+ "*.json");
-		//The following code is until we find away to configure the resolver to be case insensitive.
-		if(StringUtils.isBlank(subGroupName)){
-			return resources;
-		} else {
-			for(Resource resource: resources){
-				if(resource.getFilename().equalsIgnoreCase(subGroupName+ ".json")){
-					return new Resource[]{resource};
-				}
-			}
-			return null;
-		}
-	}
+
+
+
 
 	public void clean(String groupName, String sessionId) throws Exception {
 		// TODO

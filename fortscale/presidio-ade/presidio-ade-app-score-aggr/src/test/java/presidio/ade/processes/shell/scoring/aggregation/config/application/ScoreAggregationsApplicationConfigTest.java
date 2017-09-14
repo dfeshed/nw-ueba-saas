@@ -25,11 +25,13 @@ public class ScoreAggregationsApplicationConfigTest extends ScoreAggregationsApp
         properties.put("fortscale.scorer.configurations.location.path", "classpath:config/asl/scorers/enriched-records/*.json");
         //        end ASL paths configurations
 
-        properties.put("fortscale.model.cache.futureDiffBetweenCachedModelAndEvent", "PT48H");
+        properties.put("fortscale.model.cache.maxDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
         properties.put("spring.application.name", "test-app-name");
         properties.put("presidio.default.ttl.duration", "PT48H");
         properties.put("presidio.default.cleanup.interval", "PT24H");
+        properties.put("score-aggregation.pageIterator.pageSize",1000);
+        properties.put("score-aggregation.pageIterator.maxGroupSize",100);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

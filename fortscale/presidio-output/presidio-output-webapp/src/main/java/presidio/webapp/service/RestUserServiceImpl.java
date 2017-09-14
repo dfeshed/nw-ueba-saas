@@ -5,15 +5,17 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
+import presidio.webapp.model.UsersWrapper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 public class RestUserServiceImpl implements RestUserService {
@@ -25,7 +27,6 @@ public class RestUserServiceImpl implements RestUserService {
     private final UserPersistencyService userPersistencyService;
     private final int pageNumber;
     private final int pageSize;
-    private final String TAG_ADMIN = "admin";
 
     public RestUserServiceImpl(RestAlertService restAlertService, UserPersistencyService userPersistencyService, int pageSize, int pageNumber) {
         this.pageNumber = pageNumber;
@@ -35,65 +36,124 @@ public class RestUserServiceImpl implements RestUserService {
     }
 
     @Override
-    public User getUserById(String userId) {
-        return createResult(userPersistencyService.findUserById(userId));
-    }
-
-    @Override
-    public List<User> getUsers(UserQuery userQuery) {
-        Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
-        List<User> restUsers = new ArrayList<>();
-        for (presidio.output.domain.records.users.User user : users) {
-            restUsers.add(createResult(user));
+    public User getUserById(String userId, boolean expand) {
+        List<Alert> alerts = null;
+        presidio.output.domain.records.users.User user;
+        try {
+            user = userPersistencyService.findUserById(userId);
+        } catch (Exception ex) {
+            return createResult(null, null);
         }
-        return restUsers;
+        if (expand)
+            alerts = restAlertService.getAlertsByUserId(userId).getAlerts();
+        return createResult(user, alerts);
     }
 
     @Override
-    public User createResult(presidio.output.domain.records.users.User user) {
+    public UsersWrapper getUsers(UserQuery userQuery) {
+        Page<presidio.output.domain.records.users.User> users;
+        try {
+            users = userPersistencyService.find(convertUserQuery(userQuery));
+        } catch (Exception ex) {
+            return createUsersWrapper(null, 0, 0);
+        }
+        List<User> restUsers = new ArrayList<>();
+        List<Alert> alerts = null;
+        if (userQuery.getExpand()) {
+            List<String> usersIds = new ArrayList<>();
+            for (presidio.output.domain.records.users.User user : users) {
+                usersIds.add(user.getId());
+            }
+            Map<String, List<Alert>> usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
+            for (presidio.output.domain.records.users.User user : users) {
+                if (usersIdsToAlertsMap == null)
+                    restUsers.add(createResult(user, null));
+                else
+                    restUsers.add(createResult(user, usersIdsToAlertsMap.get(user.getId())));
+            }
+        } else {
+            for (presidio.output.domain.records.users.User user : users) {
+                restUsers.add(createResult(user, alerts));
+            }
+        }
+        return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber() != null ? userQuery.getPageNumber() : 0);
+    }
+
+    private UsersWrapper createUsersWrapper(List Users, int totalNumberOfElements, int pageNumber) {
+        UsersWrapper usersWrapper = new UsersWrapper();
+        if (CollectionUtils.isNotEmpty(Users)) {
+            usersWrapper.setUsers(Users);
+            usersWrapper.setTotal(totalNumberOfElements);
+            usersWrapper.setPage(pageNumber);
+        } else {
+            usersWrapper.setUsers(new ArrayList());
+            usersWrapper.setTotal(0);
+            usersWrapper.setPage(0);
+        }
+
+        return usersWrapper;
+    }
+
+    @Override
+    public User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts) {
         User convertedUser = new User();
+        if (ObjectUtils.isEmpty(user))
+            return null;
         convertedUser.setId(user.getId());
+        if (CollectionUtils.isNotEmpty(alerts))
+            convertedUser.setAlerts(alerts);
         convertedUser.setUserDisplayName(user.getUserDisplayName());
-        convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
-        convertedUser.setScore((int) user.getUserScore());
-        if (user.getAdmin())
-            convertedUser.setTags(new ArrayList<>(Arrays.asList(TAG_ADMIN)));
+        if (user.getUserSeverity() != null) {
+            convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
+        }
+        convertedUser.setScore((int) user.getScore());
+        convertedUser.setTags(user.getTags());
         convertedUser.setUsername(user.getUserName());
-        convertedUser.setAlerts(restAlertService.getAlertsByUserId(user.getUserId()));
+        convertedUser.setAlertClassifications(user.getAlertClassifications());
+        convertedUser.setAlertsCount(user.getAlertsCount());
         return convertedUser;
     }
 
     @Override
     public List<Alert> getAlertsByUserId(String userId) {
-        return restAlertService.getAlertsByUserId(userId);
+        return restAlertService.getAlertsByUserId(userId).getAlerts();
     }
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
         presidio.output.domain.records.users.UserQuery.UserQueryBuilder builder = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder();
-        builder.filterByAlertClassifications(userQuery.getClassification());
-        builder.filterByUserName(userQuery.getUserName());
-        builder.maxScore(userQuery.getMaxScore());
-        builder.minScore(userQuery.getMinScore());
-        builder.filterByIndicators(userQuery.getIndicatorsType());
-        builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
-        builder.pageSize(userQuery.getPageSize());
-        builder.pageNumber(userQuery.getPageNumber());
-        builder.filterByUserNameWithPrefix(userQuery.getIsPrefix());
-        if (!CollectionUtils.isEmpty(userQuery.getTags())) {
-            userQuery.getTags().forEach(tag -> {
-                if (tag.equals(TAG_ADMIN)) {
-                    builder.filterByUserAdmin(true);
-                }
-            });
+        if (CollectionUtils.isNotEmpty(userQuery.getAlertClassifications())) {
+            builder.filterByAlertClassifications(userQuery.getAlertClassifications());
         }
-        if (!CollectionUtils.isEmpty(userQuery.getSort())) {
+        if (userQuery.getUserName() != null) {
+            builder.filterByUserName(userQuery.getUserName());
+        }
+        if (userQuery.getMaxScore() != null) {
+            builder.maxScore(userQuery.getMaxScore());
+        }
+        if (userQuery.getMinScore() != null) {
+            builder.minScore(userQuery.getMinScore());
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getSeverity())) {
+            builder.filterBySeverities(convertSeverities(userQuery.getSeverity()));
+        }
+        if (userQuery.getPageSize() != null) {
+            builder.pageSize(userQuery.getPageSize());
+        }
+        if (userQuery.getPageNumber() != null) {
+            builder.pageNumber(userQuery.getPageNumber());
+        }
+        if (userQuery.getIsPrefix() != null) {
+            builder.filterByUserNameWithPrefix(userQuery.getIsPrefix());
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getTags())) {
+            builder.filterByUserTags(userQuery.getTags());
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getSort())) {
             try {
                 List<Sort.Order> orders = new ArrayList<>();
                 userQuery.getSort().forEach(s -> {
-                    String[] params = s.split(":");
-                    Sort.Direction direction = Sort.Direction.fromString(params[0]);
-                    orders.add(new Sort.Order(direction, params[1]));
-
+                    Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
+                    orders.add(new Sort.Order(direction, s.getFieldNames().name()));
                 });
                 builder.sortField(new Sort(orders));
             } catch (Exception e) {
@@ -104,7 +164,7 @@ public class RestUserServiceImpl implements RestUserService {
         return builder.build();
     }
 
-    private List<UserSeverity> convertSeverities(List<UserQuery.SeverityEnum> severityEnumList) {
+    private List<UserSeverity> convertSeverities(List<presidio.webapp.model.UserSeverity> severityEnumList) {
         List<UserSeverity> userSeverity = new ArrayList<>();
         severityEnumList.forEach(severity -> {
             userSeverity.add(UserSeverity.valueOf(severity.toString()));
@@ -112,8 +172,8 @@ public class RestUserServiceImpl implements RestUserService {
         return userSeverity;
     }
 
-    private User.UserSeverityEnum convertUserSeverity(UserSeverity userSeverity) {
-        return User.UserSeverityEnum.valueOf(userSeverity.name());
+    private presidio.webapp.model.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
+        return presidio.webapp.model.UserSeverity.valueOf(userSeverity.name());
     }
 
 

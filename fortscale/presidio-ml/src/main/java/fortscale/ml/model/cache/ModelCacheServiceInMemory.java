@@ -21,37 +21,50 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
     private ModelConfService modelConfService;
     private ModelStore modelStore;
     private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
-    private Duration futureDiffBetweenCachedModelAndEvent;
+    private Duration maxDiffBetweenCachedModelAndEvent;
     private int cacheSize;
 
     /**
      * @param modelConfService
      * @param modelStore
      * @param dataRetrieverFactoryService
-     * @param futureDiffBetweenCachedModelAndEvent see {@link ModelCacheManagerInMemory}
+     * @param maxDiffBetweenCachedModelAndEvent see {@link ModelCacheManagerInMemory}
      * @param cacheSize                            the size of each of the model caches
      */
     public ModelCacheServiceInMemory(ModelConfService modelConfService, ModelStore modelStore,
                                      FactoryService<AbstractDataRetriever> dataRetrieverFactoryService,
-                                     Duration futureDiffBetweenCachedModelAndEvent, int cacheSize) {
+                                     Duration maxDiffBetweenCachedModelAndEvent, int cacheSize) {
         this.modelConfService = modelConfService;
         this.modelStore = modelStore;
         this.dataRetrieverFactoryService = dataRetrieverFactoryService;
-        this.futureDiffBetweenCachedModelAndEvent = futureDiffBetweenCachedModelAndEvent;
+        this.maxDiffBetweenCachedModelAndEvent = maxDiffBetweenCachedModelAndEvent;
         this.cacheSize = cacheSize;
         this.modelCacheManagers = new HashMap<>();
     }
 
     @Override
     public Model getModel(String modelConfName, Map<String, String> context, Instant eventTime) {
+        ModelCacheManager modelCacheManager = createModelCacheManagerIfNotExist(modelConfName);
+
+        return modelCacheManager.getModel(context, eventTime);
+    }
+
+    @Override
+    public Model getModel(String modelConfName, String contextId, Instant eventTime) {
+        ModelCacheManager modelCacheManager = createModelCacheManagerIfNotExist(modelConfName);
+
+        return modelCacheManager.getModel(contextId, eventTime);
+    }
+
+    private ModelCacheManager createModelCacheManagerIfNotExist(String modelConfName){
         ModelCacheManager modelCacheManager = modelCacheManagers.get(modelConfName);
         if (modelCacheManager == null) {
             ModelConf modelConf = modelConfService.getModelConf(modelConfName);
-            modelCacheManager = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf()), futureDiffBetweenCachedModelAndEvent, cacheSize);
+            modelCacheManager = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf()), maxDiffBetweenCachedModelAndEvent, cacheSize);
             modelCacheManagers.put(modelConfName, modelCacheManager);
         }
 
-        return modelCacheManager.getModel(context, eventTime);
+        return modelCacheManager;
     }
 
     @Override

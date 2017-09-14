@@ -17,7 +17,7 @@ public interface TtlDataRepository extends MongoRepository<TtlData, String> {
 
     /**
      * Get TtlData records by store name
-     * @param storeName application name
+     * @param storeName store name
      * @return List<TtlData>
      */
     List<TtlData> findByStoreName(String storeName);

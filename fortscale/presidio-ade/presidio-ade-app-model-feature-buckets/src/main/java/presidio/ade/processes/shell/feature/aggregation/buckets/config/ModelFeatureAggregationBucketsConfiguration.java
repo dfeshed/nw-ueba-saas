@@ -9,6 +9,7 @@ import fortscale.utils.ttl.TtlService;
 import fortscale.utils.ttl.TtlServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,6 +28,12 @@ import presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggr
         TtlServiceConfig.class,
 })
 public class ModelFeatureAggregationBucketsConfiguration {
+
+    @Value("${model-feature-aggregation.pageIterator.pageSize}")
+    private int pageSize;
+    @Value("${model-feature-aggregation.pageIterator.maxGroupSize}")
+    private int maxGroupSize;
+
     @Autowired
     @Qualifier("modelBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
@@ -42,6 +49,6 @@ public class ModelFeatureAggregationBucketsConfiguration {
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ModelFeatureAggregationBucketsExecutionServiceImpl(
-                bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, ttlService);
+                bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, ttlService, pageSize, maxGroupSize);
     }
 }

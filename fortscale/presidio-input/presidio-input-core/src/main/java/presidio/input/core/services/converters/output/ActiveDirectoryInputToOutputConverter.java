@@ -22,6 +22,7 @@ public class ActiveDirectoryInputToOutputConverter implements InputOutputConvert
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setObjectId(transformedEvent.getObjectId());
         outputEvent.setUserAdmin(transformedEvent.isUserAdmin());
+        outputEvent.setResultCode(transformedEvent.getResultCode());
         return outputEvent;
     }
 }

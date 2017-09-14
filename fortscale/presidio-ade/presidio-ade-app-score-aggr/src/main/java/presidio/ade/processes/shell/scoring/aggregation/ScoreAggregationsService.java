@@ -1,7 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
@@ -10,7 +9,6 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
@@ -19,10 +17,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,9 +35,10 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final EnrichedDataStore enrichedDataStore;
     private final EnrichedEventsScoringService enrichedEventsScoringService;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-    private List<String> aggregationContext;
-    private BucketConfigurationService bucketConfigurationService;
-    private TtlService ttlService;
+
+    private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
+    private int pageSize;
+    private int maxGroupSize;
 
     /**
      * C'tor
@@ -52,12 +48,13 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
      * @param aggregationRecordsCreator
      * @param aggregatedDataStore
      * @param aggregatedFeatureEventsConfService
-     * @param bucketConfigurationService
+     * @param pageSize
+     * @param maxGroupSize
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, BucketConfigurationService bucketConfigurationService, TtlService ttlService) {
+                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, int pageSize, int maxGroupSize) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -65,9 +62,8 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregationRecordsCreator = aggregationRecordsCreator;
         this.aggregatedDataStore = aggregatedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-        this.bucketConfigurationService = bucketConfigurationService;
-        this.ttlService = ttlService;
-        this.aggregationContext = getAggregationContext();
+        this.pageSize = pageSize;
+        this.maxGroupSize = maxGroupSize;
     }
 
 
@@ -76,25 +72,38 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);
+        boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
 
-        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, contextType);
+
+        EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
-                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords);
+                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords);
                 FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
-                scoreAggregationsBucketService.updateBuckets(adeScoredRecords, aggregationContext, featureBucketStrategyData);
+                scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextTypes, featureBucketStrategyData);
             }
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
-    private List<String> getAggregationContext() {
-        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
+    private boolean isStoreScoredEnrichedRecords(TimeRange timeRange, String dataSource){
+        boolean ret = false;
+        Set<TimeRange> storedTimeRangeSet = storedDataSourceToTimeRanges.get(dataSource);
+        if(storedTimeRangeSet == null){
+            storedTimeRangeSet = new HashSet<>();
+            storedDataSourceToTimeRanges.put(dataSource, storedTimeRangeSet);
+        }
+
+        if(!storedTimeRangeSet.contains(timeRange)){
+            storedTimeRangeSet.add(timeRange);
+            ret = true;
+        }
+
+        return ret;
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
@@ -104,11 +113,12 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     }
 
     public List<String> getDistinctContextTypes(String dataSource){
-        Set<List<String>> distinctMultipleContextsTypeSet = bucketConfigurationService.getRelatedDistinctContexts(dataSource);
-        Set<String> distinctSingleContextTypeSet = new HashSet<>();
-        for (List<String> distinctMultipleContexts : distinctMultipleContextsTypeSet) {
-            distinctSingleContextTypeSet.addAll(distinctMultipleContexts);
-        }
-        return new ArrayList<>(distinctSingleContextTypeSet);
+        //todo: fix this implementation.
+        //this implementation returns the distinct context over all data sources which might cause us to run on context which not exist for the specific data source.
+        // we should not fail in this case just work for nothing.
+        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
+//        String confSuffix = dataSource+strategy;
+//        List<String> ret = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().filter(x ->  StringUtils.endsWithIgnoreCase(x.getName(),confSuffix)).map(x -> x.getBucketConf().getContextFieldNames()).flatMap(List::stream).distinct().collect(Collectors.toList());
+        return ret;
     }
 }

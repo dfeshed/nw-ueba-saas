@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.manager.ManagerApplicationService;
+import presidio.ade.manager.AdeManagerApplicationService;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 
@@ -18,18 +18,18 @@ import java.time.Duration;
 @Import({
         AdeManagerSdkConfig.class
 })
-public class ManagerApplicationConfig {
+public class AdeManagerApplicationConfig {
 
     @Autowired
     private AdeManagerSdk adeManagerSdk;
     @Value("#{T(java.time.Duration).parse('${presidio.enriched.ttl.duration}')}")
     private Duration ttl;
     @Value("#{T(java.time.Duration).parse('${presidio.enriched.cleanup.interval}')}")
-    private Duration cleanup;
+    private Duration cleanupInterval;
 
 
     @Bean
-    ManagerApplicationService managerApplicationService(){
-        return new ManagerApplicationService(adeManagerSdk, ttl, cleanup);
+    public AdeManagerApplicationService managerApplicationService(){
+        return new AdeManagerApplicationService(adeManagerSdk, ttl, cleanupInterval);
     }
 }

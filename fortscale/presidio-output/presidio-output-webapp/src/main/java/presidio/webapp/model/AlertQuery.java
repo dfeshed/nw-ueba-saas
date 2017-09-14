@@ -1,9 +1,6 @@
 package presidio.webapp.model;
 
-
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -14,7 +11,7 @@ import java.util.Objects;
 /**
  * AlertQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-06T11:48:16.912Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T19:21:46.635Z")
 
 public class AlertQuery {
     @JsonProperty("pageSize")
@@ -35,41 +32,8 @@ public class AlertQuery {
     @JsonProperty("startTimeTo")
     private BigDecimal startTimeTo = null;
 
-    /**
-     * Gets or Sets feedback
-     */
-    public enum FeedbackEnum {
-        NONE("None"),
-
-        APPROVED("Approved"),
-
-        REJECTED("Rejected");
-
-        private String value;
-
-        FeedbackEnum(String value) {
-            this.value = value;
-        }
-
-        @Override
-        @JsonValue
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static FeedbackEnum fromValue(String text) {
-            for (FeedbackEnum b : FeedbackEnum.values()) {
-                if (String.valueOf(b.value).equals(text)) {
-                    return b;
-                }
-            }
-            return null;
-        }
-    }
-
     @JsonProperty("feedback")
-    private List<FeedbackEnum> feedback = new ArrayList<FeedbackEnum>();
+    private List<Feedback> feedback = new ArrayList<Feedback>();
 
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
@@ -80,52 +44,20 @@ public class AlertQuery {
     @JsonProperty("classification")
     private List<String> classification = new ArrayList<String>();
 
-    @JsonProperty("indicatorsType")
-    private List<String> indicatorsType = new ArrayList<String>();
+    @JsonProperty("indicatorsName")
+    private List<String> indicatorsName = new ArrayList<String>();
 
     @JsonProperty("usersId")
     private List<String> usersId = new ArrayList<String>();
 
     @JsonProperty("sort")
-    private List<String> sort = new ArrayList<String>();
-
-    /**
-     * Gets or Sets severity
-     */
-    public enum SeverityEnum {
-        CRITICAL("CRITICAL"),
-
-        HIGH("HIGH"),
-
-        MEDIUM("MEDIUM"),
-
-        LOW("LOW");
-
-        private String value;
-
-        SeverityEnum(String value) {
-            this.value = value;
-        }
-
-        @Override
-        @JsonValue
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static SeverityEnum fromValue(String text) {
-            for (SeverityEnum b : SeverityEnum.values()) {
-                if (String.valueOf(b.value).equals(text)) {
-                    return b;
-                }
-            }
-            return null;
-        }
-    }
+    private List<AlertQuerySort> sort = new ArrayList<AlertQuerySort>();
 
     @JsonProperty("severity")
-    private List<SeverityEnum> severity = new ArrayList<SeverityEnum>();
+    private List<AlertSeverity> severity = new ArrayList<AlertSeverity>();
+
+    @JsonProperty("expand")
+    private Boolean expand = false;
 
     public AlertQuery pageSize(Integer pageSize) {
         this.pageSize = pageSize;
@@ -241,12 +173,12 @@ public class AlertQuery {
         this.startTimeTo = startTimeTo;
     }
 
-    public AlertQuery feedback(List<FeedbackEnum> feedback) {
+    public AlertQuery feedback(List<Feedback> feedback) {
         this.feedback = feedback;
         return this;
     }
 
-    public AlertQuery addFeedbackItem(FeedbackEnum feedbackItem) {
+    public AlertQuery addFeedbackItem(Feedback feedbackItem) {
         this.feedback.add(feedbackItem);
         return this;
     }
@@ -257,11 +189,11 @@ public class AlertQuery {
      * @return feedback
      **/
     @ApiModelProperty(value = "")
-    public List<FeedbackEnum> getFeedback() {
+    public List<Feedback> getFeedback() {
         return feedback;
     }
 
-    public void setFeedback(List<FeedbackEnum> feedback) {
+    public void setFeedback(List<Feedback> feedback) {
         this.feedback = feedback;
     }
 
@@ -337,28 +269,28 @@ public class AlertQuery {
         this.classification = classification;
     }
 
-    public AlertQuery indicatorsType(List<String> indicatorsType) {
-        this.indicatorsType = indicatorsType;
+    public AlertQuery indicatorsName(List<String> indicatorsName) {
+        this.indicatorsName = indicatorsName;
         return this;
     }
 
-    public AlertQuery addIndicatorsTypeItem(String indicatorsTypeItem) {
-        this.indicatorsType.add(indicatorsTypeItem);
+    public AlertQuery addIndicatorsNameItem(String indicatorsNameItem) {
+        this.indicatorsName.add(indicatorsNameItem);
         return this;
     }
 
     /**
-     * Get indicatorsType
+     * Get indicatorsName
      *
-     * @return indicatorsType
+     * @return indicatorsName
      **/
     @ApiModelProperty(value = "")
-    public List<String> getIndicatorsType() {
-        return indicatorsType;
+    public List<String> getIndicatorsName() {
+        return indicatorsName;
     }
 
-    public void setIndicatorsType(List<String> indicatorsType) {
-        this.indicatorsType = indicatorsType;
+    public void setIndicatorsName(List<String> indicatorsName) {
+        this.indicatorsName = indicatorsName;
     }
 
     public AlertQuery usersId(List<String> usersId) {
@@ -385,12 +317,12 @@ public class AlertQuery {
         this.usersId = usersId;
     }
 
-    public AlertQuery sort(List<String> sort) {
+    public AlertQuery sort(List<AlertQuerySort> sort) {
         this.sort = sort;
         return this;
     }
 
-    public AlertQuery addSortItem(String sortItem) {
+    public AlertQuery addSortItem(AlertQuerySort sortItem) {
         this.sort.add(sortItem);
         return this;
     }
@@ -401,20 +333,20 @@ public class AlertQuery {
      * @return sort
      **/
     @ApiModelProperty(value = "")
-    public List<String> getSort() {
+    public List<AlertQuerySort> getSort() {
         return sort;
     }
 
-    public void setSort(List<String> sort) {
+    public void setSort(List<AlertQuerySort> sort) {
         this.sort = sort;
     }
 
-    public AlertQuery severity(List<SeverityEnum> severity) {
+    public AlertQuery severity(List<AlertSeverity> severity) {
         this.severity = severity;
         return this;
     }
 
-    public AlertQuery addSeverityItem(SeverityEnum severityItem) {
+    public AlertQuery addSeverityItem(AlertSeverity severityItem) {
         this.severity.add(severityItem);
         return this;
     }
@@ -425,12 +357,31 @@ public class AlertQuery {
      * @return severity
      **/
     @ApiModelProperty(value = "")
-    public List<SeverityEnum> getSeverity() {
+    public List<AlertSeverity> getSeverity() {
         return severity;
     }
 
-    public void setSeverity(List<SeverityEnum> severity) {
+    public void setSeverity(List<AlertSeverity> severity) {
         this.severity = severity;
+    }
+
+    public AlertQuery expand(Boolean expand) {
+        this.expand = expand;
+        return this;
+    }
+
+    /**
+     * Get expand
+     *
+     * @return expand
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean getExpand() {
+        return expand;
+    }
+
+    public void setExpand(Boolean expand) {
+        this.expand = expand;
     }
 
 
@@ -453,15 +404,16 @@ public class AlertQuery {
                 Objects.equals(this.tags, alertQuery.tags) &&
                 Objects.equals(this.userName, alertQuery.userName) &&
                 Objects.equals(this.classification, alertQuery.classification) &&
-                Objects.equals(this.indicatorsType, alertQuery.indicatorsType) &&
+                Objects.equals(this.indicatorsName, alertQuery.indicatorsName) &&
                 Objects.equals(this.usersId, alertQuery.usersId) &&
                 Objects.equals(this.sort, alertQuery.sort) &&
-                Objects.equals(this.severity, alertQuery.severity);
+                Objects.equals(this.severity, alertQuery.severity) &&
+                Objects.equals(this.expand, alertQuery.expand);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsType, usersId, sort, severity);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sort, severity, expand);
     }
 
     @Override
@@ -479,10 +431,11 @@ public class AlertQuery {
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
         sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
-        sb.append("    indicatorsType: ").append(toIndentedString(indicatorsType)).append("\n");
+        sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    usersId: ").append(toIndentedString(usersId)).append("\n");
         sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+        sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
         sb.append("}");
         return sb.toString();
     }

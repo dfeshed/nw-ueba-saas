@@ -2,23 +2,34 @@ package presidio.webapp.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
+import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertsWrapper;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
 
 
     private final AlertPersistencyService elasticAlertService;
+    private final int pageNumber;
+    private final int pageSize;
 
-    public RestAlertServiceImpl(AlertPersistencyService elasticAlertService) {
+    public RestAlertServiceImpl(AlertPersistencyService elasticAlertService, int pageNumber, int pageSize) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
         this.elasticAlertService = elasticAlertService;
     }
 
@@ -47,40 +58,88 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
+    public AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.find(convertedAlertQuery);
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
         List restAlerts = new ArrayList();
-        alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return restAlerts;
+        if (alerts.getTotalElements() > 0)
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber() != null ? alertQuery.getPageNumber() : 0);
+    }
+
+    private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, int pageNumber) {
+        AlertsWrapper alertsWrapper = new AlertsWrapper();
+        if (CollectionUtils.isNotEmpty(restAlerts)) {
+            alertsWrapper.setAlerts(restAlerts);
+            alertsWrapper.setTotal(totalNumberOfElements);
+            alertsWrapper.setPage(pageNumber);
+        } else {
+            alertsWrapper.setAlerts(new ArrayList());
+            alertsWrapper.setTotal(0);
+            alertsWrapper.setPage(0);
+        }
+        return alertsWrapper;
     }
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder();
-        alertQueryBuilder.filterByClassification(alertQuery.getClassification());
-        alertQueryBuilder.filterByMaxScore(alertQuery.getMaxScore());
-        alertQueryBuilder.filterByMinScore(alertQuery.getMinScore());
-        alertQueryBuilder.filterByTags(alertQuery.getTags());
-        alertQueryBuilder.filterByIndicatorNams(alertQuery.getIndicatorsType());
-        alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
-        alertQueryBuilder.filterByStartDate(Integer.toUnsignedLong(alertQuery.getStartTimeFrom().intValue()));
-        alertQueryBuilder.filterByEndDate(Integer.toUnsignedLong(alertQuery.getStartTimeTo().intValue()));
-        List<String> severity = new ArrayList<>();
-        alertQuery.getSeverity().forEach(severityParam -> {
-            severity.add(severityParam.toString());
-        });
-        alertQueryBuilder.filterBySeverity(severity);
-        List<String> feedback = new ArrayList<>();
-        alertQuery.getSort().forEach(feedbackParam -> {
-            feedback.add(feedbackParam.toString());
-        });
-        alertQueryBuilder.filterByFeedback(feedback);
-        if (!CollectionUtils.isEmpty(alertQuery.getSort())) {
+        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
+            alertQueryBuilder.filterByUserId(alertQuery.getUsersId());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getUserName())) {
+            alertQueryBuilder.filterByUserName(alertQuery.getUserName());
+        }
+        if (alertQuery.getPageSize() != null) {
+            alertQueryBuilder.setPageSize(alertQuery.getPageSize());
+        }
+        if (alertQuery.getPageNumber() != null) {
+            alertQueryBuilder.setPageNumber(alertQuery.getPageNumber());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getClassification())) {
+            alertQueryBuilder.filterByClassification(alertQuery.getClassification());
+        }
+        if (alertQuery.getMaxScore() != null) {
+            alertQueryBuilder.filterByMaxScore(alertQuery.getMaxScore());
+        }
+        if (alertQuery.getMinScore() != null) {
+            alertQueryBuilder.filterByMinScore(alertQuery.getMinScore());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
+            alertQueryBuilder.filterByTags(alertQuery.getTags());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
+            alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
+        }
+        if (alertQuery.getStartTimeFrom() != null) {
+            alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());
+        }
+        if (alertQuery.getStartTimeTo() != null) {
+            alertQueryBuilder.filterByEndDate(alertQuery.getStartTimeTo().longValue());
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getSeverity())) {
+            List<String> severity = new ArrayList<>();
+            alertQuery.getSeverity().forEach(severityParam -> {
+                severity.add(severityParam.toString());
+            });
+            alertQueryBuilder.filterBySeverity(severity);
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getFeedback())) {
+            List<String> feedback = new ArrayList<>();
+            alertQuery.getSort().forEach(feedbackParam -> {
+                feedback.add(feedbackParam.toString());
+            });
+            alertQueryBuilder.filterByFeedback(feedback);
+        }
+        if (CollectionUtils.isNotEmpty(alertQuery.getSort())) {
             List<Sort.Order> orders = new ArrayList<>();
             alertQuery.getSort().forEach(s -> {
-                String[] params = s.split(":");
-                Sort.Direction direction = Sort.Direction.fromString(params[0]);
-                orders.add(new Sort.Order(direction, params[1]));
+                Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
+                orders.add(new Sort.Order(direction, s.getFieldNames().name()));
 
             });
             alertQueryBuilder.sortField(new Sort(orders));
@@ -90,12 +149,32 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(0, 10));
-        if (alerts.hasContent()) {
-            List restAlerts = new ArrayList();
+    public AlertsWrapper getAlertsByUserId(String userId) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
+        List restAlerts = new ArrayList();
+        if (alerts.getTotalElements() > 0)
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-            return restAlerts;
+        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), 0);
+    }
+
+    @Override
+    public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
+        List restAlerts;
+        if (alerts.getTotalElements() > 0) {
+            restAlerts = new ArrayList();
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            return userIdsToAlerts(restAlerts, (List) userIds);
         }
         return null;
     }
@@ -103,11 +182,33 @@ public class RestAlertServiceImpl implements RestAlertService {
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
-        restAlert.setEndDate(Long.valueOf(alert.getEndDate()).intValue());
-        restAlert.setStartDate(Long.valueOf(alert.getStartDate()).intValue());
+        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
+        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
+        restAlert.setUserId(alert.getUserId());
+        restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
+        restAlert.setIndicatorsNum(alert.getIndicatorsNum());
+        restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
+    }
+
+
+    private Map<String, List<presidio.webapp.model.Alert>> userIdsToAlerts(List<presidio.webapp.model.Alert> alerts, List<String> usersIds) {
+        Map<String, List<presidio.webapp.model.Alert>> usersIdsToAlertsMap = new HashMap<>();
+        List<presidio.webapp.model.Alert> tempAlerts;
+        for (String id : usersIds) {
+            tempAlerts = null;
+            for (presidio.webapp.model.Alert alert : alerts) {
+                if (alert.getUserId().equals(id)) {
+                    if (tempAlerts == null)
+                        tempAlerts = new ArrayList<>();
+                    tempAlerts.add(alert);
+                }
+            }
+            usersIdsToAlertsMap.put(id, tempAlerts);
+        }
+        return usersIdsToAlertsMap;
     }
 }

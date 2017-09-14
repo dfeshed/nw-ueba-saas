@@ -35,7 +35,7 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         properties.put("presidio.default.ttl.duration","PT48H");
         properties.put("presidio.default.cleanup.interval","PT24H");
         properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
-        properties.put("fortscale.model.cache.futureDiffBetweenCachedModelAndEvent", "PT48H");
+        properties.put("fortscale.model.cache.maxDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }

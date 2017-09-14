@@ -25,19 +25,17 @@ public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor 
     private int maxGroupSize;
     private SmartAccumulationsCache smartAccumulationsCache;
     private SmartAccumulationDataStore smartAccumulationDataStore;
-    private TtlService ttlService;
 
     public AccumulateSmartRecordsService(FixedDurationStrategy accumulationStrategy, SmartDataReader reader,
                                          int pageSize, int maxGroupSize,
                                          SmartAccumulationsCache smartAccumulationsCache,
-                                         SmartAccumulationDataStore smartAccumulationDataStore, TtlService ttlService) {
+                                         SmartAccumulationDataStore smartAccumulationDataStore) {
         super(accumulationStrategy);
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.smartAccumulationsCache = smartAccumulationsCache;
         this.reader = reader;
         this.smartAccumulationDataStore = smartAccumulationDataStore;
-        this.ttlService = ttlService;
     }
 
 
@@ -56,8 +54,6 @@ public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor 
             List<AccumulatedSmartRecord> accumulationsRecords = getAccumulatedSmartRecords();
             smartAccumulationDataStore.store(accumulationsRecords, configurationName);
         }
-
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
     /**

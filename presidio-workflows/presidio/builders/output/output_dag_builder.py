@@ -21,7 +21,7 @@ class OutputDagBuilder(PresidioDagBuilder):
     returns the DAG according to the given attributes.
     """
 
-    conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+    conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     def __init__(self, data_sources):
         """

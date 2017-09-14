@@ -33,7 +33,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private AggregatedDataStore scoredFeatureAggregatedStore;
     private int pageSize;
     private int maxGroupSize;
-    private TtlService ttlService;
 
     public FeatureAggregationService(FixedDurationStrategy fixedDurationStrategy,
                                      BucketConfigurationService bucketConfigurationService,
@@ -41,7 +40,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
                                      InMemoryFeatureBucketAggregator featureBucketAggregator,
                                      FeatureAggregationScoringService featureAggregationScoringService,
                                      AggregationRecordsCreator featureAggregationsCreator,
-                                     AggregatedDataStore scoredFeatureAggregatedStore, TtlService ttlService, int pageSize, int maxGroupSize) {
+                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -51,7 +50,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
-        this.ttlService = ttlService;
     }
 
     @Override
@@ -71,7 +69,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
 
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
         }
-        ttlService.cleanupCollections(timeRange.getStart());
     }
 
 
