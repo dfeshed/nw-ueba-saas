@@ -185,6 +185,9 @@ public class AlertPersistencyServiceTest {
                 new Alert("userId6", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null));
         alertPersistencyService.save(alertList);
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .filterByUserName(new ArrayList<>(Arrays.asList("normalized_username_ipusr3")))
@@ -192,7 +195,7 @@ public class AlertPersistencyServiceTest {
                         .filterByStartDate(startDate)
                         .filterByEndDate(startDate + 1)
                         .sortField(sort)
-                        .aggregateBySeverity(false)
+                        .aggregateByFields(aggregationFields)
                         .filterByClassification(classifications2)
                         .build();
 
@@ -217,10 +220,13 @@ public class AlertPersistencyServiceTest {
             alertPersistencyService.save(alert);
         }
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .sortField(sort)
-                        .aggregateBySeverity(false)
+                        .aggregateByFields(aggregationFields)
                         .filterByClassification(classifications1)
                         .build();
 
@@ -245,10 +251,13 @@ public class AlertPersistencyServiceTest {
             alertPersistencyService.save(alert);
         }
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .sortField(sort)
-                        .aggregateBySeverity(false)
+                        .aggregateByFields(aggregationFields)
                         .filterByClassification(classifications3)
                         .build();
 
@@ -271,10 +280,13 @@ public class AlertPersistencyServiceTest {
             alertPersistencyService.save(alert);
         }
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .sortField(sort)
-                        .aggregateBySeverity(false)
+                        .aggregateByFields(aggregationFields)
                         .filterByClassification(classifications4)
                         .build();
 
@@ -299,11 +311,12 @@ public class AlertPersistencyServiceTest {
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
-
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .sortField(sort)
-                        .aggregateBySeverity(false)
+                        .aggregateByFields(aggregationFields)
                         .filterByClassification(classifications5)
                         .build();
 
@@ -360,9 +373,11 @@ public class AlertPersistencyServiceTest {
                 new Alert("userId6", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null));
         alertPersistencyService.save(alertList);
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .aggregateBySeverity(true)
+                        .aggregateByFields(aggregationFields)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
@@ -395,9 +410,11 @@ public class AlertPersistencyServiceTest {
                 new Alert("userId5", Arrays.asList("c"), "normalized_username_ipusr4@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertPersistencyService.save(alertList);
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.CLASSIFICATIONS);
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .aggregateByClassifications(true)
+                        .aggregateByFields(aggregationFields)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);

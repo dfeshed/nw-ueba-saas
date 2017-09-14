@@ -2,7 +2,6 @@ package presidio.webapp.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -156,8 +155,12 @@ public class RestAlertServiceImpl implements RestAlertService {
             });
             alertQueryBuilder.sortField(new Sort(orders));
         }
-        if (BooleanUtils.isTrue(alertQuery.getAggregateBySeverity())) {
-            alertQueryBuilder.aggregateBySeverity(alertQuery.getAggregateBySeverity());
+        if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
+            List<String> aggregateByFields = new ArrayList<>();
+            alertQuery.getAggregateBy().forEach(alertQueryAggregationFieldName -> {
+                aggregateByFields.add(alertQueryAggregationFieldName.toString());
+            });
+            alertQueryBuilder.aggregateByFields(aggregateByFields);
         }
         AlertQuery convertedAlertQuery = alertQueryBuilder.build();
         return convertedAlertQuery;

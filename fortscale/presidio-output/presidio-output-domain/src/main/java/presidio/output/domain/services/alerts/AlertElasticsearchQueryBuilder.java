@@ -119,12 +119,10 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
     }
 
     public void addAggregation(AlertQuery alertQuery) {
-        if (alertQuery.isAggregateBySeverity()) {
-            super.addAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY));
-        }
-
-        if (alertQuery.isAggregateByClasifications()) {
-            super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
+        if (CollectionUtils.isNotEmpty(alertQuery.getAggregateByFields())) {
+            alertQuery.getAggregateByFields().forEach(s -> {
+                super.addAggregation(AggregationBuilders.terms(s).field(s));
+            });
         }
     }
 }

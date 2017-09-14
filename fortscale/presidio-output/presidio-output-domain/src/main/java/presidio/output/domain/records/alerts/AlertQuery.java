@@ -29,8 +29,7 @@ public class AlertQuery {
     private final int pageSize;
 
     // aggregation
-    private final boolean aggregateBySeverity;
-    private final boolean aggregateByClasifications;
+    private final List<String> aggregateByFields;
 
     public AlertQuery(AlertQueryBuilder builder) {
         this.filterByClassification = builder.filterByClassification;
@@ -41,8 +40,6 @@ public class AlertQuery {
         this.filterByEndDate = builder.filterByEndDate;
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
-        this.aggregateBySeverity = builder.aggregateBySeverity;
-        this.aggregateByClasifications = builder.aggregateByClassifications;
         this.filterByFeedback = builder.filterByFeedback;
         this.filterByMinScore = builder.filterByMinScore;
         this.filterByMaxScore = builder.filterByMaxScore;
@@ -50,6 +47,7 @@ public class AlertQuery {
         this.filterByAlertsIds = builder.filterByAlertsIds;
         this.filterByIndicatorNames = builder.filterByIndicatorNames;
         this.filterByUserId = builder.filterByUserId;
+        this.aggregateByFields = builder.aggregateByFields;
     }
 
     public List<String> getFilterByUserName() {
@@ -92,14 +90,6 @@ public class AlertQuery {
         return pageSize;
     }
 
-    public boolean isAggregateBySeverity() {
-        return aggregateBySeverity;
-    }
-
-    public boolean isAggregateByClasifications() {
-        return aggregateByClasifications;
-    }
-
     public Long getFilterByStartDate() {
         return filterByStartDate;
     }
@@ -118,6 +108,10 @@ public class AlertQuery {
 
     public List<String> getFilterByUserId() {
         return filterByUserId;
+    }
+
+    public List<String> getAggregateByFields() {
+        return aggregateByFields;
     }
 
     public static class AlertQueryBuilder {
@@ -144,8 +138,7 @@ public class AlertQuery {
         private int pageSize = -1;
 
         // aggregations
-        private boolean aggregateBySeverity;
-        private boolean aggregateByClassifications;
+        private List<String> aggregateByFields;
 
         public AlertQueryBuilder() {
         }
@@ -231,13 +224,8 @@ public class AlertQuery {
             return this;
         }
 
-        public AlertQueryBuilder aggregateBySeverity(boolean aggregateBySeverity) {
-            this.aggregateBySeverity = aggregateBySeverity;
-            return this;
-        }
-
-        public AlertQueryBuilder aggregateByClassifications(boolean aggregateByClassifications) {
-            this.aggregateByClassifications = aggregateByClassifications;
+        public AlertQueryBuilder aggregateByFields(List<String> aggregateByFields) {
+            this.aggregateByFields = aggregateByFields;
             return this;
         }
 

@@ -3,6 +3,8 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Sort;
+import presidio.webapp.model.AlertEnums.AlertQueryAggregationFieldName;
+import presidio.webapp.model.AlertEnums.AlertQuerySortFieldName;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -63,8 +65,8 @@ public class AlertQuery {
     @JsonProperty("sortDirection")
     private Sort.Direction sortDirection = Sort.Direction.ASC;
 
-    @JsonProperty("aggregateBySeverity")
-    private Boolean aggregateBySeverity;
+    @JsonProperty("aggregateBy")
+    private List<AlertQueryAggregationFieldName> aggregateBy;
 
     public AlertQuery pageSize(Integer pageSize) {
         this.pageSize = pageSize;
@@ -410,8 +412,8 @@ public class AlertQuery {
         this.expand = expand;
     }
 
-    public AlertQuery aggregateBySeverity(Boolean aggregateBySeverity) {
-        this.aggregateBySeverity = aggregateBySeverity;
+    public AlertQuery aggregateBySeverity(List<AlertQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
         return this;
     }
 
@@ -421,12 +423,12 @@ public class AlertQuery {
      * @return expand
      **/
     @ApiModelProperty(value = "")
-    public Boolean getAggregateBySeverity() {
-        return aggregateBySeverity;
+    public List<AlertQueryAggregationFieldName> getAggregateBy() {
+        return aggregateBy;
     }
 
-    public void setAggregateBySeverity(Boolean aggregateBySeverity) {
-        this.aggregateBySeverity = aggregateBySeverity;
+    public void setAggregateBy(List<AlertQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
     }
 
     @Override
@@ -454,12 +456,12 @@ public class AlertQuery {
                 Objects.equals(this.severity, alertQuery.severity) &&
                 Objects.equals(this.expand, alertQuery.expand) &&
                 Objects.equals(this.sortDirection, alertQuery.sortDirection) &&
-                Objects.equals(this.aggregateBySeverity, alertQuery.aggregateBySeverity);
+                Objects.equals(this.aggregateBy, alertQuery.aggregateBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sortFieldNames, severity, expand, sortDirection, aggregateBySeverity);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sortFieldNames, severity, expand, sortDirection, aggregateBy);
 
     }
 
@@ -484,7 +486,7 @@ public class AlertQuery {
         sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
-        sb.append("    aggregateBySeverity: ").append(toIndentedString(aggregateBySeverity)).append("\n");
+        sb.append("    aggregateBy: ").append(toIndentedString(aggregateBy)).append("\n");
         sb.append("}");
         return sb.toString();
     }
