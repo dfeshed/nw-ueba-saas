@@ -62,15 +62,15 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     }
 
     protected Model getMainModel(AdeRecordReader adeRecordReader) {
-        return getModel(adeRecordReader, modelName, Collections.singletonList(SmartRecord.CONTEXT_ID_FIELD));
+        return getModel(adeRecordReader, modelName, adeRecordReader.getContext(SmartRecord.CONTEXT_ID_FIELD));
     }
 
     protected Model getGlobalModel(AdeRecordReader adeRecordReader) {
-        return getModel(adeRecordReader, globalModelName, Collections.emptyList());
+        return getModel(adeRecordReader, globalModelName, null);
     }
 
-    protected Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
-        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextFieldNames);
+    protected Model getModel(AdeRecordReader adeRecordReader, String modelName, String contextId) {
+        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextId);
     }
 
     @Override

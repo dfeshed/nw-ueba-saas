@@ -159,17 +159,15 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getFeedback())) {
             List<String> feedback = new ArrayList<>();
-            alertQuery.getSort().forEach(feedbackParam -> {
+            alertQuery.getFeedback().forEach(feedbackParam -> {
                 feedback.add(feedbackParam.toString());
             });
             alertQueryBuilder.filterByFeedback(feedback);
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getSort())) {
+        if (CollectionUtils.isNotEmpty(alertQuery.getSortFieldNames()) && alertQuery.getSortDirection() != null) {
             List<Sort.Order> orders = new ArrayList<>();
-            alertQuery.getSort().forEach(s -> {
-                Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
-                orders.add(new Sort.Order(direction, s.getFieldNames().name()));
-
+            alertQuery.getSortFieldNames().forEach(s -> {
+                orders.add(new Sort.Order(alertQuery.getSortDirection(), s.toString()));
             });
             alertQueryBuilder.sortField(new Sort(orders));
         }

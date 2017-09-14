@@ -7,6 +7,7 @@ import java.util.Map;
 
 public interface ModelCacheManager {
 	Model getModel(Map<String, String> context, Instant eventTime);
+	public Model getModel(String contextId, Instant eventTime);
 
 	/**
 	 * deletes model from rocksdb cache by params

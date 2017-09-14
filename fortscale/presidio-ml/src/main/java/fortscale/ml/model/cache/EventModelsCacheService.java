@@ -13,6 +13,10 @@ public class EventModelsCacheService {
 	@Autowired
 	private ModelsCacheService modelsCacheService;
 
+	public Model getModel(AdeRecordReader adeRecordReader, String modelName, String contextId) {
+		return modelsCacheService.getModel(modelName, contextId, adeRecordReader.getDate_time());
+	}
+
 	public Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
 		Map<String, String> contextFieldNamesToValuesMap = resolveContext(adeRecordReader, contextFieldNames);
 

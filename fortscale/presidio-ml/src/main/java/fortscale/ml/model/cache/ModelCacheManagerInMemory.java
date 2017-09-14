@@ -46,7 +46,10 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     @Override
     public Model getModel(Map<String, String> context, Instant eventTime) {
         String contextId = getContextId(context);
-
+        return getModel(contextId, eventTime);
+    }
+    @Override
+    public Model getModel(String contextId, Instant eventTime) {
         ModelDAO cachedModelDao;
         logger.debug("getting model for params: contextId={},eventTime={},modelConf={}", contextId,  eventTime,modelConf);
         Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
