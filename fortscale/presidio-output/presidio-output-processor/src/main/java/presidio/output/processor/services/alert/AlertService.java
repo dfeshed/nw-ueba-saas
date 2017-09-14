@@ -16,7 +16,7 @@ public interface AlertService {
      * @param smart - ADE SMART to be converted into Presidio Alert
      * @param user- user entity related to the specified alert
      */
-    Alert generateAlert(SmartRecord smart, User user);
+    Alert generateAlert(SmartRecord smart, User user, int smartThresholdScoreForCreatingAlert);
 
     void save(List<Alert> alerts);
 }

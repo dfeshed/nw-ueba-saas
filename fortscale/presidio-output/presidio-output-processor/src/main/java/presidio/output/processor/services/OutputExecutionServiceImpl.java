@@ -34,20 +34,22 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
-    private final int smartThreshold;
+    private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
+
+    private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
                                       UserScoreService userScoreService,
-                                      int smartThreshold, int smartPageSize) {
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
         this.userScoreService = userScoreService;
         this.smartPageSize = smartPageSize;
-        this.smartThreshold = smartThreshold;
+        this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
     }
 
     /**
@@ -64,7 +66,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void run(Instant startDate, Instant endDate) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), smartThreshold);
+        PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
 
         List<Alert> alerts = new ArrayList<Alert>();
         List<User> users = new ArrayList<User>();
@@ -95,7 +97,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 }
 
 
-                Alert alertEntity = alertService.generateAlert(smart, userEntity);
+                Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), null);//TODO:change null to indicators when alert pojo will have indicators
                     alerts.add(alertEntity);
