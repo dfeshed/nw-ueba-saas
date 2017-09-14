@@ -6,6 +6,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import static org.junit.Assert.*;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-//@Ignore
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -419,13 +420,59 @@ public class AlertPersistencyServiceTest {
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
-        StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get("classifications");
+        StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
         List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
         assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(classificationsAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(classificationsAgg.getBucketByKey("c").getDocCount(), 3L);
+    }
+
+    @Test
+    public void testFindByQueryWithClassificationsAndSeverityAggregation() {
+
+        long startDate = Instant.now().toEpochMilli();
+        long endDate = Instant.now().toEpochMilli();
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate - 1, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+        alertList.add(
+                new Alert("userId2", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+        alertList.add(
+                new Alert("userId3", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate + 1, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null));
+        alertList.add(
+                new Alert("userId4", Arrays.asList("b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate + 2, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.LOW, null));
+        alertList.add(
+                new Alert("userId5", Arrays.asList("c"), "normalized_username_ipusr4@somebigcompany.com", startDate, endDate + 5, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+        alertPersistencyService.save(alertList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.CLASSIFICATIONS);
+        aggregationFields.add(Alert.SEVERITY);
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
+        StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
+        List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
+
+        assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
+        assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
+        assertEquals(classificationsAgg.getBucketByKey("b").getDocCount(), 2L);
+        assertEquals(classificationsAgg.getBucketByKey("c").getDocCount(), 3L);
+
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(Alert.SEVERITY);
+        buckets = severityAgg.getBuckets();
+
+        assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
+        assertEquals(severityAgg.getBucketByKey(AlertSeverity.LOW.name()).getDocCount(), 1L);
+        assertEquals(severityAgg.getBucketByKey(AlertSeverity.HIGH.name()).getDocCount(), 3L);
+        assertEquals(severityAgg.getBucketByKey(AlertSeverity.CRITICAL.name()).getDocCount(), 1L);
     }
 
 }
