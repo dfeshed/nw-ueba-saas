@@ -40,7 +40,7 @@ public class PresidioFilteredEventsMongoRepository {
         return new SinkMongoRepositoryImpl<>(mongoTemplate);
     }
 
-    public static void saveFailedFlumeEvent(String pointOfFailure, String reason, Event filteredFlumeEvent) {
+    public static synchronized void saveFailedFlumeEvent(String pointOfFailure, String reason, Event filteredFlumeEvent) {
         final JSONObject bodyAsJson = new JSONObject(new String(filteredFlumeEvent.getBody()));
         final Map<String, String> headers = filteredFlumeEvent.getHeaders();
         FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, bodyAsJson, headers);
