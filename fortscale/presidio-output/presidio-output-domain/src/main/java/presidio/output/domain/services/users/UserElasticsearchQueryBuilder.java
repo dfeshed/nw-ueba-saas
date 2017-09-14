@@ -114,9 +114,9 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
     @Override
     public void addAggregation(UserQuery userQuery) {
         if (CollectionUtils.isNotEmpty(userQuery.getAggregateByFields())) {
-            userQuery.getAggregateByFields().forEach(s -> {
-                super.addAggregation(AggregationBuilders.terms(s).field(s));
-            });
+            if (userQuery.getAggregateByFields().contains(User.SEVERITY_FIELD_NAME)) {
+                super.addAggregation(AggregationBuilders.terms(User.SEVERITY_FIELD_NAME).field(User.SEVERITY_FIELD_NAME));
+            }
         }
     }
 }
