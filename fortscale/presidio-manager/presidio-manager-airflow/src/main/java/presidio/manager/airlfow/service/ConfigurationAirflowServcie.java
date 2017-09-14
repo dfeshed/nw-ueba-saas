@@ -67,7 +67,8 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 String filePath = String.format("%s/%s-%s.json", configurationFolderPath, moduleName, profile);
                 logger.info("applying configuration path={}",filePath);
                 File file = new File(filePath);
-
+                file.setReadable(true,false);
+                file.setWritable(true,false);
                 FileWriter fileWriter = new FileWriter(file,false);
                 fileWriter.write(newConfJson);
                 fileWriter.close();
