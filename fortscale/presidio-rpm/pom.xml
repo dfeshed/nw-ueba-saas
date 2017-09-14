@@ -189,6 +189,13 @@
                         rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
                         echo "Restarting Tomcat"
                         systemctl restart tomcat.service
+                        echo "creating configuration group for common reads and writes"
+                        mkdir -p /home/presidio/presidio-core/configurations/airflow/
+                        groupadd presidio-conf
+                        usermod -a -G presidio-conf tomcat
+                        usermod -a -G presidio-conf presidio
+                        chgrp -R presidio-conf /home/presidio/presidio-core/configurations/airflow/
+                        chmod -R 770 /home/presidio/presidio-core/configurations/airflow/
                         <!--end of post installation -->"
                     </script>
                 </postinstallScriptlet>
