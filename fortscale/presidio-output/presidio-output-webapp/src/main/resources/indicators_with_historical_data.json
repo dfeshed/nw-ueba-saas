@@ -9,7 +9,7 @@
     "type": "SCORE_AGGREGATION",
     "score": 99.7,
     "historicalData": {
-      "type": "COUNT_AGGRAGEATION",
+      "type": "COUNT_AGGREGATION",
       "buckets": [
         {
           "key": "FILE_MOVED",
