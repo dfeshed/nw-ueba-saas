@@ -84,6 +84,9 @@
     "eventDate": {
       "epochSecond": 1407861600,
       "nano": 0
+    },
+    "scores": {
+      "operationType": 100
     }
   }
 ]
