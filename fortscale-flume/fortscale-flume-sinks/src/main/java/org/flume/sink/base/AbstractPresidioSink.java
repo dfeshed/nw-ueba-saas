@@ -1,5 +1,6 @@
 package org.flume.sink.base;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
@@ -70,7 +71,12 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
             }
             transaction.commit();
         } catch (Exception ex) {
-            transaction.rollback();
+            if (ex.getClass().isAssignableFrom(JsonProcessingException.class)) {
+                logger.warn("Exception is probably not recoverable. Not performing rollback.", ex);
+            } else {
+                logger.warn("Performing rollback.");
+                transaction.rollback();
+            }
             throw new EventDeliveryException("Failed to save some events ", ex);
         } finally {
             transaction.close();

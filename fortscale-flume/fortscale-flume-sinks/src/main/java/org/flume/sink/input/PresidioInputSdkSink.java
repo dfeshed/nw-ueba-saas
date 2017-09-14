@@ -1,5 +1,6 @@
 package org.flume.sink.input;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.common.general.Schema;
@@ -106,7 +107,9 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 parsedEvent = mapper.readValue(eventBody, recordType);
             } catch (Exception e) {
                 final Map<String, String> eventHeaders = flumeEvent.getHeaders();
-                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                if (e.getClass().isAssignableFrom(JsonProcessingException.class)) {
+                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                }
                 final String errorMessage = String.format("Failed to sink event. Can't getEvent since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);
                 throw new Exception(errorMessage, e);
