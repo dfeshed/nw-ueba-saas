@@ -4,7 +4,6 @@ package presidio.webapp.service;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -123,8 +122,8 @@ public class RestUserServiceImpl implements RestUserService {
         if (CollectionUtils.isNotEmpty(alerts))
             convertedUser.setAlerts(alerts);
         convertedUser.setUserDisplayName(user.getUserDisplayName());
-        if (user.getUserSeverity() != null) {
-            convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
+        if (user.getSeverity() != null) {
+            convertedUser.setSeverity(convertUserSeverity(user.getSeverity()));
         }
         convertedUser.setScore((int) user.getScore());
         convertedUser.setTags(user.getTags());
@@ -175,8 +174,12 @@ public class RestUserServiceImpl implements RestUserService {
             });
             builder.sortField(new Sort(orders));
         }
-        if (BooleanUtils.isTrue(userQuery.getAggregateBySeverity())) {
-            builder.aggregateBySeverity(userQuery.getAggregateBySeverity());
+        if (CollectionUtils.isNotEmpty(userQuery.getAggregateBy())) {
+            List<String> aggregateByFields = new ArrayList<>();
+            userQuery.getAggregateBy().forEach(alertQueryAggregationFieldName -> {
+                aggregateByFields.add(alertQueryAggregationFieldName.toString());
+            });
+            builder.aggregateByFields(aggregateByFields);
         }
 
         return builder.build();

@@ -3,6 +3,7 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Sort;
+import presidio.webapp.model.UserQueryEnums.UserQueryAggregationFieldName;
 import presidio.webapp.model.UserQueryEnums.UserQuerySortFieldName;
 
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class UserQuery {
     @JsonProperty("sortDirection")
     private Sort.Direction sortDirection = Sort.Direction.ASC;
 
-    @JsonProperty("aggregateBySeverity")
-    private Boolean aggregateBySeverity = false;
+    @JsonProperty("aggregateBy")
+    private List<UserQueryAggregationFieldName> aggregateBy;
 
     public UserQuery userName(String userName) {
         this.userName = userName;
@@ -329,8 +330,8 @@ public class UserQuery {
         this.sortDirection = sortDirection;
     }
 
-    public UserQuery aggregateBySeverity(Boolean aggregateBySeverity) {
-        this.aggregateBySeverity = aggregateBySeverity;
+    public UserQuery aggregateBy(List<UserQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
         return this;
     }
 
@@ -340,12 +341,12 @@ public class UserQuery {
      * @return expand
      **/
     @ApiModelProperty(value = "")
-    public Boolean getAggregateBySeverity() {
-        return aggregateBySeverity;
+    public List<UserQueryAggregationFieldName> getAggregateBy() {
+        return aggregateBy;
     }
 
-    public void setAggregateBySeverity(Boolean aggregateBySeverity) {
-        this.aggregateBySeverity = aggregateBySeverity;
+    public void setAggregateBy(List<UserQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
     }
 
     @Override
@@ -370,12 +371,12 @@ public class UserQuery {
                 Objects.equals(this.severity, userQuery.severity) &&
                 Objects.equals(this.expand, userQuery.expand) &&
                 Objects.equals(this.sortDirection, userQuery.sortDirection) &&
-                Objects.equals(this.aggregateBySeverity, userQuery.aggregateBySeverity);
+                Objects.equals(this.aggregateBy, userQuery.aggregateBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection, aggregateBySeverity);
+        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection, aggregateBy);
     }
 
     @Override
@@ -396,7 +397,7 @@ public class UserQuery {
         sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
-        sb.append("    aggregateBySeverity: ").append(toIndentedString(aggregateBySeverity)).append("\n");
+        sb.append("    aggregateBy: ").append(toIndentedString(aggregateBy)).append("\n");
         sb.append("}");
         return sb.toString();
     }

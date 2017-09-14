@@ -7,7 +7,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -264,14 +261,17 @@ public class UserPersistencyServiceTest {
         userList.add(user4);
         userPersistencyService.save(userList);
 
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(User.SEVERITY_FIELD_NAME);
+
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
-                    .aggregateBySeverity(true)
+                        .aggregateByFields(aggregationFields)
                         .build();
 
         Page<User> result = userPersistencyService.find(userQuery);
         Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
-        StringTerms severityAgg = (StringTerms) stringAggregationMap.get("userSeverity");
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.SEVERITY_FIELD_NAME);
         List<Terms.Bucket> buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM

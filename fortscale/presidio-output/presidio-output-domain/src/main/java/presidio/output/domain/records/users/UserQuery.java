@@ -2,7 +2,6 @@ package presidio.output.domain.records.users;
 
 
 import org.springframework.data.domain.Sort;
-import presidio.output.domain.records.alerts.AlertQuery;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class UserQuery {
     private final Sort sort;
 
     // aggregation
-    private boolean aggregateBySeverity;
+    private final List<String> aggregateByFields;
 
     // paging
     private final int pageNumber;
@@ -37,7 +36,6 @@ public class UserQuery {
         this.filterByUsersIds = builder.filterByUsersIds;
         this.filterByUserTags = builder.filterByUserTags;
         this.filterByUserName = builder.filterByUserName;
-        this.aggregateBySeverity = builder.aggregateBySeverity;
         this.isPrefix = builder.isPrefix;
         this.minScore = builder.minScore;
         this.maxScore = builder.maxScore;
@@ -48,14 +46,13 @@ public class UserQuery {
         // page
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
+
+        // aggregate
+        this.aggregateByFields = builder.aggregateByFields;
     }
 
     public List<String> getFilterByUsersIds() {
         return filterByUsersIds;
-    }
-
-    public boolean isAggregateBySeverity() {
-        return aggregateBySeverity;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -102,6 +99,10 @@ public class UserQuery {
         return filterByUserTags;
     }
 
+    public List<String> getAggregateByFields() {
+        return aggregateByFields;
+    }
+
     public static class UserQueryBuilder {
 
         // filters
@@ -120,7 +121,7 @@ public class UserQuery {
         private Sort sort;
 
         // aggregation
-        private boolean aggregateBySeverity;
+        private List<String> aggregateByFields;
 
         // paging
         private int pageNumber = -1;
@@ -171,8 +172,8 @@ public class UserQuery {
             return this;
         }
 
-        public UserQuery.UserQueryBuilder aggregateBySeverity(boolean aggregateBySeverity) {
-            this.aggregateBySeverity = aggregateBySeverity;
+        public UserQueryBuilder aggregateByFields(List<String> aggregateByFields) {
+            this.aggregateByFields = aggregateByFields;
             return this;
         }
 

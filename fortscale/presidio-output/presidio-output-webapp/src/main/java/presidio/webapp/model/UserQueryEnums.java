@@ -30,4 +30,29 @@ public class UserQueryEnums {
             return null;
         }
     }
+
+    public enum UserQueryAggregationFieldName {
+        SEVERITY("severity");
+        private String value;
+
+        UserQueryAggregationFieldName(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static UserQueryAggregationFieldName fromValue(String text) {
+            for (UserQueryAggregationFieldName b : UserQueryAggregationFieldName.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
 }
