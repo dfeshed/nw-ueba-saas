@@ -1,15 +1,22 @@
 package presidio.webapp.service;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertsWrapper;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -53,12 +60,59 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
+    public AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
-        List restAlerts = new ArrayList();
-        alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return restAlerts;
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.find(convertedAlertQuery);
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
+        List<presidio.webapp.model.Alert> restAlerts = new ArrayList<>();
+        int totalElements = 0;
+        Map<String, Aggregation> alertAggregations = null;
+        if (alerts.getTotalElements() > 0) {
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            totalElements = Math.toIntExact(alerts.getTotalElements());
+            alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
+        }
+
+        return createAlertsWrapper(restAlerts, totalElements, alertQuery.getPageNumber(), alertAggregations);
+    }
+
+    private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, Integer pageNumber, Map<String, Aggregation> alertAggregations) {
+        AlertsWrapper alertsWrapper = new AlertsWrapper();
+        if (CollectionUtils.isNotEmpty(restAlerts)) {
+            alertsWrapper.setAlerts(restAlerts);
+            alertsWrapper.setTotal(totalNumberOfElements);
+            if (pageNumber != null) {
+                alertsWrapper.setPage(pageNumber);
+            }
+            alertsWrapper.setPage(pageNumber);
+
+            if (MapUtils.isNotEmpty(alertAggregations)) {
+                Map<String, Map<String, Long>> aggregations = convertAggregationsToMap(alertAggregations);
+                alertsWrapper.setAggregationData(aggregations);
+            }
+        } else {
+            alertsWrapper.setAlerts(new ArrayList());
+            alertsWrapper.setTotal(0);
+            alertsWrapper.setPage(0);
+        }
+        return alertsWrapper;
+    }
+
+    private Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> alertAggregations) {
+        Map<String, Map<String, Long>> aggregations = new HashMap<>();
+        alertAggregations.forEach((s, aggregation) -> {
+            List<Terms.Bucket> buckets = ((StringTerms) aggregation).getBuckets();
+            Map<String, Long> bucketAsMap = new HashMap<>();
+            buckets.forEach(bucket -> {
+                bucketAsMap.put(bucket.getKeyAsString(), bucket.getDocCount());
+            });
+            aggregations.put(s, bucketAsMap);
+        });
+        return aggregations;
     }
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
@@ -105,17 +159,15 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getFeedback())) {
             List<String> feedback = new ArrayList<>();
-            alertQuery.getSort().forEach(feedbackParam -> {
+            alertQuery.getFeedback().forEach(feedbackParam -> {
                 feedback.add(feedbackParam.toString());
             });
             alertQueryBuilder.filterByFeedback(feedback);
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getSort())) {
+        if (CollectionUtils.isNotEmpty(alertQuery.getSortFieldNames()) && alertQuery.getSortDirection() != null) {
             List<Sort.Order> orders = new ArrayList<>();
-            alertQuery.getSort().forEach(s -> {
-                Sort.Direction direction = Sort.Direction.fromString(s.getDirection().name());
-                orders.add(new Sort.Order(direction, s.getFieldNames().name()));
-
+            alertQuery.getSortFieldNames().forEach(s -> {
+                orders.add(new Sort.Order(alertQuery.getSortDirection(), s.toString()));
             });
             alertQueryBuilder.sortField(new Sort(orders));
         }
@@ -127,21 +179,33 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public List<presidio.webapp.model.Alert> getAlertsByUserId(String userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
-        if (alerts.hasContent()) {
-            List restAlerts = new ArrayList();
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-            return restAlerts;
+    public AlertsWrapper getAlertsByUserId(String userId) {
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
         }
-        return null;
+        List restAlerts = new ArrayList();
+        int totalElements = 0;
+        if (alerts.getTotalElements() > 0) {
+            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            totalElements = Math.toIntExact(alerts.getTotalElements());
+        }
+        return createAlertsWrapper(restAlerts, totalElements, 0, null);
     }
 
     @Override
     public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
-        if (alerts.hasContent()) {
-            List restAlerts = new ArrayList();
+        Page<presidio.output.domain.records.alerts.Alert> alerts;
+        try {
+            alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
+        } catch (Exception ex) {
+            alerts = new PageImpl<>(null, null, 0);
+        }
+        List restAlerts;
+        if (alerts.getTotalElements() > 0) {
+            restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
             return userIdsToAlerts(restAlerts, (List) userIds);
         }

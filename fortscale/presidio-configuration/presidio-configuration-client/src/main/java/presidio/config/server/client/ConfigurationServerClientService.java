@@ -34,4 +34,6 @@ public interface ConfigurationServerClientService {
     Properties readConfigurationAsProperties(String moduleName, String profile) throws Exception;
 
     <T> T readConfigurationAsJson(String moduleName, String profile, Class<T> clazz) throws Exception;
+
+    String readConfigurationAsJsonString(String moduleName, String profile) throws Exception ;
 }

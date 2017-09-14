@@ -6,7 +6,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 
 class ConfigServerConfigurationReaderTestBuilder():
     def build(self):
-        reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+        reader = ConfigServerConfigurationReaderSingleton().config_reader
         reader.set_properties(properties={
             "dags": {
                 "operators": {
