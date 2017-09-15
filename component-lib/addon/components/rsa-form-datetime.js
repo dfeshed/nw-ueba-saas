@@ -73,13 +73,22 @@ export default Component.extend({
 
   actions: {
     forceChangeOnClose(selectedDates, dateString, flatpikr) {
-      const selectedDate = selectedDates.get('firstObject');
-      const selectedDateMs = selectedDate.getTime();
-      const inputDate = new Date(flatpikr.element.value);
-      const inputDateMs = new Date(flatpikr.element.value).getTime();
+      if (flatpikr.element.value) {
+        const selectedDate = selectedDates.get('firstObject');
+        const inputDate = new Date(flatpikr.element.value);
 
-      if (!isEmpty(inputDateMs) && inputDateMs !== selectedDateMs) {
-        this.onChange([inputDate]);
+        if (selectedDate) {
+          const selectedDateMs = selectedDate.getTime();
+          const inputDateMs = inputDate.getTime();
+
+          if ((!isEmpty(inputDateMs) && inputDateMs !== selectedDateMs)) {
+            flatpikr.setDate(inputDate);
+            this.onChange([inputDate]);
+          }
+        } else {
+          flatpikr.setDate(inputDate);
+          this.onChange([inputDate]);
+        }
       }
     }
   }
