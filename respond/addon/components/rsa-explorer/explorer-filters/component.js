@@ -179,7 +179,9 @@ export default Component.extend({
 
     customEndDateChanged([date]) {
       const dateFilterField = this.get('defaultDateFilterField') || 'created';
-      const end = date ? this._toUTCTimestamp(date) : null;
+      // Because user time selection precision is only down to the second, but the precision of the database value
+      // is down to the millisecond, adding 999 milliseconds to end time to ensure inclusion of records for the entire final second
+      const end = date ? this._toUTCTimestamp(date) + 999 : null;
       const start = this.get('timeframeFilter.start');
       this.sendAction('updateFilter', {
         [dateFilterField]: { start, end }
