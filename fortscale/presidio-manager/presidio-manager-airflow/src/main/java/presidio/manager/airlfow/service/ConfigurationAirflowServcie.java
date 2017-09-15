@@ -12,13 +12,13 @@ import presidio.manager.api.service.ConfigurationProcessingService;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class ConfigurationAirflowServcie implements ConfigurationProcessingService {
@@ -67,11 +67,22 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 String filePath = String.format("%s/%s-%s.json", configurationFolderPath, moduleName, profile);
                 logger.info("applying configuration path={}",filePath);
                 File file = new File(filePath);
-                file.setReadable(true,false);
-                file.setWritable(true,false);
+                Set<PosixFilePermission> perms = new HashSet<>();
+
+                //add owners permission
+                perms.add(PosixFilePermission.OWNER_READ);
+                perms.add(PosixFilePermission.OWNER_WRITE);
+                //add group permissions
+                perms.add(PosixFilePermission.GROUP_READ);
+                perms.add(PosixFilePermission.GROUP_WRITE);
+                //add others permissions
+                perms.add(PosixFilePermission.OTHERS_READ);
+                perms.add(PosixFilePermission.OTHERS_WRITE);
+
                 FileWriter fileWriter = new FileWriter(file,false);
                 fileWriter.write(newConfJson);
                 fileWriter.close();
+                Files.setPosixFilePermissions(Paths.get(filePath),perms);
             }
             return true;
         } catch (Exception e) {
