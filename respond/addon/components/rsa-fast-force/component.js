@@ -41,7 +41,8 @@ export default Component.extend({
   // For details, see d3 API docs: https://github.com/mbostock/d3/wiki/Force-Layout
   charge: -1000,
   chargeDistance: 250,
-  linkStrength: 0.1,  // weak link strength works better with variable node radii
+  collideStrength: 0.4, // strength of force that prevents node collisions (d3's default = 0.7)
+  linkStrength: 0.01, // weak link strength works better with variable node radii
   linkDistance: 150,
   centerX: null,      // centering forces produce confusing physics for users; disable by default
   centerY: null,
@@ -636,6 +637,7 @@ export default Component.extend({
     const {
       linkDistance,
       linkStrength,
+      collideStrength,
       charge,
       chargeDistance,
       centerX,
@@ -645,6 +647,7 @@ export default Component.extend({
     } = this.getProperties(
       'linkDistance',
       'linkStrength',
+      'collideStrength',
       'charge',
       'chargeDistance',
       'centerX',
@@ -677,9 +680,12 @@ export default Component.extend({
     }
 
     // Define a force that prevents node collisions (overlap).
-    const collideForce = forceCollide()
-      .radius(nodeMaxRadius + nodeMaxStrokeWidth * 2);
-    simulation.force('collide', collideForce);
+    if (collideStrength) {
+      const collideForce = forceCollide()
+        .radius(nodeMaxRadius + nodeMaxStrokeWidth * 2)
+        .strength(collideStrength);
+      simulation.force('collide', collideForce);
+    }
 
     // Wire up tick handler that applies simulation coordinates to DOM.
     simulation.on('tick', run.bind(this, 'ticked'));
