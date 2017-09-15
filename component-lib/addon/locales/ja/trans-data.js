@@ -472,6 +472,10 @@ export default {
     close: 'ja_Close',
     empty: 'ja_(empty)',
     filters: 'ja_Filters',
+    errorPage: {
+      serviceDown: 'ja_Respond Server is not running',
+      serviceDownDescription: 'ja_The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+    },
     timeframeOptions: {
       LAST_5_MINUTES: 'ja_Last 5 Minutes',
       LAST_10_MINUTES: 'ja_Last 10 Minutes',

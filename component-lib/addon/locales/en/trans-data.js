@@ -472,6 +472,10 @@ export default {
     close: 'Close',
     empty: '(empty)',
     filters: 'Filters',
+    errorPage: {
+      serviceDown: 'Respond Server is offline',
+      serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+    },
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',
       LAST_10_MINUTES: 'Last 10 Minutes',

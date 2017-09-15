@@ -2,11 +2,17 @@
 
 const socketRouteGenerator = require('../../../config/socketRoutes');
 const common = require('../../../../common');
+const mockPort = process.env.MOCK_PORT || 9999;
+const mockServerUrl = `http://localhost:${mockPort}`;
+const useMockServer = !process.env.NOMOCK;
 
 module.exports = function(environment) {
   const ENV = {
     modulePrefix: 'dummy',
     environment,
+    mockServerUrl,
+    useMockServer,
+    mockPort,
     rootURL: '/',
     locationType: 'auto',
     dateFormatDefault: 'MM/dd/yyyy',
