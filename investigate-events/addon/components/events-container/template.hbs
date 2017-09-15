@@ -1,0 +1,16 @@
+{{#if isLoadingServices}}
+  {{rsa-loader
+    size='large'
+    label=(t 'investigate.services.loading')
+  }}
+{{else if hasServices}}
+  {{query-bar onSubmit=(route-action 'submitQuery')}}
+{{else}}
+  {{#rsa-panel-message message=message}}
+    {{#rsa-form-button}}
+      <span {{action (action 'initializeServices')}}>
+        {{t 'investigate.tryAgain'}}
+      </span>
+    {{/rsa-form-button}}
+  {{/rsa-panel-message}}
+{{/if}}

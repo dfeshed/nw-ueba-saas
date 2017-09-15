@@ -11,11 +11,8 @@ import Meta from 'investigate-events/actions/meta';
 import Nav from 'investigate-events/actions/nav';
 import Recon from 'investigate-events/actions/recon';
 import Results from 'investigate-events/actions/results';
-import Services from 'investigate-events/actions/services';
-import Transition from 'investigate-events/actions/transition';
 
-
-export default Route.extend(Context, Events, EventCount, EventTimeline, InvestigateState, Meta, Nav, Recon, Results, Services, Transition, {
+export default Route.extend(Context, Events, EventCount, EventTimeline, InvestigateState, Meta, Nav, Recon, Results, {
   i18n: service(),
 
   state: computed(function() {

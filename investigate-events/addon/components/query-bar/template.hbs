@@ -1,28 +1,31 @@
 {{#power-select
   class='rsa-investigate-query-bar__service'
-  tagName='div'
   matchTriggerWidth=false
   onchange=(action 'updateService')
   options=services
   placeholder='Select a Service'
   searchEnabled=false
-  selected=selectedService as |option|}}
+  selected=selectedService
+  tagName='div' as |option|}}
   {{option.displayName}}
 {{/power-select}}
 
 {{#power-select
   class='rsa-investigate-query-bar__time-range'
-  tagName='div'
   matchTriggerWidth=false
   onchange=(action 'updateRange')
   options=timeRanges
   placeholder='Select a Time Range'
   searchEnabled=false
-  selected=selectedTimeRange as |option|}}
+  selected=selectedTimeRange
+  tagName='div' as |option|}}
   {{option.name}}
 {{/power-select}}
 
-{{query-input class="rsa-investigate-query-bar__query-input" queryString=queryString}}
+{{query-input
+  class="rsa-investigate-query-bar__query-input"
+  queryString=queryString
+}}
 
 {{#rsa-form-button
   class="rsa-investigate-query-bar__submit"

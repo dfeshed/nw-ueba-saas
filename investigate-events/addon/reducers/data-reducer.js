@@ -1,30 +1,21 @@
+import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 
-import * as ACTION_TYPES from '../actions/types';
+import * as ACTION_TYPES from 'investigate-events/actions/types';
 
-const dataInitialState = {
-  contentError: null,
-  contentLoading: false
-};
+const _dataInitialState = Immutable.from({
+  endpointId: null
+});
 
 const data = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => ({
-    ...dataInitialState,
-    endpointId: payload.endpointId,
-    eventId: payload.eventId
-  }),
+  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
+    const { data: { endpointId } } = payload;
+    return _dataInitialState.set('endpointId', endpointId);
+  },
 
-  // Generic content handling
-  [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => ({
-    ...state,
-    contentError: null,
-    contentLoading: true
-  }),
-  [ACTION_TYPES.CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
-    ...state,
-    contentError: payload,
-    contentLoading: false
-  })
-}, dataInitialState);
+  [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
+    return state.set('endpointId', payload);
+  }
+}, _dataInitialState);
 
 export default data;

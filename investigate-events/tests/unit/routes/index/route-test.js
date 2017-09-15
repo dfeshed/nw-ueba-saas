@@ -3,7 +3,10 @@ import engineResolverFor from '../../../helpers/engine-resolver';
 
 moduleFor('route:index', 'Unit | Route | index', {
   // Specify the other units that are required for this test.
-  needs: ['service:accessControl'],
+  needs: [
+    'service:accessControl',
+    'service:redux'
+  ],
   resolver: engineResolverFor('investigate-events')
 });
 

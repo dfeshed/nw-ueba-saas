@@ -1,5 +1,4 @@
 <section class="rsa-investigate-breadcrumb__crumbs rsa-button-group">
-
   {{#if serviceObject}}
     {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbServiceTooltip-' elementId)}}
       {{#rsa-form-button
@@ -54,7 +53,6 @@
       </li>
     </ul>
   {{/rsa-content-tethered-panel}}
-
 
   {{#each crumbs as |crumb index|}}
     <span class="rsa-investigate-breadcrumb__crumb">

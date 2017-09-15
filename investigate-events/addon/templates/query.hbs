@@ -1,10 +1,9 @@
 <article class="rsa-investigate-query">
   <header class="rsa-investigate-query__header">
-    {{b-breadcrumb
+    {{bread-crumb
       query=model.queryNode.value.definition
       language=model.queryNode.value.language.data
       aliases=model.queryNode.value.aliases.data
-      services=model.services.data
       submitQuery=(route-action 'submitQuery')}}
 
     {{#if (is-equal model.queryNode.value.results.events.status 'error')}}

@@ -1,18 +1,28 @@
 import Route from 'ember-route';
 import service from 'ember-service/inject';
 
+import {
+  initializeDictionaries,
+  initializeServices
+} from 'investigate-events/actions/data-creators';
+
 export default Route.extend({
   accessControl: service(),
+  redux: service(),
 
   beforeModel() {
     // Re-route back to the parent's protected route if we don't have permission
     if (!this.get('accessControl.hasInvestigateAccess')) {
       this.transitionToExternal('protected');
+    } else {
+      // Get services
+      this.get('redux').dispatch(initializeServices());
     }
   },
 
   model() {
     // Expose the parent route's state data to this child route's template.
+    // TODO - eventually remove this when all Reduxed-up
     return this.modelFor('application');
   },
 
@@ -36,11 +46,10 @@ export default Route.extend({
       // (2) Performance optimization: It ensures that the results UI does not
       // render the last query's results before fetching the new query's
       // results.
-      this.send('navGoto', null);
+      // this.sendAction('navGoto', null);
 
-      // Similar optimization to above: clear Recon's results (if any) so we
-      // don't glimpse them as we transition to results.
-      this.send('reconClose', true);
+      // Get `language` and `aliases` now that we know what service we're using
+      this.get('redux').dispatch(initializeDictionaries());
 
       // Navigate to results UI.
       this.transitionTo('query', [

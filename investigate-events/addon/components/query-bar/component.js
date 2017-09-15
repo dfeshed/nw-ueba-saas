@@ -1,37 +1,21 @@
-/**
- * @file Investigate Query Bar
- * A UI for the user to query the events of a NetWitness Core service.
- * @public
- */
-import Ember from 'ember';
+import Component from 'ember-component';
+import get from 'ember-metal/get';
+import { assert } from 'ember-metal/utils';
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import $ from 'jquery';
+import { serviceSelected } from 'investigate-events/actions/interaction-creators';
 
-const {
-  Component,
-  Logger,
-  get,
-  $
-} = Ember;
+const stateToComputed = ({ data, services }) => ({
+  endpointId: data.endpointId,
+  services: services.data
+});
 
-export default Component.extend({
+const dispatchToActions = { serviceSelected };
+
+const QueryBarComponent = Component.extend({
   classNames: 'rsa-investigate-query-bar',
   queryString: '',
-
-  /**
-   * Array of available Core services (brokers, concentrators, etc).
-   * @type {object[]}
-   * @public
-   */
-  services: undefined,
-
-  /**
-   * Optional status of the promise to fetch `services`. If this is set to 'wait', the UI will show a wait
-   * message in the place where the list of services would otherwise be shown.
-   * @type {string}
-   * @public
-   *
-   */
-  servicesStatus: undefined,
 
   /**
    * Array of available time ranges for user to pick from.
@@ -81,8 +65,8 @@ export default Component.extend({
   selectedTimeRange: undefined,
 
   // Resolves to `true` only if all the required user inputs/selections have been made.
-  @computed('selectedService', 'selectedTimeRange')
-  submitDisabled: (service, timeRange) => !(service && timeRange),
+  @computed('endpointId', 'selectedTimeRange')
+  submitDisabled: (endpointId, timeRange) => !(endpointId && timeRange),
 
   actions: {
     // Kicks off a query by invoking the configurable `onSubmit` callback.
@@ -92,11 +76,11 @@ export default Component.extend({
       const submitEnabled = !this.get('submitDisabled');
       if (submitEnabled) {
         const fn = this.get('onSubmit');
-        Logger.assert(
+        assert(
           $.isFunction(fn),
           'Invalid onSubmit action defined for rsa-query-bar. Action aborted.'
         );
-        const serviceId = this.get('selectedService.id');
+        const serviceId = this.get('endpointId');
         const timeRangeId = this.get('selectedTimeRange.id');
         const timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
         const seconds = get(timeRange, 'seconds');
@@ -119,7 +103,10 @@ export default Component.extend({
      * @private
      */
     updateService(selectedService) {
+      // Store off the service object for use internally to this component
       this.set('selectedService', selectedService);
+      // Save the id of the endpoint to state
+      this.send('serviceSelected', selectedService.id);
     },
 
     /**
@@ -132,3 +119,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(QueryBarComponent);

@@ -29,6 +29,7 @@
     "ember-math-helpers": "2.0.5",
     "ember-moment": "7.2.0",
     "ember-redux": "3.0.0",
+    "ember-cli-seamless-immutable-shim": "1.0.0",
     "flexi": "2.0.1"
   },
   "devDependencies": {
@@ -62,7 +63,8 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "faker": "3.1.0",
     "loader.js": "^4.2.3",
-    "lodash-es": "4.17.4"
+    "lodash-es": "4.17.4",
+    "seamless-immutable": "7.1.2"
   },
   "engines": {
     "node": ">= 4"

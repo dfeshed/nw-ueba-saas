@@ -1,11 +1,15 @@
-import { isEmpty } from 'ember-utils';
 import Route from 'ember-route';
 import run from 'ember-runloop';
-import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 import service from 'ember-service/inject';
 
+import { initializeServices } from 'investigate-events/actions/data-creators';
+import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
+import { serviceSelected } from 'investigate-events/actions/interaction-creators';
+
 export default Route.extend({
+  accessControl: service(),
   contextualHelp: service(),
+  redux: service(),
 
   queryParams: {
     eventId: {
@@ -31,6 +35,16 @@ export default Route.extend({
   deactivate() {
     this.set('contextualHelp.module', null);
     this.set('contextualHelp.topic', null);
+  },
+
+  beforeModel() {
+    // Re-route back to the parent's protected route if we don't have permission
+    if (!this.get('accessControl.hasInvestigateAccess')) {
+      this.transitionToExternal('protected');
+    } else {
+      // Get services
+      this.get('redux').dispatch(initializeServices());
+    }
   },
 
   /**
@@ -59,16 +73,24 @@ export default Route.extend({
     // `transition` instead. So instead we use `run.next()` to wait until the
     // route has transitioned before calling any actions.
     run.next(() => {
+      const { serviceId } = filterAttrs;
+      const {
+        eventId,
+        metaPanelSize,
+        reconSize
+      } = params;
+
+      // Apply the route URL queryParams to Redux state
+      if (serviceId) {
+        this.get('redux').dispatch(serviceSelected(serviceId));
+      }
+
       // Apply the route URL queryParams to the state model.
-      this.send('metaPanelSizeReceived', params.metaPanelSize);
-      this.send('reconSizeReceived', params.reconSize);
+      this.send('metaPanelSizeReceived', metaPanelSize);
+      this.send('reconSizeReceived', reconSize);
       this.send('navFindOrAdd', filterAttrs);
-
-      const endpointId = state.get('queryNode.value.definition.serviceId');
-      const { eventId } = params;
-
-      if (!isEmpty(endpointId) && !isEmpty(eventId) && eventId !== -1) {
-        this.send('reconOpen', endpointId, eventId);
+      if (serviceId && eventId && eventId !== -1) {
+        this.send('reconOpen', serviceId, eventId);
       }
     });
     return state;

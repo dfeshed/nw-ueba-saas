@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import Services from './services';
 import EventColumnGroups from './event-column-groups';
 import Tree from './utils/tree/tree';
 import Meta from './meta';
@@ -10,9 +9,6 @@ const {
 } = Ember;
 
 export default EmberObject.extend({
-
-  // List of available Core services. User can choose one to query.
-  services: Services.create(),
 
   // Cache of Core languages, keyed by Core service Id. Each hash value is an array of meta keys.
   languages: EmberObject.create(),

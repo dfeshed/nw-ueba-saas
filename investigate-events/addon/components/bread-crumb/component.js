@@ -1,17 +1,20 @@
-/**
- * @file Breadcrumb component
- * Displays the constituent pieces of a given NetWitness Core query.
- * @public
- */
-import Ember from 'ember';
+import Component from 'ember-component';
+import run from 'ember-runloop';
+import service from 'ember-service/inject';
 import computed, { bool, empty } from 'ember-computed-decorators';
+import { connect } from 'ember-redux';
 import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-utils';
 import formatUtil from 'investigate-events/components/events-table-row/format-util';
 import { metaKeyAlias } from 'investigate-events/helpers/meta-key-alias';
+import { selectedService } from 'investigate-events/reducers/services/selectors';
+import $ from 'jquery';
 
-const { $, Component, get, run, set, inject: { service } } = Ember;
+const stateToComputed = (state) => ({
+  serviceObject: selectedService(state),
+  serviceData: state.services.data
+});
 
-export default Component.extend({
+const BreadCrumbComponent = Component.extend({
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
@@ -46,27 +49,11 @@ export default Component.extend({
    */
   query: undefined,
 
-  /**
-   * List of known NetWitness Core services.
-   * Used for looking up the name of a service by its ID.
-   * @type {object[]}
-   * @public
-   */
-  services: undefined,
-
   @empty('queryString')
   isInvalidQuery: false,
 
-  @computed('services.[]', 'query')
-  servicesWithURI(services, query) {
-    return services.map((service) => {
-      const clone = query.clone();
-      clone.metaFilter.conditions.clear();
-      clone.set('serviceId', get(service, 'id'));
-      set(service, 'queryURI', uriEncodeEventQuery(clone));
-      return service;
-    });
-  },
+  @computed('serviceData', 'query')
+  servicesWithURI: (services, query) => this._addQueryUriToServices(services, query),
 
   // Compute an options hash for the utilities which will format the meta values.
   // The options hash will include any meta value aliases defined on the Core device.
@@ -94,10 +81,6 @@ export default Component.extend({
   // Resolves to true if the given query has some meta filter conditions.
   @bool('query.metaFilter.conditions.length')
   hasDrill: null,
-
-  // Computes the service object in `services` that matches `query.serviceId`.
-  @computed('services', 'query.serviceId')
-  serviceObject: ((services = [], serviceId = '') => services.findBy('id', serviceId)),
 
   // Computes URI for the given query WITHOUT the query's meta filter conditions.
   @computed('query')
@@ -154,6 +137,16 @@ export default Component.extend({
     });
   },
 
+  _addQueryUriToServices(services, query) {
+    return services.map((service) => {
+      const clone = query.clone();
+      clone.metaFilter.conditions.clear();
+      clone.serviceId = service.id;
+      service.queryURI = uriEncodeEventQuery(clone);
+      return service;
+    });
+  },
+
   actions: {
     addMeta() {
       this.toggleProperty('isAddingMeta');
@@ -171,3 +164,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(BreadCrumbComponent);

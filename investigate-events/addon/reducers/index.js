@@ -1,6 +1,11 @@
 import { combineReducers } from 'redux';
-import recon from 'recon/reducers/index';
+
+import data from './data-reducer';
+import dictionaries from './dictionaries/reducer';
+import services from './services/reducer';
 
 export default combineReducers({
-  ...recon
+  data,
+  dictionaries,
+  services
 });
