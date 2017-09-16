@@ -24,6 +24,4 @@ public interface UserPersistencyService {
     Page<User> findByUserId(String userId, PageRequest pageRequest);
 
     Page<User> find(UserQuery userQuery);
-
-
 }

@@ -195,16 +195,16 @@ public class UserScoreServiceImplTest {
         Whitebox.invokeMethod(userScoreService, "updateSeveritiesForUsersList", userScoreToSeverity, page1.getContent(), true);
 
 
-        Assert.assertEquals(UserSeverity.LOW, page.get(0).getUserSeverity());
-        Assert.assertEquals(UserSeverity.LOW, page.get(1).getUserSeverity());
-        Assert.assertEquals(UserSeverity.LOW, page.get(2).getUserSeverity());
-        Assert.assertEquals(UserSeverity.MEDIUM, page.get(3).getUserSeverity());
-        Assert.assertEquals(UserSeverity.MEDIUM, page.get(4).getUserSeverity());
-        Assert.assertEquals(UserSeverity.HIGH, page.get(5).getUserSeverity());
-        Assert.assertEquals(UserSeverity.HIGH, page.get(6).getUserSeverity());
-        Assert.assertEquals(UserSeverity.HIGH, page.get(7).getUserSeverity());
-        Assert.assertEquals(UserSeverity.HIGH, page.get(8).getUserSeverity());
-        Assert.assertEquals(UserSeverity.CRITICAL, page.get(9).getUserSeverity());
+        Assert.assertEquals(UserSeverity.LOW, page.get(0).getSeverity());
+        Assert.assertEquals(UserSeverity.LOW, page.get(1).getSeverity());
+        Assert.assertEquals(UserSeverity.LOW, page.get(2).getSeverity());
+        Assert.assertEquals(UserSeverity.MEDIUM, page.get(3).getSeverity());
+        Assert.assertEquals(UserSeverity.MEDIUM, page.get(4).getSeverity());
+        Assert.assertEquals(UserSeverity.HIGH, page.get(5).getSeverity());
+        Assert.assertEquals(UserSeverity.HIGH, page.get(6).getSeverity());
+        Assert.assertEquals(UserSeverity.HIGH, page.get(7).getSeverity());
+        Assert.assertEquals(UserSeverity.HIGH, page.get(8).getSeverity());
+        Assert.assertEquals(UserSeverity.CRITICAL, page.get(9).getSeverity());
 
     }
 }

@@ -2,6 +2,9 @@ package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.users.User;
@@ -21,6 +25,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -239,4 +244,39 @@ public class UserPersistencyServiceTest {
         assertEquals(tags, foundUser.getTags());
     }
 
+    @Test
+    public void testFindByQueryWithSeverityAggregation() {
+
+        List<String> classification = new ArrayList<>();
+        classification.add("a");
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0);
+
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        userPersistencyService.save(userList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(User.SEVERITY_FIELD_NAME);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.SEVERITY_FIELD_NAME);
+        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+
+        assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM
+        assertEquals(severityAgg.getBucketByKey("CRITICAL").getDocCount(), 2L);
+        assertEquals(severityAgg.getBucketByKey("MEDIUM").getDocCount(), 2L);
+    }
 }

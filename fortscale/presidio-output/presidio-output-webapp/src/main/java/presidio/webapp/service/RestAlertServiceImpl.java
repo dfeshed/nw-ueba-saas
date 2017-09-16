@@ -1,10 +1,13 @@
 package presidio.webapp.service;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -62,18 +65,32 @@ public class RestAlertServiceImpl implements RestAlertService {
         } catch (Exception ex) {
             alerts = new PageImpl<>(null, null, 0);
         }
-        List restAlerts = new ArrayList();
-        if (alerts.getTotalElements() > 0)
+        List<presidio.webapp.model.Alert> restAlerts = new ArrayList<>();
+        int totalElements = 0;
+        Map<String, Aggregation> alertAggregations = null;
+        if (alerts.getTotalElements() > 0) {
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber() != null ? alertQuery.getPageNumber() : 0);
+            totalElements = Math.toIntExact(alerts.getTotalElements());
+            alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
+        }
+
+        return createAlertsWrapper(restAlerts, totalElements, alertQuery.getPageNumber(), alertAggregations);
     }
 
-    private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, int pageNumber) {
+    private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, Integer pageNumber, Map<String, Aggregation> alertAggregations) {
         AlertsWrapper alertsWrapper = new AlertsWrapper();
         if (CollectionUtils.isNotEmpty(restAlerts)) {
             alertsWrapper.setAlerts(restAlerts);
             alertsWrapper.setTotal(totalNumberOfElements);
+            if (pageNumber != null) {
+                alertsWrapper.setPage(pageNumber);
+            }
             alertsWrapper.setPage(pageNumber);
+
+            if (MapUtils.isNotEmpty(alertAggregations)) {
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
+                alertsWrapper.setAggregationData(aggregations);
+            }
         } else {
             alertsWrapper.setAlerts(new ArrayList());
             alertsWrapper.setTotal(0);
@@ -135,6 +152,13 @@ public class RestAlertServiceImpl implements RestAlertService {
             });
             alertQueryBuilder.sortField(new Sort(orders));
         }
+        if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
+            List<String> aggregateByFields = new ArrayList<>();
+            alertQuery.getAggregateBy().forEach(alertQueryAggregationFieldName -> {
+                aggregateByFields.add(alertQueryAggregationFieldName.toString());
+            });
+            alertQueryBuilder.aggregateByFields(aggregateByFields);
+        }
         AlertQuery convertedAlertQuery = alertQueryBuilder.build();
         return convertedAlertQuery;
     }
@@ -148,9 +172,12 @@ public class RestAlertServiceImpl implements RestAlertService {
             alerts = new PageImpl<>(null, null, 0);
         }
         List restAlerts = new ArrayList();
-        if (alerts.getTotalElements() > 0)
+        int totalElements = 0;
+        if (alerts.getTotalElements() > 0) {
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), 0);
+            totalElements = Math.toIntExact(alerts.getTotalElements());
+        }
+        return createAlertsWrapper(restAlerts, totalElements, 0, null);
     }
 
     @Override

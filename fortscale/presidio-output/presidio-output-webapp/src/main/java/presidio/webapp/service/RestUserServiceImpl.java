@@ -3,8 +3,11 @@ package presidio.webapp.service;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
@@ -14,6 +17,7 @@ import presidio.webapp.model.UserQuery;
 import presidio.webapp.model.UsersWrapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,36 +59,51 @@ public class RestUserServiceImpl implements RestUserService {
         try {
             users = userPersistencyService.find(convertUserQuery(userQuery));
         } catch (Exception ex) {
-            return createUsersWrapper(null, 0, 0);
+            return createUsersWrapper(null, 0, 0, null);
         }
         List<User> restUsers = new ArrayList<>();
-        List<Alert> alerts = null;
-        if (userQuery.getExpand()) {
-            List<String> usersIds = new ArrayList<>();
-            for (presidio.output.domain.records.users.User user : users) {
-                usersIds.add(user.getId());
+
+        if (users != null && users.getSize() > 0) {
+            Map<String, List<Alert>> usersIdsToAlertsMap = new HashMap<>();
+
+            // Get the alert data for the received users
+            if (userQuery.getExpand()) {
+                List<String> usersIds = new ArrayList<>();
+                for (presidio.output.domain.records.users.User user : users) {
+                    usersIds.add(user.getId());
+                }
+
+                usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
             }
-            Map<String, List<Alert>> usersIdsToAlertsMap = restAlertService.getAlertsByUsersIds(usersIds);
+
+            // Create the rest response
             for (presidio.output.domain.records.users.User user : users) {
-                if (usersIdsToAlertsMap == null)
-                    restUsers.add(createResult(user, null));
-                else
-                    restUsers.add(createResult(user, usersIdsToAlertsMap.get(user.getId())));
+                List<Alert> alertList = null;
+                if (MapUtils.isNotEmpty(usersIdsToAlertsMap)) {
+                    alertList = usersIdsToAlertsMap.get(user.getId());
+                }
+                restUsers.add(createResult(user, alertList));
             }
+
+            Map<String, Aggregation> userAggregationsMap = ((AggregatedPageImpl<presidio.output.domain.records.users.User>) users).getAggregations().asMap();
+            return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber(), userAggregationsMap);
         } else {
-            for (presidio.output.domain.records.users.User user : users) {
-                restUsers.add(createResult(user, alerts));
-            }
+            return createUsersWrapper(null, 0, 0, null);
         }
-        return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber() != null ? userQuery.getPageNumber() : 0);
     }
 
-    private UsersWrapper createUsersWrapper(List Users, int totalNumberOfElements, int pageNumber) {
+    private UsersWrapper createUsersWrapper(List Users, int totalNumberOfElements, Integer pageNumber, Map<String, Aggregation> userAggregationsMap) {
         UsersWrapper usersWrapper = new UsersWrapper();
         if (CollectionUtils.isNotEmpty(Users)) {
             usersWrapper.setUsers(Users);
             usersWrapper.setTotal(totalNumberOfElements);
-            usersWrapper.setPage(pageNumber);
+            if (pageNumber != null) {
+                usersWrapper.setPage(pageNumber);
+            }
+            if (MapUtils.isNotEmpty(userAggregationsMap)) {
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(userAggregationsMap);
+                usersWrapper.setAggregationData(aggregations);
+            }
         } else {
             usersWrapper.setUsers(new ArrayList());
             usersWrapper.setTotal(0);
@@ -103,8 +122,8 @@ public class RestUserServiceImpl implements RestUserService {
         if (CollectionUtils.isNotEmpty(alerts))
             convertedUser.setAlerts(alerts);
         convertedUser.setUserDisplayName(user.getUserDisplayName());
-        if (user.getUserSeverity() != null) {
-            convertedUser.setUserSeverity(convertUserSeverity(user.getUserSeverity()));
+        if (user.getSeverity() != null) {
+            convertedUser.setSeverity(convertUserSeverity(user.getSeverity()));
         }
         convertedUser.setScore((int) user.getScore());
         convertedUser.setTags(user.getTags());
@@ -154,6 +173,13 @@ public class RestUserServiceImpl implements RestUserService {
                 orders.add(new Sort.Order(userQuery.getSortDirection(), s.toString()));
             });
             builder.sortField(new Sort(orders));
+        }
+        if (CollectionUtils.isNotEmpty(userQuery.getAggregateBy())) {
+            List<String> aggregateByFields = new ArrayList<>();
+            userQuery.getAggregateBy().forEach(alertQueryAggregationFieldName -> {
+                aggregateByFields.add(alertQueryAggregationFieldName.toString());
+            });
+            builder.aggregateByFields(aggregateByFields);
         }
 
         return builder.build();

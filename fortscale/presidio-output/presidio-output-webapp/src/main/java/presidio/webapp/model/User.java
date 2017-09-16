@@ -28,8 +28,8 @@ public class User {
     @JsonProperty("score")
     private Integer score = null;
 
-    @JsonProperty("userSeverity")
-    private UserSeverity userSeverity = null;
+    @JsonProperty("severity")
+    private UserSeverity severity = null;
 
     @JsonProperty("alertsCount")
     private Integer alertsCount = null;
@@ -142,22 +142,22 @@ public class User {
     }
 
     public User userSeverity(UserSeverity userSeverity) {
-        this.userSeverity = userSeverity;
+        this.severity = userSeverity;
         return this;
     }
 
     /**
-     * Get userSeverity
+     * Get severity
      *
-     * @return userSeverity
+     * @return severity
      **/
     @ApiModelProperty(value = "")
-    public UserSeverity getUserSeverity() {
-        return userSeverity;
+    public UserSeverity getSeverity() {
+        return severity;
     }
 
-    public void setUserSeverity(UserSeverity userSeverity) {
-        this.userSeverity = userSeverity;
+    public void setSeverity(UserSeverity severity) {
+        this.severity = severity;
     }
 
     public User alertsNum(Integer alertsNum) {
@@ -242,7 +242,7 @@ public class User {
                 Objects.equals(this.userDisplayName, user.userDisplayName) &&
                 Objects.equals(this.tags, user.tags) &&
                 Objects.equals(this.score, user.score) &&
-                Objects.equals(this.userSeverity, user.userSeverity) &&
+                Objects.equals(this.severity, user.severity) &&
                 Objects.equals(this.alertsCount, user.alertsCount) &&
                 Objects.equals(this.alerts, user.alerts) &&
                 Objects.equals(this.alertClassifications, user.alertClassifications);
@@ -250,7 +250,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, userDisplayName, tags, score, userSeverity, alertsCount, alerts, alertClassifications);
+        return Objects.hash(id, username, userDisplayName, tags, score, severity, alertsCount, alerts, alertClassifications);
     }
 
     @Override
@@ -263,7 +263,7 @@ public class User {
         sb.append("    userDisplayName: ").append(toIndentedString(userDisplayName)).append("\n");
         sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
         sb.append("    score: ").append(toIndentedString(score)).append("\n");
-        sb.append("    userSeverity: ").append(toIndentedString(userSeverity)).append("\n");
+        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    alertsCount: ").append(toIndentedString(alertsCount)).append("\n");
         sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
         sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");

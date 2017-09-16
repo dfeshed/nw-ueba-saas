@@ -4,8 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.elasticsearch.search.aggregations.support.ValueType;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
@@ -120,9 +119,13 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
     }
 
     public void addAggregation(AlertQuery alertQuery) {
-        if (alertQuery.isAggregateBySeverity()) {
-            TermsAggregationBuilder termsAggregationBuilder = new TermsAggregationBuilder(Alert.SEVERITY, ValueType.STRING);
-            super.addAggregation(termsAggregationBuilder);
+        if (CollectionUtils.isNotEmpty(alertQuery.getAggregateByFields())) {
+            if (alertQuery.getAggregateByFields().contains(Alert.SEVERITY)) {
+                super.addAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY));
+            }
+            if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
+                super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
+            }
         }
     }
 }
