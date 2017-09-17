@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,6 +44,14 @@ public class PresidioFilteredEventsMongoRepository {
     public static synchronized void saveFailedFlumeEvent(String pointOfFailure, String reason, Event filteredFlumeEvent) {
         final JSONObject bodyAsJson = new JSONObject(new String(filteredFlumeEvent.getBody()));
         final Map<String, String> headers = filteredFlumeEvent.getHeaders();
+        FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, bodyAsJson, headers);
+        sinkMongoRepository.save(filteredEvent, COLLECTION_NAME);
+        logger.debug("Saved filtered event {}", filteredEvent);
+    }
+
+    public static synchronized <T extends AbstractDocument> void saveEvent(String pointOfFailure, String reason, T event) {
+        final JSONObject bodyAsJson = new JSONObject(event);
+        final Map<String, String> headers = new HashMap<>();
         FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, bodyAsJson, headers);
         sinkMongoRepository.save(filteredEvent, COLLECTION_NAME);
         logger.debug("Saved filtered event {}", filteredEvent);
