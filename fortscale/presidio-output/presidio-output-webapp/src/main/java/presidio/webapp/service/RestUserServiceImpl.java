@@ -11,11 +11,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.User;
-import presidio.webapp.model.UserQuery;
-import presidio.webapp.model.UsersWrapper;
+import presidio.webapp.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +41,7 @@ public class RestUserServiceImpl implements RestUserService {
         List<Alert> alerts = null;
         presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
         if (expand)
-            alerts = getAlertsByUserId(userId).getAlerts();
+            alerts = restAlertService.getAlertsByUserId(userId, false).getAlerts();
         return createResult(user, alerts);
     }
 
@@ -129,7 +125,7 @@ public class RestUserServiceImpl implements RestUserService {
 
     @Override
     public AlertsWrapper getAlertsByUserId(String userId) {
-        return restAlertService.getAlertsByUserId(userId);
+        return restAlertService.getAlertsByUserId(userId, false);
     }
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
