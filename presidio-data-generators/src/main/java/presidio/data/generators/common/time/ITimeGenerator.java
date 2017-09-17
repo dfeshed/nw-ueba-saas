@@ -8,4 +8,5 @@ public interface ITimeGenerator {
 
     boolean hasNext();
     Instant getNext() throws GeneratorException;
+    void reset();
 }

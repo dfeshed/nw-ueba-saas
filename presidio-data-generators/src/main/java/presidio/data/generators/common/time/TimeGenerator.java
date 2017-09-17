@@ -74,6 +74,10 @@ public class TimeGenerator implements ITimeGenerator {
         }
     }
 
+    public void reset() {
+        timeIndex = 0;
+    }
+
     @Override
     public boolean hasNext() {
         return (timeIndex < eventTimes.size());
