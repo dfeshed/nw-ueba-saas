@@ -19,7 +19,7 @@ public class HistoricalDataWeekdayAggregation extends HistoricalData  {
    * Gets or Sets type
    */
   public enum TypeEnum {
-    AGGRAGEATION("WEEKDAY_AGGREGATION");
+    WEEKDAY_AGGRAGEATION("WEEKDAY_AGGREGATION");
 
     private String value;
 

@@ -19,7 +19,7 @@ public class HistoricalDataTimeAggregation extends HistoricalData  {
    * Gets or Sets type
    */
   public enum TypeEnum {
-    AGGRAGEATION("TIME_AGGREGATION");
+    TIME_AGGRAGEATION("TIME_AGGREGATION");
 
     private String value;
 
