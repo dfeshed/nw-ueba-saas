@@ -1,9 +1,8 @@
 package fortscale.ml.scorer;
 
 
-import fortscale.common.event.Event;
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.domain.feature.score.ModelFeatureScore;
+import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -66,7 +65,7 @@ public abstract class AbstractModelInternalUniScorer extends AbstractModelScorer
         FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
         List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
         if (model == null || additionalModels.contains(null)) {
-            return new ModelFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
+            return new CertaintyFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
         }
         FeatureScore featureScore = calculateScore(baseScore.getScore(), model, additionalModels, adeRecordReader);
         featureScore.setFeatureScores(baseFeatureScores);

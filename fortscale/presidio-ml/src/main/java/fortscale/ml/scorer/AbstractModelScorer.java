@@ -1,12 +1,10 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.feature.Feature;
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.domain.feature.score.ModelFeatureScore;
+import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.ModelScorerConf;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -130,13 +128,13 @@ public abstract class AbstractModelScorer extends AbstractScorer {
         List<Model> additionalModels = getAdditionalModels(adeRecordReader);
         FeatureScore featureScore = calculateScore(model, additionalModels, adeRecordReader);
         if (featureScore == null) {
-            return new ModelFeatureScore(getName(), 0d, 0d);
+            return new CertaintyFeatureScore(getName(), 0d, 0d);
         }
         double certainty = calculateCertainty(model);
         if (isUseCertaintyToCalculateScore) {
             featureScore.setScore(featureScore.getScore() * certainty);
         } else {
-            featureScore = new ModelFeatureScore(
+            featureScore = new CertaintyFeatureScore(
                     featureScore.getName(),
                     featureScore.getScore(),
                     featureScore.getFeatureScores(),
