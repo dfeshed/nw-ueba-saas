@@ -26,7 +26,7 @@ public class AccumulateAggregationsApplication {
         // The Spring configuration of the application
         sources.add(AccumulateAggregationsConfigurationProduction.class);
 
-        PresidioShellableApplication.run(sources, args);
+        new PresidioShellableApplication().run(sources, args);
     }
 }
 
