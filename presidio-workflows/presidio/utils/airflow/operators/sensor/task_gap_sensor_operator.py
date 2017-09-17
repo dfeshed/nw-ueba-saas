@@ -46,8 +46,6 @@ class TaskGapSensorOperator(BaseSensorOperator):
         session = settings.Session()
         is_finished_wait_for_gapped_task = self._is_finished_wait_for_gapped_task(context,session)
 
-        session.commit()
-        session.close()
         return is_finished_wait_for_gapped_task
 
     def _is_finished_wait_for_gapped_task(self, context, session):
