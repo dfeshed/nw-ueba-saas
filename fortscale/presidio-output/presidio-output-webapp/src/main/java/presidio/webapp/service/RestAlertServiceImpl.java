@@ -12,10 +12,16 @@ import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
-import presidio.webapp.model.*;
+import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -42,21 +48,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             List<Indicator> indicator = MockUtils.mockIndicators(false);
             resultAlert.setIndicators(indicator);
         }
-
-        return resultAlert;
-    }
-
-    @Override
-    public Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
-        Alert resultAlert = new Alert();
-        resultAlert.setId(alertData.getId());
-        resultAlert.setUsername(alertData.getUserName());
-        resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(alertData.getStartDate());
-        resultAlert.setEndDate(alertData.getEndDate());
-        resultAlert.setScore(alertData.getScore());
-        resultAlert.setClassifications(alertData.getClassifications());
-        return resultAlert;
+        return null;
     }
 
     @Override
@@ -183,11 +175,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public AlertsWrapper getAlertsByUserId(String userId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
+        alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {

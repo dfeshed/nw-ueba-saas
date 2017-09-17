@@ -109,7 +109,7 @@ public class AlertServiceTest {
     @Test
     public void generateAlertWithLowSmartScore() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
-        Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity);
+        Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity, 50);
         assertTrue(alert == null);
     }
 
@@ -118,7 +118,7 @@ public class AlertServiceTest {
     public void generateAlertTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
-        Alert alert = alertService.generateAlert(smart, userEntity);
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertEquals(alert.getUserId(), userEntity.getId());
         assertEquals(alert.getUserName(), userEntity.getUserName());
 //        assertEquals(alert.getAlertType() //TODO- test here if the classification is correct once classification is implemented

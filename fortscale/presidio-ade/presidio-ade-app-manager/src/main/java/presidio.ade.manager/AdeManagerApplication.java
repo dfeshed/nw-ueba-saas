@@ -27,7 +27,7 @@ public class AdeManagerApplication {
         // The Spring configuration of the application
         sources.add(AdeManagerApplicationConfigurationProduction.class);
 
-        PresidioShellableApplication.run(sources, args);
+        new PresidioShellableApplication().run(sources, args);
     }
 }
 
