@@ -31,7 +31,7 @@ def test_valid_build():
         'email_on_retry': False,
         'hourly_smart_events_confs': ['userId_hourly'],
         'daily_smart_events_confs': [],
-        'data_sources': 'dlpfile',
+        'data_sources': 'file,authentication,active_directory',
     }
 
     dag = DAG(
