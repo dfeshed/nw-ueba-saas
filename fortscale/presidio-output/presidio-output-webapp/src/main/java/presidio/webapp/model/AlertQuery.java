@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Sort;
 import presidio.webapp.model.AlertQueryEnums.AlertQueryAggregationFieldName;
 import presidio.webapp.model.AlertQueryEnums.AlertQuerySortFieldName;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

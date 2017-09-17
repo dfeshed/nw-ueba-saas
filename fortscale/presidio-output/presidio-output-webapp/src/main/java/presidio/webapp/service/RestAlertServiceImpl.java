@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
-import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.AlertsWrapper;
 
 import java.math.BigDecimal;
