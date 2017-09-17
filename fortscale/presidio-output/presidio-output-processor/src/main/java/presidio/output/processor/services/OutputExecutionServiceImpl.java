@@ -73,10 +73,14 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
-                AdeAggregationRecord indicators = smart.getAggregationRecords().get(0);
-                if (indicators == null) {
+                List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
+
+                AdeAggregationRecord indicators = null;
+                if (indicatorsList.size() == 0) {
                     logger.error("Failed to retrieve user id from smart because indicators list is empty for smart {}. skipping to next smart", smart.getId());
                     continue;
+                } else {
+                    indicators = indicatorsList.get(0);
                 }
                 String userId = indicators.getContext().get("userId");//TODO- temporary fix, ADE team should provide user id on the smart pojo
                 User userEntity = getSingleUserEntityById(userId);
