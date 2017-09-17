@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.test.utils.EventsGenerator;
 import presidio.data.generators.common.GeneratorException;
 
+import java.util.List;
+
 public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
 
     private static final int INTERVAL=30;
@@ -21,9 +23,9 @@ public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
      */
     @Test
     public void sanityTest() throws GeneratorException {
-        eventsGenerator.generateAndPersistSanityData(getInterval());
+        List generatedData = eventsGenerator.generateAndPersistSanityData(getInterval());
         executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
-        assertSanityTest();
+        assertSanityTest(generatedData);
     }
 
     protected int getInterval(){
@@ -32,7 +34,7 @@ public abstract class EnrichedFileSourceBaseAppTest extends BaseAppTest {
 
     protected abstract String getSanityTestExecutionCommand();
 
-    protected abstract void assertSanityTest() throws GeneratorException;
+    protected abstract void assertSanityTest(List generatedData) throws GeneratorException;
 
     @Import({BaseAppTest.springConfig.class})
     @Configuration

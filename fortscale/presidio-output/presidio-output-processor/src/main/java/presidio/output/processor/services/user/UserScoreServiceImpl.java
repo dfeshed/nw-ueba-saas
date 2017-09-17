@@ -17,13 +17,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -147,7 +141,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             usersPage.getContent().forEach(user -> {
                 if (!excludedUsersIds.contains(user.getUserId())) {
                     user.setScore(0D);
-                    user.setUserSeverity(null);
+                    user.setSeverity(null);
                     clearedUsersList.add(user);
                 }
             });
@@ -241,8 +235,8 @@ public class UserScoreServiceImpl implements UserScoreService {
             UserSeverity newUserSeverity = severitiesMap.getSeverity(userScore);
 
             log.debug("Updating user severity for userId: " + user.getUserId());
-            if (!newUserSeverity.equals(user.getUserSeverity())) {
-                user.setUserSeverity(newUserSeverity);
+            if (!newUserSeverity.equals(user.getSeverity())) {
+                user.setSeverity(newUserSeverity);
                 updatedUsers.add(user); //Update user only if severity changes
             }
         });

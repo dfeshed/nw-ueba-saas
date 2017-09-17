@@ -52,7 +52,7 @@ public class ModelFeatureAggregationBucketsApplicationTest extends EnrichedFileS
     }
 
     @Override
-    protected void assertSanityTest() {
+    protected void assertSanityTest(List generatedData) {
         Collection<String> collectionNames = mongoTemplate.getCollectionNames().stream().filter(x -> x.startsWith(FeatureBucketStoreMongoImpl.COLLECTION_NAME_PREFIX)).collect(Collectors.toList());
         Assert.assertEquals(4, collectionNames.size());
         for (String collectionName: collectionNames){

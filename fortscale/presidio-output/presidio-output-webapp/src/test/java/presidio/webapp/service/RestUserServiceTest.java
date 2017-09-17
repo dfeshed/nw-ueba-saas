@@ -40,7 +40,7 @@ public class RestUserServiceTest {
     AlertPersistencyService alertService;
 
     @Autowired
-    UserPersistencyService userService;
+    UserPersistencyService userPersistencyService;
 
     @Autowired
     RestUserService restUserService;
@@ -48,7 +48,7 @@ public class RestUserServiceTest {
     @Test
     public void testReturnUserWithoutExpand() {
         User user = createUser(1);
-        when(userService.findUserById(eq(user.getId()))).thenReturn(user);
+        when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
         presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", false);
         Assert.assertNotNull(resultUser);
     }
@@ -61,7 +61,7 @@ public class RestUserServiceTest {
         when(alertService.findByUserId(eq(alert.getUserId()), notNull(PageRequest.class))).thenReturn(page);
 
         User user = createUser(1);
-        when(userService.findUserById(eq(user.getId()))).thenReturn(user);
+        when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
         presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", true);
 
         Assert.assertEquals(1, resultUser.getAlerts().size());
@@ -71,8 +71,6 @@ public class RestUserServiceTest {
 
     @Test
     public void testReturnUsersWithoutExpand() {
-        User user1 = createUser(1);
-        User user2 = createUser(2);
         User user3 = createUser(3);
         user3.setScore(90);
         User user4 = createUser(4);
@@ -80,7 +78,7 @@ public class RestUserServiceTest {
         User user5 = createUser(5);
         user5.setScore(90);
         Page<User> page = new PageImpl<User>(new ArrayList<>(Arrays.asList(user3, user4, user5)), null, 5);
-        when(userService.find(notNull(presidio.output.domain.records.users.UserQuery.class))).thenReturn(page);
+        when(userPersistencyService.find(notNull(presidio.output.domain.records.users.UserQuery.class))).thenReturn(page);
         UserQuery userQuery = new UserQuery();
         userQuery.setExpand(false);
         userQuery.setMinScore(70);
@@ -104,8 +102,8 @@ public class RestUserServiceTest {
         user3.setAlertsCount(0);
         user2.setAlertsCount(2);
 
-        Page<User> userPAge = new PageImpl<User>(new ArrayList<>(Arrays.asList(user1, user2, user3)));
-        when(userService.find(notNull(presidio.output.domain.records.users.UserQuery.class))).thenReturn(userPAge);
+        Page<User> userPage = new PageImpl<User>(new ArrayList<>(Arrays.asList(user1, user2, user3)));
+        when(userPersistencyService.find(notNull(presidio.output.domain.records.users.UserQuery.class))).thenReturn(userPage);
         UserQuery userQuery = new UserQuery();
         userQuery.setExpand(true);
         Page<Alert> page = new PageImpl<Alert>(new ArrayList<>(Arrays.asList(alert1, alert2, alert3)));
@@ -131,7 +129,7 @@ public class RestUserServiceTest {
         user.setAlertsCount(1);
         user.setUserDisplayName("superuser" + number);
         user.setScore(60);
-        user.setUserSeverity(UserSeverity.MEDIUM);
+        user.setSeverity(UserSeverity.MEDIUM);
         List classifications = new ArrayList(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         user.setAlertClassifications(classifications);
         return user;
