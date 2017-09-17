@@ -22,9 +22,7 @@ public class PresidioSystemConfiguration {
 
     private String kdcUrl;
 
-    private boolean isStracturValid;
-
-    private List<String> badParams;
+    private List<String> unknownFields;
 
     private final String USER_NAME = "username";
     private final String PASSWORD = "password";
@@ -34,15 +32,14 @@ public class PresidioSystemConfiguration {
     private final String SMTP_HOST = "smtpHost";
 
     public PresidioSystemConfiguration(JsonNode node) {
-        this.badParams = new ArrayList();
+        this.unknownFields = new ArrayList();
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
             key = itr.next();
             setKeyValue(key, node.get(key).asText());
         }
-        if (badParams.isEmpty())
-            isStracturValid = true;
+
     }
 
     public void setUserName(String userName) {
@@ -91,7 +88,36 @@ public class PresidioSystemConfiguration {
                 setSmtpHost(value);
                 break;
             default:
-                badParams.add(key);
+                unknownFields.add(key);
         }
     }
+
+    public List<String> getUnknownFields() {
+        return unknownFields;
+    }
+
+    public List<String> getEmptyFields() {
+        List<String> emptyFields = new ArrayList<>();
+        if (userName == null || userName.isEmpty()) {
+            emptyFields.add(USER_NAME);
+        }
+        if (passWord == null || passWord.isEmpty()) {
+            emptyFields.add(PASSWORD);
+        }
+        if (adminGroup == null || adminGroup.isEmpty()) {
+            emptyFields.add(ADMIN_GROUP);
+        }
+        if (analystGroup == null || analystGroup.isEmpty()) {
+            emptyFields.add(ANALYST_GROUP);
+        }
+        if (smtpHost == null || smtpHost.isEmpty()) {
+            emptyFields.add(SMTP_HOST);
+        }
+        if (kdcUrl == null || kdcUrl.isEmpty()) {
+            emptyFields.add(KDC_URL);
+        }
+
+        return emptyFields;
+    }
+
 }
