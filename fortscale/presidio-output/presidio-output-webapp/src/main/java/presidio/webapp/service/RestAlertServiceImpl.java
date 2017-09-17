@@ -11,17 +11,10 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.dto.Alert;
-import presidio.webapp.model.AlertSeverity;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Indicator;
+import presidio.webapp.model.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -48,7 +41,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             List<Indicator> indicator = MockUtils.mockIndicators(false);
             resultAlert.setIndicators(indicator);
         }
-        return null;
+        return resultAlert;
     }
 
     @Override

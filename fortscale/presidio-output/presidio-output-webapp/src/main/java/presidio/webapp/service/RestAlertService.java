@@ -1,6 +1,5 @@
 package presidio.webapp.service;
 
-import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertsWrapper;
 
 import java.util.Collection;
@@ -13,7 +12,7 @@ public interface RestAlertService {
 
     AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery);
 
-    AlertsWrapper getAlertsByUserId(String userId);
+    AlertsWrapper getAlertsByUserId(String userId, boolean expand);
 
     Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userId);
 

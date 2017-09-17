@@ -6,15 +6,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import presidio.webapp.model.*;
 import org.springframework.web.bind.annotation.PathVariable;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQuery;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.InlineResponse200;
-import presidio.webapp.model.InlineResponse2001;
-import presidio.webapp.model.Patch;
+import org.springframework.web.bind.annotation.RequestParam;
+import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 
 import java.util.List;
@@ -32,13 +26,13 @@ public class AlertsController implements AlertsApi {
 
     @Override
     public ResponseEntity<Alert> getAlert(@ApiParam(value = "The UUID of the alert to return", required = true) @PathVariable("alertId") String alertId,
-                                          @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue="false") Boolean expand) {
+                                          @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
         try {
-        Alert alert = restAlertService.getAlertById(alertId, expand);
-        HttpStatus httpStatus = alert != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-        return new ResponseEntity(alert, httpStatus);
+            Alert alert = restAlertService.getAlertById(alertId, expand);
+            HttpStatus httpStatus = alert != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+            return new ResponseEntity(alert, httpStatus);
         } catch (Exception ex) {
-            logger.error("Trying the to get alert by alertId:{} , But got internal error {}",alertId,ex);
+            logger.error("Trying the to get alert by alertId:{} , But got internal error {}", alertId, ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -46,21 +40,20 @@ public class AlertsController implements AlertsApi {
     @Override
     public ResponseEntity<AlertsWrapper> getAlerts(AlertQuery alertQuery) {
         try {
-            AlertsWrapper alertsWrapper=restAlertService.getAlerts(alertQuery);
+            AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
             HttpStatus httpStatus = alertsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
             return new ResponseEntity(alertsWrapper, httpStatus);
-        }
-        catch (Exception ex){
-            logger.error("Trying the to get alerts with this alertQuery:{} , But got internal error {}",alertQuery.toString(),ex);
+        } catch (Exception ex) {
+            logger.error("Trying the to get alerts with this alertQuery:{} , But got internal error {}", alertQuery.toString(), ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public  ResponseEntity<Indicator> getIndicatorByAlert(@ApiParam(value = "The ID of the indicator to return",required=true ) @PathVariable("indicatorId") String indicatorId,
-                                                          @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
-                                                          @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue="false") Boolean expand) {
+    public ResponseEntity<Indicator> getIndicatorByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") String indicatorId,
+                                                         @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") String alertId,
+                                                         @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
         if (!StringUtils.isEmpty(alertId) && !StringUtils.isEmpty(indicatorId)) {
             Indicator indicator = restAlertService.getIndicatorById(indicatorId, expand);
             if (indicator != null) {
@@ -71,9 +64,9 @@ public class AlertsController implements AlertsApi {
     }
 
 
-    public ResponseEntity<EventsWrapper> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return",required=true ) @PathVariable("indicatorId") String indicatorId,
-                                                                    @ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
-                                                                     EventQuery eventQuery) {
+    public ResponseEntity<EventsWrapper> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") String indicatorId,
+                                                                   @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") String alertId,
+                                                                   EventQuery eventQuery) {
         List<Event> events = restAlertService.getIndicatorEventsByIndicatorId(indicatorId, eventQuery);
         if (events != null) {
             EventsWrapper eventsWrapper = new EventsWrapper();
@@ -86,7 +79,7 @@ public class AlertsController implements AlertsApi {
     }
 
     @Override
-    public ResponseEntity<IndicatorsWrapper> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return",required=true ) @PathVariable("alertId") String alertId,
+    public ResponseEntity<IndicatorsWrapper> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") String alertId,
                                                                   IndicatorQuery indicatorQuery) {
         List<Indicator> indicators = restAlertService.getIndicatorsByAlertId(alertId, indicatorQuery);
         if (indicators != null) {

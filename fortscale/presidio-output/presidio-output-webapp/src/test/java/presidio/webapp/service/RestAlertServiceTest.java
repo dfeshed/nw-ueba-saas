@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 
@@ -36,13 +34,13 @@ public class RestAlertServiceTest {
     RestAlertService restAlertService;
 
     @Autowired
-    AlertPersistencyService alertService;
+    AlertPersistencyService alertPersistencyService;
 
     @Test
     public void getAlertByIdSuccess() {
         Alert alert = createAlert();
         alert.setId("id");
-        when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
+        when(alertPersistencyService.findOne(eq(alert.getId()))).thenReturn(alert);
 
         presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertEquals(alert.getUserName(), alertById.getUsername());
@@ -50,7 +48,7 @@ public class RestAlertServiceTest {
 
     @Test
     public void getAlertById_getNull() {
-        when(alertService.findOne(anyString())).thenReturn(null);
+        when(alertPersistencyService.findOne(anyString())).thenReturn(null);
         presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertNull(alertById);
     }
@@ -61,7 +59,7 @@ public class RestAlertServiceTest {
         List<Alert> resultList = new ArrayList<>();
         resultList.add(alert);
         Page<Alert> page = new PageImpl<>(resultList, null, 1);
-        when(alertService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
@@ -76,7 +74,7 @@ public class RestAlertServiceTest {
         List<Alert> resultList = new ArrayList<>();
         resultList.add(firstAlert);
         Page<Alert> page = new PageImpl<>(resultList);
-        when(alertService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
 
@@ -90,7 +88,7 @@ public class RestAlertServiceTest {
     public void getAlertsNoAlert() {
         List<Alert> resultList = new ArrayList<>();
         Page<Alert> page = new PageImpl<>(resultList);
-        when(alertService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
