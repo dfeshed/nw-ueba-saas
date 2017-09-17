@@ -252,11 +252,11 @@ public class UserScoreServiceModuleTest {
             List<Alert> alerts = new ArrayList<>();
             //For each day generate to alerts
             for (LocalDateTime day : dates) {
-                long alert1StartTime = Date.from(day.plusHours(3).atZone(ZoneId.systemDefault()).toInstant()).getTime();
-                long alert1EndTime = Date.from(day.plusHours(4).atZone(ZoneId.systemDefault()).toInstant()).getTime();
+                Date alert1StartTime = new Date(Date.from(day.plusHours(3).atZone(ZoneId.systemDefault()).toInstant()).getTime());
+                Date alert1EndTime = new Date(Date.from(day.plusHours(4).atZone(ZoneId.systemDefault()).toInstant()).getTime());
 
-                long alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant()).getTime();
-                long alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant()).getTime();
+                Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant());
+                Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant());
                 //Alerts per user per day
                 alerts.add(new Alert("userId" + i, null, "userName" + 1, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null));
                 alerts.add(new Alert("userId" + i, null, "userName" + 1, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
@@ -321,10 +321,10 @@ public class UserScoreServiceModuleTest {
         alertPersistencyService.save(alerts);
     }
 
-    private long getMinusDay(int days) {
+    private Date getMinusDay(int days) {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DAY_OF_YEAR, -1 * days);
-        return c.getTime().getTime();
+        return new Date(c.getTime().getTime());
 
     }
 

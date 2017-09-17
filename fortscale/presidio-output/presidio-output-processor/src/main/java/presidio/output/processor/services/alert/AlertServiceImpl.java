@@ -10,6 +10,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.user.UserScoreService;
 
 import java.time.temporal.ChronoField;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class AlertServiceImpl implements AlertService {
         int indicatorsNum = smart.getAggregationRecords().size();
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
 
-        Alert alert = new Alert(user.getId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity, user.getTags());
+        Alert alert = new Alert(user.getId(), classification, user.getUserName(), new Date(startDate), new Date(endDate), score, indicatorsNum, getStratgyfromSmart(smart), severity, user.getTags());
         userScoreService.increaseUserScoreWithoutSaving(alert, user);
 
         return alert;

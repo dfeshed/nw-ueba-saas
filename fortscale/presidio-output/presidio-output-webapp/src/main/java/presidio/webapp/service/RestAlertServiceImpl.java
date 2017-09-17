@@ -49,8 +49,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         resultAlert.setId(alertData.getId());
         resultAlert.setUsername(alertData.getUserName());
         resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(alertData.getStartDate());
-        resultAlert.setEndDate(alertData.getEndDate());
+        resultAlert.setStartDate(alertData.getStartDate().getTime());
+        resultAlert.setEndDate(alertData.getEndDate().getTime());
         resultAlert.setScore(alertData.getScore());
         resultAlert.setClassifications(alertData.getClassifications());
         return resultAlert;
@@ -202,8 +202,8 @@ public class RestAlertServiceImpl implements RestAlertService {
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
-        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
-        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate()));
+        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
+        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
