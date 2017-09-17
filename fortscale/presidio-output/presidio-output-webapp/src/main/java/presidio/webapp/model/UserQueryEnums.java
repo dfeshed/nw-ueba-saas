@@ -32,7 +32,7 @@ public class UserQueryEnums {
     }
 
     public enum UserQueryAggregationFieldName {
-        SEVERITY("severity");
+        SEVERITY("severity"), TAGS("tags");
         private String value;
 
         UserQueryAggregationFieldName(String value) {

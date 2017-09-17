@@ -279,4 +279,44 @@ public class UserPersistencyServiceTest {
         assertEquals(severityAgg.getBucketByKey("CRITICAL").getDocCount(), 2L);
         assertEquals(severityAgg.getBucketByKey("MEDIUM").getDocCount(), 2L);
     }
+
+    @Test
+    public void testFindByQueryWithTagsAggregation() {
+
+        List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
+        List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
+
+
+        List<String> classification = new ArrayList<>();
+        classification.add("a");
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, tags1, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0);
+
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        userPersistencyService.save(userList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(User.TAGS_FIELD_NAME);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.TAGS_FIELD_NAME);
+        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+
+        assertEquals(buckets.size(), 2L); //two buckets- admin and watch
+        assertEquals(severityAgg.getBucketByKey("admin").getDocCount(), 3L);
+        assertEquals(severityAgg.getBucketByKey("watch").getDocCount(), 2L);
+    }
 }
