@@ -1,5 +1,6 @@
 package presidio.webapp.controllers.alerts;
 
+import fortscale.utils.logging.Logger;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ import java.util.List;
 @Controller
 public class AlertsController implements AlertsApi {
 
+    private final Logger logger = Logger.getLogger(AlertsController.class);
+
     private final RestAlertService restAlertService;
 
     public AlertsController(RestAlertService restAlertService) {
@@ -26,14 +29,27 @@ public class AlertsController implements AlertsApi {
 
     @Override
     public ResponseEntity<Alert> getAlert(@ApiParam(value = "The UUID of the alert to return", required = true) @PathVariable("alertId") String alertId) {
-        Alert alert = restAlertService.getAlertById(alertId);
-        HttpStatus httpStatus = alert != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-        return new ResponseEntity(alert, httpStatus);
+        try {
+            Alert alert = restAlertService.getAlertById(alertId);
+            HttpStatus httpStatus = alert != null ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+            return new ResponseEntity(alert, httpStatus);
+        } catch (Exception ex) {
+            logger.error("Trying the to get alert by alertId:{} , But got internal error {}",alertId,ex);
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
     public ResponseEntity<AlertsWrapper> getAlerts(AlertQuery alertQuery) {
-        return new ResponseEntity(restAlertService.getAlerts(alertQuery), HttpStatus.OK);
+        try {
+            AlertsWrapper alertsWrapper=restAlertService.getAlerts(alertQuery);
+            HttpStatus httpStatus = alertsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+            return new ResponseEntity(alertsWrapper, httpStatus);
+        }
+        catch (Exception ex){
+            logger.error("Trying the to get alerts with this alertQuery:{} , But got internal error {}",alertQuery.toString(),ex);
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

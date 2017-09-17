@@ -26,6 +26,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
     public static final String USER_ID = "userId";
+    public static final String SMART_ID = "smartId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
@@ -35,6 +36,10 @@ public class Alert extends AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_NAME)
     private String userName;
+
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(SMART_ID)
+    private String smartId;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_ID)
@@ -74,10 +79,11 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
+    public Alert(String userId, String smartId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
         super();
         this.classifications = classifications;
         this.userId = userId;
+        this.smartId = smartId;
         this.userName = userName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -86,6 +92,14 @@ public class Alert extends AbstractElasticDocument {
         this.timeframe = timeframe;
         this.severity = severity;
         this.userTags = userTags;
+    }
+
+    public String getSmartId() {
+        return smartId;
+    }
+
+    public void setSmartId(String smartId) {
+        this.smartId = smartId;
     }
 
     public String getUserId() {

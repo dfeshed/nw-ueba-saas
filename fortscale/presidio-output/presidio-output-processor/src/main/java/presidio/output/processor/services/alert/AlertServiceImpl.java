@@ -39,9 +39,9 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
-    public Alert generateAlert(SmartRecord smart, User user) {
+    public Alert generateAlert(SmartRecord smart, User user, int smartThresholdScoreForCreatingAlert) {
         double score = smart.getScore();
-        if (score < 50) {
+        if (score < smartThresholdScoreForCreatingAlert) {
             return null;
         }
 
@@ -51,7 +51,7 @@ public class AlertServiceImpl implements AlertService {
         int indicatorsNum = smart.getAggregationRecords().size();
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
 
-        Alert alert = new Alert(user.getId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity, user.getTags());
+        Alert alert = new Alert(user.getId(), smart.getId(), classification, user.getUserName(), startDate, endDate, score, indicatorsNum, getStratgyfromSmart(smart), severity, user.getTags());
         userScoreService.increaseUserScoreWithoutSaving(alert, user);
 
         return alert;

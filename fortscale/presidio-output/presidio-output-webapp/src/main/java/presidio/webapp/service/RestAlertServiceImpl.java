@@ -9,14 +9,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
 import presidio.webapp.model.AlertsWrapper;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -34,26 +38,11 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public presidio.webapp.model.Alert getAlertById(String id) {
-        presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
-        presidio.webapp.model.Alert resultAlert = null;
+        Alert alertData = elasticAlertService.findOne(id);
         if (alertData != null) {
-            resultAlert = createRestAlert(alertData);
+            return createRestAlert(alertData);
         }
-
-        return resultAlert;
-    }
-
-    @Override
-    public Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
-        Alert resultAlert = new Alert();
-        resultAlert.setId(alertData.getId());
-        resultAlert.setUsername(alertData.getUserName());
-        resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(alertData.getStartDate());
-        resultAlert.setEndDate(alertData.getEndDate());
-        resultAlert.setScore(alertData.getScore());
-        resultAlert.setClassifications(alertData.getClassifications());
-        return resultAlert;
+        return null;
     }
 
     @Override
@@ -167,12 +156,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public AlertsWrapper getAlertsByUserId(String userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
@@ -199,7 +183,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         return null;
     }
 
-    private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
+    private presidio.webapp.model.Alert createRestAlert(Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
         restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
