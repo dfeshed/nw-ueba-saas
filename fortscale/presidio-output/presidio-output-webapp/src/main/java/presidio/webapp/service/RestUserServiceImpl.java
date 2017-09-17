@@ -9,6 +9,7 @@ import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.model.User;
 import presidio.webapp.model.UserQuery;
 import presidio.webapp.model.UsersWrapper;
@@ -38,28 +39,18 @@ public class RestUserServiceImpl implements RestUserService {
     @Override
     public User getUserById(String userId, boolean expand) {
         List<Alert> alerts = null;
-        presidio.output.domain.records.users.User user;
-        try {
-            user = userPersistencyService.findUserById(userId);
-        } catch (Exception ex) {
-            return createResult(null, null);
-        }
+        presidio.output.domain.records.users.User user = userPersistencyService.findUserById(userId);
         if (expand)
-            alerts = restAlertService.getAlertsByUserId(userId).getAlerts();
+            alerts = getAlertsByUserId(userId).getAlerts();
         return createResult(user, alerts);
     }
 
     @Override
     public UsersWrapper getUsers(UserQuery userQuery) {
-        Page<presidio.output.domain.records.users.User> users;
-        try {
-            users = userPersistencyService.find(convertUserQuery(userQuery));
-        } catch (Exception ex) {
-            return createUsersWrapper(null, 0, 0);
-        }
+        Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
         List<User> restUsers = new ArrayList<>();
         List<Alert> alerts = null;
-        if (userQuery.getExpand()) {
+        if (userQuery.getExpand() && users.getTotalElements() > 0) {
             List<String> usersIds = new ArrayList<>();
             for (presidio.output.domain.records.users.User user : users) {
                 usersIds.add(user.getId());
@@ -94,8 +85,8 @@ public class RestUserServiceImpl implements RestUserService {
         return usersWrapper;
     }
 
-    @Override
-    public User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts) {
+
+    private User createResult(presidio.output.domain.records.users.User user, List<Alert> alerts) {
         User convertedUser = new User();
         if (ObjectUtils.isEmpty(user))
             return null;
@@ -115,8 +106,8 @@ public class RestUserServiceImpl implements RestUserService {
     }
 
     @Override
-    public List<Alert> getAlertsByUserId(String userId) {
-        return restAlertService.getAlertsByUserId(userId).getAlerts();
+    public AlertsWrapper getAlertsByUserId(String userId) {
+        return restAlertService.getAlertsByUserId(userId);
     }
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {

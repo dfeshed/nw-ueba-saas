@@ -6,9 +6,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertSeverity;
 import presidio.webapp.model.AlertsWrapper;
 
@@ -35,7 +35,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public presidio.webapp.model.Alert getAlertById(String id) {
-        presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
+        Alert alertData = elasticAlertService.findOne(id);
         if (alertData != null) {
             return createRestAlert(alertData);
         }
@@ -43,28 +43,15 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
-        Alert resultAlert = new Alert();
-        resultAlert.setId(alertData.getId());
-        resultAlert.setUsername(alertData.getUserName());
-        resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(alertData.getStartDate());
-        resultAlert.setEndDate(alertData.getEndDate());
-        resultAlert.setScore(alertData.getScore());
-        resultAlert.setClassifications(alertData.getClassifications());
-        return resultAlert;
-    }
-
-    @Override
     public AlertsWrapper getAlerts(presidio.webapp.model.AlertQuery alertQuery) {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
-        Page<presidio.output.domain.records.alerts.Alert> alerts= elasticAlertService.find(convertedAlertQuery);
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.find(convertedAlertQuery);
         if (alerts.getTotalElements() > 0) {
             List restAlerts = new ArrayList();
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
             return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), alertQuery.getPageNumber() != null ? alertQuery.getPageNumber() : 0);
         }
-        return createAlertsWrapper(new ArrayList(),0, 0);
+        return createAlertsWrapper(new ArrayList(), 0, 0);
     }
 
     private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, int pageNumber) {
@@ -143,16 +130,11 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public AlertsWrapper getAlertsByUserId(String userId) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
+        Page<presidio.output.domain.records.alerts.Alert> alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         if (alerts.getTotalElements() > 0)
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-        return createAlertsWrapper(restAlerts, ((Long) alerts.getTotalElements()).intValue(), 0);
+        return createAlertsWrapper(restAlerts, alerts != null ? alerts.getTotalPages() : 0, 0);
     }
 
     @Override
@@ -172,7 +154,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         return null;
     }
 
-    private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
+    private presidio.webapp.model.Alert createRestAlert(Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
         restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
