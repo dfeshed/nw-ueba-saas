@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
-import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.AlertsWrapper;
 
 import java.math.BigDecimal;
@@ -71,7 +71,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (alerts.getTotalElements() > 0) {
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
             totalElements = Math.toIntExact(alerts.getTotalElements());
-            alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
+            if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
+                alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
+            }
         }
 
         return createAlertsWrapper(restAlerts, totalElements, alertQuery.getPageNumber(), alertAggregations);
@@ -124,9 +126,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
             alertQueryBuilder.filterByTags(alertQuery.getTags());
-        }
-        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
         }
         if (alertQuery.getStartTimeFrom() != null) {
             alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());

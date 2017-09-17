@@ -60,9 +60,10 @@ public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBas
      * 2 accumulatedRecords - record per day.
      * 24 aggregatedFeatureValues for each record.
      * value of each aggregatedFeatureValues is 2 (2 opens files in each hour)
+     * @param generatedData
      */
     @Override
-    protected void assertSanityTest() {
+    protected void assertSanityTest(List generatedData) {
 
         String openFileCollectionName = "accm_numberOfSuccessfulFileActionsUserIdFileHourly";
         String failedOpenFileCollectionName = "accm_numberOfFailedFileActionsUserIdFileHourly";

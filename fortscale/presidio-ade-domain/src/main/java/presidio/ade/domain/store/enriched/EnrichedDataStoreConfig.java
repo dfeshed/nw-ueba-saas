@@ -22,7 +22,7 @@ public class EnrichedDataStoreConfig {
 	private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
 
 	@Bean
-	public EnrichedDataStoreImplMongo enrichedDataStore() {
+	public TtlServiceAwareEnrichedDataStore enrichedDataStore() {
 		return new EnrichedDataStoreImplMongo(mongoTemplate, translator, adeEventTypeToAdeEnrichedRecordClassResolver);
 	}
 }

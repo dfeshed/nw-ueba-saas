@@ -63,7 +63,7 @@ public class RestUserServiceImpl implements RestUserService {
         }
         List<User> restUsers = new ArrayList<>();
 
-        if (users != null && users.getSize() > 0) {
+        if (users != null && users.getNumberOfElements() > 0) {
             Map<String, List<Alert>> usersIdsToAlertsMap = new HashMap<>();
 
             // Get the alert data for the received users
@@ -85,7 +85,10 @@ public class RestUserServiceImpl implements RestUserService {
                 restUsers.add(createResult(user, alertList));
             }
 
-            Map<String, Aggregation> userAggregationsMap = ((AggregatedPageImpl<presidio.output.domain.records.users.User>) users).getAggregations().asMap();
+            Map<String, Aggregation> userAggregationsMap = null;
+            if (CollectionUtils.isNotEmpty(userQuery.getAggregateBy())) {
+                userAggregationsMap = ((AggregatedPageImpl<presidio.output.domain.records.users.User>) users).getAggregations().asMap();
+            }
             return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber(), userAggregationsMap);
         } else {
             return createUsersWrapper(null, 0, 0, null);
@@ -185,7 +188,7 @@ public class RestUserServiceImpl implements RestUserService {
         return builder.build();
     }
 
-    private List<UserSeverity> convertSeverities(List<presidio.webapp.model.UserSeverity> severityEnumList) {
+    private List<UserSeverity> convertSeverities(List<presidio.webapp.model.UserQueryEnums.UserSeverity> severityEnumList) {
         List<UserSeverity> userSeverity = new ArrayList<>();
         severityEnumList.forEach(severity -> {
             userSeverity.add(UserSeverity.valueOf(severity.toString()));
@@ -193,8 +196,8 @@ public class RestUserServiceImpl implements RestUserService {
         return userSeverity;
     }
 
-    private presidio.webapp.model.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
-        return presidio.webapp.model.UserSeverity.valueOf(userSeverity.name());
+    private presidio.webapp.model.UserQueryEnums.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
+        return presidio.webapp.model.UserQueryEnums.UserSeverity.valueOf(userSeverity.name());
     }
 
 
