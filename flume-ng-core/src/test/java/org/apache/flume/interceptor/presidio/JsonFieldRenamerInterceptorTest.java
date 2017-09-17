@@ -92,4 +92,43 @@ public class JsonFieldRenamerInterceptorTest {
         Assert.assertNull(event);
     }
 
+    @Test
+    public void interceptSameKeyTwice() throws Exception {
+        Context ctx = new Context();
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+
+        builder.configure(ctx);
+
+        interceptor = builder.build();
+
+        final String EVENT_KEY = "{\"orig1\": \"value1\"}";
+
+        Event event = EventBuilder.withBody(EVENT_KEY, Charsets.UTF_8);
+
+        event = interceptor.intercept(event);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_KEY, interceptValue);
+
+        Assert.assertEquals("{\"dest1\":\"value1\"}", interceptValue);
+
+
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "dest1");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest2");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+
+        builder.configure(ctx);
+
+        interceptor = builder.build();
+
+
+        event = EventBuilder.withBody(interceptValue, Charsets.UTF_8);
+
+        event = interceptor.intercept(event);
+        interceptValue = new String(event.getBody());
+
+        Assert.assertEquals("{\"dest2\":\"value1\"}", interceptValue);
+    }
+
 }
