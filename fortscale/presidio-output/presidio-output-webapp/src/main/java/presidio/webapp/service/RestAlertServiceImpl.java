@@ -11,10 +11,19 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertSeverity;
+import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.Event;
+import presidio.webapp.model.EventQuery;
+import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -124,9 +133,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsName())) {
             alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsName());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
-        }
         if (alertQuery.getStartTimeFrom() != null) {
             alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());
         }
@@ -233,7 +239,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setUserId(alert.getUserId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
-        restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
+        restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
 
