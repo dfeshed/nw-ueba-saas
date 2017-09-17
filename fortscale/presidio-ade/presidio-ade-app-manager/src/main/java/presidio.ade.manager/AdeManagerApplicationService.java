@@ -11,13 +11,13 @@ import java.time.Instant;
 public class AdeManagerApplicationService {
 
     private AdeManagerSdk adeManagerSdk;
-    private Duration ttl;
-    private Duration cleanupInterval;
+    private Duration enrichedTtl;
+    private Duration enrichedCleanupInterval;
 
-    public AdeManagerApplicationService(AdeManagerSdk adeManagerSdk, Duration ttl, Duration cleanupInterval){
+    public AdeManagerApplicationService(AdeManagerSdk adeManagerSdk, Duration enrichedTtl, Duration enrichedCleanupInterval){
         this.adeManagerSdk = adeManagerSdk;
-        this.ttl = ttl;
-        this.cleanupInterval = cleanupInterval;
+        this.enrichedTtl = enrichedTtl;
+        this.enrichedCleanupInterval = enrichedCleanupInterval;
     }
 
     /**
@@ -25,6 +25,6 @@ public class AdeManagerApplicationService {
      * @param until
      */
     public void cleanupEnrichedData(Instant until){
-        adeManagerSdk.cleanupEnrichedData(until, ttl, cleanupInterval);
+        adeManagerSdk.cleanupEnrichedData(until, enrichedTtl, enrichedCleanupInterval);
     }
 }

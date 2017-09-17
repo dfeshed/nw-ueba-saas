@@ -131,7 +131,7 @@ public class RestUserServiceTest {
         user.setAlertsCount(1);
         user.setUserDisplayName("superuser" + number);
         user.setScore(60);
-        user.setUserSeverity(UserSeverity.MEDIUM);
+        user.setSeverity(UserSeverity.MEDIUM);
         List classifications = new ArrayList(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         user.setAlertClassifications(classifications);
         return user;

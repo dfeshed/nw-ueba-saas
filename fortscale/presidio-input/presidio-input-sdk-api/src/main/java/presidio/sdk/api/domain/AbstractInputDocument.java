@@ -58,7 +58,6 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     protected String resultCode;
 
     {
-        // TODO: remove as soon as the adapter can populate this field
         additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", Boolean.toString(false));
     }

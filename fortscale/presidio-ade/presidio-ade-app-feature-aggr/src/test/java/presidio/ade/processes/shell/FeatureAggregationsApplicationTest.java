@@ -4,25 +4,18 @@ import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
-import fortscale.ml.model.Model;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.testng.annotations.BeforeTest;
-import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.ade.test.utils.generators.EnrichedSuccessfulFileOpenedGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
@@ -93,9 +86,10 @@ public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAp
      * scored_feature_aggr__numberOfSuccessfulFileActionUserIdFileHourly collection:
      * featureValue of each event is 6.
      * score greater then 0
-     **/
+     *
+     * @param generatedData*/
     @Override
-    protected void assertSanityTest() {
+    protected void assertSanityTest(List generatedData) {
         String openFileCollectionName = "scored_feature_aggr__numberOfSuccessfulFileActionUserIdFileHourly";
 
         List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = mongoTemplate.findAll(ScoredFeatureAggregationRecord.class, openFileCollectionName);
