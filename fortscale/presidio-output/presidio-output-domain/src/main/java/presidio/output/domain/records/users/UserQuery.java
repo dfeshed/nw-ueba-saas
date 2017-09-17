@@ -21,6 +21,8 @@ public class UserQuery {
     // sort
     private final Sort sort;
 
+    // aggregation
+    private final List<String> aggregateByFields;
 
     // paging
     private final int pageNumber;
@@ -44,12 +46,14 @@ public class UserQuery {
         // page
         this.pageNumber = builder.pageNumber;
         this.pageSize = builder.pageSize;
+
+        // aggregate
+        this.aggregateByFields = builder.aggregateByFields;
     }
 
     public List<String> getFilterByUsersIds() {
         return filterByUsersIds;
     }
-
 
     public List<String> getFilterByAlertClassifications() {
         return filterByAlertClassifications;
@@ -95,6 +99,10 @@ public class UserQuery {
         return filterByUserTags;
     }
 
+    public List<String> getAggregateByFields() {
+        return aggregateByFields;
+    }
+
     public static class UserQueryBuilder {
 
         // filters
@@ -111,6 +119,9 @@ public class UserQuery {
 
         // sort
         private Sort sort;
+
+        // aggregation
+        private List<String> aggregateByFields;
 
         // paging
         private int pageNumber = -1;
@@ -158,6 +169,11 @@ public class UserQuery {
 
         public UserQueryBuilder filterByUserName(String filterByUserName) {
             this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQueryBuilder aggregateByFields(List<String> aggregateByFields) {
+            this.aggregateByFields = aggregateByFields;
             return this;
         }
 
