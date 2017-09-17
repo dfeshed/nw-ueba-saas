@@ -60,7 +60,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (alerts.getTotalElements() > 0) {
             alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
             totalElements = Math.toIntExact(alerts.getTotalElements());
-            alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
+            if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
+                alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
+            }
         }
 
         return createAlertsWrapper(restAlerts, totalElements, alertQuery.getPageNumber(), alertAggregations);

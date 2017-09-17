@@ -54,7 +54,7 @@ public class RestUserServiceImpl implements RestUserService {
         Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
         List<User> restUsers = new ArrayList<>();
 
-        if (users != null && users.getSize() > 0) {
+        if (users != null && users.getNumberOfElements() > 0) {
             Map<String, List<Alert>> usersIdsToAlertsMap = new HashMap<>();
 
             // Get the alert data for the received users
@@ -76,7 +76,10 @@ public class RestUserServiceImpl implements RestUserService {
                 restUsers.add(createResult(user, alertList));
             }
 
-            Map<String, Aggregation> userAggregationsMap = ((AggregatedPageImpl<presidio.output.domain.records.users.User>) users).getAggregations().asMap();
+            Map<String, Aggregation> userAggregationsMap = null;
+            if (CollectionUtils.isNotEmpty(userQuery.getAggregateBy())) {
+                userAggregationsMap = ((AggregatedPageImpl<presidio.output.domain.records.users.User>) users).getAggregations().asMap();
+            }
             return createUsersWrapper(restUsers, ((Long) users.getTotalElements()).intValue(), userQuery.getPageNumber(), userAggregationsMap);
         } else {
             return createUsersWrapper(null, 0, 0, null);
