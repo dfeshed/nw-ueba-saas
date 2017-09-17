@@ -60,8 +60,8 @@ public class SmartAccumulatorService {
 
             for (AdeAggregationRecord adeAggregationRecord : smartRecord.getAggregationRecords()) {
                 fillAggregatedFeatureEventsValues(adeAggregationRecord, aggregatedFeatureEventsValuesMap, smartHourOfInstant);
-                smartAccumulationsCache.storeAccumulatedRecords(contextId, accumulatedSmartRecord);
             }
+            smartAccumulationsCache.storeAccumulatedRecords(contextId, accumulatedSmartRecord);
         }
 
     }

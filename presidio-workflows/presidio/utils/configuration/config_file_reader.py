@@ -31,7 +31,8 @@ class ConfigFileConfigurationReader(AbstractConfigurationReader):
         conf_file_path = "%s/%s-%s.%s" % (self.path,self.app_name,self.profile, "json")
         logging.info("reading conf from path: %s",conf_file_path)
         if not os.path.exists(conf_file_path):
-            raise "configuration file %s is missing" % conf_file_path
+            raise Exception("configuration file %s is missing, configure schemas and dates by calling manager "
+                            "configuration rest" % conf_file_path)
         with open(conf_file_path) as conf_file:
             config_properties = json.load(conf_file)
         return config_properties

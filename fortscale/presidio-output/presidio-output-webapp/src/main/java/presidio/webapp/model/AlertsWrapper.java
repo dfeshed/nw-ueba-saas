@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -21,7 +22,10 @@ public class AlertsWrapper {
     private Integer total = null;
 
     @JsonProperty("page")
-    private Integer page = null;
+    private Integer page = 0;
+
+    @JsonProperty("aggregationData")
+    private Map<String, Map<String, Long>> aggregationData;
 
     public AlertsWrapper alerts(List<Alert> alerts) {
         this.alerts = alerts;
@@ -87,6 +91,20 @@ public class AlertsWrapper {
         this.page = page;
     }
 
+    public AlertsWrapper aggregationData(Map<String, Map<String, Long>> aggregationData) {
+        this.aggregationData = aggregationData;
+        return this;
+    }
+
+    @ApiModelProperty(value = "")
+    public Map<String, Map<String, Long>> getAggregationData() {
+        return aggregationData;
+    }
+
+    public void setAggregationData(Map<String, Map<String, Long>> aggregationData) {
+        this.aggregationData = aggregationData;
+    }
+
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -99,7 +117,8 @@ public class AlertsWrapper {
         AlertsWrapper alertsWrapper = (AlertsWrapper) o;
         return Objects.equals(this.alerts, alertsWrapper.alerts) &&
                 Objects.equals(this.total, alertsWrapper.total) &&
-                Objects.equals(this.page, alertsWrapper.page);
+                Objects.equals(this.page, alertsWrapper.page) &&
+                Objects.equals(this.aggregationData, alertsWrapper.aggregationData);
     }
 
     @Override
@@ -115,6 +134,7 @@ public class AlertsWrapper {
         sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
         sb.append("    total: ").append(toIndentedString(total)).append("\n");
         sb.append("    page: ").append(toIndentedString(page)).append("\n");
+        sb.append("    aggregationData: ").append(toIndentedString(aggregationData)).append("\n");
         sb.append("}");
         return sb.toString();
     }

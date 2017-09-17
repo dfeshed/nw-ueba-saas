@@ -6,7 +6,6 @@ import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -31,7 +30,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class EnrichedDataStoreImplMongo implements EnrichedDataStore, TtlServiceAware {
+public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;

@@ -36,6 +36,7 @@ import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.aggr.AggrDataToCollectionNameTranslator;
 import presidio.ade.domain.store.aggr.AggrRecordsMetadata;
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
@@ -104,9 +105,9 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     }
 
     @Override
-    protected void assertSanityTest() throws GeneratorException {
+    protected void assertSanityTest(List generatedData) throws GeneratorException {
         // process is executed without models. scores are expected to be zero
-        assertScoredEnrichedEventsCreated(-1D);
+        assertScoredEnrichedEventsCreated(-1D,(List< EnrichedFileRecord>)generatedData);
 
         assertScoredAggregationCollectionsCreated(-1D);
     }
@@ -128,14 +129,16 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
             Query query = new Query();
             query.addCriteria(Criteria.where(AdeAggregationRecord.FEATURE_VALUE_FIELD_NAME).gt(featureValueGt));
             Assert.assertTrue(String.format("scored aggr collection=%s must have at least one record with feature value greater than=%s", collectionName,featureValueGt.toString()), collection.count(query.getQueryObject()) > 0);
+            Assert.assertEquals(48,collection.count());
         });
     }
 
-    private void assertScoredEnrichedEventsCreated(Double scoreGt) {
+    private void assertScoredEnrichedEventsCreated(Double scoreGt, List<EnrichedFileRecord> generatedData) {
         AdeEventTypeScorerConfs adeEventTypeScorerConfs = scorerConfService.getAdeEventTypeScorerConfs(ADE_EVENT_TYPE.getName());
         List<IScorerConf> scorerConfs = adeEventTypeScorerConfs.getScorerConfs().stream().filter(x -> x instanceof ScorerContainerConf).collect(Collectors.toList());
         List<ScorerContainerConf> scorerContainerConfs = new ArrayList<>();
         scorerConfs.forEach(scorerConf -> scorerContainerConfs.add(((ScorerContainerConf) scorerConf)));
+        int amountOfGeneratedData = generatedData.size();
         scorerContainerConfs.forEach(
                 scorerContainerConf -> {
                     List<IScorerConf> scorerConfList = scorerContainerConf.getScorerConfList();
@@ -149,6 +152,20 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
                                 Query query = new Query(Criteria.where(AdeScoredEnrichedRecord.SCORE_FIELD_NAME).gt(scoreGt));
                                 long amountOfDocumentsWithScoreGt = collection.count(query.getQueryObject());
                                 Assert.assertTrue(String.format("scored collection=%s must have at least one scored record with score greater than=%s", collectionName,scoreGt.toString()), amountOfDocumentsWithScoreGt > 0);
+                                // conditional scorer filter the records
+                                long amountOfDocuments = collection.count();
+                                String message = String.format("collection=%s with conditional does not have expected amount of docs", collectionName);
+                                if(scorerName.contains("FilePermissionChange"))
+                                {
+                                    Assert.assertEquals(message,96, amountOfDocuments);
+                                }
+                                else if (scorerName.contains("FileAction"))
+                                {
+                                    Assert.assertEquals(message,96, amountOfDocuments);
+                                }
+                                else {
+                                    Assert.assertEquals(message,amountOfGeneratedData,amountOfDocuments );
+                                }
                             });
                 });
         Assert.assertTrue(scorerContainerConfs.size() > 0);
@@ -159,11 +176,11 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
         // generate all file category rarity models
         generateEnrichedRawModels();
         // sanity data should contain data that is related to feature operationType
-        eventsGenerator.generateAndPersistSanityData(getInterval());
+        List<EnrichedFileRecord> generatedData = (List<EnrichedFileRecord>)eventsGenerator.generateAndPersistSanityData(getInterval());
         // score enriched and build score aggregation
         executeAndAssertCommandSuccess(getSanityTestExecutionCommand());
         // each scored enrich should contain at least one document with score>0
-        assertScoredEnrichedEventsCreated(0D);
+        assertScoredEnrichedEventsCreated(0D, (List<EnrichedFileRecord>) generatedData);
         // scored aggregations should contain records with values>0 sinces their are scored enriched events
         assertScoredAggregationCollectionsCreated(0D);
     }

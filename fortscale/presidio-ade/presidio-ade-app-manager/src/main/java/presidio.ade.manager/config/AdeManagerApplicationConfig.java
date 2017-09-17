@@ -23,13 +23,13 @@ public class AdeManagerApplicationConfig {
     @Autowired
     private AdeManagerSdk adeManagerSdk;
     @Value("#{T(java.time.Duration).parse('${presidio.enriched.ttl.duration}')}")
-    private Duration ttl;
+    private Duration enrichedTtl;
     @Value("#{T(java.time.Duration).parse('${presidio.enriched.cleanup.interval}')}")
-    private Duration cleanupInterval;
+    private Duration enrichedCleanupInterval;
 
 
     @Bean
     public AdeManagerApplicationService managerApplicationService(){
-        return new AdeManagerApplicationService(adeManagerSdk, ttl, cleanupInterval);
+        return new AdeManagerApplicationService(adeManagerSdk, enrichedTtl, enrichedCleanupInterval);
     }
 }

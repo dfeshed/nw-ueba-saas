@@ -56,9 +56,10 @@ public class AdeManagerApplicationTest extends EnrichedFileSourceBaseAppTest {
     /**
      * 1. Generate enriched file records.
      * 2. Remove enriched file records until UNTIL_DATE according to ttl and cleanup interval
+     * @param generatedData
      */
     @Override
-    protected void assertSanityTest() {
+    protected void assertSanityTest(List generatedData) {
         List<EnrichedFileRecord> enrichedFileRecordList = mongoTemplate.findAll(EnrichedFileRecord.class, COLLECTION_NAME);
 
         enrichedFileRecordList.forEach(
