@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
@@ -13,11 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME;
-import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.FIELDS_TO_JOIN_CONF_NAME;
-import static org.apache.flume.interceptor.presidio.JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME;
+import java.util.Map;
 
 /**
  * This interceptor is used to join fields from the received JSON into a new object (map)
@@ -30,11 +27,13 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
     private final List<String> fieldsToPut;
     private final String mapKeyName;
     private final Boolean deleteFields;
+    private final Map<String, String> defaultValueConfigurations;
 
-    JsonMapCreatorInterceptor(List<String> fieldsToPut, String mapKeyName, Boolean deleteFields) {
+    JsonMapCreatorInterceptor(List<String> fieldsToPut, String mapKeyName, Boolean deleteFields, Map<String, String> defaultValueConfigurations) {
         this.fieldsToPut = fieldsToPut;
         this.mapKeyName = mapKeyName;
         this.deleteFields = deleteFields;
+        this.defaultValueConfigurations = defaultValueConfigurations;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
             if (eventBodyAsJson.has(fieldToPut)) {
                 final JsonElement jsonElement = eventBodyAsJson.get(fieldToPut);
                 if (jsonElement == null || jsonElement.isJsonNull()) {
-                    logger.trace("Field {} does not exist: Can't put in map", fieldToPut);
+                    logger.trace("Field {} is null: Can't put in map", fieldToPut);
                 } else {
                     mapToAdd.addProperty(fieldToPut, jsonElement.getAsString());
                 }
@@ -57,6 +56,11 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
                     eventBodyAsJson.remove(fieldToPut);
                 }
             } else {
+                if (defaultValueConfigurations.keySet().contains(fieldToPut)) {
+                    final String defaultValue = defaultValueConfigurations.get(fieldToPut);
+                    logger.trace("Adding default value {} to field {} since the event didn't contain the field.", fieldToPut, defaultValue);
+                    mapToAdd.addProperty(fieldToPut, defaultValue);
+                }
                 logger.trace("The event does not contain field {}.", fieldToPut);
             }
         }
@@ -69,54 +73,68 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         return event;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append(FIELDS_TO_JOIN_CONF_NAME, fieldsToPut)
-                .append(MAP_KEY_NAME_CONF_NAME, mapKeyName)
-                .append(DELETE_FIELDS_CONF_NAME, deleteFields)
-                .toString();
-    }
-
     /**
      * Builder which builds new instance of the JsonMapCreatorInterceptor.
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
-        static final String FIELDS_TO_JOIN_CONF_NAME = "fieldsToPut";
+        static final String FIELDS_TO_PUT_CONF_NAME = "fieldsToPut";
         static final String MAP_KEY_NAME_CONF_NAME = "mapKeyName";
         static final String DELETE_FIELDS_CONF_NAME = "deleteFields";
+        static final String DEFAULT_VALUES_CONF_NAME = "defaultValues";
         static final String DELIMITER_CONF_NAME = "delimiter";
         static final String DEFAULT_DELIMITER_VALUE = ",";
+        static final String DEFAULT_VALUES_DELIMITER_CONF_NAME = "defaultValuesDelimiter";
+        static final String DEFAULT_VALUES_DELIMITER_DEFAULT_VALUE = "=";
 
-        private List<String> fieldsToJoin;
+        private List<String> fieldsToPut;
         private String mapKey;
         private Boolean deleteFields;
+        private Map<String, String> defaultValueConfigurations;
 
         @Override
         public void configure(Context context) {
-            String fieldsToJoinArrayAsString = context.getString(FIELDS_TO_JOIN_CONF_NAME);
-            Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToJoinArrayAsString), FIELDS_TO_JOIN_CONF_NAME + " can not be empty.");
+            String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
+
+            deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, false);
 
             mapKey = context.getString(MAP_KEY_NAME_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(mapKey), MAP_KEY_NAME_CONF_NAME + " can not be empty.");
 
-            String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
-            deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, false);
+            String fieldsToPutArrayAsString = context.getString(FIELDS_TO_PUT_CONF_NAME);
+            Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToPutArrayAsString), FIELDS_TO_PUT_CONF_NAME + " can not be empty.");
+            final String[] fieldsToPutArray = fieldsToPutArrayAsString.split(delimiter);
+            String currFieldToPut;
+            fieldsToPut = new ArrayList<>();
+            for (int i = 0; i < fieldsToPutArray.length; i++) {
+                currFieldToPut = fieldsToPutArray[i];
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToPut), "%s(index=%s) can not be empty. %s=%s.", FIELDS_TO_PUT_CONF_NAME, i, FIELDS_TO_PUT_CONF_NAME, fieldsToPutArrayAsString);
+                fieldsToPut.add(currFieldToPut);
+            }
 
-            final String[] fieldToJoinArray = fieldsToJoinArrayAsString.split(delimiter);
-            String currFieldToFilter;
-            fieldsToJoin = new ArrayList<>();
-            for (int i = 0; i < fieldToJoinArray.length; i++) {
-                currFieldToFilter = fieldToJoinArray[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "%s(index=%s) can not be empty. %s=%s.", FIELDS_TO_JOIN_CONF_NAME, i, FIELDS_TO_JOIN_CONF_NAME, fieldsToJoinArrayAsString);
-                fieldsToJoin.add(currFieldToFilter);
+
+            String defaultsDelimiter = context.getString(DEFAULT_VALUES_DELIMITER_CONF_NAME, DEFAULT_VALUES_DELIMITER_DEFAULT_VALUE);
+            String defaultValuesAsString = context.getString(DEFAULT_VALUES_CONF_NAME);
+            if (StringUtils.isNotEmpty(defaultValuesAsString)) {
+                final String[] defaultValuesArray = defaultValuesAsString.split(delimiter);
+                defaultValueConfigurations = new HashMap<>();
+                String currDefaultValueConfig;
+                for (int i = 0; i < defaultValuesArray.length; i++) {
+                    currDefaultValueConfig = defaultValuesArray[i];
+                    Preconditions.checkArgument(StringUtils.isNotEmpty(currDefaultValueConfig), "%s(index=%s) can not be empty. %s=%s.", DEFAULT_VALUES_DELIMITER_CONF_NAME, i, DEFAULT_VALUES_DELIMITER_CONF_NAME, defaultValuesAsString);
+                    final String[] split = currDefaultValueConfig.split(defaultsDelimiter);
+                    final String currFieldName = split[0];
+                    final String currDefaultValue = split[1];
+                    Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldName), String.format("invalid default value config %s. must be of format some_field_name%ssome_default_value.", currFieldName, DEFAULT_DELIMITER_VALUE));
+                    Preconditions.checkArgument(StringUtils.isNotEmpty(currDefaultValue), String.format("invalid default value config %s. must be of format some_field_name%ssome_default_value.", currDefaultValue, DEFAULT_DELIMITER_VALUE));
+                    defaultValueConfigurations.put(currFieldName, currDefaultValue);
+                }
             }
         }
 
         @Override
         public Interceptor build() {
-            final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToJoin, mapKey, deleteFields);
+            final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToPut, mapKey, deleteFields, defaultValueConfigurations);
             logger.info("Creating JsonMapCreatorInterceptor: {}", jsonMapCreatorInterceptor);
             return jsonMapCreatorInterceptor;
         }
