@@ -5,8 +5,10 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTimeZone;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -62,12 +64,12 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         }
 
         // filter by start date
-        if (alertQuery.getFilterByStartDate() > 0) {
+        if (alertQuery.getFilterByStartDate() != null) {
             boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
         }
 
         // filter by end date
-        if (alertQuery.getFilterByEndDate() > 0) {
+        if (alertQuery.getFilterByEndDate() != null) {
             boolQueryBuilder.must(rangeQuery(Alert.END_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
         }
 
@@ -125,6 +127,11 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             }
             if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
+            }
+
+            if (alertQuery.getAggregateByFields().contains(Alert.AGGR_SEVERITY_PER_DAY)) {
+                super.addAggregation(AggregationBuilders.dateHistogram(Alert.AGGR_SEVERITY_PER_DAY).field(Alert.START_DATE)
+                        .dateHistogramInterval(DateHistogramInterval.DAY));
             }
         }
     }
