@@ -2,6 +2,7 @@ package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
 import presidio.webapp.service.ConfigurationManagerService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +29,9 @@ import java.util.List;
 
 @Controller
 public class ConfigurationApiController implements ConfigurationApi {
+
+    @Value("${keytab.file.path}")
+    private String keytabFileLocation;
 
     private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio";
 
@@ -44,8 +51,19 @@ public class ConfigurationApiController implements ConfigurationApi {
     }
 
     public ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("file") MultipartFile keytabFile) {
-        throw new UnsupportedOperationException();
-//        return new ResponseEntity<Void>(HttpStatus.OK);
+        File convFile = new File(keytabFileLocation);
+        try {
+            convFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(convFile);
+            fos.write(keytabFile.getBytes());
+            fos.close();
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+
     }
 
     public ResponseEntity<SecuredConfiguration> configurationPatch(
