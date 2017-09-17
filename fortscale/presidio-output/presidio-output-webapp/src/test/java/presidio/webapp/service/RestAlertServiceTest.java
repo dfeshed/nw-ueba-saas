@@ -71,7 +71,7 @@ public class RestAlertServiceTest {
     }
 
     @Test
-    public void getAlertsSuccess_filterBuUsername() {
+    public void getAlertsSuccess_filterByUsername() {
         Alert firstAlert = createAlert();
         List<Alert> resultList = new ArrayList<>();
         resultList.add(firstAlert);
