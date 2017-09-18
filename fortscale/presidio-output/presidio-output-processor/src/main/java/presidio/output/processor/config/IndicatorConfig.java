@@ -1,11 +1,6 @@
 package presidio.output.processor.config;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,7 +14,8 @@ import fortscale.common.general.Schema;
         "adeEventType",
         "schema",
         "anomalyDescriptior",
-        "historicalData"
+        "historicalData",
+        "classification"
 })
 public class IndicatorConfig {
 
@@ -43,6 +39,9 @@ public class IndicatorConfig {
 
     @JsonProperty("historicalData")
     private HistoricalDataConfig historicalData;
+
+    @JsonProperty("classification")
+    private String classification;
 
     @JsonProperty("id")
     public String getId() {
@@ -114,6 +113,13 @@ public class IndicatorConfig {
         this.adeEventType = adeEventType;
     }
 
+    @JsonProperty("classification")
+    public String getClassification() {
+        return classification;
+    }
 
-
+    @JsonProperty("classification")
+    public void setClassification(String classification) {
+        this.classification = classification;
+    }
 }
