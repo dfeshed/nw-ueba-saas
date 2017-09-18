@@ -1,8 +1,8 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
-import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;
-import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
-import fortscale.ml.scorer.records.TransformationConfig;
+import presidio.ade.domain.record.AdeRecordReaderFactoriesConfig;
+import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
+import presidio.ade.domain.record.TransformationConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

@@ -6,7 +6,7 @@ import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringServiceImpl;
 import fortscale.ml.scorer.feature_aggregation_events.ScoredFeatureAggregatedRecordBuilder;
-import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
+import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
