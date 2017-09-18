@@ -17,16 +17,20 @@ import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
+import presidio.output.processor.config.ClassificationPriorityConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForFeatureAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForScoreAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.*;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByTimePopulator;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByValuePopulator;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByWeekdayPopulator;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
 @Configuration
 @Import({
-       // MongoConfig.class,
+        //MongoConfig.class,
         EventPersistencyServiceConfig.class,
         AdeManagerSdkConfig.class,
         BucketConfigurationServiceConfig.class,
@@ -35,10 +39,11 @@ import presidio.output.processor.services.alert.supportinginformation.historical
         AggrFeatureFuncServiceConfig.class,
         AggregatedFeatureEventsConfServiceConfig.class,
         AccumulationsCacheConfig.class,
+        AlertClassificationPriorityConfig.class,
         HistoricalDataFetcherConfig.class
 
 })
-public class SupporingInformationServiceConfig extends ApplicationConfiguration{
+public class SupporingInformationServiceConfig extends ApplicationConfiguration {
 
     @Autowired
     EventPersistencyService eventPersistencyService;
@@ -55,10 +60,11 @@ public class SupporingInformationServiceConfig extends ApplicationConfiguration{
     @Autowired
     HistoricalDataFetcher historicalDataFetcher;
 
-    @Bean
-    public SupportingInformationConfig supportingInformationConfig() {
-        return bindPropertiesToTarget(SupportingInformationConfig.class, null, "classpath:supporting_information_config.yml");
-    }
+    @Autowired
+    public SupportingInformationConfig supportingInformationConfig;
+
+    @Autowired
+    public ClassificationPriorityConfig classificationPriorityConfig;
 
     @Bean
     public HistoricalDataCountByTimePopulator historicalDataCountByTimePopulator() {
@@ -76,14 +82,14 @@ public class SupporingInformationServiceConfig extends ApplicationConfiguration{
     }
 
     @Bean
-    public HistoricalDataPopulatorFactory historicalDataPopulatorFactory()  {
-        return  new HistoricalDataPopulatorFactory();
+    public HistoricalDataPopulatorFactory historicalDataPopulatorFactory() {
+        return new HistoricalDataPopulatorFactory();
     }
 
 
     @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
-        return new SupportingInformationForScoreAggr(supportingInformationConfig(),
+        return new SupportingInformationForScoreAggr(supportingInformationConfig,
                 adeManagerSdk,
                 eventPersistencyService,
                 historicalDataPopulatorFactory());
@@ -91,13 +97,13 @@ public class SupporingInformationServiceConfig extends ApplicationConfiguration{
 
     @Bean
     public SupportingInformationForFeatureAggr supportingInformationForFeatureAggr() {
-        return new SupportingInformationForFeatureAggr(supportingInformationConfig(),
-                                                       eventPersistencyService,
-                                                        historicalDataPopulatorFactory());
+        return new SupportingInformationForFeatureAggr(supportingInformationConfig,
+                eventPersistencyService,
+                historicalDataPopulatorFactory());
     }
 
     @Bean
-    public SupportingInformationGeneratorFactory supportingInformationGeneratorFactory(){
+    public SupportingInformationGeneratorFactory supportingInformationGeneratorFactory() {
         return new SupportingInformationGeneratorFactory();
     }
 }
