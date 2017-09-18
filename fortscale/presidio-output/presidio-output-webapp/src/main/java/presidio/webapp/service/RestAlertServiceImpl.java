@@ -266,14 +266,17 @@ public class RestAlertServiceImpl implements RestAlertService {
     public IndicatorsWrapper getIndicatorsByAlertId(String alertId, IndicatorQuery indicatorQuery) {
         List<Indicator> restIndicators = new ArrayList<Indicator>();
         int totalElements = 0;
+        int pageNumber = indicatorQuery.getPageNumber()!=null?indicatorQuery.getPageNumber(): 0;
+        int pageSize = indicatorQuery.getPageSize()!=null?indicatorQuery.getPageSize():10;
+        PageRequest pageRequest = new PageRequest(pageNumber,pageSize);
         if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
-            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(indicatorQuery.getPageNumber(), indicatorQuery.getPageSize()));
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 restIndicators.add(createRestIndicator(indicator));
             }
             totalElements = Math.toIntExact(indicators.getTotalElements());
         } else {
-            Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = elasticAlertService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(indicatorQuery.getPageNumber(), indicatorQuery.getPageSize()));
+            Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = elasticAlertService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             for (presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary : indicatorsSummary) {
                 restIndicators.add(createRestIndicator(indicatorSummary));
             }
@@ -386,6 +389,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 CountBucket restBucket = new CountBucket();
                 restBucket.setKey(bucket.getKey());
                 restBucket.setValue(bucket.getValue().intValue());
+                restBucket.setAnomaly(bucket.isAnomaly());
                 restBuckets.add(restBucket);
             }
             ((HistoricalDataCountAggregation)restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.COUNT_AGGRAGEATION);
@@ -408,7 +412,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 BigDecimal time = BigDecimal.valueOf(Long.parseLong(bucket.getKey()));
                 restBucket.setKey(time);
                 restBucket.setValue(bucket.getValue());
-
+                restBucket.setAnomaly(bucket.isAnomaly());
                 restBuckets.add(restBucket);
             }
             ((HistoricalDataTimeAggregation)restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TIME_AGGRAGEATION);
