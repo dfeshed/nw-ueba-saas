@@ -69,7 +69,7 @@ public class PresidioShellableApplication implements Closeable {
             context = SpringApplication.run(configurationClass.toArray(), args);
             context.registerShutdownHook();
             exitShellRequest = run();
-            exitCode.compareAndSet(0,exitShellRequest.getExitCode());
+            exitCode.set(exitShellRequest.getExitCode());
         } catch (Exception e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
