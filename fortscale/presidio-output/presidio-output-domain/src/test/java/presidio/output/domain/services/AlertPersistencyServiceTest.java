@@ -477,7 +477,6 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindByQueryWithSeverityAggregationPerDay() {
-
         Instant instant1 = LocalDate.parse("2016-04-17").atTime(LocalTime.parse("00:00:10")).toInstant(ZoneOffset.UTC);
         Instant instant2 = LocalDate.parse("2016-04-18").atTime(LocalTime.parse("00:00:10")).toInstant(ZoneOffset.UTC);
         Date startDate1 = new Date(instant1.toEpochMilli());
@@ -523,8 +522,21 @@ public class AlertPersistencyServiceTest {
 
         assertEquals(2, severityPerDayAggr.getBuckets().size()); //bucket per day- 2 buckets
         for (Histogram.Bucket entry : buckets) {
-            assertEquals(5L, entry.getDocCount()); //bucket per day- 2 buckets
+            StringTerms severityAggregation = (StringTerms) entry.getAggregations().asMap().get(Alert.SEVERITY);
+            if(entry.getKeyAsString().startsWith("2016-04-17")) {
+                assertEquals(3L, severityAggregation.getBuckets().size());
+                assertEquals(1L, severityAggregation.getBucketByKey(AlertSeverity.MEDIUM.name()).getDocCount());
+                assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.CRITICAL.name()).getDocCount());
+                assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.HIGH.name()).getDocCount());
+            }
+            if(entry.getKeyAsString().startsWith("2016-04-18")) {
+                assertEquals(3L, severityAggregation.getBuckets().size());
+                assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.MEDIUM.name()).getDocCount());
+                assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.CRITICAL.name()).getDocCount());
+                assertEquals(1L, severityAggregation.getBucketByKey(AlertSeverity.LOW.name()).getDocCount());
+            }
         }
+
 
     }
 
