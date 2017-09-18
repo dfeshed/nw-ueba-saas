@@ -74,18 +74,18 @@ class TaskGapSensorOperator(BaseSensorOperator):
             self._refresh_gapped_dag_run(session)
             if (self._gapped_dag_run != None):
                 gapped_dag_run_state = self._gapped_dag_run.get_state()
-                if (gapped_dag_run_state == State.RUNNING):
+                if (gapped_dag_run_state in State.unfinished()):
                     external_task_instance = self._gapped_dag_run.get_task_instance(task_id=self._external_task_id,
                                                                                     session=session)
                     if (external_task_instance == None):
                         logging.info(
-                            'Still poking since the dag run is still running and the gapped task instance still have not started: '
+                            'Still poking since the dag run has not finished and the gapped task instance still have not started: '
                             'dag_id: {self._gapped_dag_run.dag_id} '
                             'run_id: {self._gapped_dag_run.run_id} '
                             'state: {gapped_dag_run_state} '.format(**locals()))
-                    elif (external_task_instance.end_date == None):
+                    elif (external_task_instance.state in State.unfinished()):
                         logging.info(
-                            'Still poking since the gapped task instance is still running: '
+                            'Still poking since the gapped task instance has not finished: '
                             'dag_id: {self._gapped_dag_run.dag_id} '
                             'run_id: {self._gapped_dag_run.run_id} '
                             'start_date: {external_task_instance.start_date} '
@@ -94,7 +94,7 @@ class TaskGapSensorOperator(BaseSensorOperator):
                     else:
                         is_finished_wait_for_gapped_task = True
                         logging.info(
-                            'Finish poking since the gapped task instance is not running any more: '
+                            'Finish poking since the gapped task instance has finished: '
                             'dag_id: {self._gapped_dag_run.dag_id} '
                             'run_id: {self._gapped_dag_run.run_id} '
                             'start_date: {external_task_instance.start_date} '

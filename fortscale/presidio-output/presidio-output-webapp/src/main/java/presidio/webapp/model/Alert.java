@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
-public class Alert   {
+public class Alert {
     @JsonProperty("id")
     private String id = null;
 
@@ -70,7 +70,7 @@ public class Alert   {
         @JsonCreator
         public static TimeframeEnum fromValue(String text) {
             for (TimeframeEnum b : TimeframeEnum.values()) {
-                if (String.valueOf(b.value).equals(text)) {
+                if (String.valueOf(b.value).equals(text.toLowerCase())) {
                     return b;
                 }
             }
@@ -98,6 +98,7 @@ public class Alert   {
 
     /**
      * Get id
+     *
      * @return id
      **/
     @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
@@ -121,6 +122,7 @@ public class Alert   {
 
     /**
      * Get classifiation
+     *
      * @return classifiation
      **/
     @ApiModelProperty(value = "")
@@ -139,6 +141,7 @@ public class Alert   {
 
     /**
      * Get startDate
+     *
      * @return startDate
      **/
     @ApiModelProperty(value = "")
@@ -157,6 +160,7 @@ public class Alert   {
 
     /**
      * Get endDate
+     *
      * @return endDate
      **/
     @ApiModelProperty(value = "")
@@ -175,6 +179,7 @@ public class Alert   {
 
     /**
      * Get username
+     *
      * @return username
      **/
     @ApiModelProperty(value = "")
@@ -198,6 +203,7 @@ public class Alert   {
 
     /**
      * Get indicatorsName
+     *
      * @return indicatorsName
      **/
     @ApiModelProperty(value = "")
@@ -216,6 +222,7 @@ public class Alert   {
 
     /**
      * Get indicatorsNum
+     *
      * @return indicatorsNum
      **/
     @ApiModelProperty(value = "")
@@ -236,6 +243,7 @@ public class Alert   {
      * Get score
      * minimum: 0
      * maximum: 100.0
+     *
      * @return score
      **/
     @ApiModelProperty(value = "")
@@ -254,6 +262,7 @@ public class Alert   {
 
     /**
      * Get feedback
+     *
      * @return feedback
      **/
     @ApiModelProperty(value = "")
@@ -272,6 +281,7 @@ public class Alert   {
 
     /**
      * Get userScoreContribution
+     *
      * @return userScoreContribution
      **/
     @ApiModelProperty(value = "")
@@ -290,6 +300,7 @@ public class Alert   {
 
     /**
      * Get timeframe
+     *
      * @return timeframe
      **/
     @ApiModelProperty(value = "")
@@ -308,6 +319,7 @@ public class Alert   {
 
     /**
      * Get severity
+     *
      * @return severity
      **/
     @ApiModelProperty(value = "")
@@ -326,6 +338,7 @@ public class Alert   {
 
     /**
      * Get userId
+     *
      * @return userId
      **/
     @ApiModelProperty(value = "")
@@ -349,6 +362,7 @@ public class Alert   {
 
     /**
      * Get indicators
+     *
      * @return indicators
      **/
     @ApiModelProperty(value = "")

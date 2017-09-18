@@ -174,9 +174,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsName())) {
             alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsName());
         }
-        if (CollectionUtils.isNotEmpty(alertQuery.getUsersId())) {
-            alertQueryBuilder.filterByUserName(alertQuery.getUsersId());
-        }
         if (alertQuery.getStartTimeFrom() != null) {
             alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());
         }
@@ -333,7 +330,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setIndicatorsName(alert.getIndicatorsNames());
-        restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
+        restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
 

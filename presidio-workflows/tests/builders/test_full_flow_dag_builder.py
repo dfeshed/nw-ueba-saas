@@ -41,7 +41,7 @@ def test_valid_build():
 
     assert_task_id_uniqueness(dag)
 
-    assert dag.task_count == 3
+    assert dag.task_count == 4
 
 
 def assert_task_id_uniqueness(dag):

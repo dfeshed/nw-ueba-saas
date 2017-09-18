@@ -41,6 +41,7 @@ public class PresidioShellableApplication implements Closeable {
      */
     private void initSigtermHandler(PresidioShellableApplication presidioShellableApplication) {
         Signal.handle(new Signal("TERM"), new ShellableApplicationSignalHandler(presidioShellableApplication));
+        Signal.handle(new Signal("INT"), new ShellableApplicationSignalHandler(presidioShellableApplication));
     }
 
     /**
@@ -68,7 +69,7 @@ public class PresidioShellableApplication implements Closeable {
             context = SpringApplication.run(configurationClass.toArray(), args);
             context.registerShutdownHook();
             exitShellRequest = run();
-            exitCode.compareAndSet(0,exitShellRequest.getExitCode());
+            exitCode.set(exitShellRequest.getExitCode());
         } catch (Exception e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
@@ -77,6 +78,13 @@ public class PresidioShellableApplication implements Closeable {
             } else {
                 exitCode.set(exitShellRequest.getExitCode());
                 exitCode.compareAndSet(0,1);
+            }
+        }
+        finally {
+            try {
+                close();
+            } catch (IOException e) {
+                throw new RuntimeException("error while closing system",e);
             }
         }
     }
