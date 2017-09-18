@@ -15,16 +15,27 @@ public class AlertEnums {
     }
 
     public enum AlertTimeframe {
-        HOURLY, DAILY;
+        HOURLY("hourly"), DAILY("daily");
+
+        private String value;
+
+        AlertTimeframe(String value) {
+            this.value = value;
+        }
 
         public static AlertTimeframe valueOfIgnoreCase(String value){
             for (AlertTimeframe timeframe:AlertTimeframe.values()){
-                if (timeframe.name().toLowerCase().equals(value.toLowerCase())){
+                if (timeframe.value.equals(value.toLowerCase())){
                     return timeframe;
                 }
             }
             return null;
         }
+
+        public String toString() {
+            return String.valueOf(value);
+        }
+
 
         public static AlertTimeframe getAlertTimeframe(String value) {
             return AlertTimeframe.valueOf(value.toUpperCase());
