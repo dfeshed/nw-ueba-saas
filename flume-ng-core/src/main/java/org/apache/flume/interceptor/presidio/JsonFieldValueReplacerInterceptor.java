@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -60,13 +61,14 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
             }
             final JsonElement realValueForField = eventBodyAsJson.get(currField);
             if (realValueForField != null && !realValueForField.isJsonNull()) {
-                final String realValueAsString = realValueForField.getAsString();
-                if (Pattern.compile(currValueToReplaceRegexValue).matcher(realValueAsString).matches()) {
-                    eventBodyAsJson.addProperty(currField, currNewValue);
-                    logger.trace("Field {} was replaced from {} to {}.", currField, currValueToReplaceRegexValue, currNewValue);
-                } else {
-                    logger.debug("Field {} exists but real value [{}] doesn't match the given valueToReplaceRegex value [{}]. Replacement [{}]. No replacement made", currField, realValueAsString, currValueToReplaceRegexValue, replacement);
+                String currRealValueAsString = realValueForField.getAsString();
+                final Pattern compile = Pattern.compile(currValueToReplaceRegexValue);
+                Matcher matcher = compile.matcher(currRealValueAsString);
+                while (matcher.find()) {
+                    currRealValueAsString = currRealValueAsString.replaceFirst(currValueToReplaceRegexValue, currNewValue);
+                    matcher = compile.matcher(currRealValueAsString);
                 }
+                eventBodyAsJson.addProperty(currField, currRealValueAsString);
             } else {
                 logger.trace("Field {} doesn't exist. Replacement [{}]. No replacement made", currField, replacement);
             }
