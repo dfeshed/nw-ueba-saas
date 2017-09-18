@@ -29,8 +29,7 @@ public class AirflowApiClientConfig {
     @Autowired
     public RestTemplate restTemplate;
 
-    @Bean(name = "OBJECT_MAPPER_BEAN")
-    public ObjectMapper jsonObjectMapper() {
+    public ObjectMapper customJsonObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
                 .serializationInclusion(JsonInclude.Include.NON_NULL) // Don’t include null values
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
@@ -50,8 +49,16 @@ public class AirflowApiClientConfig {
         List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
         messageConverters.add(new FormHttpMessageConverter());
         messageConverters.add(new StringHttpMessageConverter());
-        messageConverters.add(new MappingJackson2HttpMessageConverter());
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = mappingJackson2HttpMessageConverter();
+        messageConverters.add(mappingJackson2HttpMessageConverter);
         restTemplate.setMessageConverters(messageConverters);
         return restTemplate;
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        mappingJackson2HttpMessageConverter.setObjectMapper(customJsonObjectMapper());
+        return mappingJackson2HttpMessageConverter;
     }
 }

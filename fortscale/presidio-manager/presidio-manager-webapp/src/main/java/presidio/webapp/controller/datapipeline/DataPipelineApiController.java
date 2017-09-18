@@ -1,6 +1,7 @@
 package presidio.webapp.controller.datapipeline;
 
 import fortscale.common.SDK.PipelineState;
+import fortscale.utils.logging.Logger;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import presidio.webapp.model.datapipeline.CleanupCmd;
 
 @Controller
 public class DataPipelineApiController implements DataPipelineApi {
+    private static final Logger logger = Logger.getLogger(DataPipelineApiController.class);
 
     private final ManagerService managerService;
 
@@ -32,7 +34,12 @@ public class DataPipelineApiController implements DataPipelineApi {
     }
 
     public ResponseEntity<PipelineState> dataPipelineStatusGet() {
-        return new ResponseEntity<PipelineState>(managerService.getPipelineState(),HttpStatus.OK);
+        try {
+            return new ResponseEntity<PipelineState>(managerService.getPipelineState(), HttpStatus.OK);
+        }catch (Exception e) {
+            logger.error("failed to return data pipline state",e);
+            return new ResponseEntity<PipelineState>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Void> dataPipelineStopPost() {
