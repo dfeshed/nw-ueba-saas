@@ -11,6 +11,9 @@ public class TimeAggregation extends Aggregation<String, Double> {
 
     public static final String TYPE = "timeAggregation";
 
+    public TimeAggregation() {
+    }
+
     public TimeAggregation(List<Bucket<String, Double>> buckets) {
 
         super(buckets);

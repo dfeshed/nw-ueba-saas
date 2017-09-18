@@ -1,6 +1,8 @@
 package presidio.webapp.model;
 
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
@@ -18,8 +20,9 @@ public class HourlyBucket   {
   @JsonProperty("value")
   private Integer value = null;
 
+  @JsonInclude(JsonInclude.Include.NON_DEFAULT)
   @JsonProperty("anomaly")
-  private Boolean anomaly = null;
+  private Boolean anomaly = false;
 
   public HourlyBucket key(String key) {
     this.key = key;
