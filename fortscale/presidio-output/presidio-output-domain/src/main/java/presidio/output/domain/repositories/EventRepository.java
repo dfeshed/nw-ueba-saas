@@ -1,8 +1,10 @@
 package presidio.output.domain.repositories;
 
+import fortscale.utils.time.TimeRange;
 import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Manage events persistency to Mongo
@@ -16,6 +18,8 @@ public interface EventRepository {
      * @param events documents to be stored
      */
     void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception;
+
+    List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features) throws Exception;
 
     EnrichedEvent findLatestEventForUser(String userId);
 }

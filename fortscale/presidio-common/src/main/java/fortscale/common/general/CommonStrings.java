@@ -10,4 +10,5 @@ public class CommonStrings {
     public static final String COMMAND_LINE_SESSION_ID_FIELD_NAME = "session_id";
     public static final String COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME = "smart_record_conf_name";
     public static final String COMMAND_LINE_UNTIL_DATE_FIELD_NAME = "until_date";
+    public static final String CONTEXT_USERID = "userId";
 }

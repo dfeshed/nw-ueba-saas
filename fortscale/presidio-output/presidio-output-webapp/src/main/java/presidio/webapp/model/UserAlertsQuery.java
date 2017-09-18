@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * UserAlertsQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T10:27:29.360Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
 public class UserAlertsQuery   {
   @JsonProperty("pageSize")
@@ -23,15 +23,18 @@ public class UserAlertsQuery   {
   @JsonProperty("sort")
   private List<String> sort = new ArrayList<String>();
 
+  @JsonProperty("expand")
+  private Boolean expand = false;
+
   public UserAlertsQuery pageSize(Integer pageSize) {
     this.pageSize = pageSize;
     return this;
   }
 
-   /**
+  /**
    * Get pageSize
    * @return pageSize
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getPageSize() {
     return pageSize;
@@ -46,10 +49,10 @@ public class UserAlertsQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get pageNumber
    * @return pageNumber
-  **/
+   **/
   @ApiModelProperty(value = "")
   public Integer getPageNumber() {
     return pageNumber;
@@ -69,10 +72,10 @@ public class UserAlertsQuery   {
     return this;
   }
 
-   /**
+  /**
    * Get sort
    * @return sort
-  **/
+   **/
   @ApiModelProperty(value = "")
   public List<String> getSort() {
     return sort;
@@ -80,6 +83,24 @@ public class UserAlertsQuery   {
 
   public void setSort(List<String> sort) {
     this.sort = sort;
+  }
+
+  public UserAlertsQuery expand(Boolean expand) {
+    this.expand = expand;
+    return this;
+  }
+
+  /**
+   * Get expand
+   * @return expand
+   **/
+  @ApiModelProperty(value = "")
+  public Boolean getExpand() {
+    return expand;
+  }
+
+  public void setExpand(Boolean expand) {
+    this.expand = expand;
   }
 
 
@@ -93,23 +114,25 @@ public class UserAlertsQuery   {
     }
     UserAlertsQuery userAlertsQuery = (UserAlertsQuery) o;
     return Objects.equals(this.pageSize, userAlertsQuery.pageSize) &&
-        Objects.equals(this.pageNumber, userAlertsQuery.pageNumber) &&
-        Objects.equals(this.sort, userAlertsQuery.sort);
+            Objects.equals(this.pageNumber, userAlertsQuery.pageNumber) &&
+            Objects.equals(this.sort, userAlertsQuery.sort) &&
+            Objects.equals(this.expand, userAlertsQuery.expand);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(pageSize, pageNumber, sort);
+    return Objects.hash(pageSize, pageNumber, sort, expand);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class UserAlertsQuery {\n");
-    
+
     sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
     sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
     sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
+    sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -125,4 +148,3 @@ public class UserAlertsQuery   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

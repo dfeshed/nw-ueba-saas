@@ -25,7 +25,7 @@ public class AccumulateSmartApplication {
         // The Spring configuration of the application
         sources.add(AccumulateSmartConfigurationProduction.class);
 
-        PresidioShellableApplication.run(sources, args);
+        new PresidioShellableApplication().run(sources, args);
     }
 }
 
