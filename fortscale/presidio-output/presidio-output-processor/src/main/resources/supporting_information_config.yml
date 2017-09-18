@@ -1,0 +1,527 @@
+indicators:
+
+#*********************************************************
+#*                   FILE INDICATORS                     *
+#*********************************************************
+
+- id: highestStartInstantScoreUserIdFileHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_event_day_time
+  adeEventType: scored_enriched.file.startInstant.userId.file.score
+  schema: FILE
+  anomalyDescriptior:
+    anomalyField: startInstant
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdFileDaily
+    featureName: startInstantHistogram
+
+- id: sumOfHighestOperationTypeScoresUserIdFilePermissionChangeFileHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_file_permision_change_operation_type
+  adeEventType: scored_enriched.file.operationType.userIdFilePermissionChange.file.score
+  schema: FILE
+  anomalyDescriptior:
+    anomalyField: operationType
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdFileDaily
+    featureName: operationTypeHistogram
+
+- id: sumOfHighestOperationTypeScoresUserIdFileActionFileHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_file_action_operation_type
+  schema: FILE
+  adeEventType: scored_enriched.file.operationType.userIdFileAction.file.score
+  anomalyDescriptior:
+    anomalyField: operationType
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdFileDaily
+    featureName: operationTypeHistogram
+
+- id: numberOfSuccessfulPermissionChangeUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_file_permission_change
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: FILE_PERMISSION_CHANGE
+    anomalyFilters:
+      field_name: result
+      field_value: success
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfSuccessfulFileActionsUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_file_action_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: FILE_ACTION
+    anomalyFilters:
+      field_name: result
+      field_value: success
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFailedPermissionChangeUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_failed_file_permission_change_attempts
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: FILE_PERMISSION_CHANGE
+    anomalyFilters:
+      field_name: result
+      field_value: failure
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFailedFileActionsUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_failed_file_action_attempts
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: FILE_ACTION
+    anomalyFilters:
+      field_name: result
+      field_value: failure
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctFileOpenedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_files_opened_attempts
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_OPENED
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctFolderOpenedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_folders_opened_attempts
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FOLDER_OPENED
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFileDeletedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_deletions
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_DELETED
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfSuccessfulFileRenamedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_file_rename_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_RENAMED
+    anomalyFilters:
+      field_name: result
+      field_value: success
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFileMovedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_move_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_MOVED
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFileMovedFromSharedDriveUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_move_operations_from_shared_drive
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_MOVED
+    anomalyFilters:
+      field_name: isSrcDriveShared
+      field_value: true
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFileMovedToSharedDriveUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_move_operations_to_shared_drive
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_MOVED
+    anomalyFilters:
+      field_name: isDstDriveShared
+      field_value: true
+  historicalData:
+    type: hourly_aggregations
+
+
+#*********************************************************
+#*              ACTIVE DIRECTORY INDICATORS              *
+#*********************************************************
+
+- id: highestStartInstantScoreUserIdActiveDirectoryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_active_directory_day_time_operation
+  adeEventType: scored_enriched.active_directory.startInstant.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: startInstant
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdActiveDirectoryDaily
+    featureName: startInstantHistogram
+
+- id: sumOfHighestOperationTypeScoresUserIdSecuritySensitiveActiveDirectoryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_sensitive_operation
+  adeEventType: scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: SECURITY_SENSITIVE_OPERATION
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_senesitive_group_membership_events
+  adeEventType: active_directory
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: SECURITY_SENSITIVE_OPERATION
+    anomalyFilters:
+        field_name: operationTypeCategories
+        field_value: GROUP_MEMBERSHIP
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfGroupMembershipOperationUserIdActiveDirectoryHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_group_membership_events
+  adeEventType: active_directory
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: GROUP_MEMBERSHIP
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_AD_operations
+  adeEventType: active_directory
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: result
+    anomalyValue: success
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_security_sensitive_operations
+  adeEventType: active_directory
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: SECURITY_SENSITIVE_OPERATION
+    anomalyFilters:
+      field_name: result
+      field_value: success
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFailedOperationTypeUserIdActiveDirectoryHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_failed_active_directory_events
+  adeEventType: active_directory
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: result
+    anomalyValue: failure
+
+  historicalData:
+    type: hourly_aggregations
+
+- id: adminPasswordChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: admin_changed_his_own_password
+  adeEventType: scored_enriched.active_directory.adminPasswordChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: PASSWORD_CHANGED
+    anomalyFilters:
+        field_name: isUserAdmin
+        field_value: true
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_password_changed
+  adeEventType: scored_enriched.active_directory.nonAdminPasswordChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: PASSWORD_CHANGED
+    anomalyFilters:
+      field_name: isUserAdmin
+      field_value: false
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: userAccountEnabledScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_account_enabled
+  adeEventType: scored_enriched.active_directory.userAccountEnabled.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_ACCOUNT_ENABLED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: userAccountDisabledScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_account_disabled
+  adeEventType: scored_enriched.active_directory.userAccountDisabled.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_ACCOUNT_DISABLED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: userAccountUnlockedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_account_unlocked
+  adeEventType: scored_enriched.active_directory.userAccountUnlocked.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationTypeCategories
+    anomalyValue: USER_ACCOUNT_UNLOCKED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: userAccountTypeChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_account_type_changed
+  adeEventType: scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_ACCOUNT_TYPE_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: userAccountLockedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_account_locked
+  adeEventType: scored_enriched.active_directory.userAccountLocked.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_ACCOUNT_LOCKED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_password_never_expires_option_changed
+  adeEventType: scored_enriched.active_directory.userPasswordNeverExpiresOptionChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_password_changed_by_non-owner
+  adeEventType: scored_enriched.active_directory.passwordChangedByNonOwner.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: PASSWORD_CHANGED_BY_NON_OWNER
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: nested_member_added_to_critical_enterprise_group
+  adeEventType: scored_enriched.active_directory.nestedMemberAddedToCriticalGroup.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+- id: memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: member_added_to_critical_enterprise_group
+  adeEventType: scored_enriched.active_directory.memberAddedToCriticalGroup.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+
+
+#*********************************************************
+#*                AUTHENTICATION INDICATORS              *
+#*********************************************************
+
+- id: highestStartInstantScoreUserIdAuthenticationHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_logon_day_time
+  adeEventType: scored_enriched.authentication.startInstant.userId.authentication.score
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: startInstant
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdAuthenticationDaily
+    featureName: startInstantHistogram
+
+- id: sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_source_machine
+  adeEventType: scored_enriched.authentication.srcMachine.userId.authentication.score
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: srcMachineNameCluster
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
+    featureName: srcMachineNameRegexClusterHistogram
+
+- id: sumOfHighestDstMachineNameRegexClusterScoresUserIdAuthenticationHourly
+  type: SCORE_AGGREGATION
+  name: abnorma_destination_machine
+  adeEventType: scored_enriched.authentication.dstMachine.userId.authentication.score
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineNameCluster
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily
+    featureName: dstMachineNameRegexClusterHistogram
+
+- id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_authentications
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: result
+    anomalyValue: success
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfFailedAuthenticationsUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_failed_authentications
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: result
+    anomalyValue: failure
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctDstMachineDomainUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_destination_domains
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctSrcMachineIdUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_computers
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctDstMachineIdUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_dst_computers
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_computer_clusters
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  historicalData:
+    type: hourly_aggregations
+
+- id: numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_dst_computer_clusters
+  adeEventType: authentication
+  schema: ACTIVE_DIRECTORY
+  historicalData:
+    type: hourly_aggregations
