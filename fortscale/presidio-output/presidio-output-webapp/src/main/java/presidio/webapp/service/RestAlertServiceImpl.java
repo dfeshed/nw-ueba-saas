@@ -11,14 +11,7 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.dto.Alert;
-import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertSeverity;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Event;
-import presidio.webapp.model.EventQuery;
-import presidio.webapp.model.Indicator;
+import presidio.webapp.model.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -49,23 +42,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             resultAlert = createRestAlert(alertData);
         }
 
-        return resultAlert;
-    }
-
-    @Override
-    public Alert createResult(presidio.output.domain.records.alerts.Alert alertData) {
-        Alert resultAlert = new Alert();
-        resultAlert.setId(alertData.getId());
-        resultAlert.setUsername(alertData.getUserName());
-        resultAlert.setIndicatorsNum(alertData.getIndicatorsNum());
-        resultAlert.setStartDate(alertData.getStartDate().getTime());
-        resultAlert.setEndDate(alertData.getEndDate().getTime());
-        resultAlert.setScore(alertData.getScore());
-        resultAlert.setClassifications(alertData.getClassifications());
-        if (expand) {
-            List<Indicator> indicator = MockUtils.mockIndicators(false);
-            resultAlert.setIndicators(indicator);
-        }
         return resultAlert;
     }
 
