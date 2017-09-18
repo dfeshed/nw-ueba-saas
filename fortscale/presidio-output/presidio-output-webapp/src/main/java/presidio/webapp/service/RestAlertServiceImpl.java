@@ -12,13 +12,10 @@ import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
