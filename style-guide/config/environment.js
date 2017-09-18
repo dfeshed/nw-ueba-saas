@@ -75,6 +75,9 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+
+    ENV.visualTourRootUrl = "https://asoc-jenkins2.rsa.lab.emc.com/job/e2e-test/ws/visuals/";
+    ENV.visualTourRootUrl = "/visual-evolution";
   }
 
   if (environment === 'test') {
@@ -92,6 +95,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.rootURL = '/SA/SAStyle/production';
+    ENV.visualTourRootUrl = "https://asoc-jenkins2.rsa.lab.emc.com/job/e2e-test/ws/visuals/";
   }
 
   return ENV;

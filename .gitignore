@@ -36,3 +36,6 @@ testem.log
 lcov.dat
 typings/
 junit/
+
+style-guide/public/visual-evolution/images
+style-guide/public/visual-evolution/storage.json

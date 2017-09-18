@@ -4,3 +4,11 @@
 @import 'spec-category';
 @import 'spec-member';
 @import 'spec-masthead';
+
+.visual-tour-link {
+  text-decoration: none;
+  color: rsa-color(blue);
+  display: inline-block;
+  margin: rsa-whitespace(more) auto;
+  @include rsa-font(navigation);
+}

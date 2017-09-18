@@ -84,6 +84,8 @@ Router.map(function() {
 
     this.route('table');
   });
+
+  this.route('visual-evolution');
 });
 
 export default Router;

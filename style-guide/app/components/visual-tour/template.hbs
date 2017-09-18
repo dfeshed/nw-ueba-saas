@@ -1,0 +1,108 @@
+{{#swiper-container
+  prevButton=".prev-image"
+  nextButton=".next-image"
+  autoplay=4500
+  autoplayDisableOnInteraction=false
+  updateFor=showNetWitness
+  registerAs=tourGallery
+}}
+  {{#each filteredImages as |image|}}
+    {{#swiper-slide}}
+      <centered>
+        <div>
+          {{#if activeResolution}}
+            <img src="{{imageRoot}}/{{activeRun.timestamp}}-{{image.label}}-{{activeResolution.width}}x{{activeResolution.height}}.png">
+          {{/if}}
+
+          <h2>
+            {{image.label}}
+            |
+            {{rsa-content-datetime timestamp=activeRun.timestamp}}
+            {{#if activeRun.buildUrl}}
+              |
+              <a href={{activeRun.buildUrl}}>Jenkins Build Job</a>
+            {{/if}}
+          </h2>
+        </div>
+      </centered>
+    {{/swiper-slide}}
+  {{/each}}
+{{/swiper-container}}
+
+<hbox class="swiper-controls">
+  {{#if showNetWitness}}
+    <div class='rsa-form-radio-group resolution-filters'>
+      {{#each resolutions as |resolution|}}
+        <label class="rsa-form-radio-label {{if (eq resolution activeResolution) 'checked'}}">
+          {{radio-button
+            value=resolution
+            groupValue=activeResolution
+            changed="setResolution"}}
+            {{resolution.width}}x{{resolution.height}}
+        </label>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  {{#x-toggle
+    class="show-diffs-toggle"
+    showLabels=true
+    onLabel='Show differences'
+    value=(readonly showDiffs)
+    onToggle=(action (mut showDiffs)) as |toggle|}}
+    {{toggle.switch}}
+    {{toggle.onLabel value=(readonly (not showDiffs))}}
+  {{/x-toggle}}
+
+  {{#x-toggle
+    showLabels=true
+    class="show-style-guide-toggle"
+    onLabel='Show NetWitness'
+    value=(readonly showNetWitness)
+    onToggle=(action 'toggleNetWitness') as |toggle|}}
+    {{toggle.switch}}
+    {{toggle.onLabel value=(readonly showNetWitness)}}
+  {{/x-toggle}}
+
+  <nav class="run-selector">
+    {{rsa-icon name="arrow-previous"
+      class=(unless allowPrevRun 'disabled')
+      click=(action 'updateRun' 'prev')
+      size="medium"
+      title="View previous run"
+    }}
+
+    {{rsa-icon name="arrow-left-12"
+      class="prev-image"
+      size="medium"
+      title="View previous image"
+    }}
+
+    {{#if (eq playState 'play')}}
+      {{rsa-icon name="pause-button"
+        click=(action 'updatePlayState')
+        size="medium"
+        title="Pause slideshow"
+      }}
+    {{else}}
+      {{rsa-icon name="play-button-2"
+        click=(action 'updatePlayState')
+        size="medium"
+        title="Play slideshow"
+      }}
+    {{/if}}
+
+    {{rsa-icon name="arrow-right-12"
+      class="next-image"
+      size="medium"
+      title="View next image"
+    }}
+
+    {{rsa-icon name="arrow-next"
+      class=(unless allowNextRun 'disabled')
+      click=(action 'updateRun' 'next')
+      size="medium"
+      title="View next run"
+    }}
+  </nav>
+</hbox>

@@ -24,33 +24,37 @@
   {{/each}}
 </ul>
 
-{{rsa-application-header displayPreferences=false}}
+{{#unless hideAppChrome}}
+  {{rsa-application-header displayPreferences=false}}
 
-{{#rsa-application-content}}
-  <hbox>
-    <vbox xs="3" class="style-guide-nav">
-      <fill block class="scroll-box">
-        {{app-nav}}
-      </fill>
-    </vbox>
+  {{#rsa-application-content}}
+    <hbox>
+      <vbox xs="3" class="style-guide-nav">
+        <fill block class="scroll-box">
+          {{app-nav}}
+        </fill>
+      </vbox>
 
-    <vbox xs="9" class="style-guide-content">
-      {{outlet}}
-    </vbox>
-  </hbox>
-{{/rsa-application-content}}
+      <vbox xs="9" class="style-guide-content">
+        {{outlet}}
+      </vbox>
+    </hbox>
+  {{/rsa-application-content}}
 
-<div id="modalDestination"></div>
-{{#rsa-application-modal
-  label="Error"
-  style='error'
-  eventId='fatalError'
-  modalDidClose='clearFatalErrorQueue'}}
-  <div class='modal-content'>
-    {{#each fatalErrors.queue as |error|}}
-      <p>{{error}}</p>
-    {{/each}}
-  </div>
-{{/rsa-application-modal}}
+  {{#rsa-application-modal
+    label="Error"
+    style='error'
+    eventId='fatalError'
+    modalDidClose='clearFatalErrorQueue'}}
+    <div class='modal-content'>
+      {{#each fatalErrors.queue as |error|}}
+        <p>{{error}}</p>
+      {{/each}}
+    </div>
+  {{/rsa-application-modal}}
+{{else}}
+  {{outlet}}
+{{/unless}}
 
 {{ember-load-remover}}
+<div id="modalDestination"></div>
