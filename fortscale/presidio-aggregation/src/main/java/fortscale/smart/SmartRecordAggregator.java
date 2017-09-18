@@ -9,6 +9,8 @@ import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Aggregates {@link AdeAggregationRecord}s with a specific {@link FixedDurationStrategy} and
@@ -63,8 +65,7 @@ public class SmartRecordAggregator {
 	public void updateSmartRecords(Collection<AdeAggregationRecord> newAggregationRecords) {
 		for (AdeAggregationRecord newAggregationRecord : newAggregationRecords) {
 			if (isAggregationRecordTimeRangeValid(newAggregationRecord)) {
-				String contextId = newAggregationRecord.getContextId();
-				SmartRecord smartRecord = contextIdToSmartRecordMap.computeIfAbsent(contextId, this::getSmartRecord);
+				SmartRecord smartRecord = getSmartRecord(newAggregationRecord);
 				List<AdeAggregationRecord> existingAggregationRecords = smartRecord.getAggregationRecords();
 
 				if (existingAggregationRecords == null) {
@@ -75,13 +76,13 @@ public class SmartRecordAggregator {
 				if (doesAggregationRecordAlreadyExist(newAggregationRecord, existingAggregationRecords)) {
 					logger.error("Context ID {} already has an aggregation record of type {} between {}. " +
 							"Ignoring new aggregation record of same type between same time range.",
-							contextId, newAggregationRecord.getFeatureName(), timeRange);
+							smartRecord.getContextId(), newAggregationRecord.getFeatureName(), timeRange);
 				} else if (doesAggregationRecordPassThreshold(newAggregationRecord)) {
 					existingAggregationRecords.add(newAggregationRecord);
 				} else {
 					logger.debug("Discarding aggregation record of type {} between {}, " +
 							"because it did not pass the threshold {}. Context ID = {}.",
-							newAggregationRecord.getFeatureName(), timeRange, threshold, contextId);
+							newAggregationRecord.getFeatureName(), timeRange, threshold, smartRecord.getContextId());
 				}
 			} else {
 				logger.error("Ignoring aggregation record {} with start instant {} " +
@@ -103,8 +104,14 @@ public class SmartRecordAggregator {
 				aggregationRecord.getEndInstant().equals(timeRange.getEnd());
 	}
 
-	private SmartRecord getSmartRecord(String contextId) {
-		return new SmartRecord(timeRange, contextId, smartRecordConf.getName(), fixedDurationStrategy);
+	private SmartRecord getSmartRecord(AdeAggregationRecord aggregationRecord) {
+		String contextId = aggregationRecord.getContextId();
+		return contextIdToSmartRecordMap.computeIfAbsent(contextId, key -> {
+			Map<String, String> aggregationRecordContext = aggregationRecord.getContext();
+			Map<String, String> context = smartRecordConf.getContexts().stream()
+					.collect(Collectors.toMap(Function.identity(), aggregationRecordContext::get));
+			return new SmartRecord(timeRange, contextId, smartRecordConf.getName(), fixedDurationStrategy, context);
+		});
 	}
 
 	private boolean doesAggregationRecordAlreadyExist(
