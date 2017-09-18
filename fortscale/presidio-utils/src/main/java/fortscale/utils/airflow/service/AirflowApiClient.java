@@ -78,6 +78,7 @@ public interface AirflowApiClient {
      * @param state desired dags state
      * @param dagIdPrefix prefix to filter dag id's by
      * @return {@link this#getDagExecutionDatesByState} only filtered by {@param dagIdPrefix}
+     *
      */
     default Map<String, DagExecutionStatus> getDagExecutionDatesByStateAndDagIdPrefix(DagState state, String dagIdPrefix) {
         return getDagExecutionDatesByState(state).entrySet().stream().filter(entry -> entry.getKey().startsWith(dagIdPrefix)).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));

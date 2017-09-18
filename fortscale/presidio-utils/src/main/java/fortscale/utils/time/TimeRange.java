@@ -88,6 +88,11 @@ public class TimeRange implements Comparable<TimeRange> {
         return end.compareTo(other.end);
     }
 
+
+    public static int compareTimeRange(TimeRange other1, TimeRange other2) {
+        return other1.compareTo(other2);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;

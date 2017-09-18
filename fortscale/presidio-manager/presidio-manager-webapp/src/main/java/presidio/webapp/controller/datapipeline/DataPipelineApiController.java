@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import presidio.manager.api.service.ManagerService;
 import presidio.webapp.model.datapipeline.CleanupCmd;
 
 
@@ -14,7 +15,10 @@ import presidio.webapp.model.datapipeline.CleanupCmd;
 @Controller
 public class DataPipelineApiController implements DataPipelineApi {
 
-    public DataPipelineApiController() {
+    private final ManagerService managerService;
+
+    public DataPipelineApiController(ManagerService managerService) {
+        this.managerService = managerService;
     }
 
     public ResponseEntity<Void> dataPipelineCleanupPost(@ApiParam(value = "" ,required=true ) @RequestBody CleanupCmd body) {
@@ -28,8 +32,7 @@ public class DataPipelineApiController implements DataPipelineApi {
     }
 
     public ResponseEntity<PipelineState> dataPipelineStatusGet() {
-        // do some magic!
-        return new ResponseEntity<PipelineState>(HttpStatus.OK);
+        return new ResponseEntity<PipelineState>(managerService.getPipelineState(),HttpStatus.OK);
     }
 
     public ResponseEntity<Void> dataPipelineStopPost() {

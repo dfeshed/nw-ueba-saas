@@ -1,9 +1,11 @@
 package fortscale.common.SDK;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.time.TimeRange;
 import io.swagger.annotations.ApiModelProperty;
 import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -13,12 +15,24 @@ import java.util.Objects;
 
 public class PipelineStateDataProcessingCursor   {
   @JsonProperty("from")
-  private DateTime from = null;
+  private Instant from = null;
 
   @JsonProperty("to")
-  private DateTime to = null;
+  private Instant to = null;
 
-  public PipelineStateDataProcessingCursor from(DateTime from) {
+  public PipelineStateDataProcessingCursor() {
+  }
+
+  public PipelineStateDataProcessingCursor(Instant from, Instant to) {
+    this.from = from;
+    this.to = to;
+  }
+
+  public PipelineStateDataProcessingCursor(TimeRange timeRange) {
+    this(timeRange.getStart(),timeRange.getEnd());
+  }
+
+  public PipelineStateDataProcessingCursor from(Instant from) {
     this.from = from;
     return this;
   }
@@ -28,15 +42,15 @@ public class PipelineStateDataProcessingCursor   {
    * @return from
   **/
   @ApiModelProperty(value = "")
-  public DateTime getFrom() {
+  public Instant getFrom() {
     return from;
   }
 
-  public void setFrom(DateTime from) {
+  public void setFrom(Instant from) {
     this.from = from;
   }
 
-  public PipelineStateDataProcessingCursor to(DateTime to) {
+  public PipelineStateDataProcessingCursor to(Instant to) {
     this.to = to;
     return this;
   }
@@ -46,11 +60,11 @@ public class PipelineStateDataProcessingCursor   {
    * @return to
   **/
   @ApiModelProperty(value = "")
-  public DateTime getTo() {
+  public Instant getTo() {
     return to;
   }
 
-  public void setTo(DateTime to) {
+  public void setTo(Instant to) {
     this.to = to;
   }
 

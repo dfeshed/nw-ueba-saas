@@ -16,19 +16,18 @@ public interface DataPipelineSDK {
 
     /**
      *
-     * @return current status of a component
-     * @param currentlyRunningCursor
+     * @return current status of a component.
      */
-    PipelineState.StatusEnum getStatus(List<PipelineStateDataProcessingCursor> currentlyRunningCursor);
+    PipelineState.StatusEnum getStatus();
 
     /**
      *
-     * @return a merged result of {@link this#getStatus(List)} & {@link this#getCurrentlyRunningCursor()}
+     * @return a merged result of {@link this#getStatus()} & {@link this#getCurrentlyRunningCursor()}
      */
     default PipelineState getPipelineState()
     {
         List<PipelineStateDataProcessingCursor> currentlyRunningCursor = getCurrentlyRunningCursor();
-        PipelineState.StatusEnum status = getStatus(currentlyRunningCursor);
+        PipelineState.StatusEnum status = getStatus();
         PipelineState pipelineState = new PipelineState();
         pipelineState.setDataProcessingCursor(currentlyRunningCursor);
         pipelineState.setStatus(status);
