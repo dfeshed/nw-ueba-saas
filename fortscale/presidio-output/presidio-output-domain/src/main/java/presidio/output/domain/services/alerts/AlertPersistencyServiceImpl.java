@@ -10,8 +10,8 @@ import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
