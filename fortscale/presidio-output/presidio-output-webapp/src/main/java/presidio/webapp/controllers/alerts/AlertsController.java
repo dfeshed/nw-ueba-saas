@@ -54,42 +54,42 @@ public class AlertsController implements AlertsApi {
     public ResponseEntity<Indicator> getIndicatorByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") String indicatorId,
                                                          @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") String alertId,
                                                          @ApiParam(value = "", defaultValue = "false") @RequestParam(value = "expand", required = false, defaultValue = "false") Boolean expand) {
-        if (!StringUtils.isEmpty(alertId) && !StringUtils.isEmpty(indicatorId)) {
+
+        try {
             Indicator indicator = restAlertService.getIndicatorById(indicatorId, expand);
-            if (indicator != null) {
-                return new ResponseEntity(indicator, HttpStatus.OK);
-            }
+            HttpStatus httpStatus = indicator != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+            return new ResponseEntity(indicator, httpStatus);
+        } catch (Exception ex) {
+            logger.error("Trying the to get indicator by indicatorId:{} , But got internal error {}", indicatorId, ex);
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity(null, HttpStatus.BAD_REQUEST);
     }
 
 
     public ResponseEntity<EventsWrapper> getIndicatorEventsByAlert(@ApiParam(value = "The ID of the indicator to return", required = true) @PathVariable("indicatorId") String indicatorId,
                                                                    @ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") String alertId,
                                                                    EventQuery eventQuery) {
-        List<Event> events = restAlertService.getIndicatorEventsByIndicatorId(indicatorId, eventQuery);
-        if (events != null) {
-            EventsWrapper eventsWrapper = new EventsWrapper();
-            eventsWrapper.setEvents(events);
-            eventsWrapper.setTotal(events.size());
-            eventsWrapper.setPage(0);
-            return new ResponseEntity(eventsWrapper, HttpStatus.OK);
+        try {
+            EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId(indicatorId, eventQuery);
+            HttpStatus httpStatus = eventsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+            return new ResponseEntity(eventsWrapper, httpStatus);
+        } catch (Exception ex) {
+            logger.error("Trying the to get events with this eventQuery:{} , But got internal error {}", eventQuery.toString(), ex);
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<IndicatorsWrapper> getIndicatorsByAlert(@ApiParam(value = "The ID of the alert to return", required = true) @PathVariable("alertId") String alertId,
                                                                   IndicatorQuery indicatorQuery) {
-        List<Indicator> indicators = restAlertService.getIndicatorsByAlertId(alertId, indicatorQuery);
-        if (indicators != null) {
-            IndicatorsWrapper indicatorsWrapper = new IndicatorsWrapper();
-            indicatorsWrapper.setIndicators(indicators);
-            indicatorsWrapper.setTotal(indicators.size());
-            indicatorsWrapper.setPage(indicatorQuery.getPageNumber());
-            return new ResponseEntity(indicatorsWrapper, HttpStatus.OK);
+        try {
+            IndicatorsWrapper indicatorsWrapper = restAlertService.getIndicatorsByAlertId(alertId, indicatorQuery);
+            HttpStatus httpStatus = indicatorsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+            return new ResponseEntity(indicatorsWrapper, httpStatus);
+        } catch (Exception ex) {
+            logger.error("Trying the to get indicators with this indicatorQuery:{} , But got internal error {}", indicatorQuery.toString(), ex);
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity(null, HttpStatus.OK);
     }
 
 }
