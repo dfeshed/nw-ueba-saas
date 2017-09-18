@@ -13,6 +13,9 @@ public class TimeRange implements Comparable<TimeRange> {
     private Instant start;
     private Instant end;
 
+    public TimeRange() {
+    }
+
     /**
      * {@link Instant} based c'tor.
      *
@@ -70,11 +73,24 @@ public class TimeRange implements Comparable<TimeRange> {
         return Date.from(end);
     }
 
+    public void setStart(Instant start) {
+        this.start = start;
+    }
+
+    public void setEnd(Instant end) {
+        this.end = end;
+    }
+
     @Override
     public int compareTo(@NotNull TimeRange other) {
         int startComparisonResult = start.compareTo(other.start);
         if (startComparisonResult != 0) return startComparisonResult;
         return end.compareTo(other.end);
+    }
+
+
+    public static int compareTimeRange(TimeRange other1, TimeRange other2) {
+        return other1.compareTo(other2);
     }
 
     @Override

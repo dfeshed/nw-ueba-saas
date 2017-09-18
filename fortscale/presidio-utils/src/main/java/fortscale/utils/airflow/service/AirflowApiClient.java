@@ -3,9 +3,8 @@ package fortscale.utils.airflow.service;
 import fortscale.utils.airflow.message.DagState;
 import org.json.JSONObject;
 
-import java.time.Instant;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -61,15 +60,26 @@ public interface AirflowApiClient {
      * @param dagId - The DAG ID of the DAG you want to trigger
      * @return map key:dag list: all execution dates in given {@param state}
      */
-    Map<String, List<Instant>> getDagExecutionDatesByState(String dagId, DagState state);
+    Map<String, DagExecutionStatus> getDagExecutionDatesByState(String dagId, DagState state);
 
     /**
      * syntactic sugar
      *
      * @see this#getDagExecutionDatesByState(String, DagState)
      */
-    default Map<String, List<Instant>> getDagExecutionDatesByState(DagState state) {
+    default Map<String, DagExecutionStatus> getDagExecutionDatesByState(DagState state) {
         return getDagExecutionDatesByState(null, state);
     }
 
+
+    /**
+     *
+     * @param state desired dags state
+     * @param dagIdPrefix prefix to filter dag id's by
+     * @return {@link this#getDagExecutionDatesByState} only filtered by {@param dagIdPrefix}
+     *
+     */
+    default Map<String, DagExecutionStatus> getDagExecutionDatesByStateAndDagIdPrefix(DagState state, String dagIdPrefix) {
+        return getDagExecutionDatesByState(state).entrySet().stream().filter(entry -> entry.getKey().startsWith(dagIdPrefix)).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+    }
 }
