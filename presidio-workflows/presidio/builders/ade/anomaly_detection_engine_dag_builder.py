@@ -53,7 +53,7 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         # defining hourly and daily short circuit operators which should be wired to the sub dags and operators that
         # defined directly under the ADE dag
         hourly_short_circuit_operator = ShortCircuitOperator(
-            task_id='hourly_short_circuit',
+            task_id='ade_hourly_short_circuit',
             dag=anomaly_detection_engine_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_HOURLY,
@@ -61,7 +61,7 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             provide_context=True
         )
         daily_short_circuit_operator = ShortCircuitOperator(
-            task_id='daily_short_circuit',
+            task_id='ade_daily_short_circuit',
             dag=anomaly_detection_engine_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,

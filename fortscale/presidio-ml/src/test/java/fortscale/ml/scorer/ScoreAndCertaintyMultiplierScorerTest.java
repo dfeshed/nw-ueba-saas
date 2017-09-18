@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.domain.feature.score.ModelFeatureScore;
+import fortscale.domain.feature.score.CertaintyFeatureScore;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class ScoreAndCertaintyMultiplierScorerTest {
     public void shouldMultiplyScoreByCertainty() throws Exception {
         double score = 56;
         double certainty = 0.4;
-        ModelFeatureScore baseScore = new ModelFeatureScore("base score", score, certainty);
+        CertaintyFeatureScore baseScore = new CertaintyFeatureScore("base score", score, certainty);
         Mockito.when(baseScorer.calculateScore(adeRecordReader)).thenReturn(baseScore);
         String featureScoreName = "wrapped score";
         ScoreAndCertaintyMultiplierScorer scoreAndCertaintyMultiplierScorer =

@@ -2,12 +2,14 @@ package presidio.output.domain.services.event;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by efratn on 02/08/2017.
@@ -39,6 +41,20 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
             logger.error(errorMsg, e);
             throw e;
         }
+    }
+
+    @Override
+    public List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, Map<String, Object> features) throws Exception {
+        String collectionName = toCollectionNameTranslator.toCollectionName(schema);
+        List<? extends EnrichedEvent> events;
+        try {
+             events = eventRepository.findEvents(collectionName,userId,timeRange,features);
+        } catch (Exception e) {
+            String errorMsg = String.format("Failed to findEvents events by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            logger.error(errorMsg, e);
+            throw e;
+        }
+        return events;
     }
 
     @Override

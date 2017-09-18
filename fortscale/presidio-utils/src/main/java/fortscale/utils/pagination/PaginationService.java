@@ -67,6 +67,11 @@ public abstract class PaginationService<T> extends BasePaginationService<T> {
         return pageIteratorList;
     }
 
+    public PageIterator<T> getPageIterator(String adeEventType, TimeRange timeRange, Set<String> contextIds, int totalNumOfItems) {
+        PageIterator<T> pageIterator = createPageIterator(adeEventType, timeRange, contextIds, totalNumOfItems);
+        return pageIterator;
+    }
+
     /**
      * Create map of context ids and num of events based on timeRange and adeEventType.
      *
