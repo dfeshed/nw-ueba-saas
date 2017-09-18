@@ -1,6 +1,7 @@
 package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
@@ -86,6 +87,7 @@ public class Alert   {
     @JsonProperty("userId")
     private String userId = null;
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     @JsonProperty("indicators")
     private List<Indicator> indicators = new ArrayList<Indicator>();
 

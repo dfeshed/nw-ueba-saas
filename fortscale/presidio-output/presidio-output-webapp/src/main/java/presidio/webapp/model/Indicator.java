@@ -2,6 +2,8 @@ package presidio.webapp.model;
 
 
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -71,6 +73,7 @@ public class Indicator   {
   @JsonProperty("score")
   private Double score = null;
 
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   @JsonProperty("historicalData")
   private HistoricalData historicalData = null;
 
