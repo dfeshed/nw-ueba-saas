@@ -35,7 +35,6 @@ import static org.junit.Assert.*;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -80,7 +79,7 @@ public class AlertPersistencyServiceTest {
         assertNotNull(testAlert.getId());
         assertEquals(testAlert.getId(), alert.getId());
         assertEquals(testAlert.getUserName(), alert.getUserName());
-        //assertEquals(testAlert.getStartDate(), alert.getStartDate());
+        assertEquals(testAlert.getStartDate(), alert.getStartDate());
     }
 
     @Test
@@ -170,22 +169,22 @@ public class AlertPersistencyServiceTest {
 
     @Test
     public void testFindByQuery() throws ParseException {
-        Date startDate = Alert.ALERT_DATE_FORMAT.parse("20170916:100000.00Z");
-        Date endDate = Alert.ALERT_DATE_FORMAT.parse("20170916:103000.00Z");
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000*60);
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+                new Alert("userId1", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime()-1), new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertList.add(
-                new Alert("userId2", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+                new Alert("userId2", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertList.add(
-                new Alert("userId3", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+                new Alert("userId3", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime()+1), new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertList.add(
-                new Alert("userId4", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+                new Alert("userId4", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime()+2), new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertList.add(
-                new Alert("userId5", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
+                new Alert("userId6", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null));
         alertList.add(
-                new Alert("userId6", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null));
+                new Alert("userId5", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null));
         alertPersistencyService.save(alertList);
 
         List<String> aggregationFields = new ArrayList<>();
@@ -196,10 +195,10 @@ public class AlertPersistencyServiceTest {
                         .filterByUserName(new ArrayList<>(Arrays.asList("normalized_username_ipusr3")))
                         .filterBySeverity(new ArrayList<>(Arrays.asList(AlertSeverity.HIGH.name())))
                         .filterByStartDate(startDate.getTime())
-//                        .filterByEndDate(new Date(startDate.getTime() + 1))
+                        .filterByEndDate(startDate.getTime() + 1)
+                        .filterByClassification(classifications2)
                         .sortField(sort)
                         .aggregateByFields(aggregationFields)
-                        .filterByClassification(classifications2)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);

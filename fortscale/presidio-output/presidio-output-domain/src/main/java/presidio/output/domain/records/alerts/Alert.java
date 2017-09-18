@@ -16,7 +16,6 @@ import java.util.List;
 public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
-    public static final SimpleDateFormat ALERT_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd:HHmmss");
 
     // field names
     public static final String CLASSIFICATIONS = "classifications";
@@ -43,11 +42,11 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(USER_ID)
     private String userId;
 
-    @Field(type = FieldType.Date, store = true, format = DateFormat.custom, pattern = "yyyyMMdd:HHmmss")
+    @Field(type = FieldType.Date, store = true)
     @JsonProperty(START_DATE)
     private Date startDate;
 
-    @Field(type = FieldType.Date, store = true, format = DateFormat.custom, pattern = "yyyyMMdd:HHmmss")
+    @Field(type = FieldType.Date, store = true)
     @JsonProperty(END_DATE)
     private Date endDate;
 

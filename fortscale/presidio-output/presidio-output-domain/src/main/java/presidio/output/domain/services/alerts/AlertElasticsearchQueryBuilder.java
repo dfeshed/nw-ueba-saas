@@ -64,13 +64,13 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         }
 
         // filter by start date
-        if (alertQuery.getFilterByStartDate() != null) {
+        if (alertQuery.getFilterByStartDate() > 0) {
             boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
         }
 
-        // filter by end date
-        if (alertQuery.getFilterByEndDate() != null) {
-            boolQueryBuilder.must(rangeQuery(Alert.END_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
+        // filter by end date (meaning that the alert start date is less than the specified query filter
+        if (alertQuery.getFilterByEndDate() > 0) {
+            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
         }
 
         // filter by tags
