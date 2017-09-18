@@ -6,6 +6,9 @@ public class WeekdayAggregation extends Aggregation<String, List<Bucket<String, 
 
     public static final String TYPE = "weekdayAggregation";
 
+    public WeekdayAggregation() {
+    }
+
     public WeekdayAggregation(List<Bucket<String,List<Bucket<String, Integer>>>> buckets) {
         super(buckets);
     }
