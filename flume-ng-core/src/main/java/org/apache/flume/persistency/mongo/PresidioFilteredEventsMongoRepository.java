@@ -22,7 +22,7 @@ import java.util.Objects;
 public class PresidioFilteredEventsMongoRepository {
 
     private static final Logger logger = Logger.getLogger(PresidioFilteredEventsMongoRepository.class);
-    private static final String FILTERED_EVENTS_COLLECTION_NAME = "filtered_events";
+    private static final String COLLECTION_NAME = "filtered_events";
 
     private static SinkMongoRepository<FilteredEvent> sinkMongoRepository = null;
 
@@ -45,23 +45,16 @@ public class PresidioFilteredEventsMongoRepository {
         final JSONObject bodyAsJson = new JSONObject(new String(filteredFlumeEvent.getBody()));
         final Map<String, String> headers = filteredFlumeEvent.getHeaders();
         FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, bodyAsJson, headers);
-        sinkMongoRepository.save(filteredEvent, FILTERED_EVENTS_COLLECTION_NAME);
-        logger.trace("Saved filtered event {}", filteredEvent);
+        sinkMongoRepository.save(filteredEvent, COLLECTION_NAME);
+        logger.debug("Saved filtered event {}", filteredEvent);
     }
 
     public static synchronized <T extends AbstractDocument> void saveEvent(String pointOfFailure, String reason, T event) {
         final JSONObject bodyAsJson = new JSONObject(event);
         final Map<String, String> headers = new HashMap<>();
         FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, bodyAsJson, headers);
-        sinkMongoRepository.save(filteredEvent, FILTERED_EVENTS_COLLECTION_NAME);
-        logger.trace("Saved filtered event {}", filteredEvent);
-    }
-
-    public static synchronized void saveJsonEvent(String pointOfFailure, String reason, JSONObject event) {
-        final Map<String, String> headers = new HashMap<>();
-        FilteredEvent filteredEvent = new FilteredEvent(pointOfFailure, reason, event, headers);
-        sinkMongoRepository.save(filteredEvent, FILTERED_EVENTS_COLLECTION_NAME);
-        logger.trace("Saved filtered event {}", filteredEvent);
+        sinkMongoRepository.save(filteredEvent, COLLECTION_NAME);
+        logger.debug("Saved filtered event {}", filteredEvent);
     }
 
     protected static class FilteredEvent extends AbstractDocument {

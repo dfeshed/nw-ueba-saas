@@ -144,7 +144,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             } catch (Exception e) {
                 final Map<String, String> eventHeaders = flumeEvent.getHeaders();
                 if (!e.getClass().isAssignableFrom(MongoException.class)) {
-                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
                 }
                 final String errorMessage = String.format("PresidioMongoSink failed to sink event. Can't get event since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);

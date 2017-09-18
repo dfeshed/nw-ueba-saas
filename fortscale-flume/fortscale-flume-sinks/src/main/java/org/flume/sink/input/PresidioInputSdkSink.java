@@ -108,7 +108,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             } catch (Exception e) {
                 final Map<String, String> eventHeaders = flumeEvent.getHeaders();
                 if (!e.getClass().isAssignableFrom(MongoException.class)) {
-                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
                 }
                 final String errorMessage = String.format("Failed to sink event. Can't getEvent since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);

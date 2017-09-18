@@ -54,7 +54,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         if (baseFieldValue == null || baseFieldValue.isJsonNull() || baseFieldValue.toString().equals("null")) {
             if (filterOnMissingBaseField) {
                 logger.warn("Failed to join fields. Base field doesn't exist. for event {}. interceptor configuration: {}", event, this);
-                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), "Failed to join fields. Base field doesn't exist", event);
+                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), "Failed to join fields. Base field doesn't exist", event);
                 return null;
             } else {
                 baseValue = "";
@@ -67,7 +67,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         if (toAppendFieldValue == null || toAppendFieldValue.toString().equals("null")) {
             if (filterOnMissingToAppendField) {
                 logger.warn("Failed to join fields. To Append field doesn't exist for event {}. interceptor configuration: {}", event, this);
-                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), "Failed to join fields. To Append field doesn't exist", event);
+                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(this.getClass().getSimpleName(), "Failed to join fields. To Append field doesn't exist", event);
                 return null;
             } else {
                 toAppendValue = "";
