@@ -1,6 +1,8 @@
 package presidio.security.manager.service;
 
 
+import fortscale.utils.logging.Logger;
+import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.PresidioSystemConfiguration;
@@ -11,11 +13,18 @@ import java.util.List;
 
 public class ConfigurationSecurityService implements ConfigurationProcessingService {
 
+    private static final Logger logger = Logger.getLogger(ConfigurationSecurityService.class);
+
     private static final String DOMAIN_SYSTEM = "System";
     private static final String REASON_UNKNOWN_PROPERTY = "unknownProperty";
     private static final String REASON_MISSING_PROPERTY = "missingProperty";
     private final String LOCATION_TYPE = "jsonPath";
 
+    private final ConfigurationServerClientService configurationServerClientService;
+
+    public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService) {
+        this.configurationServerClientService = configurationServerClientService;
+    }
 
     @Override
     public ValidationResults validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
@@ -24,6 +33,13 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
 
     @Override
     public boolean applyConfiguration() {
+        try {
+            final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
+
+        } catch (Exception e) {
+            logger.error("Failed to apply configuration", e);
+            return false;
+        }
         return true;
     }
 
