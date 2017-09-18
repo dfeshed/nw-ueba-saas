@@ -27,4 +27,11 @@ public class SupportingInformationConfig {
         return indicators.stream().filter(indicator -> indicator.getId().equals(id)).findFirst().get();
     }
 
+    public IndicatorConfig getIndicatorConfigByClassification(String classification) {
+        return indicators.stream().filter(indicator -> indicator.getClassification().equals(classification)).findFirst().get();
+    }
+
+    public SupportingInformationConfig(List<IndicatorConfig> indicators) {
+        this.indicators = indicators;
+    }
 }
