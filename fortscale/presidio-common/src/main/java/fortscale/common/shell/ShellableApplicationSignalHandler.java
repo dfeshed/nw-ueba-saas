@@ -23,8 +23,10 @@ public class ShellableApplicationSignalHandler implements SignalHandler {
     @Override
     public void handle(Signal signal) {
         int exitCode = 1;
-        logger.info("received SIGTERM, setting exitcode={}",exitCode);
-        PresidioShellableApplication.exitCode.compareAndSet(0,exitCode);
+        if(signal.getName().equals("TERM")) {
+            logger.info("received SIGTERM, setting exitcode={}", exitCode);
+            PresidioShellableApplication.exitCode.compareAndSet(0, exitCode);
+        }
         try {
             shellableApplication.close();
         } catch (IOException e) {

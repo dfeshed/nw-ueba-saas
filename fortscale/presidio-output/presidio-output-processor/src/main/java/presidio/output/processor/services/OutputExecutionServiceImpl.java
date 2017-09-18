@@ -89,7 +89,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     userEntity = isUserGoingToBeCreated(users, userId);
                     if (userEntity == null) {
                         //Need to create user and add it to about to be created list
-                        userEntity = userService.createUserEntity(userId);
+                    userEntity = userService.createUserEntity(userId);
 
                         users.add(userEntity);
                         if (userEntity == null) {
@@ -103,7 +103,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
-                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), null);//TODO:change null to indicators when alert pojo will have indicators
+                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
                     alerts.add(alertEntity);
                 }
             }
@@ -119,7 +119,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-    }
+        }
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
@@ -143,7 +143,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void recalculateUserScore() throws Exception {
+    public void recalculateUserScore() throws Exception{
         logger.info("Start Recalculating User Alert Data");
         this.userService.updateAllUsersAlertData();
         logger.info("Finish Recalculating User Score");
