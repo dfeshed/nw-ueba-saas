@@ -41,6 +41,7 @@ public class PresidioShellableApplication implements Closeable {
      */
     private void initSigtermHandler(PresidioShellableApplication presidioShellableApplication) {
         Signal.handle(new Signal("TERM"), new ShellableApplicationSignalHandler(presidioShellableApplication));
+        Signal.handle(new Signal("INT"), new ShellableApplicationSignalHandler(presidioShellableApplication));
     }
 
     /**
@@ -77,6 +78,13 @@ public class PresidioShellableApplication implements Closeable {
             } else {
                 exitCode.set(exitShellRequest.getExitCode());
                 exitCode.compareAndSet(0,1);
+            }
+        }
+        finally {
+            try {
+                close();
+            } catch (IOException e) {
+                throw new RuntimeException("error while closing system",e);
             }
         }
     }
