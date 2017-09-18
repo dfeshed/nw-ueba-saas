@@ -11,19 +11,10 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertSeverity;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Event;
-import presidio.webapp.model.EventQuery;
-import presidio.webapp.model.Indicator;
+import presidio.webapp.model.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -93,7 +84,11 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
-                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
+                Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
+                alertAggregations.keySet().forEach(aggregationName -> {
+                    aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name());
+                });
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations, aggregationNamesEnumMapping);
                 alertsWrapper.setAggregationData(aggregations);
             }
         } else {
