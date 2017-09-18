@@ -311,6 +311,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setUserId(alert.getUserId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
+        restAlert.setIndicatorsName(alert.getIndicatorsNames());
         restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
