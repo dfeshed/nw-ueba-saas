@@ -361,13 +361,4 @@
     </build>
 
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/ext-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-
 </project>

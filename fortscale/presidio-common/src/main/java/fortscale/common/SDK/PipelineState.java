@@ -1,4 +1,4 @@
-package presidio.webapp.model.datapipeline;
+package fortscale.common.SDK;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,6 +24,8 @@ public class PipelineState   {
     CLEANING("CLEANING"),
     
     STOPPING("STOPPING"),
+
+    BUILDING_BASELINE("BUILDING_BASELINE"),
     
     STOPPED("STOPPED");
 

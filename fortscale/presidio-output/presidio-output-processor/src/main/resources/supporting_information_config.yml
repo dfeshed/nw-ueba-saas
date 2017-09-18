@@ -15,6 +15,7 @@ indicators:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdFileDaily
     featureName: startInstantHistogram
+  classification: non_standard_hours
 
 - id: sumOfHighestOperationTypeScoresUserIdFilePermissionChangeFileHourly
   type: SCORE_AGGREGATION
@@ -27,6 +28,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
     featureName: operationTypeHistogram
+  classification: mass_permission_changes
 
 - id: sumOfHighestOperationTypeScoresUserIdFileActionFileHourly
   type: SCORE_AGGREGATION
@@ -39,6 +41,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
     featureName: operationTypeHistogram
+  classification: abnormal_file_access
 
 - id: numberOfSuccessfulPermissionChangeUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -53,6 +56,7 @@ indicators:
       field_value: success
   historicalData:
     type: hourly_aggregations
+  classification: mass_permission_changes
 
 - id: numberOfSuccessfulFileActionsUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -67,6 +71,7 @@ indicators:
       field_value: success
   historicalData:
     type: hourly_aggregations
+  classification: snooping_user
 
 - id: numberOfFailedPermissionChangeUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -81,6 +86,7 @@ indicators:
       field_value: failure
   historicalData:
     type: hourly_aggregations
+  classification: mass_permission_changes
 
 - id: numberOfFailedFileActionsUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -95,6 +101,7 @@ indicators:
       field_value: failure
   historicalData:
     type: hourly_aggregations
+  classification: snooping_user
 
 - id: numberOfDistinctFileOpenedUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -106,6 +113,8 @@ indicators:
     anomalyValue: FILE_OPENED
   historicalData:
     type: hourly_aggregations
+  classification: snooping_user
+
 
 - id: numberOfDistinctFolderOpenedUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -117,6 +126,8 @@ indicators:
     anomalyValue: FOLDER_OPENED
   historicalData:
     type: hourly_aggregations
+  classification: snooping_user
+
 
 - id: numberOfFileDeletedUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -128,6 +139,7 @@ indicators:
     anomalyValue: FILE_DELETED
   historicalData:
     type: hourly_aggregations
+  classification: data_exfiltration
 
 - id: numberOfSuccessfulFileRenamedUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -142,6 +154,7 @@ indicators:
       field_value: success
   historicalData:
     type: hourly_aggregations
+  classification: mass_file_rename
 
 - id: numberOfFileMovedUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -153,6 +166,7 @@ indicators:
     anomalyValue: FILE_MOVED
   historicalData:
     type: hourly_aggregations
+  classification: data_exfiltration
 
 - id: numberOfFileMovedFromSharedDriveUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -167,6 +181,7 @@ indicators:
       field_value: true
   historicalData:
     type: hourly_aggregations
+  classification: suspicious_user_activity
 
 - id: numberOfFileMovedToSharedDriveUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -181,6 +196,7 @@ indicators:
       field_value: true
   historicalData:
     type: hourly_aggregations
+  classification: suspicious_user_activity
 
 
 #*********************************************************
@@ -198,6 +214,7 @@ indicators:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdActiveDirectoryDaily
     featureName: startInstantHistogram
+  classification: non_standard_hours
 
 - id: sumOfHighestOperationTypeScoresUserIdSecuritySensitiveActiveDirectoryHourly
   type: SCORE_AGGREGATION
@@ -211,6 +228,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: abnormal_ad_changes
 
 - id: numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
@@ -225,6 +243,7 @@ indicators:
         field_value: GROUP_MEMBERSHIP
   historicalData:
     type: hourly_aggregations
+  classification: mass_changes_to_critical_enterprise_groups
 
 - id: numberOfGroupMembershipOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
@@ -236,6 +255,7 @@ indicators:
     anomalyValue: GROUP_MEMBERSHIP
   historicalData:
     type: hourly_aggregations
+  classification: mass_changes_to_groups
 
 - id: numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
@@ -247,6 +267,8 @@ indicators:
     anomalyValue: success
   historicalData:
     type: hourly_aggregations
+  classification: abnormal_ad_changes
+
 
 - id: numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
@@ -261,6 +283,7 @@ indicators:
       field_value: success
   historicalData:
     type: hourly_aggregations
+  classification: abnormal_ad_changes
 
 - id: numberOfFailedOperationTypeUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
@@ -270,9 +293,9 @@ indicators:
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: failure
-
   historicalData:
     type: hourly_aggregations
+  classification: abnormal_ad_changes
 
 - id: adminPasswordChangedScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -289,6 +312,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: admin_password_change
 
 - id: nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -305,6 +329,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: userAccountEnabledScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -318,6 +343,8 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
 
 - id: userAccountDisabledScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -331,6 +358,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: userAccountUnlockedScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -344,6 +372,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: userAccountTypeChangedScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -357,6 +386,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: userAccountLockedScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -370,6 +400,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -383,6 +414,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -396,6 +428,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
 
 - id: nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -409,6 +442,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: elevated_privileges_granted
 
 - id: memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
@@ -422,6 +456,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
+  classification: elevated_privileges_granted
 
 
 #*********************************************************
@@ -439,6 +474,7 @@ indicators:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdAuthenticationDaily
     featureName: startInstantHistogram
+  classification: non_standard_hours
 
 - id: sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly
   type: SCORE_AGGREGATION
@@ -451,10 +487,11 @@ indicators:
     type: count_aggregations
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
     featureName: srcMachineNameRegexClusterHistogram
+  classification: user_login_to_abnormal_host
 
 - id: sumOfHighestDstMachineNameRegexClusterScoresUserIdAuthenticationHourly
   type: SCORE_AGGREGATION
-  name: abnorma_destination_machine
+  name: abnormal_remote_destination_machine
   adeEventType: scored_enriched.authentication.dstMachine.userId.authentication.score
   schema: AUTHENTICATION
   anomalyDescriptior:
@@ -463,6 +500,7 @@ indicators:
     type: count_aggregations
     featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily
     featureName: dstMachineNameRegexClusterHistogram
+  classification: user_login_to_abnormal_remote_host
 
 - id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -474,6 +512,7 @@ indicators:
     anomalyValue: success
   historicalData:
     type: hourly_aggregations
+  classification: multiple_logons_by_user
 
 - id: numberOfFailedAuthenticationsUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -485,6 +524,7 @@ indicators:
     anomalyValue: failure
   historicalData:
     type: hourly_aggregations
+  classification: multiple_failed_logons
 
 - id: numberOfDistinctDstMachineDomainUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -493,6 +533,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
+  classification: user_logins_to_multiple_domains
 
 - id: numberOfDistinctSrcMachineIdUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -501,6 +542,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
+  classification: user_logged_into_multiple_hosts
 
 - id: numberOfDistinctDstMachineIdUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -509,6 +551,8 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
+  classification: suspicious_user_activity
+
 
 - id: numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -517,6 +561,8 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
+  classification: suspicious_user_activity
+
 
 - id: numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -525,3 +571,63 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
+  classification: suspicious_user_activity
+
+classificationPriority:
+
+- classificationName: mass_changes_to_critical_enterprise_groups
+  priority: 1
+
+- classificationName: mass_changes_to_groups
+  priority: 2
+
+- classificationName: elevated_privileges_granted
+  priority: 3
+
+- classificationName: multiple_failed_logons
+  priority: 4
+
+- classificationName: user_logins_to_multiple_domains
+  priority: 5
+
+- classificationName: user_login_to_abnormal_remote_host
+  priority: 6
+
+- classificationName: user_login_to_abnormal_host
+  priority: 7
+
+- classificationName: data_exfiltration
+  priority: 8
+
+- classificationName: mass_file_rename
+  priority: 9
+
+- classificationName: snooping_user
+  priority: 10
+
+- classificationName: multiple_logons_by_user
+  priority: 11
+
+- classificationName: user_logged_into_multiple_hosts
+  priority: 12
+
+- classificationName: admin_password_change
+  priority: 13
+
+- classificationName: mass_permission_changes
+  priority: 14
+
+- classificationName: abnormal_ad_changes
+  priority: 15
+
+- classificationName: sensitive_user_status_changes
+  priority: 16
+
+- classificationName: abnormal_file_access
+  priority: 17
+
+- classificationName: non_standard_hours
+  priority: 18
+
+- classificationName: suspicious_user_activity
+  priority: 19
