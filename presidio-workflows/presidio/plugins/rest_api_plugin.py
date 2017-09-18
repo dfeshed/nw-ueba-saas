@@ -1052,9 +1052,10 @@ class REST_API(BaseView):
             # create a payload response containing the execution dates for each dag_id
             payload = []
             for k, v in res.items():
-
+                dag = non_sub_dag_dags.get(k)
                 payload.append({
                     'dag_id': k,
+                    'start_date': format_date(dag.start_date),
                     'execution_dates': v
                 })
             return REST_API_Response_Util.get_200_response(base_response=base_response, output=payload)

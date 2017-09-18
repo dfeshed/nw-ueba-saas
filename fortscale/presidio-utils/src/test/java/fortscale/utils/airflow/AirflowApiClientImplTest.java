@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import fortscale.utils.airflow.message.DagState;
 import fortscale.utils.airflow.service.AirflowApiClient;
 import fortscale.utils.airflow.service.AirflowApiClientConfig;
+import fortscale.utils.airflow.service.DagExecutionStatus;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -58,16 +58,19 @@ public class AirflowApiClientImplTest {
             "          \"end\": \"2017-07-24T22:00:00.000Z\", \n" +
             "          \"start\": \"2017-07-24T21:00:00.000Z\"\n" +
             "        } \n" +
-            "      ]\n" +
+            "      ],\n" +
+            "\"start_date\": \"2017-07-24T07:00:00.000Z\"\n" +
             "    },\n" +
             "    {\n" +
-            "      \"dag_id\": \"DAG2\", \n" +
+            "      \"dag_id\": \"FOO2\", \n" +
             "      \"execution_dates\": [\n" +
             "        {\n" +
             "          \"end\": \"2017-07-24T20:00:00.000Z\", \n" +
             "          \"start\": \"2017-07-24T19:00:00.000Z\"\n" +
             "        } \n" +
-            "      ]\n" +
+
+            "      ],\n" +
+            "\"start_date\": \"2017-07-24T07:00:00.000Z\"\n" +
             "    }\n" +
             "  ], \n" +
             "  \"post_arguments\": {}, \n" +
@@ -103,7 +106,8 @@ public class AirflowApiClientImplTest {
             "          \"end\": \"2017-07-24T23:00:00.000Z\", \n" +
             "          \"start\": \"2017-07-24T22:00:00.000Z\"\n" +
             "        }\n" +
-            "      ]\n" +
+            "      ],\n" +
+            "\"start_date\": \"2017-07-24T07:00:00.000Z\"\n" +
             "    }\n" +
             "  ], \n" +
             "  \"post_arguments\": {}, \n" +
@@ -127,16 +131,39 @@ public class AirflowApiClientImplTest {
         mockServer.expect(requestTo(DAG_EXECUTION_DATES_BY_STATE_URL))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(DAG_EXECUTION_DATES_BY_STATE_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
-        Map<String, List<TimeRange>> dagExecutionDatesByState = airflowApiClient.getDagExecutionDatesByState(DagState.RUNNING);
-        Map<String, List<TimeRange>> expectedMap = new HashMap<>();
-        expectedMap.put("DAG1",
+        DagState dagState = DagState.RUNNING;
+        Map<String, DagExecutionStatus> dagExecutionDatesByState = airflowApiClient.getDagExecutionDatesByState(dagState);
+        Map<String, DagExecutionStatus> expectedMap = new HashMap<>();
+        DagExecutionStatus dag1Status = new DagExecutionStatus("DAG1",Instant.parse("2017-07-24T07:00:00.000Z"),
                 Lists.newArrayList(
                         new TimeRange(Instant.parse("2017-07-24T19:00:00.000Z"), Instant.parse("2017-07-24T20:00:00.000Z")),
                         new TimeRange(Instant.parse("2017-07-24T20:00:00.000Z"), Instant.parse("2017-07-24T21:00:00.000Z")),
-                        new TimeRange(Instant.parse("2017-07-24T21:00:00.000Z"), Instant.parse("2017-07-24T22:00:00.000Z"))));
-        expectedMap.put("DAG2",
+                        new TimeRange(Instant.parse("2017-07-24T21:00:00.000Z"), Instant.parse("2017-07-24T22:00:00.000Z")))
+                ,dagState);
+        DagExecutionStatus dag2Status = new DagExecutionStatus("FOO2",Instant.parse("2017-07-24T07:00:00.000Z"),
                 Lists.newArrayList(
-                        new TimeRange(Instant.parse("2017-07-24T19:00:00.000Z"),Instant.parse("2017-07-24T20:00:00.000Z"))));
+                        new TimeRange(Instant.parse("2017-07-24T19:00:00.000Z"),Instant.parse("2017-07-24T20:00:00.000Z")))
+                ,dagState);
+        expectedMap.put("DAG1",dag1Status);
+        expectedMap.put("FOO2",dag2Status);
+        Assert.assertTrue(expectedMap.equals(dagExecutionDatesByState));
+    }
+
+    @Test
+    public void shouldReturnDagsByStateAndDagPrefix() {
+        mockServer.expect(requestTo(DAG_EXECUTION_DATES_BY_STATE_URL))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(DAG_EXECUTION_DATES_BY_STATE_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
+        DagState dagState = DagState.RUNNING;
+        Map<String, DagExecutionStatus> dagExecutionDatesByState = airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(dagState,"DAG");
+        Map<String, DagExecutionStatus> expectedMap = new HashMap<>();
+        DagExecutionStatus dag1Status = new DagExecutionStatus("DAG1",Instant.parse("2017-07-24T07:00:00.000Z"),
+                Lists.newArrayList(
+                        new TimeRange(Instant.parse("2017-07-24T19:00:00.000Z"), Instant.parse("2017-07-24T20:00:00.000Z")),
+                        new TimeRange(Instant.parse("2017-07-24T20:00:00.000Z"), Instant.parse("2017-07-24T21:00:00.000Z")),
+                        new TimeRange(Instant.parse("2017-07-24T21:00:00.000Z"), Instant.parse("2017-07-24T22:00:00.000Z")))
+                ,dagState);
+        expectedMap.put("DAG1",dag1Status);
         Assert.assertTrue(expectedMap.equals(dagExecutionDatesByState));
     }
 
@@ -145,15 +172,18 @@ public class AirflowApiClientImplTest {
         mockServer.expect(requestTo(DAG_EXECUTION_DATES_BY_STATE_DAG_ID1_URL))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(DAG_EXECUTION_DATES_BY_STATE_DAG_ID1_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
-        Map<String, List<TimeRange>> dagExecutionDatesByState = airflowApiClient.getDagExecutionDatesByState("DAG1",DagState.RUNNING);
-        Map<String, List<TimeRange>> expectedMap = new HashMap<>();
-        expectedMap.put("DAG1",
+        DagState dagState = DagState.RUNNING;
+        Map<String, DagExecutionStatus> dagExecutionDatesByState = airflowApiClient.getDagExecutionDatesByState("DAG1", dagState);
+        Map<String, DagExecutionStatus> expectedMap = new HashMap<>();
+        DagExecutionStatus dag1Status = new DagExecutionStatus("DAG1",Instant.parse("2017-07-24T07:00:00.000Z"),
                 Lists.newArrayList(
                         new TimeRange(Instant.parse("2017-07-24T19:00:00.000Z"), Instant.parse("2017-07-24T20:00:00.000Z")),
                         new TimeRange(Instant.parse("2017-07-24T20:00:00.000Z"), Instant.parse("2017-07-24T21:00:00.000Z")),
                         new TimeRange(Instant.parse("2017-07-24T21:00:00.000Z"), Instant.parse("2017-07-24T22:00:00.000Z")),
                         new TimeRange(Instant.parse("2017-07-24T22:00:00.000Z"), Instant.parse("2017-07-24T23:00:00.000Z"))
-                ));
+                )
+                ,dagState);
+        expectedMap.put("DAG1",dag1Status);
         Assert.assertTrue(expectedMap.equals(dagExecutionDatesByState));
     }
 
