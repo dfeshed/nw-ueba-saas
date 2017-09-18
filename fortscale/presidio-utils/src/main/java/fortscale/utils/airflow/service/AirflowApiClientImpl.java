@@ -3,6 +3,7 @@ package fortscale.utils.airflow.service;
 import fortscale.utils.airflow.message.AirflowDagExecutionDatesApiResponse;
 import fortscale.utils.airflow.message.DagState;
 import fortscale.utils.airflow.message.DagToExecutionDates;
+import fortscale.utils.time.TimeRange;
 import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
 
@@ -83,7 +84,7 @@ public class AirflowApiClientImpl implements AirflowApiClient {
     }
 
     @Override
-    public Map<String, List<Instant>> getDagExecutionDatesByState(String dagId, DagState state) {
+    public Map<String, List<TimeRange>> getDagExecutionDatesByState(String dagId, DagState state) {
         Assert.notNull(state,"state must be not empty");
         Map<String, String> urlVariables = new HashMap<>();
         urlVariables.put(API_URL_VARIABLE, DAG_EXECUTION_DATES_FOR_STATE_API_NAME);

@@ -1,5 +1,6 @@
 package presidio.webapp.controller.datapipeline;
 
+import fortscale.common.SDK.PipelineState;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;

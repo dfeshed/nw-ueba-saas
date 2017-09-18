@@ -23,7 +23,7 @@ import java.util.List;
  * Created by barak_schuster on 9/14/17.
  */
 @Configuration
-public class AirflowClientConfig {
+public class AirflowApiClientConfig {
     @Value("${presidio.airflow.restApi.url:http://localhost:8000/admin/rest_api/api}")
     private String airflowRestApiBaseUrl;
     @Autowired

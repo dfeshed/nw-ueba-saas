@@ -4,8 +4,11 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.common.SDK.PipelineStateDataProcessingCursor;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import fortscale.utils.airflow.message.DagState;
+import fortscale.utils.airflow.service.AirflowApiClient;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.TtlService;
@@ -30,11 +33,8 @@ import presidio.ade.sdk.online_run.OnlineRunParams;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -53,6 +53,8 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
     private Map<String, String> aggregationNameToFeatureBucketConfName;
     private TtlService ttlService;
+    private AirflowApiClient airflowApiClient;
+    private List<String> adeDAGIds;
 
     public AdeManagerSdkImpl(
             TtlServiceAwareEnrichedDataStore ttlServiceAwareEnrichedDataStore,

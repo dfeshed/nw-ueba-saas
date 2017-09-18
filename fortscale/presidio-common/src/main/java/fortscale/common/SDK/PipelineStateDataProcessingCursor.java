@@ -1,4 +1,4 @@
-package presidio.webapp.model.datapipeline;
+package fortscale.common.SDK;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;

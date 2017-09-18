@@ -1,6 +1,7 @@
 package fortscale.utils.airflow.service;
 
 import fortscale.utils.airflow.message.DagState;
+import fortscale.utils.time.TimeRange;
 import org.json.JSONObject;
 
 import java.time.Instant;
@@ -61,14 +62,14 @@ public interface AirflowApiClient {
      * @param dagId - The DAG ID of the DAG you want to trigger
      * @return map key:dag list: all execution dates in given {@param state}
      */
-    Map<String, List<Instant>> getDagExecutionDatesByState(String dagId, DagState state);
+    Map<String, List<TimeRange>> getDagExecutionDatesByState(String dagId, DagState state);
 
     /**
      * syntactic sugar
      *
      * @see this#getDagExecutionDatesByState(String, DagState)
      */
-    default Map<String, List<Instant>> getDagExecutionDatesByState(DagState state) {
+    default Map<String, List<TimeRange>> getDagExecutionDatesByState(DagState state) {
         return getDagExecutionDatesByState(null, state);
     }
 

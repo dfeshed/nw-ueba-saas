@@ -1027,6 +1027,9 @@ class REST_API(BaseView):
         """
         dag_id = request.args.get("dag_id")
         state = request.args.get("state")
+        return self.dag_execution_dates_for_state_by_dag_id_and_state(base_response, dag_id, state)
+
+    def dag_execution_dates_for_state_by_dag_id_and_state(self, base_response, dag_id, state):
         try:
             # find all dags (including sub dags with desired state)
             dags_runs_by_state = DagRun.find(state=state, dag_id=dag_id)
@@ -1038,10 +1041,18 @@ class REST_API(BaseView):
             # group dags states and execution dates by dag id
             res = {}
             for item in non_sub_dag_dag_runs_by_state:
-                res.setdefault(item.dag_id, []).append(format_date(item.execution_date))
+                item_dag_id = item.dag_id
+                dag = non_sub_dag_dags.get(item_dag_id)
+                schedule_interval = dag.schedule_interval
+
+                execution_date = item.execution_date
+                execution_time_range = {'start': format_date(execution_date),
+                                        'end': format_date(execution_date + schedule_interval)}
+                res.setdefault(item_dag_id, []).append(execution_time_range)
             # create a payload response containing the execution dates for each dag_id
             payload = []
             for k, v in res.items():
+
                 payload.append({
                     'dag_id': k,
                     'execution_dates': v
