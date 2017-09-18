@@ -20,6 +20,6 @@ public class ModelingServiceApplication {
 		logger.info("Starting {}.", ModelingServiceApplication.class.getSimpleName());
 		List<Class> configurationClasses = new ArrayList<>();
 		configurationClasses.add(ModelingServiceConfigurationProduction.class);
-		PresidioShellableApplication.run(configurationClasses, args);
+		new PresidioShellableApplication().run(configurationClasses, args);
 	}
 }

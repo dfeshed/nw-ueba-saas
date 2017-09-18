@@ -2,6 +2,9 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.data.domain.Sort;
+import presidio.webapp.model.AlertQueryEnums.AlertQueryAggregationFieldName;
+import presidio.webapp.model.AlertQueryEnums.AlertQuerySortFieldName;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,7 +14,7 @@ import java.util.Objects;
 /**
  * AlertQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T19:21:46.635Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
 public class AlertQuery {
     @JsonProperty("pageSize")
@@ -50,14 +53,20 @@ public class AlertQuery {
     @JsonProperty("usersId")
     private List<String> usersId = new ArrayList<String>();
 
-    @JsonProperty("sort")
-    private List<AlertQuerySort> sort = new ArrayList<AlertQuerySort>();
+    @JsonProperty("sortFieldNames")
+    private List<AlertQuerySortFieldName> sortFieldNames = new ArrayList<AlertQuerySortFieldName>();
 
     @JsonProperty("severity")
     private List<AlertSeverity> severity = new ArrayList<AlertSeverity>();
 
     @JsonProperty("expand")
     private Boolean expand = false;
+
+    @JsonProperty("sortDirection")
+    private Sort.Direction sortDirection = Sort.Direction.ASC;
+
+    @JsonProperty("aggregateBy")
+    private List<AlertQueryAggregationFieldName> aggregateBy;
 
     public AlertQuery pageSize(Integer pageSize) {
         this.pageSize = pageSize;
@@ -298,10 +307,10 @@ public class AlertQuery {
         return this;
     }
 
-    public AlertQuery addUsersIdItem(String usersIdItem) {
-        this.usersId.add(usersIdItem);
-        return this;
-    }
+  public AlertQuery addUsersIdItem(String usersIdItem) {
+    this.usersId.add(usersIdItem);
+    return this;
+  }
 
     /**
      * Get usersId
@@ -317,28 +326,28 @@ public class AlertQuery {
         this.usersId = usersId;
     }
 
-    public AlertQuery sort(List<AlertQuerySort> sort) {
-        this.sort = sort;
+    public AlertQuery sortFieldNames(List<AlertQuerySortFieldName> sortFieldNames) {
+        this.sortFieldNames = sortFieldNames;
         return this;
     }
 
-    public AlertQuery addSortItem(AlertQuerySort sortItem) {
-        this.sort.add(sortItem);
+    public AlertQuery addSortFieldNameItem(AlertQuerySortFieldName sortFieldName) {
+        this.sortFieldNames.add(sortFieldName);
         return this;
     }
 
     /**
-     * Get sort
+     * Get sortFieldNames
      *
-     * @return sort
+     * @return sortFieldNames
      **/
     @ApiModelProperty(value = "")
-    public List<AlertQuerySort> getSort() {
-        return sort;
+    public List<AlertQuerySortFieldName> getSortFieldNames() {
+        return sortFieldNames;
     }
 
-    public void setSort(List<AlertQuerySort> sort) {
-        this.sort = sort;
+    public void setSortFieldNames(List<AlertQuerySortFieldName> sortFieldNames) {
+        this.sortFieldNames = sortFieldNames;
     }
 
     public AlertQuery severity(List<AlertSeverity> severity) {
@@ -370,6 +379,25 @@ public class AlertQuery {
         return this;
     }
 
+    public AlertQuery sortDirection(Sort.Direction sortDirection) {
+        this.sortDirection = sortDirection;
+        return this;
+    }
+
+    /**
+     * Get sortDirection
+     *
+     * @return sortDirection
+     **/
+    @ApiModelProperty(value = "")
+    public Sort.Direction getSortDirection() {
+        return sortDirection;
+    }
+
+    public void setSortDirection(Sort.Direction sortDirection) {
+        this.sortDirection = sortDirection;
+    }
+
     /**
      * Get expand
      *
@@ -384,6 +412,24 @@ public class AlertQuery {
         this.expand = expand;
     }
 
+    public AlertQuery aggregateBy(List<AlertQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
+        return this;
+    }
+
+    /**
+     * Get expand
+     *
+     * @return expand
+     **/
+    @ApiModelProperty(value = "")
+    public List<AlertQueryAggregationFieldName> getAggregateBy() {
+        return aggregateBy;
+    }
+
+    public void setAggregateBy(List<AlertQueryAggregationFieldName> aggregateBy) {
+        this.aggregateBy = aggregateBy;
+    }
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -406,14 +452,17 @@ public class AlertQuery {
                 Objects.equals(this.classification, alertQuery.classification) &&
                 Objects.equals(this.indicatorsName, alertQuery.indicatorsName) &&
                 Objects.equals(this.usersId, alertQuery.usersId) &&
-                Objects.equals(this.sort, alertQuery.sort) &&
+                Objects.equals(this.sortFieldNames, alertQuery.sortFieldNames) &&
                 Objects.equals(this.severity, alertQuery.severity) &&
-                Objects.equals(this.expand, alertQuery.expand);
+                Objects.equals(this.expand, alertQuery.expand) &&
+                Objects.equals(this.sortDirection, alertQuery.sortDirection) &&
+                Objects.equals(this.aggregateBy, alertQuery.aggregateBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sort, severity, expand);
+        return Objects.hash(pageSize, pageNumber, minScore, maxScore, startTimeFrom, startTimeTo, feedback, tags, userName, classification, indicatorsName, usersId, sortFieldNames, severity, expand, sortDirection, aggregateBy);
+
     }
 
     @Override
@@ -433,9 +482,11 @@ public class AlertQuery {
         sb.append("    classification: ").append(toIndentedString(classification)).append("\n");
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    usersId: ").append(toIndentedString(usersId)).append("\n");
-        sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
+        sb.append("    sortFieldNames: ").append(toIndentedString(sortFieldNames)).append("\n");
+        sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
+        sb.append("    aggregateBy: ").append(toIndentedString(aggregateBy)).append("\n");
         sb.append("}");
         return sb.toString();
     }

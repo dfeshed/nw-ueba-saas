@@ -3,8 +3,10 @@ package presidio.output.domain.records.users;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
+import presidio.output.domain.records.alerts.Alert;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,14 +18,14 @@ import java.util.Set;
 /**
  * Created by efratn on 20/08/2017.
  */
-@Document(indexName = AbstractElasticDocument.INDEX_NAME, type = User.USER_DOC_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" +  User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
 
     public static final String ALERT_CLASSIFICATIONS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
-    public static final String USER_SEVERITY_FIELD_NAME = "userSeverity";
+    public static final String SEVERITY_FIELD_NAME = "severity";
     public static final String SCORE_FIELD_NAME = "score";
     public static final String USER_ID_FIELD_NAME = "userId";
     public static final String USER_NAME_FIELD_NAME = "userName";
@@ -56,10 +58,10 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(INDICATORS_FIELD_NAME)
     private List<String> indicators;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
-    @JsonProperty(USER_SEVERITY_FIELD_NAME)
-    private UserSeverity userSeverity;
+    @JsonProperty(SEVERITY_FIELD_NAME)
+    private UserSeverity severity;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(TAGS_FIELD_NAME)
@@ -70,11 +72,12 @@ public class User extends AbstractElasticDocument {
     private int alertsCount;
 
 
-    public User() {
+    public User(){
         // empty const for JSON deserialization
+        this.indicators = new ArrayList<String>();
     }
 
-    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity userSeverity,
+    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
                 int alertsCount) {
         super();
         this.userId = userId;
@@ -84,7 +87,7 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
         this.tags = tags;
-        this.userSeverity = userSeverity;
+        this.severity = severity;
         this.alertsCount = alertsCount;
     }
 
@@ -93,15 +96,16 @@ public class User extends AbstractElasticDocument {
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
+        this.indicators = new ArrayList<String>();
         this.tags = tags;
     }
 
-    public UserSeverity getUserSeverity() {
-        return userSeverity;
+    public UserSeverity getSeverity() {
+        return severity;
     }
 
-    public void setUserSeverity(UserSeverity userSeverity) {
-        this.userSeverity = userSeverity;
+    public void setSeverity(UserSeverity severity) {
+        this.severity = severity;
     }
 
     public void setUserId(String userId) {
@@ -159,7 +163,7 @@ public class User extends AbstractElasticDocument {
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications = new ArrayList<>();
+        this.alertClassifications=new ArrayList<>();
         this.alertClassifications.addAll(newAlertClassifications);
     }
 

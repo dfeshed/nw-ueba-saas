@@ -44,6 +44,19 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
 
     @Override
     public Model getModel(String modelConfName, Map<String, String> context, Instant eventTime) {
+        ModelCacheManager modelCacheManager = createModelCacheManagerIfNotExist(modelConfName);
+
+        return modelCacheManager.getModel(context, eventTime);
+    }
+
+    @Override
+    public Model getModel(String modelConfName, String contextId, Instant eventTime) {
+        ModelCacheManager modelCacheManager = createModelCacheManagerIfNotExist(modelConfName);
+
+        return modelCacheManager.getModel(contextId, eventTime);
+    }
+
+    private ModelCacheManager createModelCacheManagerIfNotExist(String modelConfName){
         ModelCacheManager modelCacheManager = modelCacheManagers.get(modelConfName);
         if (modelCacheManager == null) {
             ModelConf modelConf = modelConfService.getModelConf(modelConfName);
@@ -51,7 +64,7 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
             modelCacheManagers.put(modelConfName, modelCacheManager);
         }
 
-        return modelCacheManager.getModel(context, eventTime);
+        return modelCacheManager;
     }
 
     @Override

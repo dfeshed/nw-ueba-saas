@@ -31,4 +31,8 @@ public class AlertEnums {
         }
     }
 
+    public enum IndicatorTypes {
+        SCORE_AGGREGATION,FEATURE_AGGREGATION,STATIC_INDICATOR
+    }
+
 }

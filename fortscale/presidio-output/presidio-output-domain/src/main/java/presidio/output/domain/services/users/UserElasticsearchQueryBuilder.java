@@ -5,9 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -55,7 +57,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         if (CollectionUtils.isNotEmpty(userQuery.getFilterBySeverities())) {
             BoolQueryBuilder severityQuery = new BoolQueryBuilder();
             for (UserSeverity severity : userQuery.getFilterBySeverities()) {
-                severityQuery.should(matchQuery(User.USER_SEVERITY_FIELD_NAME, severity.name()).operator(Operator.OR));
+                severityQuery.should(matchQuery(User.SEVERITY_FIELD_NAME, severity.name()).operator(Operator.OR));
             }
             boolQueryBuilder.must(severityQuery);
         }
@@ -111,8 +113,11 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
     }
 
     @Override
-    public void addAggregation(UserQuery query) {
-        //TODO
+    public void addAggregation(UserQuery userQuery) {
+        if (CollectionUtils.isNotEmpty(userQuery.getAggregateByFields())) {
+            if (userQuery.getAggregateByFields().contains(User.SEVERITY_FIELD_NAME)) {
+                super.addAggregation(AggregationBuilders.terms(User.SEVERITY_FIELD_NAME).field(User.SEVERITY_FIELD_NAME));
+            }
+        }
     }
-
 }

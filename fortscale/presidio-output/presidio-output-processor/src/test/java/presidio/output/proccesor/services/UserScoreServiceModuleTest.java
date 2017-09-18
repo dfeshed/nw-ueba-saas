@@ -1,14 +1,17 @@
 package presidio.output.proccesor.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.filter.HiddenHttpMethodFilter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -21,21 +24,20 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
-import javax.print.attribute.standard.Severity;
-import javax.validation.constraints.AssertTrue;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes=presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
+@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
 public class UserScoreServiceModuleTest {
 
     @Autowired
@@ -99,7 +101,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
-        Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
+        Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
         userScoreService.updateSeverities();
@@ -108,8 +110,8 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(40,usersPageResult.getContent().get(0).getScore(),0.00001);
-        Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
+        Assert.assertEquals(40, usersPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
     }
 
@@ -118,11 +120,11 @@ public class UserScoreServiceModuleTest {
         //Generate one user with 2 critical alerts
 
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-        user1.setUserSeverity(null);
+        user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert("userId1", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
-        alerts.add(new Alert("userId1", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null));
-        alerts.add(new Alert("userId1", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null));
 
 
         List<User> userList = new ArrayList<>();
@@ -138,7 +140,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
-        Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
+        Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
         userScoreService.updateSeverities();
@@ -147,8 +149,8 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(20,usersPageResult.getContent().get(0).getScore(),0.00001);
-        Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
+        Assert.assertEquals(20, usersPageResult.getContent().get(0).getScore(), 0.00001);
+        Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
     }
 
@@ -157,11 +159,11 @@ public class UserScoreServiceModuleTest {
         //Generate one user with 2 critical alerts
 
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-        user1.setUserSeverity(null);
+        user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert("userId1", null, "userName1", getMinusDay(60), getMinusDay(59), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
-        alerts.add(new Alert("userId1", null, "userName1", getMinusDay(80), getMinusDay(79), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null));
-        alerts.add(new Alert("userId1", null, "userName1", getMinusDay(40), getMinusDay(39), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(60), getMinusDay(59), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(80), getMinusDay(79), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(39), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
 
 
         List<User> userList = new ArrayList<>();
@@ -177,7 +179,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
-        Assert.assertEquals(null, usersPageResult.getContent().get(0).getUserSeverity());
+        Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
         userScoreService.updateSeverities();
@@ -186,7 +188,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(1, usersPageResult.getContent().size());
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(0,usersPageResult.getContent().get(0).getScore(),0.00001);
+        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
 
     }
 
@@ -213,16 +215,16 @@ public class UserScoreServiceModuleTest {
 
         User user0 = getUserById("userId0");
         Assert.assertEquals(15D, user0.getScore(), 0.00001); //one medium alert
-        Assert.assertEquals(UserSeverity.LOW, user0.getUserSeverity());
+        Assert.assertEquals(UserSeverity.LOW, user0.getSeverity());
 
         User user60 = getUserById("userId60");
         Assert.assertEquals(915D, user60.getScore(), 0.00001); //61 medium alert
-        Assert.assertEquals(UserSeverity.HIGH, user60.getUserSeverity());
+        Assert.assertEquals(UserSeverity.HIGH, user60.getSeverity());
 
 
         User user99 = getUserById("userId99");
         Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
-        Assert.assertEquals(UserSeverity.CRITICAL, user99.getUserSeverity());
+        Assert.assertEquals(UserSeverity.CRITICAL, user99.getSeverity());
 
 
     }
@@ -254,7 +256,7 @@ public class UserScoreServiceModuleTest {
         //For each user generate user and list of alerts - 2 alerts per days
         for (int i = 0; i < USERS_COUNT; i++) {
             User user1 = new User("userId" + i, "username" + 1, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-            user1.setUserSeverity(null);
+            user1.setSeverity(null);
             List<Alert> alerts = new ArrayList<>();
             //For each day generate to alerts
             for (LocalDateTime day : dates) {
@@ -264,8 +266,8 @@ public class UserScoreServiceModuleTest {
                 long alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant()).getTime();
                 long alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant()).getTime();
                 //Alerts per user per day
-                alerts.add(new Alert("userId" + i, null, "userName" + 1, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null));
-                alerts.add(new Alert("userId" + i, null, "userName" + 1, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
+                alerts.add(new Alert("userId" + i, "smartId", null, "userName" + 1, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null));
+                alerts.add(new Alert("userId" + i, "smartId", null, "userName" + 1, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null));
             }
 
 
@@ -313,11 +315,11 @@ public class UserScoreServiceModuleTest {
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
 
         User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-        user1.setUserSeverity(null);
+        user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
 
         for (AlertEnums.AlertSeverity severity : severities) {
-            alerts.add(new Alert(userId, null, userName, getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null));
+            alerts.add(new Alert(userId, "smartId", null, userName, getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null));
         }
 
         List<User> userList = new ArrayList<>();

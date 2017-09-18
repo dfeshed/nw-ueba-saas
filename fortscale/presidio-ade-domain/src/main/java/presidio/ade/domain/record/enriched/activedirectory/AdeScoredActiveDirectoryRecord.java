@@ -21,6 +21,10 @@ import java.util.List;
 })
 public class AdeScoredActiveDirectoryRecord extends AdeScoredEnrichedRecord<AdeEnrichedActiveDirectoryContext> {
 
+    public AdeScoredActiveDirectoryRecord() {
+        super();
+    }
+
     public AdeScoredActiveDirectoryRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord) {
         super(date_time, featureName, featureEventType, score, featureScoreList, enrichedRecord);
     }

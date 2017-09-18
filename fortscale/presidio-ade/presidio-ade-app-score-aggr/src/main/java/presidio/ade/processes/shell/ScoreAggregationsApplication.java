@@ -25,6 +25,6 @@ public class ScoreAggregationsApplication {
 		// The supported CLI commands for the application
 		sources.add(PresidioCommands.class);
 
-		PresidioShellableApplication.run(sources, args);
+		new PresidioShellableApplication().run(sources, args);
 	}
 }

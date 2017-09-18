@@ -50,10 +50,8 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
         return userRepository.findByUserId(userId, pageRequest);
     }
 
-
     @Override
     public Page<User> find(UserQuery userQuery) {
         return userRepository.search(new UserElasticsearchQueryBuilder(userQuery).build());
     }
-
 }

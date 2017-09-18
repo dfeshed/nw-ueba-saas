@@ -31,7 +31,7 @@ public class FortscaleOutputProcessorApplication {
 		// The supported CLI commands for the application
 		sources.add(OutputShellCommands.class);
 
-		PresidioShellableApplication.run(sources, args);
+		new PresidioShellableApplication().run(sources, args);
 	}
 
 

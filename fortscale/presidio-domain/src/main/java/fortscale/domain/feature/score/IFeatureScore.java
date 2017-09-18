@@ -10,7 +10,7 @@ import java.util.List;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = FeatureScore.class, name = "feature-score"),
-        @JsonSubTypes.Type(value = ModelFeatureScore.class, name = "model-feature-score")
+        @JsonSubTypes.Type(value = CertaintyFeatureScore.class, name = "certainty-feature-score")
 })
 public interface IFeatureScore {
 

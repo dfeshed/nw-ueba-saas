@@ -1,8 +1,10 @@
 package presidio.output.domain.records.alerts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
 
@@ -10,7 +12,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.List;
 
-@Document(indexName = AbstractElasticDocument.INDEX_NAME, type = Alert.ALERT_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE , type = Alert.ALERT_TYPE)
 public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
@@ -22,18 +24,24 @@ public class Alert extends AbstractElasticDocument {
     public static final String END_DATE = "endDate";
     public static final String SCORE = "score";
     public static final String INDICATORS_NUM = "indicatorsNum";
+    public static final String INDICATOR_NAMES = "indicatorsNames";
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
     public static final String USER_ID = "userId";
+    public static final String SMART_ID = "smartId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(CLASSIFICATIONS)
     private List<String> classifications;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_NAME)
     private String userName;
+
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(SMART_ID)
+    private String smartId;
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_ID)
@@ -60,12 +68,18 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(TIMEFRAME)
     private AlertEnums.AlertTimeframe timeframe;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
 
     @Field(type = FieldType.String, store = true)
+    @JsonProperty(INDICATOR_NAMES)
+    private List<String> indicatorsNames;
+
+    @JsonIgnore
+    private transient List<Indicator> indicators;
+
     @JsonProperty(USER_TAGS_FIELD_NAME)
     private List<String> userTags;
 
@@ -73,10 +87,11 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
+    public Alert(String userId, String smartId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
         super();
         this.classifications = classifications;
         this.userId = userId;
+        this.smartId = smartId;
         this.userName = userName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -85,6 +100,14 @@ public class Alert extends AbstractElasticDocument {
         this.timeframe = timeframe;
         this.severity = severity;
         this.userTags = userTags;
+    }
+
+    public String getSmartId() {
+        return smartId;
+    }
+
+    public void setSmartId(String smartId) {
+        this.smartId = smartId;
     }
 
     public String getUserId() {
@@ -163,7 +186,19 @@ public class Alert extends AbstractElasticDocument {
         return userTags;
     }
 
-    public void setUserTags(List<String> userTags) {
-        this.userTags = userTags;
+    public List<Indicator> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(List<Indicator> indicators) {
+        this.indicators = indicators;
+    }
+
+    public List<String> getIndicatorsNames() {
+        return indicatorsNames;
+    }
+
+    public void setIndicatorsNames(List<String> indicatorsNames) {
+        this.indicatorsNames = indicatorsNames;
     }
 }

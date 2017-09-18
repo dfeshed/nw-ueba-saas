@@ -7,6 +7,7 @@ from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuild
 from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
 from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string, \
@@ -44,13 +45,15 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
         hourly_aggregations_sub_dag_operator_list = []
+        # collect all sub dag operators, which use enriched data
+        enriched_data_customer_tasks = []
 
         task_sensor_service = TaskSensorService()
 
         # defining hourly and daily short circuit operators which should be wired to the sub dags and operators that
         # defined directly under the ADE dag
         hourly_short_circuit_operator = ShortCircuitOperator(
-            task_id='hourly_short_circuit',
+            task_id='ade_hourly_short_circuit',
             dag=anomaly_detection_engine_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_HOURLY,
@@ -58,14 +61,13 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             provide_context=True
         )
         daily_short_circuit_operator = ShortCircuitOperator(
-            task_id='daily_short_circuit',
+            task_id='ade_daily_short_circuit',
             dag=anomaly_detection_engine_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,
                                                                      anomaly_detection_engine_dag.schedule_interval),
             provide_context=True
         )
-
 
         # Iterate all configured data sources and
         # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
@@ -77,30 +79,40 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
                 anomaly_detection_engine_dag
             )
             task_sensor_service.add_task_sequential_sensor(hourly_aggregations_sub_dag_operator)
-            task_sensor_service.add_task_short_circuit(hourly_aggregations_sub_dag_operator,hourly_short_circuit_operator)
+            task_sensor_service.add_task_short_circuit(hourly_aggregations_sub_dag_operator,
+                                                       hourly_short_circuit_operator)
 
-            #Create the raw model subDag operator for the data source
-            raw_model_sub_dag_operator = self._get_raw_model_sub_dag_operator(data_source,anomaly_detection_engine_dag)
+            # Create the raw model subDag operator for the data source
+            raw_model_sub_dag_operator = self._get_raw_model_sub_dag_operator(data_source, anomaly_detection_engine_dag)
             task_sensor_service.add_task_sequential_sensor(raw_model_sub_dag_operator)
             task_sensor_service.add_task_short_circuit(raw_model_sub_dag_operator, daily_short_circuit_operator)
 
             # Create the hourly aggr model subDag operator for the data source
-            hourly_aggr_model_sub_dag_operator = self._get_aggr_model_sub_dag_operator(data_source, FIX_DURATION_STRATEGY_HOURLY, anomaly_detection_engine_dag)
+            hourly_aggr_model_sub_dag_operator = self._get_aggr_model_sub_dag_operator(data_source,
+                                                                                       FIX_DURATION_STRATEGY_HOURLY,
+                                                                                       anomaly_detection_engine_dag)
             task_sensor_service.add_task_sequential_sensor(hourly_aggr_model_sub_dag_operator)
             task_sensor_service.add_task_short_circuit(hourly_aggr_model_sub_dag_operator, daily_short_circuit_operator)
 
             hourly_aggregations_sub_dag_operator_list.append(hourly_aggregations_sub_dag_operator)
 
+            enriched_data_customer_tasks.append(hourly_aggregations_sub_dag_operator)
+            enriched_data_customer_tasks.append(hourly_aggr_model_sub_dag_operator)
+            enriched_data_customer_tasks.append(raw_model_sub_dag_operator)
+
         # Iterate all hourly smart configurations and
         # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
-        self._build_smart_flow(anomaly_detection_engine_dag, self.hourly_smart_events_confs, FIX_DURATION_STRATEGY_HOURLY, task_sensor_service,
+        self._build_smart_flow(anomaly_detection_engine_dag, self.hourly_smart_events_confs,
+                               FIX_DURATION_STRATEGY_HOURLY, task_sensor_service,
                                hourly_short_circuit_operator,
                                hourly_aggregations_sub_dag_operator_list)
 
+        self._build_manager_operator(anomaly_detection_engine_dag, enriched_data_customer_tasks, daily_short_circuit_operator)
 
         return anomaly_detection_engine_dag
 
-    def _build_smart_flow(self, anomaly_detection_engine_dag, smart_events_confs, fixed_duration_strategy, task_sensor_service, smart_short_circuit_operator,
+    def _build_smart_flow(self, anomaly_detection_engine_dag, smart_events_confs, fixed_duration_strategy,
+                          task_sensor_service, smart_short_circuit_operator,
                           aggregations_sub_dag_operator_list):
         # Iterate all smart configurations and
         # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
@@ -133,13 +145,40 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
                                                                              anomaly_detection_engine_dag.schedule_interval),
                     provide_context=True
                 )
-                task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator, smart_model_short_circuit_operator)
-
+                task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator,
+                                                           smart_model_short_circuit_operator)
 
                 # The smart event operator should be followed by the smart model sub dag
                 smart_events_operator.set_downstream(smart_model_short_circuit_operator)
             else:
                 raise Exception("smart configuration is None or empty")
+
+    @staticmethod
+    def _build_manager_operator(anomaly_detection_engine_dag, enriched_data_customer_tasks, daily_short_circuit_operator):
+        """
+        Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished to use it.
+        Set daily_short_circuit in order to run ManagerOperator once a day.
+
+        AdeManagerOperator instances do not run sequentially (AdeManagerOperator does not use sequential sensor)
+         as a result of following assumption: AdeManagerOperator should run once a day (using daily_short_circuit),
+         all instances will get skip status except the last instance, therefore sequential sensor is unnecessary.
+
+
+        :param anomaly_detection_engine_dag: The ADE DAG
+        :type anomaly_detection_engine_dag: airflow.models.DAG
+        :param enriched_data_customer_tasks: sub_dag operators, who use enriched data.
+        :param daily_short_circuit_operator: daily short_circuit
+        """
+
+        ade_manager_operator = AdeManagerOperator(
+            command=AdeManagerOperator.cleanup_command,
+            dag=anomaly_detection_engine_dag
+        )
+
+        daily_short_circuit_operator.set_downstream(ade_manager_operator)
+
+        for enriched_data_customer_task in enriched_data_customer_tasks:
+            enriched_data_customer_task.set_downstream(ade_manager_operator)
 
     @staticmethod
     def _get_aggregations_sub_dag_operator(fixed_duration_strategy, data_source, anomaly_detection_engine_dag):
@@ -148,12 +187,15 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
             data_source
         )
 
-        return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(AggregationsDagBuilder(fixed_duration_strategy, data_source), aggregations_dag_id, anomaly_detection_engine_dag)
+        return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(
+            AggregationsDagBuilder(fixed_duration_strategy, data_source), aggregations_dag_id,
+            anomaly_detection_engine_dag)
 
     def _get_raw_model_sub_dag_operator(self, data_source, anomaly_detection_engine_dag):
         raw_model_dag_id = '{}_raw_model'.format(data_source)
 
-        return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(RawModelDagBuilder(data_source), raw_model_dag_id, anomaly_detection_engine_dag)
+        return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(RawModelDagBuilder(data_source),
+                                                                        raw_model_dag_id, anomaly_detection_engine_dag)
 
     @staticmethod
     def _get_aggr_model_sub_dag_operator(data_source, fixed_duration_strategy, anomaly_detection_engine_dag):
@@ -163,7 +205,7 @@ class AnomalyDetectionEngineDagBuilder(PresidioDagBuilder):
         )
 
         return AnomalyDetectionEngineDagBuilder.create_sub_dag_operator(
-            AggrModelDagBuilder(data_source,fixed_duration_strategy), aggr_model_dag_id,
+            AggrModelDagBuilder(data_source, fixed_duration_strategy), aggr_model_dag_id,
             anomaly_detection_engine_dag)
 
     @staticmethod
