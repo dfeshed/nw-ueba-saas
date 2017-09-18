@@ -35,7 +35,7 @@ public class ConfigurationProcessingMngServiceTest {
         dataPipeLineWithThreeFields = setJson("invalid_configuration_data_pipe_line_with_three_fields.json");
         dataPipeLineWithInvalidSchema = setJson("invalid_configuratoin_bad_schema.json");
         jsonWithGeneralError = setJson("invalid_configuration_general_error.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(null,"workflows",null,null), new ConfigurationSecurityService(null));
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(null,"workflows",null,null), new ConfigurationSecurityService(null, null));
     }
 
     @Test

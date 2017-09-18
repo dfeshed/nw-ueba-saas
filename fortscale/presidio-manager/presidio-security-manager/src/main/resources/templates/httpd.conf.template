@@ -1,0 +1,19 @@
+<Location />
+ SSLRequireSSL
+ AuthType Kerberos
+ AuthName "Windows Login"
+
+ KrbMethodK5Passwd off
+ KrbAuthRealms ${realmName}
+ KrbServiceName  HTTP/${"username"}@${realmName}
+ Krb5Keytab /etc/krb5.keytab
+
+ krblocalUserMapping on
+
+ AuthBasicProvider ldap
+ AuthLDAPURL ${ldapUrl}
+ AuthLDAPBindDN ${"username"}
+ Include /home/presidio/my_ldap_password.conf
+ AuthLDAPMaxSubGroupDepth 2
+ Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
+${r"${your place holder}"}

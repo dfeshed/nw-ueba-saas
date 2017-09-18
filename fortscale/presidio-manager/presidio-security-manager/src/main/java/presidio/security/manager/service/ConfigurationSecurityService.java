@@ -1,29 +1,45 @@
 package presidio.security.manager.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.PresidioSystemConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.manager.api.service.ConfigurationProcessingService;
+import freemarker.template.Configuration;
 
-import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.*;
 
 public class ConfigurationSecurityService implements ConfigurationProcessingService {
 
+
     private static final Logger logger = Logger.getLogger(ConfigurationSecurityService.class);
 
+    private static final String LOCATION_TYPE = "jsonPath";
+    private static final String ETC_CONFIG_PATH = "/etc/httpd/conf/httpd.conf";
     private static final String DOMAIN_SYSTEM = "System";
     private static final String REASON_UNKNOWN_PROPERTY = "unknownProperty";
     private static final String REASON_MISSING_PROPERTY = "missingProperty";
-    private final String LOCATION_TYPE = "jsonPath";
+    private static final String HTTPD_CONF_TEMPLATE = "httpd.conf.template";
 
     private final ConfigurationServerClientService configurationServerClientService;
 
-    public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService) {
+    private final Configuration freeMakerConfiguration;
+
+    public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService, Configuration freeMakerConfiguration) {
         this.configurationServerClientService = configurationServerClientService;
+        this.freeMakerConfiguration = freeMakerConfiguration;
     }
 
     @Override
@@ -36,10 +52,20 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         try {
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
+            Map<String, Object> securityConfiguration = new ObjectMapper().convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
+            String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE), securityConfiguration);
+
+            File file = new File(ETC_CONFIG_PATH);
+            FileWriter fileWriter = new FileWriter(file,false);
+            fileWriter.write(httpdConf);
+            fileWriter.close();
+
         } catch (Exception e) {
-            logger.error("Failed to apply configuration", e);
+            String msg = "failed to apply configuration";
+            logger.error(msg,e);
             return false;
         }
+
         return true;
     }
 
