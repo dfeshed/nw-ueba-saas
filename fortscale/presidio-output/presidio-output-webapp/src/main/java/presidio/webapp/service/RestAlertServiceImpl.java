@@ -13,6 +13,7 @@ import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
 import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
