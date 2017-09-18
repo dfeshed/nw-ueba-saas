@@ -2,15 +2,14 @@ package fortscale.utils.airflow.service;
 
 import fortscale.utils.airflow.message.AirflowDagExecutionDatesApiResponse;
 import fortscale.utils.airflow.message.DagState;
-import fortscale.utils.airflow.message.DagToExecutionDates;
-import fortscale.utils.time.TimeRange;
 import org.json.JSONObject;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.springframework.util.Assert;
 /**
  * @see AirflowApiClient
  * Created by barak_schuster on 9/13/17.

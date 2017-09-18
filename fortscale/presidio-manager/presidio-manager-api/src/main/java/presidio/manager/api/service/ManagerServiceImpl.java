@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
  * Created by barak_schuster on 9/18/17.
  */
 public class ManagerServiceImpl implements ManagerService {
-    private String managerDagIdPrefix;
-    private AirflowApiClient airflowApiClient;
-    private Duration buildingBaselineDuration;
+    private final String managerDagIdPrefix;
+    private final AirflowApiClient airflowApiClient;
+    private final Duration buildingBaselineDuration;
 
     /**
      * C'tor
