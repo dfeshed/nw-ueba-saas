@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.client.RestTemplate;
 import presidio.config.server.client.ConfigurationServerClientService;
-import presidio.config.server.client.ConfigurationServerClientServiceImpl;
 import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
 import presidio.manager.airlfow.spring.AirflowConfiguration;
 import presidio.manager.api.service.ConfigurationProcessingService;
@@ -23,7 +21,7 @@ import presidio.webapp.service.ConfigurationManagerService;
 import javax.annotation.Resource;
 
 @Configuration
-@Import(value = {SecurityManagerConfiguration.class,ManagerServiceConfig.class,  ConfigServerClientServiceConfiguration.class})
+@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class,ManagerServiceConfig.class,  ConfigServerClientServiceConfiguration.class})
 public class ManagerWebappConfiguration {
 
     @Autowired
