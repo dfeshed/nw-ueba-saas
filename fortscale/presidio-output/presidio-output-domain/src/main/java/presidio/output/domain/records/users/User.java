@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
+import presidio.output.domain.records.alerts.Alert;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,7 +18,7 @@ import java.util.Set;
 /**
  * Created by efratn on 20/08/2017.
  */
-@Document(indexName = AbstractElasticDocument.INDEX_NAME, type = User.USER_DOC_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" +  User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
@@ -71,8 +72,9 @@ public class User extends AbstractElasticDocument {
     private int alertsCount;
 
 
-    public User() {
+    public User(){
         // empty const for JSON deserialization
+        this.indicators = new ArrayList<String>();
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
@@ -94,6 +96,7 @@ public class User extends AbstractElasticDocument {
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
+        this.indicators = new ArrayList<String>();
         this.tags = tags;
     }
 
@@ -160,7 +163,7 @@ public class User extends AbstractElasticDocument {
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications = new ArrayList<>();
+        this.alertClassifications=new ArrayList<>();
         this.alertClassifications.addAll(newAlertClassifications);
     }
 

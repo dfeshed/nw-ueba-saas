@@ -25,7 +25,7 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
 
     @Override
     public Iterable<User> save(List<User> users) {
-        if (users != null && users.size() > 0) {
+        if (users !=null && users.size()>0) {
             return userRepository.save(users);
         } else {
             return Collections.EMPTY_LIST;
