@@ -484,6 +484,17 @@ IncludeOptional conf.d/*.conf
      RewriteEngine on
      RewriteRule / "http://${r"${server_name}"}:8080/presidio-manager/configuration/" [P,L]
   </Location>
+
+  <Location /configuration/keytabFile>
+     #Deny from all
+     AuthName Configuration
+     AuthType Basic
+     #Satisfy Any
+     AuthUserFile /etc/httpd/conf/.htpasswd
+     require valid-user
+     RewriteEngine on
+     RewriteRule / "http://${r"${server_name}"}:8080/presidio-manager/configuration/keytabFile/" [P,L]
+  </Location>
   
   <Location /data-pipeline>
      #Deny from all
