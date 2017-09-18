@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
-import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Objects;
 /**
  * Alert
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T09:31:06.391Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
 public class Alert {
     @JsonProperty("id")
@@ -70,7 +69,7 @@ public class Alert {
         @JsonCreator
         public static TimeframeEnum fromValue(String text) {
             for (TimeframeEnum b : TimeframeEnum.values()) {
-                if (String.valueOf(b.value).equals(text)) {
+                if (String.valueOf(b.value).equals(text.toLowerCase())) {
                     return b;
                 }
             }
@@ -86,6 +85,9 @@ public class Alert {
 
     @JsonProperty("userId")
     private String userId = null;
+
+    @JsonProperty("indicators")
+    private List<Indicator> indicators = new ArrayList<Indicator>();
 
     public Alert id(String id) {
         this.id = id;
@@ -346,6 +348,30 @@ public class Alert {
         this.userId = userId;
     }
 
+    public Alert indicators(List<Indicator> indicators) {
+        this.indicators = indicators;
+        return this;
+    }
+
+    public Alert addIndicatorsItem(Indicator indicatorsItem) {
+        this.indicators.add(indicatorsItem);
+        return this;
+    }
+
+    /**
+     * Get indicators
+     *
+     * @return indicators
+     **/
+    @ApiModelProperty(value = "")
+    public List<Indicator> getIndicators() {
+        return indicators;
+    }
+
+    public void setIndicators(List<Indicator> indicators) {
+        this.indicators = indicators;
+    }
+
 
     @Override
     public boolean equals(java.lang.Object o) {
@@ -368,12 +394,13 @@ public class Alert {
                 Objects.equals(this.userScoreContribution, alert.userScoreContribution) &&
                 Objects.equals(this.timeframe, alert.timeframe) &&
                 Objects.equals(this.severity, alert.severity) &&
-                Objects.equals(this.userId, alert.userId);
+                Objects.equals(this.userId, alert.userId) &&
+                Objects.equals(this.indicators, alert.indicators);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, classifiation, startDate, endDate, username, indicatorsName, indicatorsNum, score, feedback, userScoreContribution, timeframe, severity, userId);
+        return Objects.hash(id, classifiation, startDate, endDate, username, indicatorsName, indicatorsNum, score, feedback, userScoreContribution, timeframe, severity, userId, indicators);
     }
 
     @Override
@@ -394,6 +421,7 @@ public class Alert {
         sb.append("    timeframe: ").append(toIndentedString(timeframe)).append("\n");
         sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+        sb.append("    indicators: ").append(toIndentedString(indicators)).append("\n");
         sb.append("}");
         return sb.toString();
     }

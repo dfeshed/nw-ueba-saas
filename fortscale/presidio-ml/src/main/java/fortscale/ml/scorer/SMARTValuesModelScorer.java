@@ -1,7 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.domain.feature.score.ModelFeatureScore;
+import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
@@ -79,13 +79,13 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         Model globalModel = getGlobalModel(adeRecordReader);
         FeatureScore featureScore = calculateScore(model, globalModel, adeRecordReader);
         if (featureScore == null) {
-            return new ModelFeatureScore(getName(), 0d, 0d);
+            return new CertaintyFeatureScore(getName(), 0d, 0d);
         }
         double certainty = calculateCertainty(model);
         if (isUseCertaintyToCalculateScore) {
             featureScore.setScore(featureScore.getScore() * certainty);
         } else {
-            featureScore = new ModelFeatureScore(
+            featureScore = new CertaintyFeatureScore(
                     featureScore.getName(),
                     featureScore.getScore(),
                     featureScore.getFeatureScores(),
@@ -101,7 +101,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
         List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
         if (model == null || globalModel == null) {
-            return new ModelFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
+            return new CertaintyFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
         }
         FeatureScore featureScore = calculateScore(baseScore.getScore(), model, globalModel);
         featureScore.setFeatureScores(baseFeatureScores);

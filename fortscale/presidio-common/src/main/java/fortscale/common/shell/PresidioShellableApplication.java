@@ -10,9 +10,13 @@ import fortscale.utils.shell.CommandLineArgsHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.shell.core.ExitShellRequest;
+import sun.misc.Signal;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -20,9 +24,25 @@ import java.util.stream.Collectors;
  *
  * Created by efratn on 15/06/2017.
  */
-public class PresidioShellableApplication {
+public class PresidioShellableApplication implements Closeable {
 
     private static final Logger logger = Logger.getLogger(PresidioShellableApplication.class);
+    static AtomicInteger exitCode;
+    private ConfigurableApplicationContext context;
+
+    public PresidioShellableApplication() {
+        exitCode = new AtomicInteger(0);
+        this.context = null;
+        initSigtermHandler(this);
+    }
+
+    /**
+     * @see ShellableApplicationSignalHandler
+     */
+    private void initSigtermHandler(PresidioShellableApplication presidioShellableApplication) {
+        Signal.handle(new Signal("TERM"), new ShellableApplicationSignalHandler(presidioShellableApplication));
+        Signal.handle(new Signal("INT"), new ShellableApplicationSignalHandler(presidioShellableApplication));
+    }
 
     /**
      * Create a default {@link ConfigurableApplicationContext}, that contains the {@link BootShimConfig}
@@ -31,11 +51,12 @@ public class PresidioShellableApplication {
      * @param configurationClass where the application's context is configured
      * @param args               the input arguments
      */
-    public static void run(List<Class> configurationClass, String[] args) {
+    public void run(List<Class> configurationClass, String[] args) {
         if(logger.isDebugEnabled()) {
             String configurationClasses = configurationClass.stream().map(Class::getSimpleName).collect(Collectors.joining(","));
             logger.debug("Starting {} component ", configurationClasses);
         }
+
         CommandLineArgsHolder.args = args;
 
         //Required beans for the shell
@@ -43,38 +64,43 @@ public class PresidioShellableApplication {
         configurationClass.add(FSHistoryFileNameProvider.class);
         configurationClass.add(FSPromptProvider.class);
         configurationClass.add(BootShimConfig.class);
-        ConfigurableApplicationContext context = null;
-        int exitCode=0;
         ExitShellRequest exitShellRequest = null;
         try {
             context = SpringApplication.run(configurationClass.toArray(), args);
             context.registerShutdownHook();
-            exitShellRequest = run(context);
-            exitCode = exitShellRequest.getExitCode();
-        } catch (RuntimeException e) {
+            exitShellRequest = run();
+            exitCode.set(exitShellRequest.getExitCode());
+        } catch (Exception e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
             if (exitShellRequest == null) {
-                exitCode = 1;
+                exitCode.compareAndSet(0,1);
             } else {
-                exitCode = exitShellRequest.getExitCode();
-                if (exitCode == 0) {
-                    exitCode = 1;
-                }
+                exitCode.set(exitShellRequest.getExitCode());
+                exitCode.compareAndSet(0,1);
             }
         }
         finally {
-            if (context!=null) {
-                context.close();
+            try {
+                close();
+            } catch (IOException e) {
+                throw new RuntimeException("error while closing system",e);
             }
-            Thread.currentThread().interrupt();
-            logger.info("system finished with exit code={}",exitCode);
-            System.exit(exitCode);
         }
     }
 
-    private static ExitShellRequest run(ConfigurableApplicationContext ctx) {
-        BootShim bs = ctx.getBean(BootShim.class);
+    private ExitShellRequest run() {
+        BootShim bs = context.getBean(BootShim.class);
         return bs.run();
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (context!=null) {
+            context.close();
+        }
+        Thread.currentThread().interrupt();
+        logger.info("system finished with exit code={}",exitCode.get());
+        System.exit(exitCode.get());
     }
 }

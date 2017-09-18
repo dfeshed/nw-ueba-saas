@@ -13,10 +13,19 @@ import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.dto.Alert;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertSeverity;
 import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.Event;
+import presidio.webapp.model.EventQuery;
+import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -33,7 +42,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public presidio.webapp.model.Alert getAlertById(String id) {
+    public presidio.webapp.model.Alert getAlertById(String id, boolean expand) {
         presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
         presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
@@ -53,6 +62,10 @@ public class RestAlertServiceImpl implements RestAlertService {
         resultAlert.setEndDate(alertData.getEndDate().getTime());
         resultAlert.setScore(alertData.getScore());
         resultAlert.setClassifications(alertData.getClassifications());
+        if (expand) {
+            List<Indicator> indicator = MockUtils.mockIndicators(false);
+            resultAlert.setIndicators(indicator);
+        }
         return resultAlert;
     }
 
@@ -69,7 +82,13 @@ public class RestAlertServiceImpl implements RestAlertService {
         int totalElements = 0;
         Map<String, Aggregation> alertAggregations = null;
         if (alerts.getTotalElements() > 0) {
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            for (presidio.output.domain.records.alerts.Alert alert : alerts) {
+                presidio.webapp.model.Alert restAlert = createRestAlert(alert);
+                if (alertQuery.getExpand().booleanValue()) {
+                    restAlert.setIndicators(MockUtils.mockIndicators(false));
+                }
+                restAlerts.add(restAlert);
+            }
             totalElements = Math.toIntExact(alerts.getTotalElements());
             if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
                 alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
@@ -127,6 +146,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (CollectionUtils.isNotEmpty(alertQuery.getTags())) {
             alertQueryBuilder.filterByTags(alertQuery.getTags());
         }
+        if (CollectionUtils.isNotEmpty(alertQuery.getIndicatorsName())) {
+            alertQueryBuilder.filterByIndicatorNames(alertQuery.getIndicatorsName());
+        }
         if (alertQuery.getStartTimeFrom() != null) {
             alertQueryBuilder.filterByStartDate(alertQuery.getStartTimeFrom().longValue());
         }
@@ -166,17 +188,19 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public AlertsWrapper getAlertsByUserId(String userId) {
+    public AlertsWrapper getAlertsByUserId(String userId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
+        alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
+            for (presidio.output.domain.records.alerts.Alert alert : alerts) {
+                presidio.webapp.model.Alert restAlert = createRestAlert(alert);
+                if (expand) {
+                    restAlert.setIndicators(MockUtils.mockIndicators(false));
+                }
+                restAlerts.add(restAlert);
+            }
             totalElements = Math.toIntExact(alerts.getTotalElements());
         }
         return createAlertsWrapper(restAlerts, totalElements, 0, null);
@@ -199,6 +223,27 @@ public class RestAlertServiceImpl implements RestAlertService {
         return null;
     }
 
+    @Override
+    public Indicator getIndicatorById(String indicatorId, boolean expand) {
+        // TEMPORARY CODE - DO NOT REVIEW
+        Indicator restIndicator = MockUtils.mockIndicator(indicatorId, expand);
+        return restIndicator;
+    }
+
+    @Override
+    public List<presidio.webapp.model.Indicator> getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery) {
+        // TEMPORARY CODE - DO NOT REVIEW
+        List<Indicator> restIndicators = MockUtils.mockIndicators(indicatorQuery.getExpand().booleanValue());
+        return restIndicators;
+    }
+
+    @Override
+    public List<Event> getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
+        // TEMPORARY CODE - DO NOT REVIEW
+        List<Event> restEvents = MockUtils.mockEvents();
+        return restEvents;
+    }
+
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
@@ -210,7 +255,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setUserId(alert.getUserId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
-        restAlert.setTimeframe(presidio.webapp.model.Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
+        restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
 

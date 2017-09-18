@@ -57,7 +57,7 @@ class AggrModelDagBuilder(PresidioDagBuilder):
             data_source=self._data_source,
             dag=aggr_model_dag)
         aggr_accumulate_short_circuit_operator = ShortCircuitOperator(
-            task_id='aggr_accumulate_short_circuit',
+            task_id='aggr_accumulate_short_circuit{0}'.format(self._data_source),
             dag=aggr_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._accumulate_interval,
@@ -72,7 +72,7 @@ class AggrModelDagBuilder(PresidioDagBuilder):
                                               session_id=aggr_model_dag.dag_id.split('.', 1)[0],
                                               dag=aggr_model_dag)
         aggr_model_short_circuit_operator = ShortCircuitOperator(
-            task_id='aggr_model_short_circuit',
+            task_id='aggr_model_short_circuit{0}'.format(self._data_source),
             dag=aggr_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._build_model_interval,

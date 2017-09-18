@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.domain.feature.score.CertaintyFeatureScore;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -22,6 +23,13 @@ public class ScoreMapper extends AbstractScorer {
 	public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
 		FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
 		double mappedScore = ScoreMapping.mapScore(baseScore.getScore(), scoreMappingConf);
-		return new FeatureScore(getName(), mappedScore, Collections.singletonList(baseScore));
+		FeatureScore featureScore = new FeatureScore(getName(), mappedScore, Collections.singletonList(baseScore));
+
+		if(baseScore instanceof CertaintyFeatureScore){
+			double certainty = baseScore.getCertainty();
+			featureScore.setScore(featureScore.getScore() * certainty);
+		}
+
+		return featureScore;
 	}
 }

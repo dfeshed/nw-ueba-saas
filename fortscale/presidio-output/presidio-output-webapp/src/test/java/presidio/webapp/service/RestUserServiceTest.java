@@ -139,7 +139,7 @@ public class RestUserServiceTest {
 
     private Alert createAlert(int number) {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        return new Alert("useruser" + number, classifications, "user" + number,
+        return new Alert("useruser" + number, "smartId", classifications, "user" + number,
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null);
     }

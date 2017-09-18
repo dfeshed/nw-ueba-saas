@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class ModelFeatureScore extends FeatureScore {
+public class CertaintyFeatureScore extends FeatureScore {
 
     private double certainty;
 
-    public ModelFeatureScore(){}
+    public CertaintyFeatureScore(){}
 
-    public ModelFeatureScore(String name, Double score, List<FeatureScore> featureScores, double certainty) {
+    public CertaintyFeatureScore(String name, Double score, List<FeatureScore> featureScores, double certainty) {
         super(name, score, featureScores);
         this.certainty = certainty;
     }
 
-    public ModelFeatureScore(String name, Double score,	double certainty) {
+    public CertaintyFeatureScore(String name, Double score, double certainty) {
         super(name, score);
         this.certainty = certainty;
     }

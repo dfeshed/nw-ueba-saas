@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUserEntity(String userId) {
+        public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
         if (userDetails == null) {
             return null;
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
             usersIDForBatch.add(entry.getKey());
             if (usersIDForBatch.size() < defaultUsersBatchSize) {
                 continue;
-            }
+    }
             //Update user score batch
             changedUsers.addAll(updateUserAlertDataForBatch(aggregatedUserScore, usersIDForBatch));
 
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
             //After batch calculation, reset the set
             usersIDForBatch.clear();
 
-        }
+    }
 
         if (!usersIDForBatch.isEmpty()) {
             //there is leftover smaller then batch size

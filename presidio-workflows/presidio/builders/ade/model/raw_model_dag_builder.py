@@ -44,7 +44,7 @@ class RawModelDagBuilder(PresidioDagBuilder):
                                                                                                    data_source=self.data_source,
                                                                                                    dag=raw_model_dag)
         feature_aggregation_buckets_short_circuit_operator = ShortCircuitOperator(
-            task_id='feature_aggregation_buckets_short_circuit',
+            task_id=('feature_aggregation_buckets_short_circuit{0}'.format(self.data_source)),
             dag=raw_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._feature_aggregation_buckets_interval,
@@ -60,7 +60,7 @@ class RawModelDagBuilder(PresidioDagBuilder):
                                               session_id=raw_model_dag.dag_id.split('.',1)[0],
                                               dag=raw_model_dag)
         raw_model_short_circuit_operator = ShortCircuitOperator(
-            task_id='raw_model_short_circuit',
+            task_id='raw_model_short_circuit{0}'.format(self.data_source),
             dag=raw_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._build_model_interval,

@@ -3,7 +3,7 @@ import logging
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.state import State
 from airflow import settings
-from airflow.models import TaskInstance,DagRun
+from airflow.models import DagRun
 
 
 class TaskGapSensorOperator(BaseSensorOperator):
@@ -44,11 +44,20 @@ class TaskGapSensorOperator(BaseSensorOperator):
         @return: bool - whether there are tasks to wait for.
         '''
         session = settings.Session()
-        if(self._gapped_root_dag_run == None):
-            self._init_gapped_root_dag_run(context['execution_date'],session)
-            if(self._gapped_root_dag_run == None):
-                #The start time of the external gapped dag run is more recent than the needed gap.
-                #so there is nothing to sense here.
+        is_finished_wait_for_gapped_task = self._is_finished_wait_for_gapped_task(context,session)
+
+        return is_finished_wait_for_gapped_task
+
+    def _is_finished_wait_for_gapped_task(self, context, session):
+        '''
+
+        @return: bool - whether there are tasks to wait for.
+        '''
+        if (self._gapped_root_dag_run == None):
+            self._init_gapped_root_dag_run(context['execution_date'], session)
+            if (self._gapped_root_dag_run == None):
+                # The start time of the external gapped dag run is more recent than the needed gap.
+                # so there is nothing to sense here.
                 return True
 
         logging.info(
@@ -57,26 +66,26 @@ class TaskGapSensorOperator(BaseSensorOperator):
             '{self._external_task_id} on '
             '{self._gapped_root_dag_run.execution_date} ... '.format(**locals()))
 
-
         self._gapped_root_dag_run.refresh_from_db(session=session)
         is_finished_wait_for_gapped_task = True
         root_state = self._gapped_root_dag_run.get_state()
-        if(root_state == State.RUNNING):
+        if (root_state == State.RUNNING):
             is_finished_wait_for_gapped_task = False
             self._refresh_gapped_dag_run(session)
-            if(self._gapped_dag_run != None):
+            if (self._gapped_dag_run != None):
                 gapped_dag_run_state = self._gapped_dag_run.get_state()
-                if(gapped_dag_run_state == State.RUNNING):
-                    external_task_instance = self._gapped_dag_run.get_task_instance(task_id= self._external_task_id, session=session)
-                    if(external_task_instance == None):
+                if (gapped_dag_run_state in State.unfinished()):
+                    external_task_instance = self._gapped_dag_run.get_task_instance(task_id=self._external_task_id,
+                                                                                    session=session)
+                    if (external_task_instance == None):
                         logging.info(
-                            'Still poking since the dag run is still running and the gapped task instance still have not started: '
+                            'Still poking since the dag run has not finished and the gapped task instance still have not started: '
                             'dag_id: {self._gapped_dag_run.dag_id} '
                             'run_id: {self._gapped_dag_run.run_id} '
                             'state: {gapped_dag_run_state} '.format(**locals()))
-                    elif(external_task_instance.end_date == None):
+                    elif (external_task_instance.state in State.unfinished()):
                         logging.info(
-                            'Still poking since the gapped task instance is still running: '
+                            'Still poking since the gapped task instance has not finished: '
                             'dag_id: {self._gapped_dag_run.dag_id} '
                             'run_id: {self._gapped_dag_run.run_id} '
                             'start_date: {external_task_instance.start_date} '
@@ -85,7 +94,7 @@ class TaskGapSensorOperator(BaseSensorOperator):
                     else:
                         is_finished_wait_for_gapped_task = True
                         logging.info(
-                            'Finish poking since the gapped task instance is not running any more: '
+                            'Finish poking since the gapped task instance has finished: '
                             'dag_id: {self._gapped_dag_run.dag_id} '
                             'run_id: {self._gapped_dag_run.run_id} '
                             'start_date: {external_task_instance.start_date} '
@@ -119,7 +128,6 @@ class TaskGapSensorOperator(BaseSensorOperator):
         self._gapped_root_dag_run = session.query(DagRun).filter(
             DagRun.dag_id == self._root_external_dag_id,
             DagRun.execution_date < execution_date_lt,
-            DagRun.state == State.RUNNING,
         ).order_by(
             DagRun.execution_date.desc()
         ).first()

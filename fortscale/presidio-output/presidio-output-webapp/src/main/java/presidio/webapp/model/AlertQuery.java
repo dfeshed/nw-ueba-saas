@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * AlertQuery
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T19:21:46.635Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
 public class AlertQuery {
     @JsonProperty("pageSize")
@@ -308,10 +308,10 @@ public class AlertQuery {
         return this;
     }
 
-    public AlertQuery addUsersIdItem(String usersIdItem) {
-        this.usersId.add(usersIdItem);
-        return this;
-    }
+  public AlertQuery addUsersIdItem(String usersIdItem) {
+    this.usersId.add(usersIdItem);
+    return this;
+  }
 
     /**
      * Get usersId

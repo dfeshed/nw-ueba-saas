@@ -59,7 +59,7 @@ public class OutputWebappConfiguration {
 
     @Bean
     UsersApi getUsersController() {
-        return new UsersApiController(restUserService(), restAlertService());
+        return new UsersApiController(restUserService());
     }
 
     @Bean

@@ -23,6 +23,6 @@ public class SmartApplication {
 		logger.info("Starting {}.", SmartApplication.class.getSimpleName());
 		List<Class> configurationClasses = new ArrayList<>();
 		configurationClasses.add(SmartApplicationConfigurationProduction.class);
-		PresidioShellableApplication.run(configurationClasses, args);
+		new PresidioShellableApplication().run(configurationClasses, args);
 	}
 }

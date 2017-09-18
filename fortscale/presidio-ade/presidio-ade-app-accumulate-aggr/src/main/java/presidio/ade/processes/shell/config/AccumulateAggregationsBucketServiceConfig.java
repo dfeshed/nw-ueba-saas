@@ -2,9 +2,9 @@ package presidio.ade.processes.shell.config;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.ml.scorer.records.AdeRecordReaderFactoriesConfig;
-import fortscale.ml.scorer.records.RecordReaderFactoryServiceConfig;
-import fortscale.ml.scorer.records.TransformationConfig;
+import presidio.ade.domain.record.AdeRecordReaderFactoriesConfig;
+import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
+import presidio.ade.domain.record.TransformationConfig;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketService;
 import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketServiceImpl;
-import presidio.ade.processes.shell.config.AggregationRecordsCreatorConfig;
 
 /**
  * Created by maria_dorohin on 7/30/17.

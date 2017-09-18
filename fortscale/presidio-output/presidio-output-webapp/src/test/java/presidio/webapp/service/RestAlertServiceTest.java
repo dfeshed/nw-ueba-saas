@@ -35,22 +35,22 @@ public class RestAlertServiceTest {
     RestAlertService restAlertService;
 
     @Autowired
-    AlertPersistencyService alertService;
+    AlertPersistencyService alertPersistencyService;
 
     @Test
     public void getAlertByIdSuccess() {
         Alert alert = createAlert();
         alert.setId("id");
-        when(alertService.findOne(eq(alert.getId()))).thenReturn(alert);
+        when(alertPersistencyService.findOne(eq(alert.getId()))).thenReturn(alert);
 
-        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id");
+        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertEquals(alert.getUserName(), alertById.getUsername());
     }
 
     @Test
     public void getAlertById_getNull() {
-        when(alertService.findOne(anyString())).thenReturn(null);
-        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id");
+        when(alertPersistencyService.findOne(anyString())).thenReturn(null);
+        presidio.webapp.model.Alert alertById = restAlertService.getAlertById("id", false);
         Assert.assertNull(alertById);
     }
 
@@ -60,7 +60,7 @@ public class RestAlertServiceTest {
         List<Alert> resultList = new ArrayList<>();
         resultList.add(alert);
         Page<Alert> page = new PageImpl<>(resultList, null, 1);
-        when(alertService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
@@ -75,7 +75,7 @@ public class RestAlertServiceTest {
         List<Alert> resultList = new ArrayList<>();
         resultList.add(firstAlert);
         Page<Alert> page = new PageImpl<>(resultList);
-        when(alertService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
 
@@ -89,7 +89,7 @@ public class RestAlertServiceTest {
     public void getAlertsNoAlert() {
         List<Alert> resultList = new ArrayList<>();
         Page<Alert> page = new PageImpl<>(resultList);
-        when(alertService.find(anyObject())).thenReturn(page);
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
 
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
@@ -99,7 +99,7 @@ public class RestAlertServiceTest {
 
     private Alert createAlert() {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
-        return new Alert("userId", classifications, "username",
+        return new Alert("userId", "smartId"", classifications, "username",
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null);
     }
