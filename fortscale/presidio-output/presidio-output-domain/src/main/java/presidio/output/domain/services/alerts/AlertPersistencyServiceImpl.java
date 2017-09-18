@@ -1,5 +1,6 @@
 package presidio.output.domain.services.alerts;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,12 +39,16 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         // save indicators
         List<Indicator> indicators = new ArrayList<Indicator>();
         alerts.stream().forEach(alert -> indicators.addAll(alert.getIndicators()));
-        indicatorRepository.save(indicators);
+        if (CollectionUtils.isNotEmpty(indicators)) {
+            indicatorRepository.save(indicators);
+        }
 
         // save events
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
         indicators.stream().forEach(indicator -> events.addAll(indicator.getEvents()));
-        indicatorEventRepository.save(events);
+        if (CollectionUtils.isNotEmpty(events)) {
+            indicatorEventRepository.save(events);
+        }
 
         return savedAlerts;
     }

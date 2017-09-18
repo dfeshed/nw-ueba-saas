@@ -1,6 +1,7 @@
 package fortscale.utils.airflow.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.time.TimeRange;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,7 +14,10 @@ public class DagToExecutionDates {
     @JsonProperty("dag_id")
     private String dagId;
     @JsonProperty("execution_dates")
-    private List<Instant> executionDates;
+    private List<TimeRange> executionDates;
+
+    @JsonProperty("start_date")
+    private Instant startDate;
 
     public DagToExecutionDates() {
     }
@@ -26,11 +30,23 @@ public class DagToExecutionDates {
         this.dagId = dagId;
     }
 
-    public List<Instant> getExecutionDates() {
+    public  List<TimeRange> getExecutionDates() {
         return executionDates;
     }
 
-    public void setExecutionDates(List<Instant> executionDates) {
+    public void setExecutionDates( List<TimeRange> executionDates) {
         this.executionDates = executionDates;
+    }
+
+    /**
+     *
+     * @return the start date of the whole dag
+     */
+    public Instant getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
     }
 }
