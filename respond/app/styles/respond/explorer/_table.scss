@@ -5,6 +5,11 @@
   right: 0;
   bottom: 0;
 
+  .items-error {
+    font-style: italic;
+    font-size: 1.15rem;
+  }
+
   a {
     color: rsa-color(blue, light);
   }

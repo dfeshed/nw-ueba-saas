@@ -31,7 +31,8 @@
     <centered>
       {{rsa-loader size='larger'}}
     </centered>
-
+  {{else if (eq fetchStatus 'error')}}
+    <centered class="items-error">{{t 'respond.errorPage.fetchError'}}</centered>
   {{else}}
     {{#rsa-data-table/body
       rowComponentClass='rsa-explorer/explorer-table/row'

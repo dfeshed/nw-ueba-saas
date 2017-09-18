@@ -90,10 +90,11 @@ const _handleDeletes = (action) => {
 const fetchItems = (state, action) => (
   handle(state, action, {
     start: (s) => s.merge({ itemsStatus: 'wait', focusedItem: null }),
-    success: (s) => (s.merge({
+    success: (s) => s.merge({
       items: action.payload.data,
       itemsStatus: 'complete'
-    }))
+    }),
+    failure: (s) => s.set('itemsStatus', 'error')
   })
 );
 
@@ -123,7 +124,10 @@ const fetchItemsStreamCompleted = (state) => {
 };
 
 const fetchItemsStreamError = (state) => {
-  return state.set('stopItemsStream', null);
+  return state.merge({
+    itemsStatus: 'error',
+    stopItemsStream: null
+  });
 };
 
 const fetchItemCount = (state, action) => (

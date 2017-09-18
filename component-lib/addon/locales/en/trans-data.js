@@ -474,7 +474,8 @@ export default {
     filters: 'Filters',
     errorPage: {
       serviceDown: 'Respond Server is offline',
-      serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+      serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.',
+      fetchError: 'An error has occurred. The Respond Server may be offline or inaccessible.'
     },
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',
