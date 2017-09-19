@@ -128,7 +128,9 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
             }
-
+            if (alertQuery.getAggregateByFields().contains(Alert.INDICATOR_NAMES)) {
+                super.addAggregation(AggregationBuilders.terms(Alert.INDICATOR_NAMES).field(Alert.INDICATOR_NAMES));
+            }
             if (alertQuery.getAggregateByFields().contains(Alert.AGGR_SEVERITY_PER_DAY)) {
                 super.addAggregation(AggregationBuilders.dateHistogram(Alert.AGGR_SEVERITY_PER_DAY).field(Alert.START_DATE)
                         .dateHistogramInterval(DateHistogramInterval.DAY)

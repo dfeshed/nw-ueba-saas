@@ -2,6 +2,8 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import presidio.output.domain.records.users.*;
+import presidio.output.domain.records.users.User;
 
 public class UserQueryEnums {
 
@@ -32,7 +34,7 @@ public class UserQueryEnums {
     }
 
     public enum UserQueryAggregationFieldName {
-        SEVERITY("severity"), TAGS("tags");
+        SEVERITY("severity"), TAGS("tags"), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
         private String value;
 
         UserQueryAggregationFieldName(String value) {

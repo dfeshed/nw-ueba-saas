@@ -36,7 +36,6 @@ import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -536,8 +535,41 @@ public class AlertPersistencyServiceTest {
                 assertEquals(1L, severityAggregation.getBucketByKey(AlertSeverity.LOW.name()).getDocCount());
             }
         }
+    }
 
+    @Test
+    public void testFindByQueryWithIndicatorNamesAggregation() {
 
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatoorNames1 = Arrays.asList("a");
+        List<String> indicatoorNames2 = Arrays.asList("a","b");
+        List<String> indicatoorNames3 = Arrays.asList("a","b","c");
+        Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert1.setIndicatorsNames(indicatoorNames1);
+        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert2.setIndicatorsNames(indicatoorNames2);
+        Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert3.setIndicatorsNames(indicatoorNames3);
+        List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
+        alertPersistencyService.save(alertList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.INDICATOR_NAMES);
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<Alert>) testAlert).getAggregations().asMap();
+        StringTerms indicatorsAgg = (StringTerms) stringAggregationMap.get(Alert.INDICATOR_NAMES);
+        List<Terms.Bucket> buckets = indicatorsAgg.getBuckets();
+
+        assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
+        assertEquals(indicatorsAgg.getBucketByKey("a").getDocCount(), 3L);
+        assertEquals(indicatorsAgg.getBucketByKey("b").getDocCount(), 2L);
+        assertEquals(indicatorsAgg.getBucketByKey("c").getDocCount(), 1L);
     }
 
 }
