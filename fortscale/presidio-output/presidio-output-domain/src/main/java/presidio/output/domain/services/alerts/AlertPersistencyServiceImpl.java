@@ -1,5 +1,6 @@
 package presidio.output.domain.services.alerts;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,8 +10,8 @@ import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -37,14 +38,20 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
         // save indicators
         List<Indicator> indicators = new ArrayList<Indicator>();
-        alerts.stream().forEach(alert -> indicators.addAll(alert.getIndicators()));
-        indicatorRepository.save(indicators);
+        alerts.stream().forEach(alert -> {
+            if (CollectionUtils.isNotEmpty(alert.getIndicators())) {
+                indicators.addAll(alert.getIndicators());
+            }
+        });
 
-        // save events
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
-        indicators.stream().forEach(indicator -> events.addAll(indicator.getEvents()));
-        indicatorEventRepository.save(events);
+        if (CollectionUtils.isNotEmpty(indicators)) {
+            indicatorRepository.save(indicators);
 
+            // save events
+            List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+            indicators.stream().forEach(indicator -> events.addAll(indicator.getEvents()));
+            indicatorEventRepository.save(events);
+        }
         return savedAlerts;
     }
 
