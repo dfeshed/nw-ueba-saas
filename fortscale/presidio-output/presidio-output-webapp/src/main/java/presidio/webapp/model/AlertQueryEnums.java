@@ -7,7 +7,7 @@ import presidio.output.domain.records.alerts.Alert;
 
 public class AlertQueryEnums {
     public enum AlertQuerySortFieldName {
-        SCORE("score"), START_DATE("startDate"), END_DATE("endDate");
+        SCORE("score"), START_DATE("startDate"), END_DATE("endDate"), INDICATORS_NUM("indicatorsNum");
 
         private String value;
 
