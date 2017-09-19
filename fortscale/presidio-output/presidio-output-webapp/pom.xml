@@ -79,7 +79,6 @@
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>${swagger-annotations-version}</version>
         </dependency>
 
         <!-- You can find the dependencies for the library configuation you chose by looking in JavaClientCodegen.

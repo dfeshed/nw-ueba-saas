@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * historical data aggregated by value (for pie / histogram graphs)
  */
-@ApiModel(description = "historical data aggregated by value (for pie / histogram graphs)")
+@ApiModel(description = "historical data aggregated by value (for pie / histogram graphs)", value = "CountAggregation")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T06:58:50.313Z")
 
 public class HistoricalDataCountAggregation extends HistoricalData  {
@@ -19,7 +19,7 @@ public class HistoricalDataCountAggregation extends HistoricalData  {
    * Gets or Sets type
    */
   public enum TypeEnum {
-    COUNT_AGGRAGEATION("COUNT_AGGREGATION");
+    CountAggregation("CountAggregation");
 
     private String value;
 
