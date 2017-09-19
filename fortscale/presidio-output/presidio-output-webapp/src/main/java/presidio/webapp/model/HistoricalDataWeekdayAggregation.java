@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * historical data aggregated by weekday
  */
-@ApiModel(description = "historical data aggregated by weekday")
+@ApiModel(description = "historical data aggregated by weekday",value = "WeekdayAggregation")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T09:35:35.500Z")
 
 public class HistoricalDataWeekdayAggregation extends HistoricalData  {
@@ -19,7 +19,7 @@ public class HistoricalDataWeekdayAggregation extends HistoricalData  {
    * Gets or Sets type
    */
   public enum TypeEnum {
-    WEEKDAY_AGGRAGEATION("WEEKDAY_AGGREGATION");
+    WeekdayAggregation("WeekdayAggregation");
 
     private String value;
 
