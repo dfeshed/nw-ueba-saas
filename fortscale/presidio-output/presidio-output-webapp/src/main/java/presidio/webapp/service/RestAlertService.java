@@ -1,6 +1,8 @@
 package presidio.webapp.service;
 
 import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.EventsWrapper;
+import presidio.webapp.model.IndicatorsWrapper;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +20,7 @@ public interface RestAlertService {
 
     presidio.webapp.model.Indicator getIndicatorById(String indicatorId, boolean expand);
 
-    List<presidio.webapp.model.Indicator> getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery);
+    IndicatorsWrapper getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery);
 
-    List<presidio.webapp.model.Event> getIndicatorEventsByIndicatorId(String indicatorId, presidio.webapp.model.EventQuery eventQuery);
+    EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, presidio.webapp.model.EventQuery eventQuery);
 }
