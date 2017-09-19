@@ -1,7 +1,6 @@
 package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
@@ -14,7 +13,8 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import presidio.output.processor.services.user.UserScoreService;
 
 import java.time.temporal.ChronoField;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -50,16 +50,14 @@ public class AlertServiceImpl implements AlertService {
         if (score < smartThresholdScoreForCreatingAlert) {
             return null;
         }
-
-        List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(extractIndicatorsNames(smart));
         long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
         long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        Alert alert = new Alert(user.getId(), smart.getId(), classification, user.getUserName(), startDate, endDate, score, 0, getStratgyfromSmart(smart), severity, user.getTags());
+        Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStratgyfromSmart(smart), severity, user.getTags());
 
         // supporting information
         List<Indicator> supportingInfo = new ArrayList<Indicator>();
-        for (AdeAggregationRecord adeAggregationRecord:smart.getAggregationRecords()) {
+        for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(adeAggregationRecord.getAggregatedFeatureType().name());
             supportingInfo.addAll(supportingInformationGenerator.generateSupporingInformation(adeAggregationRecord, alert));
         }
@@ -68,7 +66,8 @@ public class AlertServiceImpl implements AlertService {
         alert.setIndicators(supportingInfo);
         alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
         alert.setIndicatorsNum(supportingInfo.size());
-
+        List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(alert.getIndicatorsNames());
+        alert.setClassifications(classification);
         // user update
         userScoreService.increaseUserScoreWithoutSaving(alert, user);
         return alert;
