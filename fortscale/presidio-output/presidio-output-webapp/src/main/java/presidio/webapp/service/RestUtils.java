@@ -21,21 +21,21 @@ public class RestUtils {
                     bucketAsMap.put(bucket.getKeyAsString(), bucket.getDocCount());
                 });
 
-            // Two level aggregation
+                // Two level aggregation
             } else if (aggregation instanceof InternalDateHistogram) {
                 // Get the first level buckets
                 List<InternalDateHistogram.Bucket> firstLevelBuckets = ((InternalDateHistogram) aggregation).getBuckets();
                 firstLevelBuckets.forEach(firstLevelBucket -> {
                     Map<String, Aggregation> secondLevelAggregations = firstLevelBucket.getAggregations().asMap();
                     secondLevelAggregations.forEach((aggregationFieldName, secondLevelAggregation) -> {
-                        if (secondLevelAggregation instanceof InternalTerms) {
-                            // Get the second level bucket
-                            List<Terms.Bucket> secondLevelBuckets = ((InternalTerms) secondLevelAggregation).getBuckets();
-                            secondLevelBuckets.forEach(secondLevelBucket -> {
-                                bucketAsMap.put(String.format("%s:%s", firstLevelBucket.getKeyAsString(), secondLevelBucket.getKeyAsString()), secondLevelBucket.getDocCount());
-                            });
-                        }
-                    }
+                                if (secondLevelAggregation instanceof InternalTerms) {
+                                    // Get the second level bucket
+                                    List<Terms.Bucket> secondLevelBuckets = ((InternalTerms) secondLevelAggregation).getBuckets();
+                                    secondLevelBuckets.forEach(secondLevelBucket -> {
+                                        bucketAsMap.put(String.format("%s:%s", firstLevelBucket.getKeyAsString(), secondLevelBucket.getKeyAsString()), secondLevelBucket.getDocCount());
+                                    });
+                                }
+                            }
                     );
                 });
             }
