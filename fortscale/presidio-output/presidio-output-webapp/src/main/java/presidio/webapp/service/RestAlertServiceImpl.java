@@ -9,9 +9,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -38,8 +41,14 @@ public class RestAlertServiceImpl implements RestAlertService {
             resultAlert = createRestAlert(alertData);
         }
         if (expand) {
-            List<Indicator> indicator = MockUtils.mockIndicators(false);
-            resultAlert.setIndicators(indicator);
+            List<Indicator> restIndicators = new ArrayList<Indicator>();
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
+            for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                // workaround - projection doesn't work
+                indicator.setHistoricalData(null);
+                restIndicators.add(createRestIndicator(indicator));
+            }
+            resultAlert.setIndicators(restIndicators);
         }
         return resultAlert;
     }
@@ -60,7 +69,14 @@ public class RestAlertServiceImpl implements RestAlertService {
             for (presidio.output.domain.records.alerts.Alert alert : alerts) {
                 presidio.webapp.model.Alert restAlert = createRestAlert(alert);
                 if (alertQuery.getExpand().booleanValue()) {
-                    restAlert.setIndicators(MockUtils.mockIndicators(false));
+                    // TODO: improve performance with in query
+                    List<Indicator> restIndicators = new ArrayList<Indicator>();
+                    Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 100));
+                    for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                        indicator.setHistoricalData(null);
+                        restIndicators.add(createRestIndicator(indicator));
+                    }
+                    restAlert.setIndicators(restIndicators);
                 }
                 restAlerts.add(restAlert);
             }
@@ -97,6 +113,41 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(0);
         }
         return alertsWrapper;
+    }
+
+    private IndicatorsWrapper createIndicatorsWrapper(List restIndicators, int totalNumberOfElements, Integer pageNumber) {
+        IndicatorsWrapper indicatorsWrapper = new IndicatorsWrapper();
+        if (CollectionUtils.isNotEmpty(restIndicators)) {
+            indicatorsWrapper.setIndicators(restIndicators);
+            indicatorsWrapper.setTotal(totalNumberOfElements);
+            if (pageNumber != null) {
+                indicatorsWrapper.setPage(pageNumber);
+            }
+            indicatorsWrapper.setPage(pageNumber);
+        } else {
+            indicatorsWrapper.setIndicators(new ArrayList());
+            indicatorsWrapper.setTotal(0);
+            indicatorsWrapper.setPage(0);
+        }
+        return indicatorsWrapper;
+    }
+
+    private EventsWrapper createEventsWrapper(List restEvents, int totalNumberOfElements, Integer pageNumber) {
+        EventsWrapper eventsWrapper = new EventsWrapper();
+        if (CollectionUtils.isNotEmpty(restEvents)) {
+            eventsWrapper.setEvents(restEvents);
+            eventsWrapper.setTotal(totalNumberOfElements);
+            if (pageNumber != null) {
+                eventsWrapper.setPage(pageNumber);
+            }
+            eventsWrapper.setPage(pageNumber);
+
+        } else {
+            eventsWrapper.setEvents(new ArrayList());
+            eventsWrapper.setTotal(0);
+            eventsWrapper.setPage(0);
+        }
+        return eventsWrapper;
     }
 
     private AlertQuery createQuery(presidio.webapp.model.AlertQuery alertQuery) {
@@ -176,7 +227,14 @@ public class RestAlertServiceImpl implements RestAlertService {
             for (presidio.output.domain.records.alerts.Alert alert : alerts) {
                 presidio.webapp.model.Alert restAlert = createRestAlert(alert);
                 if (expand) {
-                    restAlert.setIndicators(MockUtils.mockIndicators(false));
+                    List<Indicator> restIndicators = new ArrayList<Indicator>();
+                    Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 100));
+                    for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                        // workaround - projection doesn't work
+                        indicator.setHistoricalData(null);
+                        restIndicators.add(createRestIndicator(indicator));
+                    }
+                    restAlert.setIndicators(restIndicators);
                 }
                 restAlerts.add(restAlert);
             }
@@ -204,23 +262,65 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     @Override
     public Indicator getIndicatorById(String indicatorId, boolean expand) {
-        // TEMPORARY CODE - DO NOT REVIEW
-        Indicator restIndicator = MockUtils.mockIndicator(indicatorId, expand);
+        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
+        if (expand) {
+            presidio.output.domain.records.alerts.Indicator indicator = elasticAlertService.findIndicatorById(indicatorId);
+            restIndicator = createRestIndicator(indicator);
+        } else {
+            // workaround - projection doesn't work
+            // presidio.output.domain.records.alerts.IndicatorSummary indicator = elasticAlertService.findIndicatorSummaryById(indicatorId);
+            presidio.output.domain.records.alerts.Indicator indicator = elasticAlertService.findIndicatorById(indicatorId);
+            indicator.setHistoricalData(null);
+            restIndicator = createRestIndicator(indicator);
+        }
         return restIndicator;
     }
 
     @Override
-    public List<presidio.webapp.model.Indicator> getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery) {
-        // TEMPORARY CODE - DO NOT REVIEW
-        List<Indicator> restIndicators = MockUtils.mockIndicators(indicatorQuery.getExpand().booleanValue());
-        return restIndicators;
+    public IndicatorsWrapper getIndicatorsByAlertId(String alertId, IndicatorQuery indicatorQuery) {
+        List<Indicator> restIndicators = new ArrayList<Indicator>();
+        int totalElements = 0;
+        int pageNumber = indicatorQuery.getPageNumber()!=null?indicatorQuery.getPageNumber(): 0;
+        int pageSize = indicatorQuery.getPageSize()!=null?indicatorQuery.getPageSize():10;
+        PageRequest pageRequest = new PageRequest(pageNumber,pageSize);
+        if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                restIndicators.add(createRestIndicator(indicator));
+            }
+            totalElements = Math.toIntExact(indicators.getTotalElements());
+        } else {
+            // workaround - projection doesn't work
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                indicator.setHistoricalData(null);
+                restIndicators.add(createRestIndicator(indicator));
+            }
+            //Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = elasticAlertService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            //for (presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary : indicatorsSummary) {
+            //   restIndicators.add(createRestIndicator(indicatorSummary));
+            //}
+            totalElements = Math.toIntExact(indicators.getTotalElements());
+        }
+        return createIndicatorsWrapper(restIndicators, totalElements, indicatorQuery.getPageNumber());
+
     }
 
     @Override
-    public List<Event> getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
-        // TEMPORARY CODE - DO NOT REVIEW
-        List<Event> restEvents = MockUtils.mockEvents();
-        return restEvents;
+    public EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
+        List<presidio.webapp.model.Event> restEvents = new ArrayList<presidio.webapp.model.Event>();
+        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
+        //TODO: fix sort
+        //Sort sort = RestUtils.parseSortField(eventQuery.getSort());
+        int pageNumber = eventQuery.getPageNumber()!=null?eventQuery.getPageNumber(): 0;
+        int pageSize = eventQuery.getPageSize()!=null?eventQuery.getPageSize():10;
+        PageRequest pageRequest = new PageRequest(pageNumber,pageSize);
+        Page<IndicatorEvent> events = elasticAlertService.findIndicatorEventsByIndicatorId (indicatorId, pageRequest);
+        for (presidio.output.domain.records.alerts.IndicatorEvent event : events) {
+            restEvents.add(createRestEvent(event));
+        }
+        int totalElements = Math.toIntExact(events.getTotalElements());
+        return createEventsWrapper(restEvents, totalElements, eventQuery.getPageNumber());
     }
 
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
@@ -234,6 +334,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setUserId(alert.getUserId());
         restAlert.setSeverity(AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
+        restAlert.setIndicatorsName(alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
@@ -254,5 +355,126 @@ public class RestAlertServiceImpl implements RestAlertService {
             usersIdsToAlertsMap.put(id, tempAlerts);
         }
         return usersIdsToAlertsMap;
+    }
+
+    private presidio.webapp.model.Indicator createRestIndicator(presidio.output.domain.records.alerts.Indicator indicator) {
+        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
+        restIndicator.setId(indicator.getId());
+        restIndicator.setName(indicator.getName());
+        restIndicator.setAnomalyValue(indicator.getAnomalyValue());
+        restIndicator.setStartDate(BigDecimal.valueOf(indicator.getStartDate()));
+        restIndicator.setEndDate(BigDecimal.valueOf(indicator.getEndDate()));
+        restIndicator.setSchema(indicator.getSchema().name());
+        restIndicator.setScore(indicator.getScore());
+        restIndicator.setEventsNum(indicator.getEventsNum());
+        restIndicator.setType(Indicator.TypeEnum.fromValue(indicator.getType().name()));
+        if (indicator.getHistoricalData() != null) {
+            restIndicator.setHistoricalData(createRestHistorical(indicator.getHistoricalData()));
+        }
+        return restIndicator;
+    }
+
+    private presidio.webapp.model.Indicator createRestIndicator(presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary) {
+        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
+        restIndicator.setId(indicatorSummary.getId());
+        restIndicator.setName(indicatorSummary.getName());
+        restIndicator.setStartDate(BigDecimal.valueOf(indicatorSummary.getStartDate()));
+        restIndicator.setEndDate(BigDecimal.valueOf(indicatorSummary.getEndDate()));
+        restIndicator.setAnomalyValue(indicatorSummary.getSchema());
+        restIndicator.setSchema(indicatorSummary.getSchema().name());
+        return restIndicator;
+    }
+
+    private presidio.webapp.model.Event createRestEvent(presidio.output.domain.records.alerts.IndicatorEvent indicatorEvent) {
+        presidio.webapp.model.Event restEvent = new presidio.webapp.model.Event();
+        restEvent.setId(indicatorEvent.getId());
+        restEvent.setSchema(indicatorEvent.getSchema().name());
+        restEvent.setTime(BigDecimal.valueOf(indicatorEvent.getEventTime()));
+        restEvent.putAll(indicatorEvent.getFeatures());
+        return restEvent;
+    }
+
+    private presidio.webapp.model.HistoricalData createRestHistorical(presidio.output.domain.records.alerts.HistoricalData historicalData) {
+
+        presidio.webapp.model.HistoricalData restHistoricalData = null;
+
+        if (historicalData.getAggregation() instanceof CountAggregation) {
+
+            CountAggregation aggr = (CountAggregation)historicalData.getAggregation();
+            List<Bucket<String, Double>> buckets = aggr.getBuckets();
+            CountBucket countBucket = new CountBucket();
+            restHistoricalData = new HistoricalDataCountAggregation();
+            CountBuckets restBuckets = new CountBuckets();
+            for (Bucket<String, Double> bucket: buckets) {
+                CountBucket restBucket = new CountBucket();
+                restBucket.setKey(bucket.getKey());
+                restBucket.setValue(bucket.getValue().intValue());
+                restBucket.setAnomaly(bucket.isAnomaly());
+                restBuckets.add(restBucket);
+            }
+            ((HistoricalDataCountAggregation)restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.CountAggregation);
+            ((HistoricalDataCountAggregation)restHistoricalData).setBuckets(restBuckets);
+
+        }
+
+        if (historicalData.getAggregation() instanceof TimeAggregation) {
+
+            TimeAggregation aggr = (TimeAggregation)historicalData.getAggregation();
+            List<Bucket<String, Double>> buckets = aggr.getBuckets();
+
+
+            restHistoricalData = new HistoricalDataTimeAggregation();
+            TimeBuckets restBuckets = new TimeBuckets();
+
+            for (Bucket<String, Double> bucket: buckets) {
+
+                TimeBucket restBucket = new TimeBucket();
+                BigDecimal time = BigDecimal.valueOf(Long.parseLong(bucket.getKey()));
+                restBucket.setKey(time);
+                restBucket.setValue(bucket.getValue());
+                restBucket.setAnomaly(bucket.isAnomaly());
+                restBuckets.add(restBucket);
+            }
+            ((HistoricalDataTimeAggregation)restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TimeAggregation);
+            ((HistoricalDataTimeAggregation)restHistoricalData).setBuckets(restBuckets);
+
+        }
+
+
+        if (historicalData.getAggregation() instanceof WeekdayAggregation) {
+
+            WeekdayAggregation aggr = (WeekdayAggregation)historicalData.getAggregation();
+
+            restHistoricalData = new HistoricalDataWeekdayAggregation();
+
+            List<Bucket<String,List<Bucket<String, Integer>>>> dailyBuckets = aggr.getBuckets();
+            DailyBuckets restDailyBuckets = new DailyBuckets();
+
+            // for ech day of week
+            for (Bucket<String,List<Bucket<String, Integer>>> dailyBucket: dailyBuckets) {
+
+                DailyBucket restDailyBucket = new DailyBucket();
+                restDailyBucket.setKey(dailyBucket.getKey());
+                List<Bucket<String, Integer>> hourlyBuckets = dailyBucket.getValue();
+
+                // add hour of day
+                HourlyBuckets restHourlyBuckets = new HourlyBuckets();
+                for (Bucket<String, Integer> hourlyBucket :hourlyBuckets) {
+                    HourlyBucket restHourlyBucket = new HourlyBucket();
+                    restHourlyBucket.setKey(hourlyBucket.getKey());
+                    restHourlyBucket.setValue(hourlyBucket.getValue());
+                    restHourlyBuckets.add(restHourlyBucket);
+                }
+
+                restDailyBucket.setValue(restHourlyBuckets);
+                restDailyBuckets.add(restDailyBucket);
+
+            }
+            ((HistoricalDataWeekdayAggregation)restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WeekdayAggregation);
+            ((HistoricalDataWeekdayAggregation)restHistoricalData).setBuckets(restDailyBuckets);
+
+        }
+
+        return restHistoricalData;
     }
 }
