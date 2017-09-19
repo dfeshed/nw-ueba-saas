@@ -74,17 +74,21 @@ public class SmartRecordAggregator {
 				}
 
 				if (doesAggregationRecordAlreadyExist(newAggregationRecord, existingAggregationRecords)) {
+					// TODO: Add metric
 					logger.error("Context ID {} already has an aggregation record of type {} between {}. " +
 							"Ignoring new aggregation record of same type between same time range.",
 							smartRecord.getContextId(), newAggregationRecord.getFeatureName(), timeRange);
 				} else if (doesAggregationRecordPassThreshold(newAggregationRecord)) {
+					// TODO: Add metric
 					existingAggregationRecords.add(newAggregationRecord);
 				} else {
+					// TODO: Add metric
 					logger.debug("Discarding aggregation record of type {} between {}, " +
 							"because it did not pass the threshold {}. Context ID = {}.",
 							newAggregationRecord.getFeatureName(), timeRange, threshold, smartRecord.getContextId());
 				}
 			} else {
+				// TODO: Add metric
 				logger.error("Ignoring aggregation record {} with start instant {} " +
 						"and end instant {}, because the expected time range is {}.", newAggregationRecord,
 						newAggregationRecord.getStartInstant(), newAggregationRecord.getEndInstant(), timeRange);

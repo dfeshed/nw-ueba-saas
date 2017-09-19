@@ -16,8 +16,8 @@ import java.time.Instant;
 @Document
 @AdeRecordMetadata(adeEventType = AdeActiveDirectoryRecord.ACTIVE_DIRECTORY_STR)
 @CompoundIndexes({
-        @CompoundIndex(def = "{'startInstant': 1}")
-        // A compound index is created dynamically for every <'startInstant', 'contextType'> pair in use
+        @CompoundIndex(name = "start", def = "{'startInstant': 1}")
+        // A compound index is created dynamically for every <'contextType', 'startInstant'> pair in use
 })
 public class EnrichedActiveDirectoryRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";

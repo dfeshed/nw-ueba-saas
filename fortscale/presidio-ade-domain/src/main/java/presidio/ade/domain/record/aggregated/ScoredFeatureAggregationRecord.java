@@ -16,8 +16,8 @@ import java.util.Map;
  */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(def = "{'startInstant': 1}"),
-        @CompoundIndex(def = "{'startInstant': 1, 'contextId': 1}", unique = true)
+        @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
+        @CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true)
 })
 public class ScoredFeatureAggregationRecord extends AdeAggregationRecord implements AdeScoredRecord {
 
