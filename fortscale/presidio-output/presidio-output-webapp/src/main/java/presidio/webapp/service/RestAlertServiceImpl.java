@@ -9,11 +9,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.*;
 import presidio.webapp.model.Alert;
+import presidio.webapp.model.*;
 import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
@@ -408,7 +408,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 restBucket.setAnomaly(bucket.isAnomaly());
                 restBuckets.add(restBucket);
             }
-            ((HistoricalDataCountAggregation) restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.COUNT_AGGRAGEATION);
+            ((HistoricalDataCountAggregation) restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.CountAggregation);
             ((HistoricalDataCountAggregation) restHistoricalData).setBuckets(restBuckets);
 
         }
@@ -431,7 +431,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 restBucket.setAnomaly(bucket.isAnomaly());
                 restBuckets.add(restBucket);
             }
-            ((HistoricalDataTimeAggregation) restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TIME_AGGRAGEATION);
+            ((HistoricalDataTimeAggregation) restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TimeAggregation);
             ((HistoricalDataTimeAggregation) restHistoricalData).setBuckets(restBuckets);
 
         }
@@ -466,7 +466,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 restDailyBuckets.add(restDailyBucket);
 
             }
-            ((HistoricalDataWeekdayAggregation) restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WEEKDAY_AGGRAGEATION);
+            ((HistoricalDataWeekdayAggregation) restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WeekdayAggregation);
             ((HistoricalDataWeekdayAggregation) restHistoricalData).setBuckets(restDailyBuckets);
 
         }
