@@ -3,6 +3,9 @@ package presidio.output.processor.services.alert;
 
 import org.apache.commons.lang.StringUtils;
 import presidio.output.domain.records.alerts.ClassificationPriority;
+import presidio.output.processor.config.ClassificationPriorityConfig;
+import presidio.output.processor.config.IndicatorConfig;
+import presidio.output.processor.config.SupportingInformationConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,39 +14,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AlertClassificationServiceImpl implements AlertClassificationService{
-
-    private final String COMA = ",";
-    private final String LOWER_LINE = "_";
-    private final String SPACE = "";
+public class AlertClassificationServiceImpl implements AlertClassificationService {
 
     private Map<String, ClassificationPriority> indicatorToAlert;
+    private ClassificationPriorityConfig classificationPriorityConfig;
+    private SupportingInformationConfig supportingInformationConfig;
 
 
-    public AlertClassificationServiceImpl(String classifications, String indicators, String classificationsByPriority) {
+    public AlertClassificationServiceImpl(ClassificationPriorityConfig classificationPriorityConfig, SupportingInformationConfig supportingInformationConfig) {
+        this.classificationPriorityConfig = classificationPriorityConfig;
+        this.supportingInformationConfig = supportingInformationConfig;
+        createIndicatorToAlertByPriority();
+
+    }
+
+    private void createIndicatorToAlertByPriority() {
         indicatorToAlert = new HashMap<>();
-        createIndicatorToAlertByPriority(classifications, indicators, setAlertsByPriority(classificationsByPriority));
-
-    }
-
-    private List<String> setAlertsByPriority(String classificationsByPriority) {
-        //TODO: setting the indicators from json and not string
-        String[] names = classificationsByPriority.replace(LOWER_LINE, SPACE).split(COMA);
-        List<String> classifications = new ArrayList<>();
-        for (String name : names) {
-            classifications.add(name);
-        }
-        return classifications;
-    }
-
-    private void createIndicatorToAlertByPriority(String alerts, String indicators, List<String> classificationsByPriority) {
-        String[] indicatorsNames = indicators.replace(LOWER_LINE, SPACE).split(COMA);
-        String[] classificationsNames = alerts.replace(LOWER_LINE, SPACE).split(COMA);
-        String alertName, indicatorName;
-        for (int i = 0; i < indicatorsNames.length; i++) {
-            indicatorName = indicatorsNames[i];
-            alertName = classificationsNames[i];
-            this.indicatorToAlert.put(indicatorName, new ClassificationPriority(alertName, classificationsByPriority.indexOf(alertName)));
+        String classification, indicatorName;
+        int priority, number = 0;
+        List<IndicatorConfig> indicatorConfigs = supportingInformationConfig.getIndicators();
+        for (IndicatorConfig indicatorConfig : indicatorConfigs) {
+            number++;
+            indicatorName = indicatorConfig.getName();
+            classification = indicatorConfig.getClassification();
+            priority = classificationPriorityConfig.getClassificationConfig(classification).getPriority();
+            this.indicatorToAlert.put(indicatorName, new ClassificationPriority(classification, priority));
         }
     }
 
@@ -61,7 +56,7 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
             remove = 0;
             for (String indicator : indicators) {
                 classificationPriority = indicatorToAlert.get(indicator);
-                if (classificationPriority !=null && classificationPriority.getPriority() < priority) {
+                if (classificationPriority != null && classificationPriority.getPriority() < priority) {
                     priority = classificationPriority.getPriority();
                     alertName = classificationPriority.getName();
                     remove = place;
@@ -69,7 +64,7 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
                 place++;
             }
             indicators.remove(remove);
-            if(StringUtils.isNotEmpty(alertName))
+            if (StringUtils.isNotEmpty(alertName))
                 tempClassificationByPriority.add(alertName);
         }
         classificationByPriority.addAll(tempClassificationByPriority);

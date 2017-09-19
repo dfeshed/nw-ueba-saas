@@ -2,14 +2,14 @@ package fortscale.utils.airflow.service;
 
 import fortscale.utils.airflow.message.AirflowDagExecutionDatesApiResponse;
 import fortscale.utils.airflow.message.DagState;
-import fortscale.utils.airflow.message.DagToExecutionDates;
 import org.json.JSONObject;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.springframework.util.Assert;
 /**
  * @see AirflowApiClient
  * Created by barak_schuster on 9/13/17.
@@ -83,7 +83,7 @@ public class AirflowApiClientImpl implements AirflowApiClient {
     }
 
     @Override
-    public Map<String, List<Instant>> getDagExecutionDatesByState(String dagId, DagState state) {
+    public Map<String, DagExecutionStatus> getDagExecutionDatesByState(String dagId, DagState state) {
         Assert.notNull(state,"state must be not empty");
         Map<String, String> urlVariables = new HashMap<>();
         urlVariables.put(API_URL_VARIABLE, DAG_EXECUTION_DATES_FOR_STATE_API_NAME);
@@ -99,6 +99,11 @@ public class AirflowApiClientImpl implements AirflowApiClient {
         String url = urlBuilder.toString();
         AirflowDagExecutionDatesApiResponse response = restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
 
-        return response.getOutput().stream().collect(Collectors.toMap(DagToExecutionDates::getDagId, DagToExecutionDates::getExecutionDates));
+        Map<String, DagExecutionStatus> result =
+                response.getOutput().stream()
+                        .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
+                        .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
+
+        return result;
     }
 }

@@ -40,6 +40,8 @@ public class FotscaleManagerWebappTest {
         public TestPropertiesPlaceholderConfigurer modelConfServiceTestPropertiesPlaceholderConfigurer() {
             Properties properties = new Properties();
             properties.put("keytab.file.path", "/path/file.postfix");
+            properties.put("manager.dags.dag_id.fullFlow.prefix","full_flow");
+            properties.put("manager.dags.state.buildingBaselineDuration","P30D");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

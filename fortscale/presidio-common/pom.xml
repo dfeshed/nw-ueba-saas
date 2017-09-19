@@ -10,7 +10,6 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>fortscale</groupId>
     <artifactId>presidio-common</artifactId>
 
 
@@ -106,6 +105,10 @@
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>fortscale-global-config</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
         </dependency>
 
 
