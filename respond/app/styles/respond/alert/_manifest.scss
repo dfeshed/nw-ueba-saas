@@ -33,6 +33,14 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
 
   .rsa-data-table-body-cell {
     padding: 0;
+
+    .rsa-form-checkbox-label {
+      &::before {
+        position: relative;
+        right: 0;
+        margin-right: rsa-whitespace(least);
+      }
+    }
   }
 
   .rsa-form-checkbox-label:hover {

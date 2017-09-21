@@ -3,7 +3,7 @@ export default [
   {
     title: 'respond.alerts.list.select',
     class: 'rsa-form-row-checkbox',
-    width: '30px',
+    width: '40px',
     dataType: 'checkbox',
     componentClass: 'rsa-form-checkbox',
     disableSort: true

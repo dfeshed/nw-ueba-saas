@@ -5,10 +5,27 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   @include rsa-col(justify,fill);
   overflow: hidden; /* Hides header cells that spill outside viewport */
 
+  .rsa-form-checkbox-label {
+    letter-spacing: 0;
+
+    &::before {
+      position: absolute;
+      right: 12px;
+      margin-right: 0;
+    }
+  }
+
   &-header {
     @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
     @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
     background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
+
+    .rsa-form-checkbox-label {
+      &::before {
+        position: absolute;
+        right: 11px;
+      }
+    }
 
     &__column-selector {
       position: absolute;
@@ -166,6 +183,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-body-cell,
   &-header-cell {
+    position: relative;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;

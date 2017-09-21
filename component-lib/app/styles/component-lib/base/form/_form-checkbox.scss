@@ -1,22 +1,16 @@
 .rsa-form-checkbox-label {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
   overflow: hidden;
   color: $formCheckboxLabelColor;
 
   .rsa-form-checkbox {
-    align-self: flex-start;
     visibility: hidden;
     position: absolute;
   }
 
   &::before {
+    @include rsa-font(body);
     font-family: 'nw-icon-library-all-1';
     content: $rsa-icon-check-box-unchecked-1-filled;
-    position: relative;
-    top: -1px;
-    text-indent: 1px;
     margin-right: rsa-whitespace(least);
   }
 

@@ -34,7 +34,7 @@
 
       &:first-child { // checkbox cell
         padding: 0 0 0 rsa-whitespace(less);
-        min-width: 30px;
+        min-width: 40px;
         .rsa-form-checkbox-label {
           font-size: 0.85rem;
         }
@@ -66,7 +66,7 @@
   }
 
   .rsa-data-table-body-cell {
-    min-width: 30px;
+    min-width: 40px;
     position: relative;
 
     &:first-child { // checkbox cell should never show ellipsis
