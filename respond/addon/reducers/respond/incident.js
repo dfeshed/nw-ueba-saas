@@ -5,6 +5,7 @@ import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
 import fixNormalizedEvents from './util/events';
 import { toggle } from 'respond/utils/immut/array';
+import { isEmberArray } from 'ember-array/utils';
 import { _extractEntityIdsAndUpdates } from '../../reducers/respond/util/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::respond::incident';
@@ -299,7 +300,14 @@ const incident = reduxActions.handleActions({
       start: (s) => s,
       failure: (s) => s,
       success: (s) => {
-        const removedItemIds = action.payload.data;
+        const { payload } = action;
+        let removedItemIds = [];
+        // If the payload is an array, we had multiple promises (deletion requests) being settled, each of which has its own payload/resolved value
+        if (isEmberArray(payload)) {
+          removedItemIds = payload.reduce((removed, { value: { data } }) => removed.concat(data), []);
+        } else { // a single promise (deletion request) resolved
+          removedItemIds = payload.data;
+        }
         // Filter out newly deleted items from the main items array
         const updatedItems = state.tasks.filter((item) => (!removedItemIds.includes(item.id)));
         return s.set('tasks', updatedItems);
