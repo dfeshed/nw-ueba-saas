@@ -121,6 +121,9 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             if (userQuery.getAggregateByFields().contains(User.TAGS_FIELD_NAME)) {
                 super.addAggregation(AggregationBuilders.terms(User.TAGS_FIELD_NAME).field(User.TAGS_FIELD_NAME));
             }
+            if (userQuery.getAggregateByFields().contains(User.ALERT_CLASSIFICATIONS_FIELD_NAME)) {
+                super.addAggregation(AggregationBuilders.terms(User.ALERT_CLASSIFICATIONS_FIELD_NAME).field(User.ALERT_CLASSIFICATIONS_FIELD_NAME));
+            }
         }
     }
 }

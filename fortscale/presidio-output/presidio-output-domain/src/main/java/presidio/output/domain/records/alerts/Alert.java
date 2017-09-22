@@ -72,7 +72,7 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(INDICATOR_NAMES)
     private List<String> indicatorsNames;
 

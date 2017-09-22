@@ -12,8 +12,8 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 import presidio.output.processor.services.user.UserScoreService;
 
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
