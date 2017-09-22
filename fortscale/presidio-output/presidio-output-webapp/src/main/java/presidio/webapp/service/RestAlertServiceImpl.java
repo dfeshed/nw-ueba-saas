@@ -9,13 +9,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.*;
 import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.*;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
