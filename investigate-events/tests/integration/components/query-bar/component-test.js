@@ -40,7 +40,7 @@ test('it does not invoke the onSubmit callback when missing required input', fun
   assert.expect(0);
   new DataHelper(this.get('redux'))
     .initializeData()
-    .setEndpointId(null);
+    .setserviceId(null);
   this.set('myCallback', function() {
     assert.ok(true, 'onSubmit was invoked');
   });
@@ -63,7 +63,7 @@ test('it disables(CSS) the submit button if required inputs are not selected', f
   assert.expect(1);
   new DataHelper(this.get('redux'))
     .initializeData()
-    .setEndpointId(null);
+    .setserviceId(null);
   this.set('selectedService', null);
   this.set('selectedTimeRange', null);
   this.render(hbs`{{query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange}}`);

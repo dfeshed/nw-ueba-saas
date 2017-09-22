@@ -1,10 +1,7 @@
 import Route from 'ember-route';
 import service from 'ember-service/inject';
 
-import {
-  initializeDictionaries,
-  initializeServices
-} from 'investigate-events/actions/data-creators';
+import { initializeServices } from 'investigate-events/actions/data-creators';
 
 export default Route.extend({
   accessControl: service(),
@@ -47,9 +44,6 @@ export default Route.extend({
       // render the last query's results before fetching the new query's
       // results.
       // this.sendAction('navGoto', null);
-
-      // Get `language` and `aliases` now that we know what service we're using
-      this.get('redux').dispatch(initializeDictionaries());
 
       // Navigate to results UI.
       this.transitionTo('query', [

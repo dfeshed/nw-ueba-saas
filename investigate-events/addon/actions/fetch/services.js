@@ -5,4 +5,4 @@ import { findAllPromiseRequest } from '../util/query-util';
  * @return {object} RSVP Promise
  * @public
  */
-export const fetchServices = () => findAllPromiseRequest('core-service', {});
+export const fetchServices = () => findAllPromiseRequest('core-service');

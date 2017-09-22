@@ -4,13 +4,13 @@ import { promiseRequest } from 'streaming-data/services/data-access/requests';
 const _addFilter = (field, value, filters) => filters.concat({ field, value });
 
 /**
- * Creates an endpointId filter
- * @param {string|number} value The Id of the endpoint
+ * Creates an serviceId filter
+ * @param {string|number} value The Id of the service
  * @param {object[]} filters List of filters to augment
  * @return {object[]} New list of filters
  * @public
  */
-export const endpointIdFilter = (value, filters) => _addFilter('endpointId', value, filters);
+export const serviceIdFilter = (value, filters) => _addFilter('endpointId', value, filters);
 
 /**
  * Creates a sessionId filter
@@ -23,14 +23,13 @@ export const sessionIdFilter = (value, filters) => _addFilter('sessionId', value
 
 /**
  * Creates a Promise request with its "method" set to `findAll`,
- * @param {number} endpointId EndpointId
- * @param {number} eventId EventId
  * @param {string} modelName Name of model
+ * @param {object} query Optional query params for request
  * @param {object} streamOptions Optional stream params
  * @return {object} An RSVP Promise
  * @public
  */
-export const findAllPromiseRequest = (modelName, query, streamOptions = {}) => {
+export const findAllPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
   return promiseRequest({
     method: 'findAll',
     modelName,
@@ -41,14 +40,13 @@ export const findAllPromiseRequest = (modelName, query, streamOptions = {}) => {
 
 /**
  * Creates a Promise request with its "method" set to `query`,
- * @param {number} endpointId EndpointId
- * @param {number} eventId EventId
  * @param {string} modelName Name of model
+ * @param {object} query Optional query params for request
  * @param {object} streamOptions Optional stream params
  * @return {object} An RSVP Promise
  * @public
  */
-export const queryPromiseRequest = (modelName, query, streamOptions = {}) => {
+export const queryPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
   return promiseRequest({
     method: 'query',
     modelName,

@@ -15,18 +15,18 @@ export default Mixin.create({
   actions: {
     /**
      * Updates state in order to reveal the Recon UI and feed it a server event record.
-     * @param {string} endpointId The Core service ID from which the event came from.
+     * @param {string} serviceId The Core service ID from which the event came from.
      * @param {string} eventId The ID of the Core event object to be reconstructed in the Recon UI.
      * @param {meta[]} metas The array of metas for the event
      * @param {number} index The index of the item relative to the entire result set.
      * @public
      */
-    reconOpen(endpointId, eventId, metas, index) {
+    reconOpen(serviceId, eventId, metas, index) {
       const total = this.get('state.queryNode.value.results.eventCount.data');
 
       this.get('state.recon').setProperties({
         isOpen: true,
-        endpointId,
+        serviceId,
         eventId,
         metaPanelSizeWas: this.get('state.meta.panelSize'),
         metas,
@@ -52,7 +52,7 @@ export default Mixin.create({
       }
       this.get('state.recon').setProperties({
         isOpen: false,
-        endpointId: undefined,
+        serviceId: undefined,
         eventId: undefined,
         metas: undefined
       });

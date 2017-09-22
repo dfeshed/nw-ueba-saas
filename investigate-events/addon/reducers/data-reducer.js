@@ -4,17 +4,17 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _dataInitialState = Immutable.from({
-  endpointId: null
+  serviceId: null
 });
 
 const data = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
-    const { data: { endpointId } } = payload;
-    return _dataInitialState.set('endpointId', endpointId);
+    const { data: { serviceId } } = payload;
+    return _dataInitialState.set('serviceId', serviceId);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
-    return state.set('endpointId', payload);
+    return state.set('serviceId', payload);
   }
 }, _dataInitialState);
 

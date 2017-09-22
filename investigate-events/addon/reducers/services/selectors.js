@@ -7,15 +7,15 @@ const { createSelector } = reselect;
 // These functions are passed within the first Array argument to
 // `createSelector()`
 const _services = (state) => state.services.data;
-const _endpointId = (state) => state.data.endpointId;
+const _serviceId = (state) => state.data.serviceId;
 
 // SELECTOR FUNCTIONS
 export const selectedService = createSelector(
-  [_services, _endpointId],
-  (services, endpointId) => {
+  [_services, _serviceId],
+  (services, serviceId) => {
     let ret = null;
     if (services && Array.isArray(services)) {
-      ret = services.find((e) => e.id === endpointId);
+      ret = services.find((e) => e.id === serviceId);
     }
     return ret;
   }

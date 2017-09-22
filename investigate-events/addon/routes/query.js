@@ -2,7 +2,10 @@ import Route from 'ember-route';
 import run from 'ember-runloop';
 import service from 'ember-service/inject';
 
-import { initializeServices } from 'investigate-events/actions/data-creators';
+import {
+  initializeDictionaries,
+  initializeServices
+} from 'investigate-events/actions/data-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 import { serviceSelected } from 'investigate-events/actions/interaction-creators';
 
@@ -63,6 +66,7 @@ export default Route.extend({
    */
   model(params) {
     const state = this.modelFor('application');
+    // Parse and save URL query params
     const filterAttrs = parseEventQueryUri(params.filter);
     this.set('filterAttrs', filterAttrs);
 
@@ -83,25 +87,41 @@ export default Route.extend({
       // Apply the route URL queryParams to Redux state
       if (serviceId) {
         this.get('redux').dispatch(serviceSelected(serviceId));
+        // Get `language` and `aliases` now that we know what service we're using
+        this.get('redux').dispatch(initializeDictionaries());
       }
 
       // Apply the route URL queryParams to the state model.
       this.send('metaPanelSizeReceived', metaPanelSize);
       this.send('reconSizeReceived', reconSize);
-      this.send('navFindOrAdd', filterAttrs);
       if (serviceId && eventId && eventId !== -1) {
         this.send('reconOpen', serviceId, eventId);
       }
+      // TEMP HACK - We can't continue down our execution path until we get
+      // `aliases` and `language`, so check if they are present before
+      // continuing.
+      setTimeout(this._checkForDictionaries.bind(this), 50);
     });
     return state;
+  },
+
+  // TEMP HACK - After fully converted to Redux, we will remove this.
+  _checkForDictionaries() {
+    const { redux, filterAttrs } = this.getProperties('redux', 'filterAttrs');
+    const { aliases, language } = redux.getState().dictionaries;
+    if (aliases && language) {
+      this.send('navFindOrAdd', filterAttrs);
+    } else {
+      setTimeout(this._checkForDictionaries.bind(this), 50);
+    }
   },
 
   actions: {
     selectEvent(item, index) {
       const state = this.modelFor('application');
-      const endpointId = state.get('queryNode.value.definition.serviceId');
+      const serviceId = state.get('queryNode.value.definition.serviceId');
       const { metas, sessionId } = item;
-      this.send('reconOpen', endpointId, sessionId, metas, index);
+      this.send('reconOpen', serviceId, sessionId, metas, index);
     },
 
     submitQuery(query) {

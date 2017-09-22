@@ -3,7 +3,7 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const DEFAULT_DATA = {
   data: {
-    endpointId: 'id1'
+    serviceId: 'id1'
   },
   services: {
     data: [
@@ -32,7 +32,7 @@ export default class DataHelper {
     return this;
   }
 
-  setEndpointId(id = 'id1') {
+  setserviceId(id = 'id1') {
     this.dispatch(ACTION_TYPES.SERVICE_SELECTED, id);
     return this;
   }

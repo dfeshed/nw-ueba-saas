@@ -88,7 +88,7 @@ function makeServerInputsForQuery(query, language) {
     filter: [
       { field: 'endpointId', value: serviceId },
       { field: 'timeRange', range: { from: startTime, to: endTime } },
-      { field: 'query', value: nwEncodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
+      { field: 'query', value: _nwEncodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
     ]
   };
 }
@@ -214,28 +214,28 @@ function executeMetaValuesRequest(request, inputs, values) {
 /**
  * Given a Core service ID, computes the input parameters required to submit that request info about that service.
  * For example, a list of meta keys, a hashtable of meta value aliases, etc.
- * @param {string|number} endpointId The ID of the Core service whose info is to be queried.
+ * @param {string|number} serviceId The ID of the Core service whose info is to be queried.
  * @public
  */
-function makeServerInputsForEndpointInfo(endpointId) {
+function makeServerInputsForServiceInfo(serviceId) {
   assert(
     'Cannot make a core query without a service id.',
-    !isBlank(endpointId)
+    !isBlank(serviceId)
   );
 
   return {
     filter: [
-      { field: 'endpointId', value: endpointId }
+      { field: 'endpointId', value: serviceId }
     ]
   };
 }
 
-function buildEventLogStreamInputs(endpointId, eventIds = []) {
+function buildEventLogStreamInputs(serviceId, eventIds = []) {
   assert(
     'Cannot make a core log query without an event id.',
     eventIds.length
   );
-  const inputs = makeServerInputsForEndpointInfo(endpointId);
+  const inputs = makeServerInputsForServiceInfo(serviceId);
   inputs.filter.pushObject({ field: 'sessionIds', values: eventIds });
   return inputs;
 }
@@ -391,15 +391,17 @@ function uriEncodeMetaFilterConditions(conditions = []) {
  * @returns {string}
  * @public
  */
-function nwEncodeMetaFilterConditions(conditions = [], language) {
+function _nwEncodeMetaFilterConditions(conditions = []/* , language */) {
   return conditions
     .map((condition) => {
-      const { queryString, isKeyValuePair, key, value } = condition;
+      const { queryString, isKeyValuePair/* , key, value */ } = condition;
       if (isKeyValuePair) {
-        const keyDefinition = language.findBy('metaName', key);
-        const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
-        const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
-        return `${key}=${valueEncoded}`;
+        // GTB need language to do this
+        // const keyDefinition = language.findBy('metaName', key);
+        // const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
+        // const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
+        // return `${key}=${valueEncoded}`;
+        return 'a=b';
       } else {
         return queryString;
       }
@@ -414,10 +416,9 @@ export {
   executeEventsRequest,
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
-  makeServerInputsForEndpointInfo,
+  makeServerInputsForServiceInfo,
   parseEventQueryUri,
   uriEncodeEventQuery,
-  nwEncodeMetaFilterConditions,
   buildEventLogStreamInputs,
   executeLogDataRequest
 };

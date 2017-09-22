@@ -5,6 +5,9 @@
  * @public
  */
 import Ember from 'ember';
+import service from 'ember-service/inject';
+
+import { defaultMetaGroup } from 'investigate-events/reducers/dictionaries/selectors';
 import MetaKeyState from 'investigate-events/state/meta-key';
 import {
   buildMetaValueStreamInputs,
@@ -25,27 +28,28 @@ const STREAM_BATCH = 19;
 const MAX_JOBS_QUEUE_SIZE = 2;
 
 export default Mixin.create({
+  redux: service(),
+
   actions: {
     metaGet(queryNode, forceReload = false) {
       if (!queryNode) {
         return;
       }
-
+      const state = this.get('redux').getState();
+      const { language } = state.dictionaries;
       // Ensure we have one state object per each possible meta key's request for values.
       const metaKeyStates = queryNode.get('value.results.metaKeyStates');
       if (!metaKeyStates.length) {
-        const states = queryNode.get('value.language.data').map((info) => {
-          return MetaKeyState.create({
-            info
-          });
-        });
+        const states = language.map((info) => MetaKeyState.create({ info }));
         metaKeyStates.pushObjects(states);
       }
+
+      const group = defaultMetaGroup(state);
 
       // Kick off the fetching of meta values for the currently selected meta group.
       this.send(
         'metaGroupValuesGet',
-        queryNode.get('value.language.defaultMetaGroup'),
+        group,
         queryNode,
         metaKeyStates,
         forceReload

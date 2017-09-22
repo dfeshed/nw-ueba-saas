@@ -2,35 +2,52 @@ import * as ACTION_TYPES from './types';
 import { fetchServices } from './fetch/services';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 
+/**
+ * Initializes the dictionaries (language and aliases). If we've already
+ * retrieved the dictionaries for a specific service, we reuse that data.
+ * @public
+ */
 export const initializeDictionaries = () => {
   return (dispatch, getState) => {
-    const { data, dictionaries } = getState();
-    if (!dictionaries.language) {
+    const {
+      data: { serviceId },
+      dictionaries: { aliasesCache, languageCache }
+    } = getState();
+    if (!languageCache[serviceId]) {
       dispatch({
         type: ACTION_TYPES.LANGUAGE_RETRIEVE,
-        promise: fetchLanguage(data.endpointId),
+        promise: fetchLanguage(serviceId),
         meta: {
           onFailure(response) {
             window.console.warn('Could not retrieve language', response);
           }
         }
       });
+    } else {
+      dispatch({ type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE, payload: serviceId });
     }
 
-    if (!dictionaries.aliases) {
+    if (!aliasesCache[serviceId]) {
       dispatch({
         type: ACTION_TYPES.ALIASES_RETRIEVE,
-        promise: fetchAliases(data.endpointId),
+        promise: fetchAliases(serviceId),
         meta: {
           onFailure(response) {
             window.console.warn('Could not retrieve aliases', response);
           }
         }
       });
+    } else {
+      dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
     }
   };
 };
 
+/**
+ * Initializes the list of services (aka endpoints). This list shouldn't really
+ * change much, so we only retrieve it once.
+ * @public
+ */
 export const initializeServices = () => {
   return (dispatch, getState) => {
     const { services } = getState();

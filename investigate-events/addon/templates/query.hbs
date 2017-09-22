@@ -62,9 +62,9 @@
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">
-      {{#if (and model.recon.endpointId model.recon.eventId)}}
+      {{#if (and model.recon.serviceId model.recon.eventId)}}
         {{recon-container
-          endpointId=model.recon.endpointId
+          serviceId=model.recon.serviceId
           eventId=model.recon.eventId
           meta=model.recon.metas
           index=model.recon.index

@@ -7,7 +7,7 @@ import $ from 'jquery';
 import { serviceSelected } from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = ({ data, services }) => ({
-  endpointId: data.endpointId,
+  serviceId: data.serviceId,
   services: services.data
 });
 
@@ -65,8 +65,8 @@ const QueryBarComponent = Component.extend({
   selectedTimeRange: undefined,
 
   // Resolves to `true` only if all the required user inputs/selections have been made.
-  @computed('endpointId', 'selectedTimeRange')
-  submitDisabled: (endpointId, timeRange) => !(endpointId && timeRange),
+  @computed('serviceId', 'selectedTimeRange')
+  submitDisabled: (serviceId, timeRange) => !(serviceId && timeRange),
 
   actions: {
     // Kicks off a query by invoking the configurable `onSubmit` callback.
@@ -80,7 +80,7 @@ const QueryBarComponent = Component.extend({
           $.isFunction(fn),
           'Invalid onSubmit action defined for rsa-query-bar. Action aborted.'
         );
-        const serviceId = this.get('endpointId');
+        const serviceId = this.get('serviceId');
         const timeRangeId = this.get('selectedTimeRange.id');
         const timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
         const seconds = get(timeRange, 'seconds');
@@ -105,7 +105,7 @@ const QueryBarComponent = Component.extend({
     updateService(selectedService) {
       // Store off the service object for use internally to this component
       this.set('selectedService', selectedService);
-      // Save the id of the endpoint to state
+      // Save the id of the service to state
       this.send('serviceSelected', selectedService.id);
     },
 

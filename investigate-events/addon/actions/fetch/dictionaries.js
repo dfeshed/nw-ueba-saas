@@ -1,14 +1,14 @@
-import { queryPromiseRequest, endpointIdFilter } from '../util/query-util';
+import { queryPromiseRequest, serviceIdFilter } from '../util/query-util';
 
 /**
- * Fetch the language for a given endpoint.
- * @param {string|number} endpointId Id of the endpoint
+ * Fetch the language for a given service.
+ * @param {string|number} serviceId Id of the service
  * @return {object} RSVP Promise
  * @public
  */
-const fetchLanguage = (endpointId) => {
+const fetchLanguage = (serviceId) => {
   const query = {
-    filter: endpointIdFilter(endpointId, [])
+    filter: serviceIdFilter(serviceId, [])
   };
   return queryPromiseRequest(
     'core-meta-key',
@@ -18,14 +18,14 @@ const fetchLanguage = (endpointId) => {
 };
 
 /**
- * Fetch the aliases for a given endpoint.
- * @param {string|number} endpointId Id of the endpoint
+ * Fetch the aliases for a given service.
+ * @param {string|number} serviceId Id of the service
  * @return {object} RSVP Promise
  * @public
  */
-const fetchAliases = (endpointId) => {
+const fetchAliases = (serviceId) => {
   const query = {
-    filter: endpointIdFilter(endpointId, [])
+    filter: serviceIdFilter(serviceId, [])
   };
   return queryPromiseRequest(
     'core-meta-alias',

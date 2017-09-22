@@ -1,9 +1,9 @@
 import * as ACTION_TYPES from './types';
 
-const serviceSelected = (endpointId) => {
+const serviceSelected = (serviceId) => {
   return {
     type: ACTION_TYPES.SERVICE_SELECTED,
-    payload: endpointId
+    payload: serviceId
   };
 };
 
