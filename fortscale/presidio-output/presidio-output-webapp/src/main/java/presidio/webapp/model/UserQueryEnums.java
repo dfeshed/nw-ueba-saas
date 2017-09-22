@@ -2,13 +2,12 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import presidio.output.domain.records.users.*;
 import presidio.output.domain.records.users.User;
 
 public class UserQueryEnums {
 
     public enum UserQuerySortFieldName {
-        SCORE("score");
+        SCORE(User.SCORE_FIELD_NAME);
 
         private String value;
 
@@ -34,7 +33,7 @@ public class UserQueryEnums {
     }
 
     public enum UserQueryAggregationFieldName {
-        SEVERITY("severity"), TAGS("tags"), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
+        SEVERITY(User.SEVERITY_FIELD_NAME), TAGS(User.TAGS_FIELD_NAME), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
         private String value;
 
         UserQueryAggregationFieldName(String value) {

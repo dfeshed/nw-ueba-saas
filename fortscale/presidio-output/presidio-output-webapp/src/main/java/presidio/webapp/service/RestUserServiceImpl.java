@@ -91,7 +91,11 @@ public class RestUserServiceImpl implements RestUserService {
                 usersWrapper.setPage(pageNumber);
             }
             if (MapUtils.isNotEmpty(userAggregationsMap)) {
-                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(userAggregationsMap);
+                Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
+                userAggregationsMap.keySet().forEach(aggregationName -> {
+                    aggregationNamesEnumMapping.put(aggregationName, UserQueryEnums.UserQueryAggregationFieldName.fromValue(aggregationName).name());
+                });
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(userAggregationsMap, aggregationNamesEnumMapping);
                 usersWrapper.setAggregationData(aggregations);
             }
         } else {

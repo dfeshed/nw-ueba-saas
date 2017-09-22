@@ -2,12 +2,11 @@ package presidio.webapp.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.Alert;
 
 public class AlertQueryEnums {
     public enum AlertQuerySortFieldName {
-        SCORE("score"), START_DATE("startDate"), END_DATE("endDate"), INDICATORS_NUM("indicatorsNum");
+        SCORE(Alert.SCORE), START_DATE(Alert.START_DATE), END_DATE(Alert.END_DATE);
 
         private String value;
 
@@ -33,7 +32,7 @@ public class AlertQueryEnums {
     }
 
     public enum AlertQueryAggregationFieldName {
-        SEVERITY("severity"), CLASSIFICATIONS("classifications"), SEVERITY_DAILY("severityPerDay"), INDICATOR_NAMES(Alert.INDICATOR_NAMES);
+        SEVERITY(Alert.SEVERITY), CLASSIFICATIONS(Alert.CLASSIFICATIONS), SEVERITY_DAILY(Alert.AGGR_SEVERITY_PER_DAY), INDICATOR_NAMES(Alert.INDICATOR_NAMES);
         private String value;
 
         AlertQueryAggregationFieldName(String value) {
