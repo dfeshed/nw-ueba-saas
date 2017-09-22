@@ -5,8 +5,10 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTimeZone;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -66,9 +68,9 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(rangeQuery(Alert.START_DATE).gte(alertQuery.getFilterByStartDate()));
         }
 
-        // filter by end date
+        // filter by end date (meaning that the alert start date is less than the specified query filter
         if (alertQuery.getFilterByEndDate() > 0) {
-            boolQueryBuilder.must(rangeQuery(Alert.END_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
+            boolQueryBuilder.must(rangeQuery(Alert.START_DATE).to(alertQuery.getFilterByEndDate()).includeUpper(true));
         }
 
         // filter by tags
@@ -125,6 +127,12 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             }
             if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
+            }
+
+            if (alertQuery.getAggregateByFields().contains(Alert.AGGR_SEVERITY_PER_DAY)) {
+                super.addAggregation(AggregationBuilders.dateHistogram(Alert.AGGR_SEVERITY_PER_DAY).field(Alert.START_DATE)
+                        .dateHistogramInterval(DateHistogramInterval.DAY)
+                        .subAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY)));
             }
         }
     }

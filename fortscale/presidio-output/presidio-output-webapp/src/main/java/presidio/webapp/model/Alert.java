@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

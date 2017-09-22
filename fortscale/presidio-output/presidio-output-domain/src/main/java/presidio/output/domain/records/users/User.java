@@ -63,7 +63,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(SEVERITY_FIELD_NAME)
     private UserSeverity severity;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(TAGS_FIELD_NAME)
     private List<String> tags;
 

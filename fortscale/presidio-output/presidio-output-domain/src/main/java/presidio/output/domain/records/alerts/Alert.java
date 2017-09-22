@@ -2,14 +2,12 @@ package presidio.output.domain.records.alerts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.*;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE , type = Alert.ALERT_TYPE)
@@ -30,6 +28,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String USER_ID = "userId";
     public static final String SMART_ID = "smartId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
+    public static final String AGGR_SEVERITY_PER_DAY = "severityPerDay";
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(CLASSIFICATIONS)
@@ -47,13 +46,13 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(USER_ID)
     private String userId;
 
-    @Field(type = FieldType.Long, store = true)
+    @Field(type = FieldType.Date, store = true)
     @JsonProperty(START_DATE)
-    private long startDate;
+    private Date startDate;
 
-    @Field(type = FieldType.Long, store = true)
+    @Field(type = FieldType.Date, store = true)
     @JsonProperty(END_DATE)
-    private long endDate;
+    private Date endDate;
 
     @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE)
@@ -87,7 +86,7 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, String smartId, List<String> classifications, String userName, long startDate, long endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
+    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
         super();
         this.classifications = classifications;
         this.userId = userId;
@@ -134,19 +133,19 @@ public class Alert extends AbstractElasticDocument {
         this.userName = userName;
     }
 
-    public long getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(long startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public long getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(long endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 

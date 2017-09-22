@@ -12,7 +12,7 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 import presidio.output.processor.services.user.UserScoreService;
 
-import java.time.temporal.ChronoField;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,8 +50,8 @@ public class AlertServiceImpl implements AlertService {
         if (score < smartThresholdScoreForCreatingAlert) {
             return null;
         }
-        long startDate = smart.getStartInstant().getLong(ChronoField.INSTANT_SECONDS);
-        long endDate = smart.getEndInstant().getLong(ChronoField.INSTANT_SECONDS);
+        java.util.Date startDate = Date.from(smart.getStartInstant());
+        java.util.Date endDate = Date.from(smart.getEndInstant());
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStratgyfromSmart(smart), severity, user.getTags());
 
