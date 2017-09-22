@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RestUtils {
-    public static Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> aggregations) {
+    public static Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> aggregations, Map<String, String> aggregationNamesEnumMapping) {
         Map<String, Map<String, Long>> aggregationsMap = new HashMap<>();
         aggregations.forEach((s, aggregation) -> {
             List<Terms.Bucket> buckets = ((InternalTerms) aggregation).getBuckets();
@@ -17,7 +17,12 @@ public class RestUtils {
             buckets.forEach(bucket -> {
                 bucketAsMap.put(bucket.getKeyAsString(), bucket.getDocCount());
             });
-            aggregationsMap.put(s, bucketAsMap);
+            // getting the aggregation name
+            String aggregationName = s;
+            if (aggregationNamesEnumMapping.get(s) != null) {
+                aggregationName = aggregationNamesEnumMapping.get(s);
+            }
+            aggregationsMap.put(aggregationName, bucketAsMap);
         });
         return aggregationsMap;
     }

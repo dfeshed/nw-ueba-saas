@@ -100,7 +100,11 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
-                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
+                Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
+                alertAggregations.keySet().forEach(aggregationName -> {
+                    aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name());
+                });
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations, aggregationNamesEnumMapping);
                 alertsWrapper.setAggregationData(aggregations);
             }
         } else {
