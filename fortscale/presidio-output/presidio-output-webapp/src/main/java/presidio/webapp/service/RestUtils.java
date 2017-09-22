@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RestUtils {
-    public static Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> aggregations) {
+    public static Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> aggregations, Map<String, String> aggregationNamesEnumMapping) {
         Map<String, Map<String, Long>> aggregationsMap = new HashMap<>();
         aggregations.forEach((s, aggregation) -> {
             Map<String, Long> bucketAsMap = new HashMap<>();
@@ -39,7 +39,12 @@ public class RestUtils {
                     );
                 });
             }
-            aggregationsMap.put(s, bucketAsMap);
+
+            String aggregationName = s;
+            if (aggregationNamesEnumMapping.get(s) != null) {
+                aggregationName = aggregationNamesEnumMapping.get(s);
+            }
+            aggregationsMap.put(aggregationName, bucketAsMap);
         });
         return aggregationsMap;
     }

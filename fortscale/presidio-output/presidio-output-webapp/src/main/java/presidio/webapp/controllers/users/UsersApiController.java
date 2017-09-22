@@ -28,7 +28,7 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<AlertsWrapper> getAlertsByUser(String userId, presidio.webapp.model.UserAlertsQuery userAlertsQuery) {
+    public ResponseEntity<AlertsWrapper> getAlertsByUser(@PathVariable String userId, presidio.webapp.model.UserAlertsQuery userAlertsQuery) {
         try {
             AlertsWrapper alertsWrapper = restUserService.getAlertsByUserId(userId);
             HttpStatus httpStatus = alertsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST;

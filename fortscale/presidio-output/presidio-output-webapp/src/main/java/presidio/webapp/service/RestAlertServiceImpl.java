@@ -9,9 +9,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.webapp.model.*;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.*;
@@ -40,16 +41,16 @@ public class RestAlertServiceImpl implements RestAlertService {
         presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
             resultAlert = createRestAlert(alertData);
-        }
-        if (expand) {
-            List<Indicator> restIndicators = new ArrayList<Indicator>();
-            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
-            for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
-                // workaround - projection doesn't work
-                indicator.setHistoricalData(null);
-                restIndicators.add(createRestIndicator(indicator));
+            if (expand) {
+                List<Indicator> restIndicators = new ArrayList<Indicator>();
+                Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
+                for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                    // workaround - projection doesn't work
+                    indicator.setHistoricalData(null);
+                    restIndicators.add(createRestIndicator(indicator));
+                }
+                resultAlert.setIndicators(restIndicators);
             }
-            resultAlert.setIndicators(restIndicators);
         }
         return resultAlert;
     }
@@ -101,7 +102,11 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
-                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
+                Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
+                alertAggregations.keySet().forEach(aggregationName -> {
+                    aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name());
+                });
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations, aggregationNamesEnumMapping);
                 alertsWrapper.setAggregationData(aggregations);
             }
         } else {
