@@ -23,8 +23,8 @@ import java.util.Map;
 @CompoundIndexes({
 		@CompoundIndex(name = "start", def = "{'startInstant': 1}"),
 		@CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true),
-		@CompoundIndex(name = "ctxScrStart", def = "{'contextId': 1, 'smartScore': 1, 'startInstant': 1}"),
-		@CompoundIndex(name = "scrStart", def = "{'smartScore': 1, 'startInstant': 1}")
+		@CompoundIndex(name = "ctxStartScr", def = "{'contextId': 1, 'startInstant': 1, 'smartScore': 1}"),
+		@CompoundIndex(name = "startScr", def = "{'startInstant': 1, 'smartScore': 1}")
 })
 @DynamicIndexing(includeCompoundIndexDefinitionsOfProperties = false)
 public class SmartRecord extends AdeContextualAggregatedRecord implements AdeScoredRecord {

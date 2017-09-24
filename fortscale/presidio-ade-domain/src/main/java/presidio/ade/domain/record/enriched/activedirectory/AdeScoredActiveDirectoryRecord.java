@@ -16,8 +16,8 @@ import java.util.List;
 @AdeScoredEnrichedMetadata(erichedRecord = EnrichedActiveDirectoryRecord.class)
 @CompoundIndexes({
         @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-        @CompoundIndex(name = "scrStart", def = "{'score': 1, 'startInstant': 1}"),
-        @CompoundIndex(name = "idScr", def = "{'context.eventId': 1, 'score': 1}")
+        @CompoundIndex(name = "startScr", def = "{'startInstant': 1, 'score': 1}"),
+        @CompoundIndex(name = "eventId", def = "{'context.eventId': 1}")
 })
 public class AdeScoredActiveDirectoryRecord extends AdeScoredEnrichedRecord<AdeEnrichedActiveDirectoryContext> {
 
