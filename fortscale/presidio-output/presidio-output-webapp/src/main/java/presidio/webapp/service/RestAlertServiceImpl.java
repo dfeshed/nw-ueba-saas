@@ -14,6 +14,7 @@ import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.*;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
@@ -100,7 +101,11 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
-                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
+                Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
+                alertAggregations.keySet().forEach(aggregationName -> {
+                    aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name());
+                });
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations, aggregationNamesEnumMapping);
                 alertsWrapper.setAggregationData(aggregations);
             }
         } else {
@@ -322,8 +327,8 @@ public class RestAlertServiceImpl implements RestAlertService {
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
-        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
-        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate()));
+        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
+        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
