@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
+import presidio.monitoring.spring.MonitoringConfiguration;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -19,7 +20,7 @@ import presidio.output.processor.services.user.UserService;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, UserServiceConfig.class})
+@Import({MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, UserServiceConfig.class, MonitoringConfiguration.class})
 public class OutputProcessorConfiguration {
 
     @Autowired

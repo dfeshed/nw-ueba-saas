@@ -3,7 +3,7 @@ package presidio.monitoring.aspect.services;
 import fortscale.utils.logging.Logger;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 
-
+import java.util.HashSet;
 import java.util.Set;
 
 public class MetricCollectingServiceImpl implements MetricCollectingService {
@@ -11,11 +11,20 @@ public class MetricCollectingServiceImpl implements MetricCollectingService {
     private static final Logger logger = Logger.getLogger(MetricCollectingServiceImpl.class);
 
 
-    public MetricCollectingServiceImpl(){}
+    public MetricCollectingServiceImpl() {
+    }
 
     @Override
-    public void addMetric(String metricName, long metricValue, Set tags, String unit) {
-        logger.debug("Adding metric name {} , value {} , tags {} , unit {}",metricName,metricValue,tags,unit);
-        PresidioCustomMetrics.addInMethodMetric(metricName,metricValue,tags,unit);
+    public void addMetricWithTags(String metricName, long metricValue, Set tags, String unit) {
+        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", metricName, metricValue, tags, unit);
+        PresidioCustomMetrics.addInMethodMetric(metricName, metricValue, tags, unit);
+    }
+
+    @Override
+    public void addMetricWithOneTag(String metricName, long metricValue, String tag, String unit) {
+        logger.debug("Adding metric name {} , value {} , tag {} , unit {}", metricName, metricValue, tag, unit);
+        Set tags = new HashSet();
+        tags.add(tag);
+        PresidioCustomMetrics.addInMethodMetric(metricName, metricValue, tags, unit);
     }
 }

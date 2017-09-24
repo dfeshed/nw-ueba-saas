@@ -5,6 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import presidio.input.core.services.impl.SchemaFactory;
+import presidio.monitoring.aspect.annotations.NumberOfFilteredEvents;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class TransformationServiceImpl implements TransformationService {
     private SchemaFactory schemaFactory;
 
     @Override
+    @NumberOfFilteredEvents
     public List<AbstractInputDocument> run(List<AbstractInputDocument> events, Schema schema) {
         TransformationManager transformationManager = schemaFactory.getTransformationManager(String.format("%s.%s", schema.toString(), "transformer"));
 

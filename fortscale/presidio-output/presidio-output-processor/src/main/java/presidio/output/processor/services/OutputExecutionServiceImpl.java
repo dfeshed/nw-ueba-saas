@@ -6,9 +6,12 @@ import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
+import presidio.monitoring.aspect.annotations.RunTime;
+import presidio.monitoring.aspect.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
@@ -18,7 +21,9 @@ import presidio.output.processor.services.user.UserService;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +43,14 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final int smartPageSize;
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
+    private final String UNIT_TYPE_LONG = "long";
+    private final String NUMBER_OF_ALERTS_METRIC_NAME = "number.of.alerts.created";
+    private final String ALERT_WITH_SEVERITY_METRIC_NAME = "alert.created.with.severity.";
+    private final String LAST_EVENT_TIME_PROCESSES_METRIC_NAME = "last.event.time.processed.output";
+    private final String TYPE_LONG = "long";
+
+    @Autowired
+    MetricCollectingService metricCollectingService;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
@@ -63,6 +76,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      * @param endDate
      * @throws Exception
      */
+    @RunTime
     @Override
     public void run(Instant startDate, Instant endDate) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
@@ -70,6 +84,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         List<Alert> alerts = new ArrayList<Alert>();
         List<User> users = new ArrayList<User>();
+        Set tags = new HashSet();
+        tags.add(startDate.toString());
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
@@ -89,7 +105,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     userEntity = isUserGoingToBeCreated(users, userId);
                     if (userEntity == null) {
                         //Need to create user and add it to about to be created list
-                    userEntity = userService.createUserEntity(userId);
+                        userEntity = userService.createUserEntity(userId);
 
                         users.add(userEntity);
                         if (userEntity == null) {
@@ -103,14 +119,19 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
+                    metricCollectingService.addMetricWithTags(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
                     alerts.add(alertEntity);
                 }
+            }
+            if (!smartPageIterator.hasNext()) {
+                metricCollectingService.addMetricWithOneTag(LAST_EVENT_TIME_PROCESSES_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate.toEpochMilli() + "", TYPE_LONG);
             }
         }
 
 
         users = storeUsers(users); //Get the generated users with the new elasticsearch ID
+        metricCollectingService.addMetricWithTags(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG);
         storeAlerts(alerts);
 
         //Update the users severities
@@ -119,7 +140,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        }
+    }
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
@@ -143,7 +164,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void recalculateUserScore() throws Exception{
+    public void recalculateUserScore() throws Exception {
         logger.info("Start Recalculating User Alert Data");
         this.userService.updateAllUsersAlertData();
         logger.info("Finish Recalculating User Score");
