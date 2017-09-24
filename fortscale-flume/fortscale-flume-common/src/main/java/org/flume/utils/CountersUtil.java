@@ -238,12 +238,16 @@ public class CountersUtil {
         @Override
         @SuppressWarnings("NullableProblems") //due to intellij bug
         public Set<Object> keySet() {
-            return Collections.unmodifiableSet(new TreeSet<>(super.keySet()));
+            final TreeSet<Object> keys = new TreeSet<>(Collections.reverseOrder());
+            keys.addAll(super.keySet());
+            return Collections.unmodifiableSet(keys);
         }
 
         @Override
         public synchronized Enumeration<Object> keys() {
-            return Collections.enumeration(new TreeSet<>(super.keySet()));
+            final TreeSet<Object> keys = new TreeSet<>(Collections.reverseOrder());
+            keys.addAll(super.keySet());
+            return Collections.enumeration(keys);
         }
     }
 }
