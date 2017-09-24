@@ -30,7 +30,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public boolean store(List<? extends AbstractAuditableDocument> documents, Schema schema) {
-        logger.debug("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
+        logger.trace("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
         final ValidationManager.ValidationResults validationResults = validationManager.validate(documents);
         dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(schema), validationResults.validDocuments);
         dataSourceRepository.insertDataSource(INVALID_DOCUMENTS_COLLECTION_NAME, validationResults.invalidDocuments);
