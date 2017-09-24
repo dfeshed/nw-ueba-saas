@@ -11,6 +11,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Path;
 import javax.validation.Validator;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -76,14 +77,21 @@ public class ValidationManager {
         public AbstractAuditableDocument invalidDocument;
 
         @Field(VIOLATIONS_FIELD_NAME)
-        public Set<ConstraintViolation<AbstractAuditableDocument>> violations;
+        public Set<Violation> violations;
 
         public InvalidInputDocument() {
         }
 
         public InvalidInputDocument(AbstractAuditableDocument invalidDocument, Set<ConstraintViolation<AbstractAuditableDocument>> violations) {
+            this.violations = new HashSet<>();
             this.invalidDocument = invalidDocument;
-            this.violations = violations;
+            for (ConstraintViolation<AbstractAuditableDocument> violation : violations) {
+                final String message = violation.getMessage();
+                final String propertyPath = violation.getPropertyPath().toString();
+                final String rootBeanClass = violation.getRootBeanClass().toString();
+                final String messageTemplate = violation.getMessageTemplate();
+                this.violations.add(new Violation(message, propertyPath, rootBeanClass, messageTemplate));
+            }
         }
 
         public AbstractAuditableDocument getInvalidDocument() {
@@ -94,11 +102,11 @@ public class ValidationManager {
             this.invalidDocument = invalidDocument;
         }
 
-        public Set<ConstraintViolation<AbstractAuditableDocument>> getViolations() {
+        public Set<Violation> getViolations() {
             return violations;
         }
 
-        public void setViolations(Set<ConstraintViolation<AbstractAuditableDocument>> violations) {
+        public void setViolations(Set<Violation> violations) {
             this.violations = violations;
         }
 
@@ -108,6 +116,46 @@ public class ValidationManager {
                     .append("invalidDocument", invalidDocument)
                     .append("violations", violations)
                     .toString();
+        }
+
+        private static class Violation {
+            private final String interpolatedMessage;
+            private final String propertyPath;
+            private final String rootBeanClass;
+            private final String messageTemplate;
+
+            public Violation(String interpolatedMessage, String propertyPath, String rootBeanClass, String messageTemplate) {
+                this.interpolatedMessage = interpolatedMessage;
+                this.propertyPath = propertyPath;
+                this.rootBeanClass = rootBeanClass;
+                this.messageTemplate = messageTemplate;
+            }
+
+            public String getInterpolatedMessage() {
+                return interpolatedMessage;
+            }
+
+            public String getPropertyPath() {
+                return propertyPath;
+            }
+
+            public String getRootBeanClass() {
+                return rootBeanClass;
+            }
+
+            public String getMessageTemplate() {
+                return messageTemplate;
+            }
+
+            @Override
+            public String toString() {
+                return new ToStringBuilder(this)
+                        .append("interpolatedMessage", interpolatedMessage)
+                        .append("propertyPath", propertyPath)
+                        .append("rootBeanClass", rootBeanClass)
+                        .append("messageTemplate", messageTemplate)
+                        .toString();
+            }
         }
     }
 }

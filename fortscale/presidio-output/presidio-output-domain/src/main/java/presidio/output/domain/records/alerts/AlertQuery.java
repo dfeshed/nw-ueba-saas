@@ -12,8 +12,8 @@ public class AlertQuery {
     private final List<String> filterByUserId;
     private final List<String> filterByClassification;
     private final List<String> filterBySeverity;
-    private final Long filterByStartDate;
-    private final Long filterByEndDate;
+    private final long filterByStartDate;
+    private final long filterByEndDate;
     private final List<String> filterByFeedback;
     private final double filterByMinScore;
     private final double filterByMaxScore;
@@ -90,11 +90,11 @@ public class AlertQuery {
         return pageSize;
     }
 
-    public Long getFilterByStartDate() {
+    public long getFilterByStartDate() {
         return filterByStartDate;
     }
 
-    public Long getFilterByEndDate() {
+    public long getFilterByEndDate() {
         return filterByEndDate;
     }
 

@@ -16,6 +16,7 @@ import presidio.webapp.model.AlertQuery;
 import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,7 +100,7 @@ public class RestAlertServiceTest {
     private Alert createAlert() {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("userId", "smartId", classifications, "username",
-                Instant.parse("2017-01-01T00:00:00Z").toEpochMilli(), Instant.parse("2017-01-01T11:00:00Z").toEpochMilli(),
+                Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null);
     }
 }

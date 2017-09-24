@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * historical data aggregated by time (for time series graphs)
  */
-@ApiModel(description = "historical data aggregated by time (for time series graphs)")
+@ApiModel(description = "historical data aggregated by time (for time series graphs)", value = "TimeAggregation")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T06:58:50.313Z")
 
 public class HistoricalDataTimeAggregation extends HistoricalData  {
@@ -19,7 +19,7 @@ public class HistoricalDataTimeAggregation extends HistoricalData  {
    * Gets or Sets type
    */
   public enum TypeEnum {
-    TIME_AGGRAGEATION("TIME_AGGREGATION");
+    TimeAggregation("TimeAggregation");
 
     private String value;
 

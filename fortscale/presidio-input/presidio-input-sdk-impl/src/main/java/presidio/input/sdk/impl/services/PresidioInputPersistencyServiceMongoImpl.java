@@ -22,7 +22,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
 
     @Override
     public boolean store(Schema schema, List<? extends AbstractAuditableDocument> records) {
-        logger.info("Storing {} records for data source {}",
+        logger.trace("Storing {} records for data source {}",
                 records.size(), schema);
 
         return dataService.store(records, schema);
