@@ -186,12 +186,10 @@ public class SinkRunner implements LifecycleAware {
 
         private void shutdownFlume() {
             final Option agentName = LifecycleSupervisor.options.getOption("name");
-            logger.info("Flume agent {} is closing...", agentName);
+            logger.info("Flume agent {} is shutting down...", agentName);
             sinkRunner.lifecycleState = LifecycleState.STOP;
             shouldStop.set(true);
             SinkRunner.lifecycleSupervisor.stop();
-
-            logger.warn("Flume was unable to gracefully stop. Shutting down forcibly");
             new Thread("App-exit") {
                 @Override
                 public void run() {
