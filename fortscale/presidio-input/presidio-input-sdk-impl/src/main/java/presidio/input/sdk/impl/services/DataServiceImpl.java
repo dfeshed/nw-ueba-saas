@@ -16,7 +16,7 @@ import java.util.List;
 public class DataServiceImpl implements DataService {
 
     private static final Logger logger = Logger.getLogger(DataServiceImpl.class);
-    public static final String INVALID_DOCUMENTS_COLLECTION_NAME = "input_invalid_raw_events";
+    public static final String INVALID_DOCUMENTS_COLLECTION_NAME = "input_filtered_raw_events";
 
     private final DataSourceRepository dataSourceRepository;
     private final ToCollectionNameTranslator<Schema> toCollectionNameTranslator;
