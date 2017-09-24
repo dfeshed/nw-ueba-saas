@@ -23,14 +23,6 @@ public class AlertEnums {
             this.value = value;
         }
 
-        public static AlertTimeframe valueOfIgnoreCase(String value){
-            for (AlertTimeframe timeframe:AlertTimeframe.values()){
-                if (timeframe.value.equals(value.toLowerCase())){
-                    return timeframe;
-                }
-            }
-            return null;
-        }
 
         public String toString() {
             return String.valueOf(value);
@@ -43,7 +35,7 @@ public class AlertEnums {
     }
 
     public enum IndicatorTypes {
-        SCORE_AGGREGATION,FEATURE_AGGREGATION,STATIC_INDICATOR
+        SCORE_AGGREGATION, FEATURE_AGGREGATION, STATIC_INDICATOR
     }
 
 }
