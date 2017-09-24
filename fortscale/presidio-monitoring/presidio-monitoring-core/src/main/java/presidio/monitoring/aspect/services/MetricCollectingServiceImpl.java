@@ -11,9 +11,6 @@ public class MetricCollectingServiceImpl implements MetricCollectingService {
     private static final Logger logger = Logger.getLogger(MetricCollectingServiceImpl.class);
 
 
-    public MetricCollectingServiceImpl() {
-    }
-
     @Override
     public void addMetricWithTags(String metricName, long metricValue, Set tags, String unit) {
         logger.debug("Adding metric name {} , value {} , tags {} , unit {}", metricName, metricValue, tags, unit);
