@@ -99,8 +99,10 @@ public class PresidioShellableApplication implements Closeable {
         if (context!=null) {
             context.close();
         }
+
+        int exitCodeNumber = exitCode.get();
+        logger.info("system finished with exit code={}", exitCodeNumber);
         Thread.currentThread().interrupt();
-        logger.info("system finished with exit code={}",exitCode.get());
-        System.exit(exitCode.get());
+        System.exit(exitCodeNumber);
     }
 }
