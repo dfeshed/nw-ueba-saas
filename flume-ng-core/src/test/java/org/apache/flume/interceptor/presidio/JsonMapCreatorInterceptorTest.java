@@ -28,8 +28,9 @@ public class JsonMapCreatorInterceptorTest {
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
-        ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_JOIN_CONF_NAME, "name,ip");
+        ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_PUT_CONF_NAME, "name,ip");
         ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
         ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
 
         builder.configure(ctx);
@@ -48,6 +49,60 @@ public class JsonMapCreatorInterceptorTest {
         Assert.assertEquals("{\"additionalInfo\":{\"name\":\"user\",\"ip\":\"127.0.0.1\"}}", interceptValue);
     }
 
+    @Test
+    public void interceptNoFieldButDefaultValueExists() throws Exception {
+
+        Context ctx = new Context();
+        ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_PUT_CONF_NAME, "isUserAdmin,name,ip");
+        ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DEFAULT_VALUES_DELIMITER_CONF_NAME, ">");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DEFAULT_VALUES_CONF_NAME, "isUserAdmin>false");
+
+        builder.configure(ctx);
+
+        interceptor = builder.build();
+
+        final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\"}";
+
+        Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
+
+        event = interceptor.intercept(event);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
+
+
+        Assert.assertEquals("{\"additionalInfo\":{\"isUserAdmin\":\"false\",\"name\":\"user\",\"ip\":\"127.0.0.1\"}}", interceptValue);
+    }
+
+    @Test
+    public void interceptWithFieldButDefaultValueExists() throws Exception {
+
+        Context ctx = new Context();
+        ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_PUT_CONF_NAME, "isUserAdmin,name,ip");
+        ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DEFAULT_VALUES_DELIMITER_CONF_NAME, ">");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DEFAULT_VALUES_CONF_NAME, "isUserAdmin>false");
+
+
+        builder.configure(ctx);
+
+        interceptor = builder.build();
+
+        final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\",\"isUserAdmin\":\"true\"}";
+
+        Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
+
+        event = interceptor.intercept(event);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
+
+
+        Assert.assertEquals("{\"additionalInfo\":{\"isUserAdmin\":\"true\",\"name\":\"user\",\"ip\":\"127.0.0.1\"}}", interceptValue);
+    }
 
 
 }
