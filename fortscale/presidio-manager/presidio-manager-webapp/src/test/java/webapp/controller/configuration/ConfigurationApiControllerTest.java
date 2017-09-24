@@ -2,15 +2,11 @@ package webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 import presidio.config.server.client.ConfigurationServerClientService;
@@ -20,12 +16,10 @@ import presidio.manager.api.records.ValidationResults;
 import presidio.webapp.controller.configuration.ConfigurationApiController;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.service.ConfigurationManagerService;
-import presidio.webapp.spring.ManagerWebappConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -44,7 +38,7 @@ public class ConfigurationApiControllerTest {
 
     @Test
     public void putConfigurationInvalidConfiguration() throws IOException {
-        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient);
+        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
 
         ObjectMapper mapper = new ObjectMapper();
         File from = new File(".//src//test//resources//" + CONFIG_JSON_FILE_NAME);
@@ -66,7 +60,7 @@ public class ConfigurationApiControllerTest {
 
     @Test
     public void putConfigurationConfiguration() throws IOException {
-        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient);
+        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
 
         ObjectMapper mapper = new ObjectMapper();
         File from = new File(".//src//test//resources//" + CONFIG_JSON_FILE_NAME);
