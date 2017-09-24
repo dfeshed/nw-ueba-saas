@@ -68,16 +68,16 @@ public class CountersUtilTest {
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
         Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
-        Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), exampleDateHourEnd);
+        Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), exampleDatePreviousHourEnd);
     }
 
     @Test
-    public void addToCounterSourceCantClosePreviousHour() throws Exception {
+    public void addToCounterSourceCannotClosePreviousHour() throws Exception {
         testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, false, 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
         Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
-        Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), exampleDatePreviousHourEnd);
+        Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), null);
     }
 
     @Test

@@ -187,16 +187,13 @@ public class CountersUtil {
     private void updateLatestReadyHourProperty(Properties properties, Instant endOfHour, boolean canClosePreviousHour) {
         Instant latestReadyHour;
         if (canClosePreviousHour) {
-            latestReadyHour = endOfHour;
-        } else {
             latestReadyHour = endOfHour.minus(1, ChronoUnit.HOURS);
-        }
-
-        final boolean hasLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER) != null;
-        if (hasLatestReadyHourProperty) {
-            properties.replace(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
-        } else {
-            properties.setProperty(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
+            final boolean hasLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER) != null;
+            if (hasLatestReadyHourProperty) {
+                properties.replace(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
+            } else {
+                properties.setProperty(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
+            }
         }
     }
 
