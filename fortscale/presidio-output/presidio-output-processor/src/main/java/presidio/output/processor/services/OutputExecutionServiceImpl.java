@@ -70,9 +70,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         List<Alert> alerts = new ArrayList<Alert>();
         List<User> users = new ArrayList<User>();
+        boolean isUserEntityShouldStore;
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
+                isUserEntityShouldStore = true;
                 List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
 
                 AdeAggregationRecord indicators = null;
@@ -83,29 +85,29 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     indicators = indicatorsList.get(0);
                 }
                 String userId = indicators.getContext().get("userId");//TODO- temporary fix, ADE team should provide user id on the smart pojo
-                User userEntity = getSingleUserEntityById(userId);
+                User userEntity = getSingleUserEntityById(userId);// in this line we have already user in the system or null
                 if (userEntity == null) {
                     //Check if user already created but not saved
-                    userEntity = isUserGoingToBeCreated(users, userId);
+                    userEntity = isUserGoingToBeCreated(users, userId); // user or null
                     if (userEntity == null) {
                         //Need to create user and add it to about to be created list
-                    userEntity = userService.createUserEntity(userId);
-
+                        userEntity = userService.createUserEntity(userId);
                         users.add(userEntity);
+                        isUserEntityShouldStore = false;
                         if (userEntity == null) {
                             logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
                             continue;
                         }
                     }
-
                 }
-
-
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
                     alerts.add(alertEntity);
+                    isUserEntityShouldStore = true;
                 }
+                if (isUserEntityShouldStore)
+                    users.add(userEntity);
             }
         }
 
@@ -119,7 +121,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        }
+    }
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
@@ -143,7 +145,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void recalculateUserScore() throws Exception{
+    public void recalculateUserScore() throws Exception {
         logger.info("Start Recalculating User Alert Data");
         this.userService.updateAllUsersAlertData();
         logger.info("Finish Recalculating User Score");
