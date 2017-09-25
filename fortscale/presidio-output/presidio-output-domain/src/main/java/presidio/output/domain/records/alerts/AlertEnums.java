@@ -15,16 +15,19 @@ public class AlertEnums {
     }
 
     public enum AlertTimeframe {
-        HOURLY, DAILY;
+        HOURLY("hourly"), DAILY("daily");
 
-        public static AlertTimeframe valueOfIgnoreCase(String value){
-            for (AlertTimeframe timeframe:AlertTimeframe.values()){
-                if (timeframe.name().toLowerCase().equals(value.toLowerCase())){
-                    return timeframe;
-                }
-            }
-            return null;
+        private String value;
+
+        AlertTimeframe(String value) {
+            this.value = value;
         }
+
+
+        public String toString() {
+            return String.valueOf(value);
+        }
+
 
         public static AlertTimeframe getAlertTimeframe(String value) {
             return AlertTimeframe.valueOf(value.toUpperCase());
@@ -32,7 +35,7 @@ public class AlertEnums {
     }
 
     public enum IndicatorTypes {
-        SCORE_AGGREGATION,FEATURE_AGGREGATION,STATIC_INDICATOR
+        SCORE_AGGREGATION, FEATURE_AGGREGATION, STATIC_INDICATOR
     }
 
 }

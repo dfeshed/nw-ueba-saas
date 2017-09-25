@@ -71,7 +71,7 @@ public class Alert {
         @JsonCreator
         public static TimeframeEnum fromValue(String text) {
             for (TimeframeEnum b : TimeframeEnum.values()) {
-                if (String.valueOf(b.value).equals(text.toLowerCase())) {
+                if (String.valueOf(b.value).equals(text)) {
                     return b;
                 }
             }
