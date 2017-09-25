@@ -96,12 +96,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                             continue;
                         }
                     }
+                }
 
-                    Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
-                    if (alertEntity != null) {
-                        userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
-                        alerts.add(alertEntity);
-                    }
+                Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
+                if (alertEntity != null) {
+                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
+                    alerts.add(alertEntity);
                 }
             }
         }
