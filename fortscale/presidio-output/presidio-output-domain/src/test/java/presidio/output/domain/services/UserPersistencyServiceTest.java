@@ -31,7 +31,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -216,6 +215,49 @@ public class UserPersistencyServiceTest {
         UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).minScore(10).maxScore(20);
         Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(2, usersPageResult.getContent().size());
+    }
+
+    @Test
+    public void testFindByUserId() {
+        List<String> tags = new ArrayList<>();
+
+
+        User user1 = new User("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId1", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        Iterable<User> createdUsers = userPersistencyService.save(userList);
+
+
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"userId1"}));
+        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, usersPageResult.getContent().size());
+
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"userId1-1234-5678"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"1234-5678-userId1"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(0, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"1234"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(0, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"userId1@somecompany.com"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"somecompany.com@userId1"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(0, usersPageResult.getContent().size());
     }
 
     @Test
