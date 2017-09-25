@@ -85,7 +85,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         static final String DELIMITER_CONF_NAME = "delimiter";
         static final String DEFAULT_DELIMITER_VALUE = ",";
         static final String DEFAULT_VALUES_DELIMITER_CONF_NAME = "defaultValuesDelimiter";
-        static final String DEFAULT_VALUES_DELIMITER_DEFAULT_VALUE = "=";
+        static final String DEFAULT_VALUES_DELIMITER_DEFAULT_VALUE = ">";
 
         private List<String> fieldsToPut;
         private String mapKey;
