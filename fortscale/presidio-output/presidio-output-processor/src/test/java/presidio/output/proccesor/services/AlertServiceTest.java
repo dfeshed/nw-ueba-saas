@@ -35,14 +35,7 @@ import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -141,13 +134,11 @@ public class AlertServiceTest {
     }
 
     private SmartRecord generateSingleSmart(int score) {
-        List<FeatureScore> feature_scores = new ArrayList<FeatureScore>();
-        Map<String, String> context = new HashMap<String, String>();
+        List<FeatureScore> feature_scores = new ArrayList<>();
         List<AdeAggregationRecord> aggregated_feature_events = new ArrayList<>();
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now());
-        SmartRecord smart = new SmartRecord(timeRange, contextId, featureName, FixedDurationStrategy.HOURLY,
-                5.0, score, feature_scores, aggregated_feature_events);
-
-        return smart;
+        return new SmartRecord(
+                timeRange, contextId, featureName, FixedDurationStrategy.HOURLY,
+                5.0, score, feature_scores, aggregated_feature_events, null);
     }
 }

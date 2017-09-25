@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final UserScoreService userScoreService;
+
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
@@ -48,6 +48,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final String ALERT_WITH_SEVERITY_METRIC_NAME = "alert.created.with.severity.";
     private final String LAST_EVENT_TIME_PROCESSES_METRIC_NAME = "last.event.time.processed.output";
     private final String TYPE_LONG = "long";
+    private static final String ADE_SMART_USER_ID = "userId";
 
     @Autowired
     MetricCollectingService metricCollectingService;
@@ -90,15 +91,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
                 List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
+                String userId = smart.getContext().get(ADE_SMART_USER_ID);
 
-                AdeAggregationRecord indicators = null;
-                if (indicatorsList.size() == 0) {
-                    logger.error("Failed to retrieve user id from smart because indicators list is empty for smart {}. skipping to next smart", smart.getId());
+                if (userId == null || userId.isEmpty()) {
+                    logger.error("Failed to get user id from smart context, user id is null or empty for smart {}. skipping to next smart", smart.getId());
                     continue;
-                } else {
-                    indicators = indicatorsList.get(0);
                 }
-                String userId = indicators.getContext().get("userId");//TODO- temporary fix, ADE team should provide user id on the smart pojo
+
                 User userEntity = getSingleUserEntityById(userId);
                 if (userEntity == null) {
                     //Check if user already created but not saved
@@ -114,6 +113,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                         }
                     }
 
+                    Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
+                    if (alertEntity != null) {
+                        userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
+                        alerts.add(alertEntity);
+                    }
                 }
 
 
@@ -129,7 +133,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             }
         }
 
-
         users = storeUsers(users); //Get the generated users with the new elasticsearch ID
         metricCollectingService.addMetricWithTags(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG);
         storeAlerts(alerts);
@@ -139,8 +142,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-
     }
+
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));
