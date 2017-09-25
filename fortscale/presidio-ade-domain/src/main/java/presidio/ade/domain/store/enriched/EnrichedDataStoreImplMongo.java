@@ -89,27 +89,16 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
         return enrichedRecordList;
     }
 
-    /**
-     * Build query
-     * @param recordsMetadata
-     * @param contextIds
-     * @param contextType
-     * @param numOfItemsToSkip
-     * @param numOfItemsToRead
-     * @param pojoClass
-     * @return
-     */
-    private Query buildQuery(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType, int numOfItemsToSkip, int numOfItemsToRead, Class<? extends AdeRecord> pojoClass) {
+    private Query buildQuery(EnrichedRecordsMetadata recordsMetadata, Set<String> contextIds, String contextType,
+                             int numOfItemsToSkip, int numOfItemsToRead, Class<? extends AdeRecord> pojoClass) {
+
         Instant startDate = recordsMetadata.getStartInstant();
         Instant endDate = recordsMetadata.getEndInstant();
-        //Get type of context
+        // Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
-
         Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
         Criteria contextCriteria = Criteria.where(fieldName).in(contextIds);
-        Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
-
-        return query;
+        return new Query(dateTimeCriteria).addCriteria(contextCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
     }
 
     @Override
@@ -167,23 +156,26 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
      */
     @Override
     public void ensureContextAndDateTimeIndex(String adeEventType, String contextType) {
-        //Get pojoClass by adeEventType
+        // Get pojoClass by adeEventType
         Class pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
-
-        //Get type of context
+        // Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
-
         String collectionName = translator.toCollectionName(adeEventType);
 
-        //used for findScoredEnrichedRecords
-        DBObject indexOptions = new BasicDBObject();
-
-        //  IndexDirection.ASCENDING = 1
-        //  IndexDirection.DESCENDING = -1
-        indexOptions.put(fieldName, 1);
-        indexOptions.put(EnrichedRecord.START_INSTANT_FIELD, 1);
+        // Used by the readRecords method (no sorting)
+        DBObject indexOptions = new BasicDBObject(); // Keeps entries ordered
+        indexOptions.put(fieldName, 1); // Ascending
+        indexOptions.put(EnrichedRecord.START_INSTANT_FIELD, 1); // Ascending
         CompoundIndexDefinition indexDefinition = new CompoundIndexDefinition(indexOptions);
+        indexDefinition.named(fieldName + "_" + EnrichedRecord.START_INSTANT_FIELD);
+        mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
 
+        // Used by the readSortedRecords method (sorting by startInstant)
+        indexOptions = new BasicDBObject(); // Keeps entries ordered
+        indexOptions.put(EnrichedRecord.START_INSTANT_FIELD, 1); // Ascending
+        indexOptions.put(fieldName, 1); // Ascending
+        indexDefinition = new CompoundIndexDefinition(indexOptions);
+        indexDefinition.named(EnrichedRecord.START_INSTANT_FIELD + "_" + fieldName);
         mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
     }
 

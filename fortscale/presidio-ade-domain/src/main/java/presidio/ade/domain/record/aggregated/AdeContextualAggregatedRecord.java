@@ -1,29 +1,24 @@
 package presidio.ade.domain.record.aggregated;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
 
 import java.time.Instant;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Created by maria_dorohin on 8/1/17.
+ * @author Maria Dorohin
  */
 public abstract class AdeContextualAggregatedRecord extends AdeRecord {
     private static final String CONTEXT_ID_SEPARATOR = "#";
     public static final String END_INSTANT_FIELD = "endInstant";
     public static final String CONTEXT_ID_FIELD = "contextId";
 
-    @Indexed
     @Field(END_INSTANT_FIELD)
     private Instant endInstant;
-    @Indexed
     @Field(CONTEXT_ID_FIELD)
     private String contextId;
 
@@ -72,10 +67,9 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
 
     /**
      * Set Context id
-     * @param contextId
+     * @param contextId Context id
      */
     public void setContextId(String contextId) {
         this.contextId = contextId;
     }
-
 }
