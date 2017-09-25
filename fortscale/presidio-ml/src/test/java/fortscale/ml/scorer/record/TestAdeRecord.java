@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.record;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -12,6 +13,7 @@ import java.util.List;
  *
  * Created by Lior Govrin on 29/06/2017.
  */
+@Document
 public class TestAdeRecord extends AdeRecord {
 	@SuppressWarnings("all") private String username;
 	@SuppressWarnings("all") private String sourceMachine;

@@ -57,6 +57,7 @@ public class SmartScoringService {
 				FeatureScore smartValue = levelTwoFeatureScores.get(0);
 				smartRecord.setSmartValue(smartValue.getScore());
 				smartRecord.setScore(smartScore.getScore());
+				smartRecord.setFeatureScoreList(levelOneFeatureScores);
 			} else {
 				logger.error(
 						"A smart record's second level list of feature scores should contain only one " +
