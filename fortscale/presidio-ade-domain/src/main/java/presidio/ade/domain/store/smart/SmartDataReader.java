@@ -34,9 +34,4 @@ public interface SmartDataReader {
 	 * @return list of Smart records
 	 */
 	List<SmartRecord> readRecords(SmartRecordsMetadata smartRecordsMetadata, Set<String> contextIds, int numOfItemsToSkip, int numOfItemsToRead, int scoreThreshold);
-
-	/**
-	 * Validate that the contextId indexed in the store.
-	 */
-	void ensureContextIdIndex(String configurationName);
 }
