@@ -71,4 +71,37 @@ public class FolderPathTransformerTest {
         Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFilePath());
         Assert.assertEquals("C://file", ((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
     }
+
+    @Test
+    public void testFolderPathTransformation_noField_FileOperation() {
+        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
+                "operationType", null, EventResult.SUCCESS, "userName",
+                "displayName", null, null, false,
+                null, false, 0l, "resultCode");
+
+        List<String> folderOperations = new ArrayList<>();
+        FolderPathTransformer folderPathTransformer = new FolderPathTransformer("srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
+
+        List<AbstractInputDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+
+        Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+    }
+
+    @Test
+    public void testFolderPathTransformation_fieldEmpty_FileOperation() {
+        String filePath = "";
+        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "id", "dataSource", "userId",
+                "operationType", null, EventResult.SUCCESS, "userName",
+                "displayName", null, filePath, false,
+                filePath, false, 0l, "resultCode");
+
+        List<String> folderOperations = new ArrayList<>();
+        FolderPathTransformer folderPathTransformer = new FolderPathTransformer("srcFilePath",
+                "srcFilePath", "srcFolderPath", "operationType", folderOperations);
+
+        List<AbstractInputDocument> transformed = folderPathTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
+
+        Assert.assertNull(((FileTransformedEvent) transformed.get(0)).getSrcFolderPath());
+    }
 }

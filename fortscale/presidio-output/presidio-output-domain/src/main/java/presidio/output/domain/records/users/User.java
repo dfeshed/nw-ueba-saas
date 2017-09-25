@@ -50,7 +50,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(SCORE_FIELD_NAME)
     private double score;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(ALERT_CLASSIFICATIONS_FIELD_NAME)
     private List<String> alertClassifications;
 
@@ -63,7 +63,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(SEVERITY_FIELD_NAME)
     private UserSeverity severity;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(TAGS_FIELD_NAME)
     private List<String> tags;
 

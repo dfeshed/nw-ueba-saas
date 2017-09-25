@@ -9,11 +9,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.*;
 import presidio.webapp.model.Alert;
+import presidio.webapp.model.*;
+import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
 import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
@@ -39,16 +40,16 @@ public class RestAlertServiceImpl implements RestAlertService {
         presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
             resultAlert = createRestAlert(alertData);
-        }
-        if (expand) {
-            List<Indicator> restIndicators = new ArrayList<Indicator>();
-            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
-            for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
-                // workaround - projection doesn't work
-                indicator.setHistoricalData(null);
-                restIndicators.add(createRestIndicator(indicator));
+            if (expand) {
+                List<Indicator> restIndicators = new ArrayList<Indicator>();
+                Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
+                for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
+                    // workaround - projection doesn't work
+                    indicator.setHistoricalData(null);
+                    restIndicators.add(createRestIndicator(indicator));
+                }
+                resultAlert.setIndicators(restIndicators);
             }
-            resultAlert.setIndicators(restIndicators);
         }
         return resultAlert;
     }
@@ -100,7 +101,11 @@ public class RestAlertServiceImpl implements RestAlertService {
             alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
-                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations);
+                Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
+                alertAggregations.keySet().forEach(aggregationName -> {
+                    aggregationNamesEnumMapping.put(aggregationName, AlertQueryEnums.AlertQueryAggregationFieldName.fromValue(aggregationName).name());
+                });
+                Map<String, Map<String, Long>> aggregations = RestUtils.convertAggregationsToMap(alertAggregations, aggregationNamesEnumMapping);
                 alertsWrapper.setAggregationData(aggregations);
             }
         } else {
@@ -276,9 +281,9 @@ public class RestAlertServiceImpl implements RestAlertService {
     public IndicatorsWrapper getIndicatorsByAlertId(String alertId, IndicatorQuery indicatorQuery) {
         List<Indicator> restIndicators = new ArrayList<Indicator>();
         int totalElements = 0;
-        int pageNumber = indicatorQuery.getPageNumber()!=null?indicatorQuery.getPageNumber(): 0;
-        int pageSize = indicatorQuery.getPageSize()!=null?indicatorQuery.getPageSize():10;
-        PageRequest pageRequest = new PageRequest(pageNumber,pageSize);
+        int pageNumber = indicatorQuery.getPageNumber() != null ? indicatorQuery.getPageNumber() : 0;
+        int pageSize = indicatorQuery.getPageSize() != null ? indicatorQuery.getPageSize() : 10;
+        PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
             Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
@@ -308,10 +313,10 @@ public class RestAlertServiceImpl implements RestAlertService {
         presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
         //TODO: fix sort
         //Sort sort = RestUtils.parseSortField(eventQuery.getSort());
-        int pageNumber = eventQuery.getPageNumber()!=null?eventQuery.getPageNumber(): 0;
-        int pageSize = eventQuery.getPageSize()!=null?eventQuery.getPageSize():10;
-        PageRequest pageRequest = new PageRequest(pageNumber,pageSize);
-        Page<IndicatorEvent> events = elasticAlertService.findIndicatorEventsByIndicatorId (indicatorId, pageRequest);
+        int pageNumber = eventQuery.getPageNumber() != null ? eventQuery.getPageNumber() : 0;
+        int pageSize = eventQuery.getPageSize() != null ? eventQuery.getPageSize() : 10;
+        PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
+        Page<IndicatorEvent> events = elasticAlertService.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
         for (presidio.output.domain.records.alerts.IndicatorEvent event : events) {
             restEvents.add(createRestEvent(event));
         }
@@ -322,8 +327,8 @@ public class RestAlertServiceImpl implements RestAlertService {
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {
         presidio.webapp.model.Alert restAlert = new presidio.webapp.model.Alert();
         restAlert.setScore(Double.valueOf(alert.getScore()).intValue());
-        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate()));
-        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate()));
+        restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
+        restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
@@ -396,33 +401,33 @@ public class RestAlertServiceImpl implements RestAlertService {
 
         if (historicalData.getAggregation() instanceof CountAggregation) {
 
-            CountAggregation aggr = (CountAggregation)historicalData.getAggregation();
+            CountAggregation aggr = (CountAggregation) historicalData.getAggregation();
             List<Bucket<String, Double>> buckets = aggr.getBuckets();
             CountBucket countBucket = new CountBucket();
             restHistoricalData = new HistoricalDataCountAggregation();
             CountBuckets restBuckets = new CountBuckets();
-            for (Bucket<String, Double> bucket: buckets) {
+            for (Bucket<String, Double> bucket : buckets) {
                 CountBucket restBucket = new CountBucket();
                 restBucket.setKey(bucket.getKey());
                 restBucket.setValue(bucket.getValue().intValue());
                 restBucket.setAnomaly(bucket.isAnomaly());
                 restBuckets.add(restBucket);
             }
-            ((HistoricalDataCountAggregation)restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.CountAggregation);
-            ((HistoricalDataCountAggregation)restHistoricalData).setBuckets(restBuckets);
+            ((HistoricalDataCountAggregation) restHistoricalData).setType(HistoricalDataCountAggregation.TypeEnum.CountAggregation);
+            ((HistoricalDataCountAggregation) restHistoricalData).setBuckets(restBuckets);
 
         }
 
         if (historicalData.getAggregation() instanceof TimeAggregation) {
 
-            TimeAggregation aggr = (TimeAggregation)historicalData.getAggregation();
+            TimeAggregation aggr = (TimeAggregation) historicalData.getAggregation();
             List<Bucket<String, Double>> buckets = aggr.getBuckets();
 
 
             restHistoricalData = new HistoricalDataTimeAggregation();
             TimeBuckets restBuckets = new TimeBuckets();
 
-            for (Bucket<String, Double> bucket: buckets) {
+            for (Bucket<String, Double> bucket : buckets) {
 
                 TimeBucket restBucket = new TimeBucket();
                 BigDecimal time = BigDecimal.valueOf(Long.parseLong(bucket.getKey()));
@@ -431,23 +436,23 @@ public class RestAlertServiceImpl implements RestAlertService {
                 restBucket.setAnomaly(bucket.isAnomaly());
                 restBuckets.add(restBucket);
             }
-            ((HistoricalDataTimeAggregation)restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TimeAggregation);
-            ((HistoricalDataTimeAggregation)restHistoricalData).setBuckets(restBuckets);
+            ((HistoricalDataTimeAggregation) restHistoricalData).setType(HistoricalDataTimeAggregation.TypeEnum.TimeAggregation);
+            ((HistoricalDataTimeAggregation) restHistoricalData).setBuckets(restBuckets);
 
         }
 
 
         if (historicalData.getAggregation() instanceof WeekdayAggregation) {
 
-            WeekdayAggregation aggr = (WeekdayAggregation)historicalData.getAggregation();
+            WeekdayAggregation aggr = (WeekdayAggregation) historicalData.getAggregation();
 
             restHistoricalData = new HistoricalDataWeekdayAggregation();
 
-            List<Bucket<String,List<Bucket<String, Integer>>>> dailyBuckets = aggr.getBuckets();
+            List<Bucket<String, List<Bucket<String, Integer>>>> dailyBuckets = aggr.getBuckets();
             DailyBuckets restDailyBuckets = new DailyBuckets();
 
             // for ech day of week
-            for (Bucket<String,List<Bucket<String, Integer>>> dailyBucket: dailyBuckets) {
+            for (Bucket<String, List<Bucket<String, Integer>>> dailyBucket : dailyBuckets) {
 
                 DailyBucket restDailyBucket = new DailyBucket();
                 restDailyBucket.setKey(dailyBucket.getKey());
@@ -455,7 +460,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
                 // add hour of day
                 HourlyBuckets restHourlyBuckets = new HourlyBuckets();
-                for (Bucket<String, Integer> hourlyBucket :hourlyBuckets) {
+                for (Bucket<String, Integer> hourlyBucket : hourlyBuckets) {
                     HourlyBucket restHourlyBucket = new HourlyBucket();
                     restHourlyBucket.setKey(hourlyBucket.getKey());
                     restHourlyBucket.setValue(hourlyBucket.getValue());
@@ -466,8 +471,8 @@ public class RestAlertServiceImpl implements RestAlertService {
                 restDailyBuckets.add(restDailyBucket);
 
             }
-            ((HistoricalDataWeekdayAggregation)restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WeekdayAggregation);
-            ((HistoricalDataWeekdayAggregation)restHistoricalData).setBuckets(restDailyBuckets);
+            ((HistoricalDataWeekdayAggregation) restHistoricalData).setType(HistoricalDataWeekdayAggregation.TypeEnum.WeekdayAggregation);
+            ((HistoricalDataWeekdayAggregation) restHistoricalData).setBuckets(restDailyBuckets);
 
         }
 
