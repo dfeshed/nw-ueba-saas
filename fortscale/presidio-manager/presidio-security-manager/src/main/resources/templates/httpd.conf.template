@@ -381,7 +381,7 @@ IncludeOptional conf.d/*.conf
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${"username"}
-    Include /home/presidio/my_ldap_password.conf
+    AuthLDAPBindPassword ${"password"}
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
@@ -405,7 +405,7 @@ IncludeOptional conf.d/*.conf
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${"username"}
-    Include /home/presidio/my_ldap_password.conf
+    AuthLDAPBindPassword ${"password"}
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
@@ -446,7 +446,7 @@ IncludeOptional conf.d/*.conf
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${"username"}
-    Include /home/presidio/my_ldap_password.conf
+    AuthLDAPBindPassword ${"password"}
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
