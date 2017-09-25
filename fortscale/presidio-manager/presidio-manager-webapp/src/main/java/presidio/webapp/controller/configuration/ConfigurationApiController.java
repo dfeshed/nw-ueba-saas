@@ -144,7 +144,12 @@ public class ConfigurationApiController implements ConfigurationApi {
         configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
 
         //applying configuration to all consumers
-        configurationManagerService.applyConfiguration();
+        boolean applyConfigurationResult = configurationManagerService.applyConfiguration();
+        if(!applyConfigurationResult)
+        {
+            logger.error("failed to apply configuration");
+            return new ResponseEntity<ConfigurationResponse>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.CREATED);
     }
