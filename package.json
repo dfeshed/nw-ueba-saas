@@ -86,7 +86,7 @@
     "faker": "3.1.0",
     "flexi": "2.0.1",
     "highlightjs": "9.8.0",
-    "javascript-detect-element-resize": "git://github.rsa.lab.emc.com/bellg3/javascript-detect-element-resize.git",
+    "javascript-detect-element-resize": "file:javascript-detect-element-resize",
     "jquery": "3.1.1",
     "liquid-fire": "0.27.1",
     "loader.js": "^4.2.3",
