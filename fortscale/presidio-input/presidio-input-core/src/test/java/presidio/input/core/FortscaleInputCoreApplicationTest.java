@@ -18,8 +18,8 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
-import presidio.input.core.spring.InputCoreConfiguration;
-import presidio.monitoring.spring.MonitoringConfiguration;
+import presidio.input.core.spring.InputCoreConfigurationTest;
+import presidio.monitoring.aspect.services.MetricCollectingService;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.util.Properties;
@@ -35,6 +35,9 @@ public class FortscaleInputCoreApplicationTest {
     @Autowired
     private PresidioExecutionService processService;
 
+    @Autowired
+    private MetricCollectingService metricCollectingService;
+
     @Test
     public void contextLoads() throws Exception {
         Assert.assertTrue(processService instanceof InputExecutionServiceImpl);
@@ -42,17 +45,18 @@ public class FortscaleInputCoreApplicationTest {
 
     @Test
     public void inputCoreShellTest() {
+        //Mockito.when(metricCollectingService.addMetricWithTags(Mockito.anyString(),Mockito.anyLong(),Mockito.anySet(),Mockito.anyString())).thenReturn(null);
+        //Mockito.when(metricCollectingService.addMetricWithOneTag(Mockito.anyString(),Mockito.anyLong(),Mockito.anyString(),Mockito.anyString())).then(null);
         CommandResult commandResult = bootShim.getShell().executeCommand(EXECUTION_COMMAND);
         Assert.assertTrue(commandResult.isSuccess());
     }
 
     @Configuration
-    @Import({InputCoreConfiguration.class,
+    @Import({InputCoreConfigurationTest.class,
             MongodbTestConfig.class,
             BootShimConfig.class,
             PresidioCommands.class,
-            OutputDataServiceConfig.class,
-            MonitoringConfiguration.class})
+            OutputDataServiceConfig.class})
     @EnableSpringConfigured
     public static class springConfig {
         @Bean

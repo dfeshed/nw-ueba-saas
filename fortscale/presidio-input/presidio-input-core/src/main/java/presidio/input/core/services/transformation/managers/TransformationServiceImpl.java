@@ -20,8 +20,8 @@ public class TransformationServiceImpl implements TransformationService {
     @Autowired
     private SchemaFactory schemaFactory;
 
-    @Override
     @NumberOfFilteredEvents
+    @Override
     public List<AbstractInputDocument> run(List<AbstractInputDocument> events, Schema schema) {
         TransformationManager transformationManager = schemaFactory.getTransformationManager(String.format("%s.%s", schema.toString(), "transformer"));
 
@@ -39,7 +39,7 @@ public class TransformationServiceImpl implements TransformationService {
                     });
                     result.addAll(transformedDocuments);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.error(String.format("Error transforming event - %s", event.toString()), e);
             }
         });

@@ -22,6 +22,8 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
+import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
@@ -70,6 +72,11 @@ public class AlertServiceTest {
     @Configuration
     @EnableSpringConfigured
     public static class SpringConfig {
+        @Bean
+        public MetricCollectingService metricCollectingService() {
+            return new MetricCollectingServiceImpl();
+        }
+
         @Bean
         public static TestPropertiesPlaceholderConfigurer testPropertiesPlaceholderConfigurer() {
             Properties properties = new Properties();
