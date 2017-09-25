@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.domain.Sort;
 import presidio.webapp.model.UserQueryEnums.UserQueryAggregationFieldName;
 import presidio.webapp.model.UserQueryEnums.UserQuerySortFieldName;
+import presidio.webapp.model.UserQueryEnums.UserSeverity;
 
 import java.util.ArrayList;
 import java.util.List;
