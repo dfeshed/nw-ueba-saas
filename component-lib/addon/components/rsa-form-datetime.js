@@ -73,9 +73,11 @@ export default Component.extend({
 
   actions: {
     forceChangeOnClose(selectedDates, dateString, flatpikr) {
-      if (flatpikr.element.value) {
+      const inputDate = new Date(flatpikr.element.value);
+      const validDate = inputDate.getTime() - inputDate.getTime() === 0;
+
+      if (validDate) {
         const selectedDate = selectedDates.get('firstObject');
-        const inputDate = new Date(flatpikr.element.value);
 
         if (selectedDate) {
           const selectedDateMs = selectedDate.getTime();
@@ -89,6 +91,9 @@ export default Component.extend({
           flatpikr.setDate(inputDate);
           this.onChange([inputDate]);
         }
+      } else {
+        flatpikr.setDate(null);
+        this.onChange([]);
       }
     }
   }
