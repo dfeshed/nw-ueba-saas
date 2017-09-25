@@ -9,7 +9,7 @@ import org.junit.Test;
 public class SimplePathGeneratorTest {
     @Test
     public void PathGeneratorTest() {
-        String expected = "/usr/someuser/somesubdir/1";
+        String expected = "/usr/someuser/somesubdir/1/";
         SimplePathGenerator generator = new SimplePathGenerator();
         Assert.assertEquals(generator.getNext(), expected);
 

@@ -15,8 +15,8 @@ public class DLPFileOperationGeneratorTest {
     public void FileGeneratorDefaultTest() {
         String  expected_source_file         = "File.jar";
         String  expected_destination_file    = "File.jar";
-        String  expected_source_path         = "/usr/someuser/somesubdir/1";
-        String  expected_destination_path    = "/usr/someuser/somesubdir/1";
+        String  expected_source_path         = "/usr/someuser/somesubdir/1/";
+        String  expected_destination_path    = "/usr/someuser/somesubdir/1/";
         long    expected_size                  = 5242880;
         String  expected_type                 = DEFAULT_EVENT_TYPE.FILE_MOVE.value;
 

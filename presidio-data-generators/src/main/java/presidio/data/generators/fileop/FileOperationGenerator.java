@@ -1,7 +1,6 @@
 package presidio.data.generators.fileop;
 
 import presidio.data.domain.event.OperationType;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.domain.event.file.FileOperation;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
@@ -10,10 +9,7 @@ import presidio.data.generators.common.precentage.OperationResultPercentageGener
 import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  *
