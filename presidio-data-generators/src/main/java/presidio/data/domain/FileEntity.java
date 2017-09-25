@@ -1,7 +1,5 @@
 package presidio.data.domain;
 
-import java.io.File;
-
 public class FileEntity {
     String filePath;
     String  fileName;
@@ -58,7 +56,7 @@ public class FileEntity {
     }
 
     public String getAbsoluteFilePath() {
-        String separator = "/";
+        String separator = "";
         if(isDirectory == null || isDirectory){
             return fileName;
         } else {
