@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import arrayFilterByList from 'respond/utils/array/filter-by-list';
@@ -53,30 +54,41 @@ export const storyPoints = createSelector(
  * @type {Object[]}
  * @private
  */
-export const storyPointsWithEvents = createSelector(
+export const storyPointsIncludingEvents = createSelector(
   [ storyPoints, storylineEvents ],
   (storyPoints, storylineEvents) => {
-    (storyPoints || []).forEach((storyPoint) => {
-
-      // If the storyPoint doesn't have events yet, fetch them from storylineEvents state.
-      if (!storyPoint.get('events')) {
-        const payload = (storylineEvents || []).findBy('indicatorId', storyPoint.get('indicator.id'));
-        if (payload) {
-          storyPoint.set('events', payload.events);
-        }
+    return (storyPoints || []).map((storyPoint) => {
+      if (!storyPoint.events) {
+        const payload = (storylineEvents || []).find((point) => {
+          return point.indicatorId === storyPoint.indicator.id;
+        });
+        return _.defaults({
+          events: payload && payload.events || []
+        }, storyPoint);
       }
+      return storyPoint;
+    });
+  }
+);
 
+export const storyPointsWithEvents = createSelector(
+  storyPointsIncludingEvents,
+  (storyPointsIncludingEvents) => {
+    return storyPointsIncludingEvents.map((storyPoint) => {
       // If the storyPoint has its events now, close it if it doesn't have any child items.
       // For example, if the events have no enrichments and the child items are supposed to display enrichments,
       // then there are no child items to display, so we should mark it closed. Otherwise, if we leave it opened,
       // the UI will render it as open but not render any child items, which would be an awkward state.
-      if (storyPoint.get('events')) {
-        if (!storyPoint.get('items.length')) {
-          storyPoint.set('isOpen', false);
+      if (storyPoint.events.length > 0) {
+        const items = storyPoint && storyPoint.items || [];
+        if (!items.length > 0) {
+          return _.defaults({
+            isOpen: false
+          }, storyPoint);
         }
       }
+      return storyPoint;
     });
-    return storyPoints;
   }
 );
 

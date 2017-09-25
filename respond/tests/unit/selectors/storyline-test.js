@@ -1,5 +1,6 @@
+import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
-import { storyEventCountExpected, selectedStoryEventCountExpected } from 'respond/selectors/storyline';
+import { storyPointsWithEvents, storyEventCountExpected, selectedStoryEventCountExpected } from 'respond/selectors/storyline';
 
 module('Unit | Mixin | Storyline Selector');
 
@@ -163,4 +164,97 @@ test('selectedStoryEventCountExpected returns the sum of all alert.numEvents whe
 
   const result = selectedStoryEventCountExpected(state);
   assert.equal(result, 60, 'Expected the sum of numEvents of all alerts to be returned');
+});
+
+test('storyPointsWithEvents returns sum of storyline and events including isOpen boolean for child elements', function(assert) {
+  const state = {
+    respond: {
+      incident: {
+        selection: {
+          type: 'storyPoint',
+          ids: []
+        },
+        storyline: [
+          {
+            id: 'alert1',
+            alert: { numEvents: 10 },
+            items: [
+              {
+                id: 'abc123'
+              }
+            ]
+          },
+          {
+            id: 'alert2',
+            alert: { numEvents: 20 }
+          },
+          {
+            id: 'alert3',
+            alert: { numEvents: 30 }
+          }
+        ],
+        storylineEvents: [
+          {
+            indicatorId: 'alert1',
+            events: [
+              {
+                id: '586ecf95ecd25950034e1310',
+                description: 'IPIOC',
+                from: 'INENDEBS1L2C',
+                indicatorId: 'alert1'
+              }
+            ]
+          },
+          {
+            indicatorId: 'alert2',
+            events: []
+          }
+        ]
+      }
+    }
+  };
+
+  const result = storyPointsWithEvents(Immutable.from(state));
+  assert.deepEqual(result, [
+    {
+      events: [
+        {
+          description: 'IPIOC',
+          from: 'INENDEBS1L2C',
+          id: '586ecf95ecd25950034e1310',
+          indicatorId: 'alert1'
+        }
+      ],
+      indicator: {
+        alert: {
+          numEvents: 10
+        },
+        id: 'alert1',
+        items: [
+          {
+            id: 'abc123'
+          }
+        ]
+      },
+      isOpen: false
+    },
+    {
+      events: [],
+      indicator: {
+        alert: {
+          numEvents: 20
+        },
+        id: 'alert2'
+      }
+    },
+    {
+      events: [],
+      indicator: {
+        alert: {
+          numEvents: 30
+        },
+        id: 'alert3'
+      }
+    }
+  ]);
 });
