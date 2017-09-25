@@ -48,8 +48,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ConfigurationApiControllerModuleTest {
 
     private static final String CONFIGURATION_URI = "/configuration";
+    private static final String PRESIDIO_APPLICATION_CONFIG_SERVER_URI = "http://localhost:8888/application-presidio";
+    private static final String CONFIG_SERVER_WORKFLOWS_URI = "http://localhost:8888/workflows-default.json";
+    private static final String CONFIG_SERVER_PRESIDIO_APPLICATION_JSON_URI = "http://localhost:8888/application-presidio-default.json";
+
     private MockRestServiceServer mockRestServiceServer;
     private MockMvc managerConfigurationMVC;
+
     @Autowired
     private ConfigurationApi configurationApi;
     @Autowired
@@ -77,7 +82,7 @@ public class ConfigurationApiControllerModuleTest {
 
         mockRestServiceServer = MockRestServiceServer.createServer(restTemplate);
         mockRestServiceServer.reset();
-        mockRestServiceServer.expect(requestTo("http://localhost:8888/application-presidio-default.json"))
+        mockRestServiceServer.expect(requestTo(CONFIG_SERVER_PRESIDIO_APPLICATION_JSON_URI))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(AIRFLOW_CONFIGURATION_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
@@ -115,7 +120,9 @@ public class ConfigurationApiControllerModuleTest {
     }
 
     private SecuredConfiguration getActualConfiguration() throws Exception {
-        MvcResult mvcResult = managerConfigurationMVC.perform(get(CONFIGURATION_URI)).andExpect(status().isOk()).andReturn();
+        MvcResult mvcResult = managerConfigurationMVC.perform(get(CONFIGURATION_URI))
+                .andExpect(status().isOk())
+                .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
         return objectMapper.readValue(actualResponseStr, SecuredConfiguration.class);
     }
@@ -139,8 +146,15 @@ public class ConfigurationApiControllerModuleTest {
         expectedResponse.setSystem(system);
         expectedResponse.setDataPipeline(dataPipeline);
 
-        mockRestServiceServer.expect(requestTo("http://localhost:8888/application-presidio")).andExpect(method(HttpMethod.PUT)).andExpect(MockRestRequestMatchers.content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.dataPipeline.schemas[0]").value(equalTo(SchemasEnum.AUTHENTICATION.toString()))).andRespond(withSuccess());
-        mockRestServiceServer.expect(requestTo("http://localhost:8888/workflows-default.json")).andExpect(method(HttpMethod.GET)).andRespond(withSuccess(WORKFLOWS_CONFIG_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
+        mockRestServiceServer.expect(requestTo(PRESIDIO_APPLICATION_CONFIG_SERVER_URI))
+                .andExpect(method(HttpMethod.PUT))
+                .andExpect(MockRestRequestMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.dataPipeline.schemas[0]")
+                        .value(equalTo(SchemasEnum.AUTHENTICATION.toString())))
+                .andRespond(withSuccess());
+        mockRestServiceServer.expect(requestTo(CONFIG_SERVER_WORKFLOWS_URI))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(WORKFLOWS_CONFIG_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
         // add schema with patch
         managerConfigurationMVC.perform(request(HttpMethod.PATCH, CONFIGURATION_URI)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -159,7 +173,7 @@ public class ConfigurationApiControllerModuleTest {
             properties.put("manager.dags.dag_id.fullFlow.prefix", "full_flow");
             properties.put("manager.dags.state.buildingBaselineDuration", "P30D");
             properties.put("spring.cloud.config.uri", "http://localhost:8888");
-            properties.put("presidio.workflows.config.path","/tmp");
+            properties.put("presidio.workflows.config.path", "/tmp");
             properties.put("spring.cloud.config.username", "config");
             properties.put("spring.cloud.config.password", "secure");
             return new TestPropertiesPlaceholderConfigurer(properties);
