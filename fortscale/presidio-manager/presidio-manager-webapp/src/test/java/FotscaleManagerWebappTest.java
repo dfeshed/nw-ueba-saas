@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
-import presidio.webapp.controller.configuration.ConfigurationApiController;
 import presidio.webapp.service.ConfigurationManagerService;
 import presidio.webapp.spring.ManagerWebappConfiguration;
 
@@ -25,13 +24,9 @@ public class FotscaleManagerWebappTest {
     @Autowired
     private ConfigurationManagerService configurationManagerService;
 
-    @Autowired
-    private ConfigurationApiController configurationApiController;
     @Test
     public void contextLoads() {
         Assert.notNull(configurationManagerService, "client service on sprint context cannot be null");
-        configurationApiController.configurationGet();
-
     }
 
 

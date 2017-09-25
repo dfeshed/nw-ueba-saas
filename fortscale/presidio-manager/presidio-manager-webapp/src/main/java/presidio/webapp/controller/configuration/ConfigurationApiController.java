@@ -120,7 +120,6 @@ public class ConfigurationApiController implements ConfigurationApi {
         ValidationResults validationResults = configurationManagerService.validateConfiguration(configurationManagerService.presidioManagerConfigurationFactory(body));
         if (!validationResults.isValid()) {
             configurationResponse.setMessage("error message");
-            configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
 
             List<ConfigurationResponseError> errorList = new ArrayList<ConfigurationResponseError>();
             ConfigurationResponseError error;
@@ -137,7 +136,6 @@ public class ConfigurationApiController implements ConfigurationApi {
             return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
         }
 
-        configurationResponse.code("201");
         configurationResponse.message("Created");
 
         //storing configuration file into config server

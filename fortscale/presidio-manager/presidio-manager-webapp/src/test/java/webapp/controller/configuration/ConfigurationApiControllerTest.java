@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,6 +32,9 @@ public class ConfigurationApiControllerTest {
 
     private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test.json";
 
+    @Autowired
+    private ApplicationContext ctx;
+
     @MockBean
     private ConfigurationManagerService configurationProcessingManager;
 
@@ -41,7 +46,7 @@ public class ConfigurationApiControllerTest {
         ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
 
         ObjectMapper mapper = new ObjectMapper();
-        File from = new File(".//src//test//resources//" + CONFIG_JSON_FILE_NAME);
+        File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
         JsonNode jsonBody = mapper.readTree(from);
 
         PresidioManagerConfiguration conf = configurationProcessingManager.presidioManagerConfigurationFactory(jsonBody);
@@ -63,14 +68,16 @@ public class ConfigurationApiControllerTest {
         ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
 
         ObjectMapper mapper = new ObjectMapper();
-        File from = new File(".//src//test//resources//" + CONFIG_JSON_FILE_NAME);
+        File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
         JsonNode jsonBody = mapper.readTree(from);
 
         PresidioManagerConfiguration conf = configurationProcessingManager.presidioManagerConfigurationFactory(jsonBody);
         ValidationResults validationResult = new ValidationResults();
         when(configurationProcessingManager.validateConfiguration(conf)).thenReturn(validationResult);
+        when(configurationProcessingManager.applyConfiguration()).thenReturn(true);
+
         ResponseEntity<ConfigurationResponse> response = controller.configurationPut(jsonBody);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "response HttpStatus should be CREATED");
+        Assert.isTrue(response.getStatusCode().equals(HttpStatus.CREATED), "response HttpStatus should be CREATED");
         Assert.isTrue(response.getBody().getError().isEmpty(), "response error list should be empty");
     }
 
