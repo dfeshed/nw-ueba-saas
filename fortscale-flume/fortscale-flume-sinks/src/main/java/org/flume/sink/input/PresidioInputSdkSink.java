@@ -133,7 +133,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         final boolean allSavedSuccessfully = presidioInputPersistencyService.store(schema, records);
         final int size = records.size();
         if (allSavedSuccessfully) {
-            logger.info("{} events were saved successfully.", size);
+            logger.debug("{} events were saved successfully.", size);
 //            sinkCounter.addToEventDrainSuccessCount(size);
         } else {
             logger.warn("Not all records out of {} total records were saved successfully", size);

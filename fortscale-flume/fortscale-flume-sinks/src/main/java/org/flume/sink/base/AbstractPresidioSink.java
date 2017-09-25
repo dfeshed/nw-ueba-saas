@@ -63,11 +63,11 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
             final List<T> eventsToSave = getEvents();
 
             if (eventsToSave.isEmpty()) {
-                logger.trace("{} has finished processing 0 events.", getName());
+                logger.debug("{} has finished processing 0 events.", getName());
                 result = Status.BACKOFF;
             } else {
                 final int numOfSavedEvents = saveEvents(eventsToSave);
-                logger.debug("{} has finished processing {} events.", getName(), numOfSavedEvents);
+                logger.trace("{} has finished processing {} events.", getName(), numOfSavedEvents);
             }
             transaction.commit();
         } catch (Exception ex) {
