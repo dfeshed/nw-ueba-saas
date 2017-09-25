@@ -373,21 +373,21 @@ IncludeOptional conf.d/*.conf
     
     KrbMethodK5Passwd off
     KrbAuthRealms ${realmName}
-    KrbServiceName  HTTP/${"username"}@${realmName}
+    KrbServiceName  HTTP/${username}@${realmName}
     Krb5Keytab /etc/krb5.keytab
     
     krblocalUserMapping on
     
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
-    AuthLDAPBindDN ${"username"}
-    AuthLDAPBindPassword ${"password"}
+    AuthLDAPBindDN ${username}
+    AuthLDAPBindPassword ${password}
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
     RewriteEngine on
 
-    RewriteRule  "/caui-webapp/(.*)$" "http://dev-yuvals:8080/caui-webapp/$1" [NE,R,P]
+    RewriteRule  "/caui-webapp/(.*)$" "http://${r"${server_name}"}:8080/caui-webapp/$1" [NE,R,P]
   </Location> 
   
   <Location /kibana>
@@ -397,15 +397,15 @@ IncludeOptional conf.d/*.conf
     
     KrbMethodK5Passwd off
     KrbAuthRealms ${realmName}
-    KrbServiceName  HTTP/${"username"}@${realmName}
+    KrbServiceName  HTTP/${username}@${realmName}
     Krb5Keytab /etc/krb5.keytab
     
     krblocalUserMapping on
     
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
-    AuthLDAPBindDN ${"username"}
-    AuthLDAPBindPassword ${"password"}
+    AuthLDAPBindDN ${username}
+    AuthLDAPBindPassword ${password}
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
@@ -438,15 +438,15 @@ IncludeOptional conf.d/*.conf
     
     KrbMethodK5Passwd off
     KrbAuthRealms ${realmName}
-    KrbServiceName  HTTP/${"username"}@${realmName}
+    KrbServiceName  HTTP/${username}@${realmName}
     Krb5Keytab /etc/krb5.keytab
     
     krblocalUserMapping on
     
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
-    AuthLDAPBindDN ${"username"}
-    AuthLDAPBindPassword ${"password"}
+    AuthLDAPBindDN ${username}
+    AuthLDAPBindPassword ${password}
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
