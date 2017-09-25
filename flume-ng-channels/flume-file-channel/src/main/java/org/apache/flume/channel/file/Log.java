@@ -402,7 +402,7 @@ public class Log {
               PREFIX + id), encryptionKeyProvider, fsyncPerTransaction));
         }
       }
-      LOGGER.info("Found NextFileID " + nextFileID +
+      LOGGER.trace("Found NextFileID " + nextFileID +
           ", from " + dataFiles);
 
       /*
@@ -419,11 +419,11 @@ public class Log {
       File checkpointFile = new File(checkpointDir, "checkpoint");
       if (shouldFastReplay) {
         if (checkpointFile.exists()) {
-          LOGGER.debug("Disabling fast full replay because checkpoint " +
+          LOGGER.trace("Disabling fast full replay because checkpoint " +
               "exists: " + checkpointFile);
           shouldFastReplay = false;
         } else {
-          LOGGER.debug("Not disabling fast full replay because checkpoint " +
+          LOGGER.trace("Not disabling fast full replay because checkpoint " +
               " does not exist: " + checkpointFile);
         }
       }
@@ -441,7 +441,7 @@ public class Log {
                 this.compressBackupCheckpoint);
         queue = new FlumeEventQueue(backingStore, inflightTakesFile,
             inflightPutsFile, queueSetDir);
-        LOGGER.info("Last Checkpoint " + new Date(checkpointFile.lastModified())
+        LOGGER.trace("Last Checkpoint " + new Date(checkpointFile.lastModified())
             + ", queue depth = " + queue.getSize());
 
         /*
@@ -489,7 +489,7 @@ public class Log {
 
 
       for (int index = 0; index < logDirs.length; index++) {
-        LOGGER.info("Rolling " + logDirs[index]);
+        LOGGER.trace("Rolling " + logDirs[index]);
         roll(index);
       }
 
@@ -518,15 +518,15 @@ public class Log {
         queue, fsyncPerTransaction);
     if (useFastReplay && rebuilder.rebuild()) {
       didFastReplay = true;
-      LOGGER.info("Fast replay successful.");
+      LOGGER.trace("Fast replay successful.");
     } else {
       ReplayHandler replayHandler = new ReplayHandler(queue,
           encryptionKeyProvider, fsyncPerTransaction);
       if (useLogReplayV1) {
-        LOGGER.info("Replaying logs with v1 replay logic");
+        LOGGER.trace("Replaying logs with v1 replay logic");
         replayHandler.replayLogv1(dataFiles);
       } else {
-        LOGGER.info("Replaying logs with v2 replay logic");
+        LOGGER.trace("Replaying logs with v2 replay logic");
         replayHandler.replayLog(dataFiles);
       }
       readCount = replayHandler.getReadCount();
@@ -865,7 +865,7 @@ public class Log {
   void shutdownWorker() {
     String msg = "Attempting to shutdown background worker.";
     System.out.println(msg);
-    LOGGER.info(msg);
+    LOGGER.trace(msg);
     workerExecutor.shutdown();
     try {
       workerExecutor.awaitTermination(10, TimeUnit.SECONDS);
@@ -974,7 +974,7 @@ public class Log {
       if (oldLogFile == null || buffer == null ||
           oldLogFile.isRollRequired(buffer)) {
         try {
-          LOGGER.info("Roll start " + logDirs[index]);
+          LOGGER.debug("Roll start " + logDirs[index]);
           int fileID = nextFileID.incrementAndGet();
           File file = new File(logDirs[index], PREFIX + fileID);
           LogFile.Writer writer = LogFileFactory.getWriter(file, fileID,
@@ -990,7 +990,7 @@ public class Log {
             oldLogFile.close();
           }
         } finally {
-          LOGGER.info("Roll end");
+          LOGGER.debug("Roll end");
         }
       }
     } finally {
@@ -1049,7 +1049,7 @@ public class Log {
             writer.close();
           }
           logFileRefCountsAll.remove(logFileID);
-          LOGGER.info("Updated checkpoint for file: " + logFile + " position: "
+          LOGGER.trace("Updated checkpoint for file: " + logFile + " position: "
               + logWriter.position() + " logWriteOrderID: " + logWriteOrderID);
         }
 
@@ -1105,7 +1105,7 @@ public class Log {
     // checkpoint will become the backup at that time,
     // and thus these files are no longer needed).
     for (File fileToDelete : pendingDeletes) {
-      LOGGER.info("Removing old file: " + fileToDelete);
+      LOGGER.trace("Removing old file: " + fileToDelete);
       FileUtils.deleteQuietly(fileToDelete);
     }
     pendingDeletes.clear();
@@ -1152,7 +1152,7 @@ public class Log {
       String msg = "Cannot lock " + dir
           + ". The directory is already locked. "
           + channelNameDescriptor;
-      LOGGER.info(msg);
+      LOGGER.trace(msg);
       throw new IOException(msg);
     }
     FileLock secondLock = tryLock(dir);
