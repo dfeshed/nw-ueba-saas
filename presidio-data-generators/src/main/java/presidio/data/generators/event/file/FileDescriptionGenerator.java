@@ -8,14 +8,20 @@ public class FileDescriptionGenerator implements IFileDescriptionGenerator{
         String operationType = fileEvent.getFileOperation().getOperationType().getName();
         String description;
         String op = operationType.substring(operationType.indexOf("_") + 1, operationType.length()).toLowerCase();
+        op = op.replaceAll("_", " ");
 
         if (operationType.contains("FOLDER")) {
             description = "The folder " + fileEvent.getFileOperation().getSourceFile().getFilePath() +
                     " " + op + " on " + fileEvent.getUser().getUsername();
         }
 
-        else {
+        else if (operationType.contains("FILE")){
             description = "The file " + fileEvent.getFileOperation().getSourceFile().getAbsoluteFilePath() +
+                    " " + op + " on " + fileEvent.getUser().getUsername();
+        }
+
+        else {
+            description = "The " + fileEvent.getFileOperation().getSourceFile().getAbsoluteFilePath() +
                     " " + op + " on " + fileEvent.getUser().getUsername();
         }
         return description;
