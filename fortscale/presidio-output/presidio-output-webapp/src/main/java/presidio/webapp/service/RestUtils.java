@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RestUtils {
+    private static final String SEVERITY_PER_DAY="severityPerDay";
+
     public static Map<String, Map<String, Long>> convertAggregationsToMap(Map<String, Aggregation> aggregations, Map<String, String> aggregationNamesEnumMapping) {
         Map<String, Map<String, Long>> aggregationsMap = new HashMap<>();
         aggregations.forEach((s, aggregation) -> {
@@ -33,7 +35,7 @@ public class RestUtils {
                                     // Get the second level bucket
                                     List<Terms.Bucket> secondLevelBuckets = ((InternalTerms) secondLevelAggregation).getBuckets();
                                     secondLevelBuckets.forEach(secondLevelBucket -> {
-                                        if (s.equals("severityPerDay")) {
+                                        if (s.equals(SEVERITY_PER_DAY)) {
                                             long dateInMilli = Instant.parse(firstLevelBucket.getKeyAsString()).toEpochMilli();
                                             bucketAsMap.put(String.format("%s:%s", dateInMilli, secondLevelBucket.getKeyAsString()), secondLevelBucket.getDocCount());
                                         } else {
