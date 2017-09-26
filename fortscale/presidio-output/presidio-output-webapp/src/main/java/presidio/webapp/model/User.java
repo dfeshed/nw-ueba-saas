@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static presidio.webapp.model.UserQueryEnums.UserSeverity;
+
 /**
  * User
  */

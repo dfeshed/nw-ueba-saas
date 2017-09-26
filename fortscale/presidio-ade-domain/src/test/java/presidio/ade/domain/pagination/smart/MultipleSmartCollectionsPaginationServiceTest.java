@@ -26,41 +26,42 @@ import java.util.*;
  * @author Maria Dorohin
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {
-        SmartDataReaderConfig.class,
-        MongodbTestConfig.class
-})
+@ContextConfiguration(classes = {MongodbTestConfig.class, SmartDataReaderConfig.class})
 public class MultipleSmartCollectionsPaginationServiceTest {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
     private SmartDataReader smartDataReader;
 
+    private Set<String> configurationNames;
     private MultipleSmartCollectionsPaginationService paginationService;
 
     @Before
     public void setup() {
-        Set<String> configurationNames = new HashSet<>();
-        configurationNames.add("smartRecordConf1");
-        configurationNames.add("smartRecordConf2");
+        configurationNames = new HashSet<>(Arrays.asList("smartRecordConf1", "smartRecordConf2"));
         paginationService = new MultipleSmartCollectionsPaginationService(configurationNames, smartDataReader, 3, 100);
+    }
+
+    @Test
+    public void getPageIteratorWhenThereAreSmartCollections() {
+        List<Pair<String, Double>> contextIdAndScorePairs = new ArrayList<>();
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser1", 90.0));
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser2", 50.0));
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser3", 70.0));
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser4", 30.0));
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser5", 55.0));
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser6", 65.0));
+        contextIdAndScorePairs.add(new Pair<>("userId#testUser7", 45.0));
+
+        Instant start = Instant.EPOCH.plus(Duration.ofDays(1));
+        Instant end = start.plus(Duration.ofHours(1));
+        TimeRange timeRange = new TimeRange(start, end);
         List<SmartRecord> smartRecords = new ArrayList<>();
 
-        TimeRange timeRange = new TimeRange(Instant.EPOCH.plus(Duration.ofDays(1)), Instant.now().minus(Duration.ofDays(1)));
-        List<Pair<String, Double>> usersToScoreList = new ArrayList<>();
-        usersToScoreList.add(new Pair<>("userTest1", 90.0));
-        usersToScoreList.add(new Pair<>("userTest2", 50.0));
-        usersToScoreList.add(new Pair<>("userTest3", 70.0));
-        usersToScoreList.add(new Pair<>("userTest4", 30.0));
-        usersToScoreList.add(new Pair<>("userTest5", 55.0));
-        usersToScoreList.add(new Pair<>("userTest6", 65.0));
-        usersToScoreList.add(new Pair<>("userTest7", 45.0));
-        usersToScoreList.add(new Pair<>("userTest7", 85.0));
-
-
-        for (Pair<String, Double> usersToScore : usersToScoreList) {
-            SmartRecord smartRecord = new SmartRecord(timeRange, usersToScore.getKey(), "featureName", FixedDurationStrategy.HOURLY,
-                    90, usersToScore.getValue(), Collections.emptyList(), Collections.emptyList());
+        for (Pair<String, Double> contextIdAndScorePair : contextIdAndScorePairs) {
+            SmartRecord smartRecord = new SmartRecord(
+                    timeRange, contextIdAndScorePair.getKey(), "featureName", FixedDurationStrategy.HOURLY,
+                    0.5, contextIdAndScorePair.getValue(), Collections.emptyList(), Collections.emptyList(), null);
             smartRecords.add(smartRecord);
         }
 
@@ -68,32 +69,26 @@ public class MultipleSmartCollectionsPaginationServiceTest {
             mongoTemplate.insert(smartRecords, SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + configurationName);
         }
 
-        mongoTemplate.insert(smartRecords, "NotSmartCollectionName");
-    }
-
-    /**
-     * Creates PageIterator, which contains 3 SmartRecordPageIterator.
-     */
-    @Test
-    public void getPageIterator() {
-        TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
-        PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
+        mongoTemplate.insert(smartRecords, "notASmartCollection");
+        PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(new TimeRange(Instant.EPOCH, Instant.now()), 40);
+        int numOfPages = 0;
 
         while (pageIterator.hasNext()) {
-            List<SmartRecord> smartRecords = pageIterator.next();
-            Assert.assertTrue("page must not be empty", smartRecords.size() > 0);
-            smartRecords.forEach(record -> Assert.assertTrue("score must be greater than 40", record.getScore() > 40));
+            List<SmartRecord> nextPage = pageIterator.next();
+            numOfPages++;
+            Assert.assertEquals(3, nextPage.size());
+            nextPage.forEach(record -> Assert.assertTrue(record.getScore() >= 40));
         }
+
+        // 2 smart collections, 2 pages each
+        Assert.assertEquals(4, numOfPages);
     }
 
-    /**
-     * Test MultipleSmartCollectionsPaginationService, where no smart collection exist
-     */
     @Test
-    public void getPageIteratorWithoutSmartCollections() {
-        mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
+    public void getPageIteratorWhenThereAreNoSmartCollections() {
+        mongoTemplate.getCollectionNames().forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
         TimeRange timeRange = new TimeRange(Instant.EPOCH, Instant.now());
-        PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 40);
+        PageIterator<SmartRecord> pageIterator = paginationService.getPageIterator(timeRange, 0);
         Assert.assertFalse(pageIterator.hasNext());
     }
 }
