@@ -21,7 +21,7 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEven
     private IStringGenerator contextIdGenerator;
     private TimeGenerator startInstantGenerator;
     private IStringGenerator featureNameGenerator;
-    private FixedMapGenerator<Integer, Double> aggregatedFeatureValuesGenerator;
+    private CyclicFixedMapGenerator<Integer, Double> aggregatedFeatureValuesGenerator;
 
 
     public AccumulatedAggregationFeatureRecordHourlyGenerator(String featureName, String contextIdPattern,
@@ -31,7 +31,7 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEven
         this.startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay,0),LocalTime.of(endHourOfDay,0), 60,30,1);
         this.contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
 
-        this.aggregatedFeatureValuesGenerator = new FixedMapGenerator<>(Lists.newArrayList(aggregatedFeatureValuesMap));
+        this.aggregatedFeatureValuesGenerator = new CyclicFixedMapGenerator<>(Lists.newArrayList(aggregatedFeatureValuesMap));
 
     }
 
