@@ -1,7 +1,8 @@
 package presidio.ade.domain.record.enriched.file;
 
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -14,6 +15,10 @@ import java.time.Instant;
  */
 @Document
 @AdeRecordMetadata(adeEventType = AdeFileRecord.FILE_STR)
+@CompoundIndexes({
+        @CompoundIndex(name = "start", def = "{'startInstant': 1}")
+        // A compound index is created dynamically for every <'contextType', 'startInstant'> pair in use
+})
 public class EnrichedFileRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
@@ -24,7 +29,6 @@ public class EnrichedFileRecord extends EnrichedRecord {
     public static final String SRC_DRIVE_SHARED_FIELD = "srcDriveShared";
     public static final String DST_DRIVE_SHARED_FIELD = "dstDriveShared";
 
-    @Indexed
     @Field(USER_ID_FIELD)
     private String userId;
     @Field(ABSOLUTE_SRC_FILE_PATH_FIELD)

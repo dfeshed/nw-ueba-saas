@@ -4,11 +4,9 @@ import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.ttl.TtlService;
 import fortscale.utils.ttl.TtlServiceAware;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
@@ -79,18 +77,7 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, TtlServiceAware 
         Criteria scoreCriteria = Criteria.where(SmartRecord.SMART_SCORE_FIELD).gte(scoreThreshold);
         Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria).addCriteria(scoreCriteria).skip(numOfItemsToSkip).limit(numOfItemsToRead);
 
-        List<SmartRecord> smartRecords = mongoTemplate.find(query, SmartRecord.class, collectionName);
-
-        return smartRecords;
-    }
-
-    @Override
-    public void ensureContextIdIndex(String configurationName) {
-
-        String collectionName = translator.toCollectionName(configurationName);
-
-        mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-                .on(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, Sort.Direction.ASC));
+        return mongoTemplate.find(query, SmartRecord.class, collectionName);
     }
 
     @Override
@@ -104,5 +91,4 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, TtlServiceAware 
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
-
 }

@@ -30,9 +30,7 @@ import java.util.List;
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAppTest {
-
     private static final int DAYS_BACK_FROM = 2;
-
     private static final Schema ADE_EVENT_TYPE = Schema.FILE;
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
@@ -59,6 +57,7 @@ public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAp
 
     @Before
     public void beforeTest() {
+        mongoTemplate.getCollectionNames().forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
         ContinuousDataModel continuousDataModel = new ContinuousDataModel();
         continuousDataModel.setParameters(200, 1, 1, 1);
         GaussianPriorModel gaussianPriorModel = new GaussianPriorModel()
@@ -67,31 +66,29 @@ public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAp
         String sessionId = "test_model";
         Instant startTime = START_DATE.minus(Duration.ofDays(30));
         Instant endTime = START_DATE.minus(Duration.ofDays(1));
-        ModelDAO continousModelDao = new ModelDAO(sessionId, "userId#testUser", continuousDataModel, startTime, endTime);
+        ModelDAO continuousModelDao = new ModelDAO(sessionId, "userId#testUser", continuousDataModel, startTime, endTime);
 
         ModelDAO priorModelDao = new ModelDAO(sessionId, null, gaussianPriorModel, startTime, endTime);
-        mongoTemplate.insert(continousModelDao, "model_numberOfSuccessfulFileAction.userId.file.hourly");
+        mongoTemplate.insert(continuousModelDao, "model_numberOfSuccessfulFileAction.userId.file.hourly");
         mongoTemplate.insert(priorModelDao, "model_numberOfSuccessfulFileAction.userId.prior.global.file.hourly");
     }
-
 
     /**
      * Generate 6 events per hour.
      * Run feature aggregation app for 1 hour
      * Operation type of all the events is "open"
      * Create model for numberOfSuccessfulFileAction.userId.file.hourly with N=200 and mean=1
-     *
      * <p>
      * Expected result:
      * scored_feature_aggr__numberOfSuccessfulFileActionUserIdFileHourly collection:
      * featureValue of each event is 6.
      * score greater then 0
      *
-     * @param generatedData*/
+     * @param generatedData generated data
+     */
     @Override
     protected void assertSanityTest(List generatedData) {
         String openFileCollectionName = "scored_feature_aggr__numberOfSuccessfulFileActionUserIdFileHourly";
-
         List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = mongoTemplate.findAll(ScoredFeatureAggregationRecord.class, openFileCollectionName);
 
         for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
@@ -100,12 +97,8 @@ public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAp
         }
     }
 
-
     @Configuration
     @Import({EnrichedSourceSpringConfig.class, FeatureAggregationsConfigurationTest.class, PresidioCommands.class, EnrichedSuccessfulFileOpenedGeneratorConfig.class})
     protected static class featureAggregationsTestConfig {
-
     }
-
-
 }

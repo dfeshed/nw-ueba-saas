@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final UserScoreService userScoreService;
+
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
@@ -38,6 +38,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final int smartPageSize;
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
+    private static final String ADE_SMART_USER_ID = "userId";
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
@@ -74,22 +75,20 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
                 List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
+                String userId = smart.getContext().get(ADE_SMART_USER_ID);
 
-                AdeAggregationRecord indicators = null;
-                if (indicatorsList.size() == 0) {
-                    logger.error("Failed to retrieve user id from smart because indicators list is empty for smart {}. skipping to next smart", smart.getId());
+                if (userId == null || userId.isEmpty()) {
+                    logger.error("Failed to get user id from smart context, user id is null or empty for smart {}. skipping to next smart", smart.getId());
                     continue;
-                } else {
-                    indicators = indicatorsList.get(0);
                 }
-                String userId = indicators.getContext().get("userId");//TODO- temporary fix, ADE team should provide user id on the smart pojo
+
                 User userEntity = getSingleUserEntityById(userId);
                 if (userEntity == null) {
                     //Check if user already created but not saved
                     userEntity = isUserGoingToBeCreated(users, userId);
                     if (userEntity == null) {
                         //Need to create user and add it to about to be created list
-                    userEntity = userService.createUserEntity(userId);
+                        userEntity = userService.createUserEntity(userId);
 
                         users.add(userEntity);
                         if (userEntity == null) {
@@ -97,9 +96,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                             continue;
                         }
                     }
-
                 }
-
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
@@ -109,7 +106,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             }
         }
 
-
         users = storeUsers(users); //Get the generated users with the new elasticsearch ID
         storeAlerts(alerts);
 
@@ -118,8 +114,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+    }
 
-        }
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));

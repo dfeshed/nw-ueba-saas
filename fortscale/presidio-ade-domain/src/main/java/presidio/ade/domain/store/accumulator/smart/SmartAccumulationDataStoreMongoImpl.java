@@ -41,7 +41,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
     }
 
     /**
-     * @param metadata
+     * @param metadata metadata
      * @return collection name
      */
     protected String getCollectionName(SmartAccumulatedRecordsMetaData metadata) {
@@ -83,8 +83,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
         String collectionName = getCollectionName(metadata);
 
         Query query = new Query();
-        query.addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(startInstant)));
-        query.addCriteria(where(AdeContextualAggregatedRecord.END_INSTANT_FIELD).lte(Date.from(endInstant)));
+        query.addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(startInstant)).lt(Date.from(endInstant)));
 
         Set<String> distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName)
                 .distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject())
@@ -106,5 +105,4 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
-
 }
