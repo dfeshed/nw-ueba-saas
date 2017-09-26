@@ -73,12 +73,17 @@ public class AlertPersistencyServiceTest {
     public void testSave() {
         Date startDate = new Date();
         Date endDate = new Date();
+        Date createdDate = new Date();
+        createdDate.setTime(createdDate.getTime()+10000);
+
         Alert alert =
                 new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert.setCreatedDate(createdDate);
         Alert testAlert = alertPersistencyService.save(alert);
 
         assertNotNull(testAlert.getId());
         assertEquals(testAlert.getId(), alert.getId());
+        assertEquals(testAlert.getCreatedDate(), alert.getCreatedDate());
         assertEquals(testAlert.getUserName(), alert.getUserName());
         assertEquals(testAlert.getStartDate(), alert.getStartDate());
     }
