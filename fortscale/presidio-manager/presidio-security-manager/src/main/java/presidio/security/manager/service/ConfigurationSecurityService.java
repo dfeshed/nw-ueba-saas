@@ -16,6 +16,7 @@ import freemarker.template.Configuration;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
@@ -36,10 +37,13 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private final ConfigurationServerClientService configurationServerClientService;
 
     private final Configuration freeMakerConfiguration;
+    
+    private final ObjectMapper mapper;
 
     public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService, Configuration freeMakerConfiguration) {
         this.configurationServerClientService = configurationServerClientService;
         this.freeMakerConfiguration = freeMakerConfiguration;
+        this.mapper = new ObjectMapper();
     }
 
     @Override
@@ -49,21 +53,32 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
 
     @Override
     public boolean applyConfiguration() {
+        FileWriter fileWriter = null;
+
         try {
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
-            Map<String, Object> securityConfiguration = new ObjectMapper().convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
+            Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
             String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE), securityConfiguration);
 
             File file = new File(ETC_CONFIG_PATH);
-            FileWriter fileWriter = new FileWriter(file,false);
+            fileWriter = new FileWriter(file,false);
             fileWriter.write(httpdConf);
-            fileWriter.close();
 
         } catch (Exception e) {
             String msg = "failed to apply configuration";
             logger.error(msg,e);
             return false;
+        }
+
+        finally {
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    logger.error("Failed to close filewriter.", e);
+                }
+            }
         }
 
         return true;
