@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -20,12 +20,12 @@ public abstract class AbstractElasticDocument {
     private String id;
 
     @CreatedDate
-    @Field(type = FieldType.String, store = true)
-    private String createdDate;
+    @Field(type = FieldType.Date, store = true)
+    private Date createdDate;
 
     public AbstractElasticDocument() {
         this.id = UUID.randomUUID().toString();
-        this.createdDate = Instant.now().toString();
+        this.createdDate = new Date();
     }
 
     public String getId() {
@@ -36,11 +36,11 @@ public abstract class AbstractElasticDocument {
         this.id = id;
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 }
