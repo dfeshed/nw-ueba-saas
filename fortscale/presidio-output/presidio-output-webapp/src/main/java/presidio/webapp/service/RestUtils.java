@@ -5,6 +5,7 @@ import org.elasticsearch.search.aggregations.bucket.histogram.InternalDateHistog
 import org.elasticsearch.search.aggregations.bucket.terms.InternalTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,12 @@ public class RestUtils {
                                     // Get the second level bucket
                                     List<Terms.Bucket> secondLevelBuckets = ((InternalTerms) secondLevelAggregation).getBuckets();
                                     secondLevelBuckets.forEach(secondLevelBucket -> {
-                                        bucketAsMap.put(String.format("%s:%s", firstLevelBucket.getKeyAsString(), secondLevelBucket.getKeyAsString()), secondLevelBucket.getDocCount());
+                                        if (s.equals("severityPerDay")) {
+                                            long dateInMilli = Instant.parse(firstLevelBucket.getKeyAsString()).toEpochMilli();
+                                            bucketAsMap.put(String.format("%s:%s", dateInMilli, secondLevelBucket.getKeyAsString()), secondLevelBucket.getDocCount());
+                                        } else {
+                                            bucketAsMap.put(String.format("%s:%s", firstLevelBucket.getKeyAsString(), secondLevelBucket.getKeyAsString()), secondLevelBucket.getDocCount());
+                                        }
                                     });
                                 }
                             }
