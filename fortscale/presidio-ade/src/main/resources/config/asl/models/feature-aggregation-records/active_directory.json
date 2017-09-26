@@ -13,7 +13,7 @@
         "aggregatedFeatureEventConfName": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder"
       }
     },
     {
@@ -43,7 +43,7 @@
         "aggregatedFeatureEventConfName": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder"
       }
     },
     {
@@ -73,7 +73,7 @@
         "aggregatedFeatureEventConfName": "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder"
       }
     },
     {
@@ -103,7 +103,7 @@
         "aggregatedFeatureEventConfName": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder"
       }
     },
     {
@@ -133,7 +133,7 @@
         "aggregatedFeatureEventConfName": "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder"
       }
     },
     {

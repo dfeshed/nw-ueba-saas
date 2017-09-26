@@ -5,7 +5,7 @@
       "scorers": [
         {
           "type": "pareto-scorer",
-          "name": "file-event-score",
+          "name": "activeDirectory-event-score",
           "highest-score-weight": 0.8,
           "scorers": [
             {
@@ -23,7 +23,7 @@
             },
             {
               "type": "list-conditional-scorer",
-              "name": "userId.securitySensitive.file.score",
+              "name": "userId.securitySensitive.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
               "conditional-value": "SECURITY_SENSITIVE_OPERATION",
               "scorer": {
@@ -48,7 +48,7 @@
                 "name": "adminPasswordChanged.userId.activeDirectory.score",
                 "regex": "PASSWORD_CHANGED",
                 "regex-field-name": "operationType",
-                "constant-score": 100
+                "constant-score": 10
               }
             },
             {
@@ -61,7 +61,7 @@
                 "name": "nonAdminPasswordChanged.userId.activeDirectory.score",
                 "regex": "PASSWORD_CHANGED",
                 "regex-field-name": "operationType",
-                "constant-score": 100
+                "constant-score": 10
               }
             },
             {
@@ -69,63 +69,63 @@
               "name": "userAccountEnabled.userId.activeDirectory.score",
               "regex": "USER_ACCOUNT_ENABLED",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "userAccountDisabled.userId.activeDirectory.score",
               "regex": "USER_ACCOUNT_DISABLED",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "userAccountUnlocked.userId.activeDirectory.score",
               "regex": "USER_ACCOUNT_UNLOCKED",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "userAccountTypeChanged.userId.activeDirectory.score",
               "regex": "USER_ACCOUNT_TYPE_CHANGED",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "userAccountLocked.userId.activeDirectory.score",
               "regex": "USER_ACCOUNT_LOCKED",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "userPasswordNeverExpiresOptionChanged.userId.activeDirectory.score",
               "regex": "USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "passwordChangedByNonOwner.userId.activeDirectory.score",
               "regex": "PASSWORD_CHANGED_BY_NON_OWNER",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "nestedMemberAddedToCriticalGroup.userId.activeDirectory.score",
               "regex": "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             },
             {
               "type": "constant-regex-scorer",
               "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
               "regex": "MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP",
               "regex-field-name": "operationType",
-              "constant-score": 100
+              "constant-score": 10
             }
           ]
         }

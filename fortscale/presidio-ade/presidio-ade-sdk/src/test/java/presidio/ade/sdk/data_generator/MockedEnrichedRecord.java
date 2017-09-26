@@ -1,6 +1,5 @@
 package presidio.ade.sdk.data_generator;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
@@ -13,9 +12,7 @@ import java.util.List;
  */
 @Document
 public class MockedEnrichedRecord extends EnrichedRecord {
-    @Indexed
     private String contextField;
-    @Indexed
     private String featureField;
 
     public MockedEnrichedRecord(Instant startInstant, String contextField, String featureField) {

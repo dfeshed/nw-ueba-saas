@@ -22,6 +22,9 @@ public class DataPipeLineConfiguration {
     private final String SCHEMAS = "schemas";
 
 
+    public DataPipeLineConfiguration() {
+    }
+
     public DataPipeLineConfiguration(JsonNode node) {
         this.badParams = new ArrayList<>();
         Iterator<String> itr = node.fieldNames();

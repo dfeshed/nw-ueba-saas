@@ -3,6 +3,7 @@ package fortscale.domain.core;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
     private static final long serialVersionUID = -4585812347688862037L;
     @Field(DATE_TIME_FIELD_NAME)
     @NotNull
+    @Indexed
     protected Instant dateTime;
     @Version
     @Field(VERSION_FIELD_NAME)

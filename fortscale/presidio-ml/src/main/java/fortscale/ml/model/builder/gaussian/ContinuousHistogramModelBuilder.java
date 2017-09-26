@@ -18,6 +18,10 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Double> histogram = castModelBuilderData(modelBuilderData).getHistogramMap();
+        return buildContinuousDataModel(histogram);
+    }
+
+    protected ContinuousDataModel buildContinuousDataModel(Map<String, Double> histogram) {
         double totalCount = 0;
         double sum = 0;
         double squaredSum = 0;
@@ -35,7 +39,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         return new ContinuousDataModel().setParameters((long)totalCount, round(mean), round(sd), round(maxValue));
     }
 
-    private GenericHistogram castModelBuilderData(Object modelBuilderData) {
+    protected GenericHistogram castModelBuilderData(Object modelBuilderData) {
         Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
         Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
         return (GenericHistogram)modelBuilderData;

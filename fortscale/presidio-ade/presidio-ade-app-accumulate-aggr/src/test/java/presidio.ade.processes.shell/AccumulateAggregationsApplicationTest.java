@@ -3,13 +3,13 @@ package presidio.ade.processes.shell;
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.test.utils.generators.EnrichedSuccessfulFileOpenedGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 
@@ -22,24 +22,24 @@ import java.util.List;
 public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBaseAppTest {
     private static final int DAYS_BACK_FROM = 3;
     private static final int DAYS_BACK_TO = 1;
-
     private static final Schema ADE_EVENT_TYPE = Schema.FILE;
     private static final Duration DURATION = Duration.ofDays(1);
     private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
     private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), DURATION);
 
-
     public static final String EXECUTION_COMMAND = String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s --feature_bucket_strategy %s", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 86400, 3600);
 
-    @Autowired
-    private EnrichedDataStore enrichedDataStore;
     @Autowired
     private MongoTemplate mongoTemplate;
 
     @Import({EnrichedSourceSpringConfig.class, AccumulateAggregationsConfigurationTest.class, AccumulateServiceCommands.class, EnrichedSuccessfulFileOpenedGeneratorConfig.class})
     @Configuration
     protected static class AccumulateAggregationsTestConfig {
+    }
 
+    @Before
+    public void setup() {
+        mongoTemplate.getCollectionNames().forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
     }
 
     @Override
@@ -60,14 +60,13 @@ public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBas
      * 2 accumulatedRecords - record per day.
      * 24 aggregatedFeatureValues for each record.
      * value of each aggregatedFeatureValues is 2 (2 opens files in each hour)
-     * @param generatedData
+     *
+     * @param generatedData generated data
      */
     @Override
     protected void assertSanityTest(List generatedData) {
-
         String openFileCollectionName = "accm_numberOfSuccessfulFileActionsUserIdFileHourly";
         String failedOpenFileCollectionName = "accm_numberOfFailedFileActionsUserIdFileHourly";
-
         List<AccumulatedAggregationFeatureRecord> accumulatedRecords = mongoTemplate.findAll(AccumulatedAggregationFeatureRecord.class, openFileCollectionName);
 
         //expected results
@@ -112,5 +111,4 @@ public class AccumulateAggregationsApplicationTest extends EnrichedFileSourceBas
             }
         }
     }
-
 }

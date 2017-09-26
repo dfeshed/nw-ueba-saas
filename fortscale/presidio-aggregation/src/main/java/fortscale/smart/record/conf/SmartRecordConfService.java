@@ -120,7 +120,6 @@ public class SmartRecordConfService extends AslConfigurationService {
 
 	private void validateSmartRecordConf(SmartRecordConf smartRecordConf) {
 		String smartRecordName = smartRecordConf.getName();
-		Set<String> smartRecordContexts = new HashSet<>(smartRecordConf.getContexts());
 		String smartRecordStrategyName = smartRecordConf.getFixedDurationStrategy().toStrategyName();
 
 		for (String aggregationRecordName : smartRecordConf.getAggregationRecordNames()) {
@@ -134,12 +133,11 @@ public class SmartRecordConfService extends AslConfigurationService {
 			}
 
 			FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
-			Set<String> featureBucketContextFieldNames = new HashSet<>(featureBucketConf.getContextFieldNames());
 			String featureBucketStrategyName = featureBucketConf.getStrategyName();
 
-			if (!featureBucketContextFieldNames.equals(smartRecordContexts)) {
-				String msg = String.format("The context field names of aggregation record %s " +
-						"do not match those of smart record %s.", aggregationRecordName, smartRecordName);
+			if (!featureBucketConf.getContextFieldNames().containsAll(smartRecordConf.getContexts())) {
+				String msg = String.format("The context field names of smart record %s are not a subset " +
+						"of those of aggregation record %s.", smartRecordName, aggregationRecordName);
 				logger.error(msg);
 				throw new IllegalArgumentException(msg);
 			}

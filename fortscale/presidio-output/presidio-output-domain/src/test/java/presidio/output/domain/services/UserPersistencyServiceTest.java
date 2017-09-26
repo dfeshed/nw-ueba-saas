@@ -31,7 +31,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
@@ -219,6 +218,49 @@ public class UserPersistencyServiceTest {
     }
 
     @Test
+    public void testFindByUserId() {
+        List<String> tags = new ArrayList<>();
+
+
+        User user1 = new User("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId1", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        Iterable<User> createdUsers = userPersistencyService.save(userList);
+
+
+        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"userId1"}));
+        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, usersPageResult.getContent().size());
+
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"userId1-1234-5678"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"1234-5678-userId1"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(0, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"1234"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(0, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"userId1@somecompany.com"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(1, usersPageResult.getContent().size());
+
+        queryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(Arrays.asList(new String[] {"somecompany.com@userId1"}));
+        usersPageResult = userPersistencyService.find(queryBuilder.build());
+        Assert.assertEquals(0, usersPageResult.getContent().size());
+    }
+
+    @Test
     public void testFindByIsUserAdmin_True() {
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
@@ -278,5 +320,78 @@ public class UserPersistencyServiceTest {
         assertEquals(buckets.size(), 2L); //two buckets- HIGH and MEDIUM
         assertEquals(severityAgg.getBucketByKey("CRITICAL").getDocCount(), 2L);
         assertEquals(severityAgg.getBucketByKey("MEDIUM").getDocCount(), 2L);
+    }
+
+    @Test
+    public void testFindByQueryWithTagsAggregation() {
+
+        List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
+        List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
+
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, tags1, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0);
+
+
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        userPersistencyService.save(userList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(User.TAGS_FIELD_NAME);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.TAGS_FIELD_NAME);
+        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+
+        assertEquals(buckets.size(), 2L); //two buckets- admin and watch
+        assertEquals(severityAgg.getBucketByKey("admin").getDocCount(), 3L);
+        assertEquals(severityAgg.getBucketByKey("watch").getDocCount(), 2L);
+    }
+
+    @Test
+    public void testFindByQueryWithClassificationsAggregation() {
+
+        List<String> tags1 = Arrays.asList("admin", "watch");
+        List<String> tags2 = Arrays.asList("admin");
+
+
+        List<String> classificationA = Arrays.asList("a");
+        List<String> classificationB = Arrays.asList("a","b");
+        List<String> classificationC = Arrays.asList("a","b","c");
+        User user1 = new User("userId1", "userName", "displayName", 5d, classificationA, null, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, classificationB, null, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, classificationC, null, tags1, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+        List<String> aggregationFields = Arrays.asList(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
+        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+
+        assertEquals(buckets.size(), 3L); //two buckets- admin and watch
+        assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
+        assertEquals(severityAgg.getBucketByKey("b").getDocCount(), 2L);
+        assertEquals(severityAgg.getBucketByKey("c").getDocCount(), 1L);
     }
 }
