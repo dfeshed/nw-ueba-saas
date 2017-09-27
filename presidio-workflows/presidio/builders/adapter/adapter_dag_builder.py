@@ -1,5 +1,4 @@
 import logging
-import os
 
 from datetime import timedelta
 
@@ -55,7 +54,6 @@ class AdapterDagBuilder(PresidioDagBuilder):
         for data_source in self.data_sources:
             java_args = {
                 'schema': data_source,
-                '-Dlogback.configurationFile':  os.path.join(flume_home, 'logback-flume.xml')
             }
 
             hour_is_ready_sensor = HourIsReadySensorOperator(dag=adapter_dag,
