@@ -4,5 +4,5 @@ import java.util.Set;
 
 public interface MetricCollectingService {
 
-    void addMetricWithTags(String metricName, long metricValue, Set tags, String unit);
+    void addMetric(String metricName, long metricValue, Set tags, String unit);
 }
