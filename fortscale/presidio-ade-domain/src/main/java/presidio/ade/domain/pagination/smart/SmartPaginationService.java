@@ -61,9 +61,6 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
      * @return list of pageIterators.
      */
     protected List<PageIterator<SmartRecord>> getScoreThresholdPageIterators(String configurationName, TimeRange timeRange, int smartScoreThreshold) {
-
-        //Validate if indexes exist, otherwise add them.
-        ensureContextIdIndex(configurationName);
         List<ContextIdToNumOfItems> contextIdToNumOfItemsList = getContextIdToNumOfItemsList(configurationName, timeRange, smartScoreThreshold);
 
         //groups is a list, where each group contains pair of total num of records and set of contextId.
@@ -107,14 +104,4 @@ public class SmartPaginationService extends BasePaginationService<SmartRecord> {
         logger.debug("Num of pages is: {}", totalAmountOfPages);
         return new SmartRecordPageIterator(timeRange, configurationName, contextIds, this.reader, this.getPageSize(), totalAmountOfPages, smartScoreThreshold);
     }
-
-    /**
-     * Ensure contextId index
-     *
-     * @param configurationName smart configuration record
-     */
-    protected void ensureContextIdIndex(String configurationName) {
-        this.reader.ensureContextIdIndex(configurationName);
-    }
-
 }

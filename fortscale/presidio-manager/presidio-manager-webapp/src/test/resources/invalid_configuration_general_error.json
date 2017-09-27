@@ -1,4 +1,12 @@
 {
+  "system": {
+    "username": "presidio@somecompany.dom",
+    "password": "password",
+    "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
+    "realmName": "EXAMPLE.COM",
+    "analystGroup": "CN=Analysts,CN=Users,DC=EXAMPLE,DC=COM",
+    "smtpHost": "name.of-server.com:25"
+  },
   "general": {
     "general": "general"
   }

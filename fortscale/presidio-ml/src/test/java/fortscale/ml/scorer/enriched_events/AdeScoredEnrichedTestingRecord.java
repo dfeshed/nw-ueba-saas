@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.enriched_events;
 
 import fortscale.domain.feature.score.FeatureScore;
+import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
@@ -9,8 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by YaronDL on 6/18/2017.
+ * @author Yaron DL
  */
+@Document
 public class AdeScoredEnrichedTestingRecord extends AdeScoredEnrichedRecord<AdeScoredEnrichedTestingRecordContext> {
     public AdeScoredEnrichedTestingRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord) {
         super(date_time, featureName, featureEventType, score, featureScoreList, enrichedRecord);

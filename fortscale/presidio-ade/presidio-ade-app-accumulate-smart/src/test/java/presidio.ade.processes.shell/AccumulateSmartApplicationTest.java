@@ -23,9 +23,6 @@ import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 import presidio.ade.domain.store.smart.SmartDataStore;
-import presidio.ade.domain.store.smart.SmartDataStoreConfig;
-import presidio.ade.test.utils.generators.EnrichedSuccessfulFileOpenedGeneratorConfig;
-import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
 import presidio.data.generators.common.GeneratorException;
 
 import java.time.Duration;
@@ -111,7 +108,9 @@ public class AccumulateSmartApplicationTest {
                     aggregationRecords = createAggregationRecord(start, end, featureName, smartScore + smartIndex * 10);
                 }
 
-                SmartRecord smartRecord = new SmartRecord(timeRange, CONTEXT_ID, featureName, FixedDurationStrategy.HOURLY, smartValue, smartScore, featureScores, aggregationRecords);
+                SmartRecord smartRecord = new SmartRecord(
+                        timeRange, CONTEXT_ID, featureName, FixedDurationStrategy.HOURLY,
+                        smartValue, smartScore, featureScores, aggregationRecords, null);
                 smartRecords.add(smartRecord);
                 start = end;
                 end = end.plus(smartDuration);

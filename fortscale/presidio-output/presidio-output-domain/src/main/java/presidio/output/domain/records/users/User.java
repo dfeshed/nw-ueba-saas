@@ -33,7 +33,7 @@ public class User extends AbstractElasticDocument {
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
 
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
 
