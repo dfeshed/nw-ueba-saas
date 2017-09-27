@@ -3,6 +3,8 @@ import os
 
 from datetime import timedelta
 
+import sys
+
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.connector.sensor.hour_is_ready_sensor_operator import HourIsReadySensorOperator
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
@@ -43,8 +45,9 @@ class AdapterDagBuilder(PresidioDagBuilder):
         logging.info("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
 
         if 'FLUME_HOME' not in os.environ:
-            logging.error("Adapter DAG build'' has failed. Environment variable FLUME_HOME doesn't exist. exiting...")
-            exit(1)
+            msg = "Adapter DAG build has failed. Environment variable FLUME_HOME doesn't exist"
+            logging.error("%s. exiting..." % msg)
+            sys.exit(msg)
 
         flume_home = os.environ.get("FLUME_HOME")
 
