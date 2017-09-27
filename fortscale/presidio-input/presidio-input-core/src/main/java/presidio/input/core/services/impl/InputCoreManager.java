@@ -29,6 +29,7 @@ public class InputCoreManager {
     private final String TOTAL_EVENTS_PROCESSEd_METRIC_NAME = "total.events.processed.input";
 
     private final String TYPE_LONG = "long";
+    private final String TYPE_MILLI_SECONDS = "milliSeconds";
 
     private final PresidioInputPersistencyService persistencyService;
     private final AdeDataService adeDataService;
@@ -57,22 +58,15 @@ public class InputCoreManager {
             pageSize = DEFAULT_PAGE_SIZE;
         }
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
-
+        List transformedEvents = null;
         while (rawEventsPageIterator.hasNext()) {
             try {
                 List nextEvents = rawEventsPageIterator.next();
 
                 logger.debug("Processing {} events", nextEvents.size());
 
-                List transformedEvents = transformationService.run(nextEvents, schema);
+                transformedEvents = transformationService.run(nextEvents, schema);
                 storeToAde(schema, startDate, endDate, transformedEvents);
-                if (!rawEventsPageIterator.hasNext()) {
-                    long time = ((AbstractInputDocument) transformedEvents.get(transformedEvents.size() - 1)).getDateTime().toEpochMilli();
-                    Set tags = new HashSet();
-                    tags.add(schema.toString());
-                    tags.add(startDate.toEpochMilli());
-                    metricCollectingService.addMetricWithTags(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_LONG);
-                }
                 metricCollectingService.addMetricWithOneTag(TOTAL_EVENTS_PROCESSEd_METRIC_NAME, transformedEvents.size(), schema.toString(), TYPE_LONG);
 
                 try {
@@ -84,6 +78,11 @@ public class InputCoreManager {
                 logger.error("Error reading events from repository.", ex);
             }
         }
+        long time = ((AbstractInputDocument) transformedEvents.get(transformedEvents.size() - 1)).getDateTime().toEpochMilli();
+        Set tags = new HashSet();
+        tags.add(schema.toString());
+        tags.add(startDate.toEpochMilli());
+        metricCollectingService.addMetricWithTags(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
     }
 
     private void storeToOutput(List<? extends AbstractInputDocument> transformedEvents, Schema schema) throws Exception {
