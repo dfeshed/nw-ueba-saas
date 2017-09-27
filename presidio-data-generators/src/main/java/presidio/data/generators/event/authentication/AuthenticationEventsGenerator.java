@@ -49,7 +49,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
 
         eventIDGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
         timeGenerator = new TimeGenerator();
-        dataSourceGenerator = new FixedDataSourceGenerator();
+        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Logon Activity"});
 
         operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
         operationTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator();

@@ -40,7 +40,7 @@ public class FileEventsDeleteOpGeneratorTest {
 
     @Test
     public void DataSourceTest () {
-        Assert.assertEquals("DefaultDS", events.get(0).getDataSource());
+        Assert.assertEquals("File System", events.get(0).getDataSource());
     }
 
     @Test

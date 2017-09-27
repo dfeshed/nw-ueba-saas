@@ -36,7 +36,7 @@ public class FileEventsGenerator implements IEventGenerator {
     public FileEventsGenerator() throws GeneratorException {
         timeGenerator = new TimeGenerator();
         userGenerator = new RandomUserGenerator();
-        dataSourceGenerator = new FixedDataSourceGenerator();
+        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"File System"});
         fileOperationGenerator = new FileOperationGenerator();
         machineEntityGenerator = new QuestADMachineGenerator();
         fileDescriptionGenerator = new FileDescriptionGenerator();
