@@ -1,5 +1,6 @@
 package presidio.ade.smart;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
@@ -8,8 +9,13 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
+import fortscale.utils.jonfig.Jonfig;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.test.category.ModuleTestCategory;
+import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
+import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.collections.map.SingletonMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,21 +50,27 @@ import java.util.stream.Collectors;
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
 public class SmartApplicationTest extends BaseAppTest {
-    private Map<Double, List<String>> weightToFeatures;
-
+    private TreeMap<Double, List<String>> weightToFeatures;
+    private static final Logger logger = Logger.getLogger(SmartApplicationTest.class);
 
     private static final int GENERATOR_START_HOUR_OF_DAY = 1;
     private static final int GENERATOR_END_HOUR_OF_DAY = 22;
     private static final int GENERATOR_DAYS_BACK_FROM = 30;
-
-    private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(GENERATOR_DAYS_BACK_FROM)), Duration.ofDays(1));
+    //duration that covers all 42 features: 2 days 01:00 - 22:00
     private static final int DURATION_OF_PROCESS = 2;
+    private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(GENERATOR_DAYS_BACK_FROM)), Duration.ofDays(1));
     private static final Instant END_DATE = START_DATE.plus(Duration.ofDays(DURATION_OF_PROCESS));
 
     private static final Double START_WEIGHT = 0.1;
-    private static final Double WEIGHT_DECREASED_VALUE = 0.005;
+    private static final Double DECREASED_VALUE_OF_WEIGHT = 0.005;
+    //features divided to #6 groups
     private static final int NUM_OF_GROUPS = 6;
 
+    public static final String EXECUTION_COMMAND = String.format("process --smart_record_conf_name %s --start_date %s --end_date %s", "userId_hourly", START_DATE.toString(), END_DATE.toString());
+
+    private int aggregatedFeatureConfCount;
+    private IMapGenerator aggregatedFeatureToScoreGenerator;
+    private IMapGenerator aggregatedFeatureToValueGenerator;
     @Autowired
     private AggregatedDataStore aggregatedDataStore;
     @Autowired
@@ -66,147 +78,218 @@ public class SmartApplicationTest extends BaseAppTest {
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-    public static final String EXECUTION_COMMAND = String.format("process --smart_record_conf_name %s --start_date %s --end_date %s", "userId_hourly", START_DATE.toString(), END_DATE.toString());
-
     @Override
     protected String getContextTestExecutionCommand() {
         return EXECUTION_COMMAND;
     }
 
-    private IMapGenerator aggregatedFeatureToScoreGenerator;
-    private IMapGenerator aggregatedFeatureToValueGenerator;
-
 
     @Before
-    public void setUp() throws GeneratorException {
+    public void setUp() {
+        mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
         createFeaturesGroups();
         createAggregatedFeatureGenerators();
     }
 
-    @Test
-    public void SmartTest() throws GeneratorException {
-        Map<Double, Double> weightToScore = testNormalUser();
-        testNormalUsers(weightToScore);
-    }
-
 
     /**
+     * Test normal user, who usually has not anomaly behavior.
+     * In case the user has anomaly behaviour, he gets low positive smartValues.
+     * <p>
      * Test that feature with higher weight has higher influence over feature with lower weight if both have the same featureValue.
+     *
      * @throws GeneratorException
      */
-    public Map<Double, Double> testNormalUser() throws GeneratorException {
-
+    @Test
+    public void testNormalUserTest() throws GeneratorException {
         String contextId = "user1";
         createWeightModel(START_DATE);
-        createNormalUserSmartValuesModel(START_DATE,"userId#"+contextId);
+        createNormalUserSmartValuesModel(START_DATE, "userId#" + contextId);
         createSmartValuesPriorModel(START_DATE);
 
         int daysBackTo = GENERATOR_DAYS_BACK_FROM - DURATION_OF_PROCESS;
         List<String> contextIds = Collections.singletonList(contextId);
+
         generateAggregatedFeatureEventConf(daysBackTo, contextIds);
 
         executeAndAssertCommandSuccess(EXECUTION_COMMAND);
+
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
 
-        Assert.assertTrue(smartRecords.size() == 42);
+        Assert.assertTrue(smartRecords.size() == aggregatedFeatureConfCount);
 
-        return  AssertSmartRecords(smartRecords);
+        AssertSmartRecords(smartRecords);
     }
 
+    /**
+     * Test over 3 users for period of 6 days.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void testNormalUsersTest() throws GeneratorException {
 
-    public void testNormalUsers(Map<Double, Double> weightToScore) throws GeneratorException {
-        mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
-
-        int duration = 3;
-        int daysBackTo = GENERATOR_DAYS_BACK_FROM - duration;
-        Instant start = START_DATE;
-        Instant end =  START_DATE.plus(Duration.ofDays(duration));
+        int numOfDays = 6;
+        int daysBackTo = GENERATOR_DAYS_BACK_FROM - numOfDays;
+        Instant end = START_DATE.plus(Duration.ofDays(numOfDays));
 
         List<String> contextIds = new ArrayList<>();
+        contextIds.add("user1");
         contextIds.add("user2");
         contextIds.add("user3");
+
         generateAggregatedFeatureEventConf(daysBackTo, contextIds);
 
-        while(start.isBefore(end)){
+        //Generate models for users:
+        Instant start = START_DATE;
+        while (start.isBefore(end)) {
             createWeightModel(start);
             createSmartValuesPriorModel(start);
-            for(int i=0; i< contextIds.size();i++){
-                createNormalUserSmartValuesModel(start, "userId#"+contextIds.get(i));
+            for (int i = 0; i < contextIds.size(); i++) {
+                createNormalUserSmartValuesModel(start, "userId#" + contextIds.get(i));
             }
             start = start.plus(Duration.ofDays(2));
         }
 
         String command = String.format("process --smart_record_conf_name %s --start_date %s --end_date %s", "userId_hourly", START_DATE.toString(), end);
-
         executeAndAssertCommandSuccess(command);
+
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
 
-
         contextIds.forEach(contextId -> {
-            List<SmartRecord> contextIdSmartRecords = smartRecords.stream().filter(smart ->  smart.getContextId().equals("userId#"+contextId)).collect(Collectors.toList());
+            List<SmartRecord> contextIdSmartRecords = smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#" + contextId)).collect(Collectors.toList());
+            Assert.assertTrue(contextIdSmartRecords.size() == aggregatedFeatureConfCount * numOfDays / DURATION_OF_PROCESS);
             Map<Double, Double> contextIdWeightToScore = AssertSmartRecords(contextIdSmartRecords);
-            Assert.assertTrue(contextIdWeightToScore.equals(weightToScore));
         });
+
+        assertSmartsBetweenContexts(smartRecords, contextIds.size(), end, numOfDays);
+    }
+
+    /**
+     * Compare smarts between contextIds.
+     *
+     * @param smartRecords smart records of all contexts
+     * @param numOfUsers   num of users
+     * @param endDate      end date of process - for time split
+     * @param numOfDays    num of days
+     */
+    private void assertSmartsBetweenContexts(List<SmartRecord> smartRecords, int numOfUsers, Instant endDate, int numOfDays) {
+
+        //split time to partitions
+        Instant startDate = START_DATE.plus(Duration.ofHours(GENERATOR_START_HOUR_OF_DAY));
+        List<Instant> instants = new LinkedList<>();
+        while (startDate.isBefore(endDate)) {
+            Instant currentEnd = startDate.plus(Duration.ofHours(1));
+            instants.add(currentEnd);
+            startDate = currentEnd;
+        }
+
+        //num of smarts per user, which have not same weight
+        int expectedNumOfGeneratedHours = numOfDays * (GENERATOR_END_HOUR_OF_DAY - GENERATOR_START_HOUR_OF_DAY);
+        int numOfGeneratedHours = 0;
+
+        //compare smarts of all contexts per hour
+        for (Instant end : instants) {
+            for (Map.Entry<Double, List<String>> weightToFeature : weightToFeatures.entrySet()) {
+                List<String> features = weightToFeature.getValue();
+                List<SmartRecord> filteredSmarts = smartRecords.stream().filter(s -> {
+                    List<AdeAggregationRecord> adeAggregationRecords = s.getAggregationRecords();
+                    return adeAggregationRecords.stream().anyMatch(a -> features.contains(a.getFeatureName())) && s.getEndInstant().compareTo(end) == 0;
+                }).map(s -> s).collect(Collectors.toList());
+
+                if (!filteredSmarts.isEmpty()) {
+
+                    Assert.assertTrue(filteredSmarts.size() == numOfUsers);
+
+                    SmartRecord expectedSmart = filteredSmarts.get(0);
+                    Assert.assertTrue(filteredSmarts.stream().allMatch(smart -> smart.getScore().equals(expectedSmart.getScore())));
+                    Assert.assertTrue(filteredSmarts.stream().allMatch(smart -> smart.getSmartValue() == expectedSmart.getSmartValue()));
+                    Assert.assertTrue(filteredSmarts.stream().allMatch(smart -> smart.getStartInstant().equals(expectedSmart.getStartInstant())));
+                    Assert.assertTrue(filteredSmarts.stream().allMatch(smart -> smart.getEndInstant().equals(expectedSmart.getEndInstant())));
+                    Assert.assertTrue(filteredSmarts.stream().allMatch(smart -> smart.getFixedDurationStrategy().compareTo(expectedSmart.getFixedDurationStrategy()) == 0));
+                    Assert.assertTrue(filteredSmarts.stream().allMatch(smart -> smart.getFeatureName().equals(expectedSmart.getFeatureName())));
+
+                    numOfGeneratedHours++;
+                }
+            }
+        }
+
+        Assert.assertTrue(expectedNumOfGeneratedHours == numOfGeneratedHours);
+
     }
 
 
-
-    //Assert that feature with higher weight has higher smart score than feature with lower weight
-    // and features with same weight has same smart scores.
-    private Map<Double, Double> AssertSmartRecords(List<SmartRecord> smartRecords){
+    /**
+     * Assert that smarts of features with higher weight have higher smart score that of feature with lower weight.
+     * Assert that smarts of features with same weight have same smartScore and smartValue that of feature with lower weight.
+     *
+     * @param smartRecords smart records
+     * @return map of weight to smart score
+     */
+    private Map<Double, Double> AssertSmartRecords(List<SmartRecord> smartRecords) {
         Map<Double, Double> weightToScore = new HashMap<>();
-        weightToFeatures.forEach((weight, features) -> {
-            features.forEach(featureName -> {
-                List<Double> filteredSmartsScoreByFeature = smartRecords.stream().filter(s ->{
-                    List<AdeAggregationRecord>  adeAggregationRecords = s.getAggregationRecords();
-                    return adeAggregationRecords.stream().anyMatch(a-> a.getFeatureName().equals(featureName));
-                }).map(s -> s.getScore()).collect(Collectors.toList());
 
-                filteredSmartsScoreByFeature.forEach(smartScore -> {
+        Double weightScore = 0.0;
+        Double weightSmartValue = 0.0;
+
+        for (Map.Entry<Double, List<String>> weightToFeature : weightToFeatures.entrySet()) {
+            Double weight = weightToFeature.getKey();
+            for (String featureName : weightToFeature.getValue()) {
+
+                List<SmartRecord> filteredSmartsScoreByFeature = smartRecords.stream().filter(s -> {
+                    List<AdeAggregationRecord> adeAggregationRecords = s.getAggregationRecords();
+                    return adeAggregationRecords.stream().anyMatch(a -> a.getFeatureName().equals(featureName));
+                }).map(s -> s).collect(Collectors.toList());
+
+                for (SmartRecord smart : filteredSmartsScoreByFeature) {
                     if (weightToScore.containsKey(weight)) {
-                        Double score = weightToScore.get(weight);
-                        Assert.assertTrue(score.equals(smartScore));
+                        Assert.assertTrue(weightScore.equals(smart.getScore()));
+                        Assert.assertTrue(weightSmartValue.equals(smart.getSmartValue()));
                     } else {
-                        weightToScore.put(weight, smartScore);
-                        List<Double> lowerScores = weightToScore.entrySet().stream().filter((map) -> map.getKey() < weight).map(Map.Entry::getValue).collect(Collectors.toList());
-                        Assert.assertTrue(lowerScores.stream().filter(score -> smartScore <= score).collect(Collectors.toList()).size() == 0);
-                        List<Double> higherScores = weightToScore.entrySet().stream().filter((map) -> map.getKey() > weight).map(Map.Entry::getValue).collect(Collectors.toList());
-                        Assert.assertTrue(higherScores.stream().filter(score -> smartScore >= score).collect(Collectors.toList()).size() == 0);
+                        Assert.assertTrue(smart.getScore() > weightScore);
+                        weightToScore.put(weight, smart.getScore());
+                        weightScore = smart.getScore();
+                        weightSmartValue = smart.getSmartValue();
                     }
-                });
-            });
-        });
-
+                }
+            }
+        }
         return weightToScore;
     }
 
 
     /**
-     * Split features to groups, where each group has same weight.
-     * Build weight to featuresNames map.
+     * Generate aggregated Features (F + P)
+     *
+     * @param daysBackTo days until TimeGenerator will generate
+     * @param contextIds generate aggregated Features for given contextIds
+     * @throws GeneratorException
      */
-    private void createFeaturesGroups() {
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
-        Double weight = START_WEIGHT;
-        weightToFeatures = new HashMap<>();
+    private void generateAggregatedFeatureEventConf(int daysBackTo, List<String> contextIds) throws GeneratorException {
 
-        List<List<AggregatedFeatureEventConf>> partitions = Lists.partition(aggregatedFeatureEventConfList, NUM_OF_GROUPS);
+        IStringListGenerator contextIdGenerator = new FixedListGenerator(contextIds);
+        TimeGenerator startInstantGenerator = new TimeGenerator(LocalTime.of(GENERATOR_START_HOUR_OF_DAY, 0), LocalTime.of(GENERATOR_END_HOUR_OF_DAY, 0), 60, GENERATOR_DAYS_BACK_FROM, daysBackTo);
 
-        List<List<String>> featuresGroups =  partitions.stream().map(list-> {
-            return list.stream().map(p -> p.getName()).collect(Collectors.toList());
-        }).collect(Collectors.toList());
+        //Generate scored F:
+        ScoredFeatureAggregationRecordHourlyGenerator scoredAggregationGenerator =
+                new ScoredFeatureAggregationRecordHourlyGenerator(aggregatedFeatureToScoreGenerator, contextIdGenerator, 0.0, new ArrayList<>(), startInstantGenerator);
+        List<AdeAggregationRecord> adeScoredAggregationRecords = scoredAggregationGenerator.generate();
 
-        for (List<String> featuresGroup : featuresGroups) {
-            weightToFeatures.put(weight, featuresGroup);
-            weight = weight - WEIGHT_DECREASED_VALUE;
-        }
+        //Generate P:
+        startInstantGenerator = new TimeGenerator(LocalTime.of(GENERATOR_START_HOUR_OF_DAY, 0), LocalTime.of(GENERATOR_END_HOUR_OF_DAY, 0), 60, GENERATOR_DAYS_BACK_FROM, daysBackTo);
+        AdeAggregationRecordHourlyGenerator adeAggregationGenerator =
+                new AdeAggregationRecordHourlyGenerator(aggregatedFeatureToValueGenerator, startInstantGenerator, contextIdGenerator);
+        List<AdeAggregationRecord> adeAggregationRecords = adeAggregationGenerator.generate();
+
+        aggregatedDataStore.store(adeAggregationRecords, AggregatedFeatureType.SCORE_AGGREGATION);
+        aggregatedDataStore.store(adeScoredAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
     }
-
 
 
     /**
      * Create WeightModel.
      * Use weightToFeatures map to fill clusterConfs.
+     *
      * @param end end instant of model
      */
     private void createWeightModel(Instant end) {
@@ -227,8 +310,9 @@ public class SmartApplicationTest extends BaseAppTest {
      * Create model for a normal user.
      * User usually has not anomaly behaviour.
      * In case the user has anomaly behaviour, he gets low positive smartValues.
-     * Normal user behavior is: numOfZeroValues=300, numOfPositiveValues=60, avgFeatureValue=50
-     * @param end end instant of model
+     * Normal user behavior is: numOfZeroValues=300, numOfPositiveValues=60, avgFeatureValues=50
+     *
+     * @param end end instant of the model.
      */
     private void createNormalUserSmartValuesModel(Instant end, String contextId) {
         long numOfZeroValues = 300L;
@@ -243,9 +327,11 @@ public class SmartApplicationTest extends BaseAppTest {
         mongoTemplate.insert(modelDao, "model_smart.userId.hourly");
     }
 
+
     /**
      * Create SmartValuesPriorModel.
-     * The model represwent user with avg FeatureValue 50.
+     * The model represents user with avg FeatureValue 50.
+     *
      * @param end end instant of model
      */
     private void createSmartValuesPriorModel(Instant end) {
@@ -258,38 +344,34 @@ public class SmartApplicationTest extends BaseAppTest {
         mongoTemplate.insert(modelDao, "model_smart.global.prior.userId.hourly");
     }
 
-
     /**
-     * Generate aggregated Features
-     * @param daysBackTo
-     * @param contextIds generate aggregated Features for context ids
-     * @throws GeneratorException
+     * Build weightToFeatures map.
+     * Split features to groups, where each group has same weight.
      */
-    private void generateAggregatedFeatureEventConf(int daysBackTo,  List<String> contextIds) throws GeneratorException {
+    private void createFeaturesGroups() {
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        aggregatedFeatureConfCount = aggregatedFeatureEventConfList.size();
+        Double weight = START_WEIGHT;
+        weightToFeatures = new TreeMap<>();
 
-        IStringListGenerator contextIdGenerator = new FixedListGenerator(contextIds);
-        TimeGenerator startInstantGenerator = new TimeGenerator(LocalTime.of(GENERATOR_START_HOUR_OF_DAY, 0), LocalTime.of(GENERATOR_END_HOUR_OF_DAY, 0), 60, GENERATOR_DAYS_BACK_FROM, daysBackTo);
+        List<List<AggregatedFeatureEventConf>> partitions = Lists.partition(aggregatedFeatureEventConfList, NUM_OF_GROUPS);
 
-        //Generate F:
-        ScoredFeatureAggregationRecordHourlyGenerator scoredGenerator =
-                new ScoredFeatureAggregationRecordHourlyGenerator(aggregatedFeatureToScoreGenerator, contextIdGenerator, 0.0, new ArrayList<>(), startInstantGenerator);
-        List<AdeAggregationRecord> adeScoredAggregationRecords = scoredGenerator.generate();
+        List<List<String>> featuresGroups = partitions.stream().map(list -> {
+            return list.stream().map(p -> p.getName()).collect(Collectors.toList());
+        }).collect(Collectors.toList());
 
-        //Generate P:
-        startInstantGenerator = new TimeGenerator(LocalTime.of(GENERATOR_START_HOUR_OF_DAY, 0), LocalTime.of(GENERATOR_END_HOUR_OF_DAY, 0), 60, GENERATOR_DAYS_BACK_FROM, daysBackTo);
-        AdeAggregationRecordHourlyGenerator generator =
-                new AdeAggregationRecordHourlyGenerator(aggregatedFeatureToValueGenerator, startInstantGenerator, contextIdGenerator);
-        List<AdeAggregationRecord> adeAggregationRecords = generator.generate();
-
-
-        aggregatedDataStore.store(adeAggregationRecords, AggregatedFeatureType.SCORE_AGGREGATION);
-        aggregatedDataStore.store(adeScoredAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
+        for (List<String> featuresGroup : featuresGroups) {
+            weightToFeatures.put(weight, featuresGroup);
+            weight = weight - DECREASED_VALUE_OF_WEIGHT;
+        }
     }
 
     /**
-     * Create generators for F and P.
+     * Create CyclicFixedMapGenerator for F and P.
+     * CyclicFixedMapGenerator contains list of maps, where map consist of features and score/value.
+     * Only 1 feature has score/value = 100 in each map.
      */
-    private void createAggregatedFeatureGenerators(){
+    private void createAggregatedFeatureGenerators() {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
         Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToValue = aggregatedFeatureEventConfList.stream().collect(Collectors.toMap(aggregatedFeature -> aggregatedFeature, aggregatedFeature -> 0.0));
 
@@ -319,8 +401,6 @@ public class SmartApplicationTest extends BaseAppTest {
         aggregatedFeatureToScoreGenerator = new CyclicFixedMapGenerator<>(aggregatedFeatureEventConfToScoreList);
         aggregatedFeatureToValueGenerator = new CyclicFixedMapGenerator<>(aggregatedFeatureEventConfToValueList);
     }
-
-
 
 
     @Configuration
