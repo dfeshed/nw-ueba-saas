@@ -366,7 +366,7 @@ indicators:
   adeEventType: scored_enriched.active_directory.userAccountUnlocked.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: operationTypeCategories
+    anomalyField: operationType
     anomalyValue: USER_ACCOUNT_UNLOCKED
   historicalData:
     type: count_aggregations
