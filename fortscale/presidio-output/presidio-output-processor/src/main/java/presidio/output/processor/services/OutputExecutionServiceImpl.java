@@ -45,7 +45,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final String UNIT_TYPE_LONG = "long";
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number.of.alerts.created";
     private final String ALERT_WITH_SEVERITY_METRIC_NAME = "alert.created.with.severity.";
-    private final String LAST_EVENT_TIME_PROCESSES_METRIC_NAME = "last.smart.time.in.output";
+    private final String LAST_SMART_TIME_METRIC_NAME = "last.smart.time.in.output";
     private final String TYPE_LONG = "long";
     private static final String ADE_SMART_USER_ID = "userId";
 
@@ -131,8 +131,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        if (!smartPageIterator.hasNext()) {
-            metricCollectingService.addMetricWithTags(LAST_EVENT_TIME_PROCESSES_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG);
+        if (CollectionUtils.isNotEmpty(smarts)) {
+            metricCollectingService.addMetricWithTags(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG);
         }
     }
 
