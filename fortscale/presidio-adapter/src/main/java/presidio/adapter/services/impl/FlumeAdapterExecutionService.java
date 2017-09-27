@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 
@@ -74,12 +75,16 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         final String confFileFlag = newFlumeExecutionConfFileArgumentSplit[0];
         final String confFileFlagValue = newFlumeExecutionConfFileArgumentSplit[1];
 
+        String flumeHome = System.getenv("FLUME_HOME");
+        final String logbackFilePath = " -Dlogback.configurationFile="+ flumeHome + File.separator + "logback-flume.xml";
+
         final ImmutableList<String> args = ImmutableList.of(
                 flumeExecutionScriptPath,
                 executionArgument, agentNameArgument,
                 confFlag, confFlagValue,
                 confFileFlag,
-                confFileFlagValue);
+                confFileFlagValue,
+                logbackFilePath);
 
         processExecutor.executeProcess(jobName, args, flumeConfigurationUtil.getFlumeHome());
     }
