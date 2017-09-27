@@ -1,17 +1,22 @@
 function prepareApp {
   cd ../$1
 
-  ln -s ../node_modules node_modules
-  yarn link mock-server
-
   # At present, the script only supports OS X and Windows
   # If the user is not on Mac, then user must be Windows (CYGWIN*|MINGW32*|MSYS*)
   if [ "$(uname)" != "Darwin" ]
   then
-    info "Setting up ember-cli-windows to improve build performance for: $1"
-    ember windows
+    info "Setting up windows symbolic links for: $1"
+    # Unfortunately on Windows, you need to run on elevalted privileges to create symlinks
+    # https://blogs.windows.com/buildingapps/2016/12/02/symlinks-windows-10/
+    info "Ensure you are running on elevated privileges, else the next command will fail!"
+    cmd //c 'mklink /D node_modules ..\node_modules'
+    # TO_FIX: ember windows not working because of symbolic links
+    # ember windows
+  else
+    ln -s ../node_modules node_modules
   fi
 
+  yarn link mock-server
   success "$1 is ready to go!"
 }
 
