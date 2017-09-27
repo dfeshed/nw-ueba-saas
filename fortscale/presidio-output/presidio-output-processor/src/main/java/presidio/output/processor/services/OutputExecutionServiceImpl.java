@@ -111,6 +111,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                             continue;
                         }
                     }
+                }
 
                     Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                     if (alertEntity != null) {
