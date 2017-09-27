@@ -68,16 +68,15 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
 
-        List<Alert> alerts = new ArrayList<Alert>();
-        List<User> users = new ArrayList<User>();
-        boolean isUserEntityShouldStore;
+        List<Alert> alerts = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         while (smartPageIterator.hasNext()) {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
-                isUserEntityShouldStore = true;
+                User userEntity;
                 List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
 
-                AdeAggregationRecord indicators = null;
+                AdeAggregationRecord indicators;
                 if (indicatorsList.size() == 0) {
                     logger.error("Failed to retrieve user id from smart because indicators list is empty for smart {}. skipping to next smart", smart.getId());
                     continue;
@@ -85,34 +84,28 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     indicators = indicatorsList.get(0);
                 }
                 String userId = indicators.getContext().get("userId");//TODO- temporary fix, ADE team should provide user id on the smart pojo
-                User userEntity = getSingleUserEntityById(userId);// in this line we have already user in the system or null
-                if (userEntity == null) {
-                    //Check if user already created but not saved
-                    userEntity = isUserGoingToBeCreated(users, userId); // user or null
+                if ((userEntity = getCreatedUser(users, userId)) == null && (userEntity = getSingleUserEntityById(userId)) == null) {
+                    //Need to create user and add it to about to be created list
+                    userEntity = userService.createUserEntity(userId);
+                    users.add(userEntity);
                     if (userEntity == null) {
-                        //Need to create user and add it to about to be created list
-                        userEntity = userService.createUserEntity(userId);
-                        users.add(userEntity);
-                        isUserEntityShouldStore = false;
-                        if (userEntity == null) {
-                            logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
-                            continue;
-                        }
+                        logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
+                        continue;
                     }
                 }
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
                     alerts.add(alertEntity);
-                    isUserEntityShouldStore = true;
                 }
-                if (isUserEntityShouldStore)
+                if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
+                }
             }
         }
 
-
         users = storeUsers(users); //Get the generated users with the new elasticsearch ID
+
         storeAlerts(alerts);
 
         //Update the users severities
@@ -135,7 +128,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return userEntities.get(0);
     }
 
-    private User isUserGoingToBeCreated(List<User> users, String userVendorId) {
+    private User getCreatedUser(List<User> users, String userVendorId) {
         for (User user : users) {
             if (user.getUserId().equals(userVendorId)) {
                 return user;

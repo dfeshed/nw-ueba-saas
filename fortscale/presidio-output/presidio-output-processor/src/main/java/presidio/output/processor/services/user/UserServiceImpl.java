@@ -8,11 +8,7 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 22/08/2017.

@@ -50,7 +50,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
             // save events
             List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
             indicators.stream().forEach(indicator -> events.addAll(indicator.getEvents()));
-            indicatorEventRepository.save(events);
+            if (CollectionUtils.isNotEmpty(events)) {
+                indicatorEventRepository.save(events);
+            }
         }
 
 

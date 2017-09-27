@@ -1,6 +1,5 @@
 package presidio.output.processor.services.user;
 
-import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
@@ -24,6 +23,7 @@ public interface UserService {
     /**
      * Recalculate all alerts related data on the user for the last X days (configurable).
      * Recalculating- user score, alerts count and classification
+     *
      * @return
      */
     boolean updateAllUsersAlertData();

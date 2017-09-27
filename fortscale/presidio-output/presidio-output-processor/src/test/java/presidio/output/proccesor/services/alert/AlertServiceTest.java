@@ -1,9 +1,8 @@
-package presidio.output.proccesor.services;
+package presidio.output.proccesor.services.alert;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
@@ -13,9 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -27,20 +23,14 @@ import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,7 +42,7 @@ import static org.mockito.Matchers.eq;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, AlertServiceTest.SpringConfig.class, FongoTestConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
 
     @MockBean
@@ -66,21 +56,6 @@ public class AlertServiceTest {
 
     @Autowired
     private AlertEnumsSeverityService alertEnumsSeverityService;
-
-    @Configuration
-    @EnableSpringConfigured
-    public static class SpringConfig {
-        @Bean
-        public static TestPropertiesPlaceholderConfigurer testPropertiesPlaceholderConfigurer() {
-            Properties properties = new Properties();
-            properties.put("severity.critical", 95);
-            properties.put("severity.high", 85);
-            properties.put("severity.mid", 70);
-            properties.put("severity.low", 50);
-            return new TestPropertiesPlaceholderConfigurer(properties);
-        }
-    }
-
 
     private Instant startTime = Instant.parse("2017-06-06T10:00:00Z");
     private Instant endTime = Instant.parse("2017-06-06T11:00:00Z");

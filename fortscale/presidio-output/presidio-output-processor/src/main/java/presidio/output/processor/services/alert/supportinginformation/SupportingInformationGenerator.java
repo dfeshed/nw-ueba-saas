@@ -4,9 +4,9 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.HistoricalData;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import java.util.List;
 
 public interface SupportingInformationGenerator {
 
-    static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
+    Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    default List<Indicator> generateSupporingInformation(AdeAggregationRecord adeAggregationRecord, Alert alert) {
+    default List<Indicator> generateSupportingInformation(AdeAggregationRecord adeAggregationRecord, Alert alert) {
 
-        logger.debug("starting building supporting info for feature {}, indicator with ID {}", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId());
-        List<Indicator> indicators = new ArrayList<Indicator>();
+        logger.debug("starting building supporting info for feature {}, indicator with ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
+        List<Indicator> indicators = new ArrayList<>();
 
         try {
             // generate indicators
@@ -29,7 +29,7 @@ public interface SupportingInformationGenerator {
 
                 // generate events
                 List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator);
-                if(CollectionUtils.isNotEmpty(events)) {
+                if (CollectionUtils.isNotEmpty(events)) {
                     indicator.setEvents(events);
                     indicator.setEventsNum(events.size());
                 }
@@ -39,16 +39,19 @@ public interface SupportingInformationGenerator {
                 indicator.setHistoricalData(historicalData);
             }
         } catch (Exception ex) {
-            logger.error("failed to build supporting info for feature {}, indicator ID {}", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId(),ex);
+            logger.error("failed to build supporting info for feature {}, indicator ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId(), ex);
 
         }
-        logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId());
+        logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
         return indicators;
     }
 
-    List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert)  throws Exception;
+    List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert) throws Exception;
+
     List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
-    HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator)  throws Exception;
+
+    HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
+
     String getType();
 
 }

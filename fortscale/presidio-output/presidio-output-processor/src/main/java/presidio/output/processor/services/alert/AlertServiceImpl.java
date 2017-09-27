@@ -53,20 +53,20 @@ public class AlertServiceImpl implements AlertService {
         java.util.Date startDate = Date.from(smart.getStartInstant());
         java.util.Date endDate = Date.from(smart.getEndInstant());
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
-        Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStratgyfromSmart(smart), severity, user.getTags());
+        Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags());
 
         // supporting information
         List<Indicator> supportingInfo = new ArrayList<Indicator>();
         for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(adeAggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(supportingInformationGenerator.generateSupporingInformation(adeAggregationRecord, alert));
+            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(adeAggregationRecord, alert));
         }
 
         // alert update with indicators information
         alert.setIndicators(supportingInfo);
         alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
         alert.setIndicatorsNum(supportingInfo.size());
-        List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(alert.getIndicatorsNames());
+        List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(new ArrayList<>(alert.getIndicatorsNames()));
         alert.setClassifications(classification);
         // user update
         userScoreService.increaseUserScoreWithoutSaving(alert, user);
@@ -78,7 +78,7 @@ public class AlertServiceImpl implements AlertService {
         alertPersistencyService.save(alerts);
     }
 
-    private AlertEnums.AlertTimeframe getStratgyfromSmart(SmartRecord smart) {
+    private AlertEnums.AlertTimeframe getStrategyFromSmart(SmartRecord smart) {
         String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;
         return AlertEnums.AlertTimeframe.getAlertTimeframe(strategy);
 
