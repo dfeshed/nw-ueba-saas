@@ -38,7 +38,7 @@ public class AuthenticationEventsGeneratorTest {
 
     @Test
     public void DataSourceTest () {
-        Assert.assertEquals("DefaultDS", events.get(0).getDataSource());
+        Assert.assertEquals("Logon Activity", events.get(0).getDataSource());
     }
 
     @Test

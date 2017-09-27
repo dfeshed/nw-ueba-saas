@@ -5,10 +5,26 @@ import presidio.data.domain.event.file.FileEvent;
 public class FileDescriptionGenerator implements IFileDescriptionGenerator{
 
     private String buildFileDescription(FileEvent fileEvent){
-        String operationType = fileEvent.getFileOperation().getOperationType().getName();//.split("\\s|[_]")[1].toLowerCase();
-        String fileDescription = "The file " + fileEvent.getFileOperation().getSourceFile().getFilePath() +
-                " " + operationType + " on " + fileEvent.getUser().getUsername();
-        return fileDescription;
+        String operationType = fileEvent.getFileOperation().getOperationType().getName();
+        String description;
+        String op = operationType.substring(operationType.indexOf("_") + 1, operationType.length()).toLowerCase();
+        op = op.replaceAll("_", " ");
+
+        if (operationType.contains("FOLDER")) {
+            description = "The folder " + fileEvent.getFileOperation().getSourceFile().getFilePath() +
+                    " " + op + " on " + fileEvent.getUser().getUsername();
+        }
+
+        else if (operationType.contains("FILE")){
+            description = "The file " + fileEvent.getFileOperation().getSourceFile().getAbsoluteFilePath() +
+                    " " + op + " on " + fileEvent.getUser().getUsername();
+        }
+
+        else {
+            description = "The " + fileEvent.getFileOperation().getSourceFile().getAbsoluteFilePath() +
+                    " " + op + " on " + fileEvent.getUser().getUsername();
+        }
+        return description;
     }
 
     @Override
