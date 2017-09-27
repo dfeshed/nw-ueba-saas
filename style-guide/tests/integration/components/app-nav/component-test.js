@@ -14,3 +14,9 @@ test('it renders', function(assert) {
 
   assert.ok(this.$('.app-nav').length, 'Could not find component\'s root DOM element.');
 });
+
+test('has visual tour link', function(assert) {
+  this.render(hbs`{{app-nav}}`);
+
+  assert.ok(this.$('.visual-tour-link').length, 'Could not find visual tour link.');
+});
