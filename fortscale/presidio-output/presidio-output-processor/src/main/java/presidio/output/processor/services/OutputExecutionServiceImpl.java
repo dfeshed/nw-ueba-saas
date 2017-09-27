@@ -95,7 +95,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 }
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
-                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
+                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {

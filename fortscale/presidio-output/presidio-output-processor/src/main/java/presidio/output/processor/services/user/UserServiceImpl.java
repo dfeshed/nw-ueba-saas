@@ -1,7 +1,9 @@
 package presidio.output.processor.services.user;
 
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
@@ -83,10 +85,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserAlertData(User user, List<String> classification, List<String> indicators) {
-        user.setAlertClassifications(classification);
-        user.setIndicators(indicators);
+    public void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity) {
+
+        List<String> classificationUnion = (List<String>) CollectionUtils.union(user.getAlertClassifications(), classification);
+        user.setAlertClassifications(classificationUnion);
+        List<String> indicatorsUnion = (List<String>) CollectionUtils.union(user.getIndicators(), indicators);
+        user.setIndicators(indicatorsUnion);
         user.incrementAlertsCountByOne();
+        userScoreService.increaseUserScoreWithoutSaving(alertSeverity, user);
     }
 
     @Override

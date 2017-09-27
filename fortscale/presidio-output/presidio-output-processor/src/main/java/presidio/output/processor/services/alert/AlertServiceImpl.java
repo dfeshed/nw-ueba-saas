@@ -68,8 +68,7 @@ public class AlertServiceImpl implements AlertService {
         alert.setIndicatorsNum(supportingInfo.size());
         List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(new ArrayList<>(alert.getIndicatorsNames()));
         alert.setClassifications(classification);
-        // user update
-        userScoreService.increaseUserScoreWithoutSaving(alert, user);
+
         return alert;
     }
 

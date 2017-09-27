@@ -51,11 +51,11 @@ public class User extends AbstractElasticDocument {
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(ALERT_CLASSIFICATIONS_FIELD_NAME)
-    private List<String> alertClassifications;
+    private List<String> alertClassifications = new ArrayList<>();
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(INDICATORS_FIELD_NAME)
-    private List<String> indicators;
+    private List<String> indicators = new ArrayList<>();
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
@@ -64,7 +64,7 @@ public class User extends AbstractElasticDocument {
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(TAGS_FIELD_NAME)
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
     @Field(type = FieldType.Integer, store = true)
     @JsonProperty(ALERTS_COUNT_FIELD_NAME)
@@ -73,7 +73,6 @@ public class User extends AbstractElasticDocument {
 
     public User() {
         // empty const for JSON deserialization
-        this.indicators = new ArrayList<String>();
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
@@ -95,7 +94,6 @@ public class User extends AbstractElasticDocument {
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
-        this.indicators = new ArrayList<String>();
         this.tags = tags;
     }
 

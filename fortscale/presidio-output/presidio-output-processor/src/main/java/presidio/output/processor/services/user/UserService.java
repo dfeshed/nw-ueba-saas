@@ -1,5 +1,6 @@
 package presidio.output.processor.services.user;
 
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface UserService {
 
     User findUserById(String userId);
 
-    void setUserAlertData(User user, List<String> classification, List<String> indicators);
+    void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity);
 
     List<User> findUserByVendorUserIds(List<String> vendorUserId);
 

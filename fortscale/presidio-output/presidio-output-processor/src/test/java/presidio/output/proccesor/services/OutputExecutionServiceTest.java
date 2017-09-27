@@ -131,7 +131,7 @@ public class OutputExecutionServiceTest {
 
     @Test
     public void createAlertForExistingUser() {
-        User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList(""), Arrays.asList(""), null, UserSeverity.CRITICAL, 8);
+        User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8);
         userPersistencyService.save(userEntity);
         try {
             outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
@@ -142,8 +142,8 @@ public class OutputExecutionServiceTest {
             Assert.assertEquals(1, users.getNumberOfElements());
             User user = users.iterator().next();
             Assert.assertEquals(16, user.getAlertsCount());
-            Assert.assertEquals(1, user.getAlertClassifications().size());
-            Assert.assertEquals(1, user.getIndicators().size());
+            Assert.assertEquals(2, user.getAlertClassifications().size());
+            Assert.assertEquals(2, user.getIndicators().size());
             Assert.assertEquals(190, new Double(user.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
