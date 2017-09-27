@@ -111,13 +111,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                             continue;
                         }
                     }
+                }
 
-                    Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
-                    if (alertEntity != null) {
-                        metricCollectingService.addMetricWithTags(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
-                        userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
-                        alerts.add(alertEntity);
-                    }
+                Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
+                if (alertEntity != null) {
+                    metricCollectingService.addMetricWithTags(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
+                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
+                    alerts.add(alertEntity);
                 }
             }
         }
