@@ -26,7 +26,6 @@ public class AlertServiceImpl implements AlertService {
 
     private final AlertEnumsSeverityService alertEnumsSeverityService;
     private final AlertPersistencyService alertPersistencyService;
-    private final UserScoreService userScoreService;
     private final SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
 
     private final String FiXED_DURATION_HOURLY = "fixed_duration_hourly";
@@ -36,11 +35,10 @@ public class AlertServiceImpl implements AlertService {
     private AlertClassificationService alertClassificationService;
 
     public AlertServiceImpl(AlertPersistencyService alertPersistencyService, AlertEnumsSeverityService alertEnumsSeverityService, AlertClassificationService alertClassificationService,
-                            UserScoreService userScoreService, SupportingInformationGeneratorFactory supportingInformationGeneratorFactory) {
+                            SupportingInformationGeneratorFactory supportingInformationGeneratorFactory) {
         this.alertPersistencyService = alertPersistencyService;
         this.alertEnumsSeverityService = alertEnumsSeverityService;
         this.alertClassificationService = alertClassificationService;
-        this.userScoreService = userScoreService;
         this.supportingInformationGeneratorFactory = supportingInformationGeneratorFactory;
     }
 

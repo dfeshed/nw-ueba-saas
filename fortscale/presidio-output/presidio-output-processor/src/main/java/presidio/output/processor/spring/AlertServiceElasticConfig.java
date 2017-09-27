@@ -37,6 +37,6 @@ public class AlertServiceElasticConfig {
 
     @Bean
     public AlertService alertService() {
-        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService, userScoreService, supporingInformationGeneratorFactory);
+        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService, supporingInformationGeneratorFactory);
     }
 }
