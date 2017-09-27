@@ -237,8 +237,8 @@ public class CountersUtil {
 
 
     private void updateLatestReadyHourProperty(Properties properties, Instant latestReadyHour) {
-        final boolean hasLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER) != null;
-        if (hasLatestReadyHourProperty) {
+        final String currLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER);
+        if (currLatestReadyHourProperty != null && latestReadyHour.isAfter(Instant.parse(currLatestReadyHourProperty))) {
             properties.replace(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
         } else {
             properties.setProperty(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
