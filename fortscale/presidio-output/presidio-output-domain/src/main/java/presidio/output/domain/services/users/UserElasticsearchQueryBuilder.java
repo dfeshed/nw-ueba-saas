@@ -9,13 +9,14 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -33,6 +34,14 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             } else {
                 boolQueryBuilder.must(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()).operator(Operator.AND));
             }
+        }
+
+        // filter by freeText
+        if (StringUtils.isNotEmpty(userQuery.getFilterByFreeText())) {
+            BoolQueryBuilder freeTextQuery = new BoolQueryBuilder();
+            freeTextQuery.should(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+            freeTextQuery.should(prefixQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+            boolQueryBuilder.must(freeTextQuery);
         }
 
         // filter by alert classifications
