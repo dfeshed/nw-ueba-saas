@@ -46,15 +46,15 @@ public class CountersUtil {
      * of events that need to be 'sinked' for this hour {@code time} (by hour ceiling).
      * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T15:00:00Z
      *
-     * @param time                 the time of the event
-     * @param schema               the {@link Schema} of the event
-     * @param canClosePreviousHour is the hour closed
-     * @param amount               the amount of events that were sinked for given {@code time} and {@code schema}
+     * @param time            the time of the event
+     * @param schema          the {@link Schema} of the event
+     * @param latestReadyHour the latest hour ready
+     * @param amount          the amount of events that were sinked for given {@code time} and {@code schema}
      * @throws IOException when the there a problem with the file
      */
-    public int addToSourceCounter(Instant time, Schema schema, boolean canClosePreviousHour, int amount) throws IOException {
+    public int addToSourceCounter(Instant time, Schema schema, Instant latestReadyHour, int amount) throws IOException {
         synchronized (sourceLock) {
-            return addToCounter(time, schema, SOURCE_COUNTERS_FOLDER_NAME, canClosePreviousHour, amount);
+            return addToCounter(time, schema, SOURCE_COUNTERS_FOLDER_NAME, latestReadyHour, amount);
         }
     }
 
@@ -70,11 +70,63 @@ public class CountersUtil {
      */
     public int addToSinkCounter(Instant time, Schema schema, int amount) throws IOException {
         synchronized (sinkLock) {
-            return addToCounter(time, schema, SINK_COUNTERS_FOLDER_NAME, false, amount);
+            return addToCounter(time, schema, SINK_COUNTERS_FOLDER_NAME, null, amount);
         }
     }
 
-    private int addToCounter(Instant timeDetected, Schema schema, String flumeComponentType, boolean canClosePreviousHour, int amount) throws IOException {
+    /**
+     * This method get the latest ready hour for {@link Schema} name {@code schemaName}
+     *
+     * @param schema the {@link Schema} whose latest ready hour we return
+     * @return latest ready hour for {@code schemaName}, null if it doesn't exist or we failed to parse it
+     * @throws IOException
+     */
+    public Instant getLatestReadyHour(Schema schema) throws IOException {
+        synchronized (sourceLock) {
+            FileLock lock = null;
+            FileChannel channel = null;
+            FileInputStream in = null;
+            try {
+                /* Get the file stuff */
+                File file = createFile(schema, SOURCE_COUNTERS_FOLDER_NAME);
+                channel = new RandomAccessFile(file, "rw").getChannel();
+                lock = channel.lock(); // This method blocks until it can retrieve the lock.
+
+                /* load existing count properties */
+                Properties countProperties = new OrderedProperties<>(String.class);
+                in = new FileInputStream(file);
+                countProperties.load(in);
+
+                /* get latest ready hour properties */
+                final String latestReadyHourProperty = countProperties.getProperty(LATEST_READY_HOUR_MARKER);
+                if (latestReadyHourProperty == null) {
+                    return null;
+                }
+                Instant latestReadyHourPropertyAsInstant = null;
+                try {
+                    latestReadyHourPropertyAsInstant = Instant.parse(latestReadyHourProperty);
+                } catch (Exception e) {
+                    logger.warn("Can't get latest ready hour for schema {}. Failed to parse latestReadyHourProperty {}.", schema.getName(), latestReadyHourProperty, e);
+                }
+                return latestReadyHourPropertyAsInstant;
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
+
+                if (lock != null) {
+                    lock.release();
+                }
+
+                if (channel != null) {
+                    channel.close();
+                }
+            }
+
+        }
+    }
+
+    private int addToCounter(Instant timeDetected, Schema schema, String flumeComponentType, Instant latestReadyHour, int amount) throws IOException {
         final int newCount;
         FileLock lock = null;
         FileChannel channel = null;
@@ -93,7 +145,7 @@ public class CountersUtil {
             countProperties.load(in);
 
             /* update count properties */
-            newCount = updateCountProperties(timeDetected, canClosePreviousHour, countProperties, amount, flumeComponentType);
+            newCount = updateCountProperties(timeDetected, latestReadyHour, countProperties, amount, flumeComponentType);
 
             if (propertyTimeout > 0) {
                 countProperties = removeTimedOutProperties(flumeComponentType, countProperties);
@@ -171,12 +223,12 @@ public class CountersUtil {
     }
 
 
-    private int updateCountProperties(Instant timeDetected, boolean canClosePreviousHour, Properties properties, int amount, String flumeComponentType) throws IllegalStateException {
+    private int updateCountProperties(Instant timeDetected, Instant latestReadyHour, Properties properties, int amount, String flumeComponentType) throws IllegalStateException {
         final Instant endOfHour = DateUtils.ceiling(timeDetected, ChronoUnit.HOURS);
         String newCount = updateHourProperty(timeDetected, properties, amount, endOfHour);
 
-        if (flumeComponentType.equals(SOURCE_COUNTERS_FOLDER_NAME)) {
-            updateLatestReadyHourProperty(properties, endOfHour, canClosePreviousHour);
+        if (flumeComponentType.equals(SOURCE_COUNTERS_FOLDER_NAME) && latestReadyHour != null) {
+            updateLatestReadyHourProperty(properties, latestReadyHour);
         }
 
 
@@ -184,16 +236,12 @@ public class CountersUtil {
     }
 
 
-    private void updateLatestReadyHourProperty(Properties properties, Instant endOfHour, boolean canClosePreviousHour) {
-        Instant latestReadyHour;
-        if (canClosePreviousHour) {
-            latestReadyHour = endOfHour.minus(1, ChronoUnit.HOURS);
-            final boolean hasLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER) != null;
-            if (hasLatestReadyHourProperty) {
-                properties.replace(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
-            } else {
-                properties.setProperty(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
-            }
+    private void updateLatestReadyHourProperty(Properties properties, Instant latestReadyHour) {
+        final boolean hasLatestReadyHourProperty = properties.getProperty(LATEST_READY_HOUR_MARKER) != null;
+        if (hasLatestReadyHourProperty) {
+            properties.replace(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
+        } else {
+            properties.setProperty(LATEST_READY_HOUR_MARKER, latestReadyHour.toString());
         }
     }
 

@@ -64,7 +64,7 @@ public class CountersUtilTest {
 
     @Test
     public void addToCounterSourceCanClosePreviousHour() throws Exception {
-        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, true, 1);
+        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
         Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
@@ -73,7 +73,7 @@ public class CountersUtilTest {
 
     @Test
     public void addToCounterSourceCannotClosePreviousHour() throws Exception {
-        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, false, 1);
+        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, null, 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
         Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
@@ -82,9 +82,9 @@ public class CountersUtilTest {
 
     @Test
     public void addToCounterClean() throws Exception {
-        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, true, 1);
-        testSubject.addToSourceCounter(exampleOldDateInsideTimeout, Schema.ACTIVE_DIRECTORY, true, 1);
-        testSubject.addToSourceCounter(exampleOldDateOutsideTimeout, Schema.ACTIVE_DIRECTORY, true, 1);
+        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
+        testSubject.addToSourceCounter(exampleOldDateInsideTimeout, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
+        testSubject.addToSourceCounter(exampleOldDateOutsideTimeout, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
         Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
