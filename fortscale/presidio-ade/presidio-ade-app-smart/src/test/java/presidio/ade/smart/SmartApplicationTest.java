@@ -1,21 +1,15 @@
 package presidio.ade.smart;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.model.*;
 import fortscale.ml.model.store.ModelDAO;
-import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
-import fortscale.utils.jonfig.Jonfig;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.test.category.ModuleTestCategory;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.collections.map.SingletonMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
