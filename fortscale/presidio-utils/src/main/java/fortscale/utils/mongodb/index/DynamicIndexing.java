@@ -19,8 +19,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DynamicIndexing {
 	/**
-	 * @return true if the {@link CompoundIndex} definitions of the {@link Document}'s
-	 *         properties (fields) should be included, false otherwise.
+	 * @return an array of compound indexes that should be created dynamically
 	 */
-	boolean includeCompoundIndexDefinitionsOfProperties() default true;
+	CompoundIndex[] compoundIndexes() default {};
+
+	/**
+	 * @return true if the {@link DynamicIndexing} options of the superclass should be inherited, false otherwise
+	 */
+	boolean inheritFromSuperclass() default true;
 }

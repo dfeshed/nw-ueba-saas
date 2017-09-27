@@ -1,8 +1,6 @@
 package presidio.ade.domain.record.enriched.authentication;
 
 import fortscale.domain.feature.score.FeatureScore;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -17,11 +15,6 @@ import java.util.List;
  */
 @Document
 @AdeScoredEnrichedMetadata(erichedRecord = EnrichedAuthenticationRecord.class)
-@CompoundIndexes({
-        @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-        @CompoundIndex(name = "startScr", def = "{'startInstant': 1, 'score': 1}"),
-        @CompoundIndex(name = "eventId", def = "{'context.eventId': 1}")
-})
 public class AdeScoredAuthenticationRecord extends AdeScoredEnrichedRecord<AdeEnrichedAuthenticationContext> {
     public AdeScoredAuthenticationRecord() {
         super();

@@ -11,18 +11,17 @@ import java.util.List;
 
 /**
  * A basic ADE enriched record. All ADE enriched records (across all data sources) should extend this one.
+ * A compound index is created dynamically for every <'contextType', 'startInstant'> pair in use.
  * <p>
  * Created by Lior Govrin on 06/06/2017.
  */
 public abstract class EnrichedRecord extends AdeRecord {
-
     public static final String EVENT_ID_FIELD = "eventId";
     public static final String DATA_SOURCE_FIELD = "dataSource";
     public static final String OPERATION_TYPE_FIELD = "operationType";
     public static final String OPERATION_TYPE_CATEGORIES_FIELD = "operationTypeCategories";
     public static final String RESULT_FIELD = "result";
     public static final String RESULT_CODE_FIELD = "resultCode";
-
 
     @Field(EVENT_ID_FIELD)
     private String eventId;
@@ -36,7 +35,6 @@ public abstract class EnrichedRecord extends AdeRecord {
     private EventResult result;
     @Field(RESULT_CODE_FIELD)
     private String resultCode;
-
 
     public EnrichedRecord(Instant startInstant) {
         super(startInstant);
@@ -89,7 +87,6 @@ public abstract class EnrichedRecord extends AdeRecord {
     public void setResultCode(String resultCode) {
         this.resultCode = resultCode;
     }
-
 
     @Override
     @Transient
