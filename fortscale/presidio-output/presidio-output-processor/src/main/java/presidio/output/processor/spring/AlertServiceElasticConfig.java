@@ -30,9 +30,6 @@ public class AlertServiceElasticConfig {
     private AlertPersistencyService alertPersistencyService;
 
     @Autowired
-    private UserScoreService userScoreService;
-
-    @Autowired
     private SupportingInformationGeneratorFactory supporingInformationGeneratorFactory;
 
     @Bean

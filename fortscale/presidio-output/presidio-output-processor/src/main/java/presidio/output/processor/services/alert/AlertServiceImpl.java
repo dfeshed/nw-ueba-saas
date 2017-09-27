@@ -10,7 +10,6 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGenerator;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
-import presidio.output.processor.services.user.UserScoreService;
 
 import java.util.ArrayList;
 import java.util.Date;
