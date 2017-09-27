@@ -45,8 +45,6 @@ public class FortscaleInputCoreApplicationTest {
 
     @Test
     public void inputCoreShellTest() {
-        //Mockito.when(metricCollectingService.addMetricWithTags(Mockito.anyString(),Mockito.anyLong(),Mockito.anySet(),Mockito.anyString())).thenReturn(null);
-        //Mockito.when(metricCollectingService.addMetricWithOneTag(Mockito.anyString(),Mockito.anyLong(),Mockito.anyString(),Mockito.anyString())).then(null);
         CommandResult commandResult = bootShim.getShell().executeCommand(EXECUTION_COMMAND);
         Assert.assertTrue(commandResult.isSuccess());
     }

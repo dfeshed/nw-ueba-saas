@@ -3,6 +3,7 @@ package presidio.input.core.services.impl;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.RawEventsPageIterator;
@@ -16,6 +17,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,16 +61,15 @@ public class InputCoreManager {
         }
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
         List transformedEvents = null;
+        List nextEvents = null;
         while (rawEventsPageIterator.hasNext()) {
             try {
-                List nextEvents = rawEventsPageIterator.next();
+                nextEvents = rawEventsPageIterator.next();
 
                 logger.debug("Processing {} events", nextEvents.size());
 
                 transformedEvents = transformationService.run(nextEvents, schema);
                 storeToAde(schema, startDate, endDate, transformedEvents);
-                metricCollectingService.addMetricWithOneTag(TOTAL_EVENTS_PROCESSEd_METRIC_NAME, transformedEvents.size(), schema.toString(), TYPE_LONG);
-
                 try {
                     storeToOutput(transformedEvents, schema);
                 } catch (Exception e) {
@@ -76,13 +77,17 @@ public class InputCoreManager {
                 }
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
+            } finally {
+                metricCollectingService.addMetricWithTags(TOTAL_EVENTS_PROCESSEd_METRIC_NAME, transformedEvents.size(), new HashSet(Arrays.asList(schema.toString())), TYPE_LONG);
             }
         }
-        long time = ((AbstractInputDocument) transformedEvents.get(transformedEvents.size() - 1)).getDateTime().toEpochMilli();
-        Set tags = new HashSet();
-        tags.add(schema.toString());
-        tags.add(startDate.toEpochMilli());
-        metricCollectingService.addMetricWithTags(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
+        if (CollectionUtils.isNotEmpty(nextEvents)) {
+            long time = ((AbstractInputDocument) nextEvents.get(nextEvents.size() - 1)).getDateTime().toEpochMilli();
+            Set tags = new HashSet();
+            tags.add(schema.toString());
+            tags.add(startDate.toEpochMilli());
+            metricCollectingService.addMetricWithTags(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
+        }
     }
 
     private void storeToOutput(List<? extends AbstractInputDocument> transformedEvents, Schema schema) throws Exception {

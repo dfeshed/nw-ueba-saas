@@ -3,7 +3,6 @@ package presidio.monitoring.aspect.services;
 import fortscale.utils.logging.Logger;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class MetricCollectingServiceImpl implements MetricCollectingService {
@@ -17,11 +16,4 @@ public class MetricCollectingServiceImpl implements MetricCollectingService {
         PresidioCustomMetrics.addInMethodMetric(metricName, metricValue, tags, unit);
     }
 
-    @Override
-    public void addMetricWithOneTag(String metricName, long metricValue, String tag, String unit) {
-        logger.debug("Adding metric name {} , value {} , tag {} , unit {}", metricName, metricValue, tag, unit);
-        Set tags = new HashSet();
-        tags.add(tag);
-        PresidioCustomMetrics.addInMethodMetric(metricName, metricValue, tags, unit);
-    }
 }

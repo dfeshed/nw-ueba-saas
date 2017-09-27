@@ -7,7 +7,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
@@ -46,7 +45,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final String UNIT_TYPE_LONG = "long";
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number.of.alerts.created";
     private final String ALERT_WITH_SEVERITY_METRIC_NAME = "alert.created.with.severity.";
-    private final String LAST_EVENT_TIME_PROCESSES_METRIC_NAME = "last.event.time.processed.output";
+    private final String LAST_EVENT_TIME_PROCESSES_METRIC_NAME = "last.smart.time.in.output";
     private final String TYPE_LONG = "long";
     private static final String ADE_SMART_USER_ID = "userId";
 
@@ -87,10 +86,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<User> users = new ArrayList<User>();
         Set tags = new HashSet();
         tags.add(startDate.toString());
+        List<SmartRecord> smarts = null;
         while (smartPageIterator.hasNext()) {
-            List<SmartRecord> smarts = smartPageIterator.next();
+            smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
-                List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
                 String userId = smart.getContext().get(ADE_SMART_USER_ID);
 
                 if (userId == null || userId.isEmpty()) {
@@ -115,21 +114,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                     if (alertEntity != null) {
+                        metricCollectingService.addMetricWithTags(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
                         userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
                         alerts.add(alertEntity);
                     }
                 }
-
-
-                Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
-                if (alertEntity != null) {
-                    metricCollectingService.addMetricWithTags(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
-                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames());
-                    alerts.add(alertEntity);
-                }
-            }
-            if (!smartPageIterator.hasNext()) {
-                metricCollectingService.addMetricWithOneTag(LAST_EVENT_TIME_PROCESSES_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate.toEpochMilli() + "", TYPE_LONG);
             }
         }
 
@@ -142,6 +131,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        if (!smartPageIterator.hasNext()) {
+            metricCollectingService.addMetricWithTags(LAST_EVENT_TIME_PROCESSES_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG);
+        }
     }
 
 
