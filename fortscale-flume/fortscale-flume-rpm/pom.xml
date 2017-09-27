@@ -45,6 +45,19 @@
                                 </source>
                             </sources>
                         </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/conf</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <location>
+                                        ${project.basedir}/../../fortscale-flume/resources/flume-logback.xml
+                                    </location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <preinstallScriptlet>
                         <script>
