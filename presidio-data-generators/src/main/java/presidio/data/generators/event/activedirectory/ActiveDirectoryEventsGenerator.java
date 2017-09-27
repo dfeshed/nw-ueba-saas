@@ -45,7 +45,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         timeGenerator = new TimeGenerator();
         userGenerator = new RandomAdminUserPercentageGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
-        dataSourceGenerator = new FixedDataSourceGenerator();                                // "DefaultDS"
+        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Active Directory"});                                // "DefaultDS"
         activeDirOperationGenerator = new ActiveDirectoryOperationGenerator();
 
         srcMachineGenerator = new SimpleMachineGenerator();

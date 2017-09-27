@@ -43,7 +43,7 @@ public class ActiveDirectoryEventsGeneratorTest {
 
     @Test
     public void DataSourceTest () {
-        Assert.assertEquals("DefaultDS", events.get(0).getDataSource());
+        Assert.assertEquals("Active Directory", events.get(0).getDataSource());
     }
 
     @Test
