@@ -25,6 +25,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.CONTEXT_FIELD_NAME;
 import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.SCORE_FIELD_NAME;
 import static presidio.ade.domain.record.enriched.BaseEnrichedContext.EVENT_ID_FIELD_NAME;
+import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.START_INSTANT_FIELD;
 
 /**
  * Created by YaronDL on 6/13/2017.
@@ -83,9 +84,12 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     public List<String> findScoredEnrichedRecordsDistinctFeatureValues(String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold) {
         String collectionName = translator.toCollectionName(adeEventType);
         Criteria contextFilter = Criteria.where(String.format("%s.%s", CONTEXT_FIELD_NAME, contextFieldAndValue.getFirst())).is(contextFieldAndValue.getSecond());
-        String contextualDistinctField = String.format("%s.%s", CONTEXT_FIELD_NAME, distinctFieldName);
+        String contextualDistinctField = distinctFieldName;
+        if(!START_INSTANT_FIELD.equals(distinctFieldName)){
+            contextualDistinctField = String.format("%s.%s", CONTEXT_FIELD_NAME, distinctFieldName);
+        }
 
-        Criteria timeRangeFilter = Criteria.where(AdeScoredEnrichedRecord.START_INSTANT_FIELD).gte(timeRange.getStartAsDate()).lt(timeRange.getEndAsDate());
+        Criteria timeRangeFilter = Criteria.where(START_INSTANT_FIELD).gte(timeRange.getStartAsDate()).lt(timeRange.getEndAsDate());
         Criteria scoreFilter = Criteria.where(SCORE_FIELD_NAME).gte(scoreThreshold);
         Query query = Query.query(contextFilter).addCriteria(timeRangeFilter).addCriteria(scoreFilter);
         DBCollection collection = mongoTemplate.getCollection(collectionName);
@@ -101,7 +105,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
-                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+                .addCriteria(where(START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
 
