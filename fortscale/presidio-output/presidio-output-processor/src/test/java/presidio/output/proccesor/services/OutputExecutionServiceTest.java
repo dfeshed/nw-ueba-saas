@@ -11,6 +11,7 @@ import javafx.util.Pair;
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = {OutputProcessorConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
