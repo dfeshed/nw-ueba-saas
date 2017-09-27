@@ -114,7 +114,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
 
-        }
+    }
 
     private User getSingleUserEntityById(String userId) {
         List<User> userEntities = userService.findUserByVendorUserIds(Arrays.asList(userId));

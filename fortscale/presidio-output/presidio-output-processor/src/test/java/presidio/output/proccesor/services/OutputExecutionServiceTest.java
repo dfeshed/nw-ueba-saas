@@ -88,7 +88,7 @@ public class OutputExecutionServiceTest {
         usersToScoreList.add(new Pair<>("userTest5", 55.0));
         usersToScoreList.add(new Pair<>("userTest6", 65.0));
         usersToScoreList.add(new Pair<>("userTest7", 45.0));
-        usersToScoreList.add(new Pair<>("userTest7", 85.0));
+        usersToScoreList.add(new Pair<>("userTest8", 85.0));
 
         AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
                 10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", USER_ID_TEST_USER), AggregatedFeatureType.SCORE_AGGREGATION);
@@ -98,9 +98,11 @@ public class OutputExecutionServiceTest {
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
 
 
+        Map<String, String> context = new HashMap<>();
+        context.put("userId", USER_ID_TEST_USER);
         for (Pair<String, Double> usersToScore : usersToScoreList) {
             SmartRecord smartRecord = new SmartRecord(timeRange, usersToScore.getKey(), "featureName", FixedDurationStrategy.HOURLY,
-                    90, usersToScore.getValue(), Collections.emptyList(), Arrays.asList(adeAggregationRecord));
+                    90, usersToScore.getValue(), Collections.emptyList(), Arrays.asList(adeAggregationRecord), context);
             smartRecords.add(smartRecord);
         }
 
