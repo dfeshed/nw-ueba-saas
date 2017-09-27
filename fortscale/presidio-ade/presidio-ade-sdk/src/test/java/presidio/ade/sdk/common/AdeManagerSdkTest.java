@@ -8,7 +8,6 @@ import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.SystemDateService;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.impl.config.SystemDateServiceImplForcedConfig;
-import fortscale.utils.ttl.TtlServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -97,11 +96,11 @@ public class AdeManagerSdkTest {
         adeManagerSdk.storeEnrichedRecords(metaData, generate);
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
-        Assert.assertTrue("ade input records exists", insertedRecords.size() > 0);
+        Assert.assertTrue("ADE input records are missing.", insertedRecords.size() > 0);
         DBCollection collection = mongoTemplate.getCollection(collectionName);
         List<DBObject> indexInfo = collection.getIndexInfo();
-        // 1 index is always created for _id_ field. because of that reason we need to check that are at least 2
-        Assert.assertTrue("more than one index created", indexInfo.size() >= 2);
+        // There should be only 1 index that is always created for the _id_ field
+        Assert.assertEquals("Unexpected number of indexes.", 1, indexInfo.size());
     }
 
     @Configuration

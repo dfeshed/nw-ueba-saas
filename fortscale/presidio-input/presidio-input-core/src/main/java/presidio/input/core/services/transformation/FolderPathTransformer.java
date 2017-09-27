@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class FolderPathTransformer implements Transformer {
 
     private static final Logger logger = Logger.getLogger(FolderPathTransformer.class);
@@ -34,22 +36,25 @@ public class FolderPathTransformer implements Transformer {
         documents.forEach((AbstractInputDocument document) -> {
 
                     String filePathValue = (String) ReflectionUtils.getFieldValue(document, inputPathFieldName);
-                    String outputFilePath = null;
-                    String outputFolderPath = null;
-                    if (isFolderOperation(document)) {
-                        outputFolderPath = filePathValue;
-                    } else {
-                        Matcher matcher = pattern.matcher(filePathValue);
-                        if (matcher.find()) {
-                            outputFolderPath = matcher.group();
-                            outputFilePath = filePathValue;
+
+                    if (isNotBlank(filePathValue)) {
+                        String outputFilePath = null;
+                        String outputFolderPath = null;
+                        if (isFolderOperation(document)) {
+                            outputFolderPath = filePathValue;
+                        } else {
+                            Matcher matcher = pattern.matcher(filePathValue);
+                            if (matcher.find()) {
+                                outputFolderPath = matcher.group();
+                                outputFilePath = filePathValue;
+                            }
                         }
-                    }
-                    try {
-                        ReflectionUtils.setFieldValue(document, filePathFieldName, outputFilePath);
-                        ReflectionUtils.setFieldValue(document, folderPathFieldName, outputFolderPath);
-                    } catch (IllegalAccessException e) {
-                        logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
+                        try {
+                            ReflectionUtils.setFieldValue(document, filePathFieldName, outputFilePath);
+                            ReflectionUtils.setFieldValue(document, folderPathFieldName, outputFolderPath);
+                        } catch (IllegalAccessException e) {
+                            logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
+                        }
                     }
                 }
         );
