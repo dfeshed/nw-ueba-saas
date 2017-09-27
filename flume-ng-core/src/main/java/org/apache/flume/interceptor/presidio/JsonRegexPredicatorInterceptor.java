@@ -69,7 +69,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
                     eventBodyAsJson.remove(currValueField);
                 }
             } else {
-                logger.warn("Current event doesn't contain the key: {}", currValueField);
+                logger.trace("Current event doesn't contain the key: {}", currValueField);
             }
         }
 
