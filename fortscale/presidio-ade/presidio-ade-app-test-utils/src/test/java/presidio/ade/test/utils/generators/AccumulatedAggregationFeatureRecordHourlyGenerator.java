@@ -6,7 +6,7 @@ import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecor
 import presidio.data.generators.common.*;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
-
+import presidio.data.generators.common.FixedMapGenerator;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.ArrayList;
