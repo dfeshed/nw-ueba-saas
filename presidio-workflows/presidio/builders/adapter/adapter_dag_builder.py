@@ -1,4 +1,5 @@
 import logging
+import os
 
 from datetime import timedelta
 
@@ -41,10 +42,17 @@ class AdapterDagBuilder(PresidioDagBuilder):
 
         logging.info("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
 
+        if 'FLUME_HOME' not in os.environ:
+            logging.error("Adapter DAG build'' has failed. Environment variable FLUME_HOME doesn't exist. exiting...")
+            exit(1)
+
+        flume_home = os.environ.get("FLUME_HOME")
+
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
                 'schema': data_source,
+                '-Dlogback.configurationFile':  os.path.join(flume_home, 'logback-flume.xml')
             }
 
             hour_is_ready_sensor = HourIsReadySensorOperator(dag=adapter_dag,
