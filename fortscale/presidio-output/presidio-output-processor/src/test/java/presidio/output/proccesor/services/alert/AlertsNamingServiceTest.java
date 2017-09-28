@@ -28,7 +28,7 @@ public class AlertsNamingServiceTest {
 
     @Test
     public void classificationsAsTowOptionsTest() {
-        List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_src_computers", "high_number_of_distinct_dst_computers"));
+        List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_destination_domains", "high_number_of_distinct_dst_computers"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals(2, names.size());
     }
@@ -37,7 +37,7 @@ public class AlertsNamingServiceTest {
     public void classificationsAsOneOptionTest() {
         List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_src_computers", "high_number_of_distinct_dst_computers"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
-        assertEquals(2, names.size());
+        assertEquals(1, names.size());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class AlertsNamingServiceTest {
                 "high_number_of_successful_file_action_operations",
                 "abnormal_active_directory_day_time_operation"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
-        assertEquals("snooping_user", names.get(0));
+        assertEquals("data_exfiltration", names.get(0));
         assertEquals(4, names.size());
     }
 
@@ -58,7 +58,7 @@ public class AlertsNamingServiceTest {
                 "abnormal_file_action_operation_type",
                 "high_number_of_file_move_operations_to_shared_drive"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
-        assertEquals("snooping_user", names.get(0));
+        assertEquals("data_exfiltration", names.get(0));
         assertEquals(3, names.size());
     }
 
@@ -74,7 +74,7 @@ public class AlertsNamingServiceTest {
                 "high_number_of_distinct_src_computer_clusters"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals("mass_changes_to_critical_enterprise_groups", names.get(0));
-        assertEquals(6, names.size());
+        assertEquals(5, names.size());
     }
 }
 
