@@ -16,7 +16,13 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
  * Created by efratn on 24/07/2017.
  */
 @Configuration
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertEnumsConfig.class, UserServiceConfig.class, SupporingInformationServiceConfig.class})
+@Import({
+        PresidioOutputPersistencyServiceConfig.class,
+        AlertEnumsConfig.class,
+        UserServiceConfig.class,
+        SupportingInformationServiceConfig.class,
+        AlertClassificationPriorityConfig.class
+})
 public class AlertServiceElasticConfig {
 
     @Autowired
@@ -29,10 +35,15 @@ public class AlertServiceElasticConfig {
     private AlertPersistencyService alertPersistencyService;
 
     @Autowired
-    private SupportingInformationGeneratorFactory supporingInformationGeneratorFactory;
+    private SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
 
     @Bean
     public AlertService alertService() {
-        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService, supporingInformationGeneratorFactory);
+        return new AlertServiceImpl(
+                alertPersistencyService,
+                alertEnumsSeverityService,
+                alertClassificationService,
+                supportingInformationGeneratorFactory
+        );
     }
 }

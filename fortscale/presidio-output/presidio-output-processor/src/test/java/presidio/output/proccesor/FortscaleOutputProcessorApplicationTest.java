@@ -31,7 +31,6 @@ public class FortscaleOutputProcessorApplicationTest {
     OutputExecutionService executionService;
 
     @Test
-    @Ignore
     public void contextLoads() throws Exception {
         Assert.assertTrue(executionService instanceof OutputExecutionServiceImpl);
     }
