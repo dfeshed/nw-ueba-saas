@@ -40,7 +40,7 @@ import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -107,18 +107,20 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         Alert alert =
                 new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
-        Date createaAtDate = alert.getCreatedDate();
+        Date createDate = alert.getCreatedDate();
         alertPersistencyService.save(alert);
 
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
 
         assertNotNull(testAlert.getId());
-        assertEquals(testAlert.getCreatedDate(), createaAtDate);
-
+        assertEquals(testAlert.getCreatedDate(), createDate);
         assertEquals(testAlert.getId(), alert.getId());
         assertEquals(testAlert.getUserName(), alert.getUserName());
-        // assertEquals(testAlert.getStartDate(), alert.getStartDate());
-
+        testAlert.setIndicatorsNum(100);
+        alertPersistencyService.save(testAlert);
+        Alert testAlert2 = alertPersistencyService.findOne(alert.getId());
+        assertEquals(testAlert2.getCreatedDate(), createDate);
+        assertEquals(100, testAlert2.getIndicatorsNum());
     }
 
     @Test
