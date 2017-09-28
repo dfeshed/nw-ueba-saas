@@ -67,7 +67,7 @@ public class AlertServiceImpl implements AlertService {
             // In case that all the indicators for this alert are static indicators we don't want to save the alert
             boolean storeAlert = false;
             for (Indicator indicator : supportingInfo) {
-                if (indicator.getType() != AlertEnums.IndicatorTypes.STATIC_INDICATOR) {
+                if (! indicator.getType().equals(AlertEnums.IndicatorTypes.STATIC_INDICATOR)) {
                     storeAlert = true;
                     break;
                 }
