@@ -1,6 +1,6 @@
 package presidio.output.processor.services.user;
 
-import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
@@ -17,13 +17,14 @@ public interface UserService {
 
     User findUserById(String userId);
 
-    void setUserAlertData(User user, List<String> classification, List<String> indicators);
+    void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity);
 
     List<User> findUserByVendorUserIds(List<String> vendorUserId);
 
     /**
      * Recalculate all alerts related data on the user for the last X days (configurable).
      * Recalculating- user score, alerts count and classification
+     *
      * @return
      */
     boolean updateAllUsersAlertData();
