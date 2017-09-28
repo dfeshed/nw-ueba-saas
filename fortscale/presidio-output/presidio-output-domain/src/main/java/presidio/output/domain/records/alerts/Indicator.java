@@ -12,9 +12,10 @@ import presidio.output.domain.records.AbstractElasticDocument;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE , type = Indicator.INDICATOR_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE, type = Indicator.INDICATOR_TYPE)
 //@Mapping(mappingPath = "/mappings/test-mappings.json")
 public class Indicator extends AbstractElasticDocument {
 
@@ -85,6 +86,12 @@ public class Indicator extends AbstractElasticDocument {
 
     public Indicator(String alertId) {
         super();
+        events = new ArrayList<IndicatorEvent>();
+        this.alertId = alertId;
+    }
+
+    public Indicator(String alertId, String id, Date createdDate) {
+        super(id, createdDate);
         events = new ArrayList<IndicatorEvent>();
         this.alertId = alertId;
     }

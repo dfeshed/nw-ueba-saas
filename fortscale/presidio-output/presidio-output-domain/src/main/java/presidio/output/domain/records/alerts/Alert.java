@@ -2,7 +2,10 @@ package presidio.output.domain.records.alerts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.elasticsearch.annotations.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
@@ -10,7 +13,7 @@ import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.List;
 
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE , type = Alert.ALERT_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE, type = Alert.ALERT_TYPE)
 public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
@@ -86,6 +89,21 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
+    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Date createdDate, String id) {
+        super(id, createdDate);
+        this.classifications = classifications;
+        this.userId = userId;
+        this.smartId = smartId;
+        this.userName = userName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.score = score;
+        this.indicatorsNum = indicatorsNum;
+        this.timeframe = timeframe;
+        this.severity = severity;
+        this.userTags = userTags;
+    }
+
     public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
         super();
         this.classifications = classifications;
@@ -100,6 +118,8 @@ public class Alert extends AbstractElasticDocument {
         this.severity = severity;
         this.userTags = userTags;
     }
+
+    //Date createdDate
 
     public String getSmartId() {
         return smartId;

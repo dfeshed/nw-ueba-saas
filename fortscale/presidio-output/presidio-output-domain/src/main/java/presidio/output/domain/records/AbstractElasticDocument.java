@@ -23,6 +23,11 @@ public abstract class AbstractElasticDocument {
     @Field(type = FieldType.Date, store = true)
     private Date createdDate;
 
+    public AbstractElasticDocument(String id, Date createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
     public AbstractElasticDocument() {
         this.id = UUID.randomUUID().toString();
         this.createdDate = new Date();

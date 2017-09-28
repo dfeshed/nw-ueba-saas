@@ -4,13 +4,12 @@ import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.util.Pair;
 import presidio.output.domain.records.AbstractElasticDocument;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + IndicatorEvent.EVENT_TYPE , type = IndicatorEvent.EVENT_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + IndicatorEvent.EVENT_TYPE, type = IndicatorEvent.EVENT_TYPE)
 public class IndicatorEvent extends AbstractElasticDocument {
 
     public static final String EVENT_TYPE = "event";
@@ -32,6 +31,10 @@ public class IndicatorEvent extends AbstractElasticDocument {
 
     public IndicatorEvent() {
         super();
+    }
+
+    public IndicatorEvent(String id, Date createdDate) {
+        super(id, createdDate);
     }
 
     public String getIndicatorId() {
