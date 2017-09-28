@@ -1,4 +1,4 @@
-package presidio.output.proccesor.services;
+package presidio.output.proccesor.services.user;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,23 +12,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreService;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
