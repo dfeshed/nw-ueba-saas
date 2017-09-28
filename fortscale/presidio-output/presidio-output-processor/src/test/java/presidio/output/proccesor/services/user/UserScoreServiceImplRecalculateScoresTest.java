@@ -1,4 +1,4 @@
-package presidio.output.proccesor.services;
+package presidio.output.proccesor.services.user;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,11 +23,7 @@ import presidio.output.processor.services.user.UsersAlertData;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by shays on 27/08/2017.
