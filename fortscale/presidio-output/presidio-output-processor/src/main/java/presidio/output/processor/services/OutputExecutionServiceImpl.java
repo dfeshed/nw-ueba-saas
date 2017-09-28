@@ -75,7 +75,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             List<SmartRecord> smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
                 User userEntity;
-                List<AdeAggregationRecord> indicatorsList = smart.getAggregationRecords();
                 String userId = smart.getContext().get(ADE_SMART_USER_ID);
 
                 if (userId == null || userId.isEmpty()) {
