@@ -1,7 +1,9 @@
 package presidio.output.processor.services.user;
 
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
@@ -45,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-        public User createUserEntity(String userId) {
+    public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
         if (userDetails == null) {
             return null;
@@ -83,12 +85,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserAlertData(User user, List<String> classification, List<String> indicators) {
-        user.setAlertClassifications(classification);
-        user.setIndicators(indicators);
+    public void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity) {
 
-        int alertsCount = user.getAlertsCount();
-        user.setAlertsCount(alertsCount++);
+        List<String> classificationUnion = (List<String>) CollectionUtils.union(user.getAlertClassifications(), classification);
+        user.setAlertClassifications(classificationUnion);
+        List<String> indicatorsUnion = (List<String>) CollectionUtils.union(user.getIndicators(), indicators);
+        user.setIndicators(indicatorsUnion);
+        user.incrementAlertsCountByOne();
+        userScoreService.increaseUserScoreWithoutSaving(alertSeverity, user);
     }
 
     @Override
@@ -105,7 +109,7 @@ public class UserServiceImpl implements UserService {
             usersIDForBatch.add(entry.getKey());
             if (usersIDForBatch.size() < defaultUsersBatchSize) {
                 continue;
-    }
+            }
             //Update user score batch
             changedUsers.addAll(updateUserAlertDataForBatch(aggregatedUserScore, usersIDForBatch));
 
@@ -113,7 +117,7 @@ public class UserServiceImpl implements UserService {
             //After batch calculation, reset the set
             usersIDForBatch.clear();
 
-    }
+        }
 
         if (!usersIDForBatch.isEmpty()) {
             //there is leftover smaller then batch size
@@ -153,7 +157,7 @@ public class UserServiceImpl implements UserService {
             double newUserScore = aggregatedUserScore.get(user.getUserId()).getUserScore();
             if (user.getScore() != newUserScore) {
                 user.setScore(newUserScore);
-                user.setAlertsCount(user.getAlertsCount() + 1);
+                user.incrementAlertsCountByOne();
                 changedUsers.add(user);
             }
         });
@@ -161,11 +165,11 @@ public class UserServiceImpl implements UserService {
         return changedUsers;
     }
 
-    public List<User> findUserByVendorUserIds(List<String> vendorUserId){
+    public List<User> findUserByVendorUserIds(List<String> vendorUserId) {
         UserQuery userQuery = new UserQuery.UserQueryBuilder().filterByUsersIds(vendorUserId).build();
 
-        Page<User> usersPage =this.userPersistencyService.find(userQuery);
-        if (!usersPage.hasContent() || usersPage.getContent().size()<1){
+        Page<User> usersPage = this.userPersistencyService.find(userQuery);
+        if (!usersPage.hasContent() || usersPage.getContent().size() < 1) {
             return null;
         }
 
