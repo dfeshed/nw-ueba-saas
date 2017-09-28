@@ -39,8 +39,14 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         // filter by freeText
         if (StringUtils.isNotEmpty(userQuery.getFilterByFreeText())) {
             BoolQueryBuilder freeTextQuery = new BoolQueryBuilder();
-            freeTextQuery.should(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
-            freeTextQuery.should(prefixQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+            if (userQuery.isPrefix()) {
+                freeTextQuery.should(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+                freeTextQuery.should(prefixQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+            } else {
+                freeTextQuery.should(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+                freeTextQuery.should(matchQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()).operator(Operator.AND));
+            }
+
             boolQueryBuilder.must(freeTextQuery);
         }
 
