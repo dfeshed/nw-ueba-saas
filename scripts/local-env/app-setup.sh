@@ -36,6 +36,7 @@ yarn
 info "Running install for all application node packages"
 cd ../..
 yarn
+cd $CWD
 
 # mock-server is just Yarn install
 info "Running install for mock server"
