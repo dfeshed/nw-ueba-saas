@@ -1,29 +1,35 @@
 package presidio.output.proccesor.services.alert;
 
+import fortscale.common.general.Schema;
+import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
@@ -33,8 +39,7 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
 import java.time.Instant;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -57,6 +62,9 @@ public class AlertServiceTest {
 
     @Autowired
     private AlertEnumsSeverityService alertEnumsSeverityService;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     private Instant startTime = Instant.parse("2017-06-06T10:00:00Z");
     private Instant endTime = Instant.parse("2017-06-06T11:00:00Z");
@@ -83,7 +91,6 @@ public class AlertServiceTest {
     }
 
     @Test
-    @Ignore
     public void generateAlertWithLowSmartScore() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity, 50);
@@ -92,19 +99,55 @@ public class AlertServiceTest {
 
 
     @Test
-    @Ignore
     public void generateAlertTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertEquals(alert.getUserId(), userEntity.getId());
         assertEquals(alert.getUserName(), userEntity.getUserName());
-//        assertEquals(alert.getAlertType() //TODO- test here if the classification is correct once classification is implemented
         assertTrue(alert.getScore() == smart.getScore());
     }
 
     @Test
-    @Ignore
+    public void generateAlertWithOnlyStaticIndicatorsTest() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+                +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
+        EnrichedEvent event = new FileEnrichedEvent(Instant.now(), Instant.now(), "eventId", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
+                EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
+        mongoTemplate.save(event, fileEnrichedEventCollectionName);
+        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        assertNull(alert);
+    }
+
+    @Test
+    public void generateAlertWithNotOnlyStaticIndicatorsTest() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        AdeAggregationRecord notStaticAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "highestStartInstantScoreUserIdFileHourly",
+                +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
+        AdeAggregationRecord staticAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+                +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
+        EnrichedEvent event = new FileEnrichedEvent(Instant.now(), Instant.now(), "eventId", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
+                EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
+        mongoTemplate.save(event, fileEnrichedEventCollectionName);
+        smart.setAggregationRecords(Arrays.asList(staticAggregationRecord, notStaticAggregationRecord));
+
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        assertNotNull(alert);
+        assertEquals(2, alert.getIndicatorsNum());
+    }
+
+    @Test
     public void severityTest() {
         assertEquals(alertEnumsSeverityService.severity(51), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(71), AlertEnums.AlertSeverity.MEDIUM);

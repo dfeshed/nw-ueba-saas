@@ -1,6 +1,7 @@
 package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
@@ -53,20 +54,36 @@ public class AlertServiceImpl implements AlertService {
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags());
 
         // supporting information
-        List<Indicator> supportingInfo = new ArrayList<Indicator>();
+        List<Indicator> supportingInfo = new ArrayList<>();
         for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(adeAggregationRecord.getAggregatedFeatureType().name());
             supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(adeAggregationRecord, alert));
         }
 
-        // alert update with indicators information
-        alert.setIndicators(supportingInfo);
-        alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
-        alert.setIndicatorsNum(supportingInfo.size());
-        List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(new ArrayList<>(alert.getIndicatorsNames()));
-        alert.setClassifications(classification);
+        if (CollectionUtils.isNotEmpty(supportingInfo)) {
+            // In case that all the indicators for this alert are static indicators we don't want to save the alert
+            boolean storeAlert = false;
+            for (Indicator indicator : supportingInfo) {
+                if (! indicator.getType().equals(AlertEnums.IndicatorTypes.STATIC_INDICATOR)) {
+                    storeAlert = true;
+                    break;
+                }
+            }
+            // alert update with indicators information
+            if (storeAlert) {
+                alert.setIndicators(supportingInfo);
+                alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
+                alert.setIndicatorsNum(supportingInfo.size());
+                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(new ArrayList<>(alert.getIndicatorsNames()));
+                alert.setClassifications(classification);
+            } else {
+                return null;
+            }
+        }
 
         return alert;
+
+
     }
 
     @Override

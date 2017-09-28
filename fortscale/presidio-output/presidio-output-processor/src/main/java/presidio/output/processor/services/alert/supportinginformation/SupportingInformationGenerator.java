@@ -24,6 +24,10 @@ public interface SupportingInformationGenerator {
         try {
             // generate indicators
             indicators = generateIndicators(adeAggregationRecord, alert);
+            if(CollectionUtils.isEmpty(indicators)) {
+                logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", adeAggregationRecord.getId(),  adeAggregationRecord.getFeatureName());
+            }
+
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
 
@@ -32,17 +36,22 @@ public interface SupportingInformationGenerator {
                 if (CollectionUtils.isNotEmpty(events)) {
                     indicator.setEvents(events);
                     indicator.setEventsNum(events.size());
+                } else {
+                    logger.warn("failed to generate events for indicator ID {}, feature {}", adeAggregationRecord.getId(),  adeAggregationRecord.getFeatureName());
                 }
 
                 // generate historical data
                 HistoricalData historicalData = generateHistoricalData(adeAggregationRecord, indicator);
+                if (historicalData == null) {
+                    logger.warn("failed to generate historical data to indicator ID {}, feature {}", adeAggregationRecord.getId(),  adeAggregationRecord.getFeatureName());
+                }
                 indicator.setHistoricalData(historicalData);
             }
         } catch (Exception ex) {
-            logger.error("failed to build supporting info for feature {}, indicator ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId(), ex);
-
+            logger.error("failed to build supporting info for feature {}, indicator ID {}", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId(),ex);
         }
-        logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
+
+        logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId());
         return indicators;
     }
 

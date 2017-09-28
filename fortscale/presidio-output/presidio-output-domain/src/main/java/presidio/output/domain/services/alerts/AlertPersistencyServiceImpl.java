@@ -31,30 +31,29 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     public Iterable<Alert> save(List<Alert> alerts) {
-        //atomic save for the entire alert entities
+
+        // atomic save for the entire alert entities
 
         // save alerts
         Iterable<Alert> savedAlerts = alertRepository.save(alerts);
 
         // save indicators
         List<Indicator> indicators = new ArrayList<Indicator>();
-
-        alerts.stream().forEach(alert -> {
-            if (CollectionUtils.isNotEmpty(alert.getIndicators())) {
-                indicators.addAll(alert.getIndicators());
-            }
-        });
-
+        alerts.stream()
+                .filter(alert -> alert.getIndicators() != null)
+                .forEach(alert -> indicators.addAll(alert.getIndicators()));
         if (CollectionUtils.isNotEmpty(indicators)) {
             indicatorRepository.save(indicators);
-            // save events
-            List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
-            indicators.stream().forEach(indicator -> events.addAll(indicator.getEvents()));
-            if (CollectionUtils.isNotEmpty(events)) {
-                indicatorEventRepository.save(events);
-            }
         }
 
+        // save events
+        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        indicators.stream()
+                  .filter(indicator -> indicator.getEvents() != null)
+                  .forEach(indicator -> events.addAll(indicator.getEvents()));
+        if (CollectionUtils.isNotEmpty(events)) {
+            indicatorEventRepository.save(events);
+        }
 
         return savedAlerts;
     }
