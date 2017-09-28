@@ -181,7 +181,7 @@ indicators:
       field_value: true
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: data_exfiltration
 
 - id: numberOfFileMovedToSharedDriveUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -196,7 +196,7 @@ indicators:
       field_value: true
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: data_exfiltration
 
 
 #*********************************************************
@@ -551,7 +551,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: user_logged_into_multiple_hosts
 
 
 - id: numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly
@@ -561,7 +561,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: user_logged_into_multiple_hosts
 
 
 - id: numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly
@@ -571,7 +571,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: user_logged_into_multiple_hosts
 
 classificationPriority:
 
