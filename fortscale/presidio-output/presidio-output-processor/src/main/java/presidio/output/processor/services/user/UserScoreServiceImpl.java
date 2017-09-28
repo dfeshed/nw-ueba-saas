@@ -73,10 +73,8 @@ public class UserScoreServiceImpl implements UserScoreService {
     }
 
     @Override
-    public void increaseUserScoreWithoutSaving(Alert alert, User user) {
-        AlertEnums.AlertSeverity alertSeverity = alert.getSeverity();
+    public void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user) {
         double userScoreContribution = this.alertSeverityToScoreContribution.get(alertSeverity);
-
         double userScore = user.getScore();
         userScore += userScoreContribution;
         user.setScore(userScore);
