@@ -1,6 +1,7 @@
 package presidio.output.processor.services.user;
 
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
@@ -33,4 +34,7 @@ public interface UserScoreService {
      * @param alert
      */
     void increaseUserScoreWithoutSaving(Alert alert, User user);
+
+
+    Double getaUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity);
 }

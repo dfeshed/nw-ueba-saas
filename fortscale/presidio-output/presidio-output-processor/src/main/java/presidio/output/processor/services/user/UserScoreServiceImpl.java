@@ -75,7 +75,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Override
     public void increaseUserScoreWithoutSaving(Alert alert, User user) {
         AlertEnums.AlertSeverity alertSeverity = alert.getSeverity();
-        double userScoreContribution = this.alertSeverityToScoreContribution.get(alertSeverity);
+        double userScoreContribution = getaUserScoreContributionFromSeverity(alertSeverity);
 
         double userScore = user.getScore();
         userScore += userScoreContribution;
@@ -190,7 +190,7 @@ public class UserScoreServiceImpl implements UserScoreService {
                     alertsPage.getContent().forEach(alert -> {
                         String userId = alert.getUserId();
                         AlertEnums.AlertSeverity severity = alert.getSeverity();
-                        double userScoreContribution = this.alertSeverityToScoreContribution.get(severity);
+                        double userScoreContribution = getaUserScoreContributionFromSeverity(severity);
                         if (aggregatedUserScore.containsKey(userId)) {
                             UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
                             usersAlertData.incrementUserScore(userScoreContribution);
@@ -205,6 +205,10 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
         }
         return aggregatedUserScore;
+    }
+
+    public Double getaUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity) {
+        return this.alertSeverityToScoreContribution.get(severity);
     }
 
     private List<LocalDateTime> getListOfLastXdays(int days) {
