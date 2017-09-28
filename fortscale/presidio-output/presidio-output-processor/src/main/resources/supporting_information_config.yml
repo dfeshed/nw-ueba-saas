@@ -530,7 +530,9 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_destination_domains
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineDomain
   historicalData:
     type: hourly_aggregations
   classification: user_logins_to_multiple_domains
@@ -539,7 +541,9 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_src_computers
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: srcMachineId
   historicalData:
     type: hourly_aggregations
   classification: user_logged_into_multiple_hosts
@@ -548,27 +552,31 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_dst_computers
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineId
   historicalData:
     type: hourly_aggregations
   classification: suspicious_user_activity
-
 
 - id: numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_src_computer_clusters
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: srcMachineNameRegexCluster
   historicalData:
     type: hourly_aggregations
   classification: suspicious_user_activity
-
 
 - id: numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_dst_computer_clusters
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineNameRegexCluster
   historicalData:
     type: hourly_aggregations
   classification: suspicious_user_activity
