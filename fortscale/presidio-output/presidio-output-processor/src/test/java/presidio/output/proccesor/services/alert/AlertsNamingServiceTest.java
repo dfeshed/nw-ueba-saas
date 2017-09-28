@@ -1,4 +1,4 @@
-package presidio.output.proccesor.services;
+package presidio.output.proccesor.services.alert;
 
 
 import org.junit.Test;
