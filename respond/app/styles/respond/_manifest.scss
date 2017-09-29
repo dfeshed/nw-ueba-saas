@@ -1,9 +1,9 @@
 $respondBackgroundColor: rgb(42,48,53);
-$respondBorderColor: rsa-color(gray, lightest, $rsa-nearly-transparent);
+$respondBorderColor: border-color(primary, lightest, $rsa-nearly-transparent);
 
+@import 'themes/manifest';
 @import "solarized";
 @import "mixins";
-@import 'themes/manifest';
 @import 'respond-engine';
 @import "metadata";
 @import "alerts-search";

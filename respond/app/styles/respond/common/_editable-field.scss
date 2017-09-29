@@ -38,14 +38,14 @@ $inputHeight: 33px;
     .rsa-form-button-wrapper {
       line-height: inherit;
       padding: rsa-whitespace(less);
-      border: 1px solid rsa-color(gray, base, $rsa-transparent);
+      border: 1px solid border-color(primary, base, $rsa-transparent);
       visibility: visible;
 
       .rsa-form-button {
         padding: 0;
         i {
           font-size: 0.75rem;
-          color: rsa-color(gray, base, $rsa-somewhat-opaque);
+          color: text-color(primary, base, $rsa-somewhat-opaque);
         }
       }
     }
@@ -67,13 +67,13 @@ $inputHeight: 33px;
   &:hover {
     .editable-field__value {
       cursor: pointer;
-      border-color: rsa-color(gray);
+      border-color: border-color(primary);
       border-right-color: transparent;
     }
 
     &.textarea:hover {
       .editable-field__value {
-        border-right-color: rsa-color(gray);
+        border-right-color: border-color(primary);
       }
     }
 
@@ -82,10 +82,10 @@ $inputHeight: 33px;
 
       .rsa-form-button-wrapper {
         cursor: pointer;
-        border: 1px solid rsa-color(gray);
+        border: 1px solid border-color(primary);
         visibility: visible;
         height: 100%;
-        background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
+        background-color: background-color(primary, dark, $rsa-somewhat-opaque);
 
         .rsa-form-button i {
           color: inherit;
@@ -129,7 +129,7 @@ $inputHeight: 33px;
       height: 100%;
       line-height: inherit;
       padding: 0 rsa-whitespace(less);
-      border: 1px solid rsa-color(blue);
+      border: 1px solid border-color(secondary);
       box-sizing: border-box;
       @include rsa-font(body);
     }
@@ -142,7 +142,7 @@ $inputHeight: 33px;
       color: inherit;
       line-height: inherit;
       padding: rsa-whitespace(less);
-      border: 1px solid rsa-color(blue);
+      border: 1px solid border-color(secondary);
       box-sizing: border-box;
       @include rsa-font(body);
       outline: none;
@@ -157,8 +157,8 @@ $inputHeight: 33px;
     span.action {
       position: absolute;
       @include rsa-layer(controls);
-      background-color: rsa-color(gray, darker, $rsa-nearly-opaque);
-      border: 1px solid rsa-color(blue);
+      background-color: background-color(primary, darker, $rsa-nearly-opaque);
+      border: 1px solid border-color(secondary);
 
       button {
         padding: 0;
@@ -177,7 +177,7 @@ $inputHeight: 33px;
       border-top: none;
       bottom: $actionButtonHeight * -1 - 1;
       i {
-        color: rsa-color(gray);
+        color: text-color(primary);
       }
     }
 
@@ -187,7 +187,7 @@ $inputHeight: 33px;
       bottom: $actionButtonHeight * -1 - 1;
       i {
         font-size: 1rem;
-        color: rsa-color(red);
+        color: text-color(tertiaryOne);
       }
     }
   }
@@ -195,7 +195,7 @@ $inputHeight: 33px;
   &.has-changes {
 
     span.confirm-changes .rsa-form-button-wrapper:not(.is-disabled) i {
-      color: rsa-color(green);
+      color: text-color(tertiaryTwo);
     }
   }
 }

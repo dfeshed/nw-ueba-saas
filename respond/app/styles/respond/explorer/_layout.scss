@@ -6,7 +6,7 @@ $navbarHeight: 50px;
 
 page.respond-engine {
   min-height: 100vh;
-  color: rsa-color(gray, lightest);
+  color: text-color(primary, lightest);
 }
 .respond-engine {
   .rsa-respond-explorer {
@@ -78,7 +78,7 @@ page.respond-engine {
       .items-footer {
         margin: 0 rsa-whitespace();
         max-height: 40px;
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
         .selection-count {
           padding-left: rsa-whitespace(less);
         }
@@ -103,11 +103,11 @@ page.respond-engine {
     &.transaction-in-progress .transaction-overlay {
       @include rsa-fill-abs();
       z-index: 2;
-      background-color: rsa-color(black,base,$rsa-translucent);
+      background-color: background-color(neutral,dark,$rsa-translucent);
     }
   }
   .vertical-separator {
-    border-right: 2px solid rsa-color(gray);
+    border-right: 2px solid border-color(primary);
     width: 3px;
     height: 16px;
     display: inline-block;

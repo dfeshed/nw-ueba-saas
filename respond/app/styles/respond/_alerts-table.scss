@@ -1,7 +1,6 @@
-$alertsTableDarkBgColor: rsa-color(gray, light, $rsa-translucent);
-$alertsTableDarkerBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
-$alertsTableDarkPlusBgColor: rsa-color(gray, base, $rsa-translucent);
-$alertsTableLightBgColor: rsa-color(white);
+$alertsTableDarkBgColor: background-color(primary, light, $rsa-translucent);
+$alertsTableDarkerBgColor: background-color(primary, light, $rsa-nearly-transparent);
+$alertsTableDarkPlusBgColor: border-color(primary, base, $rsa-translucent);
 $alertsTableSeverityRadius: 1rem;
 $alertsTableLineHeight: 1.5;
 $alertsTableHeadingSize: 1rem;
@@ -248,22 +247,22 @@ $alertsTableDotSize: 5px;
   background-color: $respondBackgroundColor;
 
   &.is-selected {
-    background: rsa-color(blue, dark);
+    background: background-color(secondary, dark);
   }
 
   .p {
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
   }
 
   .tab {
-    border-color: rsa-color(blue);
-    color: rsa-color(blue);
+    border-color: border-color(secondary);
+    color: text-color(secondary);
 
     &.active,
     &:hover {
-      border-color: rsa-color(blue, light);
-      background-color: rsa-color(blue,light);
-      color: rsa-color(gray,darker);
+      border-color: border-color(secondary, light);
+      background-color: background-color(secondary,light);
+      color: text-color(primary,darker);
     }
   }
 
@@ -273,14 +272,14 @@ $alertsTableDotSize: 5px;
 }
 
 .rsa-alerts-table-alert-item {
-  color: rsa-color(white);
+  color: text-color(neutral);
 
   .sep {
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
   }
 
   &.is-selected {
-    background: rsa-color(blue, dark);
+    background: background-color(secondary, dark);
 
     .event {
       &::after {
@@ -290,12 +289,12 @@ $alertsTableDotSize: 5px;
   }
 
   .dot {
-    background-color: rsa-color(gray);
+    background-color: background-color(primary);
   }
 
   .event {
     &-header {
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
 
     &::after {

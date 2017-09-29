@@ -1,15 +1,106 @@
-$void: register-theme('dark', (
-  respond: (
-    /*
-    key-value pairs go here, nested pairs are okay, e.g:
-    ```
-    primary: blue,
-    secondary: gray,
-    images: (
-      logo: url('path/to/dark/logo.png'),
-      ..
-    )
-    ```
-    */
-  )
-));
+// sass-lint:disable no-color-hex
+
+.dark-theme {
+  --text-color-neutral-base: #fff;
+  --text-color-neutral-dark: #000;
+  --border-color-neutral-base: #fff;
+  --border-color-neutral-dark: #000;
+  --background-color-neutral-base: #fff;
+  --background-color-neutral-dark: #000;
+
+  --text-color-primary-darkest: #161616;
+  --text-color-primary-darker: #212121;
+  --text-color-primary-dark: #424242;
+  --text-color-primary-base: #757575;
+  --text-color-primary-light: #BDBDBD;
+  --text-color-primary-lighter: #EEEEEE;
+  --text-color-primary-lightest: #FAFAFA;
+
+  --border-color-primary-darkest: #161616;
+  --border-color-primary-darker: #212121;
+  --border-color-primary-dark: #424242;
+  --border-color-primary-base: #757575;
+  --border-color-primary-light: #BDBDBD;
+  --border-color-primary-lighter: #EEEEEE;
+  --border-color-primary-lightest: #FAFAFA;
+
+  --background-color-primary-darkest: #161616;
+  --background-color-primary-darker: #212121;
+  --background-color-primary-dark: #424242;
+  --background-color-primary-base: #757575;
+  --background-color-primary-light: #BDBDBD;
+  --background-color-primary-lighter: #EEEEEE;
+  --background-color-primary-lightest: #FAFAFA;
+
+  --text-color-secondary-darkest: #01579B;
+  --text-color-secondary-darker: #01579B;
+  --text-color-secondary-dark: #0288D1;
+  --text-color-secondary-base: #03A9F4;
+  --text-color-secondary-light: #4FC3F7;
+  --text-color-secondary-lighter: #B3E5FC;
+  --text-color-secondary-lightest: #B3E5FC;
+
+  --border-color-secondary-darkest: #01579B;
+  --border-color-secondary-darker: #01579B;
+  --border-color-secondary-dark: #0288D1;
+  --border-color-secondary-base: #03A9F4;
+  --border-color-secondary-light: #4FC3F7;
+  --border-color-secondary-lighter: #B3E5FC;
+  --border-color-secondary-lightest: #B3E5FC;
+
+  --background-color-secondary-darkest: #01579B;
+  --background-color-secondary-darker: #01579B;
+  --background-color-secondary-dark: #0288D1;
+  --background-color-secondary-base: #03A9F4;
+  --background-color-secondary-light: #4FC3F7;
+  --background-color-secondary-lighter: #B3E5FC;
+  --background-color-secondary-lightest: #B3E5FC;
+
+  --text-color-tertiary-one-darkest: #A60808;
+  --text-color-tertiary-one-darker: #A60808;
+  --text-color-tertiary-one-dark: #C91818;
+  --text-color-tertiary-one-base: #EC2227;
+  --text-color-tertiary-one-light: #E65C5C;
+  --text-color-tertiary-one-lighter: #FFCCD1;
+  --text-color-tertiary-one-lightest: #FFCCD1;
+
+  --text-color-tertiary-two-darkest: #33691E;
+  --text-color-tertiary-two-darker: #33691E;
+  --text-color-tertiary-two-dark: #689F38;
+  --text-color-tertiary-two-base: #8BC34A;
+  --text-color-tertiary-two-light: #AED581;
+  --text-color-tertiary-two-lighter: #DCEDC8;
+  --text-color-tertiary-two-lightest: #DCEDC8;
+
+  --background-color-tertiary-one-darkest: #A60808;
+  --background-color-tertiary-one-darker: #A60808;
+  --background-color-tertiary-one-dark: #C91818;
+  --background-color-tertiary-one-base: #EC2227;
+  --background-color-tertiary-one-light: #E65C5C;
+  --background-color-tertiary-one-lighter: #FFCCD1;
+  --background-color-tertiary-one-lightest: #FFCCD1;
+
+  --background-color-tertiary-two-darkest: #33691E;
+  --background-color-tertiary-two-darker: #33691E;
+  --background-color-tertiary-two-dark: #689F38;
+  --background-color-tertiary-two-base: #8BC34A;
+  --background-color-tertiary-two-light: #AED581;
+  --background-color-tertiary-two-lighter: #DCEDC8;
+  --background-color-tertiary-two-lightest: #DCEDC8;
+
+  --background-color-tertiary-three-darkest: #BF360C;
+  --background-color-tertiary-three-darker: #BF360C;
+  --background-color-tertiary-three-dark: #E64A19;
+  --background-color-tertiary-three-base: #FF5722;
+  --background-color-tertiary-three-light: #FF8A65;
+  --background-color-tertiary-three-lighter: #FFCCBC;
+  --background-color-tertiary-three-lightest: #FFCCBC;
+
+  --background-color-tertiary-four-darkest: #FF6F00;
+  --background-color-tertiary-four-darker: #FF6F00;
+  --background-color-tertiary-four-dark: #FFA000;
+  --background-color-tertiary-four-base: #FFC107;
+  --background-color-tertiary-four-light: #FFD54F;
+  --background-color-tertiary-four-lighter: #FFECB3;
+  --background-color-tertiary-four-lightest: #FFECB3;
+}

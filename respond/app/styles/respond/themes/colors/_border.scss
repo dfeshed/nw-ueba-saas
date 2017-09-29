@@ -1,0 +1,33 @@
+$border-colors: (
+
+  primary: (
+    darkest:  var(--border-color-primary-darkest),
+    darker:   var(--border-color-primary-darker),
+    dark:     var(--border-color-primary-dark),
+    base:     var(--border-color-primary-base),
+    light:    var(--border-color-primary-light),
+    lighter:  var(--border-color-primary-lighter),
+    lightest: var(--border-color-primary-lightest)
+  ),
+
+  secondary: (
+    darkest:  var(--border-color-secondary-darkest),
+    darker:   var(--border-color-secondary-darker),
+    dark:     var(--border-color-secondary-dark),
+    base:     var(--border-color-secondary-base),
+    light:    var(--border-color-secondary-light),
+    lighter:  var(--border-color-secondary-lighter),
+    lightest: var(--border-color-secondary-lightest)
+  ),
+
+  neutral: (
+    dark:     var(--border-color-neutral-dark),
+    base:     var(--border-color-neutral-base),
+  )
+
+);
+
+@function border-color($colorName, $modifier:base, $opacity:1) {
+  @return map-get(map-get($border-colors, $colorName), $modifier);
+  //TODO: @return rgba(#{$mappedColor}, $opacity);
+}

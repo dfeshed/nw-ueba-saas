@@ -15,7 +15,7 @@
     }
 
     .rsa-property-tree {
-      color: rsa-color(white);
+      color: text-color(neutral);
 
       .key {
 
@@ -25,7 +25,7 @@
           padding-bottom: rsa-whitespace(least);
           padding-left: 0;
           padding-right: rsa-whitespace();
-          color: rsa-color(gray,light);
+          color: text-color(primary,light);
         }
 
         &-value {
@@ -34,7 +34,7 @@
       }
 
       > table > tr {
-        //background-color: rsa-color(gray,dark,$rsa-nearly-transparent);
+        //background-color: background-color(primary,dark,$rsa-nearly-transparent);
 
         &:not(:last-of-type) {
           border-bottom: 10px solid transparent;
@@ -45,7 +45,7 @@
         }
 
         > td > .rsa-property-tree > table > tr {
-          border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);
+          border-bottom: 1px solid border-color(neutral,dark,$rsa-nearly-transparent);
         }
       }
 

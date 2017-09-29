@@ -3,7 +3,7 @@
   @include rsa-font(body,small);
   line-height: 1.35;
   text-align: right;
-  background-color: rsa-color(gray,darker, $rsa-nearly-opaque);
+  background-color: background-color(primary,darker, $rsa-nearly-opaque);
 
   &.has-no-data {
     display: none;
@@ -11,10 +11,10 @@
 
   .has-exceeded-node-limit {
     margin-top: rsa-whitespace(least);
-    color: rsa-color(gray);
+    color: text-color(primary);
 
     .show-all {
-      color: rsa-color(blue, light);
+      color: text-color(secondary, light);
       cursor: pointer;
     }
   }
@@ -23,7 +23,7 @@
     display: inline-block;
     white-space: nowrap;
     padding: 0 0 0 rsa-whitespace(less);
-    color: rsa-color(white);
+    color: text-color(neutral);
 
     label {
       padding-left: rsa-whitespace(least);
@@ -51,7 +51,7 @@
     }
     &.mac-address {
       label {
-        color: rsa-color(gray); // $entityMACColor is too dark to be legible
+        color: text-color(primary); // $entityMACColor is too dark to be legible
       }
     }
     &.file-name {
@@ -67,6 +67,6 @@
   }
 
   .selection {
-    color: rsa-color(gray,light);
+    color: text-color(primary,light);
   }
 }

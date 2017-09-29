@@ -29,7 +29,7 @@
   }
 
   .rsa-icon {
-    color: rsa-color(gray);
+    color: text-color(primary);
 
     &.file,
     &.device,
@@ -43,6 +43,6 @@
   }
 
   .entity {
-    color: rsa-color(white);
+    color: text-color(neutral);
   }
 }

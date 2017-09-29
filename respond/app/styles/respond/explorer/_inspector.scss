@@ -6,7 +6,7 @@ $metadataLabelWidth: 8rem;
   overflow: hidden;
 
   a {
-    color: rsa-color(blue, light);
+    color: text-color(secondary, light);
   }
 
   &__header {
@@ -40,7 +40,7 @@ $metadataLabelWidth: 8rem;
 
   &__toolbar {
     min-height: 25px;
-    border-bottom: 1px solid rsa-color(gray, light, $rsa-nearly-transparent);
+    border-bottom: 1px solid border-color(primary, light, $rsa-nearly-transparent);
 
     .rsa-tab {
       margin: 0 rsa-whitespace();
@@ -67,7 +67,7 @@ $metadataLabelWidth: 8rem;
     .metadata {
       display: block;
       padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $metadataLabelWidth);
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
       position: relative;
 
       > label {
@@ -99,7 +99,7 @@ $metadataLabelWidth: 8rem;
 
     .metadata-separator {
       width: 100%;
-      border-top: 1px solid rsa-color(gray, base, $rsa-somewhat-opaque);
+      border-top: 1px solid border-color(primary, base, $rsa-somewhat-opaque);
       margin: rsa-whitespace() 0;
     }
 
@@ -110,7 +110,7 @@ $metadataLabelWidth: 8rem;
       > label {
         display: block;
         padding-bottom: rsa-whitespace(less);
-        color: rsa-color(gray, light);
+        color: text-color(primary, light);
       }
     }
   }

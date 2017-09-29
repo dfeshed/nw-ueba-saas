@@ -19,7 +19,7 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
   .rsa-data-table-body {
     max-height: $maxHeightAlertNamesTable;
     overflow: auto;
-    border: 1px solid rsa-color(gray);
+    border: 1px solid border-color(primary);
     overflow-x: hidden;
   }
   .rsa-data-table-body-row {
@@ -27,7 +27,7 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
     height: $alertNamesRowHeight;
     label {
       @include rsa-font(body);
-      color: rsa-color(white);
+      color: text-color(neutral);
     }
   }
 
@@ -44,6 +44,6 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
   }
 
   .rsa-form-checkbox-label:hover {
-    color: rsa-color(blue);
+    color: text-color(secondary);
   }
 }

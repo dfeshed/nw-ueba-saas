@@ -11,7 +11,7 @@
   }
 
   a {
-    color: rsa-color(blue, light);
+    color: text-color(secondary, light);
   }
 
   .rsa-data-table-body-cell, .rsa-data-table-header-cell {
@@ -27,7 +27,7 @@
   }
 
   .rsa-data-table-header {
-    border-bottom: 1px solid rsa-color(gray, dark);
+    border-bottom: 1px solid border-color(primary, dark);
     .rsa-data-table-header-cell {
       // 20px padding on the right gives space for the column sort button
       padding: 0 20px 0 rsa-whitespace(less);
@@ -57,12 +57,12 @@
     padding: 0;
 
     &.has-focus {
-      background-color: rsa-color(blue, base, $rsa-nearly-transparent);
+      background-color: background-color(secondary, base, $rsa-nearly-transparent);
     }
   }
 
   .rsa-item-selected {
-    color: rsa-color(blue, base);
+    color: text-color(secondary, base);
   }
 
   .rsa-data-table-body-cell {
@@ -77,7 +77,7 @@
       display: inline-block;
       width: 6px;
       height: 60%;
-      background-color: rsa-color(white);
+      background-color: background-color(neutral);
       position: absolute;
       top: rsa-whitespace(less);
       bottom: 0;
@@ -85,19 +85,19 @@
       border-radius: 4px;
 
       &.priority-danger {
-        background-color: rsa-color(red);
+        background-color: background-color(tertiaryOne);
       }
 
       &.priority-high {
-        background-color: rsa-color(orange);
+        background-color: background-color(tertiaryThree);
       }
 
       &.priority-medium {
-        background-color: rsa-color(amber);
+        background-color: background-color(tertiaryFour);
       }
 
       &.priority-low {
-        background-color: rsa-color(green);
+        background-color: background-color(tertiaryTwo);
       }
     }
     .entity-priority {

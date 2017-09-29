@@ -8,7 +8,7 @@
     padding: rsa-whitespace(less);
     font-size: 20px;
     width: 23px;
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     margin-right: rsa-whitespace(least);
     cursor: pointer;
   }
@@ -77,7 +77,7 @@
     &[disabled="true"],
     &:disabled {
       cursor: default;
-      color: rsa-color(gray);
+      color: text-color(primary);
     }
   }
 }

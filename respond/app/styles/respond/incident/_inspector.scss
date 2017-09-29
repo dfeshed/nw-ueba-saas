@@ -21,7 +21,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
     cursor: ew-resize;
 
     &:hover {
-      background-color: rsa-color(blue,base,$rsa-nearly-opaque);
+      background-color: background-color(secondary,base,$rsa-nearly-opaque);
     }
   }
 
@@ -33,7 +33,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
   &.is-resizing {
     .rsa-incident-inspector {
       &__resizer {
-        background-color: rsa-color(blue,base,$rsa-nearly-opaque);
+        background-color: background-color(secondary,base,$rsa-nearly-opaque);
       }
       &__resize-cover {
         /* Covers the entire screen with a transparent overlay whose cursor is a left-right resize arrow. */
@@ -82,7 +82,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
 
       > label {
         @include rsa-font(header,small);
-        color: rsa-color(gray);
+        color: text-color(primary);
         display: block;
         margin: 0 auto rsa-whitespace(less) auto;
       }
@@ -92,7 +92,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
         width: 2 * $incidentRiskScoreRadius;
         height: 2 * $incidentRiskScoreRadius;
         line-height: 2 * $incidentRiskScoreRadius;
-        border: 4px double rsa-color(gray);
+        border: 4px double border-color(primary);
         border-radius: 2 * $incidentRiskScoreRadius;
         text-align: center;
         overflow: hidden;
@@ -104,7 +104,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
 
   &__toolbar {
     min-height: 25px;
-    border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+    border-bottom: 1px solid border-color(primary,light,$rsa-nearly-transparent);
 
     .rsa-tab {
       margin: 0 rsa-whitespace();

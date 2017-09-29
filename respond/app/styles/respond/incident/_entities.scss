@@ -24,8 +24,8 @@ $entityFileHashColor: $cyan;
       transition: opacity 0.3s;
 
       .circle {
-        stroke: rsa-color(gray,light,$rsa-nearly-opaque);
-        fill: rsa-color(black,base,$rsa-nearly-opaque);
+        stroke: text-color(primary,light,$rsa-nearly-opaque);
+        fill: text-color(neutral,dark,$rsa-nearly-opaque);
       }
       &.user .circle {
         fill: $entityUserColor;
@@ -49,7 +49,7 @@ $entityFileHashColor: $cyan;
         fill: $entityFileHashColor;
       }
       .text {
-        fill: rsa-color(white);
+        fill: text-color(neutral);
 
         &.has-context-data {
           @include rsa-has-context-data(true);
@@ -63,20 +63,20 @@ $entityFileHashColor: $cyan;
 
       &.is-hidden {
         .circle {
-          stroke: rsa-color(gray,light,$rsa-nearly-transparent);
-          fill: rsa-color(black,base,$rsa-transparent);
+          stroke: text-color(primary,light,$rsa-nearly-transparent);
+          fill: text-color(neutral,dark,$rsa-transparent);
         }
         .text {
-          fill: rsa-color(gray,light,$rsa-nearly-transparent);
+          fill: text-color(primary,light,$rsa-nearly-transparent);
         }
       }
 
       &.is-selected {
         .circle {
-          stroke: rsa-color(white);
+          stroke: text-color(neutral);
         }
         .text {
-          fill: rsa-color(white);
+          fill: text-color(neutral);
         }
       }
     }
@@ -86,32 +86,32 @@ $entityFileHashColor: $cyan;
       transition: opacity 0.3s;
 
       .line {
-        stroke: rsa-color(gray,light,$rsa-nearly-opaque);
+        stroke: text-color(primary,light,$rsa-nearly-opaque);
       }
       .text {
-        fill: rsa-color(gray,light);
+        fill: text-color(primary,light);
         text-shadow: 0 0 1pt #000;
       }
       use {
-        fill: rsa-color(gray,light);
+        fill: text-color(primary,light);
       }
 
       &.is-hidden {
         .line {
-          stroke: rsa-color(gray,base,$rsa-nearly-transparent);
+          stroke: text-color(primary,base,$rsa-nearly-transparent);
         }
         .text {
-          fill: rsa-color(gray,base,$rsa-nearly-transparent);
+          fill: text-color(primary,base,$rsa-nearly-transparent);
           text-shadow: none;
         }
       }
 
       &.is-selected {
         .line {
-          stroke: rsa-color(white);
+          stroke: text-color(neutral);
         }
         .text {
-          fill: rsa-color(white);
+          fill: text-color(neutral);
         }
       }
     }
@@ -119,24 +119,24 @@ $entityFileHashColor: $cyan;
 
 
   #force-layout__arrow {
-    fill: rsa-color(gray,light);
+    fill: text-color(primary,light);
 
     &--disabled {
-      fill: rsa-color(gray,base,$rsa-nearly-transparent);
+      fill: text-color(primary,base,$rsa-nearly-transparent);
     }
 
     &--selected {
-      fill: rsa-color(white);
+      fill: text-color(neutral);
     }
   }
   #force-layout__grid {
     .grid-axis {
       &.major {
-        stroke: rsa-color(gray, base, $rsa-translucent);
+        stroke: text-color(primary, base, $rsa-translucent);
         stroke-width: 1pt;
       }
       &.minor {
-        stroke: rsa-color(gray, base, $rsa-nearly-transparent);
+        stroke: text-color(primary, base, $rsa-nearly-transparent);
         stroke-width: 0.5pt;
       }
     }

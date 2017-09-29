@@ -156,7 +156,7 @@ $forceLayoutTransitionDuration: 0.3s;
         fill: rgba(235,235,235,.8);
       }
       .text {
-        fill: rsa-color(black);
+        fill: text-color(neutral, dark);
       }
 
       &.is-hidden {
@@ -165,16 +165,16 @@ $forceLayoutTransitionDuration: 0.3s;
           fill: rgba(195, 195, 195, 0);
         }
         .text {
-          fill: rsa-color(black, base, .1);
+          fill: text-color(neutral, dark, .1);
         }
       }
 
       &.is-selected {
         .circle {
-          fill: rsa-color(black);
+          fill: text-color(neutral, dark);
         }
         .text {
-          fill: rsa-color(white);
+          fill: text-color(neutral);
         }
       }
     }
@@ -198,10 +198,10 @@ $forceLayoutTransitionDuration: 0.3s;
 
       &.is-selected {
         .line {
-          stroke: rsa-color(black);
+          stroke: text-color(neutral, dark);
         }
         .text {
-          fill: rsa-color(black);
+          fill: text-color(neutral, dark);
         }
       }
     }
@@ -214,7 +214,7 @@ $forceLayoutTransitionDuration: 0.3s;
       }
 
       &--selected {
-        fill: rsa-color(black);
+        fill: text-color(neutral, dark);
       }
     }
   }

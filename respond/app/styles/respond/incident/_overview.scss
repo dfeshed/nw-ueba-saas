@@ -9,7 +9,7 @@ $incidentOverviewLineHeight: 1.35;
   p {
     @include rsa-font(body,small);
     padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $incidentOverviewLabelWidth);
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
     line-height: $incidentOverviewLineHeight;
     position: relative;
 
@@ -27,7 +27,7 @@ $incidentOverviewLineHeight: 1.35;
     > span {
       display: inline-block;
       min-height: 1em * $incidentOverviewLineHeight;
-      color: rsa-color(white);
+      color: text-color(neutral);
     }
 
     > .edit-button {

@@ -11,7 +11,7 @@ $addNewTaskControlHeight: 58px;
 
   &__toolbar {
     min-height: 25px;
-    border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+    border-bottom: 1px solid border-color(primary,light,$rsa-nearly-transparent);
 
     .rsa-tab {
       margin: 0 rsa-whitespace();

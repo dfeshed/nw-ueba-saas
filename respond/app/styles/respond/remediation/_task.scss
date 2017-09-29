@@ -1,11 +1,11 @@
 .remediation-task, .new-remediation-task {
   padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
   position: relative;
-  border-top: 1px solid rsa-color(gray);
+  border-top: 1px solid border-color(primary);
 
   span.required-field::after {
     content: '*';
-    color: rsa-color(red, dark);
+    color: text-color(tertiaryOne, dark);
     padding-left: rsa-whitespace(less);
   }
 
@@ -75,7 +75,7 @@
         @include rsa-font(header, small);
         display: block;
         padding-bottom: rsa-whitespace(less);
-        color: rsa-color(gray, light);
+        color: text-color(primary, light);
       }
     }
   }
@@ -87,7 +87,7 @@
     input[type="text"] {
       padding: rsa-whitespace(less);
       width: 100%;
-      border: 1px solid rsa-color(gray, base);
+      border: 1px solid border-color(primary, base);
       box-sizing: border-box;
     }
     textarea {
@@ -97,7 +97,7 @@
       width: 100%;
       resize: none;
       background-color: transparent;
-      color: rsa-color(white);
+      color: text-color(neutral);
 
     }
     .metadata {
@@ -114,7 +114,7 @@
     }
  }
   .controls {
-    border-top: 1px solid rsa-color(gray);
+    border-top: 1px solid border-color(primary);
     text-align: right;
     padding: rsa-whitespace() 0;
 

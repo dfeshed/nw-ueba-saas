@@ -7,14 +7,14 @@
     padding: rsa-whitespace(less) 0;
     @include rsa-font(navigation,small);
     line-height: 1.35;
-    color: rsa-color(white);
+    color: text-color(neutral);
 
     &:hover,
     &.is-active {
-      color: rsa-color(blue,light);
+      color: text-color(secondary,light);
     }
     &.is-active {
-      border-color: rsa-color(blue,light);
+      border-color: border-color(secondary,light);
     }
   }
 }

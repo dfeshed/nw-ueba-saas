@@ -85,6 +85,6 @@ $header-height: 40px;
   h2 {
     @include rsa-font(header, small);
     padding: rsa-whitespace() 0 rsa-whitespace(less) 0;
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
   }
 }

@@ -8,7 +8,7 @@ $metadataLineHeight: 1.35;
 
   > label {
     @include rsa-font(header, small);
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
     display: table-cell;
     vertical-align: middle;
     max-width: $metadataLabelWidth - rsa-whitespace(less) * 2;
@@ -26,7 +26,7 @@ $metadataLineHeight: 1.35;
     @include rsa-font(body, small);
     display: table-cell;
     min-height: 1em * $metadataLineHeight;
-    color: rsa-color(white);
+    color: text-color(neutral);
     width: 100%;
   }
 
@@ -64,8 +64,8 @@ $metadataLineHeight: 1.35;
       background-color: transparent;
       // set the disabled button trigger to a gray to indicate disabled state
       .rsa-form-button {
-        color: rsa-color(gray, base, $rsa-nearly-opaque);
-        border-color: rsa-color(gray, base, $rsa-nearly-opaque);
+        color: text-color(primary, base, $rsa-nearly-opaque);
+        border-color: border-color(primary, base, $rsa-nearly-opaque);
       }
     }
   }

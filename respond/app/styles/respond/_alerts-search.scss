@@ -12,13 +12,13 @@ $alertsSearchLineHeight: 2rem;
   }
 
   &-form {
-    border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+    border-bottom: 1px solid border-color(primary,light,$rsa-nearly-transparent);
 
     &__subtext {
       @include rsa-font(paragraph, small);
       padding: rsa-whitespace(less);
       padding-top: 0;
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
 
     .param {
@@ -27,7 +27,7 @@ $alertsSearchLineHeight: 2rem;
       position: relative;
 
       &-label {
-        color: rsa-color(gray, light);
+        color: text-color(primary, light);
         position: absolute;
         left: 0;
         top: 0;
@@ -41,7 +41,7 @@ $alertsSearchLineHeight: 2rem;
 
       &-value {
         display: inline-block;
-        color: rsa-color(white);
+        color: text-color(neutral);
 
         &.list {
           line-height: 1.5;
@@ -50,15 +50,15 @@ $alertsSearchLineHeight: 2rem;
         input[type="text"] {
           /* for consistency with ember-power-select's styling */
           line-height: $alertsSearchLineHeight;
-          border-bottom: 1px solid rsa-color(gray, light);
+          border-bottom: 1px solid border-color(primary, light);
           height: 30px;
           &:-ms-input-placeholder {
-            color: rsa-color(gray);
+            color: text-color(primary);
           }
         }
 
         .ember-power-select-trigger[aria-disabled="true"] {
-          /* overwrites defaults from component-lib, which would otherwise make the bg color light gray */
+          /* overwrites defaults from component-lib, which would otherwise make the bg color primary (light) */
           background-color: transparent;
         }
       }
@@ -79,7 +79,7 @@ $alertsSearchLineHeight: 2rem;
 
   &-results {
     &__header {
-      border-bottom: 1px solid rsa-color(gray,light,$rsa-nearly-transparent);
+      border-bottom: 1px solid border-color(primary,light,$rsa-nearly-transparent);
 
       &-text,
       &-wait {
@@ -88,7 +88,7 @@ $alertsSearchLineHeight: 2rem;
 
       &-text {
         @include rsa-font(body, small);
-        color: rsa-color(gray, light);
+        color: text-color(primary, light);
       }
 
       .rsa-loader__text {

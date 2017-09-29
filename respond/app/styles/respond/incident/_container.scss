@@ -93,7 +93,7 @@ $tasksAndJournalPanelWidth: 400px;
 
   &__transaction-overlay {
     z-index: 2;
-    background-color: rsa-color(black,base,$rsa-translucent);
+    background-color: background-color(neutral,dark,$rsa-translucent);
   }
 
   &__legend-wrap {
@@ -102,7 +102,7 @@ $tasksAndJournalPanelWidth: 400px;
   }
 
   &__no-storyline {
-    color: rsa-color(gray);
+    color: text-color(primary);
     font-style: italic;
   }
 

@@ -1,5 +1,4 @@
-$darkStorylineBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
-$lightStorylineBgColor: rsa-color(white);
+$darkStorylineBgColor: background-color(primary, light, $rsa-nearly-transparent);
 $storylineSeverityRadius: 1rem;
 $storylineLineHeight: 1.5;
 $storylineHeadingSize: 1rem;
@@ -165,15 +164,15 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
     }
 
     .main .content {
-      border-color: rsa-color(black, base, $rsa-nearly-transparent);
+      border-color: border-color(neutral, dark, $rsa-nearly-transparent);
     }
 
     p {
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
 
     a {
-      color: rsa-color(blue, light);
+      color: text-color(secondary, light);
     }
 
     .severity {
@@ -182,25 +181,25 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
 
     &.is-catalyst {
       .severity {
-        background-color: $lightStorylineBgColor;
-        color: rsa-color(black,base,$rsa-nearly-opaque);
+        background-color: background-color(neutral);
+        color: text-color(neutral,dark,$rsa-nearly-opaque);
       }
       .is-catalyst {
-        color: $lightStorylineBgColor;
+        color: text-color(neutral);
       }
     }
 
     .enrichment {
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
 
       &::before {
-        color: rsa-color(gray, light);
+        color: text-color(primary, light);
       }
     }
 
     .related {
       .entity {
-        color: rsa-color(white);
+        color: text-color(neutral);
 
         &.user {
           color: $entityUserColor;
@@ -227,7 +226,7 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
     }
 
     &.is-selected {
-      background: rsa-color(blue,base,$rsa-somewhat-opaque);
+      background: background-color(secondary,base,$rsa-somewhat-opaque);
     }
   }
 }

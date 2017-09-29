@@ -1,6 +1,6 @@
 $incidentAlertsSearchHeaderHeight: 30px;
 $incidentAlertsSearchSeverityRadius: 1rem;
-$incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transparent);
+$incidentAlertsSearchSeverityBgColor: background-color(primary, light, $rsa-nearly-transparent);
 
 .rsa-incident-alerts-search {
   height: calc(100% - #{$incidentAlertsSearchHeaderHeight});
@@ -9,7 +9,7 @@ $incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transpa
   &__error {
     @include rsa-fill-abs();
     z-index: 2;
-    background-color: rsa-color(gray,darker,$rsa-nearly-opaque);
+    background-color: background-color(primary,darker,$rsa-nearly-opaque);
   }
 
   &__error {
@@ -36,14 +36,14 @@ $incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transpa
           right: 0;
           margin: 0;
           padding: 0;
-          border-color: rsa-color(black);
+          border-color: border-color(neutral, dark);
 
           &:hover,
           &.is-selected,
           &.is-selected:hover {
             margin: 0;
             padding: 0;
-            border-color: rsa-color(black);
+            border-color: border-color(neutral, dark);
           }
 
           &:hover {
@@ -65,14 +65,14 @@ $incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transpa
 
       .alert-name {
         @include rsa-font(heading);
-        color: rsa-color(white);
+        color: text-color(neutral);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       a[href] {
-        color: rsa-color(blue, light);
+        color: text-color(secondary, light);
       }
 
       .severity {
@@ -87,7 +87,7 @@ $incidentAlertsSearchSeverityBgColor: rsa-color(gray, light, $rsa-nearly-transpa
         text-align: center;
         white-space: nowrap;
         background-color: $incidentAlertsSearchSeverityBgColor;
-        color: rsa-color(white);
+        color: text-color(neutral);
       }
 
       .content {
