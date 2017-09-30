@@ -502,11 +502,11 @@ indicators:
     featureName: dstMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_remote_host
 
-- id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
+- id:
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_authentications
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: SUCCESS
@@ -518,7 +518,7 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_failed_authentications
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: result
     anomalyValue: FAILURE
