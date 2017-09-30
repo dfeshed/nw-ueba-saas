@@ -6,7 +6,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import presidio.output.domain.records.AbstractElasticDocument;
-import presidio.output.domain.records.alerts.Alert;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,7 +17,7 @@ import java.util.Set;
 /**
  * Created by efratn on 20/08/2017.
  */
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" +  User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
@@ -34,7 +33,7 @@ public class User extends AbstractElasticDocument {
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
 
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
 
@@ -52,11 +51,11 @@ public class User extends AbstractElasticDocument {
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(ALERT_CLASSIFICATIONS_FIELD_NAME)
-    private List<String> alertClassifications;
+    private List<String> alertClassifications = new ArrayList<>();
 
     @Field(type = FieldType.String, store = true)
     @JsonProperty(INDICATORS_FIELD_NAME)
-    private List<String> indicators;
+    private List<String> indicators = new ArrayList<>();
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
@@ -65,16 +64,15 @@ public class User extends AbstractElasticDocument {
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(TAGS_FIELD_NAME)
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
     @Field(type = FieldType.Integer, store = true)
     @JsonProperty(ALERTS_COUNT_FIELD_NAME)
     private int alertsCount;
 
 
-    public User(){
+    public User() {
         // empty const for JSON deserialization
-        this.indicators = new ArrayList<String>();
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
@@ -96,7 +94,6 @@ public class User extends AbstractElasticDocument {
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
-        this.indicators = new ArrayList<String>();
         this.tags = tags;
     }
 
@@ -156,6 +153,14 @@ public class User extends AbstractElasticDocument {
         this.alertsCount = alertsCount;
     }
 
+    public void incrementAlertsCountByOne() {
+        this.alertsCount++;
+    }
+
+    public void incrementAlertsCountByNumber(int number) {
+        this.alertsCount = alertsCount + number;
+    }
+
     public void setAlertClassifications(List<String> alertClassifications) {
         this.alertClassifications = alertClassifications;
     }
@@ -163,7 +168,7 @@ public class User extends AbstractElasticDocument {
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
-        this.alertClassifications=new ArrayList<>();
+        this.alertClassifications = new ArrayList<>();
         this.alertClassifications.addAll(newAlertClassifications);
     }
 

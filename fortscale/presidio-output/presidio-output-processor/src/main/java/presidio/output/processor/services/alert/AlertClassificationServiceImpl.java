@@ -31,10 +31,9 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     private void createIndicatorToAlertByPriority() {
         indicatorToAlert = new HashMap<>();
         String classification, indicatorName;
-        int priority, number = 0;
+        int priority;
         List<IndicatorConfig> indicatorConfigs = supportingInformationConfig.getIndicators();
         for (IndicatorConfig indicatorConfig : indicatorConfigs) {
-            number++;
             indicatorName = indicatorConfig.getName();
             classification = indicatorConfig.getClassification();
             priority = classificationPriorityConfig.getClassificationConfig(classification).getPriority();

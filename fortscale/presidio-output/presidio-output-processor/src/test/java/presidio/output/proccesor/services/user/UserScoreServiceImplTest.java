@@ -1,4 +1,4 @@
-package presidio.output.proccesor.services;
+package presidio.output.proccesor.services.user;
 
 import org.junit.Assert;
 import org.junit.Before;
