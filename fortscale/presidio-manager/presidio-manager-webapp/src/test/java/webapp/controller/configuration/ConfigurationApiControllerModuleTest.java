@@ -64,7 +64,7 @@ public class ConfigurationApiControllerModuleTest {
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     private final String AIRFLOW_CONFIGURATION_RESPONSE =
-            "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"analystGroup\":\"presidio-soc-team-somecompany\",\"ldapUrl\":\"string\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\",\"realmName\":\"stringush\"}}";
+            "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"analystGroup\":\"presidio-soc-team-somecompany\",\"ldapUrl\":\"string\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\",\"realmName\":\"EXAMPLE.COM\"}}";
     private final String CONFIGURATION_PATCH_REQUEST =
             "[\n" +
                     "  {\n" +
@@ -104,9 +104,9 @@ public class ConfigurationApiControllerModuleTest {
         Instant startTime = Instant.parse("2017-01-01T10:00:00Z");
         dataPipeline.setStartTime(startTime);
         SecuredSystemConfiguration system = new SecuredSystemConfiguration();
-        system.adminGroup("presidio-admins-somecompany");
+        system.setRealmName("EXAMPLE.COM");
         system.analystGroup("presidio-soc-team-somecompany");
-        system.setKdcUrl("string");
+        system.setLdapUrl("string");
         system.setSmtpHost("name.of-server.com:25");
         system.setUsername("presidio@somecompany.dom");
         expectedResponse.setSystem(system);
@@ -138,9 +138,9 @@ public class ConfigurationApiControllerModuleTest {
         dataPipeline.addSchemasItem(SchemasEnum.AUTHENTICATION);
         dataPipeline.setStartTime(startTime);
         SystemConfiguration system = new SystemConfiguration();
-        system.adminGroup("presidio-admins-somecompany");
+        system.setRealmName("EXAMPLE.COM");
         system.analystGroup("presidio-soc-team-somecompany");
-        system.setKdcUrl("string");
+        system.setLdapUrl("string");
         system.setSmtpHost("name.of-server.com:25");
         system.setUsername("presidio@somecompany.dom");
         system.setPassword("password");
