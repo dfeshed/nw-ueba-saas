@@ -502,7 +502,7 @@ indicators:
     featureName: dstMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_remote_host
 
-- id:
+- id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_authentications
   adeEventType: authentication
