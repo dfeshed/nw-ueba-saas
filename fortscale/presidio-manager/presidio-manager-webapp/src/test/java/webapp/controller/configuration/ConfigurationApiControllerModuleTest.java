@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
@@ -63,7 +64,7 @@ public class ConfigurationApiControllerModuleTest {
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     private final String AIRFLOW_CONFIGURATION_RESPONSE =
-            "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"adminGroup\":\"presidio-admins-somecompany\",\"analystGroup\":\"presidio-soc-team-somecompany\",\"kdcUrl\":\"string\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\"}}";
+            "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"analystGroup\":\"presidio-soc-team-somecompany\",\"ldapUrl\":\"string\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\",\"realmName\":\"stringush\"}}";
     private final String CONFIGURATION_PATCH_REQUEST =
             "[\n" +
                     "  {\n" +
@@ -82,7 +83,7 @@ public class ConfigurationApiControllerModuleTest {
 
         mockRestServiceServer = MockRestServiceServer.createServer(restTemplate);
         mockRestServiceServer.reset();
-        mockRestServiceServer.expect(requestTo(CONFIG_SERVER_PRESIDIO_APPLICATION_JSON_URI))
+        mockRestServiceServer.expect(ExpectedCount.min(1),requestTo(CONFIG_SERVER_PRESIDIO_APPLICATION_JSON_URI))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(AIRFLOW_CONFIGURATION_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
@@ -174,6 +175,7 @@ public class ConfigurationApiControllerModuleTest {
             properties.put("manager.dags.state.buildingBaselineDuration", "P30D");
             properties.put("spring.cloud.config.uri", "http://localhost:8888");
             properties.put("presidio.workflows.config.path", "/tmp");
+            properties.put("manager.security.securityConfPath","/tmp/httpd.conf");
             properties.put("spring.cloud.config.username", "config");
             properties.put("spring.cloud.config.password", "secure");
             return new TestPropertiesPlaceholderConfigurer(properties);

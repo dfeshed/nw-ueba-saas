@@ -2,6 +2,7 @@ package presidio.security.manager.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -13,6 +14,8 @@ import presidio.security.manager.service.ConfigurationSecurityService;
 @Configuration
 @Import(ConfigServerClientServiceConfiguration.class)
 public class SecurityManagerConfiguration {
+    @Value("${manager.security.securityConfPath:/etc/httpd/conf/httpd.conf}")
+    private String securityConfPath;
 
     @Autowired
     @Qualifier("configurationServerClientService")
@@ -24,7 +27,7 @@ public class SecurityManagerConfiguration {
 
     @Bean(name = "configurationSecurityService")
     public ConfigurationSecurityService configurationSecurityService() {
-        return new ConfigurationSecurityService(configurationServerClientService, freemarkerConfiguration);
+        return new ConfigurationSecurityService(configurationServerClientService, freemarkerConfiguration, securityConfPath);
     }
 
     @Bean
