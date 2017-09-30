@@ -99,11 +99,13 @@ public class AirflowApiClientImpl implements AirflowApiClient {
         String url = urlBuilder.toString();
         AirflowDagExecutionDatesApiResponse response = restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
 
-        Map<String, DagExecutionStatus> result =
-                response.getOutput().stream()
-                        .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
-                        .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
-
+        Map<String, DagExecutionStatus> result = new HashMap<>();
+        if(response!=null && response.getOutput()!=null) {
+            result =
+                    response.getOutput().stream()
+                            .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
+                            .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
+        }
         return result;
     }
 }
