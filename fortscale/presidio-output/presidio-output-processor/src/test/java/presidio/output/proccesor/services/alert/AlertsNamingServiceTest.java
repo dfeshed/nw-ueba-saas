@@ -27,17 +27,54 @@ public class AlertsNamingServiceTest {
 
 
     @Test
-    public void classificationsAsTowOptions() {
-        List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_src_computers", "high_number_of_distinct_dst_computers"));
+    public void classificationsAsTowOptionsTest() {
+        List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_destination_domains", "high_number_of_distinct_dst_computers"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
         assertEquals(2, names.size());
     }
 
     @Test
-    public void classificationsAsOneOption() {
+    public void classificationsAsOneOptionTest() {
         List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_src_computers", "high_number_of_distinct_dst_computers"));
         List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
-        assertEquals("user_logged_into_multiple_hosts", names.get(0));
+        assertEquals(1, names.size());
+    }
+
+    @Test
+    public void classificationsAsFourOptionsTest() {
+        List indicators = new ArrayList(Arrays.asList("high_number_of_file_move_operations_to_shared_drive",
+                "abnormal_file_action_operation_type",
+                "high_number_of_successful_file_action_operations",
+                "abnormal_active_directory_day_time_operation"));
+        List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
+        assertEquals("data_exfiltration", names.get(0));
+        assertEquals(4, names.size());
+    }
+
+    @Test
+    public void classificationsAsThreeOptionsTest() {
+        List indicators = new ArrayList(Arrays.asList("high_number_of_failed_file_action_attempts",
+                "high_number_of_successful_file_action_operations",
+                "abnormal_file_action_operation_type",
+                "high_number_of_file_move_operations_to_shared_drive"));
+        List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
+        assertEquals("data_exfiltration", names.get(0));
+        assertEquals(3, names.size());
+    }
+
+    @Test
+    public void classificationsAsSixOptionsTest() {
+        List indicators = new ArrayList(Arrays.asList("high_number_of_distinct_src_computer_clusters",
+                "high_number_of_successful_file_permission_change",
+                "high_number_of_distinct_src_computers",
+                "high_number_of_senesitive_group_membership_events",
+                "high_number_of_failed_file_permission_change_attempts",
+                "abnormal_remote_destination_machine",
+                "high_number_of_successful_file_rename_operations",
+                "high_number_of_distinct_src_computer_clusters"));
+        List<String> names = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicators);
+        assertEquals("mass_changes_to_critical_enterprise_groups", names.get(0));
+        assertEquals(5, names.size());
     }
 }
 
