@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +125,7 @@ public class ConfigurationApiControllerModuleTest {
         return objectMapper.readValue(actualResponseStr, SecuredConfiguration.class);
     }
 
+    @Ignore
     @Test
     public void shouldPatchDataPipelineConfiguration() throws Exception {
         // init expected response
