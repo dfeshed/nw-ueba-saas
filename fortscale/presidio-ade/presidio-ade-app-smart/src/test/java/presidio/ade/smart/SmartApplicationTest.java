@@ -50,7 +50,6 @@ public class SmartApplicationTest extends BaseAppTest {
 
     private static final Logger logger = Logger.getLogger(SmartApplicationTest.class);
 
-    private int aggregatedFeatureConfCount;
     private IMapGenerator aggregatedFeatureToScoreGenerator;
     private IMapGenerator aggregatedFeatureToValueGenerator;
     private static final double avgFeatureValueForLowAnomaliesUser = 0.5;
@@ -372,7 +371,6 @@ public class SmartApplicationTest extends BaseAppTest {
      */
     private TreeMap<Double, List<String>> createFeaturesGroups() {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
-        aggregatedFeatureConfCount = aggregatedFeatureEventConfList.size();
         Double weight = 0.1;
         Double decreasedValueOfWeight = 0.005;
         //features divided to #6 groups
