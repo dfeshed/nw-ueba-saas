@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 /**
  * Created by barak_schuster on 9/4/17.
  */
-public class CyclicFixedMapGeneratorTest {
+public class CyclicMapGeneratorTest {
     @Test
     public void testFixedMapGenerator() {
 
@@ -24,11 +24,11 @@ public class CyclicFixedMapGeneratorTest {
         fixedMap2.put(32,322.3D);
         List<Map<Integer, Double>> fixedMaps = Stream.of(fixedMap1, fixedMap2).collect(Collectors.toList());
 
-        CyclicFixedMapGenerator<Integer,Double> cyclicFixedMapGenerator = new CyclicFixedMapGenerator<Integer,Double>(fixedMaps);
+        CyclicMapGenerator<Integer,Double> cyclicMapGenerator = new CyclicMapGenerator<Integer,Double>(fixedMaps);
 
-        Assert.assertEquals(fixedMap1, cyclicFixedMapGenerator.getNext());
-        Assert.assertEquals(fixedMap2, cyclicFixedMapGenerator.getNext());
-        Assert.assertEquals(fixedMap1, cyclicFixedMapGenerator.getNext());
+        Assert.assertEquals(fixedMap1, cyclicMapGenerator.getNext());
+        Assert.assertEquals(fixedMap2, cyclicMapGenerator.getNext());
+        Assert.assertEquals(fixedMap1, cyclicMapGenerator.getNext());
 
     }
 }

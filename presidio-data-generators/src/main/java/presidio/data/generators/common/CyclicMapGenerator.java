@@ -7,9 +7,9 @@ import java.util.Map;
 /**
  * Created by barak_schuster on 9/4/17.
  */
-public class CyclicFixedMapGenerator<K,V> extends CyclicValuesGenerator<Map<K,V>> implements IMapGenerator {
+public class CyclicMapGenerator<K,V> extends CyclicValuesGenerator<Map<K,V>> implements IMapGenerator {
 
-    public CyclicFixedMapGenerator(List<Map<K,V>> fixedMap) {
+    public CyclicMapGenerator(List<Map<K,V>> fixedMap) {
         super(fixedMap.toArray(new HashMap[fixedMap.size()]));
     }
 
