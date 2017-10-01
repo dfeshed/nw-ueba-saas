@@ -40,7 +40,7 @@ public interface ConfigurationApi {
     @RequestMapping(value = "/configuration/keytabFile",
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("file") MultipartFile keytabFile);
+    ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("keytabFile") MultipartFile keytabFile);
 
 
     @ApiOperation(value = "Use this method to update the configuration", notes = "", response = SecuredConfiguration.class, authorizations = {
