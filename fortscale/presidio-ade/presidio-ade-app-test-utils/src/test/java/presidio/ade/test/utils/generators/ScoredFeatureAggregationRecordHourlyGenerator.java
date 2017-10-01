@@ -11,6 +11,7 @@ import presidio.data.generators.common.IStringListGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,12 +25,10 @@ public class ScoredFeatureAggregationRecordHourlyGenerator extends AdeAggregatio
     public ScoredFeatureAggregationRecordHourlyGenerator(
             IMapGenerator scoreToAggregatedFeatureGenerator,
             IStringListGenerator contextIdGenerator,
-            Double featureValue,
-            List<FeatureScore> featureScoreList,
             TimeGenerator startInstantGenerator) throws GeneratorException {
         super(scoreToAggregatedFeatureGenerator, startInstantGenerator, contextIdGenerator);
-        this.featureScores = featureScoreList;
-        this.featureValue = featureValue;
+        this.featureScores = Collections.emptyList();
+        this.featureValue = 0.0;
     }
 
 
