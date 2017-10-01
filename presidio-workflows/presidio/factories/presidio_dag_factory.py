@@ -40,9 +40,9 @@ class PresidioDagFactory(AbstractDagFactory):
                 interval = eval(temp_interval)
             else:
                 interval = temp_interval
-            start_date = dateutil.parser.parse(dag_config.get("start_date"))
+            start_date = dateutil.parser.parse(dag_config.get("start_date"), ignoretz=True)
             if (dag_config.get("end_date")):
-                end_date = dateutil.parser.parse(dag_config.get("end_date"))
+                end_date = dateutil.parser.parse(dag_config.get("end_date"), ignoretz=True)
             else:
                 end_date = None
             full_filepath = dag_config.get("full_filepath")
