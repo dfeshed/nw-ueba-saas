@@ -2,6 +2,7 @@ package presidio.output.processor.services.user;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -61,8 +62,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(List<User> users) {
-        userPersistencyService.save(users);
+    public List<User> save(List<User> users) {
+        Iterable<User> savedUsers = userPersistencyService.save(users);
+        List<User> usersList = IteratorUtils.toList(savedUsers.iterator());
+        return usersList;
     }
 
     private UserDetails getUserDetails(String userId) {
