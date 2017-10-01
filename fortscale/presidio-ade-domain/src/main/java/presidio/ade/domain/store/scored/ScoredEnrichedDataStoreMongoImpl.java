@@ -80,6 +80,15 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
         return mongoTemplate.find(query,AdeScoredEnrichedRecord.class,collectionName);
     }
 
+    /**
+     * This method is a hack. Should be removed!!!
+     * @param adeEventType type of {@link AdeScoredEnrichedRecord} - symbolize the scored feature name
+     * @param contextFieldAndValue i.e. "userId","someUser"
+     * @param timeRange time line filtering param
+     * @param distinctFieldName field to retrieve distinct values on
+     * @param scoreThreshold distinct values would be fetched only for records having score greater then this value
+     * @return
+     */
     @Override
     public List<String> findScoredEnrichedRecordsDistinctFeatureValues(String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold) {
         String collectionName = translator.toCollectionName(adeEventType);
@@ -90,7 +99,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
         }
 
         Criteria timeRangeFilter = Criteria.where(START_INSTANT_FIELD).gte(timeRange.getStartAsDate()).lt(timeRange.getEndAsDate());
-        Criteria scoreFilter = Criteria.where(SCORE_FIELD_NAME).gte(scoreThreshold);
+        Criteria scoreFilter = Criteria.where(SCORE_FIELD_NAME).gt(scoreThreshold);
         Query query = Query.query(contextFilter).addCriteria(timeRangeFilter).addCriteria(scoreFilter);
         DBCollection collection = mongoTemplate.getCollection(collectionName);
         DBObject queryObject = query.getQueryObject();
