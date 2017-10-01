@@ -357,8 +357,7 @@ EnableSendfile on
 IncludeOptional conf.d/*.conf
 
 <VirtualHost *:443>
-  ServerName http://${r"${server_name}"}
-  ServerAlias ${r"${server_name}"}
+  ServerAlias *
   RewriteEngine on  
 
   SSLEngine on
@@ -387,7 +386,7 @@ IncludeOptional conf.d/*.conf
 
     RewriteEngine on
 
-    RewriteRule  "/caui-webapp/(.*)$" "http://${r"${server_name}"}:8080/caui-webapp/$1" [NE,R,P]
+    RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
   </Location> 
   
   <Location /kibana>
@@ -411,23 +410,23 @@ IncludeOptional conf.d/*.conf
 
     RewriteEngine on
 
-     RewriteRule /app/kibana/(.*)$ http://${r"${server_name}"}:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /app/kibana/(.*)$ http://${r"${server_name}"}:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /app/(.*)$ http://${r"${server_name}"}:5601/app/$1 [NE,R,P]
-     RewriteRule /kibana/(.*)$ http://${r"${server_name}"}:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /kibana/(.*)$ http://${r"${server_name}"}:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /(.*)$ http://${r"${server_name}"}:5601/app/$1 [NE,R,P]
+     RewriteRule /app/kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
+     RewriteRule /app/kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
+     RewriteRule /app/(.*)$ http://localhost:5601/app/$1 [NE,R,P]
+     RewriteRule /kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
+     RewriteRule /kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
+     RewriteRule /(.*)$ http://localhost:5601/app/$1 [NE,R,P]
 
-     RewriteRule /kibana/bundles/(.*)$ http://${r"${server_name}"}:5601/bundles/$1 [NE,R,P]
-     RewriteRule /kibana/ui/(.*)$ http://${r"${server_name}"}:5601/ui/$1 [NE,R,P]
-     RewriteRule /kibana/plugins/(.*)$ http://${r"${server_name}"}:5601/plugins/$1 [NE,R,P]
-     RewriteRule /kibana/es_admin/(.*)$ http://${r"${server_name}"}:5601/es_admin/$1 [NE,R,P]
-     RewriteRule /kibana/elasticsearch/(.*)$ http://${r"${server_name}"}:5601/elasticsearch/$1 [NE,R,P]
-     RewriteRule /kibana/status/(.*)$ http://${r"${server_name}"}:5601/status/$1 [NE,R,P]
-     RewriteRule /kibana/api/console/(.*)$ http://${r"${server_name}"}:5601/api/console/$1 [NE,R,P]
-     RewriteRule /kibana/api/status/(.*)$ http://${r"${server_name}"}:5601/api/status/$1 [NE,R,P]
-     RewriteRule /kibana/api/timelion/(.*)$ http://${r"${server_name}"}:5601/api/timelion/$1 [NE,R,P]
-     RewriteRule /kibana/app/sense/(.*)$ http://${r"${server_name}"}:5601/app/sense/$1 [NE,R,P]
+     RewriteRule /kibana/bundles/(.*)$ http://localhost:5601/bundles/$1 [NE,R,P]
+     RewriteRule /kibana/ui/(.*)$ http://localhost:5601/ui/$1 [NE,R,P]
+     RewriteRule /kibana/plugins/(.*)$ http://localhost:5601/plugins/$1 [NE,R,P]
+     RewriteRule /kibana/es_admin/(.*)$ http://localhost:5601/es_admin/$1 [NE,R,P]
+     RewriteRule /kibana/elasticsearch/(.*)$ http://localhost:5601/elasticsearch/$1 [NE,R,P]
+     RewriteRule /kibana/status/(.*)$ http://localhost:5601/status/$1 [NE,R,P]
+     RewriteRule /kibana/api/console/(.*)$ http://localhost:5601/api/console/$1 [NE,R,P]
+     RewriteRule /kibana/api/status/(.*)$ http://localhost:5601/api/status/$1 [NE,R,P]
+     RewriteRule /kibana/api/timelion/(.*)$ http://localhost:5601/api/timelion/$1 [NE,R,P]
+     RewriteRule /kibana/app/sense/(.*)$ http://localhost:5601/app/sense/$1 [NE,R,P]
 
   </Location>
 
@@ -452,15 +451,15 @@ IncludeOptional conf.d/*.conf
 
     RewriteEngine on
 
-    RewriteRule /app/(.*)$ http://${r"${server_name}"}:5601/app/$1 [NE,R,P]
+    RewriteRule /app/(.*)$ http://localhost:5601/app/$1 [NE,R,P]
 
   </Location>
 
 
   # Airflow
-  #RewriteRule "^/airflow/(.*)$" "http://${r"${server_name}"}:8000/$1" [NE,R,P]
+  #RewriteRule "^/airflow/(.*)$" "http://localhost:8000/$1" [NE,R,P]
 
-  #RewriteRule /config/(.*)$ http://${r"${server_name}"}:8888/$1 [NE,R,P]
+  #RewriteRule /config/(.*)$ http://localhost:8888/$1 [NE,R,P]
 
 
   <Location /connector/webhook/register>
@@ -471,7 +470,7 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule / "http://${r"${server_name}"}:8080/presidio-ca-connector-webapp/webhook/register/" [P,L]
+     RewriteRule / "http://localhost:8080/presidio-ca-connector-webapp/webhook/register/" [P,L]
   </Location>
 
    <Location /configuration>
@@ -482,7 +481,7 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule / "http://${r"${server_name}"}:8080/presidio-manager/configuration/" [P,L]
+     RewriteRule / "http://localhost:8080/presidio-manager/configuration/" [P,L]
   </Location>
 
   <Location /configuration/keytabFile>
@@ -493,7 +492,7 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule / "http://${r"${server_name}"}:8080/presidio-manager/configuration/keytabFile/" [P,L]
+     RewriteRule / "http://localhost:8080/presidio-manager/configuration/keytabFile/" [P,L]
   </Location>
   
   <Location /data-pipeline>
@@ -504,7 +503,7 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule /(.*) "http://${r"${server_name}"}:8080/data-pipeline/$1" [P,L]
+     RewriteRule /(.*) "http://localhost:8080/data-pipeline/$1" [P,L]
   </Location>
 
   <Location /control>
@@ -515,12 +514,12 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule /(.*) "http://${r"${server_name}"}:8080/control/$1" [P,L]
+     RewriteRule /(.*) "http://localhost:8080/control/$1" [P,L]
   </Location>
   
   <Location /api/v1.0/webhook>
      RewriteEngine on
-     RewriteRule /(.*) "http://${r"${server_name}"}:7777/api/v1.0/webhook" [P,L]
+     RewriteRule /(.*) "http://localhost:7777/api/v1.0/webhook" [P,L]
   </Location>
  
 </VirtualHost>
