@@ -24,6 +24,9 @@ indicators:
   schema: FILE
   anomalyDescriptior:
     anomalyField: operationType
+    anomalyFilters:
+      field_name: operationTypeCategories
+      field_value: FILE_PERMISSION_CHANGE
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -222,8 +225,10 @@ indicators:
   adeEventType: scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: operationTypeCategories
-    anomalyValue: SECURITY_SENSITIVE_OPERATION
+    anomalyField: operationType
+    anomalyFilters:
+      field_name: operationTypeCategories
+      field_value: SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
