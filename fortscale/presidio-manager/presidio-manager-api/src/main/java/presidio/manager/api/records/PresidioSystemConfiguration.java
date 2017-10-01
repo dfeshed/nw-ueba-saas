@@ -28,6 +28,9 @@ public class PresidioSystemConfiguration {
     @JsonProperty("smtpHost")
     private String smtpHost;
 
+    @JsonProperty("krbServiceName")
+    private String krbServiceName;
+
     private List<String> unknownFields;
 
     private final String USER_NAME = "username";
@@ -36,6 +39,7 @@ public class PresidioSystemConfiguration {
     private final String REALM_NAME = "realmName";
     private final String ANALYST_GROUP = "analystGroup";
     private final String SMTP_HOST = "smtpHost";
+    private final String KRB_SERVICE_NAME = "krbServiceName";
 
     public PresidioSystemConfiguration() {
     }
@@ -100,6 +104,15 @@ public class PresidioSystemConfiguration {
         this.smtpHost = smtpHost;
     }
 
+
+    public String getKrbServiceName() {
+        return krbServiceName;
+    }
+
+    public void setKrbServiceName(String krbServiceName) {
+        this.krbServiceName = krbServiceName;
+    }
+
     private void setKeyValue(String key, String value) {
         switch (key) {
             case USER_NAME:
@@ -120,6 +133,8 @@ public class PresidioSystemConfiguration {
             case SMTP_HOST:
                 setSmtpHost(value);
                 break;
+            case KRB_SERVICE_NAME:
+                setKrbServiceName(value);
             default:
                 unknownFields.add(key);
         }
@@ -150,7 +165,13 @@ public class PresidioSystemConfiguration {
             emptyFields.add(SMTP_HOST);
         }
 
+        if (krbServiceName == null || krbServiceName.isEmpty()) {
+            emptyFields.add(KRB_SERVICE_NAME);
+        }
+
         return emptyFields;
     }
+
+
 
 }
