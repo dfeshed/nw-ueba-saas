@@ -10,7 +10,12 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -87,9 +92,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity) {
 
-        List<String> classificationUnion = (List<String>) CollectionUtils.union(user.getAlertClassifications(), classification);
+        List<String> classificationUnion = unionOfCollectionsToList(user.getAlertClassifications(), classification);
         user.setAlertClassifications(classificationUnion);
-        List<String> indicatorsUnion = (List<String>) CollectionUtils.union(user.getIndicators(), indicators);
+        List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), indicators);
         user.setIndicators(indicatorsUnion);
         user.incrementAlertsCountByOne();
         userScoreService.increaseUserScoreWithoutSaving(alertSeverity, user);
@@ -174,6 +179,18 @@ public class UserServiceImpl implements UserService {
         }
 
         return usersPage.getContent();
+    }
+
+    private List<String> unionOfCollectionsToList(Collection col1, Collection col2) {
+        if (CollectionUtils.isEmpty(col1) || CollectionUtils.isEmpty(col2)) {
+            if (CollectionUtils.isEmpty(col1) && CollectionUtils.isEmpty(col2)) {
+                return null;
+            } else {
+                return CollectionUtils.isEmpty(col1) ? (List<String>) col2 : (List<String>) col1;
+            }
+        } else {
+            return (List<String>) CollectionUtils.union(col1, col2);
+        }
     }
 
 }
