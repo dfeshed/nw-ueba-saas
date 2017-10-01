@@ -132,4 +132,25 @@ public class ManagerServiceImplTest {
 
         Assert.assertEquals(expectedPipelineState,actualPipelineState);
     }
+
+
+    @Test
+    public void shouldHandleEmptyAirflowStatus()
+    {
+        Duration buildingBaselineDuration=Duration.ofDays(1);
+        String managerDagIdPrefix="full_flow";
+        AirflowApiClient airflowApiClient = Mockito.mock(AirflowApiClient.class);
+        DagState dagState = DagState.RUNNING;
+
+        Map<String, DagExecutionStatus> mockedResult = new HashMap<>();
+
+        Mockito.when(airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(dagState,managerDagIdPrefix)).thenReturn(mockedResult);
+        ManagerServiceImpl managerService = new ManagerServiceImpl(managerDagIdPrefix, airflowApiClient, buildingBaselineDuration);
+
+        PipelineState actualPipelineState = managerService.getPipelineState();
+
+        Assert.assertEquals(PipelineState.StatusEnum.STOPPED,actualPipelineState.getStatus());
+        Assert.assertTrue(actualPipelineState.getDataProcessingCursor().isEmpty());
+
+    }
 }
