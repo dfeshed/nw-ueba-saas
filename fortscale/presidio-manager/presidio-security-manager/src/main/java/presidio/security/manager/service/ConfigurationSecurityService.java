@@ -12,9 +12,7 @@ import presidio.manager.api.records.PresidioSystemConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.manager.api.service.ConfigurationProcessingService;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +76,8 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             }
         }
 
-        return true;
+
+        return reloadHttpConfig();
     }
 
 
@@ -103,6 +102,40 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private ConfigurationBadParamDetails createConfigurationBadParamDetails(String field, String reason, String errorMessage) {
         final String location = DOMAIN_SYSTEM + "/" + field;
         return new ConfigurationBadParamDetails(DOMAIN_SYSTEM, location, reason, LOCATION_TYPE, errorMessage);
+    }
+
+    public boolean reloadHttpConfig() {
+        String s;
+        Process p=null;
+
+//        String command = "/bin/sh -c sudo service " + webService  + " start";
+        String command = "sudo service httpd graceful";
+
+        try {
+            // run the command
+            p = Runtime.getRuntime().exec(command);
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            // get the result
+            while ((s = br.readLine()) != null)
+                System.out.println("line: " + s);
+            p.waitFor();
+            // get the exit code
+            if (p.exitValue()==0){
+                logger.info("HTTPD restarted successfully");
+                return true;
+            } else {
+                logger.info("HTTPD restart failed");
+                return false;
+            }
+
+        } catch (Exception e) {
+            logger.info("HTTPD restart failed");
+            return false;
+        } finally {
+            if (p!=null) {
+                p.destroy();
+            }
+        }
     }
 
 
