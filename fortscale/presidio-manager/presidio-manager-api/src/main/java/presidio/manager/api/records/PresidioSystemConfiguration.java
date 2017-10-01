@@ -135,6 +135,7 @@ public class PresidioSystemConfiguration {
                 break;
             case KRB_SERVICE_NAME:
                 setKrbServiceName(value);
+                break;
             default:
                 unknownFields.add(key);
         }

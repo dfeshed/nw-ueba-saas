@@ -107,7 +107,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     public boolean reloadHttpConfig() {
         String s;
         Process p=null;
-
+        logger.info("Graceful restart apache httpd");
 //        String command = "/bin/sh -c sudo service " + webService  + " start";
         String command = "sudo service httpd graceful";
 
@@ -121,10 +121,10 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             p.waitFor();
             // get the exit code
             if (p.exitValue()==0){
-                logger.info("HTTPD restarted successfully");
+                logger.info("HTTPD reloaded successfully");
                 return true;
             } else {
-                logger.info("HTTPD restart failed");
+                logger.info("HTTPD reloaded failed");
                 return false;
             }
 
