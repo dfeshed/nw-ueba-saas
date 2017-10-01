@@ -9,11 +9,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 //TODO- use Schema.java values
 public enum SchemasEnum {
   
-  FILE("file"),
+  FILE("FILE"),
   
-  ACTIVE_DIRECTORY("active_directory"),
+  ACTIVE_DIRECTORY("ACTIVE_DIRECTORY"),
   
-  AUTHENTICATION("authentication");
+  AUTHENTICATION("AUTHENTICATION");
 
   private String value;
 
