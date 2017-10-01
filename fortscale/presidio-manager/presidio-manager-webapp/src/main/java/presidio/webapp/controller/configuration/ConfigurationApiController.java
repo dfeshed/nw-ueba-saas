@@ -50,7 +50,7 @@ public class ConfigurationApiController implements ConfigurationApi {
         return new ResponseEntity<List<SecuredConfiguration>>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("file") MultipartFile keytabFile) {
+    public ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("keytabFile") MultipartFile keytabFile) {
         File convFile = new File(keytabFileLocation);
         try {
             convFile.createNewFile();
