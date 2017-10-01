@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -22,7 +23,14 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by shays on 27/08/2017.
@@ -94,6 +102,32 @@ public class UserServiceImplTest {
         Assert.assertEquals(80D, changedUsers.get(0).getScore(), 0.00001);
         Assert.assertEquals(30D, changedUsers.get(1).getScore(), 0.00001);
 
+
+    }
+
+    @Test
+    public void testSetUserAlertData() {
+        User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
+        List<String> classification1 = null, classification2, classification3;
+        List<String> indicators1 = null, indicators2, indicators3;
+        classification2 = new ArrayList<>(Arrays.asList("a", "b"));
+        indicators2 = new ArrayList<>(Arrays.asList("c", "d"));
+        classification3 = new ArrayList<>(Arrays.asList("a", "c"));
+        indicators3 = new ArrayList<>(Arrays.asList("c", "e"));
+        Assert.assertEquals(null, user1.getIndicators());
+        Assert.assertEquals(null, user1.getAlertClassifications());
+        userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
+        Assert.assertEquals(null, user1.getIndicators());
+        Assert.assertEquals(null, user1.getAlertClassifications());
+        userService.setUserAlertData(user1, classification2, indicators2, AlertEnums.AlertSeverity.CRITICAL);
+        Assert.assertEquals(2, user1.getIndicators().size());
+        Assert.assertEquals(2, user1.getAlertClassifications().size());
+        userService.setUserAlertData(user1, classification3, indicators3, AlertEnums.AlertSeverity.CRITICAL);
+        Assert.assertEquals(3, user1.getIndicators().size());
+        Assert.assertEquals(3, user1.getAlertClassifications().size());
+        userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
+        Assert.assertEquals(3, user1.getIndicators().size());
+        Assert.assertEquals(3, user1.getAlertClassifications().size());
 
     }
 
