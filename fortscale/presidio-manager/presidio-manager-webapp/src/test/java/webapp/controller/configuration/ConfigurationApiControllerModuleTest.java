@@ -176,6 +176,7 @@ public class ConfigurationApiControllerModuleTest {
             properties.put("spring.cloud.config.uri", "http://localhost:8888");
             properties.put("presidio.workflows.config.path", "/tmp");
             properties.put("manager.security.securityConfPath","/tmp/httpd.conf");
+            properties.put("manager.security.krb5ConfPath","/tmp/krb5.conf");
             properties.put("spring.cloud.config.username", "config");
             properties.put("spring.cloud.config.password", "secure");
             return new TestPropertiesPlaceholderConfigurer(properties);

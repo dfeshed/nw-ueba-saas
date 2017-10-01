@@ -26,6 +26,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private static final String REASON_UNKNOWN_PROPERTY = "unknownProperty";
     private static final String REASON_MISSING_PROPERTY = "missingProperty";
     private static final String HTTPD_CONF_TEMPLATE = "httpd.conf.template";
+    private static final String KRB5_CONF_TEMPLATE = "krb5.conf.template";
 
     private final ConfigurationServerClientService configurationServerClientService;
 
@@ -33,12 +34,15 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     
     private final ObjectMapper mapper;
     private final String securityConfPath;
+    private final String krb5ConfPath;
 
-    public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService, Configuration freeMakerConfiguration, String securityConfPath) {
+    public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService,
+                                        Configuration freeMakerConfiguration, String securityConfPath, String krb5Path) {
         this.configurationServerClientService = configurationServerClientService;
         this.freeMakerConfiguration = freeMakerConfiguration;
         this.mapper = new ObjectMapper();
         this.securityConfPath = securityConfPath;
+        this.krb5ConfPath = krb5Path;
     }
 
     @Override
@@ -53,12 +57,21 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         try {
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
+            // Handle httpd conf
             Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
             String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE), securityConfiguration);
 
             File file = new File(securityConfPath);
             fileWriter = new FileWriter(file,false);
             fileWriter.write(httpdConf);
+
+            // Handle krb5 conf
+            String krb5Conf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(KRB5_CONF_TEMPLATE), securityConfiguration);
+
+            file = new File(krb5ConfPath);
+            fileWriter = new FileWriter(file,false);
+            fileWriter.write(krb5Conf);
+
 
         } catch (Exception e) {
             String msg = "failed to apply configuration";
@@ -79,7 +92,6 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
 
         return reloadHttpConfig();
     }
-
 
     private ValidationResults validateSystemConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         ValidationResults validationResults = new ValidationResults();
@@ -104,7 +116,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         return new ConfigurationBadParamDetails(DOMAIN_SYSTEM, location, reason, LOCATION_TYPE, errorMessage);
     }
 
-    public boolean reloadHttpConfig() {
+    private boolean reloadHttpConfig() {
         String s;
         Process p=null;
         logger.info("Graceful restart apache httpd");
