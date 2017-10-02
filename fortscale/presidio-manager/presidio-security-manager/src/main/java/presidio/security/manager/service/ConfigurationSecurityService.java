@@ -13,12 +13,14 @@ import presidio.manager.api.records.ValidationResults;
 import presidio.manager.api.service.ConfigurationProcessingService;
 
 import java.io.*;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
 public class ConfigurationSecurityService implements ConfigurationProcessingService {
 
 
+    public static final String LDAP_URL = "ldapUrl";
     private static final Logger logger = Logger.getLogger(ConfigurationSecurityService.class);
 
     private static final String LOCATION_TYPE = "jsonPath";
@@ -27,6 +29,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private static final String REASON_MISSING_PROPERTY = "missingProperty";
     private static final String HTTPD_CONF_TEMPLATE = "httpd.conf.template";
     private static final String KRB5_CONF_TEMPLATE = "krb5.conf.template";
+    public static final String KDC = "kdc";
 
     private final ConfigurationServerClientService configurationServerClientService;
 
@@ -64,6 +67,10 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             File file = new File(securityConfPath);
             fileWriter = new FileWriter(file,false);
             fileWriter.write(httpdConf);
+
+            URI uri = new URI((String) securityConfiguration.get(LDAP_URL));
+            String domain = uri.getHost();
+            securityConfiguration.put(KDC, domain);
 
             // Handle krb5 conf
             String krb5Conf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(KRB5_CONF_TEMPLATE), securityConfiguration);
