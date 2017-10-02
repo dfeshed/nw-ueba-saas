@@ -96,6 +96,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
+
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
                 }
@@ -123,7 +124,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         }
         if (userEntities.size() > 1) {
             logger.error("Cannot have vendor userId more then once {}", userId);
-            throw new RuntimeException("Cannot have vendor userId more then once");
         }
         return userEntities.get(0);
     }
