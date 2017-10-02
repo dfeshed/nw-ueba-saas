@@ -15,8 +15,7 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
@@ -36,14 +35,13 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     private final String MISSIG_DATA_ERROR_MESSAGE = "Missing dataPipeline configuration";
     private final String MISSIG_SCHEMAS_ERROR_MESSAGE = "Missing schemas configuration";
     private final String MISSIG_START_TIME_ERROR_MESSAGE = "Missing dataPipeline startTime configuration";
-    private final String START_TIME_UNVALID_MESSAGE = "dataPipeline startTime format is invalid. Allowed format is: yyyy-MM-dd HH:mm:ss";
+    private final String START_TIME_UNVALID_MESSAGE = "dataPipeline startTime format is invalid. Allowed format is: yyyy-MM-ddTHH:mm:ssZ";
     private final String SCHEMA_UNVALID_MESSAGE = "dataPipeline schema %s field is not supported. Allowed values:%s";
     private final String START_TIME_FUTRE_DATE_MESSAGE = "dataPipeline startTime date is in the future.";
     private final String FILE = "FILE";
     private final String ACTIVE_DIRECTORY = "ACTIVE_DIRECTORY";
     private final String AUTHENTICATION = "AUTHENTICATION";
     private final List<String> schemas = new ArrayList<String>(Arrays.asList(FILE, ACTIVE_DIRECTORY, AUTHENTICATION));
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ConfigurationServerClientService configServerClient;
     private final String moduleName;
     private final List<String> activeProfiles;
@@ -82,7 +80,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 FileWriter fileWriter = new FileWriter(file,false);
                 fileWriter.write(newConfJson);
                 fileWriter.close();
-                Files.setPosixFilePermissions(Paths.get(filePath),perms);
+                //Files.setPosixFilePermissions(Paths.get(filePath),perms);
             }
             return true;
         } catch (Exception e) {
@@ -152,7 +150,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
 
         List<ConfigurationBadParamDetails> errorsList = null;
         try {
-            if (LocalDateTime.parse(startTime, dateTimeFormatter).isAfter(LocalDateTime.now())) {
+            if (Instant.parse(startTime).isAfter(Instant.now())) {
                 errorsList = new ArrayList<>();
                 errorsList.add(new ConfigurationBadParamDetails(DATA_PIPE_LINE, LOCATION_TYPE_START_TIME, INVALID_PROPERTY, LOCATION_TYPE, START_TIME_FUTRE_DATE_MESSAGE));
             }
