@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.model.*;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
@@ -53,6 +54,7 @@ public class SmartApplicationTest extends BaseAppTest {
     private IMapGenerator aggregatedFeatureToScoreGenerator;
     private IMapGenerator aggregatedFeatureToValueGenerator;
     private static final double avgFeatureValueForLowAnomaliesUser = 0.5;
+    private static final int numOfFeaturesInGroups = 6;
     public static final String EXECUTION_COMMAND = "process --smart_record_conf_name %s --start_date %s --end_date %s";
     @Autowired
     private AggregatedDataStore aggregatedDataStore;
@@ -60,6 +62,8 @@ public class SmartApplicationTest extends BaseAppTest {
     protected MongoTemplate mongoTemplate;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    @Autowired
+    private ModelsCacheService modelsCacheService;
 
     @Override
     protected String getContextTestExecutionCommand() {
@@ -71,6 +75,7 @@ public class SmartApplicationTest extends BaseAppTest {
     @Before
     public void setUp() {
         mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
+        modelsCacheService.resetCache();
     }
 
 
@@ -100,6 +105,7 @@ public class SmartApplicationTest extends BaseAppTest {
 
         List<String> contextIds = Collections.singletonList(contextId);
 
+        createSingleHighValueAggregatedFeatureGenerators();
         TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
         String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
         executeAndAssertCommandSuccess(command);
@@ -132,6 +138,7 @@ public class SmartApplicationTest extends BaseAppTest {
 
         TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
 
+        createSingleHighValueAggregatedFeatureGenerators();
         TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
 
         //Generate models for users:
@@ -149,6 +156,273 @@ public class SmartApplicationTest extends BaseAppTest {
 
         assertSmartsBetweenContexts(smartRecords, contextIds.size(), startDate, endDate, durationOfProcess, startHourOfDay, endHourOfDay, weightToFeaturesSortedMap);
     }
+
+    /**
+     * Test that different sets of features, where each feature has different weight in set and same weights between sets, influence in the same manner.
+     * <p>
+     * Create smarts, where each smart contains set of features with featureValue greater than 0 and different weights.
+     * Each hour generator generate next set of features.
+     * Expected get same smart score.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void setOfFeaturesWithDiffWeightTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
+        int durationOfProcess = 2;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 4;
+        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+        List<String> contextIds = new ArrayList<>();
+        contextIds.add("user1");
+        contextIds.add("user2");
+
+        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+
+        //Generate models for users:
+        createModelsForLowAnomaliesUsers(startDate, endDate, contextIds, weightToFeaturesSortedMap);
+
+        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+        executeAndAssertCommandSuccess(command);
+
+        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+
+        Double expectedScore = smartRecords.get(0).getScore();
+        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
+        Assert.assertTrue(expectedScore > 0);
+        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+    }
+
+
+    /**
+     * Test smarts, where no Weight model exist.
+     * Expected: smartScore = 0, smartValue = 0
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void NoWeightModelTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
+        int durationOfProcess = 2;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 4;
+        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+        String contextId = "user1";
+        List<String> contextIds = Collections.singletonList(contextId);
+
+        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+
+        //Generate models for users:
+        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+        createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
+
+        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+        executeAndAssertCommandSuccess(command);
+
+        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+
+        Double expectedScore = 0.0;
+        Double expectedSmartValue = 0.0;
+        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+    }
+
+
+    /**
+     * Test smarts, where no SmartValues model exist.
+     * Expected: smartScore = 0, smartValue > 0
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void NoSmartValuesModeTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
+        int durationOfProcess = 2;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 4;
+        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+        String contextId = "user1";
+        List<String> contextIds = Collections.singletonList(contextId);
+
+        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+
+        //Generate models for users:
+        createWeightModel(startDate, weightToFeaturesSortedMap);
+        createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
+
+        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+        executeAndAssertCommandSuccess(command);
+
+        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+
+        Double expectedScore = 0.0;
+        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+    }
+
+    /**
+     * Test smarts, where no Prior model exist.
+     * Expected: smartScore = 0, smartValue > 0
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void NoPriorModeTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
+        int durationOfProcess = 2;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 4;
+        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+        String contextId = "user1";
+        List<String> contextIds = Collections.singletonList(contextId);
+
+        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+
+        //Generate models for users:
+        createWeightModel(startDate, weightToFeaturesSortedMap);
+        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+
+        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+        executeAndAssertCommandSuccess(command);
+
+        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+
+        Double expectedScore = 0.0;
+        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+    }
+
+
+    /**
+     * Test smarts time range.
+     * <p>
+     * Generate Fs and Ps on 1-6 days.
+     * Run smart app on 3-4 days period.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void smartExpectedTimeTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 6;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 7;
+        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+        List<String> contextIds = new ArrayList<>();
+        contextIds.add("user1");
+
+        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+
+        //Generate models for users:
+        createModelsForLowAnomaliesUsers(startDate, endDate, contextIds, weightToFeaturesSortedMap);
+
+        //execute command on smaller time range
+        int numOfDaysToReduce = 2;
+        Instant start = timeRange.getStart().plus(Duration.ofDays(numOfDaysToReduce));
+        Instant end = timeRange.getEnd().minus(Duration.ofDays(numOfDaysToReduce));
+        String command = String.format(EXECUTION_COMMAND, "userId_hourly", start, end);
+        executeAndAssertCommandSuccess(command);
+
+        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+
+        Double expectedScore = smartRecords.get(0).getScore();
+        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
+        Assert.assertTrue(expectedScore > 0);
+        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * (durationOfProcess - (2 * numOfDaysToReduce)));
+
+        Instant smartRecordStart = smartRecords.stream().min(Comparator.comparing(SmartRecord::getStartInstant)).get().getStartInstant();
+        Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
+        Assert.assertTrue(start.equals(smartRecordStart));
+        Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
+    }
+
+
+    /**
+     * Test smarts threshold.
+     * <p>
+     * Generate Fs and Ps for 2 users, where score of user1 higher than threshold and score of user2 lower than threshold.
+     * Expect: get smarts for 2 users, where smart of user1 has all relevant aggregatedFeatures and smart of user2 has not aggregatedFeatures.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void smartExpectedThresholdTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 2;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 3;
+        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+
+        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+
+        List<String> passThresholdContexts = new ArrayList<>();
+        passThresholdContexts.add("user1");
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 11);
+        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, passThresholdContexts);
+
+        List<String> doesNotPassThresholdContexts = new ArrayList<>();
+        doesNotPassThresholdContexts.add("user2");
+        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 10.0);
+        generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, doesNotPassThresholdContexts);
+
+        //Generate models for users:
+        createModelsForLowAnomaliesUsers(startDate, endDate, passThresholdContexts, weightToFeaturesSortedMap);
+        createModelsForLowAnomaliesUsers(startDate, endDate, doesNotPassThresholdContexts, weightToFeaturesSortedMap);
+
+        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart(), timeRange.getEnd());
+        executeAndAssertCommandSuccess(command);
+
+        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+
+        for (SmartRecord smartRecord : smartRecords) {
+            if (smartRecord.getContextId().equals("userId#user1")) {
+                Assert.assertTrue(smartRecord.getScore() > 0);
+                Assert.assertTrue(smartRecord.getSmartValue() > 0);
+            } else if (smartRecord.getContextId().equals("userId#user2")) {
+                Assert.assertTrue(smartRecord.getScore() == 0);
+                Assert.assertTrue(smartRecord.getSmartValue() == 0);
+            }
+        }
+
+        Assert.assertTrue(smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#user1")).count() == passThresholdContexts.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+        Assert.assertTrue(smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#user2")).count() == doesNotPassThresholdContexts.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+    }
+
 
     /**
      * Create models for normal users with low anomalies.
@@ -277,9 +551,6 @@ public class SmartApplicationTest extends BaseAppTest {
      * @throws GeneratorException
      */
     private TimeRange generateAggregatedFeatureEventConf(int daysBackFrom, int daysBackTo, int startHourOfDay, int endHourOfDay, List<String> contextIds) throws GeneratorException {
-
-        createAggregatedFeatureGenerators();
-
         IStringListGenerator contextIdGenerator = new FixedListGenerator(contextIds);
         TimeGenerator startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, daysBackFrom, daysBackTo);
 
@@ -373,12 +644,10 @@ public class SmartApplicationTest extends BaseAppTest {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
         Double weight = 0.1;
         Double decreasedValueOfWeight = 0.005;
-        //features divided to #6 groups
-        int numOfGroups = 6;
 
         TreeMap<Double, List<String>> weightToFeaturesSortedMap = new TreeMap<>();
 
-        List<List<AggregatedFeatureEventConf>> partitions = Lists.partition(aggregatedFeatureEventConfList, numOfGroups);
+        List<List<AggregatedFeatureEventConf>> partitions = Lists.partition(aggregatedFeatureEventConfList, numOfFeaturesInGroups);
 
         List<List<String>> featuresGroups = partitions.stream().map(list -> {
             return list.stream().map(p -> p.getName()).collect(Collectors.toList());
@@ -395,9 +664,9 @@ public class SmartApplicationTest extends BaseAppTest {
     /**
      * Create CyclicMapGenerator for F and P.
      * CyclicMapGenerator contains list of maps, where map consist of features and score/value.
-     * Only 1 feature has score/value = 100 in each map.
+     * Map contains all features, where only one has score/value = 100.
      */
-    private void createAggregatedFeatureGenerators() {
+    private void createSingleHighValueAggregatedFeatureGenerators() {
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
 
         Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToValue = aggregatedFeatureEventConfList.stream().collect(Collectors.toMap(aggregatedFeature -> aggregatedFeature, aggregatedFeature -> 0.0));
@@ -433,6 +702,47 @@ public class SmartApplicationTest extends BaseAppTest {
         aggregatedFeatureToValueGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToValueList);
     }
 
+    /**
+     * Create CyclicMapGenerator for F and P.
+     * CyclicMapGenerator contains list of maps, where map consist of features and score/value.
+     * Map contains set of features, where all features have different weight.
+     */
+    private void setOfFeaturesWithDiffWeightsAggrFeatureGenerators(TreeMap<Double, List<String>> weightToFeaturesSortedMap, double featureValue) {
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+
+        //Build list of features with different weights
+        List<List<String>> featuresWithDiffWeightList = new ArrayList<>();
+        for (int i = 0; i < numOfFeaturesInGroups; i++) {
+            List<String> featuresWithDiffWeight = new ArrayList<>();
+            for (List<String> features : weightToFeaturesSortedMap.values()) {
+                featuresWithDiffWeight.add(features.get(i));
+            }
+            featuresWithDiffWeightList.add(featuresWithDiffWeight);
+        }
+
+        //F config to feature score
+        List<Map<AggregatedFeatureEventConf, Double>> aggregatedFeatureEventConfToScoreList = new ArrayList<>();
+        //P config to feature value
+        List<Map<AggregatedFeatureEventConf, Double>> aggregatedFeatureEventConfToValueList = new ArrayList<>();
+
+        for (List<String> featureNames : featuresWithDiffWeightList) {
+            Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToValue = aggregatedFeatureEventConfList.stream().filter(aggregatedFeatureEventConf -> featureNames.contains(aggregatedFeatureEventConf.getName())).collect(Collectors.toMap(aggregatedFeature -> aggregatedFeature, aggregatedFeature -> featureValue));
+
+            Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToScoreMap = aggregatedFeatureEventConfToValue.entrySet().stream()
+                    .filter(valueToAggr -> valueToAggr.getKey().getType().equals("F")).collect(Collectors.toMap(
+                            Map.Entry::getKey, Map.Entry::getValue));
+
+            Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToValueMap = aggregatedFeatureEventConfToValue.entrySet().stream()
+                    .filter(valueToAggr -> valueToAggr.getKey().getType().equals("P")).collect(Collectors.toMap(
+                            Map.Entry::getKey, Map.Entry::getValue));
+
+            aggregatedFeatureEventConfToScoreList.add(aggregatedFeatureEventConfToScoreMap);
+            aggregatedFeatureEventConfToValueList.add(aggregatedFeatureEventConfToValueMap);
+        }
+
+        aggregatedFeatureToScoreGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToScoreList);
+        aggregatedFeatureToValueGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToValueList);
+    }
 
     @Configuration
     @Import({SmartApplicationConfigurationTest.class, BaseAppTest.springConfig.class, ModelStoreConfig.class})
