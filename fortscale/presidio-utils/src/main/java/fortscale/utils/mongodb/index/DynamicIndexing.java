@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When the {@link DynamicIndexApplicationListener} creates indexes dynamically
+ * When the {@link DynamicIndexingApplicationListener} creates indexes dynamically
  * for a certain collection (derived from a {@link Document}), it uses the options
  * defined in this annotation (if it is added to the {@link Document}).
  *
