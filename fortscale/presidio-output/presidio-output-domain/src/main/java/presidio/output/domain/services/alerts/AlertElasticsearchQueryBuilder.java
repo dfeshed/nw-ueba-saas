@@ -8,7 +8,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.time.DateTimeZone;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -24,6 +23,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
     }
 
     public void withFilter(AlertQuery alertQuery) {
+        final BoolQueryBuilder boolQueryBuilder2 = new BoolQueryBuilder();
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         // filter by username
@@ -95,8 +95,10 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(rangeQuery);
         }
 
+
+        boolQueryBuilder2.filter(boolQueryBuilder);
         if (boolQueryBuilder.hasClauses()) {
-            super.withFilter(boolQueryBuilder);
+            super.withQuery(boolQueryBuilder2);
         }
     }
 

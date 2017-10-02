@@ -26,6 +26,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
 
     public void withFilter(UserQuery userQuery) {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        final BoolQueryBuilder boolQueryBuilder2 = new BoolQueryBuilder();
 
         // filter by username
         if (StringUtils.isNotEmpty(userQuery.getFilterByUserName())) {
@@ -80,8 +81,9 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             boolQueryBuilder.must(rangeQuery);
         }
 
+        boolQueryBuilder2.filter(boolQueryBuilder);
         if (boolQueryBuilder.hasClauses()) {
-            super.withFilter(boolQueryBuilder);
+            super.withQuery(boolQueryBuilder2);
         }
     }
 
