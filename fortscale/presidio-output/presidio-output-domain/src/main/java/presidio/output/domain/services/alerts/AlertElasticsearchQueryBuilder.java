@@ -85,12 +85,9 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         // filter by min or max score
         if (alertQuery.getFilterByMinScore() > 0 || alertQuery.getFilterByMaxScore() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(Alert.SCORE);
-            if (alertQuery.getFilterByMinScore() > 0) {
-                rangeQuery.gte(alertQuery.getFilterByMinScore());
-            }
-            if (alertQuery.getFilterByMaxScore() > 0) {
-                rangeQuery.lte(alertQuery.getFilterByMaxScore());
-            }
+            rangeQuery.gte(alertQuery.getFilterByMinScore() > 0 ? alertQuery.getFilterByMinScore() : 0);
+            rangeQuery.lte(alertQuery.getFilterByMinScore() > 0 ? alertQuery.getFilterByMinScore() : 100);
+            boolQueryBuilder.must(rangeQuery);
 
             boolQueryBuilder.must(rangeQuery);
         }
