@@ -56,7 +56,7 @@ public class UsersApiController implements UsersApi {
     public ResponseEntity<UsersWrapper> getUsers(presidio.webapp.model.UserQuery userQuery) {
         try {
             UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
-            HttpStatus httpStatus = usersWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+            HttpStatus httpStatus = usersWrapper.getTotal() >= 0 ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
             return new ResponseEntity(usersWrapper, httpStatus);
         } catch (Exception ex) {
             logger.error("Trying to get users with userQuery:{}, but got exception {}", userQuery.toString(), ex);
@@ -66,6 +66,6 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> updateUser(List<Patch> patch) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
