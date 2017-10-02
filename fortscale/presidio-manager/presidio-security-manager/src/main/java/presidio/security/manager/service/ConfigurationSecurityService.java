@@ -56,6 +56,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     @Override
     public boolean applyConfiguration() {
         FileWriter fileWriter = null;
+        FileWriter krb5ConfFileWriter = null;
 
         try {
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
@@ -75,9 +76,9 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             // Handle krb5 conf
             String krb5Conf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(KRB5_CONF_TEMPLATE), securityConfiguration);
 
-            file = new File(krb5ConfPath);
-            fileWriter = new FileWriter(file,false);
-            fileWriter.write(krb5Conf);
+            File krb5ConfFile = new File(krb5ConfPath);
+            krb5ConfFileWriter = new FileWriter(krb5ConfFile,false);
+            krb5ConfFileWriter.write(krb5Conf);
 
 
         } catch (Exception e) {
@@ -90,6 +91,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             if (fileWriter != null) {
                 try {
                     fileWriter.close();
+                    krb5ConfFileWriter.close();
                 } catch (IOException e) {
                     logger.error("Failed to close filewriter.", e);
                 }
@@ -126,9 +128,9 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private boolean reloadHttpConfig() {
         String s;
         Process p=null;
-        logger.info("Graceful restart apache httpd");
+        logger.info("Reload apache httpd");
 //        String command = "/bin/sh -c sudo service " + webService  + " start";
-        String command = "sudo service httpd graceful";
+        String command = "sudo /usr/bin/systemctl reload httpd";
 
         try {
             // run the command

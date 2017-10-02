@@ -17,11 +17,10 @@ includedir /etc/krb5.conf.d/
 
 [realms]
  ${realmName}= {
-  kdc = {kdc}
-  admin_server = {kdc}
+  kdc = ${kdc}
+  admin_server = ${kdc}
  }
 
 [domain_realm]
  .${realmName} = ${realmName}
  ${realmName} = ${realmName}
-~
