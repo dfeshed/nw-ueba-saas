@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         String userDisplayName = event.getUserDisplayName();
         String userName = event.getUserName();
         List<String> tags = new ArrayList<>();
-        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null) {
+        if (event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null && Boolean.valueOf(event.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
             tags.add(TAG_ADMIN);
         }
         return new UserDetails(userName, userDisplayName, userId, tags);
