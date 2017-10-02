@@ -135,7 +135,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void createUserFromEnrichedEventWiteIsAdminFalseTest() {
+    public void createUserFromEnrichedEventWithIsAdminFalseTest() {
         EventResult result = EventResult.SUCCESS;
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "false");
@@ -148,7 +148,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void createUserFromEnrichedEventWiteIsAdminTrueTest() {
+    public void createUserFromEnrichedEventWithIsAdminTrueTest() {
         EventResult result = EventResult.SUCCESS;
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "true");
