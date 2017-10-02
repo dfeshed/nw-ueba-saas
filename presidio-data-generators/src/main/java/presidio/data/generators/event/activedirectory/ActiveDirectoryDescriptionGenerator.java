@@ -7,7 +7,7 @@ public class ActiveDirectoryDescriptionGenerator implements IActiveDirectoryDesc
 
     private String buildDescription(ActiveDirectoryEvent activeDirectoryEvent){
         String operationType = activeDirectoryEvent.getOperation().getOperationType();
-        String activeDirectoryDescription = operationType + " for user " + activeDirectoryEvent.getObjectDN();
+        String activeDirectoryDescription = operationType + " for user " + activeDirectoryEvent.getUser().getUsername();
         return activeDirectoryDescription;
     }
 
