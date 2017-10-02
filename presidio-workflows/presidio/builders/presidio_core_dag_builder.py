@@ -3,7 +3,8 @@ import logging
 from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
 
-from presidio.builders.ade.anomaly_detection_engine_dag_builder import AnomalyDetectionEngineDagBuilder
+from presidio.builders.ade.anomaly_detection_engine_scoring_dag_builder import AnomalyDetectionEngineScoringDagBuilder
+from presidio.builders.ade.anomaly_detection_engine_modeling_dag_builder import AnomalyDetectionEngineModelingDagBuilder
 from presidio.builders.input.input_dag_builder import InputDagBuilder
 from presidio.builders.output.output_dag_builder import OutputDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -44,14 +45,17 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         )
         task_sensor_service.add_task_sequential_sensor(input_sub_dag_operator)
 
-        ade_sub_dag_operator = self._get_ade_sub_dag_operator(self.data_sources, presidio_core_dag)
+        ade_scoring_sub_dag_operator = self._get_ade_scoring_sub_dag_operator(self.data_sources, presidio_core_dag)
 
         output_sub_dag_operator = self._get_output_sub_dag_operator(
             self.data_sources,
             presidio_core_dag
         )
 
-        input_sub_dag_operator >> ade_sub_dag_operator >> output_sub_dag_operator
+        ade_modeling_sub_dag_operator = self._get_ade_modeling_sub_dag_operator(self.data_sources, presidio_core_dag)
+
+        input_sub_dag_operator >> ade_scoring_sub_dag_operator >> output_sub_dag_operator
+        ade_scoring_sub_dag_operator >> ade_modeling_sub_dag_operator
 
         return presidio_core_dag
 
@@ -73,24 +77,46 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         )
 
     @staticmethod
-    def _get_ade_sub_dag_operator(data_sources, presidio_core_dag):
+    def _get_ade_scoring_sub_dag_operator(data_sources, presidio_core_dag):
         default_args = presidio_core_dag.default_args
         daily_smart_events_confs = default_args.get("daily_smart_events_confs")
         hourly_smart_events_confs = default_args.get("hourly_smart_events_confs")
 
-        ade_dag_id = 'ade_dag'
+        ade_scoring_dag_id = 'ade_scoring_dag'
 
-        ade_dag = DAG(
-            dag_id='{}.{}'.format(presidio_core_dag.dag_id, ade_dag_id),
+        ade_scoring_dag = DAG(
+            dag_id='{}.{}'.format(presidio_core_dag.dag_id, ade_scoring_dag_id),
             schedule_interval=presidio_core_dag.schedule_interval,
             start_date=presidio_core_dag.start_date,
             default_args=presidio_core_dag.default_args
         )
 
         return SubDagOperator(
-            subdag=AnomalyDetectionEngineDagBuilder(data_sources, hourly_smart_events_confs,
-                                                    daily_smart_events_confs).build(ade_dag),
-            task_id=ade_dag_id,
+            subdag=AnomalyDetectionEngineScoringDagBuilder(data_sources, hourly_smart_events_confs,
+                                                           daily_smart_events_confs).build(ade_scoring_dag),
+            task_id=ade_scoring_dag_id,
+            dag=presidio_core_dag
+        )
+
+    @staticmethod
+    def _get_ade_modeling_sub_dag_operator(data_sources, presidio_core_dag):
+        default_args = presidio_core_dag.default_args
+        daily_smart_events_confs = default_args.get("daily_smart_events_confs")
+        hourly_smart_events_confs = default_args.get("hourly_smart_events_confs")
+
+        ade_modeling_dag_id = 'ade_modeling_dag'
+
+        ade_modeling_dag = DAG(
+            dag_id='{}.{}'.format(presidio_core_dag.dag_id, ade_modeling_dag_id),
+            schedule_interval=presidio_core_dag.schedule_interval,
+            start_date=presidio_core_dag.start_date,
+            default_args=presidio_core_dag.default_args
+        )
+
+        return SubDagOperator(
+            subdag=AnomalyDetectionEngineModelingDagBuilder(data_sources, hourly_smart_events_confs,
+                                                           daily_smart_events_confs).build(ade_modeling_dag),
+            task_id=ade_modeling_dag_id,
             dag=presidio_core_dag
         )
 
