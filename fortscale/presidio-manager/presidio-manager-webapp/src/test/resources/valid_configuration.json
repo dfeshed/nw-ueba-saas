@@ -1,6 +1,7 @@
 {
   "system": {
     "username": "presidio@somecompany.dom",
+    "krbServiceName":  "HTTP/hostname@fortscale.dom",
     "password": "password",
     "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
     "realmName": "EXAMPLE.COM",

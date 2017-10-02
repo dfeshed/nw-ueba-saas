@@ -17,6 +17,9 @@ public class SecurityManagerConfiguration {
     @Value("${manager.security.securityConfPath:/etc/httpd/conf/httpd.conf}")
     private String securityConfPath;
 
+    @Value("${manager.security.krb5ConfPath:/etc/krb5.conf}")
+    private String krb5ConfPath;
+
     @Autowired
     @Qualifier("configurationServerClientService")
     private ConfigurationServerClientService configurationServerClientService;
@@ -27,7 +30,8 @@ public class SecurityManagerConfiguration {
 
     @Bean(name = "configurationSecurityService")
     public ConfigurationSecurityService configurationSecurityService() {
-        return new ConfigurationSecurityService(configurationServerClientService, freemarkerConfiguration, securityConfPath);
+        return new ConfigurationSecurityService(configurationServerClientService, freemarkerConfiguration,
+                securityConfPath, krb5ConfPath);
     }
 
     @Bean
