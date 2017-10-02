@@ -51,6 +51,8 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
             presidio_core_dag
         )
 
+        task_sensor_service.add_task_sequential_sensor(output_sub_dag_operator)
+
         input_sub_dag_operator >> ade_sub_dag_operator >> output_sub_dag_operator
 
         return presidio_core_dag
