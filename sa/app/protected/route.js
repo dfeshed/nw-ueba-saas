@@ -126,7 +126,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
             'timezone.selected': timeZone
           });
 
-          this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
+          if (defaultComponentUrl) {
+            this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
+          }
 
           resolve();
         }).catch((error) => {
@@ -194,7 +196,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
     ) {
       return this.transitionTo(key);
     } else { // neither transition nor default landing page found
-      return window.location.href = '/unified';
+      if ((config.landingPageDefault === '/respond') && this.get('accessControl.hasRespondAccess')) {
+        return this.transitionTo('protected.respond');
+      } else {
+        return window.location.href = '/unified';
+      }
     }
   }
 });
