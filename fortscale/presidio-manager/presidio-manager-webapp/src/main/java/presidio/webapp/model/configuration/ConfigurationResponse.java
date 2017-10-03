@@ -13,32 +13,12 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-07T07:15:37.402Z")
 
 public class ConfigurationResponse {
-  @JsonProperty("code")
-  private String code = null;
 
   @JsonProperty("message")
   private String message = null;
 
   @JsonProperty("error")
   private List<ConfigurationResponseError> error = new ArrayList<ConfigurationResponseError>();
-
-  public ConfigurationResponse code(String code) {
-    this.code = code;
-    return this;
-  }
-
-   /**
-   * Get code
-   * @return code
-  **/
-  @ApiModelProperty(example = "422", value = "")
-  public String getCode() {
-    return code;
-  }
-
-  public void setCode(String code) {
-    this.code = code;
-  }
 
   public ConfigurationResponse message(String message) {
     this.message = message;
@@ -91,22 +71,19 @@ public class ConfigurationResponse {
       return false;
     }
     ConfigurationResponse configurationErrorResponse = (ConfigurationResponse) o;
-    return Objects.equals(this.code, configurationErrorResponse.code) &&
-        Objects.equals(this.message, configurationErrorResponse.message) &&
+    return Objects.equals(this.message, configurationErrorResponse.message) &&
         Objects.equals(this.error, configurationErrorResponse.error);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code, message, error);
+    return Objects.hash( message, error);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConfigurationResponse {\n");
-
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    error: ").append(toIndentedString(error)).append("\n");
     sb.append("}");

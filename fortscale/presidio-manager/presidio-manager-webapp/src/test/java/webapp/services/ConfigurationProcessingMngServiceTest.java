@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.manager.airlfow.service.ConfigurationAirflowServcie;
 import presidio.manager.api.records.PresidioManagerConfiguration;
@@ -26,6 +28,8 @@ public class ConfigurationProcessingMngServiceTest {
     private JsonNode dataPipeLineWithThreeFields;
     private JsonNode dataPipeLineWithInvalidSchema;
     private JsonNode jsonWithGeneralError;
+    @Autowired
+    private ApplicationContext ctx;
 
 
     @Before
@@ -35,7 +39,7 @@ public class ConfigurationProcessingMngServiceTest {
         dataPipeLineWithThreeFields = setJson("invalid_configuration_data_pipe_line_with_three_fields.json");
         dataPipeLineWithInvalidSchema = setJson("invalid_configuratoin_bad_schema.json");
         jsonWithGeneralError = setJson("invalid_configuration_general_error.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(null,"workflows",null,null), new ConfigurationSecurityService(null, null));
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowServcie(null,"workflows",null,null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf"));
     }
 
     @Test
@@ -80,8 +84,10 @@ public class ConfigurationProcessingMngServiceTest {
 
     private JsonNode setJson(String name) {
         ObjectMapper mapper = new ObjectMapper();
-        File from = new File(".//src//test//resources//" + name);
+
+
         try {
+            File from = ctx.getResource(name).getFile();
             return mapper.readTree(from);
         } catch (IOException e) {
             e.printStackTrace();
