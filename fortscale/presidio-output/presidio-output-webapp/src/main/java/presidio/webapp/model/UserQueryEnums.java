@@ -33,7 +33,9 @@ public class UserQueryEnums {
     }
 
     public enum UserQueryAggregationFieldName {
-        SEVERITY(User.SEVERITY_FIELD_NAME), TAGS(User.TAGS_FIELD_NAME), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
+        SEVERITY(User.SEVERITY_FIELD_NAME), TAGS(User.TAGS_FIELD_NAME), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME),
+        INDICATORS(User.INDICATORS_FIELD_NAME);
+
         private String value;
 
         UserQueryAggregationFieldName(String value) {
