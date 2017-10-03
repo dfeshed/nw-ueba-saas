@@ -8,7 +8,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.time.DateTimeZone;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -80,6 +79,15 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
                 tagsQuery.should(matchQuery(Alert.USER_TAGS_FIELD_NAME, tag).operator(Operator.OR));
             }
             boolQueryBuilder.must(tagsQuery);
+        }
+
+        // filter by indicator names
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByIndicatorNames())) {
+            BoolQueryBuilder indicatorNameQuery = new BoolQueryBuilder();
+            for (String indicatorName : alertQuery.getFilterByIndicatorNames()) {
+                indicatorNameQuery.should(matchQuery(Alert.INDICATOR_NAMES, indicatorName).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(indicatorNameQuery);
         }
 
         // filter by min or max score

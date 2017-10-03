@@ -6,6 +6,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -543,15 +544,15 @@ public class AlertPersistencyServiceTest {
 
         Date startDate = new Date();
         Date endDate = new Date();
-        List<String> indicatoorNames1 = Arrays.asList("a");
-        List<String> indicatoorNames2 = Arrays.asList("a","b");
-        List<String> indicatoorNames3 = Arrays.asList("a","b","c");
+        List<String> indicatorNames1 = Arrays.asList("a");
+        List<String> indicatorNames2 = Arrays.asList("a","b");
+        List<String> indicatorNames3 = Arrays.asList("a","b","c");
         Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
-        alert1.setIndicatorsNames(indicatoorNames1);
+        alert1.setIndicatorsNames(indicatorNames1);
         Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
-        alert2.setIndicatorsNames(indicatoorNames2);
+        alert2.setIndicatorsNames(indicatorNames2);
         Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
-        alert3.setIndicatorsNames(indicatoorNames3);
+        alert3.setIndicatorsNames(indicatorNames3);
         List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
         alertPersistencyService.save(alertList);
 
@@ -571,6 +572,36 @@ public class AlertPersistencyServiceTest {
         assertEquals(indicatorsAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(indicatorsAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(indicatorsAgg.getBucketByKey("c").getDocCount(), 1L);
+    }
+
+    @Test
+    public void testFindByQueryWithIndicatorNamesFilter() {
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        List<String> indicatorNames2 = Arrays.asList("a","b");
+        List<String> indicatorNames3 = Arrays.asList("a","b","c");
+        Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert1.setIndicatorsNames(indicatorNames1);
+        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert2.setIndicatorsNames(indicatorNames2);
+        Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null);
+        alert3.setIndicatorsNames(indicatorNames3);
+        List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
+        alertPersistencyService.save(alertList);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByIndicatorNames(Arrays.asList("c", "b"))
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Assert.assertEquals(2, testAlert.getTotalElements());
+        Alert firstAlert = testAlert.iterator().next();
+        Assert.assertTrue(firstAlert.getIndicatorsNames().contains("c") || firstAlert.getIndicatorsNames().contains("b") );
+        Alert secondAlert = testAlert.iterator().next();
+        Assert.assertTrue(secondAlert.getIndicatorsNames().contains("c") || secondAlert.getIndicatorsNames().contains("b") );
     }
 
 }
