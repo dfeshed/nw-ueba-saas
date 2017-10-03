@@ -18,6 +18,7 @@ import presidio.output.processor.services.user.UserService;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -154,14 +155,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     private List<User> storeUsers(List<User> users) {
+        List<User> savedUsers = Collections.EMPTY_LIST;
         if (CollectionUtils.isNotEmpty(users)) {
-            userService.save(users);
-            //Reload users to get the real new ID
-            List<String> userIds = users.stream().map(User::getUserId).collect(Collectors.toList());
-            users = userService.findUserByVendorUserIds(userIds);
             logger.info("{} output users were generated", users.size());
+            savedUsers = userService.save(users);
         }
-        return users;
+        return savedUsers;
 
     }
 

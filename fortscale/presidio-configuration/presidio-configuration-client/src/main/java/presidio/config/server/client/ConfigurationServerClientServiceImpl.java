@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.Properties;
@@ -37,8 +34,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         // set headers with basic auth to config server
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        Resource resource = new InputStreamResource(new ByteArrayInputStream(configFileContent.toString().getBytes()));
-        HttpEntity<Resource> entity = new HttpEntity<>(resource, headers);
+        HttpEntity<String> entity = new HttpEntity<>(configFileContent.toString(), headers);
 
         String url = String.format("%s/%s", configServerUri , fileName);
         return restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
@@ -46,14 +42,23 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
     @Override
     public ResponseEntity<?> readConfiguration(Class<?> responseEntityType, String moduleName, String profile) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(configServerUri)
-                .path("/" + moduleName)
-                .path("/" + profile);
+        UriComponentsBuilder builder = getConfigServerUriInJsonFormat(moduleName, profile);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
         return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, responseEntityType);
+    }
+
+    private UriComponentsBuilder getConfigServerUriInJsonFormat(String moduleName, String profile)
+    {
+        return getConfigServerUri(moduleName,profile).path(".json");
+    }
+
+    private UriComponentsBuilder getConfigServerUri(String moduleName, String profile) {
+        return UriComponentsBuilder.fromHttpUrl(configServerUri)
+                    .path("/" + moduleName)
+                    .path("-" + profile);
     }
 
     @Override
@@ -63,13 +68,10 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
     @Override
     public Properties readConfigurationAsProperties(String moduleName, String profile) throws Exception {
-        String path = "/" + moduleName;
-        if (profile != null && profile.length() > 0) {
-            path += "-" + profile;
-        }
-        path += ".properties";
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(configServerUri)
+        String path = ".properties";
+
+        UriComponentsBuilder builder = getConfigServerUri(moduleName,profile)
                 .path(path);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
@@ -84,20 +86,13 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
     @Override
     public <T> T readConfigurationAsJson(String moduleName, String profile, Class<T> clazz) throws Exception {
-        String path = "/" + moduleName;
-        if (profile != null && profile.length() > 0) {
-            path += "-" + profile;
-        }
-        path += ".json";
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(configServerUri)
-                .path(path);
+        UriComponentsBuilder builder = getConfigServerUriInJsonFormat(moduleName,profile);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
-
 
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -109,14 +104,8 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
     @Override
     public String readConfigurationAsJsonString(String moduleName, String profile) throws Exception {
-        String path = "/" + moduleName;
-        if (profile != null && profile.length() > 0) {
-            path += "-" + profile;
-        }
-        path += ".json";
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(configServerUri)
-                .path(path);
+        UriComponentsBuilder builder =getConfigServerUriInJsonFormat(moduleName,profile);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         HttpEntity<?> entity = new HttpEntity<>(headers);

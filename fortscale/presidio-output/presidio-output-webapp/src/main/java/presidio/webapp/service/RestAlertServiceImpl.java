@@ -452,7 +452,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             List<Bucket<String, List<Bucket<String, Integer>>>> dailyBuckets = aggr.getBuckets();
             DailyBuckets restDailyBuckets = new DailyBuckets();
 
-            // for ech day of week
+            // for each day of week
             for (Bucket<String, List<Bucket<String, Integer>>> dailyBucket : dailyBuckets) {
 
                 DailyBucket restDailyBucket = new DailyBucket();
@@ -465,6 +465,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                     HourlyBucket restHourlyBucket = new HourlyBucket();
                     restHourlyBucket.setKey(hourlyBucket.getKey());
                     restHourlyBucket.setValue(hourlyBucket.getValue());
+                    restHourlyBucket.setAnomaly(hourlyBucket.isAnomaly());
                     restHourlyBuckets.add(restHourlyBucket);
                 }
 
