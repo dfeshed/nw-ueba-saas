@@ -1,8 +1,8 @@
-import Ember from 'ember';
-import safeCallback from 'component-lib/utils/safe-callback';
-import computed, { mapBy } from 'ember-computed-decorators';
+import Component from 'ember-component';
+import { get } from 'ember-metal/get';
 
-const { get, Component } = Ember;
+import computed, { mapBy } from 'ember-computed-decorators';
+import safeCallback from 'component-lib/utils/safe-callback';
 
 export default Component.extend({
   tagName: 'section',
@@ -14,12 +14,6 @@ export default Component.extend({
    * @public
    */
   group: undefined,
-
-  // @see components/meta/values-panel
-  language: undefined,
-
-  // @see components/meta/values-panel
-  aliases: undefined,
 
   // @see components/meta/values-panel
   metaKeyStates: undefined,

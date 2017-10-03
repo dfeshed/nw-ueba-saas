@@ -132,42 +132,6 @@ export default Mixin.create({
           this.send('metaGet', queryNode, false);
         }
       }
-    },
-
-    /**
-     * Requests a change in the size of the meta panel UI.
-     * Typically invoked in UI by clicking on buttons that open/close panel.
-     * Responds by updating the corresponding URL query param.
-     * @param {string} size Either 'min', 'max' or 'default'.
-     * @public
-     */
-    metaPanelSize(size = 'default') {
-      const wasSize = this.get('state.meta.panelSize');
-      const sizeChanged = wasSize !== size;
-      if (!sizeChanged) {
-        return;
-      }
-      this.transitionTo({ queryParams: { metaPanelSize: size } });
-    },
-
-    /**
-     * Updates the state with a given value for the meta panel size.
-     * Typically invoked by route when its URL query params have changed.
-     * @param {string} size Either 'min', 'max' or 'default'.
-     * @public
-     */
-    metaPanelSizeReceived(size) {
-      const wasSize = this.get('state.meta.panelSize');
-      const sizeChanged = wasSize !== size;
-      if (!sizeChanged) {
-        return;
-      }
-      // When expanding meta panel from its minimized state, ensure recon panel is closed.
-      if (wasSize === 'min') {
-        this.send('reconClose', false);
-      }
-
-      this.set('state.meta.panelSize', size);
     }
   },
 

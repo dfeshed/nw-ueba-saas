@@ -1,11 +1,9 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../helpers/engine-resolver';
 import DataHelper from '../../../helpers/data-helper';
 
-moduleForComponent('events-table', 'Integration | Component | events table', {
+moduleForComponent('query-container', 'Integration | Component | query container', {
   integration: true,
-  resolver: engineResolverFor('investigate-events'),
   beforeEach() {
     this.inject.service('redux');
   }
@@ -13,6 +11,6 @@ moduleForComponent('events-table', 'Integration | Component | events table', {
 
 test('it renders', function(assert) {
   new DataHelper(this.get('redux')).initializeData();
-  this.render(hbs`{{events-table}}`);
-  assert.equal(this.$('.rsa-investigate-events-table').length, 1);
+  this.render(hbs`{{query-container}}`);
+  assert.equal(this.$().text().trim(), '');
 });

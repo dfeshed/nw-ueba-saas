@@ -7,7 +7,11 @@ import {
   initializeServices
 } from 'investigate-events/actions/data-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
-import { serviceSelected } from 'investigate-events/actions/interaction-creators';
+import {
+  serviceSelected,
+  setMetaPanelSize,
+  setReconPanelSize
+} from 'investigate-events/actions/interaction-creators';
 
 export default Route.extend({
   accessControl: service(),
@@ -20,13 +24,11 @@ export default Route.extend({
     },
     metaPanelSize: {
       refreshModel: true, // execute route.model() when metaPanelSize changes
-      replace: true,      // prevents adding a new item to browser's history
-      scope: 'controller' // lives beyond model scope
+      replace: true       // prevents adding a new item to browser's history
     },
     reconSize: {
       refreshModel: false,
-      replace: true,
-      scope: 'controller'
+      replace: true
     }
   },
 
@@ -89,11 +91,11 @@ export default Route.extend({
         this.get('redux').dispatch(serviceSelected(serviceId));
         // Get `language` and `aliases` now that we know what service we're using
         this.get('redux').dispatch(initializeDictionaries());
+        // View sizing
+        this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
+        this.get('redux').dispatch(setReconPanelSize(reconSize));
       }
 
-      // Apply the route URL queryParams to the state model.
-      this.send('metaPanelSizeReceived', metaPanelSize);
-      this.send('reconSizeReceived', reconSize);
       if (serviceId && eventId && eventId !== -1) {
         this.send('reconOpen', serviceId, eventId);
       }
@@ -138,6 +140,14 @@ export default Route.extend({
       ].compact().join('/'));
 
       this.send('reconClose', true);
+    },
+
+    metaPanelSize(size = 'default') {
+      const currentSize = this.get('redux').getState().metaPanelSize;
+      if (currentSize === size) {
+        return;
+      }
+      this.transitionTo({ queryParams: { metaPanelSize: size } });
     }
   }
 });

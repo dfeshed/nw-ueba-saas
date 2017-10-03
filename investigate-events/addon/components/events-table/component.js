@@ -1,7 +1,13 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 
-export default Component.extend({
+import { connect } from 'ember-redux';
+
+const stateToComputed = ({ data: { reconSize } }) => ({
+  reconSize
+});
+
+const EventsTable = Component.extend({
   classNames: 'rsa-investigate-events-table',
 
   // Passed along to progress bar.
@@ -31,3 +37,5 @@ export default Component.extend({
   @computed('reconSize')
   toggleEventsTitle: (size) => (size !== 'max') ? 'investigate.events.shrink' : 'investigate.events.expand'
 });
+
+export default connect(stateToComputed)(EventsTable);

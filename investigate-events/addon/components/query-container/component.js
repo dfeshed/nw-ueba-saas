@@ -1,14 +1,15 @@
-import Controller from 'ember-controller';
+import Component from 'ember-component';
+import { connect } from 'ember-redux';
 import get from 'ember-metal/get';
 import { isEmpty } from 'ember-utils';
 import computed from 'ember-computed-decorators';
 
-export default Controller.extend({
-  // Query Params
-  queryParams: ['eventId', 'metaPanelSize', 'reconSize'],
+const stateToComputed = ({ data }) => ({
+  size: data.metaPanelSize
+});
+
+const QueryContainerComponent = Component.extend({
   eventId: -1,
-  metaPanelSize: 'default',
-  reconSize: 'max',
 
   /**
    * The index of the `items` member whose id matches `selectedEventId`, if any;
@@ -16,8 +17,8 @@ export default Controller.extend({
    * @public
    */
   @computed('eventId',
-    'model.queryNode.value.results.events.data.[]',
-    'model.queryNode.value.results.eventCount.data')
+            'model.queryNode.value.results.events.data.[]',
+            'model.queryNode.value.results.eventCount.data')
   selectedIndex(eventId, items, total) {
     let idx = -1;
     if (eventId !== -1 && !isEmpty(items)) {
@@ -29,7 +30,7 @@ export default Controller.extend({
     return idx;
   },
 
-  @computed('model.recon.display', 'model.meta.panelSize')
+  @computed('model.recon.display', 'size')
   queryBodyClass: (reconDisplay, panelSize) => `rsa-investigate-query__body\
     recon-is-${reconDisplay}\
     meta-panel-size-${panelSize}`,
@@ -60,3 +61,5 @@ export default Controller.extend({
     return _index;
   }
 });
+
+export default connect(stateToComputed)(QueryContainerComponent);

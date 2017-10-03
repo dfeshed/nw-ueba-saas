@@ -1,12 +1,9 @@
 {{#each group.keys as |groupKey groupKeyIndex|}}
   {{meta-view/key-values
-    group=group
     groupKey=groupKey
     values=(get (array-lookup metaKeyStatesForGroup groupKeyIndex) 'values')
     options=(get (array-lookup metaKeyStatesForGroup groupKeyIndex) 'options')
     query=query
-    language=language
-    aliases=aliases
     clickValueAction=clickValueAction
     contextLookupAction=contextLookupAction
     toggleAction=(action "safeCallback" toggleAction groupKey)}}

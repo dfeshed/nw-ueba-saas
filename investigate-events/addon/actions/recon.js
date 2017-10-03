@@ -4,13 +4,15 @@
  * These actions assume that the state is accessible via `this.get('state')`.
  * @public
  */
-import Ember from 'ember';
-
-const { inject, Mixin } = Ember;
+import Mixin from 'ember-metal/mixin';
+import service from 'ember-service/inject';
+import {
+  setMetaPanelSize
+} from 'investigate-events/actions/interaction-creators';
 
 export default Mixin.create({
-
-  _routing: inject.service('-routing'),
+  _routing: service('-routing'),
+  redux: service(),
 
   actions: {
     /**
@@ -23,22 +25,22 @@ export default Mixin.create({
      */
     reconOpen(serviceId, eventId, metas, index) {
       const total = this.get('state.queryNode.value.results.eventCount.data');
+      const { metaPanelSize, reconPanelSize } = this.get('redux').getState();
 
       this.get('state.recon').setProperties({
         isOpen: true,
         serviceId,
         eventId,
-        metaPanelSizeWas: this.get('state.meta.panelSize'),
+        metaPanelSizeWas: metaPanelSize,
         metas,
         index,
         total
       });
 
-      this.send('metaPanelSize', 'min');
+      this.get('redux').dispatch(setMetaPanelSize('min'));
       this.send('contextPanelClose');
 
-      const reconSize = this.get('state.recon.size');
-      this.transitionTo({ queryParams: { eventId, reconSize } });
+      this.transitionTo({ queryParams: { eventId, reconPanelSize } });
     },
 
     /**
@@ -65,25 +67,8 @@ export default Mixin.create({
      * Updates the UI state in order to expand the Recon UI.
      * @public
      */
-    reconSizeReceived(reconSize) {
-      const currentSize = this.get('state.recon.size');
-      if (reconSize && reconSize !== currentSize) {
-        if (reconSize === 'min') {
-          this.send('reconShrink');
-        } else if (reconSize === 'max') {
-          this.send('reconExpand');
-        } else if (reconSize === 'full') {
-          this.send('reconFull');
-        }
-      }
-    },
-
-    /**
-     * Updates the UI state in order to expand the Recon UI.
-     * @public
-     */
     reconExpand() {
-      this.set('state.recon.size', 'max');
+      // this.set('state.recon.size', 'max');
       this.transitionTo({ queryParams: { reconSize: 'max' } });
     },
 
@@ -92,12 +77,12 @@ export default Mixin.create({
      * @public
      */
     reconShrink() {
-      this.set('state.recon.size', 'min');
+      // this.set('state.recon.size', 'min');
       this.transitionTo({ queryParams: { reconSize: 'min' } });
     },
 
     reconFull() {
-      this.set('state.recon.size', 'full');
+      // this.set('state.recon.size', 'full');
       this.transitionTo({ queryParams: { reconSize: 'full' } });
     },
 
@@ -134,7 +119,7 @@ export default Mixin.create({
 
     toggleReconSize() {
       if (this.get('state.recon.isOpen')) {
-        const size = this.get('state.recon.size');
+        const { reconPanelSize: size } = this.get('redux').getState();
         if (size === 'max') {
           this.send('reconShrink');
         } else if (size === 'min') {
@@ -145,8 +130,7 @@ export default Mixin.create({
 
     toggleSlaveFullScreen() {
       if (this.get('state.recon.isOpen')) {
-        // Get the current size of Recon
-        const size = this.get('state.recon.size');
+        const { reconPanelSize: size } = this.get('redux').getState();
         if (size === 'full') {
           // Set to previous size
           if (this.get('_size') === 'min') {

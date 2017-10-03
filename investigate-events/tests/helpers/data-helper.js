@@ -1,9 +1,10 @@
-// import run from 'ember-runloop';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const DEFAULT_DATA = {
   data: {
-    serviceId: 'id1'
+    serviceId: 'id1',
+    metaPanelSize: undefined,
+    reconSize: undefined
   },
   services: {
     data: [
@@ -12,6 +13,14 @@ const DEFAULT_DATA = {
     ],
     isLoading: false,
     isError: false
+  },
+  dictionaries: {
+    aliases: undefined,
+    aliasesCache: {},
+    language: undefined,
+    languageCache: {},
+    languageError: false,
+    aliasesError: false
   }
 };
 
@@ -32,8 +41,13 @@ export default class DataHelper {
     return this;
   }
 
-  setserviceId(id = 'id1') {
+  setServiceId(id = 'id1') {
     this.dispatch(ACTION_TYPES.SERVICE_SELECTED, id);
+    return this;
+  }
+
+  setMetaPanelSize(size) {
+    this.dispatch(ACTION_TYPES.SET_META_PANEL_SIZE, size);
     return this;
   }
 }

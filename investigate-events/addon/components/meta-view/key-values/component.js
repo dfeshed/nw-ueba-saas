@@ -1,22 +1,22 @@
-import Ember from 'ember';
-import safeCallback from 'component-lib/utils/safe-callback';
+import Component from 'ember-component';
+import { observer } from 'ember-metal/observer';
+import { assign } from 'ember-platform';
+
+import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import safeCallback from 'component-lib/utils/safe-callback';
 import { metaValueAlias } from 'investigate-events/helpers/meta-value-alias';
 import { select, event } from 'd3-selection';
 import entityTypeByMeta from './entity-type-by-meta';
 
-const {
-  merge,
-  observer,
-  Component
-} = Ember;
+const stateToComputed = ({ dictionaries }) => ({
+  aliases: dictionaries.aliases,
+  language: dictionaries.language
+});
 
-export default Component.extend({
+const KeyValueComponent = Component.extend({
   classNames: 'rsa-investigate-meta-key-values',
   classNameBindings: ['groupKey.isOpen:is-open', 'values.status', 'values.isEmpty:is-empty'],
-
-  // @see components/meta/values-panel
-  group: undefined,
 
   /**
    * The member of `group` to which this component corresponds.
@@ -48,19 +48,13 @@ export default Component.extend({
    */
   query: undefined,
 
-  // @see components/meta/values-panel
-  language: undefined,
-
-  // @see components/meta/values-panel
-  aliases: undefined,
-
   // Options for meta value formatter utility, based on `aliases`.
   @computed('aliases')
   textOptions: ((aliases) => aliases ? { aliases } : {}),
 
   // Options for meta value tooltip formatter utility. Copy of `textOptions` but shows raw + alias values together.
   @computed('textOptions')
-  tooltipOptions: ((textOptions) => merge({ appendRawValue: true }, textOptions)),
+  tooltipOptions: ((textOptions) => assign({ appendRawValue: true }, textOptions)),
 
   /**
    * Configurable callback to be invoked when user clicks the UI to toggle the key open/closed.
@@ -209,3 +203,5 @@ export default Component.extend({
     safeCallback
   }
 });
+
+export default connect(stateToComputed)(KeyValueComponent);
