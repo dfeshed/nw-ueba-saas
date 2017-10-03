@@ -25,11 +25,18 @@ import org.springframework.web.client.RestTemplate;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertQueryEnums;
+import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.spring.OutputWebappConfiguration;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,9 +135,9 @@ public class AlertApiControllerModuleTest {
     }
 
 
-
     private presidio.output.domain.records.alerts.Alert generateAlert(String userId, String smartId, List<String> classifications1, String userName, double score, AlertEnums.AlertSeverity severity, Date date) {
-        return new presidio.output.domain.records.alerts.Alert(userId, smartId, classifications1, userName, date, date, score, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null);
+        return new presidio.output.domain.records.alerts.Alert(userId, smartId, classifications1,
+                userName, date, date, score, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, 0.0);
     }
 
     private presidio.webapp.model.Alert convertDomainAlertToRestAlert(presidio.output.domain.records.alerts.Alert alert) {
@@ -144,14 +151,14 @@ public class AlertApiControllerModuleTest {
         restAlert.setUserId(alert.getUserId());
         restAlert.setSeverity(AlertQueryEnums.AlertSeverity.fromValue(alert.getSeverity().toString()));
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
-        restAlert.setIndicatorsName(alert.getIndicatorsNames() == null ? new ArrayList<>(): alert.getIndicatorsNames());
+        restAlert.setIndicatorsName(alert.getIndicatorsNames() == null ? new ArrayList<>() : alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
     }
 
 
     @Configuration
-    @Import({OutputWebappConfiguration.class,RestTemplateConfig.class})
+    @Import({OutputWebappConfiguration.class, RestTemplateConfig.class})
     public static class springConfig {
         @Bean
         public static TestPropertiesPlaceholderConfigurer configurationApiControllerSpringTestPlaceholder() {
