@@ -26,6 +26,7 @@ class RawModelDagBuilder(PresidioDagBuilder):
         self.data_source = data_source
         self._build_model_interval = timedelta(days=1)
         self._feature_aggregation_buckets_interval = timedelta(days=1)
+        self._min_gap_from_dag_start_date_to_start_modeling = timedelta(days=14)
         self._feature_aggregation_buckets_operator_gap_from_raw_model_operator_in_timedelta = timedelta(days=2)
 
     def build(self, raw_model_dag):
@@ -64,7 +65,8 @@ class RawModelDagBuilder(PresidioDagBuilder):
             dag=raw_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._build_model_interval,
-                                                                     raw_model_dag.schedule_interval),
+                                                                     raw_model_dag.schedule_interval) &
+                                             ((raw_model_dag.start_date + self._min_gap_from_dag_start_date_to_start_modeling) <= kwargs['execution_date']),
             provide_context=True
         )
         task_sensor_service.add_task_short_circuit(raw_model_operator, raw_model_short_circuit_operator)

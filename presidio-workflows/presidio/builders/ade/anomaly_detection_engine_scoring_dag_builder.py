@@ -1,17 +1,14 @@
+from datetime import timedelta
+
 from airflow import DAG
 from airflow.operators.python_operator import ShortCircuitOperator
 from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
-from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuilder
-from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
-from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.operators.ade_manager.ade_manager_operator import AdeManagerOperator
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
-from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string, \
-    FIX_DURATION_STRATEGY_DAILY, FIX_DURATION_STRATEGY_HOURLY, is_execution_date_valid
+from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string, FIX_DURATION_STRATEGY_HOURLY, is_execution_date_valid
 
 
 class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
@@ -34,6 +31,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
         self.data_sources = data_sources
         self.hourly_smart_events_confs = hourly_smart_events_confs
         self.daily_smart_events_confs = daily_smart_events_confs
+        self._min_gap_from_dag_start_date_to_start_scoring = timedelta(days=14)
 
     def build(self, anomaly_detection_engine_scoring_dag):
         """
@@ -48,6 +46,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
 
         task_sensor_service = TaskSensorService()
 
+
         # defining hourly and daily short circuit operators which should be wired to the sub dags and operators that
         # defined directly under the ADE SCORING dag
         hourly_short_circuit_operator = ShortCircuitOperator(
@@ -55,7 +54,8 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
             dag=anomaly_detection_engine_scoring_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_HOURLY,
-                                                                     anomaly_detection_engine_scoring_dag.schedule_interval),
+                                                                     anomaly_detection_engine_scoring_dag.schedule_interval) &
+                                             ((anomaly_detection_engine_scoring_dag.start_date + self._min_gap_from_dag_start_date_to_start_scoring) <= kwargs['execution_date']),
             provide_context=True
         )
 
