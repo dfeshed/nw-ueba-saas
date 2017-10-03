@@ -37,7 +37,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         self._build_model_interval = timedelta(days=2)
         self._accumulate_interval = timedelta(days=1)
         self._min_gap_from_dag_start_date_to_start_accumulating = timedelta(days=14)
-        self._min_gap_from_dag_start_date_to_start_modeling = timedelta(days=28)
+        self._min_gap_from_dag_start_date_to_start_modeling = timedelta(days=21)
         self._accumulate_operator_gap_from_smart_model_operator_in_timedelta = timedelta(days=2)
 
     def build(self, smart_model_dag):
