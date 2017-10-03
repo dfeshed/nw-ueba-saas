@@ -28,6 +28,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String USER_ID = "userId";
     public static final String SMART_ID = "smartId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
+    public static final String CONTRIBUTION_TO_USER_SCORE_FIELD_NAME = "contributionToUserScore";
     public static final String AGGR_SEVERITY_PER_DAY = "severityPerDay";
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
@@ -82,11 +83,14 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(USER_TAGS_FIELD_NAME)
     private List<String> userTags;
 
+    @JsonProperty(CONTRIBUTION_TO_USER_SCORE_FIELD_NAME)
+    private Double contributionToUserScore;
+
     public Alert() {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags) {
+    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags,Double contributionToUserScore) {
         super();
         this.classifications = classifications;
         this.userId = userId;
@@ -99,6 +103,7 @@ public class Alert extends AbstractElasticDocument {
         this.timeframe = timeframe;
         this.severity = severity;
         this.userTags = userTags;
+        this.contributionToUserScore = contributionToUserScore;
     }
 
     public String getSmartId() {
@@ -199,5 +204,13 @@ public class Alert extends AbstractElasticDocument {
 
     public void setIndicatorsNames(List<String> indicatorsNames) {
         this.indicatorsNames = indicatorsNames;
+    }
+
+    public Double getContributionToUserScore() {
+        return contributionToUserScore;
+    }
+
+    public void setContributionToUserScore(Double contributionToUserScore) {
+        this.contributionToUserScore = contributionToUserScore;
     }
 }

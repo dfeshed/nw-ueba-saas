@@ -35,4 +35,6 @@ public interface UserScoreService {
      * @param alert
      */
     void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alert, User user);
+
+    Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity);
 }

@@ -205,6 +205,11 @@ public class UserScoreServiceImpl implements UserScoreService {
         return aggregatedUserScore;
     }
 
+    @Override
+    public Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity) {
+        return this.alertSeverityToScoreContribution.get(severity);
+    }
+
     private List<LocalDateTime> getListOfLastXdays(int days) {
         LocalDate endDate = LocalDate.now();
         LocalDate startTime = endDate.minusDays(days);
