@@ -1,5 +1,6 @@
 package presidio.output.proccesor.services.alert;
 
+
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
@@ -38,9 +39,18 @@ import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 

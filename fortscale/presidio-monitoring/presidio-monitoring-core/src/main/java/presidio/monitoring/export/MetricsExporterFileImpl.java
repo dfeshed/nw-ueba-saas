@@ -22,7 +22,7 @@ public class MetricsExporterFileImpl extends MetricsExporter {
     public void export() {
         try {
             logger.debug("Exporting");
-            for (PresidioMetric metric : filterRepitMetrics()) {
+            for (PresidioMetric metric : filterRepeatMetrics()) {
                 logger.info("Metric Name : {} Metric Value : {}", metric.getName(), metric.getValue());
             }
         } catch (Exception ex) {

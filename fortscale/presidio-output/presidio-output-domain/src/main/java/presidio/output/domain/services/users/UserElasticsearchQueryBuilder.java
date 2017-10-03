@@ -9,13 +9,14 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -25,6 +26,7 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
 
     public void withFilter(UserQuery userQuery) {
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+        final BoolQueryBuilder boolQueryBuilder2 = new BoolQueryBuilder();
 
         // filter by username
         if (StringUtils.isNotEmpty(userQuery.getFilterByUserName())) {
@@ -83,18 +85,14 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         // filter by min or max score
         if (userQuery.getMinScore() > 0 || userQuery.getMaxScore() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
-            if (userQuery.getMinScore() > 0) {
-                rangeQuery.gte(userQuery.getMinScore());
-            }
-            if (userQuery.getMaxScore() > 0) {
-                rangeQuery.lte(userQuery.getMaxScore());
-            }
-
+            rangeQuery.gte(userQuery.getMinScore() > 0 ? userQuery.getMinScore() : 0);
+            rangeQuery.lte(userQuery.getMaxScore() > 0 ? userQuery.getMaxScore() : 100);
             boolQueryBuilder.must(rangeQuery);
         }
 
+        boolQueryBuilder2.filter(boolQueryBuilder);
         if (boolQueryBuilder.hasClauses()) {
-            super.withFilter(boolQueryBuilder);
+            super.withQuery(boolQueryBuilder2);
         }
     }
 

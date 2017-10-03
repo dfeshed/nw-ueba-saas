@@ -22,6 +22,7 @@ public class TestConfig {
         properties.put("elasticsearch.clustername", "fortscale");
         properties.put("elasticsearch.host", "dev-alexp");
         properties.put("elasticsearch.port", 9300);
+        properties.put("number.of.classifications", 19);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

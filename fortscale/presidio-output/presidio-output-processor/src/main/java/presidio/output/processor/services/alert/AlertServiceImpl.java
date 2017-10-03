@@ -68,7 +68,7 @@ public class AlertServiceImpl implements AlertService {
             // In case that all the indicators for this alert are static indicators we don't want to save the alert
             boolean storeAlert = false;
             for (Indicator indicator : supportingInfo) {
-                if (! indicator.getType().equals(AlertEnums.IndicatorTypes.STATIC_INDICATOR)) {
+                if (!indicator.getType().equals(AlertEnums.IndicatorTypes.STATIC_INDICATOR)) {
                     storeAlert = true;
                     break;
                 }
@@ -78,7 +78,7 @@ public class AlertServiceImpl implements AlertService {
                 alert.setIndicators(supportingInfo);
                 alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
                 alert.setIndicatorsNum(supportingInfo.size());
-                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(new ArrayList<>(alert.getIndicatorsNames()));
+                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(alert.getIndicatorsNames());
                 alert.setClassifications(classification);
             } else {
                 return null;
