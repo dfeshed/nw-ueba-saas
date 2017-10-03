@@ -1,9 +1,7 @@
 package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.utils.RestTemplateConfig;
 import fortscale.utils.json.ObjectMapperProvider;
-import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.After;
 import org.junit.Assert;
@@ -12,9 +10,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,7 +23,7 @@ import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.AlertQueryEnums;
 import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.spring.OutputWebappConfiguration;
+import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,13 +31,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = AlertApiControllerModuleTest.springConfig.class)
+@ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
 public class AlertApiControllerModuleTest {
 
@@ -154,23 +148,5 @@ public class AlertApiControllerModuleTest {
         restAlert.setIndicatorsName(alert.getIndicatorsNames() == null ? new ArrayList<>() : alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
-    }
-
-
-    @Configuration
-    @Import({OutputWebappConfiguration.class, RestTemplateConfig.class})
-    public static class springConfig {
-        @Bean
-        public static TestPropertiesPlaceholderConfigurer configurationApiControllerSpringTestPlaceholder() {
-            Properties properties = new Properties();
-            properties.put("default.page.size.for.rest.user", "1000");
-            properties.put("default.page.number.for.rest.user", "1000");
-            properties.put("default.page.size.for.rest.alert", "1000");
-            properties.put("default.page.number.for.rest.alert", "1000");
-            properties.put("elasticsearch.port", "9300");
-            properties.put("elasticsearch.clustername", "fortscale");
-            properties.put("elasticsearch.host", "dev-efratn");
-            return new TestPropertiesPlaceholderConfigurer(properties);
-        }
     }
 }
