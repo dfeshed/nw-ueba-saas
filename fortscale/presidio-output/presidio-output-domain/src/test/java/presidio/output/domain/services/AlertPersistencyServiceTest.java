@@ -549,7 +549,7 @@ public class AlertPersistencyServiceTest {
         List<String> indicatorNames3 = Arrays.asList("a","b","c");
         Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
         alert1.setIndicatorsNames(indicatorNames1);
-        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
         alert2.setIndicatorsNames(indicatorNames2);
         Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
         alert3.setIndicatorsNames(indicatorNames3);
