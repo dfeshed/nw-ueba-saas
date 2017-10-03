@@ -19,13 +19,13 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     private Map<String, ClassificationPriority> indicatorToAlert;
     private ClassificationPriorityConfig classificationPriorityConfig;
     private SupportingInformationConfig supportingInformationConfig;
-    private int NUMBER_OF_CLASSIFICATIONS;
+    private int numberOfClassifications;
 
 
     public AlertClassificationServiceImpl(ClassificationPriorityConfig classificationPriorityConfig, SupportingInformationConfig supportingInformationConfig, int numberOfClassifications) {
         this.classificationPriorityConfig = classificationPriorityConfig;
         this.supportingInformationConfig = supportingInformationConfig;
-        this.NUMBER_OF_CLASSIFICATIONS = numberOfClassifications;
+        this.numberOfClassifications = numberOfClassifications;
         createIndicatorToAlertByPriority();
 
     }
@@ -46,7 +46,7 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     public List<String> getAlertClassificationsFromIndicatorsByPriority(List<String> indicators) {
 
         Set<String> classificationByPriority = new LinkedHashSet<>();
-        String[] classifications = new String[NUMBER_OF_CLASSIFICATIONS];
+        String[] classifications = new String[numberOfClassifications];
         indicators.forEach(indicator -> {
             classifications[indicatorToAlert.get(indicator).getPriority() - 1] = indicatorToAlert.get(indicator).getName();
         });
