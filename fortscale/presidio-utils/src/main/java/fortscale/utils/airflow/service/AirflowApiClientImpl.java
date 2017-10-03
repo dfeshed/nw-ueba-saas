@@ -2,6 +2,7 @@ package fortscale.utils.airflow.service;
 
 import fortscale.utils.airflow.message.AirflowDagExecutionDatesApiResponse;
 import fortscale.utils.airflow.message.DagState;
+import fortscale.utils.logging.Logger;
 import org.json.JSONObject;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * Created by barak_schuster on 9/13/17.
  */
 public class AirflowApiClientImpl implements AirflowApiClient {
+    private static final Logger logger = Logger.getLogger(AirflowApiClientImpl.class);
 
     private static final String API_URL_VARIABLE = "api";
     private static final String STATE_URL_VARIABLE = "state";
@@ -99,11 +101,17 @@ public class AirflowApiClientImpl implements AirflowApiClient {
         String url = urlBuilder.toString();
         AirflowDagExecutionDatesApiResponse response = restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
 
-        Map<String, DagExecutionStatus> result =
-                response.getOutput().stream()
-                        .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
-                        .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
-
+        Map<String, DagExecutionStatus> result = new HashMap<>();
+        if(response!=null && response.getOutput()!=null) {
+            result =
+                    response.getOutput().stream()
+                            .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
+                            .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
+        }
+        else
+        {
+            logger.info("got 0 dags for dagId={}, state={}",dagId,state);
+        }
         return result;
     }
 }

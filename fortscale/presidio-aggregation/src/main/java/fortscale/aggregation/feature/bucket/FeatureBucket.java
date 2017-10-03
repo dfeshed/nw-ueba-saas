@@ -6,7 +6,6 @@ import fortscale.common.feature.Feature;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,24 +15,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE,isGetterVisibility = Visibility.NONE, setterVisibility=Visibility.NONE)
 @Document
-@CompoundIndexes({@CompoundIndex(name = "context_pagination", def = "{'contextId': -1, 'startInstant': -1}")})public class FeatureBucket {
+@CompoundIndexes({
+		@CompoundIndex(name = "start", def = "{'startTime': 1}"),
+		@CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startTime': 1}"),
+		@CompoundIndex(name = "bucketId", def = "{'bucketId': 1}", unique = true)
+})
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY,
+		getterVisibility = Visibility.NONE,
+		isGetterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE
+)
+public class FeatureBucket {
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
 	public static final String FEATURE_BUCKET_CONF_NAME_FIELD = "featureBucketConfName";
 	public static final String CONTEXT_FIELD_NAMES_FIELD = "contextFieldNames";
-	public static final String CONTEXT_ID_FIELD = "contextId";
 	public static final String STRATEGY_ID_FIELD = "strategyId";
 	public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
+	public static final String CONTEXT_ID_FIELD = "contextId";
 	public static final String BUCKET_ID_FIELD = "bucketId";
 	public static final String CREATED_AT_FIELD = "createdAt";
+	public static final String AGGREGATED_FEATURES_FIELD = "aggregatedFeatures";
 
 	@Id
 	private String id;
 
 	@Field(START_TIME_FIELD)
-	@Indexed
 	private Instant startTime;
 	@Field(END_TIME_FIELD)
 	private Instant endTime;
@@ -48,11 +57,10 @@ import java.util.Map;
 	@Field(CONTEXT_ID_FIELD)
 	private String contextId;
 	@Field(BUCKET_ID_FIELD)
-	@Indexed(unique = true)
 	private String bucketId;
 	@Field(CREATED_AT_FIELD)
 	private Date createdAt;
-
+	@Field(AGGREGATED_FEATURES_FIELD)
 	private Map<String, Feature> aggregatedFeatures = new HashMap<>();
 
 	public Instant getStartTime() {
@@ -98,7 +106,7 @@ import java.util.Map;
 	public Map<String, String> getContextFieldNameToValueMap() {
 		return contextFieldNameToValueMap;
 	}
-	
+
 	public void addToContextFieldNameToValueMap(String contextFieldName, String contextValue) {
 		contextFieldNameToValueMap.put(contextFieldName, contextValue);
 	}
@@ -139,26 +147,9 @@ import java.util.Map;
 		this.aggregatedFeatures = aggregatedFeatures;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * featureBucket is considered as synced if id is filled
-	 * @return true if synced, false otherwise
-     */
-	public boolean isFeatureBucketSynced()
-	{
-		return id != null;
-	}
-
 	@Override
 	public String toString() {
-		return "FeatureBucket{" +
-				"startTime=" + startTime +
-				", endTime=" + endTime +
-				", id='" + id + '\'' +
-				", bucketId='" + bucketId + '\'' +
-				'}';
+		return String.format("%s{startTime = %s, endTime = %s, id = '%s', bucketId = '%s'}",
+				getClass().getSimpleName(), startTime.toString(), endTime.toString(), id, bucketId);
 	}
 }

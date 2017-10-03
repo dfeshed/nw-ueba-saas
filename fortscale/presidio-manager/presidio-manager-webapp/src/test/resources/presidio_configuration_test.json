@@ -1,16 +1,17 @@
 {
   "system": {
     "username": "presidio@somecompany.dom",
+    "krbServiceName":  "HTTP/hostname@fortscale.dom",
     "password": "password",
-    "adminGroup": "presidio-admins-somecompany",
-    "analystGroup": "presidio-soc-team-somecompany",
-    "smtpHost": "name.of-server.com:25",
-    "kdcUrl": "string"
+    "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
+    "realmName": "EXAMPLE.COM",
+    "analystGroup": "CN=Analysts,CN=Users,DC=EXAMPLE,DC=COM",
+    "smtpHost": "name.of-server.com:25"
   },
   "dataPipeline": {
     "schemas": [
       "file"
     ],
-    "startTime": "2007-12-03 10:15:30"
+    "startTime": "2007-12-03T10:15:30Z"
   }
 }

@@ -1,16 +1,44 @@
 package presidio.security.manager.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.manager.api.service.ConfigurationProcessingService;
+import org.springframework.context.annotation.Import;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
+import presidio.config.server.client.ConfigurationServerClientService;
+import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
 import presidio.security.manager.service.ConfigurationSecurityService;
 
 @Configuration
+@Import(ConfigServerClientServiceConfiguration.class)
 public class SecurityManagerConfiguration {
+    @Value("${manager.security.securityConfPath:/etc/httpd/conf/httpd.conf}")
+    private String securityConfPath;
+
+    @Value("${manager.security.krb5ConfPath:/etc/krb5.conf}")
+    private String krb5ConfPath;
+
+    @Autowired
+    @Qualifier("configurationServerClientService")
+    private ConfigurationServerClientService configurationServerClientService;
+
+    @Autowired
+    freemarker.template.Configuration freemarkerConfiguration;
 
 
     @Bean(name = "configurationSecurityService")
-    public ConfigurationProcessingService configurationSecurityService() {
-        return new ConfigurationSecurityService();
+    public ConfigurationSecurityService configurationSecurityService() {
+        return new ConfigurationSecurityService(configurationServerClientService, freemarkerConfiguration,
+                securityConfPath, krb5ConfPath);
     }
+
+    @Bean
+    public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration() {
+        FreeMarkerConfigurationFactoryBean fmConfigFactoryBean = new FreeMarkerConfigurationFactoryBean();
+        fmConfigFactoryBean.setTemplateLoaderPath("templates/");
+        return fmConfigFactoryBean;
+    }
+
 }

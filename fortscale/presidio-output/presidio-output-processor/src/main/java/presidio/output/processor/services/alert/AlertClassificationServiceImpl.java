@@ -9,7 +9,7 @@ import presidio.output.processor.config.SupportingInformationConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,10 +31,9 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     private void createIndicatorToAlertByPriority() {
         indicatorToAlert = new HashMap<>();
         String classification, indicatorName;
-        int priority, number = 0;
+        int priority;
         List<IndicatorConfig> indicatorConfigs = supportingInformationConfig.getIndicators();
         for (IndicatorConfig indicatorConfig : indicatorConfigs) {
-            number++;
             indicatorName = indicatorConfig.getName();
             classification = indicatorConfig.getClassification();
             priority = classificationPriorityConfig.getClassificationConfig(classification).getPriority();
@@ -45,7 +44,7 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     public List<String> getAlertClassificationsFromIndicatorsByPriority(List<String> indicators) {
         int priority, place, remove, numberOfIndicators;
         List<String> classificationByPriority = new ArrayList<>();
-        Set<String> tempClassificationByPriority = new HashSet<>();
+        Set<String> tempClassificationByPriority = new LinkedHashSet<>();
         String alertName;
         ClassificationPriority classificationPriority;
         numberOfIndicators = indicators.size();

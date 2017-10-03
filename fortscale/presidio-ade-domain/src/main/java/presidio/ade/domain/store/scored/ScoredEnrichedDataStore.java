@@ -37,7 +37,7 @@ public interface ScoredEnrichedDataStore {
     List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType, Double scoreThreshold);
 
     /**
-     *
+     * This method is a hack. Should be removed!!!
      * @param adeEventType type of {@link AdeScoredEnrichedRecord} - symbolize the scored feature name
      * @param contextFieldAndValue i.e. "userId","someUser"
      * @param timeRange time line filtering param
