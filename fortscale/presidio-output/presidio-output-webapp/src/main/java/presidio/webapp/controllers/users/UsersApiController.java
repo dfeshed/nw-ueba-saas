@@ -45,7 +45,7 @@ public class UsersApiController implements UsersApi {
         try {
             User user = restUserService.getUserById(userId, expand);
             HttpStatus httpStatus = user != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-            return new ResponseEntity(user, HttpStatus.OK);
+            return new ResponseEntity(user, httpStatus);
         } catch (Exception ex) {
             logger.error("Trying to get user with id:{}, but got exception {}", userId, ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
