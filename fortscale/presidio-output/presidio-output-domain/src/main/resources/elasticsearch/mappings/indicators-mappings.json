@@ -1,7 +1,49 @@
 {
-  "mappings": {
-    "indicator": {
-      "date_detection": false
+  "indicator":{
+    "properties":{
+      "name":{
+        "store":true,
+        "type":"string"
+      },
+      "anomalyValue":{
+        "store":true,
+        "type":"string"
+      },
+      "alertId":{
+        "store":true,
+        "type":"string"
+      },
+      "historicalData":{
+        "enabled": false
+      },
+      "startDate":{
+        "store":true,
+        "type":"long"
+      },
+      "endDate":{
+        "store":true,
+        "type":"long"
+      },
+      "schema":{
+        "store":true,
+        "type":"string"
+      },
+      "score":{
+        "store":true,
+        "type":"double"
+      },
+      "type":{
+        "store":true,
+        "type":"string"
+      },
+      "eventsNum":{
+        "store":true,
+        "type":"integer"
+      },
+      "id":{
+        "type":"string",
+        "index":"not_analyzed"
+      }
     }
   }
 }
