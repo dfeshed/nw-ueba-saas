@@ -40,9 +40,9 @@ class PresidioDagFactory(AbstractDagFactory):
                 interval = eval(temp_interval)
             else:
                 interval = temp_interval
-            start_date = dateutil.parser.parse(dag_config.get("start_date"))
+            start_date = dateutil.parser.parse(dag_config.get("start_date"), ignoretz=True)
             if (dag_config.get("end_date")):
-                end_date = dateutil.parser.parse(dag_config.get("end_date"))
+                end_date = dateutil.parser.parse(dag_config.get("end_date"), ignoretz=True)
             else:
                 end_date = None
             full_filepath = dag_config.get("full_filepath")
@@ -50,8 +50,8 @@ class PresidioDagFactory(AbstractDagFactory):
             template_searchpath = dag_config.get("template_searchpath")
             params = dag_config.get("params")
             dagrun_timeout = dag_config.get("dagrun_timeout")
-            dag_id_hash = hashlib.md5(str(dag_config.get("start_date")) +
-                                      str(dag_config.get("end_date")) +
+            dag_id_hash = hashlib.md5(str(start_date) +
+                                      str(end_date) +
                                       str(args.get("data_sources"))).hexdigest()
             new_dag_id = "{0}_{1}".format(dag_config.get("dag_id"),dag_id_hash)
 

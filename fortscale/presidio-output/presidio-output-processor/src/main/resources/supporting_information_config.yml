@@ -24,6 +24,9 @@ indicators:
   schema: FILE
   anomalyDescriptior:
     anomalyField: operationType
+    anomalyFilters:
+      field_name: operationTypeCategories
+      field_value: FILE_PERMISSION_CHANGE
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -53,7 +56,7 @@ indicators:
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
       field_name: result
-      field_value: success
+      field_value: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -68,7 +71,7 @@ indicators:
     anomalyValue: FILE_ACTION
     anomalyFilters:
       field_name: result
-      field_value: success
+      field_value: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -83,7 +86,7 @@ indicators:
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
       field_name: result
-      field_value: failure
+      field_value: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -98,7 +101,7 @@ indicators:
     anomalyValue: FILE_ACTION
     anomalyFilters:
       field_name: result
-      field_value: failure
+      field_value: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -151,7 +154,7 @@ indicators:
     anomalyValue: FILE_RENAMED
     anomalyFilters:
       field_name: result
-      field_value: success
+      field_value: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_file_rename
@@ -181,7 +184,7 @@ indicators:
       field_value: true
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: data_exfiltration
 
 - id: numberOfFileMovedToSharedDriveUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -196,7 +199,7 @@ indicators:
       field_value: true
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: data_exfiltration
 
 
 #*********************************************************
@@ -222,8 +225,10 @@ indicators:
   adeEventType: scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: operationTypeCategories
-    anomalyValue: SECURITY_SENSITIVE_OPERATION
+    anomalyField: operationType
+    anomalyFilters:
+      field_name: operationTypeCategories
+      field_value: SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -264,7 +269,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: result
-    anomalyValue: success
+    anomalyValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -280,7 +285,7 @@ indicators:
     anomalyValue: SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
       field_name: result
-      field_value: success
+      field_value: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -292,7 +297,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: result
-    anomalyValue: failure
+    anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -366,7 +371,7 @@ indicators:
   adeEventType: scored_enriched.active_directory.userAccountUnlocked.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: operationTypeCategories
+    anomalyField: operationType
     anomalyValue: USER_ACCOUNT_UNLOCKED
   historicalData:
     type: count_aggregations
@@ -482,7 +487,7 @@ indicators:
   adeEventType: scored_enriched.authentication.srcMachine.userId.authentication.score
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: srcMachineNameCluster
+    anomalyField: srcMachineNameRegexCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
@@ -495,7 +500,7 @@ indicators:
   adeEventType: scored_enriched.authentication.dstMachine.userId.authentication.score
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: dstMachineNameCluster
+    anomalyField: dstMachineNameRegexCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily
@@ -506,10 +511,10 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_authentications
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: result
-    anomalyValue: success
+    anomalyValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: multiple_logons_by_user
@@ -518,10 +523,10 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_failed_authentications
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: result
-    anomalyValue: failure
+    anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: multiple_failed_logons
@@ -530,7 +535,9 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_destination_domains
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineDomain
   historicalData:
     type: hourly_aggregations
   classification: user_logins_to_multiple_domains
@@ -539,7 +546,9 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_src_computers
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: srcMachineId
   historicalData:
     type: hourly_aggregations
   classification: user_logged_into_multiple_hosts
@@ -548,30 +557,34 @@ indicators:
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_dst_computers
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineId
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
-
+  classification: user_logged_into_multiple_hosts
 
 - id: numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_src_computer_clusters
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: srcMachineNameRegexCluster
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
-
+  classification: user_logged_into_multiple_hosts
 
 - id: numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_dst_computer_clusters
   adeEventType: authentication
-  schema: ACTIVE_DIRECTORY
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: dstMachineNameRegexCluster
   historicalData:
     type: hourly_aggregations
-  classification: suspicious_user_activity
+  classification: user_logged_into_multiple_hosts
 
 classificationPriority:
 

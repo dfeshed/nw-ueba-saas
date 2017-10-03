@@ -1,6 +1,7 @@
 package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jsonpatch.JsonPatch;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,11 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import presidio.webapp.model.configuration.ConfigurationResponse;
-import presidio.webapp.model.configuration.ModelConfiguration;
-import presidio.webapp.model.PatchRequest;
 import presidio.webapp.model.configuration.SecuredConfiguration;
-
-import java.util.List;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-07T07:15:37.402Z")
 
@@ -29,7 +26,7 @@ public interface ConfigurationApi {
     @RequestMapping(value = "/configuration",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<SecuredConfiguration>> configurationGet();
+    ResponseEntity<SecuredConfiguration> configurationGet();
 
 
     @ApiOperation(value = "Uploads a keytab file", notes = "A keytab is a file containing pairs of Kerberos principals and encrypted keys (which are derived from the Kerberos password) - this file should match the machine DNS.", response = Void.class, authorizations = {
@@ -43,7 +40,7 @@ public interface ConfigurationApi {
     @RequestMapping(value = "/configuration/keytabFile",
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("file") MultipartFile keytabFile);
+    ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("keytabFile") MultipartFile keytabFile);
 
 
     @ApiOperation(value = "Use this method to update the configuration", notes = "", response = SecuredConfiguration.class, authorizations = {
@@ -55,7 +52,7 @@ public interface ConfigurationApi {
         @ApiResponse(code = 422, message = "Unprocessable Entity, The configuration is invalid", response = SecuredConfiguration.class) })
     @RequestMapping(value = "/configuration",
         method = RequestMethod.PATCH)
-    ResponseEntity<SecuredConfiguration> configurationPatch(@ApiParam(value = "A Json patch request as defined by RFC 6902 (http://jsonpatch.com/)", required = true) @RequestBody PatchRequest jsonPatch);
+    ResponseEntity<ConfigurationResponse> configurationPatch(@ApiParam(value = "A Json patch request as defined by RFC 6902 (http://jsonpatch.com/)", required = true) @RequestBody JsonPatch jsonPatch);
 
 
     @ApiOperation(value = "Configuration setup", notes = "During the initial deployment and setup of the Presidio server, a number of parameters have to be supplied to configure the server. ", response = Void.class, authorizations = {

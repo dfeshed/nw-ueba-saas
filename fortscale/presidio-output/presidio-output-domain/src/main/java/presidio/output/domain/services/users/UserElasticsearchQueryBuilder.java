@@ -44,6 +44,15 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             boolQueryBuilder.must(classificationQuery);
         }
 
+        // filter by alert indicators
+        if (CollectionUtils.isNotEmpty(userQuery.getFilterByIndicators())) {
+            BoolQueryBuilder indicatorsQuery = new BoolQueryBuilder();
+            for (String indicator : userQuery.getFilterByIndicators()) {
+                indicatorsQuery.should(matchQuery(User.INDICATORS_FIELD_NAME, indicator).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(indicatorsQuery);
+        }
+
         // filter by userIds
         if (CollectionUtils.isNotEmpty(userQuery.getFilterByUsersIds())) {
             BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
