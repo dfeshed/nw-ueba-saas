@@ -2,7 +2,7 @@ package presidio.monitoring.sdk.impl.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
+import presidio.monitoring.aspect.services.MetricCollectingService;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 
 import java.util.Set;
@@ -10,7 +10,7 @@ import java.util.Set;
 public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMonitoringService {
 
     @Autowired
-    private MetricCollectingServiceImpl metricCollectingService;
+    private MetricCollectingService metricCollectingService;
 
     private final String FILTERED_EVENT_METRIC = "number.of.filtered.event";
     private final String NUMBER_OF_PROCESSED_EVENTS_METRIC = "number.of.processed.events";
