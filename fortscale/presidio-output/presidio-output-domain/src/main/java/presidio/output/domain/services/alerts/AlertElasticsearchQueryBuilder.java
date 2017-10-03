@@ -8,7 +8,6 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.time.DateTimeZone;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -24,6 +23,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
     }
 
     public void withFilter(AlertQuery alertQuery) {
+        final BoolQueryBuilder boolQueryBuilder2 = new BoolQueryBuilder();
         final BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
         // filter by username
@@ -82,21 +82,29 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(tagsQuery);
         }
 
+        // filter by indicator names
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByIndicatorNames())) {
+            BoolQueryBuilder indicatorNameQuery = new BoolQueryBuilder();
+            for (String indicatorName : alertQuery.getFilterByIndicatorNames()) {
+                indicatorNameQuery.should(matchQuery(Alert.INDICATOR_NAMES, indicatorName).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(indicatorNameQuery);
+        }
+
         // filter by min or max score
         if (alertQuery.getFilterByMinScore() > 0 || alertQuery.getFilterByMaxScore() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(Alert.SCORE);
-            if (alertQuery.getFilterByMinScore() > 0) {
-                rangeQuery.gte(alertQuery.getFilterByMinScore());
-            }
-            if (alertQuery.getFilterByMaxScore() > 0) {
-                rangeQuery.lte(alertQuery.getFilterByMaxScore());
-            }
+            rangeQuery.gte(alertQuery.getFilterByMinScore() > 0 ? alertQuery.getFilterByMinScore() : 0);
+            rangeQuery.lte(alertQuery.getFilterByMinScore() > 0 ? alertQuery.getFilterByMinScore() : 100);
+            boolQueryBuilder.must(rangeQuery);
 
             boolQueryBuilder.must(rangeQuery);
         }
 
+
+        boolQueryBuilder2.filter(boolQueryBuilder);
         if (boolQueryBuilder.hasClauses()) {
-            super.withFilter(boolQueryBuilder);
+            super.withQuery(boolQueryBuilder2);
         }
     }
 

@@ -74,4 +74,16 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
             modelCacheManager.deleteFromCache(modelConfName, contextId);
         }
     }
+
+    @Override
+    public void resetCache() {
+        modelCacheManagers.values().forEach(modelCacheManager ->  {
+            if (modelCacheManager != null) {
+                modelCacheManager.resetCache();
+            }
+        });
+
+
+
+    }
 }

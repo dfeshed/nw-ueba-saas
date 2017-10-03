@@ -503,8 +503,19 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule /(.*) "http://localhost:8080/data-pipeline/$1" [P,L]
+     RewriteRule / "http://localhost:8080/presidio-manager/data-pipeline/" [P,L]
   </Location>
+
+   <Location /data-pipeline/status>
+       #Deny from all
+       AuthName Configuration
+       AuthType Basic
+       #Satisfy Any
+       AuthUserFile /etc/httpd/conf/.htpasswd
+       require valid-user
+       RewriteEngine on
+       RewriteRule / "http://localhost:8080/presidio-manager/data-pipeline/status/" [P,L]
+    </Location>
 
   <Location /control>
      #Deny from all
