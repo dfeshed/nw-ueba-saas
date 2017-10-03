@@ -139,9 +139,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByQueryFilterByClassificationsAndSortByScoreAscending() {
-        List<String> indicators = new ArrayList<String>();
 
-        user3.setIndicators(indicators);
         List<User> userList = new ArrayList<>();
         userList.add(user1);
         userList.add(user2);
@@ -152,8 +150,6 @@ public class UserPersistencyServiceTest {
 
         List<String> classificationFilter = new ArrayList<String>();
         classificationFilter.add("a");
-        List<String> indicatorFilter = new ArrayList<String>();
-        indicatorFilter.add("indicator");
 
         List<String> sortFields = new ArrayList<>();
         sortFields.add(User.SCORE_FIELD_NAME);
@@ -167,6 +163,36 @@ public class UserPersistencyServiceTest {
         Page<User> foundUsers = userPersistencyService.find(userQuery);
         assertThat(foundUsers.getTotalElements(), is(3L));
         assertTrue(foundUsers.iterator().next().getScore() == 50d);
+    }
+
+    @Test
+    public void testFindByQueryFilterByIndicators() {
+        List<String> indicators1 = Arrays.asList("indicatorName1");
+        List<String> indicators2 = Arrays.asList("indicatorName1", "indicatorName2");
+
+        user1.setIndicators(indicators1);
+        user2.setIndicators(indicators2);
+        List<User> userList = Arrays.asList(user1, user2);
+        userPersistencyService.save(userList);
+
+        List<String> indicatorFilter = new ArrayList<String>();
+        indicatorFilter.add("indicator");
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .filterByIndicators(indicators1)
+                        .build();
+
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+
+        UserQuery userQuery2 =
+                new UserQuery.UserQueryBuilder()
+                        .filterByIndicators(Arrays.asList("indicatorName2"))
+                        .build();
+
+        Page<User> foundUsers2 = userPersistencyService.find(userQuery2);
+        assertThat(foundUsers2.getTotalElements(), is(1L));
     }
 
     @Test
