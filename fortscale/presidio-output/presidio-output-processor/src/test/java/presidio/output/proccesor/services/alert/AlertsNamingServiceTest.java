@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertClassificationService;
 import presidio.output.processor.spring.AlertClassificationPriorityConfig;
 
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = {AlertClassificationPriorityConfig.class})
+@ContextConfiguration(classes = {AlertClassificationPriorityConfig.class, TestConfig.class})
 public class AlertsNamingServiceTest {
 
 
