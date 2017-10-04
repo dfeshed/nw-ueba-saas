@@ -3,11 +3,20 @@ import { gt } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { connect } from 'ember-redux';
 import { hasSelectedAlertsBelongingToIncidents } from 'respond/selectors/alerts';
+import { clearSearchIncidentsResults } from 'respond/actions/creators/add-alerts-to-incident-creators';
 import { next } from 'ember-runloop';
 
 const stateToComputed = (state) => {
   return {
     hasSelectedAlertsBelongingToIncidents: hasSelectedAlertsBelongingToIncidents(state)
+  };
+};
+
+const dispatchToActions = (dispatch) => {
+  return {
+    clearIncidentSearchResults() {
+      dispatch(clearSearchIncidentsResults());
+    }
   };
 };
 
@@ -27,6 +36,8 @@ const AlertControls = Component.extend({
 
   updateConfirmationDialogId: 'bulk-update-entities',
   deleteConfirmationDialogId: 'delete-entities',
+
+  activeModalId: null,
 
   /**
    * Creates a closure around the the updateItem call so that the function can be passed as a callback or invoked directly
@@ -55,18 +66,21 @@ const AlertControls = Component.extend({
   },
 
   actions: {
-    showModal() {
-      this.set('isDisplayingModal', true);
+    showModal(modalId) {
+      this.set('activeModalId', modalId);
       next(() => {
-        this.get('eventBus').trigger('rsa-application-modal-open-create-incident');
+        this.get('eventBus').trigger(`rsa-application-modal-open-${modalId}`);
       });
     },
-    closeModal() {
-      this.get('eventBus').trigger('rsa-application-modal-close-create-incident');
-      this.set('isDisplayingModal', false);
+    closeModal(modalId) {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${modalId}`);
+      this.set('activeModalId', null);
     },
     createIncident() {
-      this.send('showModal');
+      this.send('showModal', 'create-incident');
+    },
+    addToIncident() {
+      this.send('showModal', 'add-to-incident');
     },
     deleteAlerts() {
       const { itemsSelected, confirm, i18n, deleteConfirmationDialogId } =
@@ -81,4 +95,4 @@ const AlertControls = Component.extend({
   }
 });
 
-export default connect(stateToComputed)(AlertControls);
+export default connect(stateToComputed, dispatchToActions)(AlertControls);

@@ -612,7 +612,9 @@ export default {
           addJournalEntryFailure: 'There was a problem adding a journal entry to incident {{incidentId}}',
           incidentCreated: 'You successfully created the incident {{incidentId}} from the selected alerts. The incident\'s priority has been set to LOW by default.',
           incidentCreationFailed: 'There was a problem creating an incident from the selected alerts',
-          createIncidentInstruction: 'An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.'
+          createIncidentInstruction: 'An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.',
+          addAlertToIncidentSucceeded: 'You successfully created the selected alerts to {{incidentId}}.',
+          addAlertToIncidentFailed: 'There was a problem adding the selected alerts to this incident'
         },
         deselectAll: 'Deselect all'
       },
@@ -646,6 +648,14 @@ export default {
     },
     alerts: {
       createIncident: 'Create Incident',
+      addToIncident: 'Add to Incident',
+      incidentSearch: {
+        searchInputLabel: 'Search',
+        searchInputPlaceholder: 'Search by incident ID (e.g., INC-123) or incident name',
+        noResults: 'No Incidents found',
+        noQuery: 'Use the search box above to search for incidents by name or ID. Your search must contain at least (3) characters.',
+        error: 'There was a problem searching for incidents'
+      },
       actions: {
         actionMessages: {
           deleteWarning: 'Warning: You are about to delete one or more alerts that may be associated with incidents. ' +

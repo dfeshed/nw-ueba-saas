@@ -7,7 +7,7 @@ import wait from 'ember-test-helpers/wait';
 
 let redux, dispatchSpy;
 
-moduleForComponent('rsa-alerts/toolbar-controls', 'Integration | Component | Respond Alerts Create Incident', {
+moduleForComponent('rsa-alerts/create-incident', 'Integration | Component | Respond Alerts Create Incident', {
   integration: true,
   resolver: engineResolverFor('respond'),
   beforeEach() {

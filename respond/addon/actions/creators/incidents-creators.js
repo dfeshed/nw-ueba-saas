@@ -418,9 +418,9 @@ const stopSearchRelatedIndicators = () => {
  * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
  * @public
  */
-const addRelatedIndicatorsToIncident = (indicators, incidentId, incidentCreated, callbacks) => ({
+const addRelatedIndicatorsToIncident = (indicators, incidentId, callbacks) => ({
   type: ACTION_TYPES.ADD_RELATED_INDICATORS,
-  promise: Incidents.addAlertsToIncident(indicators, incidentId, incidentCreated),
+  promise: Incidents.addAlertsToIncident(indicators, incidentId),
   meta: {
     onSuccess: (response) => {
       Logger.debug(ACTION_TYPES.ADD_RELATED_INDICATORS, response);

@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
-import alertsReducer from 'respond/reducers/respond/alerts';
+import alertsReducer from 'respond/reducers/respond/alerts/alerts';
 import ACTION_TYPES from 'respond/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';

@@ -1,20 +1,22 @@
 import { combineReducers } from 'redux';
-import incidents from './incidents';
-import alerts from './alerts';
+import alertIncidentAssociation from './alerts/add-to-incident';
+import alerts from './alerts/alerts';
 import alert from './alert';
-import incident from './incident';
-import users from './users';
 import dictionaries from './dictionaries';
+import incident from './incident';
+import incidents from './incidents';
+import users from './users';
 import remediationTasks from './remediation-tasks';
 
 export default {
   respond: combineReducers({
-    incidents,
-    incident,
-    users,
-    dictionaries,
-    remediationTasks,
+    alertIncidentAssociation,
     alerts,
-    alert
+    alert,
+    dictionaries,
+    incident,
+    incidents,
+    remediationTasks,
+    users
   })
 };

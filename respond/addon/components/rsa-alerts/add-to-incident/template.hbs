@@ -1,0 +1,75 @@
+<div>
+  <label class="rsa-form-input">
+    <span class="rsa-form-label">{{t 'respond.alerts.incidentSearch.searchInputLabel'}}</span>
+    {{input type="text" placeholder=(t 'respond.alerts.incidentSearch.searchInputPlaceholder') key-up="handleSearchKeyup"}}
+  </label>
+</div>
+{{#rsa-data-table
+  items=(readonly incidentSearchResults)
+  lazy=(readonly useLazyRendering)
+  onRowClick=(action "selectIncident")
+  fitToWidth=false
+  columnsConfig=(readonly columns)}}
+
+  {{#rsa-data-table/header translateTitles=true as |column|}}
+
+    {{t column.title}}
+
+    {{! COLUMN SORT }}
+    {{#unless column.disableSort}}
+      {{rsa-icon
+        click=(action 'handleResultsSortBy' column isSortDescending)
+        name=(if isSortDescending 'arrow-down-7' 'arrow-up-7')
+        class=(concat "sort " (if (eq column.field sortBy) 'current-sort'))
+      }}
+    {{/unless}}
+  {{/rsa-data-table/header}}
+
+  {{#if (eq incidentSearchStatus 'streaming')}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
+  {{else if (eq incidentSearchStatus 'error')}}
+    <centered class="search-error">{{t 'respond.alerts.incidentSearch.error'}}</centered>
+  {{else}}
+
+    {{#rsa-data-table/body
+      noResultsMessage=(t (if hasSearchQuery 'respond.alerts.incidentSearch.noResults' 'respond.alerts.incidentSearch.noQuery')) as |item index column|}}
+      {{#rsa-data-table/body-cell item=item column=column}}
+
+        {{#if (and (eq column.id 'select') (eq item selectedIncident))}}
+          {{! if the incident is selected and the column is the 'select' column, add the check icon }}
+          {{rsa-icon name='check-2' class='selected'}}
+
+        {{else if (eq column.dataType 'date')}}
+          {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
+
+        {{ else if (eq column.field 'id')}}
+          <span>{{#link-to 'incident' item.id target="_blank" bubbles=false}}{{item.id}}{{/link-to}}</span>
+
+        {{else if (eq column.field "assignee")}}
+          {{or item.assignee.name item.assignee.id}}
+
+        {{else}}
+          <div>{{get item column.field}}</div>
+
+        {{/if}}
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+  {{/if}}
+
+{{/rsa-data-table}}
+<footer>
+  <hbox class="modal-footer-buttons">
+    {{#rsa-form-button defaultAction='handleCancel' class='cancel'}}
+      {{t 'forms.cancel'}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button
+      class="apply"
+      isDisabled=isAddToAlertsUnavailable
+      style='danger'
+      defaultAction='handleSubmit'}}
+      {{t 'forms.ok'}}
+    {{/rsa-form-button}}
+  </hbox>
+</footer>

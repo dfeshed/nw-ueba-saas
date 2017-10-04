@@ -2,9 +2,9 @@ import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
-import { load, persist } from './util/local-storage';
-import explorerInitialState from './util/explorer-reducer-initial-state';
-import explorerReducers from './util/explorer-reducer-fns';
+import { load, persist } from '../util/local-storage';
+import explorerInitialState from '../util/explorer-reducer-initial-state';
+import explorerReducers from '../util/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::respond::alerts';
 // Load local storage values and incorporate into initial state
@@ -68,6 +68,21 @@ const alertsReducers = reduxActions.handleActions({
       },
       failure: (s) => s,
       finish: (s) => s.set('isTransactionUnderway', false)
+    })
+  ),
+
+  [ACTION_TYPES.ALERTS_ADD_TO_INCIDENT]: (state, action) => (
+    handle(state, action, {
+      success: (s) => {
+        const { payload: { request: { data: { entity: { id }, associated } } } } = action;
+        const alertIds = associated.map((association) => (association.id));
+        return s.set('items', s.items.map((alert) => { // Update the alerts (items) that now have an associated incident
+          if (alertIds.includes(alert.id)) {
+            return { ...alert, incidentId: id, partOfIncident: true };
+          }
+          return alert;
+        }));
+      }
     })
   )
 

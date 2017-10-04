@@ -7,6 +7,14 @@
       {{t 'respond.alerts.createIncident'}}
     {{/rsa-form-button}}
   </div>
+  <div class="action-control add-to-incident-button">
+    {{#rsa-form-button
+      style='primary'
+      isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
+      defaultAction='addToIncident'}}
+      {{t 'respond.alerts.addToIncident'}}
+    {{/rsa-form-button}}
+  </div>
 {{/if}}
 {{#if accessControl.respondCanDeleteAlerts}}
   <div class="action-control delete-button">
@@ -18,10 +26,17 @@
     {{/rsa-form-button}}
   </div>
 {{/if}}
-{{#if isDisplayingModal}}
+{{#if (eq activeModalId 'create-incident')}}
   {{#rsa-application-modal eventId='create-incident' label=(t "respond.alerts.createIncident") style="standard create-incident-modal"}}
     <div class='modal-content'>
-      {{rsa-alerts/create-incident close=(action 'closeModal')}}
+      {{rsa-alerts/create-incident close=(action 'closeModal' 'create-incident')}}
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}
+{{#if (eq activeModalId 'add-to-incident')}}
+  {{#rsa-application-modal eventId='add-to-incident' label=(t "respond.alerts.addToIncident") style="standard add-to-incident-modal" onClose=(action 'clearIncidentSearchResults')}}
+    <div class='modal-content'>
+      {{rsa-alerts/add-to-incident finish=(action 'closeModal' 'add-to-incident')}}
     </div>
   {{/rsa-application-modal}}
 {{/if}}

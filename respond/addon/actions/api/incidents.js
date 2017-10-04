@@ -200,21 +200,22 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    * @public
    */
-  addAlertsToIncident(alerts, incidentId, incidentCreated) {
-
+  addAlertsToIncident(alerts, incidentId) {
     return promiseRequest({
       method: 'updateRecord',
       modelName: 'alerts-associated',
       query: {
         data: {
-          // entity = POJO with incident ID & created date
+          // entity = POJO with incident ID
           entity: {
-            id: incidentId,
-            created: incidentCreated
+            id: incidentId
           },
           // associated = array of POJOs with alert IDs
           associated: alerts.map((alert) => ({
-            id: alert.id
+            // if the alerts array is an array of string, use the string as ID, otherwise expect each alert to be
+            // an object and pull from there. Note: Respond Server team is reworking the service interface. This
+            // will be reworked/simplified afterwards (cf ASOC-42078)
+            id: typeof alert === 'string' ? alert : alert.id
           }))
         }
       }
@@ -264,6 +265,45 @@ IncidentsAPI.reopenClass({
           associated: alertIds.map((id) => ({ id }))
         }
       }
+    });
+  },
+
+  /**
+   * Searches incident name and incident ID fields
+   * @param searchText
+   * @param sortField
+   * @param sortDescending
+   * @param {{ onResponse: Function, onError: Function, onInit: Function, onCompleted: Function }} callbacks
+   * @public
+   * @returns {*}
+   */
+  search(searchText, sortField = 'created', sortDescending = true, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    // TODO: Allow query builder utility to support regex filters and "or" filter operator
+    return streamRequest({
+      method: 'stream',
+      modelName: 'incidents',
+      query: {
+        filter: [{
+          field: '_id',
+          regexp: `(?i)${searchText}.*`
+        }, {
+          field: 'name',
+          regexp: `(?i)${searchText}.*`
+        }],
+        sort: [{
+          descending: sortDescending,
+          field: sortField
+        }],
+        stream: {
+          limit: 1000,
+          batch: 100
+        },
+        filterOperator: 'or'
+      },
+      onInit,
+      onResponse,
+      onError,
+      onCompleted
     });
   }
 });

@@ -1,0 +1,59 @@
+$searchInputHeight: 75.5px;
+
+.rsa-add-to-incident {
+  height: 100%;
+
+  .rsa-panel-message .message {
+    width: 33%;
+    border: 1px solid border-color(primary,light);
+    padding: rsa-whitespace();
+    border-radius: 5px;
+    line-height: 2rem;
+  }
+
+  .rsa-data-table {
+    height: calc(100% - #{$searchInputHeight});
+
+    .rsa-data-table-header .sortable-item .sort.current-sort {
+      display: inline;
+    }
+
+    .rsa-data-table-body-row {
+      .rsa-data-table-body-cell {
+        a {
+          color: text-color(secondary, light);
+        }
+
+        .rsa-icon.selected {
+          color: text-color(secondary, light);
+        }
+      }
+      &:hover {
+        background-color: background-color(primary, darker);
+        cursor: pointer;
+        .rsa-data-table-body-cell {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, $rsa-nearly-transparent);
+
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}

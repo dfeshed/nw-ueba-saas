@@ -10,6 +10,7 @@ import $ from 'jquery';
 let redux;
 
 const createIncidentModalSelector = '.rsa-application-modal-content.create-incident-modal';
+const addToIncidentModalSelector = '.rsa-application-modal-content.add-to-incident-modal';
 
 moduleForComponent('rsa-alerts/toolbar-controls', 'Integration | Component | Respond Alerts Toolbar Controls', {
   integration: true,
@@ -20,6 +21,7 @@ moduleForComponent('rsa-alerts/toolbar-controls', 'Integration | Component | Res
     redux = this.get('redux');
   }
 });
+
 test('The component is rendered to the DOM', function(assert) {
   this.render(hbs`{{rsa-alerts/toolbar-controls}}`);
   assert.equal(this.$('.rsa-alerts-toolbar-controls').length, 1, 'The Alerts Toolbar Controls component should be found in the DOM');
@@ -43,25 +45,31 @@ test('The Delete button is enabled if any alert is selected', function(assert) {
     'The Delete button is enabled if it has selections');
 });
 
-test('The Create Incident button is rendered to the DOM', function(assert) {
+test('The Create Incident and Add to Incident buttons are rendered to the DOM', function(assert) {
   this.render(hbs`{{rsa-alerts/toolbar-controls}}`);
   assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button').length, 1,
     'The Create Incident button should be found in the DOM');
+  assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button').length, 1,
+    'The Add to Incident button should be found in the DOM');
 });
 
-test('The Create Incident button is disabled if no alerts are selected', function(assert) {
+test('The Create Incident/Add to Incident buttons are disabled if no alerts are selected', function(assert) {
   this.render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=true}}`);
   assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
     'The Create Incident button is disabled by default since no alerts are selected');
+  assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
+    'The Add to Incident button is disabled by default since no alerts are selected');
 });
 
-test('The Create Incident button is enabled if any alert is selected', function(assert) {
+test('The Create/Add to Incident buttons are enabled if any alert is selected', function(assert) {
   this.render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false }}`);
   assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button-wrapper:not(.is-disabled)').length, 1,
-    'The Delete button is enabled if it has selections');
+    'The Create Incident button is enabled if it has selections');
+  assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button-wrapper:not(.is-disabled)').length, 1,
+    'The Add to Incident button is enabled if it has selections');
 });
 
-test('The Create Incident button is disabled if any of the selected alerts are part of an incident already', function(assert) {
+test('The Create/Add to Incident buttons are disabled if any of the selected alerts are part of an incident already', function(assert) {
   redux.dispatch(getItems());  // fetch the alerts and get them into state
   const fetch = waitForReduxStateChange(redux, 'respond.alerts.items');
   return fetch.then(() => {
@@ -76,6 +84,8 @@ test('The Create Incident button is disabled if any of the selected alerts are p
       this.render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false }}`);
       assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.create-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
         'The Create Incident button is disabled if hasSelectedAlertsBelongingToIncidents is true');
+      assert.equal(this.$('.rsa-alerts-toolbar-controls .action-control.add-to-incident-button .rsa-form-button-wrapper.is-disabled').length, 1,
+        'The Add to Incident button is disabled if hasSelectedAlertsBelongingToIncidents is true');
     });
   });
 });
@@ -85,7 +95,7 @@ test('Clicking the Create Incident button opens the create-incident modal', func
   assert.equal($('.create-incident-modal').length, 0, 'There is no modal displayed');
   this.$('.create-incident-button .rsa-form-button').click();
   return wait().then(() => {
-    assert.equal($('.rsa-application-modal-content.create-incident-modal').length, 1, 'The create-incident modal is displayed');
+    assert.equal($(createIncidentModalSelector).length, 1, 'The create-incident modal is displayed');
   });
 });
 
@@ -98,6 +108,28 @@ test('Clicking cancel in the modal closes the create-incident modal', function(a
     $('.cancel .rsa-form-button').click();
     return wait().then(() => {
       assert.equal($(createIncidentModalSelector).length, 0, 'The create-incident modal is gone');
+    });
+  });
+});
+
+test('Clicking the Add to Incident button opens the add-to-incident modal', function(assert) {
+  this.render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false }}`);
+  assert.equal($('.add-to-incident-modal').length, 0, 'There is no modal displayed');
+  this.$('.add-to-incident-button .rsa-form-button').click();
+  return wait().then(() => {
+    assert.equal($(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
+  });
+});
+
+test('Clicking cancel in the Add to Incident modal closes the modal', function(assert) {
+  this.render(hbs`{{rsa-alerts/toolbar-controls hasNoSelections=false }}`);
+  assert.equal($('.add-to-incident-modal').length, 0, 'There is no modal displayed');
+  this.$('.add-to-incident-button .rsa-form-button').click();
+  return wait().then(() => {
+    assert.equal($(addToIncidentModalSelector).length, 1, 'The add-to-incident modal is displayed');
+    $('.cancel .rsa-form-button').click();
+    return wait().then(() => {
+      assert.equal($(addToIncidentModalSelector).length, 0, 'The add-to-incident modal is gone');
     });
   });
 });
