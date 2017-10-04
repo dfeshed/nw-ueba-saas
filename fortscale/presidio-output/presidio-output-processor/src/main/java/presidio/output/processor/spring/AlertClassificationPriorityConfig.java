@@ -1,6 +1,7 @@
 package presidio.output.processor.spring;
 
 import fortscale.utils.spring.ApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import presidio.output.processor.config.ClassificationPriorityConfig;
 import presidio.output.processor.config.DataConfig;
@@ -13,7 +14,7 @@ public class AlertClassificationPriorityConfig extends ApplicationConfiguration 
 
     @Bean
     public AlertClassificationService AlertClassificationService() {
-        return new AlertClassificationServiceImpl(classificationPriorityConfig(), supportingInformationConfig());
+        return new AlertClassificationServiceImpl(classificationPriorityConfig(), supportingInformationConfig(), numberOfClassifications);
     }
 
     @Bean
@@ -30,4 +31,9 @@ public class AlertClassificationPriorityConfig extends ApplicationConfiguration 
     public DataConfig dataConfig() {
         return bindPropertiesToTarget(DataConfig.class, null, "classpath:supporting_information_config.yml");
     }
+
+    @Value("${number.of.classifications}")
+    private int numberOfClassifications;
+
+
 }
