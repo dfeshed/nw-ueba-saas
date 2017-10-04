@@ -12,6 +12,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE, type = Alert.ALERT_TYPE)
 public class Alert extends AbstractElasticDocument {

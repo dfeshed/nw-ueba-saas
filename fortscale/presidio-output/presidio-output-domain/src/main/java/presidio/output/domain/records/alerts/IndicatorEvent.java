@@ -37,6 +37,7 @@ public class IndicatorEvent extends AbstractElasticDocument {
         super(id, createdDate);
     }
 
+
     public String getIndicatorId() {
         return indicatorId;
     }

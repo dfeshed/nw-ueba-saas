@@ -118,8 +118,11 @@ public class AlertPersistencyServiceTest {
 
         assertEquals(testAlert.getId(), alert.getId());
         assertEquals(testAlert.getUserName(), alert.getUserName());
-        // assertEquals(testAlert.getStartDate(), alert.getStartDate());
-
+        testAlert.setIndicatorsNum(100);
+        alertPersistencyService.save(testAlert);
+        Alert testAlert2 = alertPersistencyService.findOne(alert.getId());
+        assertEquals(testAlert2.getCreatedDate(), createaAtDate);
+        assertEquals(100, testAlert2.getIndicatorsNum());
     }
 
     @Test
