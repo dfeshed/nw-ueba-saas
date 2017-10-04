@@ -96,6 +96,12 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
         lruModelsMap.remove(contextId);
     }
 
+    @Override
+    public void resetCache() {
+       int lruModelCacheSize = this.lruModelsMap.size();
+        this.lruModelsMap = new LRUMap(lruModelCacheSize);
+    }
+
     private String getContextId(Map<String, String> contextFieldsToValueMap) {
         Assert.notNull(contextFieldsToValueMap, "context fields should not be null");
         if (contextFieldsToValueMap.isEmpty()) {

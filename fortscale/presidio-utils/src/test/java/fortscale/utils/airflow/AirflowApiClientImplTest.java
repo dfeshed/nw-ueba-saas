@@ -33,6 +33,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @ContextConfiguration(classes = AirflowApiClientConfig.class)
 public class AirflowApiClientImplTest {
 
+    public static final String NO_RUNNING_DAGS_URI = "http://localhost:8000/admin/rest_api/api?api=dag_execution_dates_for_state&state=running";
     private final String DAG_EXECUTION_DATES_BY_STATE_URL ="http://localhost:8000/admin/rest_api/api?api=dag_execution_dates_for_state&state=running";
     private final String DAG_EXECUTION_DATES_BY_STATE_RESPONSE ="\n" +
             "{\n" +
@@ -114,6 +115,18 @@ public class AirflowApiClientImplTest {
             "  \"response_time\": \"2017-09-18T10:10:27.952Z\", \n" +
             "  \"status\": \"OK\"\n" +
             "}\n";
+    private final String NO_RUNNING_DAGS_RESPONSE=
+            "{\n" +
+                    "  \"arguments\": {\n" +
+                    "    \"api\": \"dag_execution_dates_for_state\", \n" +
+                    "    \"state\": \"running\"\n" +
+                    "  }, \n" +
+                    "  \"call_time\": \"2017-09-30T06:02:13.021Z\", \n" +
+                    "  \"http_response_code\": 200, \n" +
+                    "  \"post_arguments\": {}, \n" +
+                    "  \"response_time\": \"2017-09-30T06:08:17.912Z\", \n" +
+                    "  \"status\": \"OK\"\n" +
+                    "}";
     @Autowired
     private AirflowApiClient airflowApiClient;
 
@@ -187,7 +200,16 @@ public class AirflowApiClientImplTest {
         Assert.assertTrue(expectedMap.equals(dagExecutionDatesByState));
     }
 
+    @Test
+    public void shouldReturnEmptyMapIfNoDagsForState() {
+        mockServer.expect(requestTo(NO_RUNNING_DAGS_URI))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess(NO_RUNNING_DAGS_RESPONSE, MediaType.APPLICATION_JSON_UTF8));
+        DagState dagState = DagState.RUNNING;
+        Map<String, DagExecutionStatus> dagExecutionDatesByState = airflowApiClient.getDagExecutionDatesByState( dagState);
 
+        Assert.assertTrue(dagExecutionDatesByState.isEmpty());
+    }
 
 
 }

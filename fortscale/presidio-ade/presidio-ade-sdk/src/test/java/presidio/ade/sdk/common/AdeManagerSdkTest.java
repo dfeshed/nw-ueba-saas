@@ -74,7 +74,8 @@ public class AdeManagerSdkTest {
         Instant endInstant = retrievedScoredEnrichedRecords.stream().max(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         TimeRange timeRange = new TimeRange(startInstant, endInstant);
         Pair<String, String> contextFieldAndValue = Pair.of("userId", GENERATED_USER);
-        List<String> distinctOperationTypes = adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType, contextFieldAndValue, timeRange, "operationType", GENERATED_SCORE);
+        List<String> distinctOperationTypes = adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType, contextFieldAndValue, timeRange, "operationType", GENERATED_SCORE-0.1);
+
         Assert.assertTrue(distinctOperationTypes.size()>=1);
     }
 

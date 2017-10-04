@@ -1,8 +1,8 @@
 {
   "system": {
     "username": "presidio@somecompany.dom",
+    "krbServiceName":  "HTTP/hostname@fortscale.dom",
     "password": "password",
-    "adminGroup": "presidio-admins-somecompany",
     "analystGroup": "presidio-soc-team-somecompany",
     "smtpHost": "name.of-server.com:25",
     "kdcUrl": "string"

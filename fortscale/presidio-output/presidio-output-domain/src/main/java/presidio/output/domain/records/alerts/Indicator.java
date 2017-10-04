@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
@@ -16,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE, type = Indicator.INDICATOR_TYPE)
-//@Mapping(mappingPath = "/mappings/test-mappings.json")
+@Mapping(mappingPath = "elasticsearch/mappings/indicators-mappings.json")
 public class Indicator extends AbstractElasticDocument {
 
     public static final String INDICATOR_TYPE = "indicator";
@@ -33,45 +31,34 @@ public class Indicator extends AbstractElasticDocument {
     public static final String SCORE = "score";
     public static final String EVENTS_NUM = "eventsNum";
 
-
-    @Field(type = FieldType.String, store = true)
     @JsonProperty(NAME)
     private String name;
 
-    @Field(type = FieldType.String, store = true)
     @JsonProperty(VALUE)
     private String anomalyValue;
 
-    @Field(type = FieldType.String, store = true)
     @JsonProperty(ALERT_ID)
     private String alertId;
 
-    @Field(type = FieldType.Object, store = true, index = FieldIndex.no)
     @JsonProperty(HISTORICAL_DATA)
     private HistoricalData historicalData;
 
-    @Field(type = FieldType.Long, store = true)
     @JsonProperty(START_DATE)
     private long startDate;
 
-    @Field(type = FieldType.Long, store = true)
     @JsonProperty(END_DATE)
     private long endDate;
 
-    @Field(type = FieldType.String, store = true)
     @JsonProperty(SCHEMA)
     Schema schema;
 
-    @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE)
     private double score;
 
-    @Field(type = FieldType.String, store = true)
     @JsonProperty(TYPE)
     @Enumerated(EnumType.STRING)
     private AlertEnums.IndicatorTypes type;
 
-    @Field(type = FieldType.Integer, store = true)
     @JsonProperty(EVENTS_NUM)
     private int eventsNum;
 
