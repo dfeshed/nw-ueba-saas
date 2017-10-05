@@ -8,15 +8,13 @@ import incidents from './incidents';
 import users from './users';
 import remediationTasks from './remediation-tasks';
 
-export default {
-  respond: combineReducers({
-    alertIncidentAssociation,
-    alerts,
-    alert,
-    dictionaries,
-    incident,
-    incidents,
-    remediationTasks,
-    users
-  })
-};
+export default combineReducers({
+  alertIncidentAssociation,
+  alerts,
+  alert,
+  dictionaries,
+  incident,
+  incidents,
+  remediationTasks,
+  users
+});
