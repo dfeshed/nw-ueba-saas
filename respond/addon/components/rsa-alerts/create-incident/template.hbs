@@ -10,9 +10,9 @@
     {{/rsa-form-button}}
     {{#rsa-form-button
       class="apply"
-      isDisabled=(or isInvalid isCreationInProgress)
+      isDisabled=isInvalid
       style='danger'
-      defaultAction='handleApply'}}
+      defaultAction='create'}}
       {{t 'forms.ok'}}
     {{/rsa-form-button}}
   </hbox>

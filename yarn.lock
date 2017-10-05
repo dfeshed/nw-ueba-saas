@@ -1489,7 +1489,7 @@ broccoli-funnel-reducer@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/broccoli-funnel-reducer/-/broccoli-funnel-reducer-1.0.0.tgz#11365b2a785aec9b17972a36df87eef24c5cc0ea"
 
-broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli-funnel@^1.0.6, broccoli-funnel@^1.0.8, broccoli-funnel@^1.1.0, broccoli-funnel@^1.2.0:
+broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli-funnel@^1.0.4, broccoli-funnel@^1.0.6, broccoli-funnel@^1.0.8, broccoli-funnel@^1.1.0, broccoli-funnel@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.2.0.tgz#cddc3afc5ff1685a8023488fff74ce6fb5a51296"
   dependencies:
@@ -3431,6 +3431,12 @@ ember-d3@0.3.3:
     ember-cli-babel "^5.1.6"
     recast "^0.11.13"
 
+ember-dependency-lookup@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/ember-dependency-lookup/-/ember-dependency-lookup-1.0.0.tgz#c42cce0b5374198aad5e1e01371afd777b7c2462"
+  dependencies:
+    ember-cli-babel "^6.8.1"
+
 ember-engines@0.5.12:
   version "0.5.12"
   resolved "https://registry.npmjs.org/ember-engines/-/ember-engines-0.5.12.tgz#4d05ded30f52cd50c2bd14d914f7f557eb053118"
@@ -3653,6 +3659,17 @@ ember-redux-actions@0.3.0:
     ember-cli-babel "^5.1.7"
     ember-cli-node-assets "0.2.0"
     redux-actions "^1.2.0"
+
+ember-redux-saga-shim@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/ember-redux-saga-shim/-/ember-redux-saga-shim-1.1.0.tgz#85c64d4b96228097db960ab0c554fff73815284e"
+  dependencies:
+    babel-plugin-transform-object-rest-spread "^6.23.0"
+    broccoli-funnel "^1.0.4"
+    broccoli-merge-trees "^1.1.4"
+    broccoli-replace "^0.12.0"
+    ember-cli-babel "^6.1.0"
+    ember-cli-htmlbars "^1.1.1"
 
 ember-redux@3.0.0:
   version "3.0.0"
@@ -6894,6 +6911,10 @@ redux-persist@4.8.3:
     json-stringify-safe "^5.0.1"
     lodash "^4.17.4"
     lodash-es "^4.17.4"
+
+redux-saga@0.15.3:
+  version "0.15.3"
+  resolved "https://registry.npmjs.org/redux-saga/-/redux-saga-0.15.3.tgz#be2b86b4ad46bf0d84fcfcb0ca96cfc33db91acb"
 
 redux-thunk@2.2.0:
   version "2.2.0"

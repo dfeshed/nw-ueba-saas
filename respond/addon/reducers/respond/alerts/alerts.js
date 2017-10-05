@@ -53,24 +53,22 @@ const alertsReducers = reduxActions.handleActions({
   [ACTION_TYPES.TOGGLE_ALERT_SELECTED]: explorerReducers.toggleSelectItem,
   [ACTION_TYPES.TOGGLE_SELECT_ALL_ALERTS]: explorerReducers.toggleSelectAll,
   [ACTION_TYPES.ALERT_SORT_BY]: persistState(explorerReducers.sortBy),
-  [ACTION_TYPES.CREATE_INCIDENT]: (state, action) => (
-    handle(state, action, {
-      start: (s) => s.set('isTransactionUnderway', true),
-      success: (s) => {
-        const { payload: { data: { id }, request: { data: { associated } } } } = action;
-        const alertIds = associated.map((association) => (association.id));
-        return s.set('items', s.items.map((alert) => { // Update the alerts (items) that now have an associated incident
-          if (alertIds.includes(alert.id)) {
-            return { ...alert, incidentId: id, partOfIncident: true };
-          }
-          return alert;
-        }));
-      },
-      failure: (s) => s,
-      finish: (s) => s.set('isTransactionUnderway', false)
-    })
-  ),
-
+  [ACTION_TYPES.START_TRANSACTION]: (state) => {
+    return state.set('isTransactionUnderway', true);
+  },
+  [ACTION_TYPES.FINISH_TRANSACTION]: (state) => {
+    return state.set('isTransactionUnderway', false);
+  },
+  [ACTION_TYPES.CREATE_INCIDENT]: (state, action) => {
+    const { payload: { data: { id }, request: { data: { associated } } } } = action;
+    const alertIds = associated.map((association) => (association.id));
+    return state.set('items', state.items.map((alert) => { // Update the alerts (items) that now have an associated incident
+      if (alertIds.includes(alert.id)) {
+        return { ...alert, incidentId: id, partOfIncident: true };
+      }
+      return alert;
+    }));
+  },
   [ACTION_TYPES.ALERTS_ADD_TO_INCIDENT]: (state, action) => (
     handle(state, action, {
       success: (s) => {
