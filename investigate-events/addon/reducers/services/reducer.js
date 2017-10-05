@@ -5,9 +5,9 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  data: null,
-  isLoading: null,
-  isError: null
+  data: undefined,
+  isLoading: undefined,
+  isError: undefined
 });
 
 export default handleActions({

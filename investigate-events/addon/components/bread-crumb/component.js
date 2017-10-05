@@ -6,13 +6,32 @@ import { connect } from 'ember-redux';
 import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-utils';
 import formatUtil from 'investigate-events/components/events-table-row/format-util';
 import { metaKeyAlias } from 'investigate-events/helpers/meta-key-alias';
-import { selectedService } from 'investigate-events/reducers/services/selectors';
+import {
+  selectedService,
+  servicesWithURI
+} from 'investigate-events/reducers/services/selectors';
 import $ from 'jquery';
 
 const stateToComputed = (state) => ({
   serviceObject: selectedService(state),
-  serviceData: state.services.data
+  servicesWithURI: servicesWithURI(state),
+  serviceData: state.services.data,
+  queryNode: state.queryNode,
+  // serviceId: state.queryNode.serviceId,
+  startTime: state.queryNode.startTime,
+  endTime: state.queryNode.endTime,
+  // metaFilter: state.queryNode.metaFilter,
+  language: state.dictionaries.language,
+  aliases: state.dictionaries.aliases
 });
+// const stateToComputed = (ie, { ie: { services, queryNode } }) => ({
+//   serviceObject: selectedService(ie),
+//   serviceData: services.data,
+//   serviceId: queryNode.serviceId,
+//   startTime: queryNode.startTime,
+//   endTime: queryNode.endTime,
+//   metaFilter: queryNode.metaFilter
+// });
 
 const BreadCrumbComponent = Component.extend({
   dateFormat: service(),
@@ -24,36 +43,8 @@ const BreadCrumbComponent = Component.extend({
   isAddingMeta: false,
   queryString: '',
 
-  /**
-   * Hash of meta value alias lookup tables, keyed by meta key.
-   * Used for rendering user-friendly aliases for meta key values.
-   * @type {object}
-   * @public
-   */
-  aliases: undefined,
-
-  /**
-   * Array of meta key definitions for given query.
-   * Used for rendering user-friendly display names for meta keys.
-   * @type {object[]}
-   * @public
-   */
-  language: undefined,
-
-  /**
-   * An object whose properties are the filter parameters for a NetWitness Core query; including
-   * `serviceId`, `startTime`, `endTime` and an optional `metaFilter`.
-   * @see state/query
-   * @type {object}
-   * @public
-   */
-  query: undefined,
-
   @empty('queryString')
   isInvalidQuery: false,
-
-  @computed('serviceData', 'query')
-  servicesWithURI: (services, query) => this._addQueryUriToServices(services, query),
 
   // Compute an options hash for the utilities which will format the meta values.
   // The options hash will include any meta value aliases defined on the Core device.
@@ -79,17 +70,17 @@ const BreadCrumbComponent = Component.extend({
   },
 
   // Resolves to true if the given query has some meta filter conditions.
-  @bool('query.metaFilter.conditions.length')
+  @bool('queryNode.metaFilter.conditions.length')
   hasDrill: null,
 
   // Computes URI for the given query WITHOUT the query's meta filter conditions.
-  @computed('query')
-  baseUri(query) {
-    if (!query) {
+  @computed('queryNode')
+  baseUri(queryNode) {
+    if (!queryNode) {
       return '';
     }
-    const clone = query.clone();
-    clone.metaFilter.conditions.clear();
+    const clone = queryNode.asMutable({ deep: true });
+    clone.metaFilter.conditions = [];
     return uriEncodeEventQuery(clone);
   },
 
@@ -98,21 +89,21 @@ const BreadCrumbComponent = Component.extend({
   // * `valueFormat`: raw & friendly names for meta value;
   // * `gotoUri`: URI for the hyperlink to "jump to" this filter condition (i.e., truncate all subsequent conditions);
   // * `deleteUri`: URI for the hyperlink to remove this filter condition.
-  @computed('query', 'language', '_opts')
-  crumbs(query, language, opts) {
-    const allConditions = query && query.get('metaFilter.conditions');
+  @computed('queryNode', 'language', '_opts')
+  crumbs(queryNode, language, opts) {
+    const { metaFilter } = queryNode;
+    const allConditions = metaFilter.conditions;
     if (!allConditions || !allConditions.length) {
       return [];
     }
 
-    const clone = query.clone();
+    const clone = queryNode.asMutable({ deep: true });
 
     return allConditions.map(({ queryString, isKeyValuePair = false, key, value }, index) => {
       const crumb = {
         text: queryString,
         tooltip: queryString
       };
-
       if (isKeyValuePair) {
         const keyFormat = metaKeyAlias([key, language]);
         const valueFormat = {
@@ -125,25 +116,15 @@ const BreadCrumbComponent = Component.extend({
 
       // Make a query clone whose conditions include only up to this condition.
       const thisAndPreviousConditions = allConditions.slice(0, index + 1);
-      clone.set('metaFilter.conditions', thisAndPreviousConditions);
+      clone.metaFilter.conditions = thisAndPreviousConditions;
       crumb.gotoUri = uriEncodeEventQuery(clone);
 
       // Make a query clone whose conditions exclude just this condition.
       const allOtherConditions = [].concat(allConditions).removeAt(index);
-      clone.set('metaFilter.conditions', allOtherConditions);
+      clone.metaFilter.conditions = allOtherConditions;
       crumb.deleteUri = uriEncodeEventQuery(clone);
 
       return crumb;
-    });
-  },
-
-  _addQueryUriToServices(services, query) {
-    return services.map((service) => {
-      const clone = query.clone();
-      clone.metaFilter.conditions.clear();
-      clone.serviceId = service.id;
-      service.queryURI = uriEncodeEventQuery(clone);
-      return service;
     });
   },
 

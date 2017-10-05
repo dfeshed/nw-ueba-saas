@@ -1,5 +1,5 @@
 import Route from 'ember-route';
-import run from 'ember-runloop';
+// import run from 'ember-runloop';
 import service from 'ember-service/inject';
 
 import {
@@ -8,8 +8,8 @@ import {
 } from 'investigate-events/actions/data-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 import {
-  serviceSelected,
   setMetaPanelSize,
+  setQueryParams,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
 
@@ -78,32 +78,32 @@ export default Route.extend({
     // sub-actions called by our initial action would not know to use
     // `transition` instead. So instead we use `run.next()` to wait until the
     // route has transitioned before calling any actions.
-    run.next(() => {
-      const { serviceId } = filterAttrs;
-      const {
-        eventId,
-        metaPanelSize,
-        reconSize
-      } = params;
+    // run.next(() => {
+    const { serviceId } = filterAttrs;
+    const {
+      eventId,
+      metaPanelSize,
+      reconSize
+    } = params;
 
-      // Apply the route URL queryParams to Redux state
-      if (serviceId) {
-        this.get('redux').dispatch(serviceSelected(serviceId));
-        // Get `language` and `aliases` now that we know what service we're using
-        this.get('redux').dispatch(initializeDictionaries());
-        // View sizing
-        this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
-        this.get('redux').dispatch(setReconPanelSize(reconSize));
-      }
+    // Apply the route URL queryParams to Redux state
+    if (serviceId) {
+      this.get('redux').dispatch(setQueryParams(filterAttrs));
+      // Get `language` and `aliases` now that we know what service we're using
+      this.get('redux').dispatch(initializeDictionaries());
+      // View sizing
+      this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
+      this.get('redux').dispatch(setReconPanelSize(reconSize));
+    }
 
-      if (serviceId && eventId && eventId !== -1) {
-        this.send('reconOpen', serviceId, eventId);
-      }
-      // TEMP HACK - We can't continue down our execution path until we get
-      // `aliases` and `language`, so check if they are present before
-      // continuing.
-      setTimeout(this._checkForDictionaries.bind(this), 50);
-    });
+    if (serviceId && eventId && eventId !== -1) {
+      this.send('reconOpen', serviceId, eventId);
+    }
+    // TEMP HACK - We can't continue down our execution path until we get
+    // `aliases` and `language`, so check if they are present before
+    // continuing.
+    setTimeout(this._checkForDictionaries.bind(this), 50);
+    // });
     return state;
   },
 

@@ -3,24 +3,14 @@ import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
-const _dataInitialState = Immutable.from({
-  serviceId: undefined,
+const _initialState = Immutable.from({
   metaPanelSize: undefined,
   reconSize: undefined
 });
 
 const { info } = console;
 
-const data = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
-    const { data: { serviceId } } = payload;
-    return _dataInitialState.set('serviceId', serviceId);
-  },
-
-  [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
-    return state.set('serviceId', payload);
-  },
-
+export default handleActions({
   /**
    * Updates the state with a given value for the meta panel size.
    * Typically invoked by route when its URL query params have changed.
@@ -55,6 +45,4 @@ const data = handleActions({
 
     return state.set('reconSize', _size);
   }
-}, _dataInitialState);
-
-export default data;
+}, _initialState);

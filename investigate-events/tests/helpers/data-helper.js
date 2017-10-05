@@ -2,17 +2,8 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const DEFAULT_DATA = {
   data: {
-    serviceId: 'id1',
     metaPanelSize: undefined,
     reconSize: undefined
-  },
-  services: {
-    data: [
-      { 'id': 'id1', 'displayName': 'Service Name', 'name': 'CONCENTRATOR' },
-      { 'id': 'id2', 'displayName': 'Service Name2', 'name': 'BROKER' }
-    ],
-    isLoading: false,
-    isError: false
   },
   dictionaries: {
     aliases: undefined,
@@ -21,6 +12,17 @@ const DEFAULT_DATA = {
     languageCache: {},
     languageError: false,
     aliasesError: false
+  },
+  queryNode: {
+    serviceId: 'id1'
+  },
+  services: {
+    data: [
+      { 'id': 'id1', 'displayName': 'Service Name', 'name': 'CONCENTRATOR' },
+      { 'id': 'id2', 'displayName': 'Service Name2', 'name': 'BROKER' }
+    ],
+    isLoading: false,
+    isError: false
   }
 };
 
@@ -38,6 +40,21 @@ export default class DataHelper {
 
   initializeData(inputs = DEFAULT_DATA) {
     this.dispatch(ACTION_TYPES.INITIALIZE, inputs);
+    return this;
+  }
+
+  setAliases(aliases) {
+    this.dispatch(ACTION_TYPES.SET_ALIASES, aliases);
+    return this;
+  }
+
+  setLanguage(language) {
+    this.dispatch(ACTION_TYPES.SET_LANGUAGE, language);
+    return this;
+  }
+
+  setQueryParams(params) {
+    this.dispatch(ACTION_TYPES.SET_QUERY_PARAMS, params);
     return this;
   }
 

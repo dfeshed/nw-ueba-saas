@@ -23,14 +23,14 @@
 {{/power-select}}
 
 {{query-input
-  class="rsa-investigate-query-bar__query-input"
+  class='rsa-investigate-query-bar__query-input'
   queryString=queryString
 }}
 
 {{#rsa-form-button
-  class="rsa-investigate-query-bar__submit"
-  click=(action "submit")
-  isDisabled=submitDisabled
-  style="primary"}}
-  <span class="js-test-investigate-query-bar__submit">Query Events</span>
+  class='rsa-investigate-query-bar__submit'
+  click=(action 'submit')
+  isDisabled=(not hasRequiredValuesToQuery)
+  style='primary'}}
+  <span class='js-test-investigate-query-bar__submit'>Query Events</span>
 {{/rsa-form-button}}

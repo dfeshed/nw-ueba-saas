@@ -1,13 +1,12 @@
 import reselect from 'reselect';
+import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-utils';
 
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-// These tell the selectors below _where_ to find the property in state.
-// These functions are passed within the first Array argument to
-// `createSelector()`
 const _services = (state) => state.services.data;
-const _serviceId = (state) => state.data.serviceId;
+const _serviceId = (state) => state.queryNode.serviceId;
+const _queryNode = (state) => state.queryNode;
 
 // SELECTOR FUNCTIONS
 export const selectedService = createSelector(
@@ -16,6 +15,32 @@ export const selectedService = createSelector(
     let ret = null;
     if (services && Array.isArray(services)) {
       ret = services.find((e) => e.id === serviceId);
+    }
+    return ret;
+  }
+);
+
+export const servicesWithURI = createSelector(
+  [_services, _queryNode],
+  (services, queryNode) => {
+    const { startTime, endTime, metaFilter } = queryNode;
+    let ret = [];
+    if (services && Array.isArray(services)) {
+      ret = services.map((service) => {
+        const query = {
+          serviceId: service.id,
+          startTime,
+          endTime,
+          metaFilter: {
+            uri: metaFilter.uri,
+            conditions: []
+          }
+        };
+        return service.merge({
+          ...query,
+          queryURI: uriEncodeEventQuery(query)
+        });
+      });
     }
     return ret;
   }

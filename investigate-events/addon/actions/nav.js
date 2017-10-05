@@ -116,7 +116,7 @@ export default Mixin.create({
       return;
     }
     const state = this.get('redux').getState();
-    const { serviceId } = state.data;
+    const { serviceId } = state.queryNode;
     const language = state.dictionaries.languageCache[serviceId];
     if (language) {
       queryNode.set('value.language', language);
@@ -137,7 +137,7 @@ export default Mixin.create({
       return;
     }
     const state = this.get('redux').getState();
-    const { serviceId } = state.data;
+    const { serviceId } = state.queryNode;
     const aliases = state.dictionaries.aliasesCache[serviceId];
     if (aliases) {
       queryNode.set('value.aliases', aliases);

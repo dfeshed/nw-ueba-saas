@@ -13,7 +13,7 @@ const _initialState = Immutable.from({
   aliasesError: false
 });
 
-const dictionariesReducer = handleActions({
+export default handleActions({
   // Handles the results from a Promise call to fetch `language` for a given
   // service.
   [ACTION_TYPES.LANGUAGE_RETRIEVE]: (state, action) => {
@@ -64,7 +64,15 @@ const dictionariesReducer = handleActions({
     const { payload: serviceId } = action;
     const aliases = state.aliasesCache[serviceId];
     return state.merge({ aliases });
+  },
+
+  // Helper function for testing
+  [ACTION_TYPES.SET_ALIASES]: (state, { payload }) => {
+    return state.merge(payload);
+  },
+
+  // Helper function for testing
+  [ACTION_TYPES.SET_LANGUAGE]: (state, { payload }) => {
+    return state.merge(payload);
   }
 }, _initialState);
-
-export default dictionariesReducer;
