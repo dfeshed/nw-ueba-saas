@@ -3,26 +3,30 @@ import { connect } from 'ember-redux';
 import get from 'ember-metal/get';
 import { isEmpty } from 'ember-utils';
 import computed from 'ember-computed-decorators';
+import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
-const stateToComputed = ({ data }) => ({
-  size: data.metaPanelSize
+const stateToComputed = ({ investigate }) => ({
+  defaultMetaGroup: defaultMetaGroup(investigate),
+  aliases: investigate.dictionaries.aliases,
+  language: investigate.dictionaries.language,
+  serviceId: investigate.queryNode.serviceId,
+  sessionId: investigate.queryNode.sessionId,
+  size: investigate.data.metaPanelSize
 });
 
 const QueryContainerComponent = Component.extend({
-  eventId: -1,
-
   /**
    * The index of the `items` member whose id matches `selectedEventId`, if any;
    * -1 otherwise.  This is passed along to the data table.
    * @public
    */
-  @computed('eventId',
+  @computed('sessionId',
             'model.queryNode.value.results.events.data.[]',
             'model.queryNode.value.results.eventCount.data')
-  selectedIndex(eventId, items, total) {
+  selectedIndex(sessionId, items, total) {
     let idx = -1;
-    if (eventId !== -1 && !isEmpty(items)) {
-      const index = this._indexOfBy(items, 'sessionId', eventId);
+    if (sessionId && !isEmpty(items)) {
+      const index = this._indexOfBy(items, 'sessionId', sessionId);
       this.set('model.recon.index', index);
       this.set('model.recon.total', total);
       idx = index;

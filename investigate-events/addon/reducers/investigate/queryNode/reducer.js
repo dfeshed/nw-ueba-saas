@@ -4,21 +4,21 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  serviceId: '',
+  serviceId: undefined,
+  sessionId: undefined,
   startTime: 0,
   endTime: 0,
   metaFilter: {
-    uri: '',
+    uri: undefined,
     conditions: []
   },
   results: {
     events: {
-      status: 'idle',
+      status: undefined,
       data: undefined,
       reason: undefined,
       anchor: 0,
       goal: 0
-      // percent: selector as percentageOfEventsDataReturned
     },
     eventCount: {
       data: undefined,
@@ -37,6 +37,10 @@ const _initialState = Immutable.from({
 export default handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
     return _initialState.merge(payload.queryNode, { deep: true });
+  },
+
+  [ACTION_TYPES.SESSION_SELECTED]: (state, { payload }) => {
+    return state.set('sessionId', payload);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {

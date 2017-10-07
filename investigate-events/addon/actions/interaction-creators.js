@@ -34,6 +34,11 @@ export const setQueryTimeRange = (timeRange) => {
   };
 };
 
+export const setSessionId = (serviceId) => ({
+  type: ACTION_TYPES.SESSION_SELECTED,
+  payload: serviceId
+});
+
 export const setServiceId = (serviceId) => ({
   type: ACTION_TYPES.SERVICE_SELECTED,
   payload: serviceId

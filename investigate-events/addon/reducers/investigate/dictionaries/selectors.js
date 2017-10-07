@@ -22,7 +22,7 @@ const _createMetaGroup = (obj) => ({
 // SELECTOR FUNCTIONS
 export const defaultMetaGroup = createSelector(
   [_language],
-  (language) => ({
+  (language = []) => ({
     keys: language.reduce(_removeHiddenKeys, []).map(_createMetaGroup)
   })
 );

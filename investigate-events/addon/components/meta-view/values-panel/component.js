@@ -1,7 +1,8 @@
 import Component from 'ember-component';
-import { get } from 'ember-metal/get';
+// import get from 'ember-metal/get';
 
-import computed, { mapBy } from 'ember-computed-decorators';
+// import computed, { mapBy } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 
 export default Component.extend({
@@ -41,36 +42,44 @@ export default Component.extend({
    * @type {object[]}
    * @private
    */
-  @computed('group.keys.[]', 'metaKeyStates.[]')
+  @computed('group.keys', 'metaKeyStates.[]')
   metaKeyStatesForGroup: ((keys = [], states = []) => {
-    if (!states.length) {
-      return [];
+    let ret = [];
+    if (states.length) {
+      ret = keys.map((key) => states.findBy('info.metaName', key.name));
     }
-    return keys.map((key) => {
-      return states.findBy('info.metaName', get(key, 'name'));
-    });
+    return ret;
   }),
 
-  // We'd like to compute the subset of `metaKeyStatesForGroup` whose meta keys have no values.
-  // To do this, we'd want to use `metaKeyStatesForGroup.@each.values.isEmpty` as a dependency, but nested properties
-  // aren't supported after `.@each`; that is, a change in the nested property won't trigger a re-compute.
-  // So to workaround that, we map the nested property to an array, so we can use THAT array as our dependency.
-  // Note that, since the nested value we care about (`values.isEmpty`) is nested 2 levels deep, we need to
-  // do 2 mappings (1 map per level) in order for Ember to trigger re-computes when the nested value changes.
-  @mapBy('metaKeyStatesForGroup', 'values')
-  _metaKeyValues: null,
+  /**
+   * We'd like to compute the subset of `metaKeyStatesForGroup` whose meta keys
+   * have no values. To do this, we'd want to use
+   * `metaKeyStatesForGroup.@each.values.isEmpty` as a dependency, but nested
+   * properties aren't supported after `.@each`; that is, a change in the nested
+   * property won't trigger a re-compute. So to workaround that, we map the
+   * nested property to an array, so we can use THAT array as our dependency.
+   * Note that, since the nested value we care about (`values.isEmpty`) is
+   * nested 2 levels deep, we need to do 2 mappings (1 map per level) in order
+   * for Ember to trigger re-computes when the nested value changes.
+   * @private
+   */
+  // TODO - There is a conflict between Immutable and Ember. The below mapBy
+  // doesn't work because `values` doesn't exist. It's a computed property
+  // that never gets created, so this blows up.
+  // @mapBy('metaKeyStatesForGroup', 'values')
+  // _metaKeyValues: null,
+  // @mapBy('_metaKeyValues', 'isEmpty')
+  // _metaKeyIsEmpties: null,
 
-  @mapBy('_metaKeyValues', 'isEmpty')
-  _metaKeyIsEmpties: null,
-
-  @computed('_metaKeyIsEmpties.[]')
+  @computed('_metaKeyIsEmpties')
   emptyMetaKeyStates(isEmpties = []) {
-    const states = this.get('metaKeyStatesForGroup') || [];
-    return isEmpties.map((isEmpty, index) => {
-      if (isEmpty) {
-        return states[index];
-      }
-    }).compact();
+    return isEmpties;
+    // const states = this.get('metaKeyStatesForGroup') || [];
+    // return isEmpties.map((isEmpty, index) => {
+    //   if (isEmpty) {
+    //     return states[index];
+    //   }
+    // }).compact();
   },
 
   actions: {

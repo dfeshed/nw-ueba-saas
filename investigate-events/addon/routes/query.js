@@ -1,5 +1,5 @@
 import Route from 'ember-route';
-// import run from 'ember-runloop';
+import run from 'ember-runloop';
 import service from 'ember-service/inject';
 
 import {
@@ -10,7 +10,8 @@ import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-uti
 import {
   setMetaPanelSize,
   setQueryParams,
-  setReconPanelSize
+  setReconPanelSize,
+  setSessionId
 } from 'investigate-events/actions/interaction-creators';
 
 export default Route.extend({
@@ -72,13 +73,6 @@ export default Route.extend({
     const filterAttrs = parseEventQueryUri(params.filter);
     this.set('filterAttrs', filterAttrs);
 
-    // @workaround Using `this.send()` throws an error if you are navigating to
-    // this route directly from a bookmark. Ember tells us to use
-    // `transition.send()` in that case instead. We could, but then any
-    // sub-actions called by our initial action would not know to use
-    // `transition` instead. So instead we use `run.next()` to wait until the
-    // route has transitioned before calling any actions.
-    // run.next(() => {
     const { serviceId } = filterAttrs;
     const {
       eventId,
@@ -97,20 +91,21 @@ export default Route.extend({
     }
 
     if (serviceId && eventId && eventId !== -1) {
-      this.send('reconOpen', serviceId, eventId);
+      run.next(() => {
+        this.send('reconOpen', serviceId, eventId);
+      });
     }
     // TEMP HACK - We can't continue down our execution path until we get
     // `aliases` and `language`, so check if they are present before
     // continuing.
     setTimeout(this._checkForDictionaries.bind(this), 50);
-    // });
     return state;
   },
 
   // TEMP HACK - After fully converted to Redux, we will remove this.
   _checkForDictionaries() {
     const { redux, filterAttrs } = this.getProperties('redux', 'filterAttrs');
-    const { aliases, language } = redux.getState().dictionaries;
+    const { aliases, language } = redux.getState().investigate.dictionaries;
     if (aliases && language) {
       this.send('navFindOrAdd', filterAttrs);
     } else {
@@ -120,9 +115,9 @@ export default Route.extend({
 
   actions: {
     selectEvent(item, index) {
-      const state = this.modelFor('application');
-      const serviceId = state.get('queryNode.value.definition.serviceId');
+      const { serviceId } = this.get('redux').getState().investigate.queryNode;
       const { metas, sessionId } = item;
+      this.get('redux').dispatch(setSessionId(sessionId));
       this.send('reconOpen', serviceId, sessionId, metas, index);
     },
 
@@ -143,7 +138,7 @@ export default Route.extend({
     },
 
     metaPanelSize(size = 'default') {
-      const currentSize = this.get('redux').getState().metaPanelSize;
+      const currentSize = this.get('redux').getState().investigate.metaPanelSize;
       if (currentSize === size) {
         return;
       }

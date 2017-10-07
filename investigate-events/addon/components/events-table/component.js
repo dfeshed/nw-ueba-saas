@@ -3,8 +3,10 @@ import computed from 'ember-computed-decorators';
 
 import { connect } from 'ember-redux';
 
-const stateToComputed = ({ data: { reconSize } }) => ({
-  reconSize
+const stateToComputed = ({ investigate }) => ({
+  aliases: investigate.dictionaries.aliases,
+  language: investigate.dictionaries.language,
+  reconSize: investigate.data.reconSize
 });
 
 const EventsTable = Component.extend({
@@ -17,8 +19,6 @@ const EventsTable = Component.extend({
   // Passed along to data table.
   items: undefined,
   columnsConfig: undefined,
-  language: undefined,
-  aliases: undefined,
   rowClickAction: undefined,
   loadLogsAction: undefined,
 

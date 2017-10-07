@@ -7,7 +7,7 @@
 import Ember from 'ember';
 import service from 'ember-service/inject';
 
-import { defaultMetaGroup } from 'investigate-events/reducers/dictionaries/selectors';
+import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import MetaKeyState from 'investigate-events/state/meta-key';
 import {
   buildMetaValueStreamInputs,
@@ -35,7 +35,7 @@ export default Mixin.create({
       if (!queryNode) {
         return;
       }
-      const state = this.get('redux').getState();
+      const state = this.get('redux').getState().investigate;
       const { language } = state.dictionaries;
       // Ensure we have one state object per each possible meta key's request for values.
       const metaKeyStates = queryNode.get('value.results.metaKeyStates');

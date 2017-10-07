@@ -6,8 +6,8 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 
-const stateToComputed = ({ data }) => ({
-  size: data.metaPanelSize
+const stateToComputed = ({ investigate }) => ({
+  size: investigate.data.metaPanelSize
 });
 
 const MetaViewComponent = Component.extend({

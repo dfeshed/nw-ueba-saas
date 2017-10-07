@@ -1,5 +1,5 @@
 import Component from 'ember-component';
-import { observer } from 'ember-metal/observer';
+import observer from 'ember-metal/observer';
 import { assign } from 'ember-platform';
 
 import { connect } from 'ember-redux';
@@ -9,9 +9,9 @@ import { metaValueAlias } from 'investigate-events/helpers/meta-value-alias';
 import { select, event } from 'd3-selection';
 import entityTypeByMeta from './entity-type-by-meta';
 
-const stateToComputed = ({ dictionaries }) => ({
-  aliases: dictionaries.aliases,
-  language: dictionaries.language
+const stateToComputed = ({ investigate }) => ({
+  aliases: investigate.dictionaries.aliases,
+  language: investigate.dictionaries.language
 });
 
 const KeyValueComponent = Component.extend({

@@ -115,7 +115,7 @@ export default Mixin.create({
     if (!queryNode || queryNode.get('value.language.status') === 'resolved') {
       return;
     }
-    const state = this.get('redux').getState();
+    const state = this.get('redux').getState().investigate;
     const { serviceId } = state.queryNode;
     const language = state.dictionaries.languageCache[serviceId];
     if (language) {
@@ -136,7 +136,7 @@ export default Mixin.create({
     if (!queryNode || (queryNode.get('value.aliases.status') === 'resolved')) {
       return;
     }
-    const state = this.get('redux').getState();
+    const state = this.get('redux').getState().investigate;
     const { serviceId } = state.queryNode;
     const aliases = state.dictionaries.aliasesCache[serviceId];
     if (aliases) {

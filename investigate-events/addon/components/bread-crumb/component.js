@@ -9,29 +9,21 @@ import { metaKeyAlias } from 'investigate-events/helpers/meta-key-alias';
 import {
   selectedService,
   servicesWithURI
-} from 'investigate-events/reducers/services/selectors';
+} from 'investigate-events/reducers/investigate/services/selectors';
 import $ from 'jquery';
 
-const stateToComputed = (state) => ({
-  serviceObject: selectedService(state),
-  servicesWithURI: servicesWithURI(state),
-  serviceData: state.services.data,
-  queryNode: state.queryNode,
-  // serviceId: state.queryNode.serviceId,
-  startTime: state.queryNode.startTime,
-  endTime: state.queryNode.endTime,
-  // metaFilter: state.queryNode.metaFilter,
-  language: state.dictionaries.language,
-  aliases: state.dictionaries.aliases
-});
-// const stateToComputed = (ie, { ie: { services, queryNode } }) => ({
-//   serviceObject: selectedService(ie),
-//   serviceData: services.data,
-//   serviceId: queryNode.serviceId,
-//   startTime: queryNode.startTime,
-//   endTime: queryNode.endTime,
-//   metaFilter: queryNode.metaFilter
-// });
+const stateToComputed = ({ investigate }) => {
+  return {
+    serviceObject: selectedService(investigate),
+    servicesWithURI: servicesWithURI(investigate),
+    serviceData: investigate.services.data,
+    queryNode: investigate.queryNode,
+    startTime: investigate.queryNode.startTime,
+    endTime: investigate.queryNode.endTime,
+    language: investigate.dictionaries.language,
+    aliases: investigate.dictionaries.aliases
+  };
+};
 
 const BreadCrumbComponent = Component.extend({
   dateFormat: service(),
@@ -46,20 +38,28 @@ const BreadCrumbComponent = Component.extend({
   @empty('queryString')
   isInvalidQuery: false,
 
-  // Compute an options hash for the utilities which will format the meta values.
-  // The options hash will include any meta value aliases defined on the Core device.
-  // For consistency with 10.6 UI, it will also include some i18n strings for certain event types (i.e., `medium`s).
-  // These event types (namely, Network, Log & Correlation) are to be rendered as i18n strings consistently across all
-  // deployments, regardless of whether or not the customer has bothered to define aliases for them. Note that there
-  // may be other event types found in data; for those, the UI will still support aliases (non-i18n), if defined.
-  @computed('i18n', 'aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'timezone.selected.zoneId')
-  _opts(i18n, aliases) {
+  /**
+   * Compute an options hash for the utilities which will format the meta
+   * values. The options hash will include any meta value aliases defined on the
+   * Core device. For consistency with 10.6 UI, it will also include some i18n
+   * strings for certain event types (i.e., `medium`s). These event types
+   * (namely, Network, Log & Correlation) are to be rendered as i18n strings
+   * consistently across all deployments, regardless of whether or not the
+   * customer has bothered to define aliases for them. Note that there may be
+   * other event types found in data; for those, the UI will still support
+   * aliases (non-i18n), if defined.
+   * @private
+   */
+  @computed('i18n', 'aliases', 'dateFormat.selected.format',
+            'timeFormat.selected.format', 'timezone.selected.zoneId')
+  _opts(i18n, aliases, dateFormat, timeFormat, timeZone) {
     return {
       aliases,
-      dateTimeFormat: `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`,
-      timeZone: this.get('timezone.selected.zoneId'),
+      dateTimeFormat: `${dateFormat} ${timeFormat}`,
+      timeZone,
       i18n: i18n && {
-        // For these values, display them as i18n strings (rather than alias strings which are not localized).
+        // For these values, display them as i18n strings (rather than alias
+        // strings which are not localized).
         medium: {
           '1': i18n.t('investigate.medium.network'),
           '32': i18n.t('investigate.medium.log'),
@@ -69,11 +69,18 @@ const BreadCrumbComponent = Component.extend({
     };
   },
 
-  // Resolves to true if the given query has some meta filter conditions.
+  /**
+   * Resolves to true if the given query has some meta filter conditions.
+   * @public
+   */
   @bool('queryNode.metaFilter.conditions.length')
   hasDrill: null,
 
-  // Computes URI for the given query WITHOUT the query's meta filter conditions.
+  /**
+   * Computes URI for the given query WITHOUT the query's meta filter
+   * conditions.
+   * @public
+   */
   @computed('queryNode')
   baseUri(queryNode) {
     if (!queryNode) {
@@ -84,11 +91,16 @@ const BreadCrumbComponent = Component.extend({
     return uriEncodeEventQuery(clone);
   },
 
-  // Maps the given query's conditions to a set of objects with information for each key, including:
-  // * `keyFormat`: raw & friendly names for meta key;
-  // * `valueFormat`: raw & friendly names for meta value;
-  // * `gotoUri`: URI for the hyperlink to "jump to" this filter condition (i.e., truncate all subsequent conditions);
-  // * `deleteUri`: URI for the hyperlink to remove this filter condition.
+  /**
+   * Maps the given query's conditions to a set of objects with information for
+   * each key, including:
+   * `keyFormat`: raw & friendly names for meta key;
+   * `valueFormat`: raw & friendly names for meta value;
+   * `gotoUri`: URI for the hyperlink to "jump to" this filter condition
+   *            (i.e., truncate all subsequent conditions);
+   * `deleteUri`: URI for the hyperlink to remove this filter condition.
+   * @public
+   */
   @computed('queryNode', 'language', '_opts')
   crumbs(queryNode, language, opts) {
     const { metaFilter } = queryNode;

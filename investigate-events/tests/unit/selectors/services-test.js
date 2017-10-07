@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { servicesWithURI } from 'investigate-events/reducers/services/selectors';
+import { servicesWithURI } from 'investigate-events/reducers/investigate/services/selectors';
 
 module('Unit | Selectors | services');
 

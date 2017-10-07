@@ -25,8 +25,7 @@ export default Mixin.create({
      */
     reconOpen(serviceId, eventId, metas, index) {
       const total = this.get('state.queryNode.value.results.eventCount.data');
-      const { metaPanelSize, reconPanelSize } = this.get('redux').getState();
-
+      const { metaPanelSize, reconSize } = this.get('redux').getState().investigate.data;
       this.get('state.recon').setProperties({
         isOpen: true,
         serviceId,
@@ -40,7 +39,7 @@ export default Mixin.create({
       this.get('redux').dispatch(setMetaPanelSize('min'));
       this.send('contextPanelClose');
 
-      this.transitionTo({ queryParams: { eventId, reconPanelSize } });
+      this.transitionTo({ queryParams: { eventId, reconSize } });
     },
 
     /**
@@ -119,7 +118,7 @@ export default Mixin.create({
 
     toggleReconSize() {
       if (this.get('state.recon.isOpen')) {
-        const { reconPanelSize: size } = this.get('redux').getState();
+        const { reconSize: size } = this.get('redux').getState().investigate.data;
         if (size === 'max') {
           this.send('reconShrink');
         } else if (size === 'min') {
@@ -130,7 +129,7 @@ export default Mixin.create({
 
     toggleSlaveFullScreen() {
       if (this.get('state.recon.isOpen')) {
-        const { reconPanelSize: size } = this.get('redux').getState();
+        const { reconSize: size } = this.get('redux').getState().investigate.data;
         if (size === 'full') {
           // Set to previous size
           if (this.get('_size') === 'min') {

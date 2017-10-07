@@ -19,7 +19,7 @@
     <section class="rsa-investigate-query__body-master">
       <aside class="rsa-investigate-query__body-master-aside">
         {{meta-view
-          group=model.queryNode.value.language.defaultMetaGroup
+          group=defaultMetaGroup
           metaKeyStates=model.queryNode.value.results.metaKeyStates
           query=model.queryNode.value.definition
           minSizeAction=(route-action "metaPanelSize" 'min')
@@ -36,8 +36,6 @@
           items=model.queryNode.value.results.events.data
           selectedIndex=selectedIndex
           columnsConfig=model.eventColumnGroups.selected.columns
-          language=model.queryNode.value.language.data
-          aliases=model.queryNode.value.aliases
           status=model.queryNode.value.results.events.status
           percent=model.queryNode.value.results.events.percent
           rowClickAction=(route-action "selectEvent")
@@ -54,10 +52,10 @@
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">
-      {{#if (and model.recon.serviceId model.recon.eventId)}}
+      {{#if (and serviceId sessionId)}}
         {{recon-container
-          serviceId=model.recon.serviceId
-          eventId=model.recon.eventId
+          serviceId=serviceId
+          eventId=sessionId
           meta=model.recon.metas
           index=model.recon.index
           total=model.recon.total
@@ -66,8 +64,8 @@
           expandAction=(route-action 'reconExpand')
           shrinkAction=(route-action 'reconShrink')
           linkToFileAction=(route-action 'reconLinkToFile')
-          language=model.queryNode.value.language
-          aliases=model.queryNode.value.aliases}}
+          language=language
+          aliases=aliases}}
       {{/if}}
     </vbox>
   </section>

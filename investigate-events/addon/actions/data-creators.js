@@ -9,8 +9,8 @@ import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
  */
 export const initializeDictionaries = () => {
   return (dispatch, getState) => {
-    const { serviceId } = getState().queryNode;
-    const { aliasesCache, languageCache } = getState().dictionaries;
+    const { serviceId } = getState().investigate.queryNode;
+    const { aliasesCache, languageCache } = getState().investigate.dictionaries;
 
     if (!languageCache[serviceId]) {
       dispatch({
@@ -49,7 +49,7 @@ export const initializeDictionaries = () => {
  */
 export const initializeServices = () => {
   return (dispatch, getState) => {
-    const { services } = getState();
+    const { services } = getState().investigate;
     if (!services.data) {
       dispatch({
         type: ACTION_TYPES.SERVICES_RETRIEVE,
