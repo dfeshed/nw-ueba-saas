@@ -1,14 +1,22 @@
 package presidio.output.processor.services.user;
 
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -45,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-        public User createUserEntity(String userId) {
+    public User createUserEntity(String userId) {
         UserDetails userDetails = getUserDetails(userId);
         if (userDetails == null) {
             return null;
@@ -59,8 +67,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(List<User> users) {
-        userPersistencyService.save(users);
+    public List<User> save(List<User> users) {
+        Iterable<User> savedUsers = userPersistencyService.save(users);
+        List<User> usersList = IteratorUtils.toList(savedUsers.iterator());
+        return usersList;
     }
 
     private UserDetails getUserDetails(String userId) {
@@ -83,12 +93,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserAlertData(User user, List<String> classification, List<String> indicators) {
-        user.setAlertClassifications(classification);
-        user.setIndicators(indicators);
+    public void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity) {
 
-        int alertsCount = user.getAlertsCount();
-        user.setAlertsCount(alertsCount++);
+        List<String> classificationUnion = unionOfCollectionsToList(user.getAlertClassifications(), classification);
+        user.setAlertClassifications(classificationUnion);
+        List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), indicators);
+        user.setIndicators(indicatorsUnion);
+        user.incrementAlertsCountByOne();
+        userScoreService.increaseUserScoreWithoutSaving(alertSeverity, user);
     }
 
     @Override
@@ -105,7 +117,7 @@ public class UserServiceImpl implements UserService {
             usersIDForBatch.add(entry.getKey());
             if (usersIDForBatch.size() < defaultUsersBatchSize) {
                 continue;
-    }
+            }
             //Update user score batch
             changedUsers.addAll(updateUserAlertDataForBatch(aggregatedUserScore, usersIDForBatch));
 
@@ -113,7 +125,7 @@ public class UserServiceImpl implements UserService {
             //After batch calculation, reset the set
             usersIDForBatch.clear();
 
-    }
+        }
 
         if (!usersIDForBatch.isEmpty()) {
             //there is leftover smaller then batch size
@@ -153,7 +165,7 @@ public class UserServiceImpl implements UserService {
             double newUserScore = aggregatedUserScore.get(user.getUserId()).getUserScore();
             if (user.getScore() != newUserScore) {
                 user.setScore(newUserScore);
-                user.setAlertsCount(user.getAlertsCount() + 1);
+                user.incrementAlertsCountByOne();
                 changedUsers.add(user);
             }
         });
@@ -161,15 +173,27 @@ public class UserServiceImpl implements UserService {
         return changedUsers;
     }
 
-    public List<User> findUserByVendorUserIds(List<String> vendorUserId){
+    public List<User> findUserByVendorUserIds(List<String> vendorUserId) {
         UserQuery userQuery = new UserQuery.UserQueryBuilder().filterByUsersIds(vendorUserId).build();
 
-        Page<User> usersPage =this.userPersistencyService.find(userQuery);
-        if (!usersPage.hasContent() || usersPage.getContent().size()<1){
+        Page<User> usersPage = this.userPersistencyService.find(userQuery);
+        if (!usersPage.hasContent() || usersPage.getContent().size() < 1) {
             return null;
         }
 
         return usersPage.getContent();
+    }
+
+    private List<String> unionOfCollectionsToList(Collection col1, Collection col2) {
+        if (CollectionUtils.isEmpty(col1) || CollectionUtils.isEmpty(col2)) {
+            if (CollectionUtils.isEmpty(col1) && CollectionUtils.isEmpty(col2)) {
+                return null;
+            } else {
+                return CollectionUtils.isEmpty(col1) ? (List<String>) col2 : (List<String>) col1;
+            }
+        } else {
+            return (List<String>) CollectionUtils.union(col1, col2);
+        }
     }
 
 }

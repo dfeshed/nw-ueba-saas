@@ -7,12 +7,24 @@
       "has_uninstall":"false"
     },
     {
+      "filePath": "kerb_files_permissions.sh",
+      "executor": "default",
+      "description": "Setting kerb files permissions ",
+      "has_uninstall":"false"
+    },
+    {
       "filePath": "config_server.sh",
       "executor": "default",
       "description": "Installing configuration server and service",
       "has_uninstall":"true",
       "uninstall_param":"--uninstall",
       "uninstall_description":"Uninstalling configuration server"
+    },
+    {
+      "filePath": "airflow_dir.sh",
+      "executor": "default",
+      "description": "Creating airflow pid directory and restarting webserver",
+      "has_uninstall":"false"
     }
   ]
 }

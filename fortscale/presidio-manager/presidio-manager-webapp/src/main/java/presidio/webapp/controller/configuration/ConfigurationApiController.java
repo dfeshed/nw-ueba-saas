@@ -1,8 +1,10 @@
 package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import fortscale.utils.logging.Logger;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.ValidationResults;
-import presidio.webapp.model.PatchRequest;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
@@ -29,9 +30,10 @@ import java.util.List;
 
 @Controller
 public class ConfigurationApiController implements ConfigurationApi {
+    private static final Logger logger = Logger.getLogger(ConfigurationApiController.class);
 
-    @Value("${keytab.file.path}")
     private String keytabFileLocation;
+    private List<String> activeProfiles;
 
     private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio";
 
@@ -39,18 +41,43 @@ public class ConfigurationApiController implements ConfigurationApi {
 
     private ConfigurationServerClientService configServerClient;
 
+
     public ConfigurationApiController(ConfigurationManagerService configurationManagerService,
-                                      ConfigurationServerClientService configServerClient) {
+                                      ConfigurationServerClientService configServerClient, List<String> activeProfiles, String keytabFileLocation) {
         this.configurationManagerService = configurationManagerService;
         this.configServerClient = configServerClient;
+        this.activeProfiles = activeProfiles;
+        this.keytabFileLocation = keytabFileLocation;
     }
 
-    public ResponseEntity<List<SecuredConfiguration>> configurationGet() {
-        //TODO implement
-        return new ResponseEntity<List<SecuredConfiguration>>(HttpStatus.OK);
+    private String getProfile() {
+        return activeProfiles.get(0);
     }
 
-    public ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("file") MultipartFile keytabFile) {
+    public ResponseEntity<SecuredConfiguration> configurationGet() {
+        SecuredConfiguration configuration;
+        try {
+            configuration = readCurrentSecuredConfiguration();
+            return new ResponseEntity<SecuredConfiguration>(configuration, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("an error occured while getting configuration", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private SecuredConfiguration readCurrentSecuredConfiguration() {
+        // assuming the first profile is the relvant for configuration retrieval
+        String profile = getProfile();
+        return (SecuredConfiguration) configServerClient.readConfiguration(SecuredConfiguration.class, PRESIDO_CONFIGURATION_FILE_NAME, profile).getBody();
+    }
+
+    private JsonNode readCurrentFullConfigurationAsJsonNode() {
+        // assuming the first profile is the relvant for configuration retrieval
+        String profile = getProfile();
+        return (JsonNode) configServerClient.readConfiguration(JsonNode.class, PRESIDO_CONFIGURATION_FILE_NAME, profile).getBody();
+    }
+
+    public ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("keytabFile") MultipartFile keytabFile) {
         File convFile = new File(keytabFileLocation);
         try {
             convFile.createNewFile();
@@ -66,22 +93,33 @@ public class ConfigurationApiController implements ConfigurationApi {
 
     }
 
-    public ResponseEntity<SecuredConfiguration> configurationPatch(
+    public ResponseEntity<ConfigurationResponse> configurationPatch(
             @ApiParam(value = "A Json patch request as defined by RFC 6902 (http://jsonpatch.com/)",
                     required = true)
-            @RequestBody PatchRequest jsonPatch) {
+            @RequestBody JsonPatch jsonPatch) {
+        JsonNode jsonNode = readCurrentFullConfigurationAsJsonNode();
+        JsonNode patchedJson;
+        try {
+            patchedJson = jsonPatch.apply(jsonNode);
 
-        //TODO- implement
-        return new ResponseEntity<SecuredConfiguration>(HttpStatus.OK);
+            return updatedConfiguration(patchedJson);
+        } catch (JsonPatchException e) {
+            logger.error("got an error while performaing jsonPatch={}", jsonPatch, e);
+            return new ResponseEntity<ConfigurationResponse>(HttpStatus.UNPROCESSABLE_ENTITY);
+
+        }
     }
 
     public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
+        return updatedConfiguration(body);
+    }
+
+    private ResponseEntity<ConfigurationResponse> updatedConfiguration(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
         ConfigurationResponse configurationResponse = new ConfigurationResponse();
 
         ValidationResults validationResults = configurationManagerService.validateConfiguration(configurationManagerService.presidioManagerConfigurationFactory(body));
         if (!validationResults.isValid()) {
             configurationResponse.setMessage("error message");
-            configurationResponse.setCode(HttpStatus.BAD_REQUEST.toString());
 
             List<ConfigurationResponseError> errorList = new ArrayList<ConfigurationResponseError>();
             ConfigurationResponseError error;
@@ -97,17 +135,21 @@ public class ConfigurationApiController implements ConfigurationApi {
             configurationResponse.error(errorList);
             return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
         }
-        
-        configurationResponse.code("201");
+
         configurationResponse.message("Created");
 
-            //storing configuration file into config server
-            configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
+        //storing configuration file into config server
+        configServerClient.storeConfigurationFile(PRESIDO_CONFIGURATION_FILE_NAME, body);
 
-            //applying configuration to all consumers
-            configurationManagerService.applyConfiguration();
+        //applying configuration to all consumers
+        boolean applyConfigurationResult = configurationManagerService.applyConfiguration();
+        if(!applyConfigurationResult)
+        {
+            logger.error("failed to apply configuration");
+            return new ResponseEntity<ConfigurationResponse>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.OK);
+        return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.CREATED);
     }
 
 }
