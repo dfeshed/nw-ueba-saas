@@ -2,7 +2,7 @@ package presidio.data.generators.machine;
 
 import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.IStringGenerator;
-import presidio.data.generators.utils.StringGeneratorUtils;
+import presidio.data.generators.utils.StringUtils;
 
 public class HostnameFromUsernameGenerator extends CyclicValuesGenerator<String> implements IStringGenerator {
 
@@ -11,7 +11,7 @@ public class HostnameFromUsernameGenerator extends CyclicValuesGenerator<String>
     }
 
     public HostnameFromUsernameGenerator(String username, int numberOfHosts) {
-        super(StringGeneratorUtils.buildUniqueAlphabetStrings(username, "src", numberOfHosts));
+        super(StringUtils.buildUniqueAlphabetStrings(username, "src", numberOfHosts));
     }
 
  }
