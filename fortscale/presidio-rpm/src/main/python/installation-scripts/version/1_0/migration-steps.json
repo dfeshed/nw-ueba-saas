@@ -7,6 +7,12 @@
       "has_uninstall":"false"
     },
     {
+      "filePath": "kerb_files_permissions.sh",
+      "executor": "default",
+      "description": "Setting kerb files permissions ",
+      "has_uninstall":"false"
+    },
+    {
       "filePath": "config_server.sh",
       "executor": "default",
       "description": "Installing configuration server and service",
