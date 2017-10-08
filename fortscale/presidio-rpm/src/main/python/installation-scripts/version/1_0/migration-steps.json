@@ -13,6 +13,12 @@
       "has_uninstall":"true",
       "uninstall_param":"--uninstall",
       "uninstall_description":"Uninstalling configuration server"
+    },
+    {
+      "filePath": "airflow_dir.sh",
+      "executor": "default",
+      "description": "Creating airflow pid directory and restarting webserver",
+      "has_uninstall":"false"
     }
   ]
 }
