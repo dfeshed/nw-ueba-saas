@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.mongodb.*;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
-import fortscale.utils.mongodb.index.DynamicIndexApplicationListenerConfig;
+import fortscale.utils.mongodb.index.DynamicIndexingApplicationListenerConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,17 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by rans on 27/10/15.
- */
 @Configuration
 @EnableMongoAuditing
-@Import(DynamicIndexApplicationListenerConfig.class)
+@Import(DynamicIndexingApplicationListenerConfig.class)
 public class MongoConfig extends AbstractMongoConfiguration {
-
     @Value("${mongo.db.name}")
     protected String mongoDBName;
-    @Autowired (required = false)
+    @Autowired(required = false)
     private List<Converter> converters;
     @Value("${mongo.host.name}")
     private String mongoHostName;
@@ -41,26 +37,21 @@ public class MongoConfig extends AbstractMongoConfiguration {
     private int mongoHostPort;
     @Value("${mongo.db.user}")
     private String mongoUserName;
-
     @Value("${mongo.db.password}")
     private String mongoPassword;
-
     @Value("${mongo.map.dot.replacement}")
-    private String mapKeyDotReplacemant;
-
+    private String mapKeyDotReplacement;
     @Value("${mongo.map.dollar.replacement}")
-    private String mapKeyDollarReplacemant;
+    private String mapKeyDollarReplacement;
 
     @Bean
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {
-
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
         FSMappingMongoConverter converter = new FSMappingMongoConverter(dbRefResolver, mongoMappingContext());
-        converter.setMapKeyDotReplacement(mapKeyDotReplacemant);
-        converter.setMapKeyDollarReplacement(mapKeyDollarReplacemant);
+        converter.setMapKeyDotReplacement(mapKeyDotReplacement);
+        converter.setMapKeyDollarReplacement(mapKeyDollarReplacement);
         converter.setCustomConversions(customConversions());
-
         return converter;
     }
 
@@ -83,26 +74,23 @@ public class MongoConfig extends AbstractMongoConfiguration {
                             EncryptionUtils.decrypt(mongoPassword).toCharArray()
                     )
             );
-
             client = new MongoClient(address, credentials);
         } else {
-            client = new MongoClient(mongoHostName,mongoHostPort);
+            client = new MongoClient(mongoHostName, mongoHostPort);
         }
-
         client.setWriteConcern(WriteConcern.SAFE);
         return client;
     }
 
     @Override
     protected Collection<String> getMappingBasePackages() {
-        return Lists.newArrayList("fortscale","presidio");
+        return Lists.newArrayList("fortscale", "presidio");
     }
 
     @Bean
     @Override
     public CustomConversions customConversions() {
-        if(converters==null)
-        {
+        if (converters == null) {
             return super.customConversions();
         }
         return new CustomConversions(converters);

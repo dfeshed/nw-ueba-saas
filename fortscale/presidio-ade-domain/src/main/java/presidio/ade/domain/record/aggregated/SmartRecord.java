@@ -5,7 +5,6 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.mongodb.index.DynamicIndexing;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeScoredRecord;
@@ -20,13 +19,10 @@ import java.util.Map;
  * @author Lior Govrin
  */
 @Document
-@CompoundIndexes({
-		@CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-		@CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true),
+@DynamicIndexing(compoundIndexes = {
 		@CompoundIndex(name = "ctxStartScr", def = "{'contextId': 1, 'startInstant': 1, 'smartScore': 1}"),
 		@CompoundIndex(name = "startScr", def = "{'startInstant': 1, 'smartScore': 1}")
 })
-@DynamicIndexing(includeCompoundIndexDefinitionsOfProperties = false)
 public class SmartRecord extends AdeContextualAggregatedRecord implements AdeScoredRecord {
 	private static final String ADE_EVENT_TYPE_PREFIX = "smart_";
 
