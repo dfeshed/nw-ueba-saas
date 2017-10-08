@@ -170,11 +170,10 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         // start instance case -> WORKAROUND - start_instant is not part of the ADE context
         if (START_INSTANT.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
             distinctFeatureValues.add(adeAggregationRecord.getStartInstant().toString());
+        } else {
+            // get distinct values of all the scored events from ADE
+            distinctFeatureValues.addAll(adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(indicatorConfig.getAdeEventType(), contextFieldAndValue, timeRange, indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0));
         }
-
-        // get distinct values of all the scored events from ADE
-        distinctFeatureValues.addAll(adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(indicatorConfig.getAdeEventType(), contextFieldAndValue, timeRange, indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0));
-
         return distinctFeatureValues;
     }
 

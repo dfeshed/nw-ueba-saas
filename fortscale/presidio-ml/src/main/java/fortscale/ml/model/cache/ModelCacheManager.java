@@ -15,4 +15,9 @@ public interface ModelCacheManager {
 	 * @param contextId
      */
 	void deleteFromCache(String modelConfName, String contextId);
+
+	/**
+	 * Reset cache
+	 */
+	void resetCache();
 }

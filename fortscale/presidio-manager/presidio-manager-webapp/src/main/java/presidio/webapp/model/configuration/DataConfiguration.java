@@ -2,11 +2,12 @@ package presidio.webapp.model.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import org.joda.time.DateTime;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * DataConfiguration
@@ -18,7 +19,7 @@ public class DataConfiguration {
     private List<SchemasEnum> schemas = new ArrayList<SchemasEnum>();
 
     @JsonProperty("startTime")
-    private DateTime startTime = null;
+    private Instant startTime = null;
 
     public DataConfiguration schemas(List<SchemasEnum> schemas) {
         this.schemas = schemas;
@@ -41,10 +42,10 @@ public class DataConfiguration {
     }
 
     public void setSchemas(List<SchemasEnum> schemas) {
-        this.schemas = schemas;
+        this.schemas = schemas.stream().filter(schemasEnum -> schemasEnum != null).collect(Collectors.toList());
     }
 
-    public DataConfiguration startTime(DateTime startTime) {
+    public DataConfiguration startTime(Instant startTime) {
         this.startTime = startTime;
         return this;
     }
@@ -55,11 +56,11 @@ public class DataConfiguration {
      * @return startTime
      **/
     @ApiModelProperty(example = "2007-12-03T10:15:30.00Z", value = "Date time in ISO-format UTC determining the first event time to be used for anomaly detection")
-    public DateTime getStartTime() {
+    public Instant getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(DateTime startTime) {
+    public void setStartTime(Instant startTime) {
         this.startTime = startTime;
     }
 
