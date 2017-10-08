@@ -13,14 +13,10 @@ import java.util.UUID;
 public abstract class AbstractElasticDocument {
 
     public static final String INDEX_NAME = "presidio-output";
-    public static final String CREATED_BY_AT = "presidio-output event time ";
 
     @Id
     @Field(type = FieldType.String, store = true)
     private String id;
-
-    @Field(type = FieldType.String, store = true)
-    private String createdBy;
 
     @Field(type = FieldType.Date, store = true)
     private Date createdDate;
@@ -30,8 +26,14 @@ public abstract class AbstractElasticDocument {
 
     public AbstractElasticDocument(String id, Date createdDate, Date updatedDate) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
+        if (this.createdDate == null) {
+            Date date = new Date();
+            this.createdDate = createdDate;
+            this.updatedDate = date;
+        } else {
+            this.createdDate = createdDate;
+            this.updatedDate = updatedDate;
+        }
     }
 
     public AbstractElasticDocument() {
@@ -57,17 +59,10 @@ public abstract class AbstractElasticDocument {
         this.createdDate = createdDate;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
     public Date getUpdatedDate() {
         return updatedDate;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = CREATED_BY_AT + createdBy;
-    }
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
