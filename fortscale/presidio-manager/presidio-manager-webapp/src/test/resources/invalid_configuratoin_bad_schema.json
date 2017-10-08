@@ -1,5 +1,6 @@
 {
   "system": {
+    "krbServiceName":  "HTTP/hostname@fortscale.dom",
     "username": "presidio@somecompany.dom",
     "password": "password",
     "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
@@ -11,6 +12,6 @@
     "schemas": [
       "badFile"
     ],
-    "startTime": "2007-12-03 10:15:30"
+    "startTime": "2007-12-03T10:15:30Z"
   }
 }

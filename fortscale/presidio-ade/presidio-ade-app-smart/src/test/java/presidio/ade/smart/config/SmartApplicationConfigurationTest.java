@@ -29,7 +29,7 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         // Model conf service
         properties.put("presidio.modeling.base.configurations.path", "classpath*:config/asl/models/smart-records/*.json");
         // Additional properties
-        properties.put("presidio.ade.aggregation.records.threshold", 0);
+        properties.put("presidio.ade.aggregation.records.threshold", 10);
         properties.put("presidio.ade.aggregation.data.pagination.service.num.of.context.ids.in.page","1000");
         properties.put("presidio.application.name","smart");
         properties.put("presidio.default.ttl.duration","PT48H");

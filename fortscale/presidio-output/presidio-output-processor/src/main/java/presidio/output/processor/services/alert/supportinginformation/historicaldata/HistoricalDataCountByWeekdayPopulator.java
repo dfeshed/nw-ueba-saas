@@ -9,6 +9,10 @@ import presidio.output.domain.records.alerts.WeekdayAggregation;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,52 +41,48 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
         for (DailyHistogram<String> dailyHistogram : dailyHistograms) {
 
             Integer dayOfWeek = dailyHistogram.getDate().getDayOfWeek().ordinal();
-
             if (dailyHistogram.getHistogram() == null) {
-                // TODO: logger
-                //logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
                 continue;
             }
+
+            Map<Integer, Double> hoursMap = (weekdayMap.get(dayOfWeek) != null)? weekdayMap.get(dayOfWeek): new HashMap<Integer, Double>();
 
             // iterate over hours and aggregate the data per dayofweek / hour
             for (Map.Entry<String, Double> hoursHistogram : dailyHistogram.getHistogram().entrySet()) {
 
-                    Integer hour = Integer.parseInt(hoursHistogram.getKey());
-
-                    if (TimeUtils.isOrdinalHourValid(hour)) {
-                        throw new IllegalStateException("Hour value is out of range - " + hour);
-                    }
-
-                    Double currValue = hoursHistogram.getValue();
-
-                    Map<Integer, Double> hoursMap = (weekdayMap.get(dayOfWeek) != null)? weekdayMap.get(dayOfWeek): new HashMap<Integer, Double>();
-
-                    Double currHistogramValue = (hoursMap.get(hour) != null) ?  hoursMap.get(hour) : 0.0;
-
-                    hoursMap.put(hour, currHistogramValue + currValue);
-
-                    weekdayMap.put(dayOfWeek, hoursMap);
-                }
-
+                Instant instant = Instant.ofEpochSecond(Long.parseLong(hoursHistogram.getKey()));
+                LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
+                int hour = localDateTime.getHour();
+                Double currValue = hoursHistogram.getValue();
+                Double currHistogramValue = (hoursMap.get(hour) != null) ?  hoursMap.get(hour) : 0.0;
+                hoursMap.put(hour, currHistogramValue + currValue);
             }
+
+            weekdayMap.put(dayOfWeek, hoursMap);
+
+        }
 
 
         // cretae output
         List<Bucket<String,List<Bucket<String, Integer>>>> buckets = new ArrayList<Bucket<String,List<Bucket<String, Integer>>>>();
+        Instant anomalyInstant = Instant.parse(anomalyValue);
+        int anomalyDayOfWeek = LocalDateTime.ofInstant(anomalyInstant, ZoneOffset.UTC).getDayOfWeek().ordinal();
+        int anomalyHourOfWeek = LocalDateTime.ofInstant(anomalyInstant, ZoneOffset.UTC).getHour();
 
-        for (Integer datOfWeek : weekdayMap.keySet()) {
+        for (Integer dayOfWeek : weekdayMap.keySet()) {
 
             Bucket<String,List<Bucket<String, Integer>>> dayOfWeekBucket = new Bucket<String,List<Bucket<String, Integer>>>();
             List<Bucket<String, Integer>> dayOfweekHours = new ArrayList<Bucket<String, Integer>>();
 
-            for (Integer hour: weekdayMap.get(datOfWeek).keySet()) {
+            for (Integer hour: weekdayMap.get(dayOfWeek).keySet()) {
 
-                Double valueInHour =   weekdayMap.get(datOfWeek).get(hour);
-                Bucket<String, Integer> hourlyBucket = new Bucket<String, Integer>(hour.toString(), valueInHour.intValue());
+                Double valueInHour =   weekdayMap.get(dayOfWeek).get(hour);
+                boolean anomaly = anomalyDayOfWeek == dayOfWeek.intValue() && anomalyHourOfWeek == hour.intValue();
+                Bucket<String, Integer> hourlyBucket = new Bucket<String, Integer>(hour.toString(), valueInHour.intValue(), anomaly);
                 dayOfweekHours.add(hourlyBucket);
             }
 
-            dayOfWeekBucket.setKey(datOfWeek.toString());
+            dayOfWeekBucket.setKey(DayOfWeek.of(dayOfWeek+1).name());
             dayOfWeekBucket.setValue(dayOfweekHours);
             buckets.add(dayOfWeekBucket);
         }

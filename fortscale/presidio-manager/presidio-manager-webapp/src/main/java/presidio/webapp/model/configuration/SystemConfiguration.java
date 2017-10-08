@@ -17,17 +17,17 @@ public class SystemConfiguration {
     @JsonProperty("password")
     private String password = null;
 
-    @JsonProperty("adminGroup")
-    private String adminGroup = null;
-
     @JsonProperty("analystGroup")
     private String analystGroup = null;
 
     @JsonProperty("smtpHost")
     private String smtpHost = null;
 
-    @JsonProperty("kdcUrl")
-    private String kdcUrl = null;
+    @JsonProperty("ldapUrl")
+    private String ldapUrl = null;
+
+    @JsonProperty("realmName")
+    private String realmName=null;
 
     public SystemConfiguration username(String username) {
         this.username = username;
@@ -67,24 +67,6 @@ public class SystemConfiguration {
         this.password = password;
     }
 
-    public SystemConfiguration adminGroup(String adminGroup) {
-        this.adminGroup = adminGroup;
-        return this;
-    }
-
-    /**
-     * Active directory group that represent presidio admin user
-     *
-     * @return adminGroup
-     **/
-    @ApiModelProperty(example = "presidio-admins-somecompany", value = "Active directory group that represent presidio admin user")
-    public String getAdminGroup() {
-        return adminGroup;
-    }
-
-    public void setAdminGroup(String adminGroup) {
-        this.adminGroup = adminGroup;
-    }
 
     public SystemConfiguration analystGroup(String analystGroup) {
         this.analystGroup = analystGroup;
@@ -124,25 +106,32 @@ public class SystemConfiguration {
         this.smtpHost = smtpHost;
     }
 
-    public SystemConfiguration kdcUrl(String kdcUrl) {
-        this.kdcUrl = kdcUrl;
+    public SystemConfiguration ldapUrl(String ldapUrl) {
+        this.ldapUrl = ldapUrl;
         return this;
     }
 
     /**
      * The Key Distribution Center URL
      *
-     * @return kdcUrl
+     * @return ldapUrl
      **/
     @ApiModelProperty(value = "The Key Distribution Center URL")
-    public String getKdcUrl() {
-        return kdcUrl;
+    public String getLdapUrl() {
+        return ldapUrl;
     }
 
-    public void setKdcUrl(String kdcUrl) {
-        this.kdcUrl = kdcUrl;
+    public void setLdapUrl(String ldapUrl) {
+        this.ldapUrl = ldapUrl;
     }
 
+    public String getRealmName() {
+        return realmName;
+    }
+
+    public void setRealmName(String realmName) {
+        this.realmName = realmName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -155,15 +144,15 @@ public class SystemConfiguration {
         SystemConfiguration systemConfiguration = (SystemConfiguration) o;
         return Objects.equals(this.username, systemConfiguration.username) &&
                 Objects.equals(this.password, systemConfiguration.password) &&
-                Objects.equals(this.adminGroup, systemConfiguration.adminGroup) &&
+                Objects.equals(this.realmName, systemConfiguration.realmName) &&
                 Objects.equals(this.analystGroup, systemConfiguration.analystGroup) &&
                 Objects.equals(this.smtpHost, systemConfiguration.smtpHost) &&
-                Objects.equals(this.kdcUrl, systemConfiguration.kdcUrl);
+                Objects.equals(this.ldapUrl, systemConfiguration.ldapUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, adminGroup, analystGroup, smtpHost, kdcUrl);
+        return Objects.hash(username, password, realmName, analystGroup, smtpHost, ldapUrl);
     }
 
     @Override
@@ -173,10 +162,10 @@ public class SystemConfiguration {
 
         sb.append("    username: ").append(toIndentedString(username)).append("\n");
         sb.append("    password: ").append(toIndentedString(password)).append("\n");
-        sb.append("    adminGroup: ").append(toIndentedString(adminGroup)).append("\n");
+        sb.append("    realmName: ").append(toIndentedString(realmName)).append("\n");
         sb.append("    analystGroup: ").append(toIndentedString(analystGroup)).append("\n");
         sb.append("    smtpHost: ").append(toIndentedString(smtpHost)).append("\n");
-        sb.append("    kdcUrl: ").append(toIndentedString(kdcUrl)).append("\n");
+        sb.append("    ldapUrl: ").append(toIndentedString(ldapUrl)).append("\n");
         sb.append("}");
         return sb.toString();
     }

@@ -9,7 +9,7 @@ import presidio.output.processor.config.SupportingInformationConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,11 +19,13 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     private Map<String, ClassificationPriority> indicatorToAlert;
     private ClassificationPriorityConfig classificationPriorityConfig;
     private SupportingInformationConfig supportingInformationConfig;
+    private int numberOfClassifications;
 
 
-    public AlertClassificationServiceImpl(ClassificationPriorityConfig classificationPriorityConfig, SupportingInformationConfig supportingInformationConfig) {
+    public AlertClassificationServiceImpl(ClassificationPriorityConfig classificationPriorityConfig, SupportingInformationConfig supportingInformationConfig, int numberOfClassifications) {
         this.classificationPriorityConfig = classificationPriorityConfig;
         this.supportingInformationConfig = supportingInformationConfig;
+        this.numberOfClassifications = numberOfClassifications;
         createIndicatorToAlertByPriority();
 
     }
@@ -42,32 +44,18 @@ public class AlertClassificationServiceImpl implements AlertClassificationServic
     }
 
     public List<String> getAlertClassificationsFromIndicatorsByPriority(List<String> indicators) {
-        int priority, place, remove, numberOfIndicators;
-        List<String> classificationByPriority = new ArrayList<>();
-        Set<String> tempClassificationByPriority = new HashSet<>();
-        String alertName;
-        ClassificationPriority classificationPriority;
-        numberOfIndicators = indicators.size();
-        for (int i = 0; i < numberOfIndicators; i++) {
-            priority = indicatorToAlert.size() + 1;
-            alertName = "";
-            place = 0;
-            remove = 0;
-            for (String indicator : indicators) {
-                classificationPriority = indicatorToAlert.get(indicator);
-                if (classificationPriority != null && classificationPriority.getPriority() < priority) {
-                    priority = classificationPriority.getPriority();
-                    alertName = classificationPriority.getName();
-                    remove = place;
-                }
-                place++;
-            }
-            indicators.remove(remove);
-            if (StringUtils.isNotEmpty(alertName))
-                tempClassificationByPriority.add(alertName);
+
+        Set<String> classificationByPriority = new LinkedHashSet<>();
+        String[] classifications = new String[numberOfClassifications];
+        indicators.forEach(indicator -> {
+            classifications[indicatorToAlert.get(indicator).getPriority() - 1] = indicatorToAlert.get(indicator).getName();
+        });
+
+        for (int i = 0; i < classifications.length; i++) {
+            if (StringUtils.isNotEmpty(classifications[i]))
+                classificationByPriority.add(classifications[i]);
         }
-        classificationByPriority.addAll(tempClassificationByPriority);
-        return classificationByPriority;
+        return new ArrayList<>(classificationByPriority);
     }
 
 }

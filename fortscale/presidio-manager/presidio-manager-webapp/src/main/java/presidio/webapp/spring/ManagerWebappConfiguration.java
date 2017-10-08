@@ -2,6 +2,7 @@ package presidio.webapp.spring;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,10 +20,16 @@ import presidio.webapp.controller.datapipeline.DataPipelineApiController;
 import presidio.webapp.service.ConfigurationManagerService;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Configuration
-@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class,ManagerServiceConfig.class,  ConfigServerClientServiceConfiguration.class})
+@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class, ManagerServiceConfig.class, ConfigServerClientServiceConfiguration.class})
 public class ManagerWebappConfiguration {
+
+    @Value("#{'${spring.profiles.active:default}'.split(',')}")
+    private List<String> activeProfiles;
+    @Value("${keytab.file.path}")
+    private String keytabFileLocation;
 
     @Autowired
     private ManagerService managerService;
@@ -45,12 +52,12 @@ public class ManagerWebappConfiguration {
 
     @Bean
     ConfigurationApi configurationApi() {
-        return new ConfigurationApiController(configurationServiceImpl(), configServerClient);
+        return new ConfigurationApiController(configurationServiceImpl(), configServerClient,
+                activeProfiles, keytabFileLocation);
     }
 
     @Bean
-    DataPipelineApi dataPipelineApi()
-    {
+    DataPipelineApi dataPipelineApi() {
         return new DataPipelineApiController(managerService);
     }
 }
