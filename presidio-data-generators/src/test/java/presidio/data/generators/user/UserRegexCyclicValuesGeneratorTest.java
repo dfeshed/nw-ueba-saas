@@ -34,9 +34,10 @@ public class UserRegexCyclicValuesGeneratorTest {
 
     @Test
     public void generateStringValuesByRegex() {
+        String lastNamePattern = "the grey";
         IUserGenerator generator =
                 new UserRegexCyclicValuesGenerator("user[1-73]{1}","s-[a-z]{1}[1-3]{1}",
-                        "gandalf[1-73]{1}","the grey",true,false);
+                        "gandalf[1-73]{1}", lastNamePattern,true,false);
 
         User firstGeneratedValue = generator.getNext();
         int amountOfCharsInAbc = 26;
@@ -49,7 +50,8 @@ public class UserRegexCyclicValuesGeneratorTest {
             currentGeneratedValue = generator.getNext();
             Assert.assertTrue(currentGeneratedValue.getAdministrator());
             Assert.assertFalse(currentGeneratedValue.getAnonymous());
-            Assert.assertFalse(generatedValues.contains(currentGeneratedValue),"cyclic values should not repeat");
+            Assert.assertEquals(lastNamePattern,currentGeneratedValue.getLastName());
+            Assert.assertFalse(generatedValues.contains(currentGeneratedValue),"cyclic id's should not repeat");
             generatedValues.add(currentGeneratedValue);
         }
 
