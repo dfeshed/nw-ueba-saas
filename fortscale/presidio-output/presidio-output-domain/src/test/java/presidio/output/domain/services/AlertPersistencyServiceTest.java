@@ -8,7 +8,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -108,20 +107,26 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         Alert alert =
                 new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        Date createaAtDate = alert.getCreatedDate();
-        alertPersistencyService.save(alert);
+        Date createAtDate = alert.getCreatedDate();
 
+        Date createAtDate2;
+
+        alertPersistencyService.save(alert);
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
+        Date createAtDateFierstFind = testAlert.getCreatedDate();
+        testAlert.setUserName("smartId1");
+        alertPersistencyService.save(testAlert);
+        testAlert = alertPersistencyService.findOne(alert.getId());
 
         assertNotNull(testAlert.getId());
-        assertEquals(testAlert.getCreatedDate(), createaAtDate);
+        assertEquals(testAlert.getCreatedDate(), createAtDate);
 
         assertEquals(testAlert.getId(), alert.getId());
         assertEquals(testAlert.getUserName(), alert.getUserName());
         testAlert.setIndicatorsNum(100);
         alertPersistencyService.save(testAlert);
         Alert testAlert2 = alertPersistencyService.findOne(alert.getId());
-        assertEquals(testAlert2.getCreatedDate(), createaAtDate);
+        assertEquals(testAlert2.getCreatedDate(), createAtDate);
         assertEquals(100, testAlert2.getIndicatorsNum());
     }
 

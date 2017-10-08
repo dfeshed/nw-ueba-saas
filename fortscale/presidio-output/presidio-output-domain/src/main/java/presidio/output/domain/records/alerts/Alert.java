@@ -12,7 +12,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE, type = Alert.ALERT_TYPE)
 public class Alert extends AbstractElasticDocument {
@@ -96,6 +95,23 @@ public class Alert extends AbstractElasticDocument {
 
     public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore) {
         super();
+        this.setCreatedBy(startDate.toString());
+        this.classifications = classifications;
+        this.userId = userId;
+        this.smartId = smartId;
+        this.userName = userName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.score = score;
+        this.indicatorsNum = indicatorsNum;
+        this.timeframe = timeframe;
+        this.severity = severity;
+        this.userTags = userTags;
+        this.contributionToUserScore = contributionToUserScore;
+    }
+
+    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore, String id, Date createdDate, Date updatedDate) {
+        super(id, createdDate, updatedDate);
         this.classifications = classifications;
         this.userId = userId;
         this.smartId = smartId;

@@ -91,8 +91,8 @@ public class User extends AbstractElasticDocument {
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount, String id, Date createdDate) {
-        super(id, createdDate);
+                int alertsCount, String id, Date createdDate, Date updatedDate) {
+        super(id, createdDate, updatedDate);
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
