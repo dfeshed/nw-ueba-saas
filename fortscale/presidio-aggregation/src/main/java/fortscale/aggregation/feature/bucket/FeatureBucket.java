@@ -3,9 +3,9 @@ package fortscale.aggregation.feature.bucket;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.common.feature.Feature;
+import fortscale.utils.mongodb.index.DynamicIndexing;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Document
-@CompoundIndexes({
+@DynamicIndexing(compoundIndexes = {
 		@CompoundIndex(name = "start", def = "{'startTime': 1}"),
 		@CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startTime': 1}"),
 		@CompoundIndex(name = "bucketId", def = "{'bucketId': 1}", unique = true)

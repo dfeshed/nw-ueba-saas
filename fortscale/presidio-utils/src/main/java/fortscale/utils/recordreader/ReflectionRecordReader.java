@@ -104,7 +104,7 @@ public class ReflectionRecordReader implements RecordReader {
 
 			if (value == null) {
 				String format = "The value of {} was extracted, but it is null. Record = {}, field path = {}.";
-				logger.warn(format, key, record, fieldPath);
+				logger.trace(format, key, record, fieldPath);
 				return null;
 			}
 		}
