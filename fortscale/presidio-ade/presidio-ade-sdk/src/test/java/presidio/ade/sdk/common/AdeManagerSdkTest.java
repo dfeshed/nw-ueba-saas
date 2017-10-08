@@ -1,7 +1,5 @@
 package presidio.ade.sdk.common;
 
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -17,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.util.Pair;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,10 +33,7 @@ import presidio.data.generators.common.GeneratorException;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator.GENERATED_SCORE;
@@ -69,19 +65,17 @@ public class AdeManagerSdkTest {
         String adeEventType = generatedScoredRecords.get(0).getAdeEventType();
         List<String> eventIds = generatedScoredRecords.stream().map(x -> x.getContext().getEventId()).collect(Collectors.toList());
         List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE);
-        Assert.assertEquals(generatedScoredRecords.size(),retrievedScoredEnrichedRecords.size());
+        Assert.assertEquals(generatedScoredRecords.size(), retrievedScoredEnrichedRecords.size());
         Instant startInstant = retrievedScoredEnrichedRecords.stream().min(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         Instant endInstant = retrievedScoredEnrichedRecords.stream().max(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         TimeRange timeRange = new TimeRange(startInstant, endInstant);
         Pair<String, String> contextFieldAndValue = Pair.of("userId", GENERATED_USER);
         List<String> distinctOperationTypes = adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(adeEventType, contextFieldAndValue, timeRange, "operationType", GENERATED_SCORE-0.1);
-
         Assert.assertTrue(distinctOperationTypes.size()>=1);
     }
 
     @Test
-    public void shouldGetScoreAggregationNameToAdeEventTypeMap()
-    {
+    public void shouldGetScoreAggregationNameToAdeEventTypeMap() {
         Map<String, List<String>> scoreAggregationNameToAdeEventTypeMap = adeManagerSdk.getAggregationNameToAdeEventTypeMap();
         Assert.assertNotNull(scoreAggregationNameToAdeEventTypeMap);
         Assert.assertTrue(scoreAggregationNameToAdeEventTypeMap.size()>0);
@@ -98,10 +92,11 @@ public class AdeManagerSdkTest {
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
         Assert.assertTrue("ADE input records are missing.", insertedRecords.size() > 0);
-        DBCollection collection = mongoTemplate.getCollection(collectionName);
-        List<DBObject> indexInfo = collection.getIndexInfo();
-        // There should be only 1 index that is always created for the _id_ field
-        Assert.assertEquals("Unexpected number of indexes.", 1, indexInfo.size());
+        List<IndexInfo> indexInfo = mongoTemplate.indexOps(collectionName).getIndexInfo();
+        Assert.assertEquals("Unexpected number of indexes.", 2, indexInfo.size());
+        Assert.assertEquals("Unexpected index name.",
+                new HashSet<>(Arrays.asList("_id_", "start")),
+                indexInfo.stream().map(IndexInfo::getName).collect(Collectors.toSet()));
     }
 
     @Configuration

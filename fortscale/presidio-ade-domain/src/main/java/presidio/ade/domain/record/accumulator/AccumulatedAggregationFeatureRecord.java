@@ -1,8 +1,6 @@
 package presidio.ade.domain.record.accumulator;
 
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
@@ -17,15 +15,11 @@ import java.util.Map;
  * @author Maria Dorohin
  */
 @Document
-@CompoundIndexes({
-        @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-        @CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true)
-})
 public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregatedRecord {
-
     private static final String ADE_ACCUMULATION_EVENT_TYPE_PREFIX = "accumulation_aggr_event";
+
     @Field
-    private Map<Integer,Double> aggregatedFeatureValues;
+    private Map<Integer, Double> aggregatedFeatureValues;
 
     @Transient
     private String featureName;
@@ -48,7 +42,6 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
     }
 
     /**
-     *
      * @return map of aggregated feature values.
      * the key is the floored start hour integer, the value is the actual aggregated feature value
      */
@@ -61,7 +54,7 @@ public class AccumulatedAggregationFeatureRecord extends AdeContextualAggregated
      *
      * @param aggregatedFeatureValues aggregated feature values
      */
-    public void setAggregatedFeatureValues(Map<Integer,Double> aggregatedFeatureValues) {
+    public void setAggregatedFeatureValues(Map<Integer, Double> aggregatedFeatureValues) {
         this.aggregatedFeatureValues = aggregatedFeatureValues;
     }
 

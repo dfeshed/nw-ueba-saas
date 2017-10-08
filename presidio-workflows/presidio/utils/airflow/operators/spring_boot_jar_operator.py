@@ -297,7 +297,7 @@ class SpringBootJarOperator(BashOperator):
         :type bash_command list
         :return: 
         """
-        logback_config = '-Dlogback.configurationFile=%s'
+        logback_config = '-Dlogging.config=%s'
         overriding_logback_config = False
 
         logback_conf_key = 'java_overriding_logback_conf_path'

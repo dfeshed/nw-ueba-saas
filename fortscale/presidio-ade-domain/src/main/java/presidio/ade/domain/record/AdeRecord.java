@@ -1,7 +1,9 @@
 package presidio.ade.domain.record;
 
+import fortscale.utils.mongodb.index.DynamicIndexing;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
@@ -12,6 +14,9 @@ import java.util.List;
  * <p>
  * Created by Lior Govrin on 06/06/2017.
  */
+@DynamicIndexing(compoundIndexes = {
+        @CompoundIndex(name = "start", def = "{'startInstant': 1}")
+})
 public abstract class AdeRecord {
     public static final String START_INSTANT_FIELD = "startInstant";
 
