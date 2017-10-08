@@ -8,6 +8,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +36,13 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-//@Ignore
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -109,20 +111,23 @@ public class AlertPersistencyServiceTest {
                 new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         Date createAtDate = alert.getCreatedDate();
 
-        Date createAtDate2;
 
         alertPersistencyService.save(alert);
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
-        Date createAtDateFierstFind = testAlert.getCreatedDate();
+        Date updateAtDateFirstFind = testAlert.getUpdatedDate();
+        Date createAtDateFirstFind = testAlert.getCreatedDate();
         testAlert.setUserName("smartId1");
         alertPersistencyService.save(testAlert);
         testAlert = alertPersistencyService.findOne(alert.getId());
+        Date createAtDateSecondFind = testAlert.getCreatedDate();
+        Date updateAtDateSecondFind = testAlert.getUpdatedDate();
 
         assertNotNull(testAlert.getId());
+        assertEquals(createAtDateSecondFind, createAtDateFirstFind);
+        assertNotEquals(createAtDateSecondFind, updateAtDateSecondFind);
         assertEquals(testAlert.getCreatedDate(), createAtDate);
-
         assertEquals(testAlert.getId(), alert.getId());
-        assertEquals(testAlert.getUserName(), alert.getUserName());
+        assertEquals(testAlert.getUserName(), "smartId1");
         testAlert.setIndicatorsNum(100);
         alertPersistencyService.save(testAlert);
         Alert testAlert2 = alertPersistencyService.findOne(alert.getId());

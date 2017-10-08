@@ -4,6 +4,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.testng.collections.Lists;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.data.generators.common.CustomStringGenerator;
+import presidio.data.generators.common.CyclicMapGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
