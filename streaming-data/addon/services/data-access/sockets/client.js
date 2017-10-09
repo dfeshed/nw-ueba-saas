@@ -19,6 +19,8 @@ const {
   isEmpty
 } = Ember;
 
+const MAX_WEBSOCKET_FRAME_SIZE = 64 * 1024;
+
 /**
  * Utility that determines whether or not a received socket message needs to have its body parsed from a JSON string to
  * javascript variable.  This is done by first checking if there is a message.headers.content-type; if so, only
@@ -277,6 +279,7 @@ export default EmberObject.extend({
     const stompClient = Stomp.over(
       new SockJS(url, {}, { transports: ['websocket'] })
     );
+    stompClient.maxWebSocketFrameSize = MAX_WEBSOCKET_FRAME_SIZE; // change/increase the default max websocket frame size
     stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;
     this.set('stompClient', stompClient);
 

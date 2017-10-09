@@ -117,6 +117,33 @@ test('The fetchItemCount() reducer updates the itemsTotal property on successful
   assert.deepEqual(endState, expectedEndState);
 });
 
+test('The fetchItemsStreamBatchRetrieved() reducer function updates items state', function(assert) {
+  const initState = Immutable.from(initialState);
+  const items = [{ id: 'INC-123', test: '1' }];
+  const expectedEndState = {
+    ...initState,
+    items,
+    itemsStatus: 'complete'
+  };
+
+  const endState = reducers.fetchItemsStreamBatchRetrieved(initState, { payload: { data: items, meta: { complete: true } } });
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('The fetchItemsStreamBatchRetrieved() reducer function updates itemsSelected if isSelectAll is true', function(assert) {
+  const initState = { ...initialState, isSelectAll: true };
+  const items = [{ id: 'INC-123', test: '1' }];
+  const expectedEndState = {
+    ...initState,
+    items,
+    itemsStatus: 'complete',
+    itemsSelected: ['INC-123']
+  };
+
+  const endState = reducers.fetchItemsStreamBatchRetrieved(Immutable.from(initState), { payload: { data: items, meta: { complete: true } } });
+  assert.deepEqual(endState, expectedEndState);
+});
+
 test('The updateItem() reducer sets the "isTransactionUnderway" property to true at startup', function(assert) {
   const initState = Immutable.from(initialState);
   const expectedEndState = {

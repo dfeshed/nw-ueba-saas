@@ -113,8 +113,11 @@ const fetchItemsStreamInitialized = (state, { payload }) => {
 
 const fetchItemsStreamBatchRetrieved = (state, { payload: { data, meta } }) => {
   data = data || [];
+  // if select all is active while the items are streaming in, ensure items in each new batch get selected
+  const selectedIds = state.isSelectAll ? data.map((item) => item.id) : [];
   return state.merge({
     items: [...state.items, ...data],
+    itemsSelected: [ ...state.itemsSelected, ...selectedIds ],
     itemsStatus: meta.complete ? 'complete' : 'streaming'
   });
 };
