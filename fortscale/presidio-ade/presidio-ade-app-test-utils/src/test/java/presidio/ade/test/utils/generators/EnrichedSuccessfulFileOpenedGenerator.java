@@ -4,25 +4,19 @@ import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.data.ade.AdeFileOperationGeneratorTemplateFactory;
-import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.event.file.FileEventsGenerator;
-import presidio.data.generators.fileop.FileOperationGenerator;
-import presidio.data.generators.fileop.FixedFileOperationTypeGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
 public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator {
 
-    public EnrichedSuccessfulFileOpenedGenerator(EnrichedDataStore enrichedDataStore) {
+    public EnrichedSuccessfulFileOpenedGenerator(EnrichedDataStore enrichedDataStore) throws GeneratorException {
         super(enrichedDataStore);
     }
 
