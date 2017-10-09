@@ -59,6 +59,10 @@ export default Mixin.create({
      * @public
      */
     navFindOrAdd(filterParams) {
+      const {
+        aliases,
+        language
+      } = this.get('redux').getState().investigate.dictionaries;
       // Do we already have a query that matches the incoming params?
       const state = this.get('state');
       const queryTree = state.get('queryTree');
@@ -77,8 +81,8 @@ export default Mixin.create({
         const currentNode = state.get('queryNode');
         if (currentNode && currentNode.get('value.definition.serviceId') === filterParams.serviceId) {
           queryNode.setProperties({
-            'value.language': currentNode.get('value.language'),
-            'value.aliases': currentNode.get('value.aliases')
+            'value.language': language,
+            'value.aliases': aliases
           });
         }
         queryTree.add(queryNode, currentNode);
@@ -115,9 +119,11 @@ export default Mixin.create({
     if (!queryNode || queryNode.get('value.language.status') === 'resolved') {
       return;
     }
-    const state = this.get('redux').getState().investigate;
-    const { serviceId } = state.queryNode;
-    const language = state.dictionaries.languageCache[serviceId];
+    const {
+      dictionaries,
+      queryNode: { serviceId }
+    } = this.get('redux').getState().investigate;
+    const language = dictionaries.languageCache[serviceId];
     if (language) {
       queryNode.set('value.language', language);
     } else {

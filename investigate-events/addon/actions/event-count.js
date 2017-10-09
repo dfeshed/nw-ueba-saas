@@ -5,6 +5,7 @@
  * @public
  */
 import Ember from 'ember';
+import service from 'ember-service/inject';
 import { makeServerInputsForEventCount } from './helpers/query-utils';
 
 const { Mixin } = Ember;
@@ -13,6 +14,7 @@ const { Mixin } = Ember;
 const COUNT_THRESHOLD = 100000;
 
 export default Mixin.create({
+  redux: service(),
   actions: {
     /**
      * Fetches the count of event results for the given query node. Stores the request's state in node's `value.results.eventCount`.
@@ -22,6 +24,7 @@ export default Mixin.create({
      * @public
      */
     eventCountGet(queryNode, forceReload = false) {
+      const { language } = this.get('redux').getState().investigate.dictionaries;
       if (!queryNode) {
         return;
       }
@@ -43,7 +46,7 @@ export default Mixin.create({
         modelName: 'core-event-count',
         query: makeServerInputsForEventCount(
           queryNode.get('value.definition'),
-          queryNode.get('value.language.data'),
+          language,
           COUNT_THRESHOLD
         )
       }).then(({ data }) => {

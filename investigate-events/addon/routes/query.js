@@ -13,6 +13,7 @@ import {
   setReconPanelSize,
   setSessionId
 } from 'investigate-events/actions/interaction-creators';
+import { navGoto } from 'investigate-events/actions/navigation-creators';
 
 export default Route.extend({
   accessControl: service(),
@@ -107,6 +108,7 @@ export default Route.extend({
     const { redux, filterAttrs } = this.getProperties('redux', 'filterAttrs');
     const { aliases, language } = redux.getState().investigate.dictionaries;
     if (aliases && language) {
+      redux.dispatch(navGoto());
       this.send('navFindOrAdd', filterAttrs);
     } else {
       setTimeout(this._checkForDictionaries.bind(this), 50);

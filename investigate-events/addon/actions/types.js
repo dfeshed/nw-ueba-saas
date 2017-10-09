@@ -4,7 +4,7 @@ export const INITIALIZE = 'INVESTIGATE_EVENTS::INITIALIZE';
 export const SERVICE_SELECTED = 'INVESTIGATE_EVENTS::SERVICE_SELECTED';
 export const SERVICES_RETRIEVE = 'INVESTIGATE_EVENTS::SERVICES_RETRIEVE';
 
-// Session actions
+// Session action typess
 export const SESSION_SELECTED = 'INVESTIGATE_EVENTS::SESSION_SELECTED';
 
 // Dictionary action types
@@ -21,5 +21,11 @@ export const SET_META_PANEL_SIZE = 'INVESTIGATE_EVENTS::SET_META_PANEL_SIZE';
 export const SET_RECON_PANEL_SIZE = 'INVESTIGATE_EVENTS::SET_RECON_PANEL_SIZE';
 export const SET_QUERY_PARAMS = 'INVESTIGATE_EVENTS::SET_QUERY_PARAMS';
 
-// Query time range
+// Query time range action types
 export const SET_QUERY_TIME_RANGE = 'INVESTIGATE_EVENTS::SET_QUERY_TIME_RANGE';
+
+// Results action types
+export const GET_RESULTS = 'INVESTIGATE_EVENTS::GET_RESULTS';
+
+// View state action types
+export const SET_RECON_CLOSE = 'INVESTIGATE_EVENTS::SET_RECON_CLOSE';

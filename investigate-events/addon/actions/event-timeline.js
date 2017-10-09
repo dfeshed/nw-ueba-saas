@@ -5,11 +5,13 @@
  * @public
  */
 import Ember from 'ember';
+import service from 'ember-service/inject';
 import { makeServerInputsForQuery } from './helpers/query-utils';
 
 const { Mixin, run } = Ember;
 
 export default Mixin.create({
+  redux: service(),
   actions: {
     /**
      * Fetches the timeline data for the given query node. Stores the request's state in node's `value.results.eventTimeline`.
@@ -19,6 +21,7 @@ export default Mixin.create({
      * @public
      */
     eventTimelineGet(queryNode, forceReload = false) {
+      const { language } = this.get('redux').getState().investigate.dictionaries;
       if (!queryNode) {
         return;
       }
@@ -42,7 +45,7 @@ export default Mixin.create({
           modelName: 'core-event-timeline',
           query: makeServerInputsForQuery(
             queryNode.get('value.definition'),
-            queryNode.get('value.language.data')
+            language
           )
         }).then(function({ data }) {
           run.join(function() {

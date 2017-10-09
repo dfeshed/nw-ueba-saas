@@ -184,6 +184,7 @@ export default Mixin.create({
   },
 
   _metaKeyValuesGet(queryNode, metaKeyState) {
+    const { language } = this.get('redux').getState().investigate.dictionaries;
     const queryDefinition = queryNode.get('value.definition');
     const { values, options } = metaKeyState.getProperties('values', 'options');
 
@@ -197,7 +198,7 @@ export default Mixin.create({
     const inputs = buildMetaValueStreamInputs(
       metaKeyState.get('info.metaName'),
       queryDefinition,
-      queryNode.get('value.language.data'),
+      language,
       metaKeyState.get('options'),
       STREAM_LIMIT,
       STREAM_BATCH

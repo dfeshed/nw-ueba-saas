@@ -5,6 +5,7 @@
  * @public
  */
 import Ember from 'ember';
+import service from 'ember-service/inject';
 import {
   buildEventStreamInputs,
   executeEventsRequest,
@@ -18,7 +19,7 @@ const STREAM_LIMIT = 1000;
 const STREAM_BATCH = 19;
 
 export default Mixin.create({
-
+  redux: service(),
   actions: {
     /**
      * Fetches a stream of events for the given query node. Stores the stream's state in node's `value.results.events`.
@@ -28,6 +29,7 @@ export default Mixin.create({
      * @public
      */
     eventsGetFirst(queryNode, forceReload = false) {
+      const { language } = this.get('redux').getState().investigate.dictionaries;
       if (!queryNode) {
         return;
       }
@@ -61,7 +63,7 @@ export default Mixin.create({
 
       const inputs = buildEventStreamInputs(
         queryNode.get('value.definition'),
-        queryNode.get('value.language.data'),
+        language,
         STREAM_LIMIT,
         STREAM_BATCH
       );
@@ -75,6 +77,7 @@ export default Mixin.create({
      * @public
      */
     eventsGetMore(queryNode) {
+      const { language } = this.get('redux').getState().investigate.dictionaries;
       if (!queryNode) {
         return;
       }
@@ -94,7 +97,7 @@ export default Mixin.create({
 
       const inputs = buildEventStreamInputs(
         queryNode.get('value.definition'),
-        queryNode.get('value.language.data'),
+        language,
         limit,
         STREAM_BATCH,
         lastSessionId
