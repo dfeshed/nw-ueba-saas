@@ -28,7 +28,6 @@ public class UserRegexCyclicValuesGeneratorTest {
             generatedValues.add(currentGeneratedValue);
         }
 
-        Assert.assertEquals(generatedValuesCounter, expectedIterationsTillRepeat,"not enough generated values for given pattern");
         Assert.assertEquals(currentGeneratedValue, firstGeneratedValue,"if it was cyclic we should have returned to the first value in the cycle");
     }
 
@@ -55,7 +54,6 @@ public class UserRegexCyclicValuesGeneratorTest {
             generatedValues.add(currentGeneratedValue);
         }
 
-        Assert.assertEquals(generatedValuesCounter, expectedIterationsTillRepeat,"not enough generated values for given pattern");
         Assert.assertEquals(currentGeneratedValue, firstGeneratedValue,"if it was cyclic we should have returned to the first value in the cycle");
     }
 }

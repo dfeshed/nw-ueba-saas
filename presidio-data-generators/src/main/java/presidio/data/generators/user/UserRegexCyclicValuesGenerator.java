@@ -5,7 +5,6 @@ import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * generates all possible userId values for given regex and stores them in a cyclic array.
@@ -35,7 +34,7 @@ public class UserRegexCyclicValuesGenerator extends CyclicValuesGenerator<User> 
             String firstName = firstNameGenerator.getNext();
             String lastName = lastNameGenerator.getNext();
             return new User(userName, id, firstName, lastName, isAdmin, isAnonymous);
-        }).collect(Collectors.toList()).toArray(new User[0]);
+        }).toArray(User[]::new);
         return users;
     }
 
