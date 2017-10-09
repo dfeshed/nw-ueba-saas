@@ -9,7 +9,6 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -39,25 +38,15 @@ import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
 /**
  * Created by efratn on 24/07/2017.
  */
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
