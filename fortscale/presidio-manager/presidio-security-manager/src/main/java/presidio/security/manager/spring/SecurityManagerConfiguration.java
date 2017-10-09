@@ -20,6 +20,9 @@ public class SecurityManagerConfiguration {
     @Value("${manager.security.krb5ConfPath:/etc/krb5.conf}")
     private String krb5ConfPath;
 
+    @Value("${manager.security.shouldReloadHttpd:true}")
+    private boolean shouldReloadHttpd;
+
     @Autowired
     @Qualifier("configurationServerClientService")
     private ConfigurationServerClientService configurationServerClientService;
@@ -31,7 +34,7 @@ public class SecurityManagerConfiguration {
     @Bean(name = "configurationSecurityService")
     public ConfigurationSecurityService configurationSecurityService() {
         return new ConfigurationSecurityService(configurationServerClientService, freemarkerConfiguration,
-                securityConfPath, krb5ConfPath);
+                securityConfPath, krb5ConfPath, shouldReloadHttpd);
     }
 
     @Bean

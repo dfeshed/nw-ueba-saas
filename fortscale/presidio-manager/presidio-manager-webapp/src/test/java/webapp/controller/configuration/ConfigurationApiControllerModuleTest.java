@@ -61,7 +61,7 @@ public class ConfigurationApiControllerModuleTest {
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     private final String AIRFLOW_CONFIGURATION_RESPONSE =
-            "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"analystGroup\":\"presidio-soc-team-somecompany\",\"ldapUrl\":\"string\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\",\"realmName\":\"EXAMPLE.COM\"}}";
+            "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"analystGroup\":\"presidio-soc-team-somecompany\",\"ldapUrl\":\"ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\",\"realmName\":\"EXAMPLE.COM\",\"krbServiceName\":\"HTTP/presidiod3.fortscale.dom@FORTSCALE.DOM\"}}";
     private final String CONFIGURATION_PATCH_REQUEST =
             "[\n" +
                     "  {\n" +
@@ -103,7 +103,7 @@ public class ConfigurationApiControllerModuleTest {
         SecuredSystemConfiguration system = new SecuredSystemConfiguration();
         system.setRealmName("EXAMPLE.COM");
         system.analystGroup("presidio-soc-team-somecompany");
-        system.setLdapUrl("string");
+        system.setLdapUrl("ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName");
         system.setSmtpHost("name.of-server.com:25");
         system.setUsername("presidio@somecompany.dom");
         expectedResponse.setSystem(system);
@@ -125,7 +125,6 @@ public class ConfigurationApiControllerModuleTest {
         return objectMapper.readValue(actualResponseStr, SecuredConfiguration.class);
     }
 
-    @Ignore
     @Test
     public void shouldPatchDataPipelineConfiguration() throws Exception {
         // init expected response
@@ -158,6 +157,7 @@ public class ConfigurationApiControllerModuleTest {
         managerConfigurationMVC.perform(request(HttpMethod.PATCH, CONFIGURATION_URI)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(CONFIGURATION_PATCH_REQUEST)).andExpect(status().is(201)).andReturn();
+        System.out.println("a");
     }
 
 
@@ -175,6 +175,7 @@ public class ConfigurationApiControllerModuleTest {
             properties.put("presidio.workflows.config.path", "/tmp");
             properties.put("manager.security.securityConfPath","/tmp/httpd.conf");
             properties.put("manager.security.krb5ConfPath","/tmp/krb5.conf");
+            properties.put("manager.security.shouldReloadHttpd",false);
             properties.put("spring.cloud.config.username", "config");
             properties.put("spring.cloud.config.password", "secure");
             return new TestPropertiesPlaceholderConfigurer(properties);
