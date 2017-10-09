@@ -25,10 +25,7 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -97,7 +94,6 @@ public class UserApiControllerModuleTest {
         UsersWrapper expectedResponse = new UsersWrapper();
         expectedResponse.setTotal(2);
         List<User> users = Arrays.asList(expectedUser1, expectedUser2);
-        users.sort(defaultUserComparator); //Sort the users list in order to be able to compare between expected and actual users list
         expectedResponse.setUsers(users);
         expectedResponse.setPage(0);
 
@@ -108,6 +104,8 @@ public class UserApiControllerModuleTest {
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
         UsersWrapper actualResponse = objectMapper.readValue(actualResponseStr, UsersWrapper.class);
 
+        Collections.sort(expectedResponse.getUsers(), defaultUserComparator);
+        Collections.sort(actualResponse.getUsers(), defaultUserComparator);
         Assert.assertEquals(expectedResponse, actualResponse);
     }
 
