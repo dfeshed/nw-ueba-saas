@@ -157,7 +157,6 @@ public class ConfigurationApiControllerModuleTest {
         managerConfigurationMVC.perform(request(HttpMethod.PATCH, CONFIGURATION_URI)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(CONFIGURATION_PATCH_REQUEST)).andExpect(status().is(201)).andReturn();
-        System.out.println("a");
     }
 
 
