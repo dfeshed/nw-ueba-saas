@@ -67,11 +67,7 @@ public class AlertServiceTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    private Instant startTime = Instant.parse("2017-06-06T10:00:00Z");
-    private Instant endTime = Instant.parse("2017-06-06T11:00:00Z");
-    private TimeRange timeRange = new TimeRange(startTime, endTime);
     private static String contextId = "testUser";
-    private static String configurationName = "testConfName";
     private static String featureName = "featureName";
 
     public void setup(int smartListSize, int numOfSmartsBelowScoreThreshold, int scoreThreshold) {
