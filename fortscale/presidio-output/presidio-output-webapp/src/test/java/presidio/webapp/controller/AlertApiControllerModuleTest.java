@@ -140,6 +140,7 @@ public class AlertApiControllerModuleTest {
         restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
         restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
+        restAlert.setUserScoreContribution(alert.getContributionToUserScore() == null ? BigDecimal.valueOf(0) : new BigDecimal(alert.getContributionToUserScore()));
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
         restAlert.setUserId(alert.getUserId());
