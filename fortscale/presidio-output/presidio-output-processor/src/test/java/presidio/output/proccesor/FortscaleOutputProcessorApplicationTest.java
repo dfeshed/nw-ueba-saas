@@ -61,8 +61,8 @@ public class FortscaleOutputProcessorApplicationTest {
             properties.put("smart.page.size", "100");
             properties.put("elasticsearch.port", "9300");
             properties.put("elasticsearch.clustername", "fortscale");
-            properties.put("elasticsearch.host", "dev-efratn");
-            properties.put("number.of.classifications", "19");
+            properties.put("elasticsearch.host", "localhost");
+            properties.put("number.of.classifications", 19);
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
 
