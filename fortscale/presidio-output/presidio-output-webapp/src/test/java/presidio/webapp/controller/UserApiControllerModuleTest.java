@@ -120,7 +120,6 @@ public class UserApiControllerModuleTest {
     public void getUsersFilteredByIndicators() throws Exception {
 
         // init expected response
-        User expectedUser1 = convertDomainUserToRestUser(user1);
         User expectedUser2 = convertDomainUserToRestUser(user2);
         UsersWrapper expectedResponse = new UsersWrapper();
         expectedResponse.setTotal(1);
@@ -137,6 +136,27 @@ public class UserApiControllerModuleTest {
 
         Collections.sort(expectedResponse.getUsers(), defaultUserComparator);
         Collections.sort(actualResponse.getUsers(), defaultUserComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getUsersFilteredByMinScore() throws Exception {
+
+        // init expected response
+        User expectedUser2 = convertDomainUserToRestUser(user2); //score 60
+        UsersWrapper expectedResponse = new UsersWrapper();
+        expectedResponse.setTotal(1);
+        List<User> users = Arrays.asList(expectedUser2);
+        expectedResponse.setUsers(users);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = usersApiMVC.perform(get(USERS_URI).param("minScore","55"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        UsersWrapper actualResponse = objectMapper.readValue(actualResponseStr, UsersWrapper.class);
+
         Assert.assertEquals(expectedResponse, actualResponse);
     }
 
