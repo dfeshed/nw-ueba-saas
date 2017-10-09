@@ -95,7 +95,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServi
 		return COLLECTION_NAME_PREFIX + featureBucketConfName;
 	}
 
-	private static String getCollectionName(FeatureBucketConf featureBucketConf) {
+	public static String getCollectionName(FeatureBucketConf featureBucketConf) {
 		return getCollectionName(featureBucketConf.getName());
 	}
 
