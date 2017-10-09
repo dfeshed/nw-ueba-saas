@@ -13,13 +13,15 @@ import presidio.output.processor.services.alert.AlertServiceImpl;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 import presidio.output.processor.services.user.UserScoreService;
 
-/**
- * Created by efratn on 24/07/2017.
- */
 @Configuration
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertEnumsConfig.class, UserServiceConfig.class, SupporingInformationServiceConfig.class})
+@Import({
+        PresidioOutputPersistencyServiceConfig.class,
+        AlertEnumsConfig.class,
+        UserServiceConfig.class,
+        SupportingInformationServiceConfig.class,
+        AlertClassificationPriorityConfig.class
+})
 public class AlertServiceElasticConfig {
-
     @Autowired
     private AlertEnumsSeverityService alertEnumsSeverityService;
 
@@ -30,12 +32,19 @@ public class AlertServiceElasticConfig {
     private AlertPersistencyService alertPersistencyService;
 
     @Autowired
-    private SupportingInformationGeneratorFactory supporingInformationGeneratorFactory;
+    private SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
 
     @Autowired
     private UserScoreService userScoreService;
+
     @Bean
     public AlertService alertService() {
-        return new AlertServiceImpl(alertPersistencyService, alertEnumsSeverityService, alertClassificationService, userScoreService,supporingInformationGeneratorFactory);
+        return new AlertServiceImpl(
+                alertPersistencyService,
+                alertEnumsSeverityService,
+                alertClassificationService,
+                userScoreService,
+                supportingInformationGeneratorFactory
+        );
     }
 }
