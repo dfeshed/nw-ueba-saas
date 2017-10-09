@@ -1,8 +1,6 @@
 package presidio.ade.domain.record.enriched.file;
 
 import fortscale.domain.feature.score.FeatureScore;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -14,13 +12,7 @@ import java.util.List;
 
 @Document
 @AdeScoredEnrichedMetadata(erichedRecord = EnrichedFileRecord.class)
-@CompoundIndexes({
-        @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-        @CompoundIndex(name = "startScr", def = "{'startInstant': 1, 'score': 1}"),
-        @CompoundIndex(name = "eventId", def = "{'context.eventId': 1}")
-})
-public class AdeScoredFileRecord  extends AdeScoredEnrichedRecord<AdeEnrichedFileContext> {
-
+public class AdeScoredFileRecord extends AdeScoredEnrichedRecord<AdeEnrichedFileContext> {
     public AdeScoredFileRecord() {
         super();
     }
@@ -33,7 +25,6 @@ public class AdeScoredFileRecord  extends AdeScoredEnrichedRecord<AdeEnrichedFil
     public List<String> getDataSources() {
         return Collections.singletonList(AdeFileRecord.FILE_STR);
     }
-
 
     @Override
     public void fillContext(EnrichedRecord enrichedRecord) {

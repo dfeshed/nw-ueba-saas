@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * When the {@link DynamicIndexApplicationListener} creates indexes dynamically
+ * When the {@link DynamicIndexingApplicationListener} creates indexes dynamically
  * for a certain collection (derived from a {@link Document}), it uses the options
  * defined in this annotation (if it is added to the {@link Document}).
  *
@@ -19,8 +19,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DynamicIndexing {
 	/**
-	 * @return true if the {@link CompoundIndex} definitions of the {@link Document}'s
-	 *         properties (fields) should be included, false otherwise.
+	 * @return an array of compound indexes that should be created dynamically
 	 */
-	boolean includeCompoundIndexDefinitionsOfProperties() default true;
+	CompoundIndex[] compoundIndexes() default {};
+
+	/**
+	 * @return true if the {@link DynamicIndexing} options of the superclass should be inherited, false otherwise
+	 */
+	boolean inheritFromSuperclass() default true;
 }

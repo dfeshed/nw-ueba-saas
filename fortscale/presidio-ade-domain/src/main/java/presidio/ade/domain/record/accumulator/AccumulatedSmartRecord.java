@@ -1,8 +1,6 @@
 package presidio.ade.domain.record.accumulator;
 
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
@@ -14,23 +12,19 @@ import java.util.*;
  * to handle performance issues at large scale while building models.
  */
 @Document
-@CompoundIndexes({
-        @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-        @CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true)
-})
 public class AccumulatedSmartRecord extends AdeContextualAggregatedRecord {
 
     private static final String ADE_ACCUMULATION_SMART_TYPE_PREFIX = "accm_smart";
 
     // <featureName<smartHour, value | score>>
-    private Map<String,Map<Integer,Double>> aggregatedFeatureEventsValuesMap;
+    private Map<String, Map<Integer, Double>> aggregatedFeatureEventsValuesMap;
 
     private Set<Integer> activityTime;
 
     @Transient
     private String featureName;
 
-    public AccumulatedSmartRecord(){
+    public AccumulatedSmartRecord() {
         super();
     }
 
@@ -41,19 +35,19 @@ public class AccumulatedSmartRecord extends AdeContextualAggregatedRecord {
         activityTime = new HashSet<>();
     }
 
-    public Map<String,Map<Integer,Double>>  getAggregatedFeatureEventsValuesMap() {
+    public Map<String, Map<Integer, Double>> getAggregatedFeatureEventsValuesMap() {
         return aggregatedFeatureEventsValuesMap;
     }
 
-    public void setAggregatedFeatureEventsValuesMap(Map<String,Map<Integer,Double>>  aggregatedFeatureEventsValuesMap) {
+    public void setAggregatedFeatureEventsValuesMap(Map<String, Map<Integer, Double>> aggregatedFeatureEventsValuesMap) {
         this.aggregatedFeatureEventsValuesMap = aggregatedFeatureEventsValuesMap;
     }
 
-    public Set<Integer> getActivityTime(){
+    public Set<Integer> getActivityTime() {
         return activityTime;
     }
 
-    public void setActivityTime(Set<Integer> activityTime){
+    public void setActivityTime(Set<Integer> activityTime) {
         this.activityTime = activityTime;
     }
 
@@ -70,6 +64,7 @@ public class AccumulatedSmartRecord extends AdeContextualAggregatedRecord {
 
     /**
      * Set feature name
+     *
      * @param featureName feature name
      */
     public void setFeatureName(String featureName) {
@@ -77,7 +72,6 @@ public class AccumulatedSmartRecord extends AdeContextualAggregatedRecord {
     }
 
     /**
-     *
      * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
      */
     public String getFeatureName() {
