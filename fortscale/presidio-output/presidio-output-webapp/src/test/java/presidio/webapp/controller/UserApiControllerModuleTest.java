@@ -1,12 +1,10 @@
 package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,7 @@ import java.util.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Ignore //TODO- remove this when we will have solution for elastic tests
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
@@ -52,6 +51,9 @@ public class UserApiControllerModuleTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PresidioElasticsearchTemplate esTemplate;
+
     private ObjectMapper objectMapper;
 
     private presidio.output.domain.records.users.User user1;
@@ -71,11 +73,16 @@ public class UserApiControllerModuleTest {
 
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
 
+        esTemplate.deleteIndex(presidio.output.domain.records.users.User.class);
+        esTemplate.createIndex(presidio.output.domain.records.users.User.class);
+        esTemplate.putMapping(presidio.output.domain.records.users.User.class);
+        esTemplate.refresh(presidio.output.domain.records.users.User.class);
+
         //save users in elastic
-        user1 = generateUser(Arrays.asList("a"), "user1", "userId1", "user1", 50d);
-        user2 = generateUser(Arrays.asList("b"), "user2", "userId2", "user2", 60d);
+        user1 = generateUser(Arrays.asList("a"), "user1", "userId1", "user1", 50d, Arrays.asList("indicator1"));
+        user2 = generateUser(Arrays.asList("b"), "user2", "userId2", "user2", 60d, Arrays.asList("indicator1", "indicator2"));
         List<presidio.output.domain.records.users.User> userList = Arrays.asList(user1, user2);
-        Iterable<presidio.output.domain.records.users.User> savedUserd = userRepository.save(userList);
+        userRepository.save(userList);
     }
 
     @After
@@ -110,6 +117,30 @@ public class UserApiControllerModuleTest {
     }
 
     @Test
+    public void getUsersFilteredByIndicators() throws Exception {
+
+        // init expected response
+        User expectedUser1 = convertDomainUserToRestUser(user1);
+        User expectedUser2 = convertDomainUserToRestUser(user2);
+        UsersWrapper expectedResponse = new UsersWrapper();
+        expectedResponse.setTotal(1);
+        List<User> users = Arrays.asList(expectedUser2);
+        expectedResponse.setUsers(users);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = usersApiMVC.perform(get(USERS_URI).param("indicatorsName","indicator2"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        UsersWrapper actualResponse = objectMapper.readValue(actualResponseStr, UsersWrapper.class);
+
+        Collections.sort(expectedResponse.getUsers(), defaultUserComparator);
+        Collections.sort(actualResponse.getUsers(), defaultUserComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
     public void getUserById() throws Exception {
 
         // init expected response
@@ -126,8 +157,8 @@ public class UserApiControllerModuleTest {
     }
 
 
-    private presidio.output.domain.records.users.User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
-        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, null, new ArrayList<>(), UserSeverity.CRITICAL, 0);
+    private presidio.output.domain.records.users.User generateUser(List<String> classifications, String userName, String userId, String displayName, double score, List<String> indicators) {
+        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, indicators, new ArrayList<>(), UserSeverity.CRITICAL, 0);
     }
 
     private User convertDomainUserToRestUser(presidio.output.domain.records.users.User user) {
