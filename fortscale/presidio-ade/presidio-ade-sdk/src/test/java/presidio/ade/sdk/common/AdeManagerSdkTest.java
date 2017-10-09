@@ -111,8 +111,6 @@ public class AdeManagerSdkTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-            properties.put("streaming.aggr_event.field.context", "context");
             properties.put("spring.application.name", "test-app-name");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

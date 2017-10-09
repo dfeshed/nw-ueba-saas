@@ -50,8 +50,6 @@ public class FortscaleOutputProcessorApplicationTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();
-            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-            properties.put("streaming.aggr_event.field.context", "context");
             properties.put("page.iterator.page.size", "1000");
             properties.put("severity.critical", "95");
             properties.put("severity.high", "85");

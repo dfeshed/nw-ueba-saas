@@ -60,8 +60,6 @@ public class FortscaleInputCoreApplicationTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();
-            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-            properties.put("streaming.aggr_event.field.context", "context");
             properties.put("page.iterator.page.size", "1000");
             properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
