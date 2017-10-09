@@ -40,7 +40,7 @@ public class WeightsModelBuilderTest {
         SmartRecordConf entityEventConf = Mockito.mock(SmartRecordConf.class);
         Mockito.when(entityEventConf.getClusterConfs()).thenReturn(clusterConfs);
         Mockito.when(smartRecordConfService.getSmartRecordConf(Mockito.eq(smartRecordConfName))).thenReturn(entityEventConf);
-        return new WeightsModelBuilderConf(smartRecordConfName, null);
+        return new WeightsModelBuilderConf(smartRecordConfName, null, null);
     }
 
     private WeightsModelBuilder createModelBuilder() {
@@ -66,7 +66,7 @@ public class WeightsModelBuilderTest {
         String entityEventConfName = "smartRecordConfName";
         Mockito.when(smartRecordConfService.getSmartRecordConf(Mockito.eq(entityEventConfName))).thenReturn(null);
 
-        new WeightsModelBuilder(new WeightsModelBuilderConf(entityEventConfName, null), modelBuilderAlgorithm,smartRecordConfService);
+        new WeightsModelBuilder(new WeightsModelBuilderConf(entityEventConfName, null, Collections.emptyList()), modelBuilderAlgorithm,smartRecordConfService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -83,7 +83,7 @@ public class WeightsModelBuilderTest {
                 Mockito.eq(this.clusterConfs),
                 Mockito.eq(modelBuilderData.getSmartAggregatedRecordDataContainers()),
                 Mockito.eq(modelBuilderData.getNumOfContexts()),
-                Mockito.anyInt()
+                Mockito.anyInt(), Mockito.anyList()
         )).thenReturn(clusterConfs);
 
         SmartWeightsModel model = (SmartWeightsModel) createModelBuilder(algorithm).build(modelBuilderData);

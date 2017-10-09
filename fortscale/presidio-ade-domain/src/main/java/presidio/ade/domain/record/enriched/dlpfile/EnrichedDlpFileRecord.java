@@ -1,8 +1,6 @@
 package presidio.ade.domain.record.enriched.dlpfile;
 
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -17,10 +15,6 @@ import java.time.Instant;
  */
 @Document
 @AdeRecordMetadata(adeEventType = AdeDlpFileRecord.DLP_FILE_STR)
-@CompoundIndexes({
-        @CompoundIndex(name = "start", def = "{'startInstant': 1}")
-        // A compound index is created dynamically for every <'contextType', 'startInstant'> pair in use
-})
 public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
