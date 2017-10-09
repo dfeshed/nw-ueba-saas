@@ -91,6 +91,27 @@ public class RestUserServiceTest {
         Assert.assertEquals(5, usersWrapper.getTotal().intValue());
     }
 
+    @Test
+    public void testReturnUsersWithIndicatorsFilter() {
+        User user1 = createUser(1);
+        user1.setIndicators(Arrays.asList("indicator1"));
+        User user2 = createUser(2);
+        user2.setIndicators(Arrays.asList("indicator1", "indicator2"));
+
+        Page<User> page = new PageImpl<User>(new ArrayList<>(Arrays.asList(user2)), null, 2);
+        presidio.output.domain.records.users.UserQuery domainQuery = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder()
+                .filterByIndicators(Arrays.asList("indicator2")).build();
+        when(userPersistencyService.find(domainQuery)).thenReturn(page);
+        UserQuery userQuery = new UserQuery();
+        userQuery.setExpand(false);
+        userQuery.setIndicatorsName(Arrays.asList("indicator2"));
+        UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
+        List<presidio.webapp.model.User> resultUser = usersWrapper.getUsers();
+
+        Assert.assertEquals(1, resultUser.size());
+        Assert.assertEquals(2, usersWrapper.getTotal().intValue());
+    }
+
 
     @Test
     public void testReturnUsersWithExpand() {

@@ -201,4 +201,50 @@ public class UserQuery {
             return new UserQuery(this);
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserQuery userQuery = (UserQuery) o;
+
+        if (minScore != userQuery.minScore) return false;
+        if (maxScore != userQuery.maxScore) return false;
+        if (isPrefix != userQuery.isPrefix) return false;
+        if (pageNumber != userQuery.pageNumber) return false;
+        if (pageSize != userQuery.pageSize) return false;
+        if (filterByAlertClassifications != null ? !filterByAlertClassifications.equals(userQuery.filterByAlertClassifications) : userQuery.filterByAlertClassifications != null)
+            return false;
+        if (filterByIndicators != null ? !filterByIndicators.equals(userQuery.filterByIndicators) : userQuery.filterByIndicators != null)
+            return false;
+        if (filterBySeverities != null ? !filterBySeverities.equals(userQuery.filterBySeverities) : userQuery.filterBySeverities != null)
+            return false;
+        if (filterByUserTags != null ? !filterByUserTags.equals(userQuery.filterByUserTags) : userQuery.filterByUserTags != null)
+            return false;
+        if (filterByUsersIds != null ? !filterByUsersIds.equals(userQuery.filterByUsersIds) : userQuery.filterByUsersIds != null)
+            return false;
+        if (filterByUserName != null ? !filterByUserName.equals(userQuery.filterByUserName) : userQuery.filterByUserName != null)
+            return false;
+        if (sort != null ? !sort.equals(userQuery.sort) : userQuery.sort != null) return false;
+        return aggregateByFields != null ? aggregateByFields.equals(userQuery.aggregateByFields) : userQuery.aggregateByFields == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = filterByAlertClassifications != null ? filterByAlertClassifications.hashCode() : 0;
+        result = 31 * result + (filterByIndicators != null ? filterByIndicators.hashCode() : 0);
+        result = 31 * result + (filterBySeverities != null ? filterBySeverities.hashCode() : 0);
+        result = 31 * result + (filterByUserTags != null ? filterByUserTags.hashCode() : 0);
+        result = 31 * result + (filterByUsersIds != null ? filterByUsersIds.hashCode() : 0);
+        result = 31 * result + minScore;
+        result = 31 * result + maxScore;
+        result = 31 * result + (isPrefix ? 1 : 0);
+        result = 31 * result + (filterByUserName != null ? filterByUserName.hashCode() : 0);
+        result = 31 * result + (sort != null ? sort.hashCode() : 0);
+        result = 31 * result + (aggregateByFields != null ? aggregateByFields.hashCode() : 0);
+        result = 31 * result + pageNumber;
+        result = 31 * result + pageSize;
+        return result;
+    }
 }
