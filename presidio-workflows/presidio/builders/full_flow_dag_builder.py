@@ -1,9 +1,6 @@
 
 from datetime import timedelta
 
-from airflow import DAG
-from airflow.operators.subdag_operator import SubDagOperator
-
 from presidio.builders.adapter.adapter_dag_builder import AdapterDagBuilder
 from presidio.builders.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -47,37 +44,13 @@ class FullFlowDagBuilder(PresidioDagBuilder):
 
         return full_flow_dag
 
-    @staticmethod
-    def _get_adapter_sub_dag_operator(data_sources, full_flow_dag):
+    def _get_adapter_sub_dag_operator(self, data_sources, full_flow_dag):
         adapter_dag_id = 'adapter_dag'
 
-        adapter_dag = DAG(
-            dag_id='{}.{}'.format(full_flow_dag.dag_id, adapter_dag_id),
-            schedule_interval=full_flow_dag.schedule_interval,
-            start_date=full_flow_dag.start_date,
-            default_args=full_flow_dag.default_args
-        )
+        return self._create_sub_dag_operator(AdapterDagBuilder(data_sources), adapter_dag_id, full_flow_dag)
 
-        return SubDagOperator(
-            subdag=AdapterDagBuilder(data_sources).build(adapter_dag),
-            task_id=adapter_dag_id,
-            dag=full_flow_dag
-        )
-
-    @staticmethod
-    def _get_presidio_core_sub_dag_operator(data_sources, full_flow_dag):
+    def _get_presidio_core_sub_dag_operator(self, data_sources, full_flow_dag):
         presidio_core_dag_id = 'presidio_core_dag'
 
-        presidio_core_dag = DAG(
-            dag_id='{}.{}'.format(full_flow_dag.dag_id, presidio_core_dag_id),
-            schedule_interval=full_flow_dag.schedule_interval,
-            start_date=full_flow_dag.start_date,
-            default_args=full_flow_dag.default_args
-        )
-
-        return SubDagOperator(
-            subdag=PresidioCoreDagBuilder(data_sources).build(presidio_core_dag),
-            task_id=presidio_core_dag_id,
-            dag=full_flow_dag
-        )
+        return self._create_sub_dag_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag)
 

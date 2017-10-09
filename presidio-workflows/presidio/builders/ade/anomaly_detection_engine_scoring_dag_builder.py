@@ -1,8 +1,7 @@
 from datetime import timedelta
+import logging
 
-from airflow import DAG
 from airflow.operators.python_operator import ShortCircuitOperator
-from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -42,6 +41,9 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
         :return: The given ADE SCORING DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
+
+        logging.info("populating the ade scoring dag, dag_id=%s for data sources: %s and hourly smarts: %s",
+                     anomaly_detection_engine_scoring_dag.dag_id, self.data_sources, self.hourly_smart_events_confs)
         hourly_aggregations_sub_dag_operator_list = []
 
         task_sensor_service = TaskSensorService()
@@ -55,7 +57,9 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_HOURLY,
                                                                      anomaly_detection_engine_scoring_dag.schedule_interval) &
-                                             ((anomaly_detection_engine_scoring_dag.start_date + self._min_gap_from_dag_start_date_to_start_scoring) <= kwargs['execution_date']),
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(anomaly_detection_engine_scoring_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_scoring,
+                                                                                                                                   kwargs['execution_date']),
             provide_context=True
         )
 
@@ -114,42 +118,16 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
             else:
                 raise Exception("smart configuration is None or empty")
 
-    @staticmethod
-    def _get_aggregations_sub_dag_operator(fixed_duration_strategy, data_source, anomaly_detection_engine_dag):
+    def _get_aggregations_sub_dag_operator(self, fixed_duration_strategy, data_source, anomaly_detection_engine_dag):
         aggregations_dag_id = '{}_{}_aggregations'.format(
             fixed_duration_strategy_to_string(fixed_duration_strategy),
             data_source
         )
 
-        return AnomalyDetectionEngineScoringDagBuilder.create_sub_dag_operator(
+        return self._create_sub_dag_operator(
             AggregationsDagBuilder(fixed_duration_strategy, data_source), aggregations_dag_id,
             anomaly_detection_engine_dag)
 
 
-    @staticmethod
-    def create_sub_dag_operator(sub_dag_builder, sub_dag_id, anomaly_detection_engine_scoring_dag):
-        """
-        create a sub dag of the recieved "anomaly_detection_engine_scoring_dag" fill it with a flow using the sub_dag_builder
-        and wrap it with a sub dag operator.
-        :param sub_dag_builder: 
-        :type sub_dag_builder: PresidioDagBuilder
-        :param sub_dag_id:
-        :type sub_dag_id: str
-        :param anomaly_detection_engine_scoring_dag: The ADE DAG to populate
-        :type anomaly_detection_engine_scoring_dag: airflow.models.DAG
-        :return: The given ADE DAG, after it has been populated
-        :rtype: airflow.models.DAG
-        """
 
-        sub_dag = DAG(
 
-            dag_id='{}.{}'.format(anomaly_detection_engine_scoring_dag.dag_id, sub_dag_id),
-            schedule_interval=anomaly_detection_engine_scoring_dag.schedule_interval,
-            start_date=anomaly_detection_engine_scoring_dag.start_date
-        )
-
-        return SubDagOperator(
-            subdag=sub_dag_builder.build(sub_dag),
-            task_id=sub_dag_id,
-            dag=anomaly_detection_engine_scoring_dag
-        )

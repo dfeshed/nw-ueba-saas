@@ -34,10 +34,10 @@ class SmartModelDagBuilder(PresidioDagBuilder):
 
         self._fixed_duration_strategy = fixed_duration_strategy
         self._smart_events_conf = smart_events_conf
-        self._build_model_interval = timedelta(days=2)
+        self._build_model_interval = timedelta(days=1)
         self._accumulate_interval = timedelta(days=1)
         self._min_gap_from_dag_start_date_to_start_accumulating = timedelta(days=14)
-        self._min_gap_from_dag_start_date_to_start_modeling = timedelta(days=21)
+        self._min_gap_from_dag_start_date_to_start_modeling = timedelta(days=28)
         self._accumulate_operator_gap_from_smart_model_operator_in_timedelta = timedelta(days=2)
 
     def build(self, smart_model_dag):
@@ -66,7 +66,9 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._accumulate_interval,
                                                                      smart_model_dag.schedule_interval) &
-                                             ((smart_model_dag.start_date + self._min_gap_from_dag_start_date_to_start_accumulating) <= kwargs['execution_date']),
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_accumulating,
+                                                                                                                                   kwargs['execution_date']),
             provide_context=True
         )
         task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, smart_accumulate_short_circuit_operator)
@@ -83,7 +85,9 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._build_model_interval,
                                                                      smart_model_dag.schedule_interval) &
-                                             ((smart_model_dag.start_date + self._min_gap_from_dag_start_date_to_start_modeling) <= kwargs['execution_date']),
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
+                                                                                                                                   kwargs['execution_date']),
             provide_context=True
         )
         task_sensor_service.add_task_short_circuit(smart_model_operator, smart_model_short_circuit_operator)

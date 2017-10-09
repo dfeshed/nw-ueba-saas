@@ -1,6 +1,7 @@
-from airflow import DAG
+import logging
+
+
 from airflow.operators.python_operator import ShortCircuitOperator
-from airflow.operators.subdag_operator import SubDagOperator
 
 from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuilder
 from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
@@ -40,6 +41,8 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
         :return: The given ADE MODELING DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
+        logging.info("populating the ade modeling dag, dag_id=%s for data sources: %s and hourly smarts: %s",
+                     anomaly_detection_engine_modeling_dag.dag_id, self.data_sources, self.hourly_smart_events_confs)
 
         task_sensor_service = TaskSensorService()
 
@@ -100,8 +103,7 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
             else:
                 raise Exception("smart configuration is None or empty")
 
-    @staticmethod
-    def _build_manager_operator(anomaly_detection_engine_modeling_dag, enriched_data_customer_tasks, daily_short_circuit_operator):
+    def _build_manager_operator(self, anomaly_detection_engine_modeling_dag, enriched_data_customer_tasks, daily_short_circuit_operator):
         """
         Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished to use it.
         Set daily_short_circuit in order to run ManagerOperator once a day.
@@ -131,52 +133,24 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
     def _get_raw_model_sub_dag_operator(self, data_source, anomaly_detection_engine_modeling_dag):
         raw_model_dag_id = '{}_raw_model'.format(data_source)
 
-        return AnomalyDetectionEngineModelingDagBuilder.create_sub_dag_operator(RawModelDagBuilder(data_source),
+        return self._create_sub_dag_operator(RawModelDagBuilder(data_source),
                                                                                raw_model_dag_id, anomaly_detection_engine_modeling_dag)
 
-    @staticmethod
-    def _get_aggr_model_sub_dag_operator(data_source, fixed_duration_strategy, anomaly_detection_engine_modeling_dag):
+    def _get_aggr_model_sub_dag_operator(self, data_source, fixed_duration_strategy, anomaly_detection_engine_modeling_dag):
         aggr_model_dag_id = '{}_{}_aggr_model'.format(
             data_source,
             fixed_duration_strategy_to_string(fixed_duration_strategy)
         )
 
-        return AnomalyDetectionEngineModelingDagBuilder.create_sub_dag_operator(
+        return self._create_sub_dag_operator(
             AggrModelDagBuilder(data_source, fixed_duration_strategy), aggr_model_dag_id,
             anomaly_detection_engine_modeling_dag)
 
-    @staticmethod
-    def _get_smart_model_sub_dag_operator(fixed_duration_strategy, smart_events_conf, anomaly_detection_engine_modeling_dag):
+    def _get_smart_model_sub_dag_operator(self, fixed_duration_strategy, smart_events_conf, anomaly_detection_engine_modeling_dag):
         smart_model_dag_id = '{}_smart_model_sub_dag'.format(smart_events_conf)
 
-        return AnomalyDetectionEngineModelingDagBuilder.create_sub_dag_operator(
+        return self._create_sub_dag_operator(
             SmartModelDagBuilder(fixed_duration_strategy, smart_events_conf), smart_model_dag_id,
             anomaly_detection_engine_modeling_dag)
 
-    @staticmethod
-    def create_sub_dag_operator(sub_dag_builder, sub_dag_id, anomaly_detection_engine_modeling_dag):
-        """
-        create a sub dag of the recieved "anomaly_detection_engine_modeling_dag" fill it with a flow using the sub_dag_builder
-        and wrap it with a sub dag operator.
-        :param sub_dag_builder: 
-        :type sub_dag_builder: PresidioDagBuilder
-        :param sub_dag_id:
-        :type sub_dag_id: str
-        :param anomaly_detection_engine_modeling_dag: The ADE DAG to populate
-        :type anomaly_detection_engine_modeling_dag: airflow.models.DAG
-        :return: The given ADE DAG, after it has been populated
-        :rtype: airflow.models.DAG
-        """
 
-        sub_dag = DAG(
-
-            dag_id='{}.{}'.format(anomaly_detection_engine_modeling_dag.dag_id, sub_dag_id),
-            schedule_interval=anomaly_detection_engine_modeling_dag.schedule_interval,
-            start_date=anomaly_detection_engine_modeling_dag.start_date
-        )
-
-        return SubDagOperator(
-            subdag=sub_dag_builder.build(sub_dag),
-            task_id=sub_dag_id,
-            dag=anomaly_detection_engine_modeling_dag
-        )
