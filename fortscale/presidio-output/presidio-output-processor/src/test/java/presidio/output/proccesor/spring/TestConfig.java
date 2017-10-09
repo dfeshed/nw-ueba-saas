@@ -20,7 +20,7 @@ public class TestConfig {
         properties.put("smart.threshold.score", 0);
         properties.put("smart.page.size", 50);
         properties.put("elasticsearch.clustername", "fortscale");
-        properties.put("elasticsearch.host", "dev-alexp");
+        properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", 9300);
         properties.put("number.of.classifications", 19);
         return new TestPropertiesPlaceholderConfigurer(properties);
