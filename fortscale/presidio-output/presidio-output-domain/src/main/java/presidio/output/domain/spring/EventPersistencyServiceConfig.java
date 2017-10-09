@@ -1,8 +1,10 @@
 package presidio.output.domain.spring;
 
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
@@ -14,6 +16,7 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
  * Created by efratn on 02/08/2017.
  */
 @Configuration
+@Import({MongoDbBulkOpUtilConfig.class})
 public class EventPersistencyServiceConfig {
 
     @Autowired
