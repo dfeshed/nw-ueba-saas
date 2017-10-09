@@ -47,7 +47,7 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
         task_sensor_service = TaskSensorService()
 
         daily_short_circuit_operator = ShortCircuitOperator(
-            task_id='ade_scoring_daily_short_circuit',
+            task_id='ade_modeling_daily_short_circuit',
             dag=anomaly_detection_engine_modeling_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,
@@ -66,7 +66,7 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
         enriched_data_customer_tasks = []
 
         # Iterate all configured data sources and
-        # define the hourly and daily aggregation sub dags, their sensors, short circuit and their flow dependencies.
+        # define the raw models and hourly and daily aggregation models sub dags, their sensors and short circuit.
         for data_source in self.data_sources:
             # Create the raw model subDag operator for the data source
             raw_model_sub_dag_operator = self._get_raw_model_sub_dag_operator(data_source,
@@ -84,7 +84,7 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
             enriched_data_customer_tasks.append(hourly_aggr_model_sub_dag_operator)
             enriched_data_customer_tasks.append(raw_model_sub_dag_operator)
 
-        self._build_manager_operator(anomaly_detection_engine_modeling_dag, enriched_data_customer_tasks,
+        self._build_ade_manager_operator(anomaly_detection_engine_modeling_dag, enriched_data_customer_tasks,
                                      daily_short_circuit_operator)
 
     def _build_smart_model_dags(self, anomaly_detection_engine_modeling_dag, daily_short_circuit_operator, task_sensor_service):
@@ -103,10 +103,10 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
             else:
                 raise Exception("smart configuration is None or empty")
 
-    def _build_manager_operator(self, anomaly_detection_engine_modeling_dag, enriched_data_customer_tasks, daily_short_circuit_operator):
+    def _build_ade_manager_operator(self, anomaly_detection_engine_modeling_dag, enriched_data_customer_tasks, daily_short_circuit_operator):
         """
         Create AdeManagerOperator in order to clean enriched data after all enriched data customer tasks finished to use it.
-        Set daily_short_circuit in order to run ManagerOperator once a day.
+        Set daily_short_circuit in order to run AdeManagerOperator once a day.
 
         AdeManagerOperator instances do not run sequentially (AdeManagerOperator does not use sequential sensor)
          as a result of following assumption: AdeManagerOperator should run once a day (using daily_short_circuit),
@@ -120,7 +120,7 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
         """
 
         ade_manager_operator = AdeManagerOperator(
-            command=AdeManagerOperator.cleanup_command,
+            command=AdeManagerOperator.enriched_ttl_cleanup_command,
             dag=anomaly_detection_engine_modeling_dag
         )
 

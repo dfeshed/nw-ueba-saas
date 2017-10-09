@@ -12,8 +12,8 @@ from presidio.utils.services.fixed_duration_strategy import fixed_duration_strat
 
 class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
     """
-    The "Anomaly Detection Engine" DAG consists of all the hourly and daily
-    aggregation, scoring, modeling and smart tasks, per all configured data sources.
+    The "Anomaly Detection Engine Scoring" DAG consists of all the hourly and daily
+    aggregation, scoring, and smart tasks, per all configured data sources and smart configuration.
     """
 
     def __init__(self, data_sources, hourly_smart_events_confs, daily_smart_events_confs):
@@ -69,7 +69,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                                              hourly_short_circuit_operator, hourly_aggregations_sub_dag_operator_list)
 
         # Iterate all hourly smart configurations and
-        # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
+        # define the smart operator with its sensor, short circuit and flow dependecies.
         self._build_smart_flow(anomaly_detection_engine_scoring_dag, self.hourly_smart_events_confs,
                                FIX_DURATION_STRATEGY_HOURLY, task_sensor_service,
                                hourly_short_circuit_operator,
@@ -98,7 +98,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                           task_sensor_service, smart_short_circuit_operator,
                           aggregations_sub_dag_operator_list):
         # Iterate all smart configurations and
-        # define the smart operator and smart model sub dag with their sensor, short circuit and flow dependecies.
+        # define the smart operator with its sensor, short circuit and flow dependecies.
         for smart_events_conf in smart_events_confs:
             if smart_events_conf:
                 # Create the smart events operator for the configuration
