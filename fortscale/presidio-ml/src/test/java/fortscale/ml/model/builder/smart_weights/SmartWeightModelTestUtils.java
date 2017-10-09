@@ -30,10 +30,14 @@ public class SmartWeightModelTestUtils {
                 Map<String, Double> featureNameToScore = new HashMap<>();
                 for (String featureName : featureNames) {
                     if (r.nextBoolean()) {
+                        double score = r.nextDouble() * (featureName.startsWith("F") ? 100 : 500);
                         featureNameToScore.put(
                                 featureName,
-                                r.nextDouble() * (featureName.startsWith("F") ? 100 : 500)
+                                score
                         );
+                        if(featureName.equals("F1")){
+                            featureNameToScore.put("F6",score);
+                        }
                     }
                 }
                 smartAggregatedRecordDataContainers.add(new SmartAggregatedRecordDataContainer(Instant.ofEpochMilli(1234), featureNameToScore));
@@ -44,7 +48,8 @@ public class SmartWeightModelTestUtils {
             ClusterConf c4 = createClusterConf("F4", "F5");
             ClusterConf c5 = createClusterConf("P1");
             ClusterConf c6 = createClusterConf("P2");
-            clusterConfs = createClusterConfs(c1, c2, c3, c4, c5, c6);
+            ClusterConf c7 = createClusterConf("F6");
+            clusterConfs = createClusterConfs(c1, c2, c3, c4, c5, c6, c7);
         }
     }
 

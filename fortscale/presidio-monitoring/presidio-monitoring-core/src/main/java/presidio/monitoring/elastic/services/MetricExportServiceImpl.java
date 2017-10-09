@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import presidio.monitoring.elastic.records.PresidioMetric;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 
-
 import java.util.List;
 
 @Service
@@ -20,13 +19,15 @@ public class MetricExportServiceImpl implements MetricExportService {
     }
 
     public PresidioMetric save(PresidioMetric presidioMetric) {
-        logger.info("Exporting metric to elastic {}",presidioMetric.toString());
+        logger.debug("Exporting metric to elastic {}",presidioMetric);
         return metricRepository.save(presidioMetric);
     }
 
 
     public Iterable<PresidioMetric> save(List<PresidioMetric> presidioMetric) {
-        logger.info("Exporting metrics to elastic, number of metrics {}",presidioMetric.size());
+        if(logger.isDebugEnabled()) {
+            logger.debug("Exporting metrics to elastic, number of metrics {}", presidioMetric.size());
+        }
         return metricRepository.save(presidioMetric);
     }
 }

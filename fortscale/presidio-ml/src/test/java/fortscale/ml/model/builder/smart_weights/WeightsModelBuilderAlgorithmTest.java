@@ -354,7 +354,7 @@ public class WeightsModelBuilderAlgorithmTest {
     public void shouldReturnClusterSpecsPrototypeWhenEmptyModelBuilderData() {
         List<ClusterConf> clusterConfsPrototype = createClusterConfs(createClusterConf("F1"));
 
-        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(clusterConfsPrototype, Collections.emptyList(), 0, 100);
+        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(clusterConfsPrototype, Collections.emptyList(), 0, 100, null);
 
         Assert.assertEquals(clusterConfsPrototype, clusterConfs);
     }
@@ -370,7 +370,7 @@ public class WeightsModelBuilderAlgorithmTest {
                 AggregatedFeatureReliability::new,
                 new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm())
         );
-        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100);
+        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"));
 
         Assert.assertEquals(0.07829410949206357, clusterConfs.get(0).getWeight(), 0.00000001);
         Assert.assertEquals(0.07829410949206357, clusterConfs.get(1).getWeight(), 0.00000001);
@@ -378,5 +378,6 @@ public class WeightsModelBuilderAlgorithmTest {
         Assert.assertEquals(0.07878756912077528, clusterConfs.get(3).getWeight(), 0.00000001);
         Assert.assertEquals(3.817233818453441E-4, clusterConfs.get(4).getWeight(), 0.00000001);
         Assert.assertEquals(0.0022737147214453943, clusterConfs.get(5).getWeight(), 0.00000001);
+        Assert.assertEquals(0.0, clusterConfs.get(6).getWeight(), 0.0);
     }
 }
