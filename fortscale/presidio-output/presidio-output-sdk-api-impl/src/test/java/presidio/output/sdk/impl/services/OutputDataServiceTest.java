@@ -65,7 +65,7 @@ public class OutputDataServiceTest {
         String collectionName = toCollectionNameTranslator.toCollectionName(Schema.FILE);
         List<FileEnrichedEvent> eventsFound = mongoTemplate.findAll(FileEnrichedEvent.class, collectionName);
         Assert.assertTrue("retrieved event number", eventsFound.size() == 1);
-        Assert.assertEquals(event.getId(), eventsFound.get(0).getId());
+        Assert.assertEquals(event.getEventId(), eventsFound.get(0).getEventId());
     }
 
 }
