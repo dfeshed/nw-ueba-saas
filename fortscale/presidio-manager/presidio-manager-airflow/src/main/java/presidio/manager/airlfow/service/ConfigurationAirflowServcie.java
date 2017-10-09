@@ -1,6 +1,7 @@
 package presidio.manager.airlfow.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.ArrayUtils;
 import presidio.config.server.client.ConfigurationServerClientService;
@@ -46,19 +47,24 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     private final String moduleName;
     private final List<String> activeProfiles;
     private final String configurationFolderPath;
+    private final ObjectMapper mapper;
 
     public ConfigurationAirflowServcie(ConfigurationServerClientService configServerClient, String moduleName, List<String> activeProfiles, String configurationFolderPath) {
         this.configServerClient = configServerClient;
         this.moduleName = moduleName;
         this.activeProfiles = activeProfiles;
         this.configurationFolderPath = configurationFolderPath;
+        this.mapper = new ObjectMapper();
+
     }
 
     @Override
     public boolean applyConfiguration() {
         try {
             for (String profile: activeProfiles) {
-                String newConfJson = configServerClient.readConfigurationAsJsonString(moduleName, profile);
+
+                Object response = configServerClient.readConfigurationAsJson(moduleName, profile, Object.class);
+                String newConfJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
                 File dir = new File(configurationFolderPath);
                 dir.mkdirs();
 
@@ -80,7 +86,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 FileWriter fileWriter = new FileWriter(file,false);
                 fileWriter.write(newConfJson);
                 fileWriter.close();
-                //Files.setPosixFilePermissions(Paths.get(filePath),perms);
+                Files.setPosixFilePermissions(Paths.get(filePath),perms);
             }
             return true;
         } catch (Exception e) {
