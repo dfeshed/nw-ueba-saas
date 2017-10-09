@@ -54,7 +54,7 @@
     <vbox class="rsa-investigate-query__body-slave">
       {{#if (and serviceId sessionId)}}
         {{recon-container
-          serviceId=serviceId
+          endpointId=serviceId
           eventId=sessionId
           meta=model.recon.metas
           index=model.recon.index

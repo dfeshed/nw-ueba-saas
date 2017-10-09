@@ -70,16 +70,12 @@ export default Route.extend({
    */
   model(params) {
     const state = this.modelFor('application');
+    const { eventId, metaPanelSize, reconSize } = params;
     // Parse and save URL query params
     const filterAttrs = parseEventQueryUri(params.filter);
+    filterAttrs.sessionId = eventId;
     this.set('filterAttrs', filterAttrs);
-
     const { serviceId } = filterAttrs;
-    const {
-      eventId,
-      metaPanelSize,
-      reconSize
-    } = params;
 
     // Apply the route URL queryParams to Redux state
     if (serviceId) {
