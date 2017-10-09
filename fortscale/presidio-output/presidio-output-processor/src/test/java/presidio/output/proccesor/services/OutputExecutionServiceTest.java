@@ -41,7 +41,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-@Ignore
+@Ignore //this test is ignored since it is using elastic. we should run this test after we will have solution for tests with elastic
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = {OutputProcessorConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
