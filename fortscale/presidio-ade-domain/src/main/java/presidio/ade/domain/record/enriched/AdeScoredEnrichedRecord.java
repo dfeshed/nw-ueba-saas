@@ -1,6 +1,8 @@
 package presidio.ade.domain.record.enriched;
 
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.utils.mongodb.index.DynamicIndexing;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeScoredRecord;
@@ -11,7 +13,11 @@ import java.util.List;
 /**
  * @author Yaron DL
  */
-public abstract class AdeScoredEnrichedRecord<U extends BaseEnrichedContext> extends AdeRecord implements AdeScoredRecord{
+@DynamicIndexing(compoundIndexes = {
+        @CompoundIndex(name = "startScr", def = "{'startInstant': 1, 'score': 1}"),
+        @CompoundIndex(name = "eventId", def = "{'context.eventId': 1}")
+})
+public abstract class AdeScoredEnrichedRecord<U extends BaseEnrichedContext> extends AdeRecord implements AdeScoredRecord {
     public static final String EVENT_TYPE_PREFIX = "scored_enriched";
     public static final String CONTEXT_FIELD_NAME = "context";
     public static final String SCORE_FIELD_NAME = "score";
@@ -38,13 +44,13 @@ public abstract class AdeScoredEnrichedRecord<U extends BaseEnrichedContext> ext
     }
 
     @Override
-    public String getAdeEventType(){
+    public String getAdeEventType() {
         return EVENT_TYPE_PREFIX + "." + getFeatureEventType() + "." + getFeatureName();
     }
 
     public abstract void fillContext(EnrichedRecord enrichedRecord);
 
-    public U getContext(){
+    public U getContext() {
         return context;
     }
 
