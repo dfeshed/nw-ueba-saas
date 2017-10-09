@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.test.utils.generators.EnrichedFileGenerator;
 import presidio.ade.test.utils.generators.EnrichedFileGeneratorConfig;
 import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
@@ -43,6 +44,8 @@ public class ModelFeatureAggregationBucketsApplicationTest extends EnrichedFileS
     public static final String COMMAND_FORMAT = "run  --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s ";
     public static final String EXECUTION_COMMAND = String.format(COMMAND_FORMAT, ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 3600);
 
+    @Autowired
+    private EnrichedDataStore enrichedDataStore;
     @Autowired
     @Qualifier("modelBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
@@ -91,16 +94,18 @@ public class ModelFeatureAggregationBucketsApplicationTest extends EnrichedFileS
 
     @Test
     public void shouldCreateBucketsForMultipleUsers() throws GeneratorException {
-        ((EnrichedFileGenerator)eventsGenerator).setUserGenerator(new UserRegexCyclicValuesGenerator("s-[1-5]{1}"));
-        eventsGenerator.generateAndPersistSanityData(10);
+        EnrichedFileGenerator fileGenerator = new EnrichedFileGenerator(enrichedDataStore);
+        fileGenerator.setUserGenerator(new UserRegexCyclicValuesGenerator("s-[1-5]{1}"));
+        fileGenerator.generateAndPersistSanityData(10);
         executeAndAssertCommandSuccess(EXECUTION_COMMAND);
         assertFeatureBuckets(5*(DAYS_BACK_FROM - DAYS_BACK_TO));
     }
 
     @Test
     public void shouldCreateBucketsForPartialDateAndMultipleUsers() throws GeneratorException {
-        ((EnrichedFileGenerator)eventsGenerator).setUserGenerator(new UserRegexCyclicValuesGenerator("s-[1-8]{1}"));
-        eventsGenerator.generateAndPersistSanityData(10);
+        EnrichedFileGenerator fileGenerator = new EnrichedFileGenerator(enrichedDataStore);
+        fileGenerator.setUserGenerator(new UserRegexCyclicValuesGenerator("s-[1-8]{1}"));
+        fileGenerator.generateAndPersistSanityData(10);
         executeAndAssertCommandSuccess(String.format(COMMAND_FORMAT, ADE_EVENT_TYPE, START_DATE.minus(1, ChronoUnit.DAYS).toString(), END_DATE.minus(1, ChronoUnit.DAYS).toString(), 3600));
         assertFeatureBuckets(8);
     }
