@@ -15,6 +15,11 @@ export const setQueryParams = (params) => ({
   payload: params
 });
 
+export const setQueryString = (queryString) => ({
+  type: ACTION_TYPES.SET_QUERY_STRING,
+  payload: queryString
+});
+
 /**
  * Takes a time range object and calculates the start and end dates. The
  * timeRange object has the following properties:

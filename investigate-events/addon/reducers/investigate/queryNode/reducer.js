@@ -31,7 +31,8 @@ const _initialState = Immutable.from({
       status: undefined
     },
     metaKeyStates: []
-  }
+  },
+  queryString: ''
 });
 
 export default handleActions({
@@ -49,6 +50,10 @@ export default handleActions({
 
   [ACTION_TYPES.SET_QUERY_PARAMS]: (state, { payload }) => {
     return state.merge(payload);
+  },
+
+  [ACTION_TYPES.SET_QUERY_STRING]: (state, { payload }) => {
+    return state.set('queryString', payload);
   },
 
   [ACTION_TYPES.SET_QUERY_TIME_RANGE]: (state, { payload }) => {

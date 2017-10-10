@@ -7,10 +7,11 @@ import {
 } from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = ({ investigate }) => ({
-  serviceId: investigate.queryNode.serviceId,
-  startTime: investigate.queryNode.startTime,
   endTime: investigate.queryNode.endTime,
-  services: investigate.services.data
+  queryString: investigate.queryNode.queryString,
+  serviceId: investigate.queryNode.serviceId,
+  services: investigate.services.data,
+  startTime: investigate.queryNode.startTime
 });
 
 const dispatchToActions = { setQueryTimeRange, setServiceId };
@@ -36,7 +37,6 @@ const TIME_RANGES = [
 
 const QueryBarComponent = Component.extend({
   classNames: 'rsa-investigate-query-bar',
-  queryString: '',
 
   /**
    * Configurable callback to be invoked when user submits the query.
