@@ -1,0 +1,29 @@
+.rsa-preferences-panel {
+  transition: width .65s;
+  position: absolute;
+  top: $applicationHeaderHeight;
+  width: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rsa-color(gray, darker);
+  border-top: 1px solid rsa-color(blue);
+  overflow: hidden;
+  @include rsa-layer(panels);
+
+  &.is-expanded {
+    transition: width .65s;
+    width: calc(100vw / 4);
+  }
+
+  .rsa-content-section-header {
+    min-width: calc(100vw / 4);
+    padding: rsa-whitespace();
+    box-sizing: border-box;
+    background-color: rsa-color(gray, darkest);
+
+    .controls {
+      right: rsa-whitespace(less);
+    }
+  }
+
+}

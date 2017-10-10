@@ -9,7 +9,8 @@ const ALL_SUBMODULES = [
   'sa',
   'streaming-data',
   'style-guide',
-  'context'
+  'context',
+  'preferences'
 ];
 
 // A configuration that lists each submodule with
@@ -24,7 +25,8 @@ const saModuleDependants = {
     'investigate-files',
     'packager',
     'respond',
-    'context'
+    'context',
+    'preferences'
   ],
   docs: [], // lol
   'mock-server': [
@@ -60,6 +62,10 @@ const saModuleDependants = {
   context: [
     'sa',
     'respond'
+  ],
+  preferences: [
+    'sa',
+    'investigate-events'
   ]
 };
 

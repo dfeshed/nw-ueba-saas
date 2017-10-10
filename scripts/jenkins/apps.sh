@@ -177,6 +177,7 @@ buildEmberApp component-lib false
 buildEmberApp packager false true
 buildEmberApp recon false true
 buildEmberApp context false true
+buildEmberApp preferences false true
 buildEmberApp style-guide true
 buildEmberApp investigate-events false true
 buildEmberApp investigate-files false true

@@ -1,0 +1,14 @@
+<grid responsive>
+  <box class="col-xs-3">
+    <aside>
+      {{#rsa-form-button style='primary' click=(action 'togglePreferencesPanel' 'investigate')}}
+        Toggle Investigate Preferences
+      {{/rsa-form-button}}
+    </aside>
+  </box>
+  <box class="col-xs-9">
+    <page>
+      {{preferences-panel source="investigate" }}
+    </page>
+  </box>
+</grid>

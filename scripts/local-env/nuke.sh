@@ -31,6 +31,7 @@ nukeNode investigate-events
 nukeNode investigate-files
 nukeNode respond
 nukeNode context
+nukeNode preferences
 nukeNode sa
 
 red "                               ________________

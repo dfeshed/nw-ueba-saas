@@ -53,6 +53,7 @@ prepareApp investigate-events
 prepareApp investigate-files
 prepareApp respond
 prepareApp context
+prepareApp preferences
 prepareApp sa
 
 cd $CWD
