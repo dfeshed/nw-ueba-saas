@@ -14,7 +14,9 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
+import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
@@ -33,6 +35,20 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             } else {
                 boolQueryBuilder.must(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByUserName()).operator(Operator.AND));
             }
+        }
+
+        // filter by freeText
+        if (StringUtils.isNotEmpty(userQuery.getFilterByFreeText())) {
+            BoolQueryBuilder freeTextQuery = new BoolQueryBuilder();
+            if (userQuery.isPrefix()) {
+                freeTextQuery.should(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+                freeTextQuery.should(prefixQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+            } else {
+                freeTextQuery.should(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+                freeTextQuery.should(matchQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()).operator(Operator.AND));
+            }
+
+            boolQueryBuilder.must(freeTextQuery);
         }
 
         // filter by alert classifications
