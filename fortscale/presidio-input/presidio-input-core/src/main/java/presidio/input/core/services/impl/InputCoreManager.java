@@ -88,7 +88,7 @@ public class InputCoreManager {
             long time = ((AbstractInputDocument) nextEvents.get(nextEvents.size() - 1)).getDateTime().toEpochMilli();
             Set tags = new HashSet();
             tags.add(schema.toString());
-            tags.add(startDate.toEpochMilli());
+            tags.add(startDate.toString());
             metricCollectingService.addMetric(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
         }
     }
