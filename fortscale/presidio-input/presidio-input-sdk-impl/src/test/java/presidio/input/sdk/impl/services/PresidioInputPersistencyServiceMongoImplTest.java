@@ -60,7 +60,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         Instant endTime = Instant.parse("2017-06-06T11:00:00Z");
         presidioInputPersistencyService.store(Schema.FILE, list);
         List<? extends AbstractAuditableDocument> all = presidioInputPersistencyService.find(Schema.FILE, startTime, endTime);
-        Assert.assertEquals(doc, all.get(0));
+        Assert.assertEquals(doc.toString().trim(), all.get(0).toString().trim());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         list.add(doc);
         presidioInputPersistencyService.store(Schema.FILE, list);
         List<DlpFileDataDocument> all = mongoTemplate.findAll(DlpFileDataDocument.class, toCollectionNameTranslator.toCollectionName(Schema.FILE));
-        Assert.assertEquals(doc, all.get(0));
+        Assert.assertEquals(doc.toString().trim(), all.get(0).toString().trim());
     }
 
     @Test

@@ -1,10 +1,13 @@
 package presidio.input.sdk.impl.spring;
 
 import fortscale.common.general.Schema;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,10 +26,14 @@ import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 @Configuration
 @EnableMongoRepositories(basePackages = "presidio.input.sdk.impl.repositories")
 @PropertySource("classpath:inputSdk.properties")
+@Import({MongoDbBulkOpUtilConfig.class})
 public class PresidioInputPersistencyServiceConfig {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -40,7 +47,7 @@ public class PresidioInputPersistencyServiceConfig {
 
     @Bean
     public DataSourceRepository dataSourceRepository() {
-        return new DataSourceRepositoryImpl(mongoTemplate);
+        return new DataSourceRepositoryImpl(mongoTemplate, mongoDbBulkOpUtil);
     }
 
     @Bean

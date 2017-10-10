@@ -55,7 +55,9 @@ public class UserPersistencyServiceTest {
     User user3;
     User user4;
     User user5;
-
+    User user6;
+    User user7;
+    User user8;
 
     @Before
     public void before() {
@@ -73,6 +75,9 @@ public class UserPersistencyServiceTest {
         user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
         user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
         user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
+        user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
+        user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
+        user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
     }
 
     @Test
@@ -123,6 +128,103 @@ public class UserPersistencyServiceTest {
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
 
+    }
+
+    @Test
+    public void testFreeTextWithoutIsPrefixEnabled() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user6);
+        userList.add(user7);
+        userList.add(user8);
+        userPersistencyService.save(userList);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .build();
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(0L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("text")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+    }
+
+    @Test
+    public void testFreeTextWithIsPrefixEnabled() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user6);
+        userList.add(user7);
+        userList.add(user8);
+        userPersistencyService.save(userList);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .filterByUserNameWithPrefix(true)
+                        .build();
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(3L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .filterByUserNameWithPrefix(true)
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(3L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("text")
+                        .filterByUserNameWithPrefix(true)
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+    }
+
+    @Test
+    public void testFreeTextWhitUserName() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user6);
+        userList.add(user7);
+        userList.add(user8);
+        userPersistencyService.save(userList);
+        Page<User> foundUsers=null;
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .filterByUserNameWithPrefix(true)
+                        .filterByUserName("free")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(1L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .filterByUserName("free")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(1L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .filterByUserNameWithPrefix(true)
+                        .filterByUserName("fre")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .filterByUserName("fre")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(0L));
     }
 
     @Test
@@ -452,5 +554,41 @@ public class UserPersistencyServiceTest {
 
         assertEquals(buckets.size(), 1L); //one bucket- CRITICAL
         assertEquals(3L, severityAgg.getBucketByKey("CRITICAL").getDocCount());
+    }
+
+    @Test
+    public void testFindByQueryWithIndicatorsAggregation() {
+
+        List<String> tags1 = Arrays.asList("admin", "watch");
+        List<String> tags2 = Arrays.asList("admin");
+
+
+        List<String> indicatorsA = Arrays.asList("a");
+        List<String> indicatorsB = Arrays.asList("a", "b");
+        List<String> indicatorsC = Arrays.asList("a", "b", "c");
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, indicatorsA, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, indicatorsB, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, indicatorsC, tags1, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+        List<String> aggregationFields = Arrays.asList(User.INDICATORS_FIELD_NAME);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .aggregateByFields(aggregationFields)
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        Map<String, Aggregation> stringAggregationMap = ((AggregatedPageImpl<User>) result).getAggregations().asMap();
+        StringTerms severityAgg = (StringTerms) stringAggregationMap.get(User.INDICATORS_FIELD_NAME);
+        List<Terms.Bucket> buckets = severityAgg.getBuckets();
+
+        assertEquals(buckets.size(), 3L); //two buckets- admin and watch
+        assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
+        assertEquals(severityAgg.getBucketByKey("b").getDocCount(), 2L);
+        assertEquals(severityAgg.getBucketByKey("c").getDocCount(), 1L);
     }
 }

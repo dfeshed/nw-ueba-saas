@@ -3,15 +3,17 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
-import org.springframework.data.elasticsearch.annotations.*;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE , type = Indicator.INDICATOR_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE, type = Indicator.INDICATOR_TYPE)
 @Mapping(mappingPath = "elasticsearch/mappings/indicators-mappings.json")
 public class Indicator extends AbstractElasticDocument {
 
@@ -71,6 +73,12 @@ public class Indicator extends AbstractElasticDocument {
 
     public Indicator(String alertId) {
         super();
+        events = new ArrayList<IndicatorEvent>();
+        this.alertId = alertId;
+    }
+
+    public Indicator(String alertId, String id, Date createdDate, Date updatedDate) {
+        super(id, createdDate, updatedDate);
         events = new ArrayList<IndicatorEvent>();
         this.alertId = alertId;
     }

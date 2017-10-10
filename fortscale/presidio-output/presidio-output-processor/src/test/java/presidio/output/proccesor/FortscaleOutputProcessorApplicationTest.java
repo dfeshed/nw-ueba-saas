@@ -31,7 +31,6 @@ public class FortscaleOutputProcessorApplicationTest {
     OutputExecutionService executionService;
 
     @Test
-    @Ignore
     public void contextLoads() throws Exception {
         Assert.assertTrue(executionService instanceof OutputExecutionServiceImpl);
     }
@@ -51,8 +50,6 @@ public class FortscaleOutputProcessorApplicationTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();
-            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-            properties.put("streaming.aggr_event.field.context", "context");
             properties.put("page.iterator.page.size", "1000");
             properties.put("severity.critical", "95");
             properties.put("severity.high", "85");
@@ -63,6 +60,7 @@ public class FortscaleOutputProcessorApplicationTest {
             properties.put("elasticsearch.port", "9300");
             properties.put("elasticsearch.clustername", "fortscale");
             properties.put("elasticsearch.host", "localhost");
+            properties.put("number.of.classifications", 19);
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
 

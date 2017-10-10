@@ -38,14 +38,16 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private final ObjectMapper mapper;
     private final String securityConfPath;
     private final String krb5ConfPath;
+    private final boolean shouldReloadHttpd;
 
     public ConfigurationSecurityService(ConfigurationServerClientService configurationServerClientService,
-                                        Configuration freeMakerConfiguration, String securityConfPath, String krb5Path) {
+                                        Configuration freeMakerConfiguration, String securityConfPath, String krb5Path, boolean shouldReloadHttpd) {
         this.configurationServerClientService = configurationServerClientService;
         this.freeMakerConfiguration = freeMakerConfiguration;
         this.mapper = new ObjectMapper();
         this.securityConfPath = securityConfPath;
         this.krb5ConfPath = krb5Path;
+        this.shouldReloadHttpd = shouldReloadHttpd;
     }
 
     @Override
@@ -98,8 +100,14 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             }
         }
 
-
-        return reloadHttpConfig();
+        if(shouldReloadHttpd) {
+            return reloadHttpConfig();
+        }
+        else
+        {
+            logger.warn("not reloading httpd config. you must be running a unit test... right?");
+            return true;
+        }
     }
 
     private ValidationResults validateSystemConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {

@@ -1,7 +1,10 @@
 package presidio.ade.domain.pagination.enriched;
 
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,20 +29,22 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class)
+@ContextConfiguration(classes = {AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class, MongoDbBulkOpUtilConfig.class, MongodbTestConfig.class})
 public class EnrichedRecordPaginationServiceTest {
 
     private static final int PAGE_SIZE = 3;
     private static final int MAX_GROUP_SIZE = 2;
     private static final Instant NOW = Instant.now();
     private EnrichedDataStoreImplMongo enrichedDataStoreImplMongo;
-    private  MongoTemplate mongoTemplate;
-    
+    private MongoTemplate mongoTemplate;
+
     @Autowired
     private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
+    @Autowired
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Before
-    public void inilize(){
+    public void initialize() {
         //mock of mongoTemplate
         mongoTemplate = mock(MongoTemplate.class);
     }
@@ -252,7 +257,7 @@ public class EnrichedRecordPaginationServiceTest {
      * result: {} -> 0 pages, 0 events
      */
     public List<EnrichedRecordPaginationServiceGroup> generateResultTest4() {
-        return  new ArrayList<>();
+        return new ArrayList<>();
     }
 
     /**
@@ -267,7 +272,7 @@ public class EnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
