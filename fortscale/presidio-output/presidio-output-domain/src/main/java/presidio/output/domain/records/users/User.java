@@ -32,6 +32,7 @@ public class User extends AbstractElasticDocument {
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
+    public static final String CREATED_BY = "createdBy";
 
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
@@ -45,6 +46,10 @@ public class User extends AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
+
+    @Field(type = FieldType.Date, store = true)
+    @JsonProperty(CREATED_BY)
+    private Date createdBy;
 
     @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE_FIELD_NAME)
@@ -77,7 +82,7 @@ public class User extends AbstractElasticDocument {
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount) {
+                int alertsCount, Date createdBy) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -88,10 +93,11 @@ public class User extends AbstractElasticDocument {
         this.tags = tags;
         this.severity = severity;
         this.alertsCount = alertsCount;
+        this.createdBy = createdBy;
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount, String id, Date createdDate, Date updatedDate) {
+                int alertsCount, String id, Date createdDate, Date updatedDate, Date createdBy) {
         super(id, createdDate, updatedDate);
         this.userId = userId;
         this.userName = userName;
@@ -102,14 +108,16 @@ public class User extends AbstractElasticDocument {
         this.tags = tags;
         this.severity = severity;
         this.alertsCount = alertsCount;
+        this.createdBy = createdBy;
     }
 
-    public User(String userId, String userName, String userDisplayName, List<String> tags) {
+    public User(String userId, String userName, String userDisplayName, List<String> tags, Date createdBy) {
         super();
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
         this.tags = tags;
+        this.createdBy = createdBy;
     }
 
     public UserSeverity getSeverity() {
@@ -176,8 +184,18 @@ public class User extends AbstractElasticDocument {
         this.alertsCount = alertsCount + number;
     }
 
+    public Date getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Date createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public void setAlertClassifications(List<String> alertClassifications) {
         this.alertClassifications = alertClassifications;
+
+
     }
 
     public void addAlertClassifications(List<String> alertClassifications) {

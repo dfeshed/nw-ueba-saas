@@ -26,6 +26,7 @@ import presidio.output.processor.services.user.UsersAlertData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -66,10 +67,11 @@ public class UserServiceImplTest {
 
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
+        Date date = new Date();
         List<User> usersWithOldScore = Arrays.asList(
-                new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
-                new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
-                new User("user3", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0)
+                new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date),
+                new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date),
+                new User("user3", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date)
         );
 
         Pageable pageable1 = new PageRequest(0, 3);
@@ -107,7 +109,8 @@ public class UserServiceImplTest {
 
     @Test
     public void testSetUserAlertData() {
-        User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
+        Date date = new Date();
+        User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date);
         List<String> classification1 = null, classification2, classification3;
         List<String> indicators1 = null, indicators2, indicators3;
         classification2 = new ArrayList<>(Arrays.asList("a", "b"));

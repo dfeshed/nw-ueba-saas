@@ -11,8 +11,10 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,12 +55,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUserEntity(String userId) {
+    public User createUserEntity(String userId, Instant startDate) {
         UserDetails userDetails = getUserDetails(userId);
         if (userDetails == null) {
             return null;
         }
-        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags(), Date.from(startDate));
     }
 
     @Override
