@@ -34,7 +34,7 @@
       }
 
       > table > tr {
-        //background-color: background-color(primary,dark,$rsa-nearly-transparent);
+        //background-color: background-color(primary,dark,nearly-transparent);
 
         &:not(:last-of-type) {
           border-bottom: 10px solid transparent;
@@ -45,7 +45,7 @@
         }
 
         > td > .rsa-property-tree > table > tr {
-          border-bottom: 1px solid border-color(neutral,dark,$rsa-nearly-transparent);
+          border-bottom: 1px solid border-color(neutral,dark,nearly-transparent);
         }
       }
 

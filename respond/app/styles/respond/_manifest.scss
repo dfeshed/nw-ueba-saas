@@ -1,7 +1,6 @@
 $respondBackgroundColor: rgb(42,48,53);
-$respondBorderColor: border-color(primary, lightest, $rsa-nearly-transparent);
+$respondBorderColor: border-color(primary, lightest, nearly-transparent);
 
-@import 'themes/manifest';
 @import "solarized";
 @import "mixins";
 @import 'respond-engine';

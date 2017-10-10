@@ -11,11 +11,11 @@
 
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.respond-engine-dummy {
-  color: rsa-color(gray, light);
+  color: text-color(primary, light);
   .engine-splash-page {
     .rsa-logo {
       .rsa-logo__title {
-        color: rsa-color(green);
+        color: text-color(accentTwo);
         text-align: center;
         font-size: 25px;
       }
@@ -53,7 +53,7 @@ body.respond-engine-dummy {
       .respond-engine-dummy__main {
         &-aside {
           width: 75%;
-          box-shadow: 0 0 rsa-whitespace() rsa-color(black, base, $rsa-nearly-opaque);
+          box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
         }
       }
     }
@@ -63,6 +63,6 @@ body.respond-engine-dummy {
 .respond-engine {
   .background-icon {
     font-size: 15rem;
-    color: rsa-color(red, dark);
+    color: text-color(accentOne, dark);
   }
 }

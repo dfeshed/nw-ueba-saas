@@ -1,6 +1,6 @@
-$alertsTableDarkBgColor: background-color(primary, light, $rsa-translucent);
-$alertsTableDarkerBgColor: background-color(primary, light, $rsa-nearly-transparent);
-$alertsTableDarkPlusBgColor: border-color(primary, base, $rsa-translucent);
+$alertsTableDarkBgColor: background-color(primary, light, translucent);
+$alertsTableDarkerBgColor: background-color(primary, light, nearly-transparent);
+$alertsTableDarkPlusBgColor: border-color(primary, base, translucent);
 $alertsTableSeverityRadius: 1rem;
 $alertsTableLineHeight: 1.5;
 $alertsTableHeadingSize: 1rem;

@@ -12,7 +12,7 @@ $alertsSearchLineHeight: 2rem;
   }
 
   &-form {
-    border-bottom: 1px solid border-color(primary,light,$rsa-nearly-transparent);
+    border-bottom: 1px solid border-color(primary,light,nearly-transparent);
 
     &__subtext {
       @include rsa-font(paragraph, small);
@@ -79,7 +79,7 @@ $alertsSearchLineHeight: 2rem;
 
   &-results {
     &__header {
-      border-bottom: 1px solid border-color(primary,light,$rsa-nearly-transparent);
+      border-bottom: 1px solid border-color(primary,light,nearly-transparent);
 
       &-text,
       &-wait {

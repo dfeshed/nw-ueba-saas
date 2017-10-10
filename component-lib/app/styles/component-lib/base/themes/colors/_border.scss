@@ -27,7 +27,8 @@ $border-colors: (
 
 );
 
-@function border-color($colorName, $modifier:base, $opacity:1) {
-  @return map-get(map-get($border-colors, $colorName), $modifier);
-  //TODO: @return rgba(#{$mappedColor}, $opacity);
+@function border-color($colorName, $modifier:base, $opacity:opaque) {
+  $colorVar: map-get(map-get($border-colors, $colorName), $modifier);
+  $opacityVar: opacity-value($opacity);
+  @return rgbx($colorVar, $opacityVar);
 }

@@ -3,7 +3,7 @@
   @include rsa-font(body,small);
   line-height: 1.35;
   text-align: right;
-  background-color: background-color(primary,darker, $rsa-nearly-opaque);
+  background-color: background-color(primary,darker, nearly-opaque);
 
   &.has-no-data {
     display: none;

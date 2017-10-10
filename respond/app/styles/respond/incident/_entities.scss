@@ -24,8 +24,8 @@ $entityFileHashColor: $cyan;
       transition: opacity 0.3s;
 
       .circle {
-        stroke: text-color(primary,light,$rsa-nearly-opaque);
-        fill: text-color(neutral,dark,$rsa-nearly-opaque);
+        stroke: text-color(primary,light,nearly-opaque);
+        fill: text-color(neutral,dark,nearly-opaque);
       }
       &.user .circle {
         fill: $entityUserColor;
@@ -63,11 +63,11 @@ $entityFileHashColor: $cyan;
 
       &.is-hidden {
         .circle {
-          stroke: text-color(primary,light,$rsa-nearly-transparent);
-          fill: text-color(neutral,dark,$rsa-transparent);
+          stroke: text-color(primary,light,nearly-transparent);
+          fill: text-color(neutral,dark,transparent);
         }
         .text {
-          fill: text-color(primary,light,$rsa-nearly-transparent);
+          fill: text-color(primary,light,nearly-transparent);
         }
       }
 
@@ -86,7 +86,7 @@ $entityFileHashColor: $cyan;
       transition: opacity 0.3s;
 
       .line {
-        stroke: text-color(primary,light,$rsa-nearly-opaque);
+        stroke: text-color(primary,light,nearly-opaque);
       }
       .text {
         fill: text-color(primary,light);
@@ -98,10 +98,10 @@ $entityFileHashColor: $cyan;
 
       &.is-hidden {
         .line {
-          stroke: text-color(primary,base,$rsa-nearly-transparent);
+          stroke: text-color(primary,base,nearly-transparent);
         }
         .text {
-          fill: text-color(primary,base,$rsa-nearly-transparent);
+          fill: text-color(primary,base,nearly-transparent);
           text-shadow: none;
         }
       }
@@ -122,7 +122,7 @@ $entityFileHashColor: $cyan;
     fill: text-color(primary,light);
 
     &--disabled {
-      fill: text-color(primary,base,$rsa-nearly-transparent);
+      fill: text-color(primary,base,nearly-transparent);
     }
 
     &--selected {
@@ -132,11 +132,11 @@ $entityFileHashColor: $cyan;
   #force-layout__grid {
     .grid-axis {
       &.major {
-        stroke: text-color(primary, base, $rsa-translucent);
+        stroke: text-color(primary, base, translucent);
         stroke-width: 1pt;
       }
       &.minor {
-        stroke: text-color(primary, base, $rsa-nearly-transparent);
+        stroke: text-color(primary, base, nearly-transparent);
         stroke-width: 0.5pt;
       }
     }

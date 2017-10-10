@@ -1,6 +1,6 @@
 $incidentAlertsSearchHeaderHeight: 30px;
 $incidentAlertsSearchSeverityRadius: 1rem;
-$incidentAlertsSearchSeverityBgColor: background-color(primary, light, $rsa-nearly-transparent);
+$incidentAlertsSearchSeverityBgColor: background-color(primary, light, nearly-transparent);
 
 .rsa-incident-alerts-search {
   height: calc(100% - #{$incidentAlertsSearchHeaderHeight});
@@ -9,7 +9,7 @@ $incidentAlertsSearchSeverityBgColor: background-color(primary, light, $rsa-near
   &__error {
     @include rsa-fill-abs();
     z-index: 2;
-    background-color: background-color(primary,darker,$rsa-nearly-opaque);
+    background-color: background-color(primary,darker,nearly-opaque);
   }
 
   &__error {

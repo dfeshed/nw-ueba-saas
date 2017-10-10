@@ -28,7 +28,7 @@ page.respond-engine {
       max-width: 0;
       padding: 0;
       overflow: hidden;
-      opacity: $rsa-transparent;
+      opacity: opacity-value(transparent);
       @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
       @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
     }
@@ -38,7 +38,7 @@ page.respond-engine {
         border-right: 1px solid $zoneBorderColor;
         max-width: 25%;
         min-width: $filterPanelMinWidth;
-        opacity: $rsa-opaque;
+        opacity: opacity-value(opaque);
 
         .close-filters.rsa-form-button-wrapper {
           position: absolute;
@@ -56,7 +56,7 @@ page.respond-engine {
       padding: 0;
       overflow: auto;
       overflow-x: hidden;
-      opacity: $rsa-opaque;
+      opacity: opacity-value(opaque);
     }
 
     .inspector-zone {
@@ -103,7 +103,7 @@ page.respond-engine {
     &.transaction-in-progress .transaction-overlay {
       @include rsa-fill-abs();
       z-index: 2;
-      background-color: background-color(neutral,dark,$rsa-translucent);
+      background-color: background-color(neutral,dark,translucent);
     }
   }
   .vertical-separator {

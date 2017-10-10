@@ -1,0 +1,74 @@
+$background-colors: (
+
+  primary: (
+    darkest:  var(--background-color-primary-darkest),
+    darker:   var(--background-color-primary-darker),
+    dark:     var(--background-color-primary-dark),
+    base:     var(--background-color-primary-base),
+    light:    var(--background-color-primary-light),
+    lighter:  var(--background-color-primary-lighter),
+    lightest: var(--background-color-primary-lightest)
+  ),
+
+  secondary: (
+    darkest:  var(--background-color-secondary-darkest),
+    darker:   var(--background-color-secondary-darker),
+    dark:     var(--background-color-secondary-dark),
+    base:     var(--background-color-secondary-base),
+    light:    var(--background-color-secondary-light),
+    lighter:  var(--background-color-secondary-lighter),
+    lightest: var(--background-color-secondary-lightest)
+  ),
+
+  accentOne: (
+    darkest:  var(--background-color-accent-one-darkest),
+    darker:   var(--background-color-accent-one-darker),
+    dark:     var(--background-color-accent-one-dark),
+    base:     var(--background-color-accent-one-base),
+    light:    var(--background-color-accent-one-light),
+    lighter:  var(--background-color-accent-one-lighter),
+    lightest: var(--background-color-accent-one-lightest)
+  ),
+
+  accentTwo: (
+    darkest:  var(--background-color-accent-two-darkest),
+    darker:   var(--background-color-accent-two-darker),
+    dark:     var(--background-color-accent-two-dark),
+    base:     var(--background-color-accent-two-base),
+    light:    var(--background-color-accent-two-light),
+    lighter:  var(--background-color-accent-two-lighter),
+    lightest: var(--background-color-accent-two-lightest)
+  ),
+
+  accentThree: (
+    darkest:  var(--background-color-accent-three-darkest),
+    darker:   var(--background-color-accent-three-darker),
+    dark:     var(--background-color-accent-three-dark),
+    base:     var(--background-color-accent-three-base),
+    light:    var(--background-color-accent-three-light),
+    lighter:  var(--background-color-accent-three-lighter),
+    lightest: var(--background-color-accent-three-lightest)
+  ),
+
+  accentFour: (
+    darkest:  var(--background-color-accent-four-darkest),
+    darker:   var(--background-color-accent-four-darker),
+    dark:     var(--background-color-accent-four-dark),
+    base:     var(--background-color-accent-four-base),
+    light:    var(--background-color-accent-four-light),
+    lighter:  var(--background-color-accent-four-lighter),
+    lightest: var(--background-color-accent-four-lightest)
+  ),
+
+  neutral: (
+    dark:     var(--background-color-neutral-dark),
+    base:     var(--background-color-neutral-base),
+  )
+
+);
+
+@function background-color($colorName, $modifier:base, $opacity:opaque) {
+  $colorVar: map-get(map-get($background-colors, $colorName), $modifier);
+  $opacityVar: opacity-value($opacity);
+  @return rgbx($colorVar, $opacityVar);
+}

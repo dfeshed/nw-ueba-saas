@@ -1,6 +1,6 @@
-/* Must import utils first in order for the theme configs to be imported correctly. */
-@import 'utils';
-
-/* Theme configs: */
 @import 'light';
 @import 'dark';
+@import 'opacity';
+@import 'colors/text';
+@import 'colors/border';
+@import 'colors/background';

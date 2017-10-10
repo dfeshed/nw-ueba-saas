@@ -93,7 +93,7 @@ $tasksAndJournalPanelWidth: 400px;
 
   &__transaction-overlay {
     z-index: 2;
-    background-color: background-color(neutral,dark,$rsa-translucent);
+    background-color: background-color(neutral,dark,translucent);
   }
 
   &__legend-wrap {

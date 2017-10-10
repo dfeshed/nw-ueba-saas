@@ -38,14 +38,14 @@ $inputHeight: 33px;
     .rsa-form-button-wrapper {
       line-height: inherit;
       padding: rsa-whitespace(less);
-      border: 1px solid border-color(primary, base, $rsa-transparent);
+      border: 1px solid border-color(primary, base, transparent);
       visibility: visible;
 
       .rsa-form-button {
         padding: 0;
         i {
           font-size: 0.75rem;
-          color: text-color(primary, base, $rsa-somewhat-opaque);
+          color: text-color(primary, base, somewhat-opaque);
         }
       }
     }
@@ -85,7 +85,7 @@ $inputHeight: 33px;
         border: 1px solid border-color(primary);
         visibility: visible;
         height: 100%;
-        background-color: background-color(primary, dark, $rsa-somewhat-opaque);
+        background-color: background-color(primary, dark, somewhat-opaque);
 
         .rsa-form-button i {
           color: inherit;
@@ -157,7 +157,7 @@ $inputHeight: 33px;
     span.action {
       position: absolute;
       @include rsa-layer(controls);
-      background-color: background-color(primary, darker, $rsa-nearly-opaque);
+      background-color: background-color(primary, darker, nearly-opaque);
       border: 1px solid border-color(secondary);
 
       button {
@@ -187,7 +187,7 @@ $inputHeight: 33px;
       bottom: $actionButtonHeight * -1 - 1;
       i {
         font-size: 1rem;
-        color: text-color(tertiaryOne);
+        color: text-color(accentOne);
       }
     }
   }
@@ -195,7 +195,7 @@ $inputHeight: 33px;
   &.has-changes {
 
     span.confirm-changes .rsa-form-button-wrapper:not(.is-disabled) i {
-      color: text-color(tertiaryTwo);
+      color: text-color(accentTwo);
     }
   }
 }

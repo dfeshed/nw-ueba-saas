@@ -1,6 +1,7 @@
 /* eslint-env node */
 'use strict';
 
+const replace = require('broccoli-replace');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const { isDevelopingAddon } = require('../common');
 const projectName = 'component-lib';
@@ -16,6 +17,19 @@ if (EmberApp.env() === 'development') {
 
 module.exports = {
   name: projectName,
+  postprocessTree: function (type, tree) {
+    if (type !== 'css') { return tree; }
+
+    return replace(tree, {
+      files: ['assets/*.css'],
+      patterns: [
+        {
+          match: /rgbx/g,
+          replacement: "rgba"
+        }
+      ]
+    });
+  },
   options: {
     'ember-cli-babel': {
       includePolyfill: true

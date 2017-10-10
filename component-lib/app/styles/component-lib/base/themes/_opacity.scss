@@ -1,0 +1,14 @@
+$opacity-values: (
+
+  opaque:               var(--opacity-opaque),
+  nearly-opaque:        var(--opacity-nearly-opaque),
+  somewhat-opaque:      var(--opacity-somewhat-opaque),
+  translucent:          var(--opacity-translucent),
+  nearly-transparent:   var(--opacity-nearly-transparent),
+  transparent:          var(--opacity-transparent)
+
+);
+
+@function opacity-value($opacity) {
+  @return map-get($opacity-values, $opacity);
+}

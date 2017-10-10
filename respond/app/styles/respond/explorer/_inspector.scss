@@ -40,7 +40,7 @@ $metadataLabelWidth: 8rem;
 
   &__toolbar {
     min-height: 25px;
-    border-bottom: 1px solid border-color(primary, light, $rsa-nearly-transparent);
+    border-bottom: 1px solid border-color(primary, light, nearly-transparent);
 
     .rsa-tab {
       margin: 0 rsa-whitespace();
@@ -99,7 +99,7 @@ $metadataLabelWidth: 8rem;
 
     .metadata-separator {
       width: 100%;
-      border-top: 1px solid border-color(primary, base, $rsa-somewhat-opaque);
+      border-top: 1px solid border-color(primary, base, somewhat-opaque);
       margin: rsa-whitespace() 0;
     }
 

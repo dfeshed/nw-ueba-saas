@@ -5,7 +5,7 @@
 
   span.required-field::after {
     content: '*';
-    color: text-color(tertiaryOne, dark);
+    color: text-color(accentOne, dark);
     padding-left: rsa-whitespace(less);
   }
 

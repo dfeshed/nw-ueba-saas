@@ -64,8 +64,8 @@ $metadataLineHeight: 1.35;
       background-color: transparent;
       // set the disabled button trigger to a gray to indicate disabled state
       .rsa-form-button {
-        color: text-color(primary, base, $rsa-nearly-opaque);
-        border-color: border-color(primary, base, $rsa-nearly-opaque);
+        color: text-color(primary, base, nearly-opaque);
+        border-color: border-color(primary, base, nearly-opaque);
       }
     }
   }

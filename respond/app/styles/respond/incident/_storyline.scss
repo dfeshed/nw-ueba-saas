@@ -1,4 +1,4 @@
-$darkStorylineBgColor: background-color(primary, light, $rsa-nearly-transparent);
+$darkStorylineBgColor: background-color(primary, light, nearly-transparent);
 $storylineSeverityRadius: 1rem;
 $storylineLineHeight: 1.5;
 $storylineHeadingSize: 1rem;
@@ -164,7 +164,7 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
     }
 
     .main .content {
-      border-color: border-color(neutral, dark, $rsa-nearly-transparent);
+      border-color: border-color(neutral, dark, nearly-transparent);
     }
 
     p {
@@ -182,7 +182,7 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
     &.is-catalyst {
       .severity {
         background-color: background-color(neutral);
-        color: text-color(neutral,dark,$rsa-nearly-opaque);
+        color: text-color(neutral,dark,nearly-opaque);
       }
       .is-catalyst {
         color: text-color(neutral);
@@ -226,7 +226,7 @@ $storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConne
     }
 
     &.is-selected {
-      background: background-color(secondary,base,$rsa-somewhat-opaque);
+      background: background-color(secondary,base,somewhat-opaque);
     }
   }
 }

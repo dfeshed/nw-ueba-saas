@@ -8,7 +8,7 @@
   z-index: 2;
 
   &:hover {
-    background-color: background-color(secondary,base,$rsa-nearly-opaque);
+    background-color: background-color(secondary,base,nearly-opaque);
   }
 
   &__cover {
@@ -17,7 +17,7 @@
 
   /* Styles for only while user is resizing the component (via drag). */
   &.is-resizing {
-    background-color: background-color(secondary,base,$rsa-nearly-opaque);
+    background-color: background-color(secondary,base,nearly-opaque);
 
     .rsa-sizer__cover {
       /* Covers the entire screen with a transparent overlay whose cursor is a left-right resize arrow. */

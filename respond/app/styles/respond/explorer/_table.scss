@@ -57,7 +57,7 @@
     padding: 0;
 
     &.has-focus {
-      background-color: background-color(secondary, base, $rsa-nearly-transparent);
+      background-color: background-color(secondary, base, nearly-transparent);
     }
   }
 
@@ -85,19 +85,19 @@
       border-radius: 4px;
 
       &.priority-danger {
-        background-color: background-color(tertiaryOne);
+        background-color: background-color(accentOne);
       }
 
       &.priority-high {
-        background-color: background-color(tertiaryThree);
+        background-color: background-color(accentThree);
       }
 
       &.priority-medium {
-        background-color: background-color(tertiaryFour);
+        background-color: background-color(accentFour);
       }
 
       &.priority-low {
-        background-color: background-color(tertiaryTwo);
+        background-color: background-color(accentTwo);
       }
     }
     .entity-priority {
