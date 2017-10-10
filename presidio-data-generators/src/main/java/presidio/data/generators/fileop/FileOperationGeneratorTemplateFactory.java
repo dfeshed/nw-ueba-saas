@@ -71,7 +71,7 @@ public class FileOperationGeneratorTemplateFactory {
     }
 
     public IFileOperationGenerator createMoveToSharedFileOperationsGenerator() throws GeneratorException {
-        return createMoveFromSharedFileOperationsGenerator(null);
+        return createMoveToSharedFileOperationsGenerator(null);
     }
     public IFileOperationGenerator createMoveToSharedFileOperationsGenerator(List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
@@ -106,6 +106,12 @@ public class FileOperationGeneratorTemplateFactory {
         return getFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_RENAMED.value, categories);
     }
 
+    public IFileOperationGenerator createFailedRenameFileOperationsGenerator() throws GeneratorException {
+        return createFailedRenameFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createFailedRenameFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        return getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_RENAMED.value, categories);
+    }
     public IFileOperationGenerator createOpenFileOperationsGenerator() throws GeneratorException {
         return createOpenFileOperationsGenerator(null);
     }
@@ -120,14 +126,13 @@ public class FileOperationGeneratorTemplateFactory {
     }
 
     public IFileOperationGenerator createFailedOpenFileOperationsGenerator() throws GeneratorException {
-        return createOpenFileOperationsGenerator(null);
+        return createFailedOpenFileOperationsGenerator(null);
     }
     public IFileOperationGenerator createFailedOpenFileOperationsGenerator(List<String> categories) throws GeneratorException {
-        FileOperationGenerator generator = new FileOperationGenerator();
-        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories));
+        IFileOperationGenerator generator = getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories);
 
         IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
-        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+        ((FileOperationGenerator)generator).setDestFileEntityGenerator(nullFileEntityGenerator);
 
         return generator;
     }
