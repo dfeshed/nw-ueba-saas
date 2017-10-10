@@ -145,6 +145,9 @@ public class RestUserServiceImpl implements RestUserService {
         if (userQuery.getUserName() != null) {
             builder.filterByUserName(userQuery.getUserName());
         }
+        if (userQuery.getIndicatorsName() != null) {
+            builder.filterByIndicators(userQuery.getIndicatorsName());
+        }
         if (userQuery.getFreeText() != null) {
             builder.filterByFreeText(userQuery.getFreeText());
         }
