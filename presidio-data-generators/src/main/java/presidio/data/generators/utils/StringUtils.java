@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Created by YaronDL on 7/9/2017.
  */
-public class StringGeneratorUtils {
+public class StringUtils {
 
     /**
      * Create an array of strings in format <prefix>_<abc>_<suffix>
@@ -34,4 +34,9 @@ public class StringGeneratorUtils {
         }
         return ret;
     }
+
+    public static String getFriendlyName(String name) {
+        return name.toLowerCase().replaceAll("_", " ");
+    }
+
 }

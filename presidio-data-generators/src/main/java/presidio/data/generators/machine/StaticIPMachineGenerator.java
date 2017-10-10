@@ -2,10 +2,9 @@ package presidio.data.generators.machine;
 
 import presidio.data.domain.MachineEntity;
 import presidio.data.generators.common.CyclicValuesGenerator;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import presidio.data.generators.utils.StringGeneratorUtils;
+import presidio.data.generators.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class StaticIPMachineGenerator extends CyclicValuesGenerator<MachineEntit
     }
 
     private static MachineEntity[] buildMachineListByUserList(String username, int numOfMachines) {
-        String[] machineNames = StringGeneratorUtils.buildUniqueAlphabetStrings(username, "", numOfMachines);
+        String[] machineNames = StringUtils.buildUniqueAlphabetStrings(username, "", numOfMachines);
         IPIterator ipIterator = new IPIterator("192.168.0.0");
         List<Pair<String,String>> machineAndIpPairList= new ArrayList<>();
         for(String machineName: machineNames){
@@ -107,7 +106,7 @@ public class StaticIPMachineGenerator extends CyclicValuesGenerator<MachineEntit
         }
 
         public String toString(){
-            return StringUtils.join(ipAddressArray,'.');
+            return org.apache.commons.lang.StringUtils.join(ipAddressArray,'.');
         }
     }
 }
