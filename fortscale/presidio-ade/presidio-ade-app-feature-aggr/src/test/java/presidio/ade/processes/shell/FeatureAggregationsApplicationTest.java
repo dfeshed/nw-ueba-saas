@@ -502,7 +502,9 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     }
 
     /**
-     * Create models
+     * Create models:
+     * create continuous model by given params
+     * create gaussian_prior model by continuous model.
      *
      * @param contextIds contextIds
      * @param endDate    endDate
@@ -532,8 +534,6 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
                 }
             } else if (modelConf.getModelBuilderConf() instanceof GaussianPriorModelBuilderConf) {
                 GaussianPriorModelBuilderConf config = (GaussianPriorModelBuilderConf) modelConf.getModelBuilderConf();
-
-
                 GaussianPriorModelBuilderFactory gaussianPriorModelBuilderFactory = new GaussianPriorModelBuilderFactory();
                 IModelBuilder modelBuilder = gaussianPriorModelBuilderFactory.getProduct(modelConf.getModelBuilderConf());
                 Model model = modelBuilder.build(models);
@@ -544,7 +544,11 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         }
     }
 
-
+    /**
+     *
+     * @param value
+     * @return rounded value
+     */
     private static double round(double value) {
         return Math.round(value * 1000000) / 1000000d;
     }
