@@ -55,7 +55,9 @@ public class UserPersistencyServiceTest {
     User user3;
     User user4;
     User user5;
-
+    User user6;
+    User user7;
+    User user8;
 
     @Before
     public void before() {
@@ -73,6 +75,9 @@ public class UserPersistencyServiceTest {
         user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
         user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
         user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
+        user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
+        user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
+        user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
     }
 
     @Test
@@ -123,6 +128,103 @@ public class UserPersistencyServiceTest {
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
 
+    }
+
+    @Test
+    public void testFreeTextWithoutIsPrefixEnabled() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user6);
+        userList.add(user7);
+        userList.add(user8);
+        userPersistencyService.save(userList);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .build();
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(0L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("text")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+    }
+
+    @Test
+    public void testFreeTextWithIsPrefixEnabled() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user6);
+        userList.add(user7);
+        userList.add(user8);
+        userPersistencyService.save(userList);
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .filterByUserNameWithPrefix(true)
+                        .build();
+        Page<User> foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(3L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .filterByUserNameWithPrefix(true)
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(3L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("text")
+                        .filterByUserNameWithPrefix(true)
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+    }
+
+    @Test
+    public void testFreeTextWhitUserName() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user6);
+        userList.add(user7);
+        userList.add(user8);
+        userPersistencyService.save(userList);
+        Page<User> foundUsers=null;
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .filterByUserNameWithPrefix(true)
+                        .filterByUserName("free")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(1L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("free")
+                        .filterByUserName("free")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(1L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .filterByUserNameWithPrefix(true)
+                        .filterByUserName("fre")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(2L));
+
+        userQuery =
+                new UserQuery.UserQueryBuilder().filterByFreeText("fre")
+                        .filterByUserName("fre")
+                        .build();
+        foundUsers = userPersistencyService.find(userQuery);
+        assertThat(foundUsers.getTotalElements(), is(0L));
     }
 
     @Test

@@ -11,7 +11,12 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.User;
+import presidio.webapp.model.UserQuery;
+import presidio.webapp.model.UserQueryEnums;
+import presidio.webapp.model.UsersWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -142,6 +147,9 @@ public class RestUserServiceImpl implements RestUserService {
         }
         if (userQuery.getIndicatorsName() != null) {
             builder.filterByIndicators(userQuery.getIndicatorsName());
+        }
+        if (userQuery.getFreeText() != null) {
+            builder.filterByFreeText(userQuery.getFreeText());
         }
         if (userQuery.getMaxScore() != null) {
             builder.maxScore(userQuery.getMaxScore());

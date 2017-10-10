@@ -10,6 +10,7 @@ import presidio.output.domain.records.AbstractElasticDocument;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +79,20 @@ public class User extends AbstractElasticDocument {
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
                 int alertsCount) {
         super();
+        this.userId = userId;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.score = score;
+        this.alertClassifications = alertClassifications;
+        this.indicators = indicators;
+        this.tags = tags;
+        this.severity = severity;
+        this.alertsCount = alertsCount;
+    }
+
+    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
+                int alertsCount, String id, Date createdDate, Date updatedDate) {
+        super(id, createdDate, updatedDate);
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;

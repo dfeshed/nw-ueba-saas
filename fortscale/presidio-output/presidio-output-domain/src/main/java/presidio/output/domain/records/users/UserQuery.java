@@ -17,6 +17,7 @@ public class UserQuery {
     private int maxScore;
     private boolean isPrefix;
     private String filterByUserName;
+    private String filterByFreeText;
 
     // sort
     private final Sort sort;
@@ -36,6 +37,7 @@ public class UserQuery {
         this.filterByUsersIds = builder.filterByUsersIds;
         this.filterByUserTags = builder.filterByUserTags;
         this.filterByUserName = builder.filterByUserName;
+        this.filterByFreeText = builder.filterByFreeText;
         this.isPrefix = builder.isPrefix;
         this.minScore = builder.minScore;
         this.maxScore = builder.maxScore;
@@ -69,6 +71,10 @@ public class UserQuery {
 
     public String getFilterByUserName() {
         return filterByUserName;
+    }
+
+    public String getFilterByFreeText() {
+        return filterByFreeText;
     }
 
     public boolean isPrefix() {
@@ -115,6 +121,7 @@ public class UserQuery {
         private int minScore = -1;
         private int maxScore = -1;
         private String filterByUserName;
+        private String filterByFreeText;
         private boolean isPrefix = false;
 
         // sort
@@ -169,6 +176,11 @@ public class UserQuery {
 
         public UserQueryBuilder filterByUserName(String filterByUserName) {
             this.filterByUserName = filterByUserName;
+            return this;
+        }
+
+        public UserQueryBuilder filterByFreeText(String filterByFreeText) {
+            this.filterByFreeText = filterByFreeText;
             return this;
         }
 

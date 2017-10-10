@@ -4,6 +4,7 @@ package presidio.ade.domain.store.enriched;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.ttl.TtlService;
 import org.springframework.data.domain.Sort;
@@ -36,19 +37,21 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataAdeToCollectionNameTranslator translator;
     private final AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
+    private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private TtlService ttlService;
 
-    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver) {
+    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.adeEventTypeToAdeEnrichedRecordClassResolver = adeEventTypeToAdeEnrichedRecordClassResolver;
+        this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
     }
 
     @Override
     public void store(EnrichedRecordsMetadata recordsMetadata, List<? extends EnrichedRecord> records) {
         logger.info("storing by recordsMetadata={}", recordsMetadata);
         String collectionName = translator.toCollectionName(recordsMetadata);
-        mongoTemplate.insert(records, collectionName);
+        mongoDbBulkOpUtil.insertUnordered(records, collectionName);
         ttlService.save(getStoreName(), collectionName);
     }
 
