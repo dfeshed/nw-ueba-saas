@@ -14,6 +14,7 @@ import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.fileop.FixedFileOperationTypeGenerator;
+import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Duration;
@@ -34,8 +35,9 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
     protected final FileRaw2EnrichedConverter converter;
 
     protected EnrichedDataStore enrichedDataStore;
+    private IUserGenerator userGenerator = new SingleUserGenerator("testUser");
 
-    public EnrichedFileGenerator(EnrichedDataStore enrichedDataStore) {
+    public EnrichedFileGenerator(EnrichedDataStore enrichedDataStore) throws GeneratorException {
         this.enrichedDataStore = enrichedDataStore;
         this.converter  = new FileRaw2EnrichedConverter();
     }
@@ -46,10 +48,11 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
      * @throws GeneratorException
      */
     public List<EnrichedFileRecord> generateAndPersist(int interval) throws GeneratorException {
-        String testUser = "testUser";
+
         FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
         filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
-        filePermissionEventGenerator.setUserGenerator(new SingleUserGenerator(testUser));
+
+        filePermissionEventGenerator.setUserGenerator(userGenerator);
         FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
         ArrayList<String> filePermissionCategories = new ArrayList<>();
         filePermissionCategories.add("FILE_PERMISSION_CHANGE");
@@ -65,7 +68,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
         FileEventsGenerator fileActionEventGenerator = new FileEventsGenerator();
         FileOperationGenerator fileOperationActionGenerator = new FileOperationGenerator();
         fileActionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
-        fileActionEventGenerator.setUserGenerator(new SingleUserGenerator(testUser));
+        fileActionEventGenerator.setUserGenerator(userGenerator);
         ArrayList<String> fileActionCategories = new ArrayList<>();
         fileActionCategories.add("FILE_ACTION");
         String actionOperationName = "FOLDER_OPENED";
@@ -84,6 +87,10 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
     @Override
     public List<EnrichedFileRecord> generateAndPersistSanityData(int interval) throws GeneratorException {
         return generateAndPersist(interval);
+    }
+
+    public void setUserGenerator(IUserGenerator userGenerator) {
+        this.userGenerator = userGenerator;
     }
 
     protected int getInterval() {

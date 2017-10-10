@@ -41,7 +41,7 @@ public class WeightsModelBuilderAlgorithm {
      * @param numOfSimulations the number of simulations to perform in the simulations phase.
      * @return a new list of {@link ClusterConf} , or clusterConfsPrototype if no data available in smartAggregatedRecordDataContainers.
      */
-    public List<ClusterConf> createWeightsClusterConfs(List<ClusterConf> clusterConfsPrototype, List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers, int numOfContexts, int numOfSimulations) {
+    public List<ClusterConf> createWeightsClusterConfs(List<ClusterConf> clusterConfsPrototype, List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers, int numOfContexts, int numOfSimulations, List<String> zeroWeightFeatures) {
         if(smartAggregatedRecordDataContainers.isEmpty())
         {
             logger.warn("building model from empty data");
@@ -49,8 +49,23 @@ public class WeightsModelBuilderAlgorithm {
         }
         // first give a penalty to every feature based on how reliable it is (it shouldn't be too noisy)
         List<ClusterConf> clusterConfs = calculateClusterConfsViaReliability(smartAggregatedRecordDataContainers, clusterConfsPrototype, numOfContexts);
+        // set zero weight to cluster which contains feature that should get zero weight.
+        if(zeroWeightFeatures != null && !zeroWeightFeatures.isEmpty()){
+            for(ClusterConf clusterConf: clusterConfs){
+                for(String aggregationRecordName: clusterConf.getAggregationRecordNames()){
+                    if(zeroWeightFeatures.contains(aggregationRecordName)){
+                        clusterConf.setWeight(0.0);
+                        break;
+                    }
+                }
+            }
+        }
         // then, after setting the initial guess, perform many simulations in order to make the initial guess better
-        return calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
+        List<ClusterConf> zeroWeightFeaturesClusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()==0).collect(Collectors.toList());
+        clusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()>0).collect(Collectors.toList());
+        clusterConfs = calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
+        clusterConfs.addAll(zeroWeightFeaturesClusterConfs);
+        return clusterConfs;
     }
 
     private List<ClusterConf> cloneClusterConfList(List<ClusterConf> clusterConfsPrototype) {

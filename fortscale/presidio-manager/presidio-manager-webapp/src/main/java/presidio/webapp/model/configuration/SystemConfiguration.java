@@ -29,6 +29,9 @@ public class SystemConfiguration {
     @JsonProperty("realmName")
     private String realmName=null;
 
+    @JsonProperty("krbServiceName")
+    private String krbServiceName=null;
+
     public SystemConfiguration username(String username) {
         this.username = username;
         return this;
@@ -129,8 +132,16 @@ public class SystemConfiguration {
         return realmName;
     }
 
+    public String getKrbServiceName() {
+        return krbServiceName;
+    }
+
     public void setRealmName(String realmName) {
         this.realmName = realmName;
+    }
+
+    public void setKrbServiceName(String krbServiceName) {
+        this.krbServiceName = krbServiceName;
     }
 
     @Override

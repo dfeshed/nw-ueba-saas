@@ -9,6 +9,8 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 /**
  * Full documentation can be found here: https://fortscale.atlassian.net/wiki/pages/viewpage.action?pageId=75071492
  */
@@ -17,6 +19,7 @@ public class WeightsModelBuilder implements IModelBuilder {
 
     private int numOfSimulations;
     private SmartRecordConf smartRecordConf;
+    private List<String> zeroWeightFeatures;
     private WeightsModelBuilderAlgorithm algorithm;
 
     public WeightsModelBuilder(WeightsModelBuilderConf conf, WeightsModelBuilderAlgorithm algorithm, SmartRecordConfService smartRecordConfService) {
@@ -27,6 +30,7 @@ public class WeightsModelBuilder implements IModelBuilder {
         Assert.notNull(entityEventConf, String.format("did not found smartConf for name=%s", smartRecordConfName));
         this.numOfSimulations = conf.getNumOfSimulations();
         this.smartRecordConf = entityEventConf;
+        this.zeroWeightFeatures = conf.getZeroWeightFeatures();
         this.algorithm = algorithm;
     }
 
@@ -38,7 +42,8 @@ public class WeightsModelBuilder implements IModelBuilder {
                 smartRecordConf.getClusterConfs(),
                 smartWeightsModelBuilderData.getSmartAggregatedRecordDataContainers(),
                 smartWeightsModelBuilderData.getNumOfContexts(),
-                numOfSimulations
+                numOfSimulations,
+                zeroWeightFeatures
         ));
     }
 

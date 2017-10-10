@@ -322,12 +322,13 @@ public class ClustersContributionsSimulatorTest {
         Map<ClusterConf, Double> contributions = simulator.simulate(testData.smartAggregatedRecordDataContainers, testData.clusterConfs);
 
         Map<ClusterConf, Double> expectedContributions = new HashMap<ClusterConf, Double>() {{
-            put(testData.clusterConfs.get(0), 0.04151121074767802);
-            put(testData.clusterConfs.get(1), 0.05148374087884419);
-            put(testData.clusterConfs.get(2), 0.05948251185304837);
-            put(testData.clusterConfs.get(3), 0.065353006722243163);
-            put(testData.clusterConfs.get(4), 0.4053629140199955);
-            put(testData.clusterConfs.get(5), 0.3768066157781908);
+            put(testData.clusterConfs.get(0), 0.04507233044160597);
+            put(testData.clusterConfs.get(1), 0.052289474027702884);
+            put(testData.clusterConfs.get(2), 0.050066470289609255);
+            put(testData.clusterConfs.get(3), 0.05773153766577976);
+            put(testData.clusterConfs.get(4), 0.3903772390719948);
+            put(testData.clusterConfs.get(5), 0.3593906180617014);
+            put(testData.clusterConfs.get(6), 0.04507233044160597);
         }};
         assertContributions(expectedContributions, contributions);
     }

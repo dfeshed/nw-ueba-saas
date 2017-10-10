@@ -20,6 +20,9 @@ public class UserQuery {
     @JsonProperty("userName")
     private String userName = null;
 
+    @JsonProperty("freeText")
+    private String freeText = null;
+
     @JsonProperty("pageSize")
     private Integer pageSize = null;
 
@@ -76,6 +79,25 @@ public class UserQuery {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public UserQuery freeText(String freeText) {
+        this.freeText = freeText;
+        return this;
+    }
+
+    /**
+     * Get freeText
+     *
+     * @return freeText
+     **/
+    @ApiModelProperty(value = "")
+    public String getFreeText() {
+        return freeText;
+    }
+
+    public void setFreeText(String freeText) {
+        this.freeText = freeText;
     }
 
     public UserQuery pageSize(Integer pageSize) {
@@ -360,6 +382,7 @@ public class UserQuery {
         }
         UserQuery userQuery = (UserQuery) o;
         return Objects.equals(this.userName, userQuery.userName) &&
+                Objects.equals(this.freeText, userQuery.freeText) &&
                 Objects.equals(this.pageSize, userQuery.pageSize) &&
                 Objects.equals(this.pageNumber, userQuery.pageNumber) &&
                 Objects.equals(this.minScore, userQuery.minScore) &&
@@ -377,7 +400,7 @@ public class UserQuery {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection, aggregateBy);
+        return Objects.hash(userName, freeText, pageSize, pageNumber, minScore, maxScore, isPrefix, tags, alertClassifications, indicatorsName, sortFieldNames, severity, expand, sortDirection, aggregateBy);
     }
 
     @Override
@@ -386,6 +409,7 @@ public class UserQuery {
         sb.append("class UserQuery {\n");
 
         sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
+        sb.append("    freeText: ").append(toIndentedString(freeText)).append("\n");
         sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
         sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
         sb.append("    minScore: ").append(toIndentedString(minScore)).append("\n");
