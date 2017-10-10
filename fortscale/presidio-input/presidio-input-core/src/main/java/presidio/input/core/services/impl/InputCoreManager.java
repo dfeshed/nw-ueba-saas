@@ -69,11 +69,12 @@ public class InputCoreManager {
                 logger.debug("Processing {} events", nextEvents.size());
 
                 transformedEvents = transformationService.run(nextEvents, schema);
-                storeToAde(schema, startDate, endDate, transformedEvents);
+
                 try {
+                    storeToAde(schema, startDate, endDate, transformedEvents);
                     storeToOutput(transformedEvents, schema);
                 } catch (Exception e) {
-                    logger.error("Error storing transformed data to output ", e);
+                    logger.error("Error storing transformed data , number of transformed events: {} ", transformedEvents != null ? transformedEvents.size() : 0, e);
                 }
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
