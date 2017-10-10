@@ -88,7 +88,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 		if (adeRecordReader == null) return null;
 		String adeEventType = adeRecordReader.getAdeEventType();
 		if (StringUtils.isEmpty(adeEventType)) return null;
-		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
+		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
 		Assert.notNull(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
 
 		featureBucketConfs = featureBucketConfs.stream()
@@ -100,12 +100,16 @@ public class BucketConfigurationService extends AslConfigurationService {
 		return featureBucketConfs;
 	}
 
+	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType) {
+		return adeEventTypeToListOfBucketConfs.get(adeEventType);
+	}
+
 	public FeatureBucketConf getBucketConf(String bucketConfName) {
 		return bucketConfs.get(bucketConfName);
 	}
 
 	public Set<List<String>> getRelatedDistinctContexts(String adeEventType) {
-		List<FeatureBucketConf> featureBucketConfs = adeEventTypeToListOfBucketConfs.get(adeEventType);
+		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
 		if (featureBucketConfs == null) {
 			logger.warn("no feature bucket conf for the given ade event type {}", adeEventType);
 			// TODO: Add monitoring metric

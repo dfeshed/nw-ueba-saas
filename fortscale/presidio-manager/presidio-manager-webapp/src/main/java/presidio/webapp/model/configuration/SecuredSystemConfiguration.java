@@ -26,6 +26,9 @@ public class SecuredSystemConfiguration   {
   @JsonProperty("realmName")
   private String realmName=null;
 
+  @JsonProperty("krbServiceName")
+  private String krbServiceName=null;
+
   public SecuredSystemConfiguration username(String username) {
     this.username = username;
     return this;
@@ -91,6 +94,14 @@ public class SecuredSystemConfiguration   {
 
   public void setRealmName(String realmName) {
     this.realmName = realmName;
+  }
+
+  public String getKrbServiceName() {
+    return krbServiceName;
+  }
+
+  public void setKrbServiceName(String krbServiceName) {
+    this.krbServiceName = krbServiceName;
   }
 
   /**

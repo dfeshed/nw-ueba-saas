@@ -105,6 +105,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithLowSmartScore() {
+        Dat
         Date date = new Date();
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0, date);
         Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity, 50);

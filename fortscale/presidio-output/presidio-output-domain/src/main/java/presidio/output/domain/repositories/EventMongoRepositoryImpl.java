@@ -1,6 +1,6 @@
 package presidio.output.domain.repositories;
 
-import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,16 +25,19 @@ public class EventMongoRepositoryImpl implements EventRepository {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
+
     private final List<String> collectionNames = new ArrayList<>(Arrays.asList(
-            "output_active_directory_enriched_events","output_authentication_enriched_events","output_file_enriched_events"));
+            "output_active_directory_enriched_events", "output_authentication_enriched_events", "output_file_enriched_events"));
 
     public EventMongoRepositoryImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
     @Override
-    public void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception{
-        mongoTemplate.insert(events, collectionName);
+    public void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception {
+        mongoDbBulkOpUtil.insertUnordered(events, collectionName);
     }
 
     @Override
@@ -45,17 +48,17 @@ public class EventMongoRepositoryImpl implements EventRepository {
                 .addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
                         .gte(timeRange.getStart())
                         .lt(timeRange.getEnd()));
-        features.forEach((k,v)->{
+        features.forEach((k, v) -> {
 
             query.addCriteria(new Criteria().orOperator(
-                                Criteria.where(k).is(v), // for single object
-                                Criteria.where(k).in(v)) // for array
-                             );
+                    Criteria.where(k).is(v), // for single object
+                    Criteria.where(k).in(v)) // for array
+            );
 
         });
         query.limit(limitEvents);
 
-        return mongoTemplate.find(query,EnrichedEvent.class, collectionName);
+        return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }
 
     @Override
@@ -63,19 +66,16 @@ public class EventMongoRepositoryImpl implements EventRepository {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD).is(userId))
                 .limit(1);
-        List<EnrichedEvent> enrichedEvents=null;
-        for (String collection : collectionNames){
-            enrichedEvents = mongoTemplate.find(query, EnrichedEvent.class,collection);
-            if (enrichedEvents.size()>0)
+        List<EnrichedEvent> enrichedEvents = null;
+        for (String collection : collectionNames) {
+            enrichedEvents = mongoTemplate.find(query, EnrichedEvent.class, collection);
+            if (enrichedEvents.size() > 0)
                 break;
         }
-        if (enrichedEvents.size()>0) {
+        if (enrichedEvents.size() > 0) {
             return enrichedEvents.get(0);
         } else {
-            return  null;
+            return null;
         }
-
     }
-
-
 }
