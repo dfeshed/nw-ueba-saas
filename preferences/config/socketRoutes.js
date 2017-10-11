@@ -8,14 +8,14 @@ module.exports = function(environment) {
 
   return {
     'investigate-preferences': {
-      investigateSocketUrl,
-      createRecord: {
-        subscriptionDestination: '/user/queue/investigate/preferences/set',
-        requestDestination: '/ws/investigate/preferences/set'
-      },
-      queryRecord: {
+      socketUrl: investigateSocketUrl,
+      getPreferences: {
         subscriptionDestination: '/user/queue/investigate/preferences/get',
         requestDestination: '/ws/investigate/preferences/get'
+      },
+      setPreferences: {
+        subscriptionDestination: '/user/queue/investigate/preferences/set',
+        requestDestination: '/ws/investigate/preferences/set'
       }
     }
   };
