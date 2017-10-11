@@ -1,6 +1,7 @@
+import { lookup } from 'ember-dependency-lookup';
 import * as ACTION_TYPES from './types';
-
 import { eventQueryUri } from 'investigate-events/helpers/event-query-uri';
+import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-utils';
 
 /**
  * Close Recon panel, then fire action to get events.
@@ -30,10 +31,38 @@ export const navDrill = (metaName, metaValue) => {
       endTime,
       metaFilter
     } = getState().investigate.queryNode;
-    this.transitionTo('query', eventQueryUri([
+    lookup('service:-routing').transitionTo('investigate-events.query', [eventQueryUri([
       { serviceId, startTime, endTime, metaFilter },
       metaName,
       metaValue
-    ]));
+    ])]);
+  };
+};
+
+/**
+ * Constructs a URL and navigates to that URL.
+ * @param {string} query Query string to add to end or URL
+ * @public
+ */
+export const submitQuery = () => {
+  return (dipatch, getState) => {
+    const {
+      serviceId,
+      startTime,
+      endTime,
+      metaFilter,
+      queryString
+    } = getState().investigate.queryNode;
+    const query = uriEncodeEventQuery({ serviceId, startTime, endTime, metaFilter });
+    const uri = (queryString && metaFilter.conditions.length > 0) ?
+      `${query}/${queryString}` : // Add a '/'
+      `${query}${queryString}`;   // No extra '/'
+    lookup('service:-routing').transitionTo('investigate-events.query', [uri]);
+    // TODO - 'service:-routing' is private; We should be using 'service:router'
+    // There is a bug the public API that adds undefined query params to the URL.
+    // https://github.com/emberjs/ember.js/pull/15613
+    // After that PR is merged, we should be able to update the above line to be
+    // lookup('service:router').transitionTo('investigate-events.query', `${uri}${queryString}`);
+
   };
 };

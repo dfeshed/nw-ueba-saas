@@ -6,7 +6,6 @@ import {
   initializeDictionaries,
   initializeServices
 } from 'investigate-events/actions/data-creators';
-import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 import {
   setMetaPanelSize,
   setQueryParams,
@@ -14,6 +13,7 @@ import {
   setSessionId
 } from 'investigate-events/actions/interaction-creators';
 import { navGoto } from 'investigate-events/actions/navigation-creators';
+import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 
 export default Route.extend({
   accessControl: service(),
@@ -100,16 +100,21 @@ export default Route.extend({
   },
 
   // TEMP HACK - After fully converted to Redux, we will remove this.
-  _checkForDictionaries() {
-    const { redux, filterAttrs } = this.getProperties('redux', 'filterAttrs');
-    const { aliases, language } = redux.getState().investigate.dictionaries;
-    if (aliases && language) {
-      redux.dispatch(navGoto());
-      this.send('navFindOrAdd', filterAttrs);
-    } else {
-      setTimeout(this._checkForDictionaries.bind(this), 50);
-    }
-  },
+  // This will run for about 5 seconds before timing out.
+  _checkForDictionaries: (() => {
+    let timeout = 100;
+    return function() {
+      --timeout;
+      const { redux, filterAttrs } = this.getProperties('redux', 'filterAttrs');
+      const { aliases, language } = redux.getState().investigate.dictionaries;
+      if (aliases && language) {
+        redux.dispatch(navGoto());
+        this.send('navFindOrAdd', filterAttrs);
+      } else if (timeout) {
+        setTimeout(this._checkForDictionaries.bind(this), 50);
+      }
+    };
+  })(),
 
   actions: {
     selectEvent(item, index) {
@@ -117,22 +122,6 @@ export default Route.extend({
       const { metas, sessionId } = item;
       this.get('redux').dispatch(setSessionId(sessionId));
       this.send('reconOpen', serviceId, sessionId, metas, index);
-    },
-
-    submitQuery(query) {
-      const fa = this.get('filterAttrs');
-      const uri = (fa.metaFilter.uri && fa.metaFilter.uri !== '') ?
-                    fa.metaFilter.uri : null;
-      // Navigate to new results
-      this.transitionTo('query', [
-        fa.serviceId,
-        fa.startTime,
-        fa.endTime,
-        uri,
-        query
-      ].compact().join('/'));
-
-      this.send('reconClose', true);
     },
 
     metaPanelSize(size = 'default') {

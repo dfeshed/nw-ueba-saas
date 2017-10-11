@@ -10,6 +10,7 @@ import {
   selectedService,
   servicesWithURI
 } from 'investigate-events/reducers/investigate/services/selectors';
+import { submitQuery } from 'investigate-events/actions/navigation-creators';
 import $ from 'jquery';
 
 const stateToComputed = ({ investigate }) => {
@@ -21,9 +22,12 @@ const stateToComputed = ({ investigate }) => {
     startTime: investigate.queryNode.startTime,
     endTime: investigate.queryNode.endTime,
     language: investigate.dictionaries.language,
-    aliases: investigate.dictionaries.aliases
+    aliases: investigate.dictionaries.aliases,
+    queryString: investigate.queryNode.queryString
   };
 };
+
+const dispatchToActions = { submitQuery };
 
 const BreadCrumbComponent = Component.extend({
   dateFormat: service(),
@@ -33,7 +37,6 @@ const BreadCrumbComponent = Component.extend({
   tagName: 'nav',
   classNames: 'rsa-investigate-breadcrumb',
   isAddingMeta: false,
-  queryString: '',
 
   @empty('queryString')
   isInvalidQuery: false,
@@ -148,14 +151,12 @@ const BreadCrumbComponent = Component.extend({
       });
     },
 
-    submit(q) {
-      // Call action on route
-      this.sendAction('submitQuery', q);
+    submit() {
+      this.send('submitQuery');
       // Cleanup
-      this.set('queryString', '');
       this.toggleProperty('isAddingMeta');
     }
   }
 });
 
-export default connect(stateToComputed)(BreadCrumbComponent);
+export default connect(stateToComputed, dispatchToActions)(BreadCrumbComponent);

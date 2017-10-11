@@ -111,14 +111,13 @@
   {{#if isAddingMeta}}
     {{query-input
       class='rsa-investigate-breadcrumb__query-input'
-      queryString=queryString
       placeholder='Enter Value'
     }}
     {{#rsa-form-button
       class='rsa-investigate-breadcrumb__submit'
       style='primary'
       isDisabled=isInvalidQuery
-      click=(action 'submit' queryString)
+      click=(action 'submit')
     }}
       Query Events
     {{/rsa-form-button}}
