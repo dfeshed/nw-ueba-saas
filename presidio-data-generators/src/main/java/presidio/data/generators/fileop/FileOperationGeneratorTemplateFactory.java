@@ -129,10 +129,10 @@ public class FileOperationGeneratorTemplateFactory {
         return createFailedOpenFileOperationsGenerator(null);
     }
     public IFileOperationGenerator createFailedOpenFileOperationsGenerator(List<String> categories) throws GeneratorException {
-        IFileOperationGenerator generator = getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories);
+        FileOperationGenerator generator = getFailedFileOperationsGenerator(FILE_OPERATION_TYPE.FILE_OPENED.value, categories);
 
         IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
-        ((FileOperationGenerator)generator).setDestFileEntityGenerator(nullFileEntityGenerator);
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
 
         return generator;
     }
@@ -242,7 +242,7 @@ public class FileOperationGeneratorTemplateFactory {
         return generator;
     }
 
-    private IFileOperationGenerator getFailedFileOperationsGenerator(String operationType, List<String> categories) throws GeneratorException {
+    private FileOperationGenerator getFailedFileOperationsGenerator(String operationType, List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(operationType, categories));
 
