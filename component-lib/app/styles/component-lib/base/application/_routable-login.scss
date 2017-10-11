@@ -19,23 +19,23 @@
 
   .eula-content {
     margin-bottom: rsa-whitespace(more);
-    border: 1px solid rsa-color(gray);
+    border: 1px solid border-color(primary);
     height: 65vh;
     overflow: auto;
     width: 50vw;
     @include rsa-font(paragraph);
     font-weight: 300;
-    background: rsa-color(gray, darkest);
+    background: background-color(primary, darkest);
 
     div {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
 
     .warning {
       padding: rsa-whitespace();
-      background-color: rsa-color(gray, darkest);
+      background-color: background-color(primary, darkest);
       @include rsa-font(header);
-      color: rsa-color(red);
+      color: text-color(accentOne);
       text-align: center;
     }
 
@@ -99,7 +99,7 @@
       top: 0;
       padding: rsa-whitespace(more) rsa-whitespace(more);
       line-height: 2rem;
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
 
     .rsa-logo {
@@ -121,7 +121,7 @@
         padding: rsa-whitespace(least);
         padding-left: rsa-whitespace(less);
         margin-left: rsa-whitespace(less);
-        border-left: 1px solid rsa-color(gray, lighter);
+        border-left: 1px solid border-color(primary, lighter);
         vertical-align: middle;
         @include rsa-font(header, large);
         white-space: nowrap;
@@ -163,7 +163,7 @@
       list-style: disc;
       @include rsa-font(paragraph, small);
       margin: 0 rsa-whitespace() rsa-whitespace();
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
   }
 

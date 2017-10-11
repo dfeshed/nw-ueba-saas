@@ -1,7 +1,7 @@
 .x-toggle-component {
   @include rsa-font(header, small);
   align-items: center;
-  color: rsa-color(gray, lighter);
+  color: text-color(primary, lighter);
   cursor: pointer;
   display: inline-flex;
   text-transform: uppercase;
@@ -25,7 +25,7 @@
 
     label > .x-toggle-btn.x-toggle-default {
       background-color: transparent;
-      border: 1px solid rsa-color(gray);
+      border: 1px solid border-color(primary);
       border-radius: 16px;
       flex-basis: 4.5rem;
       height: 16px;
@@ -35,25 +35,25 @@
       &::after {
         position: absolute;
         top: -1px;
-        left: -1px; 
-        background-color: rsa-color(gray, lighter);
+        left: -1px;
+        background-color: background-color(primary, lighter);
         border-radius: 16px;
         width: 16px;
         height: 16px;
       }
 
       &:hover:not(.x-toggle-disabled) {
-        border-color: rsa-color(gray, light);
+        border-color: border-color(primary, light);
 
         &::after {
-          background-color: rsa-color(gray, lightest);
+          background-color: background-color(primary, lightest);
         }
       }
 
       &.x-toggle-disabled {
-        border: 1px solid rsa-color(gray, dark);
+        border: 1px solid border-color(primary, dark);
         &::after {
-          background-color: rsa-color(gray, dark);
+          background-color: background-color(primary, dark);
         }
       }
     }
@@ -61,7 +61,7 @@
     &-checked {
       .x-toggle:checked + label > .x-toggle-default.x-toggle-btn {
         transition: background-color .3s;
-        background-color: rsa-color(blue);
+        background-color: background-color(secondary);
         &::after {
           left: 1rem;
         }
@@ -70,10 +70,10 @@
 
     &-disabled {
       .x-toggle:checked + label > .x-toggle-default.x-toggle-btn {
-        background-color: rsa-color(gray, dark, $rsa-somewhat-opaque);
+        background-color: background-color(primary, dark, somewhat-opaque);
       }
       + label.on-label {
-        color: rsa-color(gray, dark);
+        color: text-color(primary, dark);
       }
     }
   }

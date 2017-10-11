@@ -5,7 +5,7 @@
 
   .grids {
     line {
-      stroke: rsa-color(grey, lightest);
+      stroke: text-color(primary, lightest);
       stroke-opacity: 0.5;
       shape-rendering: crispEdges;
     }
@@ -24,15 +24,15 @@
   }
 
   .domain {
-    stroke: rsa-color(white);
+    stroke: text-color(neutral);
     shape-rendering: crispEdges;
   }
 
   .tick {
     line,
     text {
-      fill: rsa-color(white);
-      stroke: rsa-color(white);
+      fill: text-color(neutral);
+      stroke: text-color(neutral);
       shape-rendering: crispEdges;
       text-rendering: geometricPrecision;
       text-anchor: end;
@@ -41,43 +41,43 @@
 }
 
 .rsa-chart-background {
-  fill: rsa-color(gray, darkest);
+  fill: text-color(primary, darkest);
 }
 
 .rsa-line-series {
   fill: none;
   stroke-width: 1;
   &.series-0 {
-    stroke: rsa-color(blue);
+    stroke: text-color(secondary);
   }
   &.series-1 {
-    stroke: rsa-color(blue, darker);
+    stroke: text-color(secondary, darker);
   }
   &.series-2 {
-    stroke: rsa-color(blue, darkest);
+    stroke: text-color(secondary, darkest);
   }
   &.symbol {
     stroke: none;
     &.series-0 {
-      fill: rsa-color(blue);
+      fill: text-color(secondary);
     }
     &.series-1 {
-      fill: rsa-color(blue, darker);
+      fill: text-color(secondary, darker);
     }
     &.series-2 {
-      fill: rsa-color(blue, darkest);
+      fill: text-color(secondary, darkest);
     }
   }
 }
 
 .rsa-area-series {
   &.series-0 {
-    fill: rsa-color(blue);
+    fill: text-color(secondary);
   }
   &.series-1 {
-    fill: rsa-color(blue, darker);
+    fill: text-color(secondary, darker);
   }
   &.series-2 {
-    fill: rsa-color(blue, darkest);
+    fill: text-color(secondary, darkest);
   }
 }

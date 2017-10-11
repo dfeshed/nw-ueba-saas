@@ -225,17 +225,17 @@
     margin: 0 rsa-whitespace(least);
 
     &.is-active {
-      border-bottom: rsa-whitespace(least) solid rsa-color(blue);
+      border-bottom: rsa-whitespace(least) solid border-color(secondary);
       background: none!important;
 
       button {
-        color: rsa-color(gray, lightest)!important;
+        color: text-color(primary, lightest)!important;
       }
     }
 
     button {
       padding: rsa-whitespace() rsa-whitespace(less) !important;
-      // color: rsa-color(gray, light)!important;
+      // color: text-color(primary, light)!important;
     }
   }
 }

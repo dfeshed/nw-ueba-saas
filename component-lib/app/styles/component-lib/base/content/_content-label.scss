@@ -53,46 +53,46 @@
   }
 
   &.is-disabled {
-    opacity: $rsa-translucent;
+    opacity: opacity-value(translucent);
   }
 
   &.is-neutral {
-    @include rsa-form-label-color(rsa-color(gray));
+    @include rsa-form-label-color(text-color(primary));
 
     &.is-inverted {
-      @include rsa-form-label-color($contentLabelColor, rsa-color(gray), rsa-color(gray));
+      @include rsa-form-label-color($contentLabelColor, text-color(primary), text-color(primary));
     }
   }
 
   &.is-low {
-    @include rsa-form-label-color(rsa-color(green));
+    @include rsa-form-label-color(text-color(accentTwo));
 
     &.is-inverted {
-      @include rsa-form-label-color($contentLabelColor, rsa-color(green), rsa-color(green));
+      @include rsa-form-label-color($contentLabelColor, text-color(accentTwo), text-color(accentTwo));
     }
   }
 
   &.is-medium {
-    @include rsa-form-label-color(rsa-color(amber));
+    @include rsa-form-label-color(text-color(accentFour));
 
     &.is-inverted {
-      @include rsa-form-label-color($contentLabelColor, rsa-color(amber), rsa-color(amber));
+      @include rsa-form-label-color($contentLabelColor, text-color(accentFour), text-color(accentFour));
     }
   }
 
   &.is-high {
-    @include rsa-form-label-color(rsa-color(orange));
+    @include rsa-form-label-color(text-color(accentThree));
 
     &.is-inverted {
-      @include rsa-form-label-color($contentLabelColor, rsa-color(orange), rsa-color(orange));
+      @include rsa-form-label-color($contentLabelColor, text-color(accentThree), text-color(accentThree));
     }
   }
 
   &.is-danger {
-    @include rsa-form-label-color(rsa-color(red));
+    @include rsa-form-label-color(text-color(accentOne));
 
     &.is-inverted {
-      @include rsa-form-label-color($contentLabelColor, rsa-color(red), rsa-color(red));
+      @include rsa-form-label-color($contentLabelColor, text-color(accentOne), text-color(accentOne));
     }
   }
 }

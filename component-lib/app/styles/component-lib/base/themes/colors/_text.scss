@@ -40,6 +40,26 @@ $text-colors: (
     lightest: var(--text-color-accent-two-lightest)
   ),
 
+  accentThree: (
+    darkest:  var(--text-color-accent-three-darkest),
+    darker:   var(--text-color-accent-three-darker),
+    dark:     var(--text-color-accent-three-dark),
+    base:     var(--text-color-accent-three-base),
+    light:    var(--text-color-accent-three-light),
+    lighter:  var(--text-color-accent-three-lighter),
+    lightest: var(--text-color-accent-three-lightest)
+  ),
+
+  accentFour: (
+    darkest:  var(--text-color-accent-four-darkest),
+    darker:   var(--text-color-accent-four-darker),
+    dark:     var(--text-color-accent-four-dark),
+    base:     var(--text-color-accent-four-base),
+    light:    var(--text-color-accent-four-light),
+    lighter:  var(--text-color-accent-four-lighter),
+    lightest: var(--text-color-accent-four-lightest)
+  ),
+
   neutral: (
     dark:     var(--text-color-neutral-dark),
     base:     var(--text-color-neutral-base),

@@ -18,35 +18,35 @@
     max-width: 7.5rem;
     color: $contentBadgeIconLabelColor;
   }
-  
-  
+
+
   &.is-danger {
     i {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
   }
-  
+
   &.is-high {
     i {
-      color: rsa-color(orange);
+      color: text-color(accentThree);
     }
   }
-  
+
   &.is-passive {
     i {
-      color: rsa-color(gray);
+      color: text-color(primary);
     }
   }
-  
+
   &.is-medium {
     i {
-      color: rsa-color(amber);
+      color: text-color(accentFour);
     }
   }
-  
+
   &.is-low {
     i {
-      color: rsa-color(green);
+      color: text-color(accentTwo);
     }
   }
 }

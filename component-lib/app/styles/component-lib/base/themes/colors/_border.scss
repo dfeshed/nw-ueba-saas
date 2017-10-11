@@ -20,6 +20,36 @@ $border-colors: (
     lightest: var(--border-color-secondary-lightest)
   ),
 
+  accentOne: (
+    darkest:  var(--border-color-accent-one-darkest),
+    darker:   var(--border-color-accent-one-darker),
+    dark:     var(--border-color-accent-one-dark),
+    base:     var(--border-color-accent-one-base),
+    light:    var(--border-color-accent-one-light),
+    lighter:  var(--border-color-accent-one-lighter),
+    lightest: var(--border-color-accent-one-lightest)
+  ),
+
+  accentTwo: (
+    darkest:  var(--border-color-accent-two-darkest),
+    darker:   var(--border-color-accent-two-darker),
+    dark:     var(--border-color-accent-two-dark),
+    base:     var(--border-color-accent-two-base),
+    light:    var(--border-color-accent-two-light),
+    lighter:  var(--border-color-accent-two-lighter),
+    lightest: var(--border-color-accent-two-lightest)
+  ),
+
+  accentFour: (
+    darkest:  var(--border-color-accent-four-darkest),
+    darker:   var(--border-color-accent-four-darker),
+    dark:     var(--border-color-accent-four-dark),
+    base:     var(--border-color-accent-four-base),
+    light:    var(--border-color-accent-four-light),
+    lighter:  var(--border-color-accent-four-lighter),
+    lightest: var(--border-color-accent-four-lightest)
+  ),
+
   neutral: (
     dark:     var(--border-color-neutral-dark),
     base:     var(--border-color-neutral-base),

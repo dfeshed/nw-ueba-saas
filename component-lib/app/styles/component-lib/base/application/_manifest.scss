@@ -1,44 +1,44 @@
 $applicationHeaderHeight: 40px;
-$applicationHeaderBackground: rsa-color(gray, darkest);
-$applicationHeaderLinkColor: rsa-color(gray, light);
-$applicationHeaderLinkHoverColor: rsa-color(gray, lightest);
-$applicationHeaderLinkActiveColor: rsa-color(white);
+$applicationHeaderBackground: background-color(custom, nav);
+$applicationHeaderLinkColor: text-color(primary, light);
+$applicationHeaderLinkHoverColor: text-color(primary, lightest);
+$applicationHeaderLinkActiveColor: text-color(neutral);
 $applicationHeaderLinkActiveArrowColor: #BE3A34;
 $applicationHeaderLinkActiveArrowSize: 5px;
-$applicationHeaderActiveButtonColor: rsa-color(blue);
+$applicationHeaderActiveButtonColor: border-color(secondary);
 
-$userPreferencesPanelHeaderBackgroundColor: rsa-color(blue);
+$userPreferencesPanelHeaderBackgroundColor: background-color(secondary);
 
 $applicationContentBlur: rsa-whitespace(least);
 
-$applicationModalBackgroundColor: rsa-color(gray, darkest);
-$applicationModalTypeColor: rsa-color(gray, lightest);
-$applicationModalBorderColor: rsa-color(blue);
-$applicationModalOverlayColor: rsa-color(gray, darkest, $rsa-translucent);
-$applicationModalCloseLinkColor: rsa-color(gray, lightest);
+$applicationModalBackgroundColor: background-color(primary, darkest);
+$applicationModalTypeColor: text-color(primary, lightest);
+$applicationModalBorderColor: border-color(secondary);
+$applicationModalOverlayColor: background-color(primary, darkest, translucent);
+$applicationModalCloseLinkColor: text-color(primary, lightest);
 
-$applicationLoginTypeColor: rsa-color(gray, lighter);
+$applicationLoginTypeColor: text-color(primary, lighter);
 $applicationLoginWidth: 25rem;
-$applicationLoginBackgroundColor: rsa-color(gray, darkest, $rsa-somewhat-opaque);
-$applicationLoginBorderColor: rsa-color(gray, darker);
-$applicationLoginErrorBorderColor: rsa-color(red);
-$applicationLoginHeaderBackgroundColor: rsa-color(gray, darker);
+$applicationLoginBackgroundColor: background-color(primary, darkest, somewhat-opaque);
+$applicationLoginBorderColor: border-color(primary, darker);
+$applicationLoginErrorBorderColor: border-color(accentOne);
+$applicationLoginHeaderBackgroundColor: background-color(primary, darker);
 $applicationLoginHeaderLogoWidth: 3.5rem;
-$applicationLoginLinkColor: rsa-color(gray);
-$applicationLoginLinkHoverColor: rsa-color(gray, lighter);
-$applicationLoginVersionColor: rsa-color(gray, light);
+$applicationLoginLinkColor: text-color(primary);
+$applicationLoginLinkHoverColor: text-color(primary, lighter);
+$applicationLoginVersionColor: text-color(primary, light);
 
-$applicationLoaderColor: rsa-color(gray, darker);
-$applicationLoaderColorAlt: rsa-color(blue);
-$applicationLoaderLabelColor: rsa-color(gray, lightest);
+$applicationLoaderColor: text-color(primary, darker);
+$applicationLoaderColorAlt: text-color(secondary);
+$applicationLoaderLabelColor: text-color(primary, lightest);
 
 // sass-lint:disable-block indentation
-$applicationBodyBackgroundImage: radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
-radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
-radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
-radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%);
+$applicationBodyBackgroundImage: radial-gradient(circle at 0px 25%, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%),
+radial-gradient(circle at 70% 0px, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%),
+radial-gradient(circle at 35% 65%, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%),
+radial-gradient(circle at 85% 85%, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%);
 
-$applicationBodyBackgroundColor: rsa-color(gray, dark);
+$applicationBodyBackgroundColor: background-color(primary, dark);
 
 @mixin global-nav() {
   position: fixed;

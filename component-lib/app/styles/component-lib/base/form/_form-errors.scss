@@ -1,5 +1,5 @@
 .form-error-message {
   margin: rsa-whitespace() 0;
   @include rsa-font(paragraph);
-  color: rsa-color(gray,lightest);
+  color: text-color(primary,lightest);
 }

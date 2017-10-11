@@ -45,7 +45,7 @@
     line-height: $applicationHeaderHeight;
 
     .rsa-form-button-wrapper {
-      border-left: 1px solid rsa-color(gray, dark);
+      border-left: 1px solid border-color(primary, dark);
       border-bottom: rsa-whitespace(least) solid transparent;
       text-align: center;
       height: $applicationHeaderHeight;
@@ -61,11 +61,11 @@
       }
 
       &.is-active {
-        border-bottom: rsa-whitespace(least) solid rsa-color(blue);
+        border-bottom: rsa-whitespace(least) solid border-color(secondary);
 
         .rsa-form-button {
-          background: rsa-color(black);
-          color: rsa-color(gray, lightest);
+          background: background-color(neutral, dark);
+          color: text-color(primary, lightest);
         }
       }
 
@@ -76,15 +76,15 @@
 
       .rsa-form-button {
         border-width: 0;
-        color: rsa-color(gray, lighter);
+        color: text-color(primary, lighter);
 
         .expand {
           left: 0;
         }
 
         &:hover {
-          background: rsa-color(black);
-          color: rsa-color(gray, lightest);
+          background: background-color(neutral, dark);
+          color: text-color(primary, lightest);
         }
       }
     }
@@ -106,7 +106,7 @@
       background-image: linear-gradient(180deg, #BE3A34, #81312F);
 
       .rsa-logo__letter {
-        fill: rsa-color(white);
+        fill: text-color(neutral);
       }
 
     }

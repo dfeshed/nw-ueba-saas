@@ -80,42 +80,42 @@
     &.invert-color {
       &.is-danger {
         circle {
-          stroke: rsa-color(red);
+          stroke: text-color(accentOne);
         }
       }
       &.is-high {
         circle {
-          stroke: rsa-color(orange);
+          stroke: text-color(accentThree);
         }
       }
 
       &.is-medium {
         circle {
-          stroke: rsa-color(amber);
+          stroke: text-color(accentFour);
         }
       }
       &.is-low {
         circle {
-          stroke: rsa-color(green);
+          stroke: text-color(accentTwo);
         }
       }
     }
 
     &:not(.invert-color) {
       &.is-danger {
-        background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+        background-image: linear-gradient(180deg, background-color(accentOne), background-color(accentOne, dark));
       }
 
       &.is-high {
-        background-image: linear-gradient(180deg, rsa-color(orange), rsa-color(orange, dark));
+        background-image: linear-gradient(180deg, background-color(accentThree), background-color(accentThree, dark));
       }
 
       &.is-medium {
-        background-image: linear-gradient(180deg, rsa-color(amber), rsa-color(amber, dark));
+        background-image: linear-gradient(180deg, background-color(accentFour), background-color(accentFour, dark));
       }
 
       &.is-low {
-        background-image: linear-gradient(180deg, rsa-color(green), rsa-color(green, dark));
+        background-image: linear-gradient(180deg, background-color(accentTwo), background-color(accentTwo, dark));
       }
     }
   }
@@ -142,22 +142,22 @@
 
     &.is-danger {
       .progress-bar {
-        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(red, dark));
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentOne, dark));
       }
     }
     &.is-high {
       .progress-bar {
-        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(orange, dark));
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentThree, dark));
       }
     }
     &.is-medium {
       .progress-bar {
-        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(amber, dark));
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentFour, dark));
       }
     }
     &.is-low {
       .progress-bar {
-        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(green, dark));
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentTwo, dark));
       }
     }
   }

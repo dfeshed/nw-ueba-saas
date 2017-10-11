@@ -14,14 +14,14 @@
 }
 
 .rsa-application-layout-panel-header {
-  background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
-  border-top: 3px solid rsa-color(gray, darkest);
+  background-color: background-color(primary, darkest, somewhat-opaque);
+  border-top: 3px solid border-color(primary, darkest);
 
   h2 {
     margin: rsa-whitespace();
     margin-left: calc((#{rsa-whitespace()} + #{rsa-whitespace(least)} + #{rsa-whitespace(less)}) - 1px);
     @include rsa-font(header, larger);
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
 
     .count {
       @include rsa-font(header, large);
@@ -29,7 +29,7 @@
 
     &.with-separator {
       margin-right: 0;
-      border-right: 1px solid rsa-color(gray);
+      border-right: 1px solid border-color(primary);
       padding-right: calc(#{rsa-whitespace(less)} + #{rsa-whitespace()});
     }
 
@@ -61,7 +61,7 @@
       margin: rsa-whitespace(less);
       padding: rsa-whitespace(least) rsa-whitespace(less) 0!important;
       padding-bottom: 0!important;
-      border-left: 1px solid rsa-color(gray);
+      border-left: 1px solid border-color(primary);
       height: 1.75rem;
       overflow: visible;
 
@@ -80,7 +80,7 @@
         padding-top: 0!important;
 
         button {
-          color: rsa-color(gray);
+          color: text-color(primary);
           padding-top: 0!important;
           padding-bottom: rsa-whitespace(less)!important;
         }
@@ -90,21 +90,21 @@
 
   .filters {
     .rsa-form-input:not(:hover) input {
-      border-color: rsa-color(gray);
-      color: rsa-color(gray);
-      @include rsa-input-placeholder(rsa-color(gray));
+      border-color: border-color(primary);
+      color: text-color(primary);
+      @include rsa-input-placeholder(text-color(primary));
     }
   }
 
 
   .panel-control-group {
-    border-right: 1px solid rsa-color(gray);
+    border-right: 1px solid border-color(primary);
     margin-right: rsa-whitespace(less);
     padding: rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace(least) 0;
 
     .is-standard .rsa-form-button:not(:hover) {
-      border-color: rsa-color(gray);
-      color: rsa-color(gray);
+      border-color: border-color(primary);
+      color: text-color(primary);
     }
 
     .rsa-button-group {
@@ -129,5 +129,5 @@
 }
 
 .rsa-application-layout-panel-content {
-  background-color: rsa-color(gray, darkest, $rsa-translucent);
+  background-color: background-color(primary, darkest, translucent);
 }

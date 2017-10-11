@@ -12,21 +12,21 @@
 .flatpickr-day.notAllowed,
 .flatpickr-day.notAllowed.prevMonthDay,
 .flatpickr-day.notAllowed.nextMonthDay {
-  color: rsa-color(gray);
+  color: text-color(primary);
 
   &:hover {
     border-color: transparent;
-    background-color: rsa-color(gray, dark);
+    background-color: background-color(primary, dark);
   }
 }
 
 .flatpickr-calendar {
   border-radius: 0;
-  background-color: rsa-color(gray, darkest);
-  box-shadow: 1px 1px rsa-color(black);
+  background-color: background-color(primary, darkest);
+  box-shadow: 1px 1px background-color(neutral, dark);
 
   input {
-    color: rsa-color(gray, lightest)
+    color: text-color(primary, lightest)
   }
 
   .numInputWrapper {
@@ -38,7 +38,7 @@
 }
 
 .rsa-form-input.is-disabled .datetime-picker-icon {
-  color: rsa-color(gray);
+  color: text-color(primary);
 }
 
 .flatpickr-current-month {
@@ -46,19 +46,19 @@
 
   .numInputWrapper {
     width: 20%;
-    
+
     span {
       right: auto;
 
       &.arrowUp {
         &:after {
-          border-bottom-color: rsa-color(gray, lightest);
+          border-bottom-color: border-color(primary, lightest);
         }
       }
 
       &.arrowDown {
         &:after {
-          border-top-color: rsa-color(gray, lightest);
+          border-top-color: border-color(primary, lightest);
         }
       }
 
@@ -76,11 +76,11 @@ span.flatpickr-weekday,
 .flatpickr-day,
 .flatpickr-time input,
 .flatpickr-time .flatpickr-am-pm {
-  color: rsa-color(gray, lightest);
+  color: text-color(primary, lightest);
 }
 
 .flatpickr-time .flatpickr-time-separator {
-  color: rsa-color(gray, light);
+  color: text-color(primary, light);
 }
 
 .flatpickr-day,
@@ -89,20 +89,20 @@ span.flatpickr-weekday,
 
   &:hover {
     border-color: transparent;
-    background-color: rsa-color(gray, dark);
+    background-color: background-color(primary, dark);
   }
 
   &.today {
-    border-color: rsa-color(gray, light);
+    border-color: border-color(primary, light);
 
     &:hover {
-      background-color: rsa-color(gray, dark);
+      background-color: background-color(primary, dark);
     }
   }
 }
 
 .flatpickr-calendar.showTimeInput.hasTime .flatpickr-time {
-  border-color: rsa-color(gray, dark);
+  border-color: border-color(primary, dark);
 }
 
 .flatpickr-day.selected,
@@ -123,23 +123,23 @@ span.flatpickr-weekday,
 .flatpickr-day.selected.nextMonthDay,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
-  background-color: rsa-color(blue);
-  color: rsa-color(gray, lightest);
+  background-color: background-color(secondary);
+  color: text-color(primary, lightest);
 }
 
 .flatpickr-time .numInputWrapper span.arrowUp:after {
-  border-bottom-color: rsa-color(gray, lightest);
+  border-bottom-color: border-color(primary, lightest);
 }
 
 .flatpickr-time .numInputWrapper span.arrowDown,
 .flatpickr-time .numInputWrapper span.arrowUp {
   &:hover {
-    background-color: rsa-color(gray, dark);
+    background-color: background-color(primary, dark);
   }
 }
 
 .flatpickr-time .numInputWrapper span.arrowDown:after {
-  border-top-color: rsa-color(gray, lightest);
+  border-top-color: border-color(primary, lightest);
 }
 
 .flatpickr-calendar.arrowBottom:before,

@@ -1,5 +1,5 @@
 .error-page {
-  color: rsa-color(gray, lighter);
+  color: text-color(primary, lighter);
   padding: rsa-whitespace(more);
 
   vbox {
@@ -16,7 +16,7 @@
   }
 
   .bottom-links {
-    color: rsa-color(blue);
+    color: text-color(secondary);
     box {
       cursor: pointer;
       padding-right: rsa-whitespace(more);
@@ -28,7 +28,7 @@
 
     h3 {
       @include rsa-font(header, base, true);
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
 
     p {
@@ -38,7 +38,7 @@
 
   .subtitle, .title {
     @include rsa-font(header, larger);
-    color: rsa-color(gray);
+    color: text-color(primary);
   }
 
   .title {

@@ -1,38 +1,38 @@
-$contentAccordionBorderColor: rsa-color(gray, darkest);
-$contentAccordionHeaderBackgroundColor: rsa-color(gray, darker, $rsa-nearly-opaque);
-$contentAccordionHeaderHoverBackgroundColor: rsa-color(gray, darker);
-$contentAccordionHeaderTypeColor: rsa-color(gray, light);
-$contentAccordionBodyTypeColor: rsa-color(gray, lighter);
-$contentAccordionBodyBackgroundColor: rsa-color(gray, dark, $rsa-nearly-opaque);
+$contentAccordionBorderColor: border-color(primary, darkest);
+$contentAccordionHeaderBackgroundColor: background-color(primary, darker, nearly-opaque);
+$contentAccordionHeaderHoverBackgroundColor: background-color(primary, darker);
+$contentAccordionHeaderTypeColor: text-color(primary, light);
+$contentAccordionBodyTypeColor: text-color(primary, lighter);
+$contentAccordionBodyBackgroundColor: background-color(primary, dark, nearly-opaque);
 
-$contentBadgeIconColor: rsa-color(gray, lightest);
-$contentBadgeIconLabelColor: rsa-color(gray, light);
+$contentBadgeIconColor: border-color(primary, lightest);
+$contentBadgeIconLabelColor: text-color(primary, light);
 
-$contentBadgeScoreCircleColor: rsa-color(gray, lightest);
-$contentBadgeScoreLabelColor: rsa-color(gray, lightest);
+$contentBadgeScoreCircleColor: text-color(primary, lightest);
+$contentBadgeScoreLabelColor: text-color(primary, lightest);
 
-$contentCardBackgroundColor: rsa-color(black, null, $rsa-translucent);
-$contentCardBorderColor: rsa-color(gray, darker);
+$contentCardBackgroundColor: background-color(neutral, dark, translucent);
+$contentCardBorderColor: border-color(primary, darker);
 
-$contentDefinitionLabelColor: rsa-color(gray, light);
-$contentDefinitionValueColor: rsa-color(gray, lighter);
+$contentDefinitionLabelColor: text-color(primary, light);
+$contentDefinitionValueColor: text-color(primary, lighter);
 
-$contentIpConnectionsTypeColor: rsa-color(gray, lighter);
-$contentIpConnectionsCircleColor: rsa-color(gray, light);
-$contentIpConnectionsDirectionIconColor: rsa-color(gray, light);
+$contentIpConnectionsTypeColor: text-color(primary, lighter);
+$contentIpConnectionsCircleColor: text-color(primary, light);
+$contentIpConnectionsDirectionIconColor: text-color(primary, light);
 
-$contentLabelColor: rsa-color(white);
-$contentLabelInvertedColor: rsa-color(black);
+$contentLabelColor: text-color(neutral);
+$contentLabelInvertedColor: text-color(neutral, dark);
 
-$contentSectionHeaderBackgroundColor: rsa-color(gray, darkest, $rsa-nearly-opaque);
-$contentSectionHeaderTypeColor: rsa-color(gray, lightest);
-$contentSectionHeaderBorderColor: rsa-color(gray, darkest);
+$contentSectionHeaderBackgroundColor: background-color(primary, darkest, nearly-opaque);
+$contentSectionHeaderTypeColor: text-color(primary, lightest);
+$contentSectionHeaderBorderColor: border-color(primary, darkest);
 
-$contentLogoTitleColor: rsa-color(gray, lighter);
+$contentLogoTitleColor: text-color(primary, lighter);
 
-$contentUpdateIndicatorBackgroundColor: rsa-color(blue);
-$contentUpdateIndicatorBorderColor: rsa-color(gray, lightest);
-$contentUpdateIndicatorTypeColor: rsa-color(gray, light);
+$contentUpdateIndicatorBackgroundColor: background-color(secondary);
+$contentUpdateIndicatorBorderColor: border-color(primary, lightest);
+$contentUpdateIndicatorTypeColor: text-color(primary, light);
 
 @import 'chart';
 @import 'content-accordion';

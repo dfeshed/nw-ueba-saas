@@ -86,7 +86,7 @@ $entityFileHashColor: $cyan;
       transition: opacity 0.3s;
 
       .line {
-        stroke: text-color(primary,light,nearly-opaque);
+        stroke: text-color(primary,base,translucent);
       }
       .text {
         fill: text-color(primary,light);

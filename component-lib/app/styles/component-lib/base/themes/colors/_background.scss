@@ -63,6 +63,11 @@ $background-colors: (
   neutral: (
     dark:     var(--background-color-neutral-dark),
     base:     var(--background-color-neutral-base),
+  ),
+
+  custom: (
+    respond:  var(--background-color-respond-specific),
+    nav:      var(--background-color-nav-specific)
   )
 
 );

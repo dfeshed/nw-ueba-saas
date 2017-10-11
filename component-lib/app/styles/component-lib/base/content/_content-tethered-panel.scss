@@ -8,11 +8,11 @@
 }
 
 .panel-content {
-  background: rsa-color(gray, darker);
-  color: rsa-color(gray, lighter);
+  background: background-color(primary, darker);
+  color: text-color(primary, lighter);
   text-align: left;
   position: relative;
-  box-shadow: 1px 1px 2px rsa-color(black, base, $rsa-translucent);
+  box-shadow: 1px 1px 2px background-color(neutral, dark, translucent);
 
   .close-icon {
     position: absolute;
@@ -21,10 +21,10 @@
 
     i {
       top: 0;
-      color: rsa-color(gray, lighter);
+      color: text-color(primary, lighter);
 
       &:hover {
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
         cursor: pointer;
       }
     }
@@ -36,14 +36,14 @@
     position: absolute;
 
     polygon {
-      fill: rsa-color(gray, darker);
+      fill: text-color(primary, darker);
     }
 
     line {
       stroke-width: 1;
 
       &.bottom {
-        stroke: rsa-color(gray, darker);
+        stroke: text-color(primary, darker);
       }
     }
   }
@@ -56,7 +56,7 @@
   > section {
     padding: rsa-whitespace() rsa-whitespace(more) rsa-whitespace() rsa-whitespace();
     @include rsa-font(paragraph, small);
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     max-width: 25rem;
     min-width: 15rem;
   }
@@ -69,32 +69,32 @@
   }
 
   &.standard {
-    border: 1px solid rsa-color(gray, lightest);
+    border: 1px solid border-color(primary, lightest);
 
     svg line {
-      stroke: rsa-color(gray, lightest);
+      stroke: text-color(primary, lightest);
     }
   }
 
   &.primary,
   &.highlighted {
-    border: 1px solid rsa-color(blue);
+    border: 1px solid border-color(secondary);
 
     header {
-      color: rsa-color(blue);
+      color: text-color(secondary);
     }
 
     svg line {
-      stroke: rsa-color(blue);
+      stroke: text-color(secondary);
     }
   }
 
   &.highlighted {
-    background-color: rsa-color(blue);
+    background-color: background-color(secondary);
     padding: rsa-whitespace(least) 0;
 
     header {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
       @include rsa-font(header, small);
       padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(least);
     }
@@ -105,20 +105,20 @@
     }
 
     polygon {
-      stroke: rsa-color(blue);
-      fill: rsa-color(blue);
+      stroke: text-color(secondary);
+      fill: text-color(secondary);
     }
   }
 
   &.error {
-    border: 1px solid rsa-color(red);
+    border: 1px solid border-color(accentOne);
 
     header {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
 
     svg line {
-      stroke: rsa-color(red);
+      stroke: text-color(accentOne);
     }
   }
 
@@ -306,7 +306,7 @@
 
   .rsa-dropdown-action-list {
     li {
-      border-bottom: 1px solid rsa-color(gray, dark);
+      border-bottom: 1px solid border-color(primary, dark);
       @include rsa-font(body);
       padding: rsa-whitespace(less) rsa-whitespace();
     }
@@ -326,19 +326,19 @@
   .rsa-dropdown-link-list,
   .rsa-dropdown-action-list {
     li {
-      border-bottom: 1px solid rsa-color(gray, dark);
+      border-bottom: 1px solid border-color(primary, dark);
 
       &:last-child {
         border-bottom: none!important;
       }
 
       &:hover {
-        background-color: rsa-color(blue, darker);
+        background-color: background-color(secondary, darker);
         cursor: pointer;
       }
 
       &.is-active {
-        background-color: rsa-color(blue, dark);
+        background-color: background-color(secondary, dark);
       }
     }
   }
@@ -347,7 +347,7 @@
     .rsa-dropdown-link-list,
     .rsa-dropdown-action-list {
       li {
-        border-bottom: 1px solid rsa-color(blue, dark);
+        border-bottom: 1px solid border-color(secondary, dark);
       }
     }
   }
@@ -356,7 +356,7 @@
     .rsa-dropdown-link-list,
     .rsa-dropdown-action-list {
       li {
-        border-bottom: 1px solid rsa-color(red, dark);
+        border-bottom: 1px solid border-color(accentOne, dark);
       }
     }
   }

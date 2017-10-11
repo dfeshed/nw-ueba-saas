@@ -4,7 +4,7 @@
 
   /* Tab strip for sub-routes: Incidents, Alerts, Remediation Tasks. Matches investigate color. */
   > .rsa-nav-tab-group {
-    background-color: background-color(primary, darker);
+    background-color: background-color(custom, nav);
   }
 
   .error-page .bottom-links {

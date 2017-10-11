@@ -66,10 +66,10 @@
     }
 
     &.error {
-      border: 1px solid rsa-color(red, dark);
+      border: 1px solid border-color(accentOne, dark);
 
       h3 {
-        background-color: rsa-color(red);
+        background-color: background-color(accentOne);
       }
 
       .modal-content {

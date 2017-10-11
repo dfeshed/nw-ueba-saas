@@ -1,3 +1,4 @@
+import { skip } from 'qunit';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -51,7 +52,7 @@ test('it renders the progress bar with the correct length based on the score whe
   assert.equal(this.$('.progress-bar').css('flex-grow'), '0.5', 'Progress bar has 50% length');
 });
 
-test('it renders the progress bar with the correct color based on the style', function(assert) {
+skip('it renders the progress bar with the correct color based on the style', function(assert) {
   this.render(hbs `{{rsa-content-badge-score isInline=true style='medium' score=50}}`);
   const badge = this.$('.rsa-content-badge-score');
   assert.ok(badge.hasClass('progress-bar-length-50'), 'Progress bar has the expected class name with the expected length');

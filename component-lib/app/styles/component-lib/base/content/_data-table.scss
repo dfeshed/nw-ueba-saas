@@ -18,7 +18,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-header {
     @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
     @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
-    background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
+    background-color: background-color(primary, darker, somewhat-opaque);
 
     .rsa-form-checkbox-label {
       &::before {
@@ -31,7 +31,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       position: absolute;
       right: 0;
       top: 0;
-      border-left: 1px solid rsa-color(black);
+      border-left: 1px solid border-color(neutral, dark);
       z-index: 99;
       background-image: $applicationBodyBackgroundImage;
       background-color: $applicationBodyBackgroundColor;
@@ -58,10 +58,10 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       }
 
       &.is-sorted {
-        background-color: rsa-color(gray, darkest, $rsa-translucent);
+        background-color: background-color(primary, darkest, translucent);
 
         .sort {
-          color: rsa-color(blue);
+          color: text-color(secondary);
           display: inline-block;
         }
 
@@ -86,7 +86,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     overflow: auto;
 
     .no-results {
-      color: rsa-color(gray);
+      color: text-color(primary);
       font-style: italic;
       padding: rsa-whitespace();
     }
@@ -106,7 +106,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-font(header, small);
     text-transform: uppercase;
     height: 30px;
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
   }
 
   &-body-row {
@@ -114,8 +114,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     left: rsa-whitespace(less);
     right: rsa-whitespace(less);
     @include rsa-font(paragraph, small);
-    color: rsa-color(grey, light);
-    border-top: 1px solid rsa-color(grey, darkest);
+    color: text-color(primary, light);
+    border-top: 1px solid border-color(primary, darkest);
 
     &:hover,
     &.is-selected,
@@ -131,15 +131,15 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &:hover {
       .rsa-data-table-body-cell {
-        background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+        background-color: background-color(primary, darkest, nearly-transparent);
       }
     }
 
     &.is-selected,
     &.is-selected:hover {
       .rsa-data-table-body-cell {
-        color: rsa-color(gray, lighter)!important;
-        background-color: rsa-color(blue, base, 0.6);
+        color: text-color(primary, lighter)!important;
+        background-color: background-color(secondary, base, somewhat-opaque);
       }
     }
 
@@ -177,7 +177,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
 
     &.is-error {
-      background-color: rsa-color(red, base, 0.2);
+      background-color: background-color(accentOne, base, nearly-transparent);
     }
   }
 
@@ -211,7 +211,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     position: relative; /* enables absolute positioning for the .resize-handle children */
     line-height: 30px;
     padding: 0 rsa-whitespace(less);
-    border-right: 1px solid rsa-color(gray, dark);
+    border-right: 1px solid border-color(primary, dark);
     margin-right: -1px;
 
     &:first-child {
@@ -223,7 +223,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
 
     &.is-dragging {
-      background-color: rsa-color(gray);
+      background-color: background-color(primary);
       transition-duration: 0s;
       z-index: $data-table-max-z-index;
       .js-move-handle {
@@ -254,7 +254,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
       :hover,
       .is-dragging {
-        background-color: rsa-color(blue);
+        background-color: background-color(secondary);
       }
 
       &.left {
@@ -289,17 +289,17 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     .rsa-data-table {
       &-body-row,
       &-header-row {
-        border-bottom: 1px solid rsa-color(black);
+        border-bottom: 1px solid border-color(neutral,dark);
       }
     }
   }
   &.monochrome {
     .rsa-data-table {
       &-body-row {
-        border-bottom: 1px solid rsa-color(black);
+        border-bottom: 1px solid border-color(neutral,dark);
       }
       &-header-row {
-        background-color: rsa-color(black);
+        background-color: background-color(neutral, dark);
       }
     }
   }

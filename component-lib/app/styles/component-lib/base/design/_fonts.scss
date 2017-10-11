@@ -258,12 +258,12 @@ body.ember-application, html {
 }
 
 strong.is-danger {
-  color: rsa-color(red);
+  color: text-color(accentOne);
 }
 
 code {
   display: block;
   @include rsa-font-code();
-  border-left: rsa-whitespace(least) solid rsa-color(gray);
+  border-left: rsa-whitespace(least) solid border-color(primary);
   padding: rsa-whitespace(least) rsa-whitespace();
 }

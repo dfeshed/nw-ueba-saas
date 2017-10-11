@@ -23,44 +23,44 @@
   &.checked {
     &::before {
       content: $rsa-icon-radio-button-selected-1-filled;
-      color: rsa-color(blue);
+      color: text-color(secondary);
     }
   }
 
   &:hover:not(.disabled) {
     cursor: pointer;
-    color: rsa-color(blue);
+    color: text-color(secondary);
 
     &::before {
-      color: rsa-color(blue);
+      color: text-color(secondary);
     }
   }
 
   &.disabled {
-    color: rsa-color(gray);
+    color: text-color(primary);
 
     &.checked {
       &::before {
-        color: rsa-color(gray);
+        color: text-color(primary);
       }
     }
   }
 
   &.error {
-    color: rsa-color(red);
+    color: text-color(accentOne);
 
     &::before {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
 
     &.checked {
       &::before {
-        color: rsa-color(red);
+        color: text-color(accentOne);
       }
 
       &:hover {
         &::before {
-          color: rsa-color(blue);
+          color: text-color(secondary);
         }
       }
 

@@ -23,14 +23,14 @@
 
   .journal-panel {
     .scroll-box  {
-      background-color: rsa-color(black, null, $rsa-translucent);
+      background-color: background-color(neutral, dark, translucent);
       margin-right: 2px;
     }
   }
 
   .context-panel {
     .scroll-box  {
-      background-color: rsa-color(black, null, $rsa-translucent);
+      background-color: background-color(neutral, dark, translucent);
       margin-left: 2px;
     }
   }

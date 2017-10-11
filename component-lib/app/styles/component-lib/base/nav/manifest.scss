@@ -1,13 +1,13 @@
-$navLinkListHeaderTypeColor: rsa-color(gray);
-$navLinkListAnchorTypeColor: rsa-color(white);
-$navLinkListAnchorHoverTypeColor: rsa-color(gray, base, $rsa-nearly-transparent);
+$navLinkListHeaderTypeColor: text-color(primary);
+$navLinkListAnchorTypeColor: text-color(neutral);
+$navLinkListAnchorHoverTypeColor: text-color(primary, base, nearly-transparent);
 
-$navTabBorderBottomColor: rsa-color(gray);
-$navTabActiveBorderBottomColor: rsa-color(blue);
-$navTabActiveTypeColor: rsa-color(gray, lightest);
-$navTabHoverTypeColor: rsa-color(gray, lightest);
-$navTabImageryTypeColor: rsa-color(gray, light);
-$navTabLabelTypeColor: rsa-color(gray, light);
+$navTabBorderBottomColor: border-color(primary);
+$navTabActiveBorderBottomColor: border-color(secondary);
+$navTabActiveTypeColor: text-color(primary, lightest);
+$navTabHoverTypeColor: text-color(primary, lightest);
+$navTabImageryTypeColor: text-color(primary, light);
+$navTabLabelTypeColor: text-color(primary, light);
 
 @import 'nav-link-list';
 @import 'nav-tab';

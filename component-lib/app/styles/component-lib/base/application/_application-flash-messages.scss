@@ -14,32 +14,32 @@
     margin-bottom: rsa-whitespace();
 
     &.alert-info {
-      border: 1px solid rsa-color(blue);
-      background-color: rsa-color(blue, base, $rsa-nearly-opaque);
+      border: 1px solid border-color(secondary);
+      background-color: background-color(secondary, base, nearly-opaque);
     }
 
     &.alert-success {
-      border: 1px solid rsa-color(green);
-      background-color: rsa-color(green, dark, $rsa-nearly-opaque);
+      border: 1px solid border-color(accentTwo);
+      background-color: background-color(accentTwo, dark, nearly-opaque);
     }
 
     &.alert-warning {
-      border: 1px solid rsa-color(amber);
-      background-color: rsa-color(amber, dark, $rsa-nearly-opaque);
+      border: 1px solid border-color(accentFour);
+      background-color: background-color(accentFour, dark, nearly-opaque);
     }
 
     &.alert-error {
-      border: 1px solid rsa-color(red);
-      background-color: rsa-color(red, base, $rsa-nearly-opaque);
+      border: 1px solid border-color(accentOne);
+      background-color: background-color(accentOne, base, nearly-opaque);
     }
 
     .message {
       @include rsa-font(paragraph);
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
 
     .rsa-icon {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
       display: inline-block;
     }
   }

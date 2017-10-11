@@ -1,8 +1,8 @@
-$ember-power-select-text-color: rsa-color(gray, lightest);
-$ember-power-select-trigger-border-bottom: 1px solid rsa-color(gray, light);
+$ember-power-select-text-color: text-color(primary, lightest);
+$ember-power-select-trigger-border-bottom: 1px solid borer-color(primary, light);
 $ember-power-select-default-border-radius: 0;
-$ember-power-select-highlighted-background: rsa-color(blue, darker);
-$ember-power-select-selected-background: rsa-color(blue, dark);
+$ember-power-select-highlighted-background: background-color(secondary, darker);
+$ember-power-select-selected-background: background-color(secondary, dark);
 $ember-power-select-option-padding: rsa-whitespace();
 $ember-power-select-line-height: 2rem;
 
@@ -20,7 +20,7 @@ $ember-power-select-line-height: 2rem;
 
   &.is-error {
     .label-text {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
   }
 
@@ -35,18 +35,18 @@ $ember-power-select-line-height: 2rem;
 
 
 .ember-power-select-dropdown {
-  border: 1px solid rsa-color(blue)!important;
-  background: rsa-color(gray, darkest);
+  border: 1px solid border-color(secondary)!important;
+  background: background-color(primary, darkest);
 
   &.is-error {
-    border: 1px solid rsa-color(red)!important;
+    border: 1px solid border-color(accentOne)!important;
 
     .ember-power-select-option {
       &[aria-selected="true"] {
-        background-color: rsa-color(red);
+        background-color: background-color(accentOne);
       }
       &[aria-current="true"] {
-        background-color: rsa-color(red, darker);
+        background-color: background-color(accentOne, darker);
       }
     }
   }
@@ -70,21 +70,21 @@ $ember-power-select-line-height: 2rem;
   border-left: none!important;
   border-right: none!important;
   border-top: none!important;
-  border-bottom: 1px solid rsa-color(gray, light);
+  border-bottom: 1px solid border-color(primary, light);
 
   &.is-error {
-    border-bottom: 1px solid rsa-color(red);
+    border-bottom: 1px solid border-color(accentOne);
     background-color: $formSelectErrorBackgroundColor;
 
     .ember-power-select-status-icon {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
 
     &:hover {
-      border-bottom: 1px solid rsa-color(red);
+      border-bottom: 1px solid border-color(accentOne);
 
       .ember-power-select-status-icon {
-        color: rsa-color(red);
+        color: text-color(accentOne);
       }
     }
   }
@@ -111,7 +111,7 @@ $ember-power-select-line-height: 2rem;
     bottom: auto;
     display: block;
     line-height: 1.75em;
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
 
     &::after {
       font-size: .6rem;
@@ -131,16 +131,16 @@ $ember-power-select-line-height: 2rem;
     }
 
     .ember-power-select-status-icon {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
       transform: none;
     }
 
     &.is-error {
-      color: rsa-color(red);
-      border-bottom: 1px solid rsa-color(red);
+      color: text-color(accentOne);
+      border-bottom: 1px solid border-color(accentOne);
 
       .ember-power-select-status-icon {
-        color: rsa-color(red);
+        color: text-color(accentOne);
       }
 
     }
@@ -148,19 +148,19 @@ $ember-power-select-line-height: 2rem;
 
   &:hover {
     cursor: pointer;
-    border-bottom: 1px solid rsa-color(gray, lightest);
+    border-bottom: 1px solid border-color(primary, lightest);
 
     .ember-power-select-status-icon {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
   }
 }
 
 .ember-power-select-multiple-option {
-  border: 1px solid rsa-color(gray, lightest);
+  border: 1px solid border-color(primary, lightest);
   background: transparent;
   border-radius: 3px;
-  color: rsa-color(gray, lightest);
+  color: text-color(primary, lightest);
 }
 
 #ember-basic-dropdown-wormhole {
