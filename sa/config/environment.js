@@ -149,8 +149,10 @@ module.exports = function(environment) {
     ENV.i18n = {
       defaultLocale: 'en',
       includedLocales: ['en']
-    }
-  }
+    };
 
+    // Ensure useMockServer is always false in production build
+    ENV.useMockServer = false;
+  }
   return ENV;
 };
