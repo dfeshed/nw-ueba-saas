@@ -1,14 +1,22 @@
 import * as ACTION_TYPES from './types';
 
-export const setMetaPanelSize = (size) => ({
-  type: ACTION_TYPES.SET_META_PANEL_SIZE,
-  payload: size
-});
+export const setMetaPanelSize = (size) => {
+  if (size) {
+    return {
+      type: ACTION_TYPES.SET_META_PANEL_SIZE,
+      payload: size
+    };
+  }
+};
 
-export const setReconPanelSize = (size) => ({
-  type: ACTION_TYPES.SET_RECON_PANEL_SIZE,
-  payload: size
-});
+export const setReconPanelSize = (size) => {
+  if (size) {
+    return {
+      type: ACTION_TYPES.SET_RECON_PANEL_SIZE,
+      payload: size
+    };
+  }
+};
 
 export const setQueryParams = (params) => ({
   type: ACTION_TYPES.SET_QUERY_PARAMS,
@@ -39,6 +47,19 @@ export const setQueryTimeRange = (timeRange) => {
   };
 };
 
+export const setSelectedEvent = (event, index) => {
+  const metas = event ? event.metas : undefined;
+  const sessionId = event ? event.sessionId : undefined;
+  return {
+    type: ACTION_TYPES.SET_SELECTED_EVENT,
+    payload: {
+      eventIndex: index,
+      eventMetas: metas,
+      sessionId
+    }
+  };
+};
+
 export const setSessionId = (serviceId) => ({
   type: ACTION_TYPES.SESSION_SELECTED,
   payload: serviceId
@@ -47,4 +68,14 @@ export const setSessionId = (serviceId) => ({
 export const setServiceId = (serviceId) => ({
   type: ACTION_TYPES.SERVICE_SELECTED,
   payload: serviceId
+});
+
+export const setReconOpen = () => ({
+  type: ACTION_TYPES.SET_RECON_VIEWABLE,
+  payload: true
+});
+
+export const setReconClosed = () => ({
+  type: ACTION_TYPES.SET_RECON_VIEWABLE,
+  payload: false
 });

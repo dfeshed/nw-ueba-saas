@@ -10,7 +10,7 @@ import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-ut
 export const navGoto = () => {
   return (dispatch) => {
     // Before navigating to a query, close recon.
-    dispatch({ type: ACTION_TYPES.SET_RECON_CLOSE, payload: true });
+    // dispatch({ type: ACTION_TYPES.SET_RECON_VIEWABLE, payload: false });
     dispatch({ type: ACTION_TYPES.GET_RESULTS, payload: false });
   };
 };
@@ -19,6 +19,7 @@ export const navGoto = () => {
  * Requests a drill from a given query on a given meta key name-value pair. The
  * drill is performed by constructing a URL for the drill and navigating to
  * that URL.
+ * TODO - See `submitQuery` TODO
  * @param {string} metaName The meta key identifier (e.g., "ip.src").
  * @param {*} metaValue The meta key value (raw, not aliased).
  * @public
@@ -41,6 +42,8 @@ export const navDrill = (metaName, metaValue) => {
 
 /**
  * Constructs a URL and navigates to that URL.
+ * TODO - We should explore moving this to the submit button, making the button
+ * a link with this constructed url
  * @param {string} query Query string to add to end or URL
  * @public
  */
@@ -63,6 +66,5 @@ export const submitQuery = () => {
     // https://github.com/emberjs/ember.js/pull/15613
     // After that PR is merged, we should be able to update the above line to be
     // lookup('service:router').transitionTo('investigate-events.query', `${uri}${queryString}`);
-
   };
 };

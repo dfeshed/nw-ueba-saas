@@ -10,6 +10,9 @@ const unknownMetaSize = (val) => valueNotInArray(META_PANEL_SIZES, val);
 const unknownReconSize = (val) => valueNotInArray(RECON_PANEL_SIZES, val);
 
 const _initialState = Immutable.from({
+  eventIndex: undefined,
+  eventMetas: undefined,
+  isReconOpen: false,
   metaPanelSize: 'default',
   reconSize: 'max'
 });
@@ -41,5 +44,13 @@ export default handleActions({
   [ACTION_TYPES.SET_RECON_PANEL_SIZE]: (state, { payload }) => {
     const reconSize = unknownReconSize(payload) ? 'max' : payload;
     return state.merge({ reconSize });
+  },
+
+  [ACTION_TYPES.SET_SELECTED_EVENT]: (state, { payload }) => {
+    return state.merge(payload);
+  },
+
+  [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload }) => {
+    return state.set('isReconOpen', payload);
   }
 }, _initialState);

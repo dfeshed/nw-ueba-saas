@@ -34,7 +34,7 @@ export default Mixin.create({
       // Before navigating to a query, close recon. If coming from another
       // route, it may already be closed; but here we make sure even if
       // navigating via breadcrumb or drills.
-      this.send('reconClose', true);
+      // this.send('reconClose', true);
       this.setProperties({
         'state.queryNode': queryNode,
         'state.lastQueryNode': wasQueryNode

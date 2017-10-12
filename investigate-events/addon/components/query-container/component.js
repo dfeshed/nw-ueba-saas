@@ -4,15 +4,25 @@ import get from 'ember-metal/get';
 import { isEmpty } from 'ember-utils';
 import computed from 'ember-computed-decorators';
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
+import { setReconPanelSize } from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = ({ investigate }) => ({
   defaultMetaGroup: defaultMetaGroup(investigate),
+  queryBodyClass: queryBodyClass(investigate),
   aliases: investigate.dictionaries.aliases,
   language: investigate.dictionaries.language,
   serviceId: investigate.queryNode.serviceId,
   sessionId: investigate.queryNode.sessionId,
-  size: investigate.data.metaPanelSize
+  metaPanelSize: investigate.data.metaPanelSize,
+  reconSize: investigate.data.reconSize,
+  isReconOpen: investigate.data.isReconOpen,
+  eventMetas: investigate.data.eventMetas,
+  eventIndex: investigate.data.eventIndex,
+  eventCount: investigate.queryNode.results.eventCount.data
 });
+
+const actionsToDispatch = { setReconPanelSize };
 
 const QueryContainerComponent = Component.extend({
   /**
@@ -20,24 +30,17 @@ const QueryContainerComponent = Component.extend({
    * -1 otherwise.  This is passed along to the data table.
    * @public
    */
-  @computed('sessionId',
-            'model.queryNode.value.results.events.data.[]',
-            'model.queryNode.value.results.eventCount.data')
-  selectedIndex(sessionId, items, total) {
+  @computed('sessionId', 'model.queryNode.value.results.events.data.[]')
+  selectedIndex(sessionId, items) {
+    // TODO - make selector
     let idx = -1;
     if (sessionId && !isEmpty(items)) {
       const index = this._indexOfBy(items, 'sessionId', sessionId);
       this.set('model.recon.index', index);
-      this.set('model.recon.total', total);
       idx = index;
     }
     return idx;
   },
-
-  @computed('model.recon.display', 'size')
-  queryBodyClass: (reconDisplay, panelSize) => `rsa-investigate-query__body\
-    recon-is-${reconDisplay}\
-    meta-panel-size-${panelSize}`,
 
   /**
    * Finds and returns the index of the first array member whose key matches a
@@ -66,4 +69,4 @@ const QueryContainerComponent = Component.extend({
   }
 });
 
-export default connect(stateToComputed)(QueryContainerComponent);
+export default connect(stateToComputed, actionsToDispatch)(QueryContainerComponent);

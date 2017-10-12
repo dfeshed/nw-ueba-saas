@@ -47,25 +47,26 @@
           totalThreshold=model.queryNode.value.results.eventCount.threshold
           totalStatus=model.queryNode.value.results.eventCount.status
           totalRetryAction=(route-action "eventCountGet" model.queryNode)
-          isOpen=model.recon.isOpen
+          isOpen=isReconOpen
         }}
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">
       {{#if (and serviceId sessionId)}}
         {{recon-container
-          endpointId=serviceId
-          eventId=sessionId
-          meta=model.recon.metas
-          index=model.recon.index
-          total=model.recon.total
-          size=(readonly model.recon.size)
+          aliases=(readonly aliases)
+          endpointId=(readonly serviceId)
+          eventId=(readonly sessionId)
+          index=(readonly eventIndex)
+          language=(readonly language)
+          meta=(readonly eventMetas)
+          size=(readonly reconSize)
+          total=(readonly eventCount)
           closeAction=(route-action 'reconClose')
-          expandAction=(route-action 'reconExpand')
-          shrinkAction=(route-action 'reconShrink')
+          expandAction=(route-action 'reconSize' 'max')
           linkToFileAction=(route-action 'reconLinkToFile')
-          language=language
-          aliases=aliases}}
+          shrinkAction=(route-action 'reconSize' 'min')
+        }}
       {{/if}}
     </vbox>
   </section>

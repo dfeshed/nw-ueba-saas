@@ -71,7 +71,7 @@
 
   {{#each crumbs as |crumb index|}}
     <span class="rsa-investigate-breadcrumb__crumb">
-      {{#link-to 'query' crumb.deleteUri (query-params eventId='-1') class='delete'}}
+      {{#link-to 'query' crumb.deleteUri (query-params eventId=undefined) class='delete'}}
         {{rsa-icon name='close' size='small'}}
       {{/link-to}}
       {{#rsa-content-tethered-panel-trigger

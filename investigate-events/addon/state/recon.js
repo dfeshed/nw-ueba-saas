@@ -45,7 +45,7 @@ export default EmberObject.extend({
    * @type {string}
    * @public
    */
-  serviceId: undefined,
+  endpointId: undefined,
 
   /**
    * The ID of the event (session) object from NetWitness Core to be inspected in the recon UI.

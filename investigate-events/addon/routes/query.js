@@ -1,5 +1,4 @@
 import Route from 'ember-route';
-import run from 'ember-runloop';
 import service from 'ember-service/inject';
 
 import {
@@ -10,7 +9,9 @@ import {
   setMetaPanelSize,
   setQueryParams,
   setReconPanelSize,
-  setSessionId
+  setSelectedEvent,
+  setReconOpen,
+  setReconClosed
 } from 'investigate-events/actions/interaction-creators';
 import { navGoto } from 'investigate-events/actions/navigation-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
@@ -19,17 +20,18 @@ export default Route.extend({
   accessControl: service(),
   contextualHelp: service(),
   redux: service(),
+  _routing: service('-routing'),
 
   queryParams: {
     eventId: {
-      refreshModel: false
+      refreshModel: true
     },
     metaPanelSize: {
       refreshModel: true, // execute route.model() when metaPanelSize changes
       replace: true       // prevents adding a new item to browser's history
     },
     reconSize: {
-      refreshModel: false,
+      refreshModel: true,
       replace: true
     }
   },
@@ -82,16 +84,15 @@ export default Route.extend({
       this.get('redux').dispatch(setQueryParams(filterAttrs));
       // Get `language` and `aliases` now that we know what service we're using
       this.get('redux').dispatch(initializeDictionaries());
+      // If there's an event, let's show the recon panel
+      if (eventId && eventId !== -1) {
+        this.get('redux').dispatch(setReconOpen());
+      }
       // View sizing
       this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
       this.get('redux').dispatch(setReconPanelSize(reconSize));
     }
 
-    if (serviceId && eventId && eventId !== -1) {
-      run.next(() => {
-        this.send('reconOpen', serviceId, eventId);
-      });
-    }
     // TEMP HACK - We can't continue down our execution path until we get
     // `aliases` and `language`, so check if they are present before
     // continuing.
@@ -117,19 +118,91 @@ export default Route.extend({
   })(),
 
   actions: {
-    selectEvent(item, index) {
-      const { serviceId } = this.get('redux').getState().investigate.queryNode;
-      const { metas, sessionId } = item;
-      this.get('redux').dispatch(setSessionId(sessionId));
-      this.send('reconOpen', serviceId, sessionId, metas, index);
+    selectEvent(event, index) {
+      const { reconSize } = this.get('redux').getState().investigate.data;
+      const { sessionId } = event;
+      this.get('redux').dispatch(setSelectedEvent(event, index));
+      this.get('redux').dispatch(setReconOpen());
+      // this.send('contextPanelClose');
+      this.transitionTo({
+        queryParams: {
+          eventId: sessionId,
+          reconSize,
+          metaPanelSize: 'min'
+        }
+      });
     },
 
     metaPanelSize(size = 'default') {
-      const currentSize = this.get('redux').getState().investigate.metaPanelSize;
-      if (currentSize === size) {
-        return;
+      const { metaPanelSize } = this.get('redux').getState().investigate.data;
+      if (metaPanelSize !== size) {
+        this.transitionTo({ queryParams: { metaPanelSize: size } });
       }
-      this.transitionTo({ queryParams: { metaPanelSize: size } });
-    }
+    },
+
+    reconClose() {
+      this.get('redux').dispatch(setReconClosed());
+      this.get('redux').dispatch(setSelectedEvent(null));
+      this.transitionTo({ queryParams: { eventId: undefined, metaPanelSize: 'default' } });
+    },
+
+    reconSize(size = 'max') {
+      const { reconSize } = this.get('redux').getState().investigate.data;
+      if (reconSize !== size) {
+        this.transitionTo({ queryParams: { reconSize: size } });
+      }
+    },
+
+    reconLinkToFile(file = {}) {
+      const { start, end } = file;
+      let { query = '' } = file;
+
+      // Remove surrounding quotes from query, if any
+      const hasSurroundingQuotes = query.match(/^"(.*)"$/);
+      if (hasSurroundingQuotes) {
+        query = hasSurroundingQuotes[1];
+      }
+
+      if (query && start && end) {
+        const { serviceId } = this.get('redux').getState().investigate.queryNode;
+        const routing = this.get('_routing');
+        const url = routing.generateURL(
+          routing.get('currentRouteName'),
+          [`${serviceId}/${start}/${end}/${query}`],
+          { eventId: undefined }
+        );
+        window.open(url, '_blank');
+      }
+    },
+
+    toggleReconSize() {
+      const {
+        isReconOpen,
+        reconSize
+      } = this.get('redux').getState().investigate.data;
+      if (isReconOpen) {
+        this.send('reconSize', (reconSize === 'max') ? 'min' : 'max');
+      }
+    },
+
+    toggleSlaveFullScreen: (() => {
+      let _size = '';
+      return function() {
+        const {
+          isReconOpen,
+          reconSize
+        } = this.get('redux').getState().investigate.data;
+        if (isReconOpen) {
+          if (reconSize === 'full') {
+            // Set to previous size
+            this.send('reconSize', (_size === 'min') ? 'min' : 'max');
+          } else {
+            // save off previous size
+            _size = reconSize;
+            this.send('reconSize', 'full');
+          }
+        }
+      };
+    })()
   }
 });
