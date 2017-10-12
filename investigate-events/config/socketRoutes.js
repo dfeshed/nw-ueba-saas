@@ -1,6 +1,7 @@
 /* eslint-env node */
 const reconConfigGen = require('../../recon').socketRouteGenerator;
 const contextConfigGen = require('../../context').socketRouteGenerator;
+const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
 const common = require('../../common');
 let mergedConfig;
 
@@ -80,7 +81,7 @@ module.exports = function(environment) {
     return {};
   }
 
-  const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen];
+  const configGenerators = [investigateConfigGen, reconConfigGen, contextConfigGen, preferencesConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };

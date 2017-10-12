@@ -3,6 +3,7 @@
 const common = require('../../../common');
 const investigateConfigGen = require('../../../investigate-events').socketRouteGenerator;
 const contextConfigGen = require('../../../context').socketRouteGenerator;
+const preferencesConfigGen = require('../../../preferences').socketRouteGenerator;
 const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const adminConfigGen = require('./administration');
 
@@ -11,6 +12,7 @@ const configGenerators = [
   investigateConfigGen,
   respondConfigGen,
   contextConfigGen,
+  preferencesConfigGen,
   adminConfigGen
 ];
 

@@ -2,7 +2,6 @@ import Service from 'ember-service';
 import service from 'ember-service/inject';
 import { getSocketDetails } from 'preferences/utils/preference-socket-provider';
 
-
 /**
  * @class Preferences service
  * A global API for fetching/setting preferences for logged in user for given service.
@@ -24,11 +23,7 @@ export default Service.extend({
    */
   getPreferences(preferenceFor) {
     const requestPayload = getSocketDetails(preferenceFor, 'get');
-    requestPayload.query = {
-      filter: [
-        { field: 'preferenceFor', value: preferenceFor }
-      ]
-    };
+    requestPayload.query = { };
     return this.get('request').promiseRequest(requestPayload);
   },
 
@@ -39,12 +34,14 @@ export default Service.extend({
    * @param {Object} [preferenceObject] Need to pass JSON object to save preferences,
    * @example
    * ```js
-   * {
-       preferenceFor: 'events'
-       eventsPreferences: {
-          defaultAnalysisView: 'text'
-       }
-     }
+   *  {
+        "defaultLandingPage": null,
+        "eventsPreferences": {
+          "defaultAnalysesView": "Text"
+        },
+        "createdOn": 0,
+        "lastModifiedOn": 0
+      }
    * ```
    * @returns {Promise}
    * @public
@@ -52,11 +49,7 @@ export default Service.extend({
   setPreferences(preferenceFor, preferences) {
 
     const requestPayload = getSocketDetails(preferenceFor, 'set');
-    requestPayload.query = {
-      filter: [
-        { field: 'investigatePreferences', value: preferences }
-      ]
-    };
+    requestPayload.query = { data: preferences };
     return this.get('request').promiseRequest(requestPayload);
   }
 });
