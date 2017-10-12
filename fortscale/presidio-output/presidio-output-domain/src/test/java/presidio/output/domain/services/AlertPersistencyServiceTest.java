@@ -110,9 +110,8 @@ public class AlertPersistencyServiceTest {
         Alert alert =
                 new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         Date createAtDate = alert.getCreatedDate();
-
-
         alertPersistencyService.save(alert);
+
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
         Date updateAtDateFirstFind = testAlert.getUpdatedDate();
         Date createAtDateFirstFind = testAlert.getCreatedDate();
@@ -123,9 +122,11 @@ public class AlertPersistencyServiceTest {
         Date updateAtDateSecondFind = testAlert.getUpdatedDate();
 
         assertNotNull(testAlert.getId());
+        assertEquals(createAtDate, createAtDateFirstFind);
         assertEquals(createAtDateSecondFind, createAtDateFirstFind);
         assertNotEquals(createAtDateSecondFind, updateAtDateSecondFind);
-        assertEquals(testAlert.getCreatedDate(), createAtDate);
+        assertNotEquals(updateAtDateFirstFind, updateAtDateSecondFind);
+        
         assertEquals(testAlert.getId(), alert.getId());
         assertEquals(testAlert.getUserName(), "smartId1");
         testAlert.setIndicatorsNum(100);

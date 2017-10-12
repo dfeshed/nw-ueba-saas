@@ -26,14 +26,8 @@ public abstract class AbstractElasticDocument {
 
     public AbstractElasticDocument(String id, Date createdDate, Date updatedDate) {
         this.id = id;
-        if (this.createdDate == null) {
-            Date date = new Date();
-            this.createdDate = createdDate;
-            this.updatedDate = date;
-        } else {
-            this.createdDate = createdDate;
-            this.updatedDate = updatedDate;
-        }
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
     }
 
     public AbstractElasticDocument() {

@@ -117,12 +117,15 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindOne() {
-        User user = user1;
+        User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
         userPersistencyService.save(user);
 
+        Date createdByBeforeFind = user.getCreatedBy();
         User foundUser = userPersistencyService.findUserById(user.getId());
+        Date createdByAfterFind = foundUser.getCreatedBy();
 
         assertNotNull(foundUser.getId());
+        assertEquals(createdByBeforeFind, createdByAfterFind);
         assertEquals(foundUser.getId(), user.getId());
         assertEquals(foundUser.getUserName(), user.getUserName());
         assertEquals(foundUser.getUserDisplayName(), user.getUserDisplayName());
