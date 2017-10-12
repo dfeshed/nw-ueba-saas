@@ -27,16 +27,10 @@ Router.map(function() {
 
   this.route('protected', { path: '/' }, function() {
     this.route('monitor');
-
-    if (config.featureFlags['show-respond-route']) {
-      this.mount('respond');
-    }
-
-    if (config.featureFlags['show-investigate-route']) {
-      this.route('investigate', function() {
-        this.mount('investigate-events', { path: 'events' });
-      });
-    }
+    this.mount('respond');
+    this.route('investigate', function() {
+      this.mount('investigate-events', { path: 'events' });
+    });
   });
 
   this.route('not-found', { path: '/*path' });

@@ -24,10 +24,10 @@
 #     FULL: runs everything, tests, builds, RPM, fetch
 #     TEST: runs just the tests, no RPM
 #     RPM: runs everything, but does not copy RPM out of build
-# export FF_ON=11.1-enabled
+# export FF_ON=future
 #   Sets web application features to true. To set multiple features, comma-delimit
 #   feature names.
-# export FF_OFF=11.1-enabled
+# export FF_OFF=future
 #   Sets web application features to false. To set multiple features, comma-delimit
 #   feature names.
 

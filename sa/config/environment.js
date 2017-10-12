@@ -143,7 +143,6 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     // Tweak feature flags for production here
-    // ENV.featureFlags['show-respond-route'] = false;
     ENV.adminServerAvailable = true;
 
     ENV.i18n = {
