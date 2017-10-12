@@ -4,33 +4,33 @@
 }
 
 .rsa-chart-background {
-  fill: rsa-color(gray, darkest);
+  fill: text-color(primary, darkest);
 }
 
 .rsa-line-series {
   fill: none;
   stroke-width: 2;
   &.series-0 {
-    stroke: rsa-color(blue);
+    stroke: text-color(secondary);
   }
   &.series-1 {
-    stroke: rsa-color(blue, darker);
+    stroke: text-color(secondary, darker);
   }
 }
 
 .rsa-area-series {
   /*fill-opacity: 0.25;*/
   &.series-0 {
-    fill: rsa-color(blue);
+    fill: text-color(secondary);
   }
   &.series-1 {
-    fill: rsa-color(blue, darker);
+    fill: text-color(secondary, darker);
   }
 }
 
 .rsa-chart {
   .domain {
-    stroke: rsa-color(white);
+    stroke: text-color(neutral);
     shape-rendering: crispEdges;
   }
 
@@ -42,23 +42,23 @@
       text-anchor: end;
     }
     line {
-      stroke: rsa-color(white);
+      stroke: text-color(neutral);
     }
     text {
-      fill: rsa-color(white);
+      fill: text-color(neutral);
     }
   }
 }
 
 .points {
   circle {
-    fill: rsa-color(gray, darkest);
+    fill: text-color(primary, darkest);
     stroke-width: 2px;
   }
   &.series-0 circle {
-    stroke: rsa-color(blue);
+    stroke: text-color(secondary);
   }
   &.series-1 circle {
-    stroke: rsa-color(blue, darker);
+    stroke: text-color(secondary, darker);
   }
 }

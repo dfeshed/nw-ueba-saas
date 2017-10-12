@@ -1,5 +1,3 @@
-// sass-lint:disable no-color-hex
-
 .dark-theme {
   --opacity-opaque: 1;
   --opacity-nearly-opaque: .8;
@@ -23,7 +21,7 @@
   --text-color-primary-darker: 33,33,33; //#212121;
   --text-color-primary-dark: 66,66,66; //#424242;
   --text-color-primary-base: 117,117,117; //#757575;
-  --text-color-primary-light: #189,189,189; //#BDBDBD;
+  --text-color-primary-light: 189,189,189; //#BDBDBD;
   --text-color-primary-lighter: 238,238,238; //#EEEEEE;
   --text-color-primary-lightest: 250,250,250; //#FAFAFA;
 
@@ -63,7 +61,7 @@
   --background-color-primary-darker: 33,33,33; //#212121;
   --background-color-primary-dark: 66,66,66; //#424242;
   --background-color-primary-base: 117,117,117; //#757575;
-  --background-color-primary-light: #189,189,189; //#BDBDBD;
+  --background-color-primary-light: 189,189,189; //#BDBDBD;
   --background-color-primary-lighter: 238,238,238; //#EEEEEE;
   --background-color-primary-lightest: 250,250,250; //#FAFAFA;
 

@@ -1,10 +1,10 @@
 // sass-lint:disable no-universal-selectors
 
 .spec-member {
-  background-color: rsa-color(gray, darkest, $rsa-translucent);
-  border: 1px solid rsa-color(gray, darkest);
+  background-color: background-color(primary, darkest, translucent);
+  border: 1px solid border-color(primary, darkest);
   padding: rsa-whitespace();
-  color: rsa-color(gray, lighter);
+  color: text-color(primary, lighter);
   margin-bottom: rsa-whitespace();
 
   &:last-child {
@@ -18,8 +18,8 @@
     margin-right: calc(#{rsa-whitespace()} * -1);
     margin-bottom: rsa-whitespace();
     padding: rsa-whitespace(less) rsa-whitespace();
-    background-color: rsa-color(black);
-    color: rsa-color(white);
+    background-color: background-color(neutral, dark);
+    color: text-color(neutral);
 
     > .title {
       margin-bottom: rsa-whitespace(least);
@@ -29,7 +29,7 @@
     > .subtitle {
       @include rsa-font(paragraph, small);
       margin-bottom: rsa-whitespace();
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
   }
 
@@ -45,12 +45,12 @@
     code {
       width: 100%;
       margin: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
-      border-left: rsa-whitespace(least) solid rsa-color(gray);
+      border-left: rsa-whitespace(least) solid border-color(primary);
       padding-left: rsa-whitespace();
       background-color: transparent;
 
       * {
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
         @include rsa-font-code();
       }
 

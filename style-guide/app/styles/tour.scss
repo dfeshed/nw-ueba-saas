@@ -11,12 +11,12 @@
 
     h2 {
       text-align: center;
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
       @include rsa-font(header, small);
     }
 
     img {
-      border: 1px solid rsa-color(black);
+      border: 1px solid border-color(neutral, dark);
       margin: rsa-whitespace() auto 0;
       display: block;
       max-width: calc(100% - 4rem);
@@ -37,7 +37,7 @@
   right: 0;
   height: 2rem;
   padding: rsa-whitespace(less);
-  background: rsa-color(gray, darkest);
+  background: background-color(primary, darkest);
   @include rsa-layer(controls);
   justify-content: center;
 
@@ -53,16 +53,16 @@
 
     .rsa-icon {
       margin-right: rsa-whitespace();
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
 
       &:hover:not(.disabled):not(.swiper-button-disabled) {
         cursor: pointer;
-        color: rsa-color(blue);
+        color: text-color(secondary);
       }
 
       &.disabled,
       &.swiper-button-disabled {
-        color: rsa-color(gray);
+        color: text-color(primary);
       }
     }
   }

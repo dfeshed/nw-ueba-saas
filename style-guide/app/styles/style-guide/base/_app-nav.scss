@@ -1,11 +1,11 @@
 .app-nav {
-  background: rsa-color(gray, darkest, $rsa-translucent);
+  background: background-color(primary, darkest, translucent);
   padding: rsa-whitespace();
 
   header {
     .rsa-logo {
       h2 {
-        color: rsa-color(white);
+        color: text-color(neutral);
       }
     }
   }

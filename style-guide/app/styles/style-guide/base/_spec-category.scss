@@ -10,18 +10,18 @@
     > .title {
       @include rsa-font(header, large);
       margin-bottom: rsa-whitespace(less);
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
 
     > .subtitle {
       @include rsa-font(paragraph, small);
       margin-bottom: rsa-whitespace();
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
 
     > .description {
       @include rsa-font(paragraph);
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
   }
 

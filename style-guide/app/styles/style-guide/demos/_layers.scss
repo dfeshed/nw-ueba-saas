@@ -4,46 +4,46 @@
 
   &.below {
     @include rsa-layer(below);
-    background-color: rsa-color(red);
+    background-color: background-color(accentOne);
   }
 
   &.base {
     @include rsa-layer(base);
-    background-color: rsa-color(gray, darkest);
+    background-color: background-color(primary, darkest);
   }
 
   &.panels {
     @include rsa-layer(panels);
-    background-color: rsa-color(gray, darker);
+    background-color: background-color(primary, darker);
   }
 
   &.controls {
     @include rsa-layer(controls);
-    background-color: rsa-color(gray, dark);
+    background-color: background-color(primary, dark);
   }
 
   &.overlay {
     @include rsa-layer(overlay);
-    background-color: rsa-color(gray);
-    color: rsa-color(black);
+    background-color: background-color(primary);
+    color: text-color(neutral, dark);
   }
 
   &.modals {
     @include rsa-layer(modals);
-    background-color: rsa-color(gray, light);
-    color: rsa-color(black);
+    background-color: background-color(primary, light);
+    color: text-color(neutral, dark);
   }
 
   &.tooltips {
     @include rsa-layer(tooltips);
-    background-color: rsa-color(gray, lighter);
-    color: rsa-color(black);
+    background-color: background-color(primary, lighter);
+    color: text-color(neutral, dark);
   }
 
   &.above {
     @include rsa-layer(above);
-    background-color: rsa-color(green);
-    color: rsa-color(black);
+    background-color: background-color(accentTwo);
+    color: text-color(neutral, dark);
   }
 
 }

@@ -1,15 +1,15 @@
 .color-swatch {
   display: block;
-  background-color: rsa-color(white);
-  border: 1px solid rsa-color(black);  
+  background-color: background-color(neutral);
+  border: 1px solid border-color(neutral, dark);
   margin-bottom: rsa-whitespace();
-  background-color: rsa-color(gray, darker, $rsa-nearly-transparent);
-  color: rsa-color(gray, lighter);
-  
+  background-color: background-color(primary, darker, nearly-transparent);
+  color: text-color(primary, lighter);
+
   &:last-child {
-    margin-bottom: 0;  
+    margin-bottom: 0;
   }
-  
+
   h2 {
     @include rsa-font(header, small);
   }
@@ -17,9 +17,9 @@
   .preview {
     height: 5rem;
   }
-  
+
   section {
-    background: rsa-color(black);
+    background-color: background-color(neutral, dark);
     padding: rsa-whitespace();
   }
 }
@@ -33,44 +33,44 @@ Then for each list color, generate a mixin who name is variable
 Similarly, a correpsonding mixin "<colorname>-fg") sets color: that variable.
 */
 
-.rsa-bg-white     { background-color: rsa-color(white); }
+.rsa-bg-white     { background-color: background-color(neutral); }
 
-.rsa-bg-black     { background-color: rsa-color(black); }
+.rsa-bg-black     { background-color: background-color(neutral, dark); }
 
-.rsa-bg-gray-darkest   { background-color: rsa-color(gray, darkest); }
-.rsa-bg-gray-darker   { background-color: rsa-color(gray, darker); }
-.rsa-bg-gray-dark   { background-color: rsa-color(gray, dark); }
-.rsa-bg-gray      { background-color: rsa-color(gray); }
-.rsa-bg-gray-light   { background-color: rsa-color(gray, light); }
-.rsa-bg-gray-lighter   { background-color: rsa-color(gray, lighter); }
-.rsa-bg-gray-lightest   { background-color: rsa-color(gray, lightest); }
+.rsa-bg-gray-darkest   { background-color: background-color(primary, darkest); }
+.rsa-bg-gray-darker   { background-color: background-color(primary, darker); }
+.rsa-bg-gray-dark   { background-color: background-color(primary, dark); }
+.rsa-bg-gray      { background-color: background-color(primary); }
+.rsa-bg-gray-light   { background-color: background-color(primary, light); }
+.rsa-bg-gray-lighter   { background-color: background-color(primary, lighter); }
+.rsa-bg-gray-lightest   { background-color: background-color(primary, lightest); }
 
-.rsa-bg-blue-darker   { background-color: rsa-color(blue, darker); }
-.rsa-bg-blue-dark   { background-color: rsa-color(blue, dark); }
-.rsa-bg-blue      { background-color: rsa-color(blue); }
-.rsa-bg-blue-light   { background-color: rsa-color(blue, light); }
-.rsa-bg-blue-lighter   { background-color: rsa-color(blue, lighter); }
+.rsa-bg-blue-darker   { background-color: background-color(secondary, darker); }
+.rsa-bg-blue-dark   { background-color: background-color(secondary, dark); }
+.rsa-bg-blue      { background-color: background-color(secondary); }
+.rsa-bg-blue-light   { background-color: background-color(secondary, light); }
+.rsa-bg-blue-lighter   { background-color: background-color(secondary, lighter); }
 
-.rsa-bg-green-darker  { background-color: rsa-color(green, darker); }
-.rsa-bg-green-dark  { background-color: rsa-color(green, dark); }
-.rsa-bg-green     { background-color: rsa-color(green); }
-.rsa-bg-green-light  { background-color: rsa-color(green, light); }
-.rsa-bg-green-lighter  { background-color: rsa-color(green, lighter); }
+.rsa-bg-green-darker  { background-color: background-color(accentTwo, darker); }
+.rsa-bg-green-dark  { background-color: background-color(accentTwo, dark); }
+.rsa-bg-green     { background-color: background-color(accentTwo); }
+.rsa-bg-green-light  { background-color: background-color(accentTwo, light); }
+.rsa-bg-green-lighter  { background-color: background-color(accentTwo, lighter); }
 
-.rsa-bg-red-darker    { background-color: rsa-color(red, darker); }
-.rsa-bg-red-dark    { background-color: rsa-color(red, dark); }
-.rsa-bg-red       { background-color: rsa-color(red); }
-.rsa-bg-red-light    { background-color: rsa-color(red, light); }
-.rsa-bg-red-lighter    { background-color: rsa-color(red, lighter); }
+.rsa-bg-red-darker    { background-color: background-color(accentOne, darker); }
+.rsa-bg-red-dark    { background-color: background-color(accentOne, dark); }
+.rsa-bg-red       { background-color: background-color(accentOne); }
+.rsa-bg-red-light    { background-color: background-color(accentOne, light); }
+.rsa-bg-red-lighter    { background-color: background-color(accentOne, lighter); }
 
-.rsa-bg-orange-darker { background-color: rsa-color(orange, darker); }
-.rsa-bg-orange-dark { background-color: rsa-color(orange, dark); }
-.rsa-bg-orange    { background-color: rsa-color(orange); }
-.rsa-bg-orange-light { background-color: rsa-color(orange, light); }
-.rsa-bg-orange-lighter { background-color: rsa-color(orange, lighter); }
+.rsa-bg-orange-darker { background-color: background-color(accentThree, darker); }
+.rsa-bg-orange-dark { background-color: background-color(accentThree, dark); }
+.rsa-bg-orange    { background-color: background-color(accentThree); }
+.rsa-bg-orange-light { background-color: background-color(accentThree, light); }
+.rsa-bg-orange-lighter { background-color: background-color(accentThree, lighter); }
 
-.rsa-bg-amber-darker  { background-color: rsa-color(amber, darker); }
-.rsa-bg-amber-dark  { background-color: rsa-color(amber, dark); }
-.rsa-bg-amber     { background-color: rsa-color(amber); }
-.rsa-bg-amber-light  { background-color: rsa-color(amber, light); }
-.rsa-bg-amber-lighter  { background-color: rsa-color(amber, lighter); }
+.rsa-bg-amber-darker  { background-color: background-color(accentFour, darker); }
+.rsa-bg-amber-dark  { background-color: background-color(accentFour, dark); }
+.rsa-bg-amber     { background-color: background-color(accentFour); }
+.rsa-bg-amber-light  { background-color: background-color(accentFour, light); }
+.rsa-bg-amber-lighter  { background-color: background-color(accentFour, lighter); }

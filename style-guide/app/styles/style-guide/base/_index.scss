@@ -10,7 +10,7 @@
   }
 
   h3 {
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
     @include rsa-font(header);
     display: block;
     width: 20rem;
@@ -21,7 +21,7 @@
 
   .click-to-copy {
     margin-bottom: rsa-whitespace(most);
-    color: rsa-color(blue);
+    color: text-color(secondary);
     @include rsa-font(paragraph);
     width: 25rem;
     position: relative;
@@ -31,7 +31,7 @@
   }
 
   li {
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
     @include rsa-font(paragraph);
   }
 

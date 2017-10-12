@@ -2,34 +2,34 @@
   padding: rsa-whitespace();
   width: 100%;
   box-sizing: border-box;
-  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  background-color: background-color(primary, darkest, nearly-opaque);
 
   .spec-notes {
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
     margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
   }
-    
+
   > h2 {
     @include rsa-font(header, larger);
     margin-bottom: rsa-whitespace(less);
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
   }
 
   > .subtitle {
     @include rsa-font(paragraph, small);
     margin-bottom: rsa-whitespace();
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
   }
 
   > .description {
     @include rsa-font(paragraph);
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
   }
 
 
   > h3 {
     display: inline-block;
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
   }
 
   > ul {
@@ -42,7 +42,7 @@
 
       > a {
         text-decoration: none;
-        color: rsa-color(white);
+        color: text-color(neutral);
       }
     }
   }

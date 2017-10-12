@@ -1,6 +1,6 @@
 .table-of-contents {
   @include rsa-font(body, large);
-  color: rsa-color(gray, lighter);
+  color: text-color(primary, lighter);
   list-style: decimal;
   margin-left: rsa-whitespace(more);
   li {
@@ -10,6 +10,6 @@
 
 .toc-header {
   @include rsa-font(header, large);
-  color: rsa-color(white);
+  color: text-color(neutral);
   margin: rsa-whitespace();
 }
