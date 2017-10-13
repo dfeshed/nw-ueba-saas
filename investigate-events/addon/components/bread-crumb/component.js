@@ -10,7 +10,6 @@ import {
   selectedService,
   servicesWithURI
 } from 'investigate-events/reducers/investigate/services/selectors';
-import { submitQuery } from 'investigate-events/actions/navigation-creators';
 import $ from 'jquery';
 
 const stateToComputed = ({ investigate }) => {
@@ -26,8 +25,6 @@ const stateToComputed = ({ investigate }) => {
     queryString: investigate.queryNode.queryString
   };
 };
-
-const dispatchToActions = { submitQuery };
 
 const BreadCrumbComponent = Component.extend({
   dateFormat: service(),
@@ -151,12 +148,12 @@ const BreadCrumbComponent = Component.extend({
       });
     },
 
+    // TODO: this toggles isAddingMeta when submitting query
+    // why? not sure, come back to this
     submit() {
-      this.send('submitQuery');
-      // Cleanup
       this.toggleProperty('isAddingMeta');
     }
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(BreadCrumbComponent);
+export default connect(stateToComputed)(BreadCrumbComponent);

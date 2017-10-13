@@ -24,10 +24,11 @@
 
 {{query-input class='rsa-investigate-query-bar__query-input'}}
 
-{{#rsa-form-button
-  class='rsa-investigate-query-bar__submit'
-  click=(action 'submit')
-  isDisabled=(not hasRequiredValuesToQuery)
-  style='primary'}}
-  <span class='js-test-investigate-query-bar__submit'>Query Events</span>
-{{/rsa-form-button}}
+{{#search-link disabled=(not hasRequiredValuesToQuery)}}
+  {{#rsa-form-button
+    class='rsa-investigate-query-bar__submit'
+    isDisabled=(not hasRequiredValuesToQuery)
+    style='primary'}}
+    <span class='js-test-investigate-query-bar__submit'>Query Events</span>
+  {{/rsa-form-button}}
+{{/search-link}}

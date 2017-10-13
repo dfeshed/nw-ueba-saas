@@ -1,6 +1,6 @@
 <article class="rsa-investigate-query">
   <header class="rsa-investigate-query__header">
-    {{bread-crumb submitQuery=(route-action 'submitQuery')}}
+    {{bread-crumb}}
 
     {{#if (is-equal model.queryNode.value.results.events.status 'error')}}
       {{#rsa-panel-message messageType='query-error'}}

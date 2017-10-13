@@ -113,14 +113,15 @@
       class='rsa-investigate-breadcrumb__query-input'
       placeholder='Enter Value'
     }}
-    {{#rsa-form-button
-      class='rsa-investigate-breadcrumb__submit'
-      style='primary'
-      isDisabled=isInvalidQuery
-      click=(action 'submit')
-    }}
-      Query Events
-    {{/rsa-form-button}}
+    {{#search-link disabled=isInvalidQuery}}
+      {{#rsa-form-button
+        class='rsa-investigate-breadcrumb__submit'
+        style='primary'
+        isDisabled=isInvalidQuery
+      }}
+        Query Events
+      {{/rsa-form-button}}
+    {{/search-link}}
   {{else}}
     {{#rsa-form-button
       class='rsa-investigate-breadcrumb__more'

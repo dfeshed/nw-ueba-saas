@@ -3,7 +3,6 @@ import { connect } from 'ember-redux';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { initializeServices } from 'investigate-events/actions/data-creators';
-import { submitQuery } from 'investigate-events/actions/navigation-creators';
 
 const stateToComputed = ({ investigate }) => ({
   services: investigate.services.data,
@@ -11,7 +10,9 @@ const stateToComputed = ({ investigate }) => ({
   isErrorServices: investigate.services.isError
 });
 
-const dispatchToActions = { initializeServices, submitQuery };
+const dispatchToActions = {
+  initializeServices
+};
 
 const EventsContainer = Component.extend({
   classNames: ['events-container'],

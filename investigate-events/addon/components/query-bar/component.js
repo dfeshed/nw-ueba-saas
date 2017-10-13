@@ -16,10 +16,6 @@ const stateToComputed = ({ investigate }) => ({
 
 const dispatchToActions = { setQueryTimeRange, setServiceId };
 
-const {
-  warn
-} = console;
-
 const TIME_RANGES = [
   { id: 'LAST_5_MINUTES', name: 'Last 5 Minutes', seconds: 5 * 60 },
   { id: 'LAST_10_MINUTES', name: 'Last 10 Minutes', seconds: 10 * 60 },
@@ -37,13 +33,6 @@ const TIME_RANGES = [
 
 const QueryBarComponent = Component.extend({
   classNames: 'rsa-investigate-query-bar',
-
-  /**
-   * Configurable callback to be invoked when user submits the query.
-   * @type {function}
-   * @public
-   */
-  onSubmit: undefined,
 
   /**
    * Array of available time ranges for user to pick from.
@@ -70,21 +59,6 @@ const QueryBarComponent = Component.extend({
   hasRequiredValuesToQuery: false,
 
   actions: {
-    submit() {
-      if (this.get('hasRequiredValuesToQuery')) {
-        const fn = this.get('onSubmit');
-        if (fn instanceof Function) {
-          const serviceId = this.get('serviceId');
-          const startTime = this.get('startTime');
-          const endTime = this.get('endTime');
-          const queryString = this.get('queryString');
-          fn(serviceId, startTime, endTime, queryString);
-        } else {
-          warn('Invalid onSubmit action defined for query-bar.');
-        }
-      }
-    },
-
     updateService(selectedService) {
       this.set('selectedService', selectedService);
       this.send('setServiceId', selectedService.id);
