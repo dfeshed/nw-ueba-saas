@@ -194,13 +194,12 @@ IncidentsAPI.reopenClass({
 
   /**
    * Executes a websocket promise request to add a given list of alerts to a given incident ID.
-   * @param {object[]} alerts The alert POJOs to be added to the incident.
+   * @param {[]} alertIds The alertIds for the alerts to be added to the incident.
    * @param {string} incidentId The ID of the incident to be added to.
-   * @param {number} incidentCreated The incident's created timestamp. Required by server API for some odd reason.
    * @returns {Promise}
    * @public
    */
-  addAlertsToIncident(alerts, incidentId) {
+  addAlertsToIncident(alertIds, incidentId) {
     return promiseRequest({
       method: 'updateRecord',
       modelName: 'alerts-associated',
@@ -210,27 +209,9 @@ IncidentsAPI.reopenClass({
           entity: {
             id: incidentId
           },
-          // associated = array of POJOs with alert IDs
-          associated: alerts.map((alert) => ({
-            // if the alerts array is an array of string, use the string as ID, otherwise expect each alert to be
-            // an object and pull from there. Note: Respond Server team is reworking the service interface. This
-            // will be reworked/simplified afterwards (cf ASOC-42078)
-            id: typeof alert === 'string' ? alert : alert.id
-          }))
+          associated: alertIds
         }
       }
-    }).then((response) => {
-
-      // response does not include the updated alert POJOs,
-      // so set response.data = the same inputted alert POJOs,
-      // but with their `partOfIncident` & `incidentId` props updated.
-      response.data = alerts.map((alert) => ({
-        ...alert,
-        partOfIncident: true,
-        incidentId
-      }));
-
-      return response;
     });
   },
 
@@ -262,7 +243,7 @@ IncidentsAPI.reopenClass({
       query: {
         data: {
           entity: { name },
-          associated: alertIds.map((id) => ({ id }))
+          associated: alertIds
         }
       }
     });

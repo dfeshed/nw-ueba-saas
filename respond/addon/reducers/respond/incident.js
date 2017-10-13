@@ -444,21 +444,30 @@ const incident = reduxActions.handleActions({
     handle(state, action, {
       start: (s) => s.set('addRelatedIndicatorsStatus', 'wait'),
       success: (s) => {
-        // Append indicators from payload into storyline
-        const { payload: { data: updatedIndicators } } = action;
+        const { payload: { data: addedIndicatorIds, request: { data: { entity: { id } } } } } = action;
+        const { searchResults } = s;
+        const updatedIndicators = [];
+
+        // Update any indicators in searchResults that match the indicators in payload
+        const searchResultsUpdated = searchResults.map((indicator) => {
+          if (addedIndicatorIds.includes(indicator.id)) {
+            // For the indicator(s) added to the incident, ensure they have the updated properties
+            const updatedIndicator = indicator.merge({
+              partOfIncident: true,
+              incidentId: id
+            });
+            // Track all updated indicators so they can be added to the storyline
+            updatedIndicators.push(updatedIndicator);
+            return updatedIndicator;
+          }
+          return indicator;
+        });
+
+        // Append updated indicators to storyline
         const storyline = s.storyline || [];
         const storylineUpdated = updatedIndicators ?
           [ ...storyline, ...updatedIndicators ] :
           s.storyline;
-
-        // Update any indicators in searchResults that match the indicators in payload
-        const { searchResults } = s;
-        const searchResultsUpdated = (searchResults && updatedIndicators) ?
-          searchResults.map((indicator) => {
-            const found = updatedIndicators.findBy('id', indicator.id);
-            return found || indicator;
-          }) :
-          searchResults;
 
         return s.merge({
           storyline: storylineUpdated,

@@ -144,51 +144,34 @@ test('When SEARCH_RELATED_INDICATORS_ERROR, the search status & stop function st
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('When ADD_RELATED_INDICATORS succeeds, the alerts in the payload are added to the storyline', function(assert) {
-  const alert1 = { id: 1, alert: { name: 'Alert1' }, partOfIncident: true, incidentId: 'INC-101' };
-  const alert2 = { id: 2, alert: { name: 'Alert2' }, partOfIncident: true, incidentId: 'INC-101' };
-  const alert3 = { id: 3, alert: { name: 'Alert3' }, partOfIncident: true, incidentId: 'INC-101' };
-  const initStoryline = [ alert1 ];
-  const payload = { code: 0, data: [ alert2, alert3 ] };
-  const expectedEndStoryline = initStoryline.concat(payload.data);
+test('The ADD_RELATED_INDICATORS action properly modifies the app state', function(assert) {
+  const searchResult = Immutable.from({ id: '586ecf95ecd25950034e1314', receivedTime: 1483657109645 });
+  const endStateIndicatorToAdd = searchResult.asMutable();
+  endStateIndicatorToAdd.partOfIncident = true;
+  endStateIndicatorToAdd.incidentId = 'INC-123';
 
-  const initState = {
-    ...initialState,
-    storyline: initStoryline
-  };
-  const expectedEndState = {
-    ...initState,
-    storyline: expectedEndStoryline,
-    addRelatedIndicatorsStatus: 'success'
-  };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RELATED_INDICATORS, payload });
-  const endState = incidentReducer(Immutable.from(initState), action);
-  assert.deepEqual(endState, expectedEndState);
-});
-
-test('When ADD_RELATED_INDICATORS succeeds, the added alerts are updated in searchResults, if found there', function(assert) {
-  const alert1 = { id: 1, alert: { name: 'Alert1' } };
-  const alert2 = { id: 2, alert: { name: 'Alert2' } };
-  const alert1Updated = { id: 1, alert: { name: 'Alert1' }, partOfIncident: true, incidentId: 'INC-101' };
-  const initStoryline = null;
-  const initSearchResults = [ alert1, alert2 ];
-  const payload = { code: 0, data: [ alert1Updated ] };
-  const expectedEndStoryline = [ alert1Updated ];
-  const expectedEndSearchResults = [ alert1Updated, alert2 ];
-
-  const initState = {
-    ...initialState,
-    storyline: initStoryline,
-    searchResults: initSearchResults
-  };
+  const initState = initialState.asMutable();
+  initState.storyline = [
+    { id: '586ecf95ecd25950034e1312', receivedTime: 1483657109643 },
+    { id: '586ecf95ecd25950034e1313', receivedTime: 1483657109644 }
+  ];
+  initState.searchResults = [searchResult];
 
   const expectedEndState = {
-    ...initState,
-    storyline: expectedEndStoryline,
-    searchResults: expectedEndSearchResults,
+    ...initialState,
+    storyline: [...initState.storyline, endStateIndicatorToAdd],
+    searchResults: [endStateIndicatorToAdd],
     addRelatedIndicatorsStatus: 'success'
   };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RELATED_INDICATORS, payload });
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.ADD_RELATED_INDICATORS,
+    payload: {
+      data: ['586ecf95ecd25950034e1314'],
+      request: { data: { entity: { id: 'INC-123' } } }
+    }
+  });
+
   const endState = incidentReducer(Immutable.from(initState), action);
   assert.deepEqual(endState, expectedEndState);
 });

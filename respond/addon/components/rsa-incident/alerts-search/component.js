@@ -56,12 +56,10 @@ const dispatchToActions = (dispatch) => ({
   },
   addToIncident(indicator) {
     const incidentId = this.get('incidentId');
-    const created = this.get('incidentInfo.created');
     dispatch(
       addRelatedIndicatorsToIncident(
-        [ indicator ],
+        [ indicator.id ],
         incidentId,
-        created,
         {
           onSuccess: () => {
             // Kick off the loading of the events for these newly added indicators.

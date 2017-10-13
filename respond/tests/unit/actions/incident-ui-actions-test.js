@@ -12,7 +12,6 @@ const initialState = Immutable.from({
   defaultSearchTimeFrameName: null,
   defaultSearchEntityType: null
 });
-
 module('Unit | Utility | Incident UI Actions - Reducers');
 
 test('The SET_VIEW_MODE action properly modifies the viewMode app state property', function(assert) {

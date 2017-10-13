@@ -61,9 +61,8 @@ const alertsReducers = reduxActions.handleActions({
   },
   [ACTION_TYPES.CREATE_INCIDENT]: (state, action) => {
     const { payload: { data: { id }, request: { data: { associated } } } } = action;
-    const alertIds = associated.map((association) => (association.id));
     return state.set('items', state.items.map((alert) => { // Update the alerts (items) that now have an associated incident
-      if (alertIds.includes(alert.id)) {
+      if (associated.includes(alert.id)) {
         return { ...alert, incidentId: id, partOfIncident: true };
       }
       return alert;
@@ -72,10 +71,9 @@ const alertsReducers = reduxActions.handleActions({
   [ACTION_TYPES.ALERTS_ADD_TO_INCIDENT]: (state, action) => (
     handle(state, action, {
       success: (s) => {
-        const { payload: { request: { data: { entity: { id }, associated } } } } = action;
-        const alertIds = associated.map((association) => (association.id));
+        const { payload: { data, request: { data: { entity: { id } } } } } = action;
         return s.set('items', s.items.map((alert) => { // Update the alerts (items) that now have an associated incident
-          if (alertIds.includes(alert.id)) {
+          if (data.includes(alert.id)) {
             return { ...alert, incidentId: id, partOfIncident: true };
           }
           return alert;

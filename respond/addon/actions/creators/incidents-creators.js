@@ -410,17 +410,16 @@ const stopSearchRelatedIndicators = () => {
 
 /**
  * Adds a given list of indicators (alerts) to an incident with a given ID.
- * @param {Object[]} indicators Array of indicators to be added to an incident.
+ * @param {[]} indicatorIds Array of indicator IDs for the indicators to be added to an incident.
  * @param {String} incidentId ID of incident to which indicators will be added.
- * @param {Number} incidentCreated The incident's created timestamp.
  * @param callbacks Hash of functions to invoke after promise has succeeded or failed
  * @param callbacks.onSuccess {function} - The callback to be executed when the operation is successful (e.g., showing a flash notification)
  * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
  * @public
  */
-const addRelatedIndicatorsToIncident = (indicators, incidentId, callbacks) => ({
+const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => ({
   type: ACTION_TYPES.ADD_RELATED_INDICATORS,
-  promise: Incidents.addAlertsToIncident(indicators, incidentId),
+  promise: Incidents.addAlertsToIncident(indicatorIds, incidentId),
   meta: {
     onSuccess: (response) => {
       Logger.debug(ACTION_TYPES.ADD_RELATED_INDICATORS, response);

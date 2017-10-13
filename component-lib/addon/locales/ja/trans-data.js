@@ -613,7 +613,7 @@ export default {
           incidentCreated: 'ja_You successfully created the incident {{incidentId}} from the selected alerts. The incident\'s priority has been set to LOW by default.',
           incidentCreationFailed: 'ja_There was a problem creating an incident from the selected alerts',
           createIncidentInstruction: 'ja_An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.',
-          addAlertToIncidentSucceeded: 'ja_You successfully created the selected alerts to {{incidentId}}.',
+          addAlertToIncidentSucceeded: 'ja_You successfully added the selected alerts to {{incidentId}}.',
           addAlertToIncidentFailed: 'ja_There was a problem adding the selected alerts to this incident'
         },
         deselectAll: 'ja_Deselect all'
