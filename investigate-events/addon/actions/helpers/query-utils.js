@@ -391,17 +391,15 @@ function uriEncodeMetaFilterConditions(conditions = []) {
  * @returns {string}
  * @public
  */
-function _nwEncodeMetaFilterConditions(conditions = []/* , language */) {
+function _nwEncodeMetaFilterConditions(conditions = [], language) {
   return conditions
     .map((condition) => {
-      const { queryString, isKeyValuePair/* , key, value */ } = condition;
+      const { queryString, isKeyValuePair, key, value } = condition;
       if (isKeyValuePair) {
-        // GTB need language to do this
-        // const keyDefinition = language.findBy('metaName', key);
-        // const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
-        // const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
-        // return `${key}=${valueEncoded}`;
-        return 'a=b';
+        const keyDefinition = language.findBy('metaName', key);
+        const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
+        const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
+        return `${key}=${valueEncoded}`;
       } else {
         return queryString;
       }
