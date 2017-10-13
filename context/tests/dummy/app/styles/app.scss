@@ -10,8 +10,8 @@
 .ember-application > DIV:nth-child(4) {
  height: 100%;
     > grid {
-      height :100%;    
-    }    
+      height :100%;
+    }
 }
 
 page {
@@ -21,7 +21,7 @@ page {
 
 aside {
   padding: rsa-whitespace(more);
-  color: rsa-color(gray, light);
+  color: text-color(primary, light);
 
   p {
     margin-bottom: rsa-whitespace(less);

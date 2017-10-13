@@ -1,9 +1,9 @@
-$zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
+$zoneBorderColor: border-color(primary, darker, nearly-transparent);
 $filterPanelMinWidth: 200px;
 
 page.investigate-files-engine {
   min-height: 100vh;
-  color: rsa-color(gray, lightest);
+  color: text-color(primary, lightest);
 }
 
 .rsa-investigate-files {
@@ -31,7 +31,7 @@ page.investigate-files-engine {
   .filter-list__item {
     cursor: pointer;
     font-weight: 700;
-    color: rsa-color(gray);
+    color: text-color(primary);
     line-height: 30px;
     &.is-active {
       color: white;
@@ -80,8 +80,8 @@ page.investigate-files-engine {
   }
   .files-footer {
     max-height: 2rem;
-    background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
-    color: rsa-color(gray, lightest);
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
     border-top: 1px solid $zoneBorderColor;
   }
 
@@ -89,7 +89,7 @@ page.investigate-files-engine {
     padding: rsa-whitespace(less);
     font-size: 20px;
     width: 23px;
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     margin-right: rsa-whitespace(least);
     cursor: pointer;
   }
@@ -98,7 +98,7 @@ page.investigate-files-engine {
     height: 100%;
   }
   .rsa-data-table-header {
-    border-bottom: 1px solid rsa-color(gray, dark);
+    border-bottom: 1px solid border-color(primary, dark);
   }
   .rsa-data-table-header-cell {
     button {

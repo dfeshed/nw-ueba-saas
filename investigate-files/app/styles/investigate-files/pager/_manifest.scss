@@ -1,14 +1,14 @@
 .file-pager {
   @include rsa-font(body, small);
-  color: rsa-color(gray);
-  border-top: 1px solid rsa-color(gray, dark);
-  background-color: rsa-color(gray, darkest, $rsa-translucent);
+  color: text-color(primary);
+  border-top: 1px solid border-color(primary, dark);
+  background-color: background-color(primary, darkest, translucent);
   position: absolute;
   bottom: 0;
   width: 100%;
   height: rsa-whitespace(more);
   .lighter {
-    color: rsa-color(grey, lighter);
+    color: text-color(primary, lighter);
   }
 }
 

@@ -1,5 +1,5 @@
 .rsa-files-toolbar {
-  background-color: rsa-color(black);
+  background-color: background-color(neutral, dark);
   .selection-count {
     padding-right: rsa-whitespace();
   }
@@ -8,15 +8,15 @@
     padding: rsa-whitespace(less);
     font-size: 20px;
     width: 23px;
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     margin-right: rsa-whitespace(least);
     cursor: pointer;
   }
 
   &.more-filters-active {
     .more-filters-button {
-      color: rsa-color(green);
-      border-bottom: 2px solid rsa-color(green);
+      color: text-color(accentTwo);
+      border-bottom: 2px solid border-color(accentTwo);
     }
   }
 

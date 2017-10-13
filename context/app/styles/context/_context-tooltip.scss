@@ -2,7 +2,7 @@ $contextTooltipDatumWidth: 75px;
 $contextTooltipDatumPadding: 0px;
 
 .rsa-context-tooltip {
-  background-color: rsa-color(black);
+  background-color: background-color(neutral, dark);
   padding: rsa-whitespace(less);
   max-width: 5 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding);
 
@@ -27,13 +27,13 @@ $contextTooltipDatumPadding: 0px;
       @include rsa-font(header, small);
       white-space: nowrap;
       line-height: 1.35;
-      color: rsa-color(gray);
+      color: text-color(primary);
       padding: rsa-whitespace(least) 0;
     }
   }
 
   &__content {
-    border-right: 1px solid rsa-color(gray, dark);
+    border-right: 1px solid border-color(primary, dark);
     padding-right: rsa-whitespace(less);
 
     &-body {
@@ -59,7 +59,7 @@ $contextTooltipDatumPadding: 0px;
   .action {
     @include rsa-font(body, small);
     padding: rsa-whitespace(least) 0;
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     cursor: pointer;
 
     .icon {
@@ -87,12 +87,12 @@ $contextTooltipDatumPadding: 0px;
     border-bottom: 3px solid transparent;
 
     &:hover {
-      border-bottom-color: rsa-color(blue, light);
+      border-bottom-color: border-color(secondary, light);
     }
 
     .value {
       @include rsa-font(base, large, uppercase);
-      color: rsa-color(white);
+      color: text-color(neutral);
       text-overflow: ellipsis;
       overflow: hidden;
     }
@@ -104,7 +104,7 @@ $contextTooltipDatumPadding: 0px;
 
     .text {
       @include rsa-font(base, smaller, uppercase);
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
     }
 
     .subtext,
@@ -114,7 +114,7 @@ $contextTooltipDatumPadding: 0px;
       Temporarily hiding subtext pending UX review.
       @include rsa-font(light, smaller, uppercase);
       font-size: 75%;
-      color: rsa-color(gray);
+      color: text-color(primary);
       */
     }
 
@@ -123,7 +123,7 @@ $contextTooltipDatumPadding: 0px;
   &__error {
     text-align: center;
     padding: rsa-whitespace() 0;
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
     font-style: italic;
   }
 }

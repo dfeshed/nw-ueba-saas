@@ -5,8 +5,8 @@
   width: 0;
   right: 0;
   bottom: 0;
-  background-color: rsa-color(gray, darker);
-  border-top: 1px solid rsa-color(blue);
+  background-color: background-color(primary, darker);
+  border-top: 1px solid border-color(secondary);
   overflow: hidden;
   @include rsa-layer(panels);
 
@@ -19,7 +19,7 @@
     min-width: calc(100vw / 4);
     padding: rsa-whitespace();
     box-sizing: border-box;
-    background-color: rsa-color(gray, darkest);
+    background-color: background-color(primary, darkest);
 
     .controls {
       right: rsa-whitespace(less);

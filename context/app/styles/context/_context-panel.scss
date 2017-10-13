@@ -1,27 +1,27 @@
-$font-highlight-color: rsa-color(gray, lighter);
-$font-fade-color: rsa-color(gray, light);
-$panelBackgroundImage: radial-gradient(circle at 0px 25%, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%),
-radial-gradient(circle at 70% 0px, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%),
-radial-gradient(circle at 35% 65%, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%),
-radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray, dark, 0) 65%);
+$font-highlight-color: text-color(primary, lighter);
+$font-fade-color: text-color(primary, light);
+$panelBackgroundImage: radial-gradient(circle at 0px 25%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
+radial-gradient(circle at 70% 0px, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
+radial-gradient(circle at 35% 65%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
+radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%);
 
 .rsa-context-panel {
   @include rsa-vendor-prefix(flex-grow, 0);
   @include rsa-vendor-prefix(flex-shrink, 0);
   @include rsa-col(justify, fill);
   background-image: $panelBackgroundImage;
-  background-color: rsa-color(gray, darkest);
+  background-color: background-color(primary, darkest);
   height: 100%;
   display: flex;
   flex-direction: row;
   &__linkButton {
     text-decoration: none;
     padding: rsa-whitespace(less) rsa-whitespace();
-    border: 1px solid rsa-color(gray, light);
+    border: 1px solid border-color(primary, light);
     margin-left: rsa-whitespace(least);
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     &:hover {
-     border-color: rsa-color(white, lightest);
+     border-color: border-color(neutral);
     }
   }
   .rsa-nav-tab-group {
@@ -32,15 +32,15 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     padding: 5px;
     margin: 5px;
     font-size: 20px;
-    color: rsa-color(gray, dark);
+    color: text-color(primary, dark);
   }
   .rsa-nav-tab.is-active {
-    background-color: rsa-color(blue);
+    background-color: background-color(secondary);
   }
   &__tabs {
-    background: rsa-color(black, darker);
+    background: background-color(neutral, dark);
     &__enabled {
-      color: rsa-color(white, lightest);
+      color: text-color(neutral);
     }
     &__tooltip {
       padding: rsa-whitespace(less) rsa-whitespace();
@@ -52,8 +52,8 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     }
   }
   &__header {
-    background: rsa-color(black, darker);
-    color: rsa-color(white);
+    background: background-color(neutral, dark);
+    color: text-color(neutral);
     padding: rsa-whitespace(less) - rsa-whitespace(least);
     >hbox {
       height: 30px;
@@ -75,7 +75,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
   }
   &__error-text {
     @include rsa-font();
-    color: rsa-color(amber, light);
+    color: text-color(accentFour, light);
     text-align: center;
     align-items: center;
     padding: rsa-whitespace(least);
@@ -90,11 +90,11 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     @include rsa-vendor-prefix(flex-grow, 1);
     @include rsa-vendor-prefix(flex-shrink, 1);
     position: relative;
-    color: rsa-color(white);
+    color: text-color(neutral);
     position: relative;
     height: calc(100% - 100px);
     background-image: $panelBackgroundImage;
-    background-color: rsa-color(gray, darkest);
+    background-color: background-color(primary, darkest);
   }
   &__body_size {
     height: 100%
@@ -103,18 +103,18 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     @include rsa-vendor-prefix(flex-grow, 1);
     @include rsa-vendor-prefix(flex-shrink, 1);
     position: relative;
-    color: rsa-color(white);
+    color: text-color(neutral);
     position: relative;
     width: 100%;
     height: 100%;
     background-image: $panelBackgroundImage;
-    background-color: rsa-color(gray, darkest);
+    background-color: background-color(primary, darkest);
   }
   &__footer {
     height: 15px;
-    background-color: rsa-color(black, darker);
+    background-color: background-color(neutral, dark);
     padding: rsa-whitespace(less);
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, lighter);
     @include rsa-font(footer, small);
     display: flex;
     justify-content: space-between;
@@ -136,22 +136,22 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       height: calc(100% - 240px);
       display: flex;
       >div {
-        border: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+        border: 1px solid border-color(neutral, dark, nearly-transparent);
       }
     }
   }
   &__risk-badge {
     &__danger-risk {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
     &__high-risk {
-      color: rsa-color(orange);
+      color: text-color(accentThree);
     }
     &__medium-risk {
-      color: rsa-color(amber);
+      color: text-color(accentFour);
     }
     &__low-risk {
-      color: rsa-color(green);
+      color: text-color(accentTwo);
     }
   }
   &__data__header {
@@ -186,27 +186,27 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     &__risk-badge {
       max-width: 180px;
       svg circle {
-        stroke: rsa-color(red);
+        stroke: text-color(accentOne);
         stroke-width: 4;
       }
       .details .score {
-        color: rsa-color(orange);
+        color: text-color(accentThree);
       }
       &__default {
         padding: 1rem;
       }
     }
     .rsa-content-badge-score.is-danger .score {
-      color: rsa-color(red);
+      color: text-color(accentOne);
     }
     .rsa-content-badge-score.is-high .score {
-      color: rsa-color(orange);
+      color: text-color(accentThree);
     }
     .rsa-content-badge-score.is-medium .score {
-      color: rsa-color(amber);
+      color: text-color(accentFour);
     }
     .rsa-content-badge-score.is-low .score {
-      color: rsa-color(green);
+      color: text-color(accentTwo);
     }
     &__itemsContainer {
       position: relative
@@ -224,18 +224,18 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       right: -60%;
     }
     .link a {
-      color: rsa-color(blue, base);
+      color: text-color(secondary);
       display: block;
       text-decoration: none;
     }
     .link:hover {
       display: block;
       text-decoration: underline;
-      color: rsa-color(blue, base);
+      color: text-color(secondary);
     }
     &__heading-text {
       @include rsa-font(header, large);
-      color: rsa-color(gray, lighter);
+      color: text-color(primary, lighter);
       padding: rsa-whitespace(less);
     }
     &__heading-text>span {
@@ -248,7 +248,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       background: none!important;
       border: none;
       margin-left: 50%;
-      color: rsa-color(blue, base);
+      color: text-color(secondary);
       text-decoration: underline;
       cursor: pointer;
       @include rsa-font(default, small);
@@ -257,7 +257,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       padding-left: rsa-whitespace(base);
       padding-top: rsa-whitespace(less);
       padding-bottom: rsa-whitespace(less);
-      border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+      border-bottom: 1px solid border-color(neutral, dark, nearly-transparent);
       border-bottom-style: ridge;
     }
     &__host-details,
@@ -292,7 +292,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         justify-content: flex-start;
       }
       &__groupdata {
-        color: rsa-color(blue, base);
+        color: text-color(secondary);
       }
       &__field-value {
         padding-bottom: rsa-whitespace(least);
@@ -306,7 +306,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         @include rsa-font(header, larger);
         font-weight: 500;
         max-height: 60%;
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
         padding-left: rsa-whitespace();
       }
       &__badge-score {
@@ -376,7 +376,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     }
     &__related-entity-error {
       @include rsa-font();
-      color: rsa-color(amber, light);
+      color: text-color(accentFour, light);
       text-align: center;
       align-items: center;
       padding: rsa-whitespace(least);
@@ -391,7 +391,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
     &__emptychart {
       width: 100%;
       height: 130px;
-      background: rsa-color(gray, darkest);
+      background: background-color(primary, darkest);
       text-align: center;
       span {
         display: inline-block;
@@ -403,13 +403,13 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       padding: rsa-whitespace();
     }
     &__no-feedback-label {
-      color: rsa-color(amber, dark);
+      color: text-color(accentFour, dark);
     }
     &__heading {
       @include rsa-font(header, large);
-      color: rsa-color(gray, lighter);
+      color: text-color(primary, lighter);
       padding: rsa-whitespace();
-      border-top: 3px solid rsa-color(gray, darkest);
+      border-top: 3px solid border-color(primary, darkest);
     }
     &__heading>span {
       float: right;
@@ -422,8 +422,8 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       .rsa-area-series {
         stroke-width: 1;
         &.series-0 {
-          stroke: rsa-color(blue);
-          fill: rsa-color(blue, base, $rsa-somewhat-opaque);
+          stroke: text-color(secondary);
+          fill: text-color(secondary, base, somewhat-opaque);
         }
       }
     }
@@ -432,16 +432,16 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       .rsa-area-series {
         stroke-width: 1;
         &.series-0 {
-          stroke: rsa-color(red);
-          fill: rsa-color(red, base, $rsa-somewhat-opaque);
+          stroke: text-color(accentOne);
+          fill: text-color(accentOne, base, somewhat-opaque);
         }
         &.series-1 {
-          stroke: rsa-color(orange);
-          fill: rsa-color(orange, base, $rsa-somewhat-opaque);
+          stroke: text-color(accentThree);
+          fill: text-color(accentThree, base, somewhat-opaque);
         }
         &.series-2 {
-          stroke: rsa-color(amber, dark);
-          fill: rsa-color(amber, dark, $rsa-somewhat-opaque);
+          stroke: text-color(accentFour, dark);
+          fill: text-color(accentFour, dark, somewhat-opaque);
         }
       }
     }
@@ -462,7 +462,7 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
             shape-rendering: crispEdges;
             text-rendering: geometricPrecision;
             text-anchor: end;
-            fill: rsa-color(white);
+            fill: text-color(neutral);
           }
         }
       }
@@ -471,31 +471,31 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
         @include rsa-font(paragraph);
         &__seen {
           @include rsa-font(bold);
-          color: rsa-color(blue);
+          color: text-color(secondary);
         }
         &__submitted {
           @include rsa-font(bold);
-          color: rsa-color(orange);
+          color: text-color(accentThree);
         }
         &__high-risk {
           @include rsa-font(bold);
-          color: rsa-color(red, darker);
+          color: text-color(accentOne, darker);
         }
         &__unsafe {
           @include rsa-font(bold);
-          color: rsa-color(orange);
+          color: text-color(accentThree);
         }
         &__suspicious {
           @include rsa-font(bold);
-          color: rsa-color(amber, light);
+          color: text-color(accentFour, light);
         }
         &__safe {
           @include rsa-font(bold);
-          color: rsa-color(green);
+          color: text-color(accentTwo);
         }
         &__unknown {
           @include rsa-font(bold);
-          color: rsa-color(gray, light);
+          color: text-color(primary, light);
         }
       }
     }
@@ -517,42 +517,42 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       margin-left: 100px;
       &__unsafe {
         svg circle {
-          stroke: rsa-color(orange);
+          stroke: text-color(accentThree);
         }
         .details .score {
-          color: rsa-color(orange);
+          color: text-color(accentThree);
         }
       }
       &__safe {
         svg circle {
-          stroke: rsa-color(green);
+          stroke: text-color(accentTwo);
         }
         .details .score {
-          color: rsa-color(green);
+          color: text-color(accentTwo);
         }
       }
       &__suspicious {
         svg circle {
-          stroke: rsa-color(amber)
+          stroke: text-color(accentFour)
         }
         .details .score {
-          color: rsa-color(amber)
+          color: text-color(accentFour)
         }
       }
       &__high-risk {
         svg circle {
-          stroke: rsa-color(red);
+          stroke: text-color(accentOne);
         }
         .details .score {
-          color: rsa-color(red);
+          color: text-color(accentOne);
         }
       }
       &__unknown {
         svg circle {
-          stroke: rsa-color(gray, lightest);
+          stroke: text-color(primary, lightest);
         }
         .details .score {
-          color: rsa-color(gray, lightest);
+          color: text-color(primary, lightest);
         }
       }
     }
@@ -571,27 +571,27 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
       margin-top: rsa-whitespace();
       margin-left: rsa-whitespace();
       margin-bottom: rsa-whitespace();
-      background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+      background-color: background-color(primary, darkest, nearly-opaque);
       padding: rsa-whitespace();
     }
     &__risk-rating-unsafe {
-      color: rsa-color(red, darker);
+      color: text-color(accentOne, darker);
     }
     &__risk-rating-safe {
-      color: rsa-color(green);
+      color: text-color(accentTwo);
     }
     &__risk-rating-unknown {
-      color: rsa-color(amber, dark);
+      color: text-color(accentFour, dark);
     }
     &__entity-value {
-      color: rsa-color(blue);
+      color: text-color(secondary);
     }
     &__feedback {
       height: 175px;
       position: absolute;
       bottom: 1px;
       width: 100%;
-      background-color: rsa-color(gray, darker);
+      background-color: background-color(primary, darker);
       background-image: $panelBackgroundImage;
       .risk-level-col,
       .confidence-col {
@@ -612,11 +612,11 @@ radial-gradient(circle at 85% 85%, rsa-color(gray, darker, .1) 0, rsa-color(gray
 }
 
 .tab-active-background {
-  background-color: rsa-color(blue);
+  background-color: background-color(secondary);
 }
 
 .filter-icon {
   padding-top: rsa-whitespace();
   padding-left: rsa-whitespace(more);
-  color: rsa-color(gray, light)
+  color: text-color(primary, light)
 }

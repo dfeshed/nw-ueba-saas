@@ -21,7 +21,7 @@
     .rsa-protected {
       &__aside {
         width: 75%;
-        box-shadow: 0 0 rsa-whitespace() rsa-color(black, base, $rsa-nearly-opaque);
+        box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
       }
     }
   }
