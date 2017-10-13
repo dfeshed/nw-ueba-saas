@@ -1,17 +1,17 @@
 @import "./event-dropdowns";
 
 .recon-event-header {
-  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  background-color: background-color(primary, darkest, nearly-opaque);
 
   .divider {
-    border-left: 1px solid rsa-color(white);
+    border-left: 1px solid border-color(neutral);
     height: 1.5rem;
     margin: 5px;
   }
 
   .header-data {
-    border-top: 1px solid rsa-color(gray, dark);
-    background-color: rsa-color(gray, darkest, $rsa-transparent);
+    border-top: 1px solid border-color(primary, dark);
+    background-color: background-color(primary, darkest, transparent);
     padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
     .header-item {
       padding: rsa-whitespace(less);
@@ -19,13 +19,13 @@
 
       .name {
         @include rsa-font(header, small);
-        color: rsa-color(gray, light);
+        color: text-color(primary, light);
         padding-bottom: rsa-whitespace(least);
       }
 
       .value {
         @include rsa-font(body);
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
       }
     }
 
@@ -68,11 +68,11 @@
 
       .tview-heading {
         border-bottom: 3px solid transparent;
-        border-color: rsa-color(blue);
+        border-color: border-color(secondary);
         cursor:default;
         .tview-label {
           text-transform: capitalize;
-          color:rsa-color(gray, lightest);
+          color:text-color(primary, lightest);
           font-weight: 100;
           font-size: 1.28rem;
           letter-spacing: 0.05rem;
@@ -81,14 +81,14 @@
 
       .event-title {
         @include rsa-font(header, large);
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
         text-transform: capitalize;
         padding: .5rem 0 .36rem;
         border-bottom-width: 3px;
         &.seperator {
           padding: 0;
           margin: 0.5rem .3rem 0.5rem 1.1rem;
-          border: 0 solid rsa-color(gray);
+          border: 0 solid border-color(primary);
           border-right-width: .1rem;
         }
       }
@@ -96,24 +96,24 @@
 
     .header-toggle,
     .header-button {
-      color: rsa-color(gray);
+      color: text-color(primary);
       cursor: pointer;
       margin: 0 rsa-whitespace(least);
       padding: rsa-whitespace(less) rsa-whitespace(least);
       &:hover {
-        color: rsa-color(grey, lightest);
+        color: text-color(primary, lightest);
       }
       &.active:not(.disabled) {
-        color: rsa-color(gray, lightest);
+        color: text-color(primary, lightest);
       }
       &.disabled {
-        color: rsa-color(gray, dark);
+        color: text-color(primary, dark);
         cursor: default;
       }
     }
     .header-toggle {
       &.active:not(.disabled) {
-        border-bottom: rsa-color(blue) 3px solid;
+        border-bottom: border-color(secondary) 3px solid;
       }
     }
   }

@@ -55,14 +55,14 @@
 
     .points {
       circle {
-        fill: rsa-color(gray, darkest);
+        fill: text-color(primary, darkest);
         stroke-width: 1px;
       }
       &.series-0 circle {
-        stroke: rsa-color(blue);
+        stroke: text-color(secondary);
       }
       &.series-1 circle {
-        stroke: rsa-color(blue, darker);
+        stroke: text-color(secondary, darker);
       }
     }
   }
@@ -83,7 +83,7 @@
     text-align: center;
 
     a {
-      color: rsa-color(blue);
+      color: text-color(secondary);
       cursor: pointer;
       padding: 0 rsa-whitespace(less);
 
@@ -95,7 +95,7 @@
 
   &.wait .rsa-chart,
   &.rejected .rsa-chart {
-    opacity: $rsa-translucent;
+    opacity: opacity-value(translucent);
   }
 
   &:not(.is-expanded) .rsa-loader__text {

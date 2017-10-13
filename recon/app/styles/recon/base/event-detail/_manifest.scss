@@ -3,7 +3,7 @@
 @import "./text/manifest";
 
 .recon-request-response-header {
-  color: rsa-color(blue);
+  color: text-color(secondary);
   padding: 0.8rem 0 rsa-whitespace();
   &.response {
     text-align: right;
@@ -25,7 +25,7 @@
 .recon-event-content {
 
   .request {
-    background-color:rgb(34,41,45);
+    background-color: background-color(primary, darker);
   }
 
   .response {
@@ -47,7 +47,7 @@
     // Handles borders for text view
     // TODO, move packet view so this'll work for it as well
     > div {
-      border-top: 1px rsa-color(blue) solid;
+      border-top: 1px border-color(secondary) solid;
 
       &:first-of-type {
         border-top: none;

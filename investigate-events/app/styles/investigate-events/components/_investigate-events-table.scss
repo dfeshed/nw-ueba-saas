@@ -3,14 +3,14 @@
 
   &__header {
     @include rsa-vendor-prefix(flex-grow,0);
-    background-color: rsa-color(gray, darker);
-    border-bottom: 1px solid rsa-color(gray, dark);
+    background-color: background-color(primary, darker);
+    border-bottom: 1px solid border-color(primary, dark);
     align-items: baseline;
     justify-content: space-between;
     h2 {
       @include rsa-font(header, large);
       padding: rsa-whitespace();
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
 
       .rsa-investigate-events-table__sums {
         .rsa-investigate-event-counter__count {
@@ -29,19 +29,19 @@
     .events-table-control {
       display: inline-block;
       margin-right: 12px;
-      color: rsa-color(grey);
+      color: text-color(primary);
       .rsa-icon {
         cursor: pointer;
         margin: 0 rsa-whitespace(least);
         padding: 0 rsa-whitespace(least);
         &:hover {
-          color: rsa-color(grey, lightest);
+          color: text-color(primary, lightest);
         }
         &.active:not(.disabled) {
-          color: rsa-color(gray, lightest);
+          color: text-color(primary, lightest);
         }
         &.disabled {
-          color: rsa-color(gray, dark);
+          color: text-color(primary, dark);
           cursor: default;
         }
       }
@@ -70,7 +70,7 @@
     z-index: 1;
 
     &-header {
-      background-color: rsa-color(gray, darker);
+      background-color: background-color(primary, darker);
       /* @workaround Clear defaults that were introduced for Response UI. */
       margin: 0;
       padding: 0;
@@ -84,12 +84,12 @@
     &-body-cell {
       .meta-key-and-value {
         .key {
-          color: rsa-color(white, base, $rsa-translucent);
+          color: text-color(neutral, base, translucent);
           padding-right: rsa-whitespace();
 
           &::after {
             content: ':';
-            color: rsa-color(white,base,$rsa-translucent);
+            color: text-color(neutral,base,translucent);
           }
         }
       }
@@ -101,7 +101,7 @@
         .arrow {
           display: inline-block;
           padding: 0 rsa-whitespace(less);
-          color: rsa-color(white, base, $rsa-translucent);
+          color: text-color(neutral, base, translucent);
         }
       }
 
@@ -116,7 +116,7 @@
 
         .meta-key-value-pairs {
           .value {
-            color: rsa-color(grey, lightest);
+            color: text-color(primary, lightest);
             padding-left: rsa-whitespace(least);
           }
         }

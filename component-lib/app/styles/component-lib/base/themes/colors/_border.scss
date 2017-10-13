@@ -40,6 +40,16 @@ $border-colors: (
     lightest: var(--border-color-accent-two-lightest)
   ),
 
+  accentThree: (
+    darkest:  var(--border-color-accent-three-darkest),
+    darker:   var(--border-color-accent-three-darker),
+    dark:     var(--border-color-accent-three-dark),
+    base:     var(--border-color-accent-three-base),
+    light:    var(--border-color-accent-three-light),
+    lighter:  var(--border-color-accent-three-lighter),
+    lightest: var(--border-color-accent-three-lightest)
+  ),
+
   accentFour: (
     darkest:  var(--border-color-accent-four-darkest),
     darker:   var(--border-color-accent-four-darker),

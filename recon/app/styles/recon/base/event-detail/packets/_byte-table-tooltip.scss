@@ -1,6 +1,6 @@
 .rsa-byte-table-tooltip {
-  background-color: rsa-color(blue);
-  border: 1px solid rsa-color(blue);
+  background-color: background-color(secondary);
+  border: 1px solid border-color(secondary);
   box-shadow: 1px 1px 2px 0 $dark-box-shadow-color;
   display: none; /* to be set at run-time by javascript */
   min-width: 5rem;
@@ -13,18 +13,18 @@
   }
 
   &.is-signature {
-    background-color: rsa-color(orange);
-    border: 1px solid rsa-color(orange);
+    background-color: background-color(accentThree);
+    border: 1px solid border-color(accentThree);
     svg {
       line, polygon {
-        stroke: rsa-color(orange);
-        fill: rsa-color(orange);
+        stroke: text-color(accentThree);
+        fill: text-color(accentThree);
       }
     }
   }
 
   div {
-    color: rsa-color(gray, lightest);
+    color: text-color(primary, lightest);
 
     &.label {
       @include rsa-font(header, small);
@@ -40,12 +40,12 @@
     width: 14px;
 
     line {
-      stroke: rsa-color(blue);
+      stroke: text-color(secondary);
       stroke-width: 1;
     }
 
     polygon {
-      fill: rsa-color(blue);
+      fill: text-color(secondary);
     }
   }
 }

@@ -4,19 +4,19 @@
 
   &:hover {
     cursor: pointer;
-    color: rsa-color(gray, lightest);
-    background-color: rsa-color(blue);
+    color: text-color(primary, lightest);
+    background-color: background-color(secondary);
   }
 }
 
 .recon-tooltip.panel-content {
   &.standard {
-    border: 1px solid rsa-color(grey);
-    background-color: rsa-color(grey);
+    border: 1px solid border-color(primary);
+    background-color: background-color(primary);
     svg {
       line, polygon {
-        stroke: rsa-color(grey);
-        fill: rsa-color(grey);
+        stroke: text-color(primary);
+        fill: text-color(primary);
       }
     }
   }
@@ -51,13 +51,13 @@
 
 // Tweaks to persist the default text highlight color when going out of focus
 ::selection {  /* WebKit/Blink Browsers */
-  background: rsa-color(blue);
+  background: background-color(secondary);
 }
 ::-moz-selection { /* Gecko Browsers */
-  background: rsa-color(blue);
+  background: background-color(secondary);
 }
 .text-container {
   span {
-    background: rsa-color(blue);
+    background: background-color(secondary);
   }
 }

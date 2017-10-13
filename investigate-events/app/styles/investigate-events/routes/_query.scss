@@ -6,7 +6,7 @@ $investigateReconFullWidth: 100%;
   .rsa-investigate-query__body {
     &-master {
       right: $reconWidth;
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      background-color: background-color(neutral,dark,nearly-transparent);
     }
     &-slave {
       width: $reconWidth;
@@ -20,12 +20,12 @@ $investigateReconFullWidth: 100%;
   bottom: 0;
   left: 0;
   right: 0;
-  color: rsa-color(white);
+  color: text-color(neutral);
   @include rsa-col(justify,fill);
 
   &__header {
-    background-color: rsa-color(gray, darkest, $rsa-translucent);
-    border-bottom: 1px solid rsa-color(black);
+    background-color: background-color(primary,darkest,translucent);
+    border-bottom: 1px solid border-color(neutral, dark);
     @include rsa-vendor-prefix(flex-shrink, 1);
     padding: rsa-whitespace(least) rsa-whitespace();
     .rsa-investigate-breadcrumb {
@@ -94,7 +94,7 @@ $investigateReconFullWidth: 100%;
     }
     &-master-main {
       @include rsa-vendor-prefix(flex-grow,1);
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      background-color: background-color(neutral,dark,nearly-transparent);
     }
     &-master-aside {
       @include rsa-vendor-prefix(flex-shrink,0);
@@ -117,7 +117,7 @@ $investigateReconFullWidth: 100%;
       .rsa-investigate-query__body {
         &-master-aside {
           @include rsa-vendor-prefix(flex-basis,0);
-          background-color: rsa-color(black,base,$rsa-nearly-transparent);
+          background-color: background-color(neutral,dark,nearly-transparent);
           z-index: 1;
         }
         &-master-main {
@@ -151,41 +151,41 @@ $investigateReconFullWidth: 100%;
     bottom: 0;
     left: 0;
     right: 1px;
-    background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    background-color: background-color(neutral,dark,nearly-transparent);
 
     &__header {
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      background-color: background-color(neutral,dark,nearly-transparent);
     }
 
     .rsa-list-button {
-      color: rsa-color(white,base, $rsa-nearly-opaque);
+      color: text-color(neutral,base, nearly-opaque);
       &::after {
-        color: rsa-color(white,base, $rsa-nearly-transparent);
+        color: text-color(neutral,base, nearly-transparent);
       }
       &:hover {
-        color: rsa-color(white,base, $rsa-opaque);
+        color: text-color(neutral,base, opaque);
         &::after {
-          color: rsa-color(white,base, $rsa-translucent);
+          color: text-color(neutral,base, translucent);
         }
       }
     }
 
     &-key-values {
-      border-bottom: 1px solid rsa-color(gray, base, $rsa-nearly-transparent);
-      color: rsa-color(grey,lightest);
+      border-bottom: 1px solid border-color(primary, base, nearly-transparent);
+      color: text-color(primary,lightest);
       &:last-child {
         h2,
         .meta-size {
-          color: rsa-color(gray,light);
+          color: text-color(primary,light);
         }
       }
       &__value {
-        border: 1px solid rsa-color(white, base, $rsa-nearly-transparent);
+        border: 1px solid border-color(neutral, base, nearly-transparent);
         border-radius: 2px;
         &.selected,
         &:hover {
-          background-color: rsa-color(blue);
-          border-color: rsa-color(blue);
+          background-color: background-color(secondary);
+          border-color: border-color(secondary);
         }
       }
     }
@@ -208,7 +208,7 @@ $investigateReconFullWidth: 100%;
     .hover-data {
       height: 1.5rem;
       line-height: 2rem;
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      background-color: background-color(neutral,dark,nearly-transparent);
       position: absolute;
       top: 2.5rem;
       left: 0;
@@ -216,19 +216,19 @@ $investigateReconFullWidth: 100%;
       padding-left: 35px;
       @include rsa-font(light, small);
       .rsa-content-datetime {
-        color: rsa-color(grey,light);
+        color: text-color(primary,light);
       }
       // We'll need to create some sort of color service that can generate consistent
       // colors for multi-series data. For now, I'll just hardcode a few in. These
       // are the same colors from _rsa_chart.scss.
       .series-0 {
-        color: rsa-color(blue);
+        color: text-color(secondary);
       }
       .series-1 {
-        color: rsa-color(blue, darker);
+        color: text-color(secondary, darker);
       }
       .series-2 {
-        color: rsa-color(blue, darkest);
+        color: text-color(secondary, darkest);
       }
     }
 
@@ -236,7 +236,7 @@ $investigateReconFullWidth: 100%;
       position: absolute;
       right: 0;
       padding: 7px 9px;
-      background-color: rsa-color(black,base,$rsa-translucent);
+      background-color: background-color(neutral,dark,translucent);
     }
 
     .timestamp {
@@ -246,20 +246,20 @@ $investigateReconFullWidth: 100%;
       height: 1rem;
       padding: 0.75rem 0;
       text-align: center;
-      color: rsa-color(grey,light);
-      background-color: rsa-color(black,base,$rsa-translucent);
+      color: text-color(primary,light);
+      background-color: background-color(neutral,dark,translucent);
       &.right {
         right: 39px;
       }
       span {
         @include rsa-font();
-        color: white;
+        color: text-color(neutral);
       }
     }
 
     .rsa-chart {
       margin: 0;
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      background-color: background-color(neutral,dark,nearly-transparent);
       &.master {
         left: 185px;
         right: 224px;
@@ -271,7 +271,7 @@ $investigateReconFullWidth: 100%;
         right: 0;
         .domain,
         .tick line {
-          stroke: rsa-color(black,base,$rsa-translucent);
+          stroke: text-color(neutral, dark, translucent);
         }
         .tick text {
           stroke-width: 0;
@@ -289,7 +289,7 @@ $investigateReconFullWidth: 100%;
   }
 
   .recon-event-wrapper {
-    border-top: 1px solid rsa-color(blue);
+    border-top: 1px solid border-color(secondary);
     flex: 1 1 auto;
   }
 

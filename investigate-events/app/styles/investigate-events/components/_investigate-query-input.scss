@@ -1,14 +1,14 @@
 .rsa-investigate-query-input {
   @include rsa-row(left, middle);
-  border-bottom: 1px solid rsa-color(gray, light);
+  border-bottom: 1px solid border-color(primary, light);
   &:hover {
-    border-bottom-color: rsa-color(gray, lighter);
+    border-bottom-color: border-color(primary, lighter);
     .rsa-investigate-query-input__icon {
-      color: rsa-color(gray, lighter);
+      color: text-color(primary, lighter);
     }
   }
   &.has-value {
-    border-bottom-color: rsa-color(blue);
+    border-bottom-color: border-color(secondary);
   }
 
   &__input {
@@ -23,11 +23,11 @@
 
   &__icon,
   &__clear {
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
   }
   &__clear {
     &:hover {
-      color: rsa-color(gray, lighter);
+      color: text-color(primary, lighter);
     }
   }
 }

@@ -1,8 +1,8 @@
 .recon-pager {
   @include rsa-font(body, small);
-  color: rsa-color(gray);
-  border-top: 1px solid rsa-color(gray, dark);
-  background-color: rsa-color(gray, darkest, $rsa-translucent);
+  color: text-color(primary);
+  border-top: 1px solid border-color(primary, dark);
+  background-color: background-color(primary, darkest, translucent);
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -16,7 +16,7 @@
 
   .packet-info {
     .disclaimer {
-      color:rsa-color(orange);
+      color:text-color(accentThree);
 
       .darker {
         font-weight: bold;
@@ -35,12 +35,12 @@
   }
 
   .lighter {
-    color: rsa-color(grey, lighter);
+    color: text-color(primary, lighter);
   }
 }
 
 .data-pagination {
-  
+
   button {
     margin: 0 2px 0 2px;
     padding: 0.15em 0.15em !important;

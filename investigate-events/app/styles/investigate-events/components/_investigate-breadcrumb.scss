@@ -7,7 +7,7 @@
   }
 
   .disabled-meta-breadcrumb-title {
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
     @include rsa-font(header, large);
     margin-right: rsa-whitespace();
   }
@@ -24,11 +24,11 @@
       margin: 1px;
       padding: rsa-whitespace(less) rsa-whitespace();
       z-index: 2;
-      background-color: rsa-color(black, base, $rsa-transparent);
+      background-color: background-color(neutral, dark, transparent);
       color: $formButtonTypeColor;
 
       &:hover {
-        color: rsa-color(blue);
+        color: text-color(secondary);
       }
     }
 
@@ -37,11 +37,11 @@
       padding-left: rsa-whitespace(less) + rsa-whitespace(more);
       white-space: nowrap;
       margin-right: rsa-whitespace(least);
-      border: 1px solid rsa-color(gray)!important;
-      color: rsa-color(gray, light)!important;
+      border: 1px solid border-color(primary)!important;
+      color: text-color(primary, light)!important;
 
       .rsa-icon {
-        color: rsa-color(gray);
+        color: text-color(primary);
       }
     }
 

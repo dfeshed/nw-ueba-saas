@@ -2,7 +2,7 @@
   .meta-heading {
     @include rsa-font(header, small);
     font-size: 0.85rem;
-    color: rsa-color(blue);
+    color: text-color(secondary);
     padding: rsa-whitespace() rsa-whitespace() 1rem;
   }
 }
@@ -17,17 +17,17 @@
     }
   }
   &.is-hovering {
-    background-color: rsa-color(gray, darkest);
+    background-color: background-color(primary, darkest);
   }
   &.is-selected {
-    background-color: rsa-color(blue);
+    background-color: background-color(secondary);
     &, .meta-name {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
   }
   .meta-name {
     @include rsa-font(header, small);
-    color: rsa-color(gray, light);
+    color: text-color(primary, light);
     padding-right: rsa-whitespace();
   }
   .meta-value {

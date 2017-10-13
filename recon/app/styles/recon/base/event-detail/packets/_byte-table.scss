@@ -64,13 +64,13 @@ $packet-byte-border-width: 1px;
 
       &.header {
         background-color: $dark-packet-header-bg-color;
-        color: rsa-color(white);
+        color: text-color(neutral);
 
         &[data-is-hover="true"] {
           &.packet-field-value {
             span {
               background-color: $dark-packet-field-hover-bg-color;
-              color: rsa-color(black);
+              color: text-color(neutral, dark);
             }
           }
         }
@@ -118,7 +118,7 @@ $packet-byte-border-width: 1px;
 
       &.footer {
         background-color: $dark-packet-footer-bg-color;
-        color: rsa-color(white);
+        color: text-color(neutral);
       }
 
       &[data-is-selected="true"] {

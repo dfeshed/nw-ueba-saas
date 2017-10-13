@@ -17,7 +17,7 @@
   }
 
   .highlighted-meta {
-    background-color: rsa-color(blue);
-    color: rsa-color(gray, lightest);
+    background-color: background-color(secondary);
+    color: text-color(primary, lightest);
   }
 }

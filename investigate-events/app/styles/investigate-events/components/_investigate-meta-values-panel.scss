@@ -3,7 +3,7 @@
   &__empties {
     @include rsa-font(body,small);
     li {
-      color: rsa-color(gray);
+      color: text-color(primary);
       display: inline-block;
       padding: 0 rsa-whitespace(least) rsa-whitespace(less) 0;
       &::after {

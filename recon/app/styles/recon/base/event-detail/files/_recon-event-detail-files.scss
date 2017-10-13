@@ -14,7 +14,7 @@
   }
 
   .recon-file-link {
-    color: rsa-color(blue);
+    color: text-color(secondary);
     cursor: pointer;
 
     &:hover {
@@ -52,8 +52,8 @@
   }
 
   .download-warning {
-    background-color: rsa-color(orange, dark);
-    color: rsa-color(white);
+    background-color: background-color(accentThree, dark);
+    color: text-color(neutral);
     padding: rsa-whitespace();
     position: absolute;
     right: 0;

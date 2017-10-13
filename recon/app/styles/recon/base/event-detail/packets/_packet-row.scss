@@ -1,8 +1,8 @@
-$base-color: rsa-color(white);
+$base-color: white;
 
 .rsa-packet {
 
-  border-top: 1px rsa-color(blue) solid;
+  border-top: 1px border-color(secondary) solid;
   min-width: 56rem;
 
   &:first-of-type {
@@ -21,7 +21,7 @@ $base-color: rsa-color(white);
 
   &__body {
     @include rsa-row(justify,fill);
-    background-color: rsa-color(gray, dark, $rsa-transparent);
+    background-color: background-color(primary, dark, transparent);
     color: $dark-fg-hover-color;
     font-size: 0.85rem;
     padding-bottom: 1.25rem;
@@ -117,12 +117,12 @@ $base-color: rsa-color(white);
       &.is-known {
         // orange @ 20% opacity, but we don't actually want opacity
         background-color: #4b2c24;
-        color: rsa-color(white);
+        color: text-color(neutral);
         &[data-is-hover="true"] {
           &.packet-field-value {
             span {
-              background-color: rsa-color(orange, darkest);
-              color: rsa-color(white);
+              background-color: background-color(accentThree, darkest);
+              color: text-color(neutral);
             }
           }
         }
