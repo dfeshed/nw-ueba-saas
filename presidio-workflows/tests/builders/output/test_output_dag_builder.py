@@ -38,4 +38,4 @@ def test_valid_build():
 
     dag = OutputDagBuilder(['dlpfile']).build(dag)
 
-    assert dag.task_count == 3
+    assert dag.task_count == 4
