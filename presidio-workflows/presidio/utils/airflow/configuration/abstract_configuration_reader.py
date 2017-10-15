@@ -1,6 +1,7 @@
 import json
 import logging
 from abc import ABCMeta, abstractmethod
+from datetime import timedelta
 
 from presidio.utils.airflow.configuration.configuration_exceptions import InvalidDefaultValueException, \
     DefaultConfFileNotValidException
@@ -57,3 +58,6 @@ class AbstractConfigurationReader:
         except Exception as e:
             raise DefaultConfFileNotValidException(default_value_file_path=default_value_file_path, cause=e)
         return default_file_value
+
+    def read_daily_timedelta(self, conf_key, default_value=None):
+        return timedelta(days=self.read(conf_key=conf_key, default_value=default_value))

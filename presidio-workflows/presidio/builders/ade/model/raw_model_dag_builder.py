@@ -1,4 +1,3 @@
-from datetime import timedelta
 from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -6,6 +5,7 @@ from presidio.operators.model.raw_model_feature_aggregation_buckets_operator imp
 from presidio.operators.model.raw_model_operator import RawModelOperator
 from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY, is_execution_date_valid
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
+from presidio.utils.configuration.config_server_configuration_reader_singleton import ConfigServerConfigurationReaderSingleton
 
 
 class RawModelDagBuilder(PresidioDagBuilder):
@@ -16,6 +16,13 @@ class RawModelDagBuilder(PresidioDagBuilder):
         returns the DAG according to this data source.
         """
 
+    build_model_interval_conf_key = "components.ade.models.enriched_records.build_model_interval_in_days"
+    build_model_interval_default_value = 1
+    feature_aggregation_buckets_interval_conf_key = "components.ade.models.enriched_records.feature_aggregation_buckets_interval_in_days"
+    feature_aggregation_buckets_interval_default_value = 1
+    min_gap_from_dag_start_date_to_start_modeling_conf_key = "components.ade.models.enriched_records.min_data_time_range_for_building_models_in_days"
+    min_gap_from_dag_start_date_to_start_modeling_default_value = 14
+
     def __init__(self, data_source):
         """
         C'tor.
@@ -24,10 +31,19 @@ class RawModelDagBuilder(PresidioDagBuilder):
         """
 
         self.data_source = data_source
-        self._build_model_interval = timedelta(days=1)
-        self._feature_aggregation_buckets_interval = timedelta(days=1)
-        self._min_gap_from_dag_start_date_to_start_modeling = timedelta(days=14)
-        self._feature_aggregation_buckets_operator_gap_from_raw_model_operator_in_timedelta = timedelta(days=2)
+
+        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+        self._build_model_interval = config_reader.read_daily_timedelta(RawModelDagBuilder.build_model_interval_conf_key,
+                                                                        RawModelDagBuilder.build_model_interval_default_value)
+        self._feature_aggregation_buckets_interval = \
+            config_reader.read_daily_timedelta(RawModelDagBuilder.feature_aggregation_buckets_interval_conf_key,
+                                               RawModelDagBuilder.feature_aggregation_buckets_interval_default_value)
+        self._min_gap_from_dag_start_date_to_start_modeling = self.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
+
+    @staticmethod
+    def get_min_gap_from_dag_start_date_to_start_modeling(config_reader):
+        return config_reader.read_daily_timedelta(RawModelDagBuilder.min_gap_from_dag_start_date_to_start_modeling_conf_key,
+                                           RawModelDagBuilder.min_gap_from_dag_start_date_to_start_modeling_default_value)
 
     def build(self, raw_model_dag):
         """
@@ -71,12 +87,10 @@ class RawModelDagBuilder(PresidioDagBuilder):
                                                                                                                                    kwargs['execution_date']),
             provide_context=True
         )
+        task_sensor_service.add_task_sequential_sensor(raw_model_operator)
         task_sensor_service.add_task_short_circuit(raw_model_operator, raw_model_short_circuit_operator)
 
         # defining the dependencies between the operators
-        task_sensor_service.add_task_gap_sensor(raw_model_feature_aggregation_buckets_operator,
-                                                raw_model_operator,
-                                                self._feature_aggregation_buckets_operator_gap_from_raw_model_operator_in_timedelta)
         raw_model_feature_aggregation_buckets_operator.set_downstream(raw_model_short_circuit_operator)
 
 

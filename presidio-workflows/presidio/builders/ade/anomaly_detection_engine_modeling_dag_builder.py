@@ -71,14 +71,12 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
             # Create the raw model subDag operator for the data source
             raw_model_sub_dag_operator = self._get_raw_model_sub_dag_operator(data_source,
                                                                               anomaly_detection_engine_modeling_dag)
-            task_sensor_service.add_task_sequential_sensor(raw_model_sub_dag_operator)
             task_sensor_service.add_task_short_circuit(raw_model_sub_dag_operator, daily_short_circuit_operator)
 
             # Create the hourly aggr model subDag operator for the data source
             hourly_aggr_model_sub_dag_operator = self._get_aggr_model_sub_dag_operator(data_source,
                                                                                        FIX_DURATION_STRATEGY_HOURLY,
                                                                                        anomaly_detection_engine_modeling_dag)
-            task_sensor_service.add_task_sequential_sensor(hourly_aggr_model_sub_dag_operator)
             task_sensor_service.add_task_short_circuit(hourly_aggr_model_sub_dag_operator, daily_short_circuit_operator)
 
             enriched_data_customer_tasks.append(hourly_aggr_model_sub_dag_operator)
@@ -96,7 +94,6 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
                 smart_model_sub_dag_operator = self._get_smart_model_sub_dag_operator(FIX_DURATION_STRATEGY_HOURLY,
                                                                                       smart_events_conf,
                                                                                       anomaly_detection_engine_modeling_dag)
-                task_sensor_service.add_task_sequential_sensor(smart_model_sub_dag_operator)
 
                 task_sensor_service.add_task_short_circuit(smart_model_sub_dag_operator,
                                                            daily_short_circuit_operator)

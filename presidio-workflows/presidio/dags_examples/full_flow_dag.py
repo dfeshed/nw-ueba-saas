@@ -22,6 +22,6 @@ default_args = {
     # 'priority_weight': 10,
     # 'end_date': datetime(2016, 1, 1),
 }
-full_flow_dag = DAG(dag_id='full_flow_dag', start_date=datetime(2017, 8, 17, 0), schedule_interval=timedelta(minutes=60),default_args=default_args)
+full_flow_dag = DAG(dag_id='full_flow_dag', start_date=datetime(2017, 8, 28, 10), schedule_interval=timedelta(minutes=60),default_args=default_args)
 builder = FullFlowDagBuilder()
 builder.build(full_flow_dag)

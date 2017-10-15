@@ -8,7 +8,8 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.services.fixed_duration_strategy import fixed_duration_strategy_to_string, FIX_DURATION_STRATEGY_HOURLY, is_execution_date_valid
-
+from presidio.utils.configuration.config_server_configuration_reader_singleton import ConfigServerConfigurationReaderSingleton
+from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 
 class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
     """
@@ -30,7 +31,15 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
         self.data_sources = data_sources
         self.hourly_smart_events_confs = hourly_smart_events_confs
         self.daily_smart_events_confs = daily_smart_events_confs
-        self._min_gap_from_dag_start_date_to_start_scoring = timedelta(days=14)
+
+        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+        # currently we start scoring only when smart models start accumulating.
+        # later we will probably run scoring according to the specific modeling configuration.
+        self._min_gap_from_dag_start_date_to_start_scoring = self.get_min_gap_from_dag_start_date_to_start_scoring(config_reader)
+
+    @staticmethod
+    def get_min_gap_from_dag_start_date_to_start_scoring(config_reader):
+        return SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_accumulating(config_reader)
 
     def build(self, anomaly_detection_engine_scoring_dag):
         """
