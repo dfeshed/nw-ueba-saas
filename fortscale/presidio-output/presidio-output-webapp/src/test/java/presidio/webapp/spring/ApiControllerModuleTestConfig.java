@@ -21,7 +21,7 @@ public class ApiControllerModuleTestConfig {
         properties.put("default.page.number.for.rest.alert", "1000");
         properties.put("elasticsearch.port", "9300");
         properties.put("elasticsearch.clustername", "fortscale");
-        properties.put("elasticsearch.host", "dev-efratn");
+        properties.put("elasticsearch.host", "localhost");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

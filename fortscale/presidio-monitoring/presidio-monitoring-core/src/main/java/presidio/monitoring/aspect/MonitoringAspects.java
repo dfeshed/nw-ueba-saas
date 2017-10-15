@@ -127,17 +127,19 @@ public class MonitoringAspects {
      */
 
     @Around("@annotation(presidio.monitoring.aspect.annotations.NumberOfFilteredEvents)")
-    public void numberOfFilteredEvents(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object numberOfFilteredEvents(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString() + NUMBER_OF_FILTERED_EVENTS;
         List events = (List) joinPoint.getArgs()[0];
         String schema = joinPoint.getArgs()[1].toString();
         int numberOfEventsEntered = events.size();
-        List result = (List) joinPoint.proceed();
+        Object returnVal = joinPoint.proceed();
+        List result = (List) returnVal;
         int numberOfFilteredEvents = numberOfEventsEntered - result.size();
         Set tags = new HashSet();
         tags.add(schema);
         presidioCustomMetrics.addMetric(metricName, numberOfFilteredEvents, tags, UNIT_TYPE_LONG);
         logger.debug("Metric {} add {} events filtered. ", metricName, numberOfFilteredEvents);
+        return returnVal;
     }
 
     /**

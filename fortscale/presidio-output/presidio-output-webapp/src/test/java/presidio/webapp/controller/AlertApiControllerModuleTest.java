@@ -26,11 +26,7 @@ import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -109,6 +105,8 @@ public class AlertApiControllerModuleTest {
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
         AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
 
+        Collections.sort(expectedResponse.getAlerts(), defaultAlertComparator);
+        Collections.sort(actualResponse.getAlerts(), defaultAlertComparator);
         Assert.assertEquals(expectedResponse, actualResponse);
     }
 
@@ -140,6 +138,7 @@ public class AlertApiControllerModuleTest {
         restAlert.setEndDate(BigDecimal.valueOf(alert.getEndDate().getTime()));
         restAlert.setStartDate(BigDecimal.valueOf(alert.getStartDate().getTime()));
         restAlert.setId(alert.getId());
+        restAlert.setUserScoreContribution(alert.getContributionToUserScore() == null ? BigDecimal.valueOf(0) : new BigDecimal(alert.getContributionToUserScore()));
         restAlert.setClassifiation(alert.getClassifications());
         restAlert.setUsername(alert.getUserName());
         restAlert.setUserId(alert.getUserId());

@@ -1,5 +1,7 @@
 package presidio.ade.domain.pagination.enriched;
 
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -11,15 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolver;
 import presidio.ade.domain.record.enriched.AdeEventTypeToAdeEnrichedRecordClassResolverConfig;
 import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
-import presidio.ade.domain.pagination.enriched.groups.EnrichedRecordPaginationServiceGroup;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
+import presidio.ade.domain.store.enriched.EnrichedDataStoreImplMongo;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -27,7 +32,7 @@ import static junit.framework.Assert.assertTrue;
 /**
  * Created by mariad on 6/15/2017.
  */
-@ContextConfiguration(classes = {MongodbTestConfig.class, AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class})
+@ContextConfiguration(classes = {MongodbTestConfig.class, AdeEventTypeToAdeEnrichedRecordClassResolverConfig.class, MongoDbBulkOpUtilConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
 public class FakeMongoEnrichedRecordPaginationServiceTest {
@@ -36,6 +41,8 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
     MongoTemplate mongoTemplate;
     @Autowired
     private AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
+    @Autowired
+    private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
 
     private static final int PAGE_SIZE = 4;
@@ -66,7 +73,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =

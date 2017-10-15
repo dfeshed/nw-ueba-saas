@@ -1,23 +1,14 @@
 package presidio.output.processor.spring;
 
-import fortscale.accumulator.aggregation.AccumulationsCacheConfig;
-import fortscale.aggregation.feature.functions.AggrFeatureFuncServiceConfig;
-import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
-import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
-import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventsConfServiceConfig;
-import presidio.ade.sdk.aggregation_records.BucketConfigurationServiceConfig;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
-import presidio.output.processor.config.ClassificationPriorityConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForFeatureAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForScoreAggr;
@@ -30,41 +21,22 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 
 @Configuration
 @Import({
-        //MongoConfig.class,
         EventPersistencyServiceConfig.class,
         AdeManagerSdkConfig.class,
-        BucketConfigurationServiceConfig.class,
-        EnrichedDataStoreConfig.class,
-        RecordReaderFactoryServiceConfig.class,
-        AggrFeatureFuncServiceConfig.class,
-        AggregatedFeatureEventsConfServiceConfig.class,
-        AccumulationsCacheConfig.class,
-        AlertClassificationPriorityConfig.class,
         HistoricalDataFetcherConfig.class
-
 })
-public class SupporingInformationServiceConfig extends ApplicationConfiguration {
+public class SupportingInformationServiceConfig extends ApplicationConfiguration {
+    @Autowired
+    private EventPersistencyService eventPersistencyService;
 
     @Autowired
-    EventPersistencyService eventPersistencyService;
+    private AdeManagerSdk adeManagerSdk;
 
     @Autowired
-    AdeManagerSdk adeManagerSdk;
+    private HistoricalDataFetcher historicalDataFetcher;
 
     @Autowired
-    RecordReaderFactoryService recordReaderFactoryService;
-
-    @Autowired
-    EnrichedDataStore enrichedDataStore;
-
-    @Autowired
-    HistoricalDataFetcher historicalDataFetcher;
-
-    @Autowired
-    public SupportingInformationConfig supportingInformationConfig;
-
-    @Autowired
-    public ClassificationPriorityConfig classificationPriorityConfig;
+    private SupportingInformationConfig supportingInformationConfig;
 
     @Bean
     public HistoricalDataCountByTimePopulator historicalDataCountByTimePopulator() {
@@ -86,10 +58,10 @@ public class SupporingInformationServiceConfig extends ApplicationConfiguration 
         return new HistoricalDataPopulatorFactory();
     }
 
-
     @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
-        return new SupportingInformationForScoreAggr(supportingInformationConfig,
+        return new SupportingInformationForScoreAggr(
+                supportingInformationConfig,
                 adeManagerSdk,
                 eventPersistencyService,
                 historicalDataPopulatorFactory());
@@ -97,7 +69,8 @@ public class SupporingInformationServiceConfig extends ApplicationConfiguration 
 
     @Bean
     public SupportingInformationForFeatureAggr supportingInformationForFeatureAggr() {
-        return new SupportingInformationForFeatureAggr(supportingInformationConfig,
+        return new SupportingInformationForFeatureAggr(
+                supportingInformationConfig,
                 eventPersistencyService,
                 historicalDataPopulatorFactory());
     }

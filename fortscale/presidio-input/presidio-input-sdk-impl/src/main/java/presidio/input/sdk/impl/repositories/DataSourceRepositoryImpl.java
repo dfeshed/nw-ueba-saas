@@ -2,6 +2,7 @@ package presidio.input.sdk.impl.repositories;
 
 import com.mongodb.WriteResult;
 import fortscale.domain.core.AbstractAuditableDocument;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,9 +15,11 @@ import java.util.List;
 public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     private final MongoTemplate mongoTemplate;
+    private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    public DataSourceRepositoryImpl(MongoTemplate mongoTemplate) {
+    public DataSourceRepositoryImpl(MongoTemplate mongoTemplate, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
+        this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
 
     @Override
     public void insertDataSource(String collectionName, List<? extends AbstractAuditableDocument> documents) {
-        mongoTemplate.insert(documents, collectionName);
+        mongoDbBulkOpUtil.insertUnordered(documents, collectionName);
     }
 
     @Override
