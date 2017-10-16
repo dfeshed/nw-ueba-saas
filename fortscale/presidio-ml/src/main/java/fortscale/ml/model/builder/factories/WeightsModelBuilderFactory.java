@@ -8,6 +8,7 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     @Autowired
     private SmartRecordConfService smartRecordConfService;
 
+    @Value("${presidio.ade.model.smart.weights.builder.use.weight.for.contribution.calc:true}")
+    private Boolean useWeightForContributionCalculation;
+
     @Override
     public String getFactoryName() {
         return WEIGHTS_MODEL_BUILDER;
@@ -30,7 +34,7 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     public IModelBuilder getProduct(FactoryConfig factoryConfig) {
         BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> listIntegerAggregatedFeatureReliabilityBiFunction = (smartAggregatedRecordDataContainers, numOfContexts) -> new AggregatedFeatureReliability(smartAggregatedRecordDataContainers, numOfContexts);
         SmartWeightsScorerAlgorithm scorerAlgorithm = new SmartWeightsScorerAlgorithm();
-        ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(scorerAlgorithm);
+        ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(scorerAlgorithm, useWeightForContributionCalculation);
         WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator);
         return new WeightsModelBuilder((WeightsModelBuilderConf) factoryConfig, algorithm, smartRecordConfService);
     }

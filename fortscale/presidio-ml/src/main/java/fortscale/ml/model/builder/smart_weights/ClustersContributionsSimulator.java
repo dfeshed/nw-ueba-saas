@@ -23,9 +23,15 @@ public class ClustersContributionsSimulator {
     private static final double EPSILON = 0.000001;
 
     private SmartWeightsScorerAlgorithm scorerAlgorithm;
+    private boolean useWeightForContributionCalculation = true;
 
     public ClustersContributionsSimulator(SmartWeightsScorerAlgorithm scorerAlgorithm) {
         this.scorerAlgorithm = scorerAlgorithm;
+    }
+
+    public ClustersContributionsSimulator(SmartWeightsScorerAlgorithm scorerAlgorithm, boolean useWeightForContributionCalculation) {
+        this.scorerAlgorithm = scorerAlgorithm;
+        this.useWeightForContributionCalculation = useWeightForContributionCalculation;
     }
 
 
@@ -90,9 +96,14 @@ public class ClustersContributionsSimulator {
     /**
      * Given a {@link SmartAggregatedRecordDataContainer), calculate how much every cluster of the given {@link List<ClusterConf>}
      * contributes to it. This is done by calculating for every cluster how much will it contibute to the
-     * smart value if all the clusters weights would have been equal (which is essentially the maximal score
-     * of the aggregated features participating in the cluster). The reason why we use a hypothetical equals
-     * weight {@link  List<ClusterConf>} instead of the given {@link  List<ClusterConf>} is that once the user will see the alert
+     * smart value.
+     * There are 2 option t calculate contribution.
+     * One using the cluster weight and one giving the same weight to each cluster (which is essentially the maximal score
+     * of the aggregated features participating in the cluster).
+     * This is configured by the member useWeightForContributionCalculation.
+     * The default configuration is to use the weight.
+     * The reason why one might use a hypothetical equals weight {@link  List<ClusterConf>}
+     * instead of the given {@link  List<ClusterConf>} is that once the user will see the alert
      * in our product, he won't have any clue what are the weights. All he sees is the indicators and their scores.
      * @param smartAggregatedRecordDataContainer the data to evaluate the contributions upon.
      * @param clusterConfList the clusters to evaluate.
@@ -113,7 +124,7 @@ public class ClustersContributionsSimulator {
                                             clusterConfs
                                     )
                                     .getMaxScore();
-                            return maxScore == null ? 0 : maxScore;
+                            return maxScore == null ? 0 : useWeightForContributionCalculation ? maxScore*clusterConfs.getWeight() : maxScore;
                         }
                 ));
         return normalizeMapValuesToSumTo(clusterConfToMaxScore, 1);
