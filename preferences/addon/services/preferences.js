@@ -24,7 +24,7 @@ export default Service.extend({
   /**
    * Returns a promise for the default preferences settings.
    *
-   * @param {String} [preferenceFor='events'] Can pass different preferenceName,
+   * @param {String} [preferenceFor='investigate-events'] Can pass different preferenceName,
    * @example
    * ```js
    * events, respond, navigate
@@ -56,7 +56,7 @@ export default Service.extend({
   /**
    * Returns a promise after saving preferences settings.
    *
-   * @param {String} [preferenceFor='events'] Can pass different preferenceName,
+   * @param {String} [preferenceFor='investigate-events'] Can pass different preferenceName,
    * @param {Object} [preferenceObject] Need to pass JSON object to save preferences,
    * @example
    * ```js

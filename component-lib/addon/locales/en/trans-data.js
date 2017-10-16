@@ -1421,7 +1421,7 @@ export default {
     }
   },
   preferences: {
-    eventsPreferences: {
+    'investigate-events-preferences': {
       panelTitle: 'Event Preferences',
       triggerTip: 'Open/Hide Event Preferences'
     }

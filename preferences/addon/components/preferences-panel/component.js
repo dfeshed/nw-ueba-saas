@@ -1,29 +1,46 @@
 import Component from 'ember-component';
 import layout from './template';
-import service from 'ember-service/inject';
+import run from 'ember-runloop';
+import { connect } from 'ember-redux';
+import { closePreferencesPanel, resetPreferencesPanel } from 'preferences/actions/interaction-creators';
 
-export default Component.extend({
+const stateToComputed = ({ preferences }) => ({
+  launchFor: preferences.launchFor,
+  isExpanded: preferences.expanded
+});
+
+const dispatchToActions = {
+  closePreferencesPanel,
+  resetPreferencesPanel
+};
+
+const PreferencesPanel = Component.extend({
 
   layout,
 
   classNames: ['rsa-preferences-panel'],
   classNameBindings: ['isExpanded'],
-  launchFor: null,
-
-  eventBus: service(),
 
   init() {
     this._super(arguments);
+    this.addObserver('isExpanded', this, this.resetPanel);
+  },
 
-    this.get('eventBus').on('toggle-rsa-preferences-panel', (launchFor) => {
-      this.set('launchFor', launchFor);
-      this.toggleProperty('isExpanded');
-    });
+  resetPanel() {
+    if (!this.get('isExpanded')) {
+      // wait for the panel to close completely before sending reset action, else the
+      // panel title gets cleared immediately while the panel is still sliding out
+      run.later(() => {
+        this.send('resetPreferencesPanel');
+      }, 650);
+    }
   },
 
   actions: {
     closePreferencesPanel() {
-      this.set('isExpanded', false);
+      this.send('closePreferencesPanel', false);
     }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(PreferencesPanel);

@@ -1,1 +1,1 @@
-export { default } from 'context/reducers/index';
+export { default } from 'preferences/reducers/index';

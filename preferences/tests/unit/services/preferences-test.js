@@ -21,7 +21,7 @@ test('it can get preferences for given preference type', function(assert) {
     });
   };
   const done = assert.async();
-  service.getPreferences('events').then((response) => {
+  service.getPreferences('investigate-events').then((response) => {
     assert.ok(response, 'Expected promise callback to be invoked with a response.');
     assert.equal(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
     done();
@@ -116,7 +116,7 @@ test('it can set preferences for given preference type', function(assert) {
     });
   };
   const done = assert.async();
-  service.setPreferences({ preferenceFor: 'events', data: { defaultAnalysisView: 'File' } }).then((response) => {
+  service.setPreferences({ preferenceFor: 'investigate-events', data: { defaultAnalysisView: 'File' } }).then((response) => {
     assert.ok(response, 'Expected promise callback to be invoked with a response.');
     assert.equal(response, true, 'Expected to return true after persisting settings.');
     done();
@@ -164,7 +164,7 @@ test('it should not be able to set preferences if not authorized', function(asse
     });
   };
   const done = assert.async();
-  service.setPreferences({ preferenceFor: 'events', data: { defaultAnalysisView: 'File' } }).then(() => {
+  service.setPreferences({ preferenceFor: 'investigate-events', data: { defaultAnalysisView: 'File' } }).then(() => {
     assert.fail('Server is throwing error this should not pass.');
     done();
   }).catch((errorObj) => {

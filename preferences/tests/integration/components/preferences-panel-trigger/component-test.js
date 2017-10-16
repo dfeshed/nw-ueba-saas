@@ -9,7 +9,7 @@ moduleForComponent('preferences-panel-trigger', 'Integration | Component | Prefe
 });
 
 test('Preferences trigger renders correctly', function(assert) {
-  this.set('launchFor', 'events');
+  this.set('launchFor', 'investigate-events');
   this.render(hbs `{{preferences-panel-trigger launchFor=launchFor}}`);
 
   assert.equal(this.$('.rsa-preferences-panel-trigger').length, 1, 'Preference trigger component rendered.');
