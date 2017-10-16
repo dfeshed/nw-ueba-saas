@@ -26,20 +26,16 @@
 
 {{#if authenticatedAndPageFound}}
   {{#rsa-application-header version=version title=title}}
-    {{#if features.showRespondRoute}}
-      {{#if accessControl.hasRespondAccess}}
-        {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}
-          {{t "respond.title"}}
-        {{/link-to}}
-      {{/if}}
+    {{#if accessControl.hasRespondAccess}}
+      {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}
+        {{t "respond.title"}}
+      {{/link-to}}
     {{/if}}
 
-    {{#if features.showInvestigateRoute}}
-      {{#if accessControl.hasInvestigateAccess}}
-        {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
-          {{t "investigate.title"}}
-        {{/link-to}}
-      {{/if}}
+    {{#if accessControl.hasInvestigateAccess}}
+      {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
+        {{t "investigate.title"}}
+      {{/link-to}}
     {{/if}}
 
     {{#if accessControl.hasMonitorAccess}}
