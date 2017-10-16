@@ -1,1 +1,24 @@
-{{outlet}}
+{{#rsa-investigate-header
+  activeTab='investigate-events'
+  as |section| }}
+
+  {{#if section.isIconBar}}
+    {{!-- {{rsa-icon
+      active=(not-eq model.recon.size 'full')
+      disabled=(not model.recon.isOpen)
+      click=(route-action 'toggleSlaveFullScreen')
+      name='layout-1'
+      title=(t 'investigate.controls.toggle')}} --}}
+
+    {{rsa-icon
+      name='layout-1'
+      title=(t 'investigate.controls.toggle')}}
+
+    {{!-- {{preferences-panel-trigger launchFor='investigate-events'}} --}}
+  {{/if}}
+
+  {{#if section.isMain}}
+    {{outlet}}
+  {{/if}}
+
+{{/rsa-investigate-header}}

@@ -1,0 +1,21 @@
+<nav class="rsa-investigate__nav">
+  <ul>
+    {{#each tabs as |tab|}}
+      <li>
+        {{#if tab.isActive}}
+          <a href='#'>{{tab.label}}</a>
+        {{else if tab.isClassic}}
+          <a href={{tab.url}} class={{concat 'js-test-investigate-' tab.label '-classic'}}>{{tab.label}}</a>
+        {{else}}
+          {{#link-to tab.name class=(concat 'js-test-investigate-' tab.name '-classic')}}
+            {{tab.label}}
+          {{/link-to}}
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+  <div class="investigate-controls">
+    {{yield iconBar}}
+  </div>
+</nav>
+{{yield main}}
