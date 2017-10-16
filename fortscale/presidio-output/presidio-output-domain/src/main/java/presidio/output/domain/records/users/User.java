@@ -33,6 +33,8 @@ public class User extends AbstractElasticDocument {
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
     public static final String CREATED_BY = "createdBy";
+    public static final String OUTPUT_PROCESSOR_LOGIC_TIME = "outputProcessorLogicTime";
+    public static final String OUTPUT_PROCESSOR_LOGIC_TIME_NAME = "outpu_processor_logic_time";
 
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
@@ -50,6 +52,11 @@ public class User extends AbstractElasticDocument {
     @Field(type = FieldType.Date, store = true)
     @JsonProperty(CREATED_BY)
     private Date createdBy;
+
+    @Field(type = FieldType.String, store = true)
+    @JsonProperty(OUTPUT_PROCESSOR_LOGIC_TIME)
+    private String outputProcessorLogicTime;
+
 
     @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE_FIELD_NAME)
@@ -82,7 +89,7 @@ public class User extends AbstractElasticDocument {
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount, Date createdBy) {
+                int alertsCount, String outputProcessorLogicTime) {
         super();
         this.userId = userId;
         this.userName = userName;
@@ -93,11 +100,11 @@ public class User extends AbstractElasticDocument {
         this.tags = tags;
         this.severity = severity;
         this.alertsCount = alertsCount;
-        this.createdBy = createdBy;
+        this.outputProcessorLogicTime = OUTPUT_PROCESSOR_LOGIC_TIME_NAME + outputProcessorLogicTime;
     }
 
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount, String id, Date createdDate, Date updatedDate, Date createdBy) {
+                int alertsCount, String id, Date createdDate, Date updatedDate, String outputProcessorLogicTime) {
         super(id, createdDate, updatedDate);
         this.userId = userId;
         this.userName = userName;
@@ -108,16 +115,16 @@ public class User extends AbstractElasticDocument {
         this.tags = tags;
         this.severity = severity;
         this.alertsCount = alertsCount;
-        this.createdBy = createdBy;
+        this.outputProcessorLogicTime = OUTPUT_PROCESSOR_LOGIC_TIME_NAME + outputProcessorLogicTime;
     }
 
-    public User(String userId, String userName, String userDisplayName, List<String> tags, Date createdBy) {
+    public User(String userId, String userName, String userDisplayName, List<String> tags, String outputProcessorLogicTime) {
         super();
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
         this.tags = tags;
-        this.createdBy = createdBy;
+        this.outputProcessorLogicTime = OUTPUT_PROCESSOR_LOGIC_TIME_NAME + outputProcessorLogicTime;
     }
 
     public UserSeverity getSeverity() {
@@ -194,8 +201,14 @@ public class User extends AbstractElasticDocument {
 
     public void setAlertClassifications(List<String> alertClassifications) {
         this.alertClassifications = alertClassifications;
+    }
 
+    public String getOutputProcessorLogicTime() {
+        return outputProcessorLogicTime;
+    }
 
+    public void setOutputProcessorLogicTime(String outputProcessorLogicTime) {
+        this.outputProcessorLogicTime = outputProcessorLogicTime;
     }
 
     public void addAlertClassifications(List<String> alertClassifications) {

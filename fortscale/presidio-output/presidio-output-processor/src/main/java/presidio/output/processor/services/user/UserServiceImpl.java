@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         if (userDetails == null) {
             return null;
         }
-        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags(), Date.from(startDate));
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags(), Date.from(startDate).toString());
     }
 
     @Override

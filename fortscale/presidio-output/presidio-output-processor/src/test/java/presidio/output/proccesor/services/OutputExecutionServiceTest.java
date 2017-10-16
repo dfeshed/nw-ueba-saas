@@ -142,7 +142,7 @@ public class OutputExecutionServiceTest {
 
     @Test
     public void createAlertForExistingUser() {
-        User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8, new Date());
+        User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8, new Date().toString());
         userPersistencyService.save(userEntity);
         try {
             outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));

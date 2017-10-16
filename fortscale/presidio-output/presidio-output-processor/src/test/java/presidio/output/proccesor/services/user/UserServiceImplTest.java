@@ -70,7 +70,7 @@ public class UserServiceImplTest {
 
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
-        Date date = new Date();
+        String date = new Date().toString();
         List<User> usersWithOldScore = Arrays.asList(
                 new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date),
                 new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date),
@@ -112,7 +112,7 @@ public class UserServiceImplTest {
 
     @Test
     public void testSetUserAlertData() {
-        Date date = new Date();
+        String date = new Date().toString();
         User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date);
         List<String> classification1 = null, classification2, classification3;
         List<String> indicators1 = null, indicators2, indicators3;

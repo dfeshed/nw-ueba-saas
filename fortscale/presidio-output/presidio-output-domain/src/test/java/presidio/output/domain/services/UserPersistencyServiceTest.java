@@ -110,7 +110,7 @@ public class UserPersistencyServiceTest {
     private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
         ArrayList<String> indicators = new ArrayList<String>();
         indicators.add("indicator");
-        Date date = new Date();
+        String date = new Date().toString();
         return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0, date);
     }
 
@@ -304,7 +304,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByListOfIds() {
-        Date date = new Date();
+        String date = new Date().toString();
         User user1 = new User("userId1", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
         User user2 = new User("userId2", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
         User user3 = new User("userId3", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
@@ -328,7 +328,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByUserScore() {
-        Date date = new Date();
+        String date = new Date().toString();
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
 
@@ -356,7 +356,7 @@ public class UserPersistencyServiceTest {
     @Test
     public void testFindByUserId() {
         List<String> tags = new ArrayList<>();
-        Date date = new Date();
+        String date = new Date().toString();
 
         User user1 = new User("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0, date);
         User user2 = new User("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0, date);
@@ -424,7 +424,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByQueryWithSeverityAggregation() {
-        Date date = new Date();
+        String date = new Date().toString();
         List<String> classification = new ArrayList<>();
         classification.add("a");
         User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0, date);
@@ -460,7 +460,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByQueryWithTagsAggregation() {
-        Date date = new Date();
+        String date = new Date().toString();
         List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
         List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
 
@@ -500,7 +500,7 @@ public class UserPersistencyServiceTest {
 
         List<String> tags1 = Arrays.asList("admin", "watch");
         List<String> tags2 = Arrays.asList("admin");
-        Date date = new Date();
+        String date = new Date().toString();
 
         List<String> classificationA = Arrays.asList("a");
         List<String> classificationB = Arrays.asList("a", "b");
@@ -568,7 +568,7 @@ public class UserPersistencyServiceTest {
         List<String> tags1 = Arrays.asList("admin", "watch");
         List<String> tags2 = Arrays.asList("admin");
 
-        Date date = new Date();
+        String date = new Date().toString();
         List<String> indicatorsA = Arrays.asList("a");
         List<String> indicatorsB = Arrays.asList("a", "b");
         List<String> indicatorsC = Arrays.asList("a", "b", "c");

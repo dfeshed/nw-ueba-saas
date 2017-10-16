@@ -4,7 +4,6 @@ import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -118,7 +117,7 @@ public class UserScoreServiceModuleTest {
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
-        Date date = new Date();
+        String date = new Date().toString();
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
         ;
         user1.setSeverity(null);
@@ -158,7 +157,7 @@ public class UserScoreServiceModuleTest {
     @Test
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
-        Date date = new Date();
+        String date = new Date().toString();
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
         ;
         user1.setSeverity(null);
@@ -234,7 +233,7 @@ public class UserScoreServiceModuleTest {
 
     @Test
     public void testBulkUserScoreLargeScale() throws InterruptedException {
-        Date date = new Date();
+        String date = new Date().toString();
         final int DAYS_COUNT = 110;
         final int USERS_COUNT = 4000;
         userScoreService = new UserScoreServiceImpl(
@@ -317,7 +316,7 @@ public class UserScoreServiceModuleTest {
     }
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
-        Date date = new Date();
+        String date = new Date().toString();
         User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
         ;
         user1.setSeverity(null);

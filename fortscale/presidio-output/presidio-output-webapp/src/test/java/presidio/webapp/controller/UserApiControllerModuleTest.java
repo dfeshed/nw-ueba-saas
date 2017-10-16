@@ -187,7 +187,7 @@ public class UserApiControllerModuleTest {
 
 
     private presidio.output.domain.records.users.User generateUser(List<String> classifications, String userName, String userId, String displayName, double score, List<String> indicators) {
-        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, indicators, new ArrayList<>(), UserSeverity.CRITICAL, 0, new Date());
+        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, indicators, new ArrayList<>(), UserSeverity.CRITICAL, 0, new Date().toString());
     }
 
     private User convertDomainUserToRestUser(presidio.output.domain.records.users.User user) {

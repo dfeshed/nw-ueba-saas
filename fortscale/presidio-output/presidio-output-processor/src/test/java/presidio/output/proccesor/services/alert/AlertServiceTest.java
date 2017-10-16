@@ -105,7 +105,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithLowSmartScore() {
-        Date date = new Date();
+        String date = new Date().toString();
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0, date);
         Alert alert = alertService.generateAlert(generateSingleSmart(30), userEntity, 50);
         assertTrue(alert == null);
@@ -114,7 +114,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertTest() {
-        Date date = new Date();
+        String date = new Date().toString();
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0, date);
         SmartRecord smart = generateSingleSmart(60);
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
@@ -125,7 +125,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithOnlyStaticIndicatorsTest() {
-        Date date = new Date();
+        String date = new Date().toString();
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0, date);
         SmartRecord smart = generateSingleSmart(60);
         AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
@@ -144,7 +144,7 @@ public class AlertServiceTest {
 
     @Test
     public void generateAlertWithNotOnlyStaticIndicatorsTest() {
-        Date date = new Date();
+        String date = new Date().toString();
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0, date);
         SmartRecord smart = generateSingleSmart(60);
         AdeAggregationRecord notStaticAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "highestStartInstantScoreUserIdFileHourly",
