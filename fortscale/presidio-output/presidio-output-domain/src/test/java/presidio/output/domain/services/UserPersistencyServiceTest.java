@@ -22,16 +22,11 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Ignore
 @RunWith(SpringRunner.class)
@@ -194,7 +189,7 @@ public class UserPersistencyServiceTest {
         userList.add(user7);
         userList.add(user8);
         userPersistencyService.save(userList);
-        Page<User> foundUsers=null;
+        Page<User> foundUsers = null;
 
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder().filterByFreeText("free")
@@ -590,5 +585,32 @@ public class UserPersistencyServiceTest {
         assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(severityAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(severityAgg.getBucketByKey("c").getDocCount(), 1L);
+    }
+
+    @Test
+    public void testSortByUserName() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .sort(new Sort(Sort.Direction.ASC, User.USER_NAME_FIELD_NAME))
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(result.getContent().size(), 3L); //two buckets- admin and watch
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("B_userName", iterator.next().getUserName());
+        Assert.assertEquals("C_userName", iterator.next().getUserName());
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
     }
 }
