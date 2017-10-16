@@ -99,8 +99,10 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         // filter by min or max score
         if (userQuery.getMinScore() > 0 || userQuery.getMaxScore() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
-            rangeQuery.gte(userQuery.getMinScore() > 0 ? userQuery.getMinScore() : 0);
-            rangeQuery.lte(userQuery.getMaxScore() > 0 ? userQuery.getMaxScore() : 100);
+            if (userQuery.getMinScore() > -1)
+                rangeQuery.gte(userQuery.getMinScore());
+            if (userQuery.getMaxScore() > -1)
+                rangeQuery.lte(userQuery.getMaxScore());
             boolQueryBuilder.must(rangeQuery);
         }
 
