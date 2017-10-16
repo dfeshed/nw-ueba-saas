@@ -364,8 +364,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         restIndicator.setId(indicator.getId());
         restIndicator.setName(indicator.getName());
         restIndicator.setAnomalyValue(indicator.getAnomalyValue());
-        restIndicator.setStartDate(BigDecimal.valueOf(indicator.getStartDate()));
-        restIndicator.setEndDate(BigDecimal.valueOf(indicator.getEndDate()));
+        restIndicator.setStartDate(BigDecimal.valueOf(indicator.getStartDate().getTime()/1000));
+        restIndicator.setEndDate(BigDecimal.valueOf(indicator.getEndDate().getTime()/1000));
         restIndicator.setSchema(indicator.getSchema().name());
         restIndicator.setScore(indicator.getScore());
         restIndicator.setEventsNum(indicator.getEventsNum());

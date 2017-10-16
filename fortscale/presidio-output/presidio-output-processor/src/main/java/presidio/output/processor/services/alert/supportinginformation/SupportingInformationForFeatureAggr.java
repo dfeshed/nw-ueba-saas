@@ -52,8 +52,8 @@ public class SupportingInformationForFeatureAggr implements  SupportingInformati
 
         Indicator indicator = new Indicator(alert.getId());
         indicator.setName(indicatorConfig.getName());
-        indicator.setStartDate(adeAggregationRecord.getStartInstant().getLong(ChronoField.INSTANT_SECONDS));
-        indicator.setEndDate(adeAggregationRecord.getEndInstant().getLong(ChronoField.INSTANT_SECONDS));
+        indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
+        indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
         indicator.setAnomalyValue(String.valueOf(adeAggregationRecord.getFeatureValue()));
         indicator.setSchema(indicatorConfig.getSchema());
         indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
