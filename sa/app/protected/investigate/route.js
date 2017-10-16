@@ -1,10 +1,10 @@
 import Route from 'ember-route';
 
 export default Route.extend({
-
-  beforeModel() {
-    // default landing page for /investigate is events
-    this.transitionTo('protected.investigate.investigate-events');
+  afterModel(model, transition) {
+    if (transition.targetName === 'protected.investigate.index') {
+      this.transitionTo('protected.investigate.investigate-events');
+    }
   },
 
   title() {
