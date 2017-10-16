@@ -1,104 +1,561 @@
 package presidio.ade.processes.shell;
 
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
-import fortscale.ml.model.ContinuousDataModel;
-import fortscale.ml.model.GaussianPriorModel;
+import fortscale.ml.model.*;
+import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.builder.factories.GaussianPriorModelBuilderFactory;
+import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
+import fortscale.ml.model.builder.gaussian.prior.*;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
+import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.utils.test.category.ModuleTestCategory;
+import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
+import javafx.util.Pair;
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
+import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.test.utils.generators.EnrichedSuccessfulFileOpenedGeneratorConfig;
-import presidio.ade.test.utils.tests.EnrichedFileSourceBaseAppTest;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
+import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
+import presidio.ade.test.utils.generators.FileOperationGenerator;
+import presidio.ade.test.utils.generators.EnrichedRandomDeterministicFileGenerator;
+import presidio.ade.test.utils.tests.BaseAppTest;
+import presidio.data.ade.AdeFileOperationGeneratorTemplateFactory;
+import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
+import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.fileop.IFileOperationGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by barak_schuster on 7/30/17.
  */
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
-public class FeatureAggregationsApplicationTest extends EnrichedFileSourceBaseAppTest {
-    private static final int DAYS_BACK_FROM = 2;
+public class FeatureAggregationsApplicationTest extends BaseAppTest {
+
     private static final Schema ADE_EVENT_TYPE = Schema.FILE;
-    private static final Duration DURATION = Duration.ofDays(1);
-    private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), DURATION);
-    private static final Instant END_DATE = START_DATE.plus(Duration.ofHours(1));
-
-    public static final String EXECUTION_COMMAND = String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s", ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 3600);
-
+    public static final String COMMAND = "run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s";
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private AggregatedDataReader scoredFeatureAggregatedReader;
+    @Autowired
+    private ModelsCacheService modelsCacheService;
+    @Autowired
+    private EnrichedDataStore enrichedDataStore;
+    @Autowired
+    public ModelConfService modelConfService;
+    @Autowired
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Override
     protected String getContextTestExecutionCommand() {
-        return EXECUTION_COMMAND;
+        int DAYS_BACK_FROM = 2;
+        Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), Duration.ofDays(1));
+        Instant END_DATE = START_DATE.plus(Duration.ofHours(1));
+        return String.format(COMMAND, ADE_EVENT_TYPE, START_DATE.toString(), END_DATE.toString(), 3600);
     }
 
-    @Override
-    protected String getSanityTestExecutionCommand() {
-        return EXECUTION_COMMAND;
-    }
-
-    protected int getInterval() {
-        return 10;
-    }
 
     @Before
-    public void beforeTest() {
-        mongoTemplate.getCollectionNames().forEach(collectionName -> mongoTemplate.dropCollection(collectionName));
-        ContinuousDataModel continuousDataModel = new ContinuousDataModel();
-        continuousDataModel.setParameters(200, 1, 1, 1);
-        GaussianPriorModel gaussianPriorModel = new GaussianPriorModel()
-                .init(Collections.singletonList(new GaussianPriorModel.SegmentPrior().init(0, 0, 0)));
-
-        String sessionId = "test_model";
-        Instant startTime = START_DATE.minus(Duration.ofDays(30));
-        Instant endTime = START_DATE.minus(Duration.ofDays(1));
-        ModelDAO continuousModelDao = new ModelDAO(sessionId, "userId#testUser", continuousDataModel, startTime, endTime);
-
-        ModelDAO priorModelDao = new ModelDAO(sessionId, null, gaussianPriorModel, startTime, endTime);
-        mongoTemplate.insert(continuousModelDao, "model_numberOfSuccessfulFileAction.userId.file.hourly");
-        mongoTemplate.insert(priorModelDao, "model_numberOfSuccessfulFileAction.userId.prior.global.file.hourly");
+    public void setUp() {
+        mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
+        modelsCacheService.resetCache();
     }
 
     /**
-     * Generate 6 events per hour.
-     * Run feature aggregation app for 1 hour
-     * Operation type of all the events is "open"
-     * Create model for numberOfSuccessfulFileAction.userId.file.hourly with N=200 and mean=1
+     * Test feature scores and feature values of all features.
      * <p>
-     * Expected result:
-     * scored_feature_aggr__numberOfSuccessfulFileActionUserIdFileHourly collection:
-     * featureValue of each event is 6.
-     * score greater then 0
+     * user get high feature values, while user has  low anomalies model.
      *
-     * @param generatedData generated data
+     * @throws GeneratorException
      */
-    @Override
-    protected void assertSanityTest(List generatedData) {
-        String openFileCollectionName = "scored_feature_aggr__numberOfSuccessfulFileActionUserIdFileHourly";
-        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = mongoTemplate.findAll(ScoredFeatureAggregationRecord.class, openFileCollectionName);
+    @Test
+    public void lowAnomaliesUserTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 1;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 2;
 
+        String contextId = "user";
+        Set<String> contextIdSet = new HashSet<>();
+        contextIdSet.add("userId#" + contextId);
+
+
+        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
+        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
+        Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
+
+        createModels(contextIdSet, start, 50, 2.6, 0.19, 5);
+
+        String command = String.format(COMMAND, ADE_EVENT_TYPE, start, end, 3600);
+        executeAndAssertCommandSuccess(command);
+
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet = new HashSet<>();
+        for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(aggregatedFeatureEventConf.getName(), AggregatedFeatureType.FEATURE_AGGREGATION);
+            aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
+        }
+
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, timeRange);
+
+        Map<String, Double> featureToScore = getExpectedFeatureToScoreOfLowAnomaliesUser();
+        Map<String, Double> featureToValue = getExpectedFeatureToValue();
         for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
-            Assert.assertTrue(scoredFeatureAggregationRecord.getScore() > 0);
-            Assert.assertTrue(scoredFeatureAggregationRecord.getFeatureValue() == 6);
+            Assert.assertTrue(featureToScore.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getScore()));
+            Assert.assertTrue(featureToValue.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getFeatureValue()));
         }
     }
 
+    /**
+     * Test feature scores and feature values of all features.
+     * <p>
+     * user get high/low/avg feature values (depends on feature), while user has avg anomalies model.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void avgAnomaliesUserTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 1;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 2;
+
+        String contextId = "user";
+        Set<String> contextIdSet = new HashSet<>();
+        contextIdSet.add("userId#" + contextId);
+
+        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
+
+        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
+        Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
+
+        //numOfRecords to featureVlue
+        //10 -> 1
+        //10 -> 2
+        //10 -> 5
+        //20 -> 12
+        createModels(contextIdSet, start, 50, 6.4, 0.679, 12);
+
+        String command = String.format(COMMAND, ADE_EVENT_TYPE, start, end, 3600);
+        executeAndAssertCommandSuccess(command);
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet = new HashSet<>();
+        for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(aggregatedFeatureEventConf.getName(), AggregatedFeatureType.FEATURE_AGGREGATION);
+            aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
+        }
+
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, timeRange);
+
+        Map<String, Double> featureToScore = getExpectedFeatureToScoreOfAvgAnomaliesUser();
+        Map<String, Double> featureToValue = getExpectedFeatureToValue();
+        for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
+            Assert.assertTrue(featureToScore.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getScore()));
+            Assert.assertTrue(featureToValue.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getFeatureValue()));
+        }
+    }
+
+
+    /**
+     * Test score of user with same behaviour with different modes.
+     * mean and maxValue of model grows gradually over the time.
+     * result: gradually reduced score.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void graduallyRisingScoreTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 1;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 2;
+
+        String contextId = "user";
+        Set<String> contextIdSet = new HashSet<>();
+        contextIdSet.add("userId#" + contextId);
+
+        List<Pair<Double, Double>> meanToMaxValueList = new ArrayList<>();
+        meanToMaxValueList.add(new Pair<>(0.001, 0.01));
+        meanToMaxValueList.add(new Pair<>(1.0, 4.0));
+        meanToMaxValueList.add(new Pair<>(4.0, 6.0));
+        meanToMaxValueList.add(new Pair<>(10.0, 12.0));
+        meanToMaxValueList.add(new Pair<>(20.0, 36.0));
+        meanToMaxValueList.add(new Pair<>(22.0, 38.0));
+        meanToMaxValueList.add(new Pair<>(30.0, 38.0));
+        meanToMaxValueList.add(new Pair<>(36.0, 38.0));
+
+        Instant startInstant = Instant.now();
+        Instant endInstant = Instant.EPOCH;
+        int numOfDays = 0;
+        for (Pair<Double, Double> pair : meanToMaxValueList) {
+            TimeRange timeRange = generateData(new FileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom - numOfDays, daysBackTo - numOfDays, contextId);
+            Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
+            Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
+            createModels(contextIdSet, start, 50, pair.getKey(), 0.19, pair.getValue());
+
+            if (startInstant.isAfter(start)) {
+                startInstant = start;
+            }
+            if (endInstant.isBefore(end)) {
+                endInstant = end;
+            }
+            numOfDays += 2;
+        }
+
+        String command = String.format(COMMAND, ADE_EVENT_TYPE, startInstant, endInstant, 3600);
+        executeAndAssertCommandSuccess(command);
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet = new HashSet<>();
+        for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(aggregatedFeatureEventConf.getName(), AggregatedFeatureType.FEATURE_AGGREGATION);
+            aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
+        }
+
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, new TimeRange(startInstant, endInstant));
+
+
+        Instant start = startInstant;
+        scoredFeatureAggregationRecords.stream().filter(record -> record.getStartInstant().equals(start)).collect(Collectors.toList()).forEach(record -> {
+                    Double score = record.getScore();
+                    Assert.assertTrue(score > 0);
+
+                    String featureName = record.getFeatureName();
+                    List<ScoredFeatureAggregationRecord> filteredRecordsByFeature = scoredFeatureAggregationRecords.stream().filter(r -> r.getFeatureName().equals(featureName)).collect(Collectors.toList());
+                    List<Double> results = filteredRecordsByFeature.stream().sorted(
+                            Comparator.comparing(r -> r.getStartInstant())).map(r -> r.getScore()).collect(Collectors.toList());
+
+                    for (Double result : results) {
+                        Assert.assertTrue(result <= score);
+                        score = result;
+                    }
+                }
+        );
+    }
+
+
+    /**
+     * Test that only feature that related to file open have been created
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void fileOpenedFeaturesTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 1;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 2;
+
+        String contextId = "user";
+        Set<String> contextIdSet = new HashSet<>();
+        contextIdSet.add("userId#" + contextId);
+
+        List<IFileOperationGenerator> fileOperationGenerators = new ArrayList<>();
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createOpenFileOperationsGenerator());
+        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator(fileOperationGenerators);
+
+        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
+        Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
+
+        //numOfRecords to featureVlue
+        //10 -> 1
+        //10 -> 2
+        //10 -> 3
+        //20 -> 5
+        createModels(contextIdSet, start, 50, 2.6, 0.19, 5);
+
+        String command = String.format(COMMAND, ADE_EVENT_TYPE, start, end, 3600);
+        executeAndAssertCommandSuccess(command);
+
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet = new HashSet<>();
+        for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(aggregatedFeatureEventConf.getName(), AggregatedFeatureType.FEATURE_AGGREGATION);
+            aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
+        }
+
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, timeRange);
+
+        Set<String> features = new HashSet<>();
+        features.add("numberOfFailedFileActionsUserIdFileHourly");
+        features.add("numberOfSuccessfulFileActionsUserIdFileHourly");
+        features.add("numberOfDistinctFileOpenedUserIdFileHourly");
+        for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
+            Assert.assertTrue(features.contains(scoredFeatureAggregationRecord.getFeatureName()));
+        }
+    }
+
+
+    /**
+     * Test feature scores and feature values without continuous and gaussian_prior models.
+     *
+     * @throws GeneratorException
+     */
+    @Test
+    public void noModelsTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 1;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 2;
+
+        String contextId = "user";
+        Set<String> contextIdSet = new HashSet<>();
+        contextIdSet.add("userId#" + contextId);
+
+
+        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
+        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
+        Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
+
+        String command = String.format(COMMAND, ADE_EVENT_TYPE, start, end, 3600);
+        executeAndAssertCommandSuccess(command);
+
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet = new HashSet<>();
+        for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(aggregatedFeatureEventConf.getName(), AggregatedFeatureType.FEATURE_AGGREGATION);
+            aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
+        }
+
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, timeRange);
+
+        Double expectedScore = 0.0;
+        Map<String, Double> featureToValue = getExpectedFeatureToValue();
+        for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
+            Assert.assertTrue(expectedScore.equals(scoredFeatureAggregationRecord.getScore()));
+            Assert.assertTrue(featureToValue.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getFeatureValue()));
+        }
+    }
+
+
+    @Test
+    public void expectedTimeTest() throws GeneratorException {
+        int daysBackFrom = 30;
+        int durationOfProcess = 4;
+        int daysBackTo = daysBackFrom - durationOfProcess;
+        int startHourOfDay = 1;
+        int endHourOfDay = 2;
+
+        String contextId = "user";
+        Set<String> contextIdSet = new HashSet<>();
+        contextIdSet.add("userId#" + contextId);
+
+
+        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
+        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
+        Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
+
+        createModels(contextIdSet, start, 50, 2.6, 0.19, 5);
+        createModels(contextIdSet, start.plus(Duration.ofDays(2)), 50, 2.6, 0.19, 5);
+
+        String command = String.format(COMMAND, ADE_EVENT_TYPE, start.plus(Duration.ofDays(1)), end.minus(Duration.ofDays(1)), 3600);
+        executeAndAssertCommandSuccess(command);
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        Set<AggregatedDataPaginationParam> aggregatedDataPaginationParamSet = new HashSet<>();
+        for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
+            AggregatedDataPaginationParam aggregatedDataPaginationParam = new AggregatedDataPaginationParam(aggregatedFeatureEventConf.getName(), AggregatedFeatureType.FEATURE_AGGREGATION);
+            aggregatedDataPaginationParamSet.add(aggregatedDataPaginationParam);
+        }
+
+        List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = scoredFeatureAggregatedReader.readRecords(aggregatedDataPaginationParamSet, contextIdSet, timeRange);
+
+        //Assert that features created in expected time range.
+        for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
+            Assert.assertTrue(scoredFeatureAggregationRecord.getStartInstant().getEpochSecond() >= start.plus(Duration.ofDays(1)).getEpochSecond());
+            Assert.assertTrue(scoredFeatureAggregationRecord.getStartInstant().getEpochSecond() < end.minus(Duration.ofDays(1)).getEpochSecond());
+        }
+    }
+
+    /**
+     * Generate records every 10 minutes.
+     * create context and time generators.
+     *
+     * @param fileOperationTpeGenerator file operationTpe generator
+     * @param startHourOfDay            start hour of day
+     * @param endHourOfDay              end hour of day
+     * @param daysBackFrom
+     * @param daysBackTo
+     * @param contextIdPattern          contextId pattern for contextIdGenerator
+     * @return TimeRange of records
+     * @throws GeneratorException
+     */
+    public TimeRange generateData(FileOperationGenerator fileOperationTpeGenerator, int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, String contextIdPattern) throws GeneratorException {
+
+        StringRegexCyclicValuesGenerator contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
+        TimeGenerator timeGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 10, daysBackFrom, daysBackTo);
+
+        EnrichedRandomDeterministicFileGenerator enrichedRandomDeterministicFileGenerator =
+                new EnrichedRandomDeterministicFileGenerator(timeGenerator, contextIdGenerator, fileOperationTpeGenerator);
+        List<EnrichedFileRecord> enrichedFileRecords = enrichedRandomDeterministicFileGenerator.generate();
+
+        EnrichedRecordsMetadata recordsMetadata = new EnrichedRecordsMetadata("file", Instant.now(), Instant.now());
+        enrichedDataStore.store(recordsMetadata, enrichedFileRecords);
+
+        Instant start = enrichedFileRecords.stream().min(Comparator.comparing(EnrichedFileRecord::getStartInstant)).get().getStartInstant();
+        Instant end = enrichedFileRecords.stream().max(Comparator.comparing(EnrichedFileRecord::getStartInstant)).get().getStartInstant();
+
+        return new TimeRange(start, end);
+    }
+
+    /**
+     * Build expected scores due to results of the test
+     *
+     * @return
+     */
+    private Map<String, Double> getExpectedFeatureToScoreOfLowAnomaliesUser() {
+        Map<String, Double> featureToScore = new HashedMap();
+        featureToScore.put("numberOfSuccessfulFileActionsUserIdFileHourly", 100.0);
+        featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfFileMovedUserIdFileHourly", 100.0);
+        featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 100.0);
+        featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfFileDeletedUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 99.81836346749674);
+
+        return featureToScore;
+    }
+
+    /**
+     * Build expected scores due to results of the test
+     *
+     * @return
+     */
+    private Map<String, Double> getExpectedFeatureToScoreOfAvgAnomaliesUser() {
+        Map<String, Double> featureToScore = new HashedMap();
+        featureToScore.put("numberOfSuccessfulFileActionsUserIdFileHourly", 100.0);
+        featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfFileMovedUserIdFileHourly", 98.32706265874862);
+        featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 98.32706265874862);
+        featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfFileDeletedUserIdFileHourly", 0.0);
+        featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 0.0);
+        return featureToScore;
+    }
+
+
+    /**
+     * Build expected values due to results of the test
+     *
+     * @return
+     */
+    private Map<String, Double> getExpectedFeatureToValue() {
+        Map<String, Double> featureToValue = new HashedMap();
+        featureToValue.put("numberOfSuccessfulFileActionsUserIdFileHourly", 36.0);
+        featureToValue.put("numberOfDistinctFileOpenedUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfFileMovedUserIdFileHourly", 12.0);
+        featureToValue.put("numberOfDistinctFolderOpenedUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfFailedFileActionsUserIdFileHourly", 12.0);
+        featureToValue.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfFileDeletedUserIdFileHourly", 6.0);
+        featureToValue.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 6.0);
+        return featureToValue;
+    }
+
+    /**
+     * Create models:
+     * create continuous model by given params
+     * create gaussian_prior model by continuous model.
+     *
+     * @param contextIds contextIds
+     * @param endDate    endDate
+     * @param N          population size.
+     * @param mean       mean.
+     * @param sd         standard deviation.
+     * @param maxValue   maximal value.
+     */
+    private void createModels(Set<String> contextIds, Instant endDate, long N, double mean, double sd, double maxValue) {
+
+        //add users in order to provide enough models for GaussianPriorModel.
+        for (int i = 1; i < 30; i++) {
+            contextIds.add("userId#user" + i);
+        }
+
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<ModelConf> modelConfs = modelConfService.getModelConfs();
+        List<Model> models = new ArrayList<>();
+        for (ModelConf modelConf : modelConfs) {
+            if (modelConf.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf) {
+                for (String contextId : contextIds) {
+                    ContinuousDataModel continuousDataModel = new ContinuousDataModel().setParameters(N, round(mean), round(sd), round(maxValue));
+                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, continuousDataModel, endDate.minus(Duration.ofDays(90)), endDate);
+                    mongoTemplate.insert(modelDao, "model_" + modelConf.getName());
+                    models.add(continuousDataModel);
+
+                }
+            } else if (modelConf.getModelBuilderConf() instanceof GaussianPriorModelBuilderConf) {
+                GaussianPriorModelBuilderConf config = (GaussianPriorModelBuilderConf) modelConf.getModelBuilderConf();
+                GaussianPriorModelBuilderFactory gaussianPriorModelBuilderFactory = new GaussianPriorModelBuilderFactory();
+                IModelBuilder modelBuilder = gaussianPriorModelBuilderFactory.getProduct(modelConf.getModelBuilderConf());
+                Model model = modelBuilder.build(models);
+                ModelDAO modelDao = new ModelDAO("test-session-id", null, model, endDate.minus(Duration.ofDays(90)), endDate);
+                mongoTemplate.insert(modelDao, "model_" + modelConf.getName());
+                models = new ArrayList<>();
+            }
+        }
+    }
+
+    /**
+     *
+     * @param value
+     * @return rounded value
+     */
+    private static double round(double value) {
+        return Math.round(value * 1000000) / 1000000d;
+    }
+
+
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class, FeatureAggregationsConfigurationTest.class, PresidioCommands.class, EnrichedSuccessfulFileOpenedGeneratorConfig.class})
+    @Import({FeatureAggregationsConfigurationTest.class, PresidioCommands.class, BaseAppTest.springConfig.class, ModelStoreConfig.class})
     protected static class featureAggregationsTestConfig {
     }
 }
