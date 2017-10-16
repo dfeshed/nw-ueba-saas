@@ -20,12 +20,14 @@ public class WeightsModelBuilderAlgorithm {
 
     static final double MAX_ALLOWED_WEIGHT_DEFAULT = 0.1;
     static final double MIN_ALLOWED_WEIGHT_DEFAULT = MAX_ALLOWED_WEIGHT_DEFAULT*0.1;
-    private static final double PENALTY_LOG_BASE = 5;
-    private static final double SIMULATION_WEIGHT_DECAY_FACTOR = 0.8;
+    private static final double PENALTY_LOG_BASE_DEFAULT = 5;
+    private static final double SIMULATION_WEIGHT_DECAY_FACTOR_DEFAULT = 0.8;
     private BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory;
     private ClustersContributionsSimulator clustersContributionsSimulator;
     private double maxAllowedWeight = MAX_ALLOWED_WEIGHT_DEFAULT;
     private double minAllowedWeight = MIN_ALLOWED_WEIGHT_DEFAULT;
+    double peneltyLogBase = PENALTY_LOG_BASE_DEFAULT;
+    double simulationWeightDecayFactor = SIMULATION_WEIGHT_DECAY_FACTOR_DEFAULT;
 
     public WeightsModelBuilderAlgorithm(BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory,
                                         ClustersContributionsSimulator clustersContributionsSimulator) {
@@ -34,13 +36,19 @@ public class WeightsModelBuilderAlgorithm {
     }
 
     public WeightsModelBuilderAlgorithm(BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory,
-                                        ClustersContributionsSimulator clustersContributionsSimulator, double maxAllowedWeight, double minAllowedWeight) {
+                                        ClustersContributionsSimulator clustersContributionsSimulator, double maxAllowedWeight, double minAllowedWeight,
+                                        double peneltyLogBase, double simulationWeightDecayFactor) {
         this.aggregatedFeatureReliabilityFactory = aggregatedFeatureReliabilityFactory;
         this.clustersContributionsSimulator = clustersContributionsSimulator;
         Assert.isTrue(maxAllowedWeight > minAllowedWeight,
                 String.format("max allowed weight should be bigger than min allowed weight. maxAllowedWeight: %f, minAllowedWeight %f",maxAllowedWeight, minAllowedWeight));
+        Assert.isTrue(peneltyLogBase > 1, String.format("penelty log base  should be bigger than 1. peneltyLogBase: %f", peneltyLogBase));
+        Assert.isTrue(simulationWeightDecayFactor > 0 && simulationWeightDecayFactor < 1,
+                String.format("simulation weight decay factor is expected to be in the range (0,1). simulationWeightDecayFactor: %f",simulationWeightDecayFactor));
         this.maxAllowedWeight = maxAllowedWeight;
         this.minAllowedWeight = minAllowedWeight;
+        this.peneltyLogBase = peneltyLogBase;
+        this.simulationWeightDecayFactor = simulationWeightDecayFactor;
     }
 
     /**
@@ -130,7 +138,7 @@ public class WeightsModelBuilderAlgorithm {
                 .filter(clusterConf -> clusterToContribution.get(clusterConf) == maxContribution)
                 // and decrease their weight in hope the next simulation will be better
                 .forEach(clusterConfConsumer -> {
-                    clusterConfConsumer.setWeight(clusterConfConsumer.getWeight() * SIMULATION_WEIGHT_DECAY_FACTOR);
+                    clusterConfConsumer.setWeight(clusterConfConsumer.getWeight() * simulationWeightDecayFactor);
                     logger.debug("updating weight: {}", clusterConfConsumer.toString());
                 });
     }
@@ -182,7 +190,7 @@ public class WeightsModelBuilderAlgorithm {
      */
     private double normalizePenalty(double penalty) {
         // penalty >= 0
-        double penaltyLog = Math.log(PENALTY_LOG_BASE + penalty / 10.0) / Math.log(PENALTY_LOG_BASE);
+        double penaltyLog = Math.log(peneltyLogBase + penalty / 10.0) / Math.log(peneltyLogBase);
         // penaltyLog >= 1
         double normalizedPenalty = 1.0 - 1.0 / penaltyLog;
         // 0 <= normalizedPenalty < 1

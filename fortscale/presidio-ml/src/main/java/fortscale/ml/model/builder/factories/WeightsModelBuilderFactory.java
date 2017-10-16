@@ -28,6 +28,10 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     private Double maxAllowedWeight;
     @Value("${presidio.ade.model.smart.weights.builder.max.allowed.weight:0.01}")
     private Double minAllowedWeight;
+    @Value("${presidio.ade.model.smart.weights.builder.penelty.log.base:5}")
+    private Double peneltyLogBase;
+    @Value("${presidio.ade.model.smart.weights.builder.simulation.weight.decay.factor:0.8}")
+    private Double simulationWeightDecayFactor;
 
     @Override
     public String getFactoryName() {
@@ -39,7 +43,9 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
         BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> listIntegerAggregatedFeatureReliabilityBiFunction = (smartAggregatedRecordDataContainers, numOfContexts) -> new AggregatedFeatureReliability(smartAggregatedRecordDataContainers, numOfContexts);
         SmartWeightsScorerAlgorithm scorerAlgorithm = new SmartWeightsScorerAlgorithm();
         ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(scorerAlgorithm, useWeightForContributionCalculation);
-        WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator, maxAllowedWeight, minAllowedWeight);
+        WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator,
+                maxAllowedWeight, minAllowedWeight,
+                peneltyLogBase, simulationWeightDecayFactor);
         return new WeightsModelBuilder((WeightsModelBuilderConf) factoryConfig, algorithm, smartRecordConfService);
     }
 }
