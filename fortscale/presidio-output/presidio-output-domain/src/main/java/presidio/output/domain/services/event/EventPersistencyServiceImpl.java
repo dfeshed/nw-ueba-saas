@@ -67,14 +67,13 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         return eventRepository.findLatestEventForUser(userId);
     }
 
-    @Override
     /**
-     * Determine the bean property type for the given property from the
-     * given classes/interfaces, if possible.
-     * @param propertyName the name of the bean property
-     * @param beanClasses the classes to check against
+     * Determine the feature property type
+     * @param schema the schema of the event
+     * @param feature the feature name (i.e: operationType
      * @return the property type, or {@code Object.class} as fallback
      */
+    @Override
     public Class<?> findFeatureType(Schema schema, String feature) {
         String eventClassName = toClassNameTranslator.toClassName(schema);
         Class<?> featureType = Object.class;
@@ -83,7 +82,8 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
             featureType = BeanUtils.findPropertyType(feature, clazz);
 
         } catch (Exception ex) {
-            // Swallow and continue
+            // swallow and continue
+            logger.trace("Cannot find feature {} in schema {}", feature, schema);
         }
 
         return featureType;
