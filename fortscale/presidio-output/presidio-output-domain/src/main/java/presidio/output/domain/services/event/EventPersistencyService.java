@@ -33,6 +33,12 @@ public interface EventPersistencyService {
 
     EnrichedEvent findLatestEventForUser(String userId);
 
+    /**
+     * Determine the feature property type
+     * @param schema the schema of the event
+     * @param feature the feature name (i.e: operationType
+     * @return the property type, or {@code Object.class} as fallback
+     */
     Class findFeatureType(Schema schema, String feature);
 
 }
