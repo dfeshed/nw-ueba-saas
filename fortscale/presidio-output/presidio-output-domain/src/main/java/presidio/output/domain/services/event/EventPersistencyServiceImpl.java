@@ -77,7 +77,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
 
         } catch (Exception ex) {
             // swallow and continue
-            logger.trace("Cannot find feature {} in schema {}", feature, schema);
+            logger.error("Cannot find feature {} in schema {}", feature, schema);
         }
 
         return featureType;
