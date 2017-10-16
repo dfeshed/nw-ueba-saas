@@ -11,17 +11,6 @@
     </parent>
 
     <artifactId>fortscale-flume-sinks</artifactId>
-
-    <repositories>
-        <repository>
-            <id>snapshots</id>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>

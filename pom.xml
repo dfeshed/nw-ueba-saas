@@ -76,6 +76,21 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <profiles>
 
         <profile>
