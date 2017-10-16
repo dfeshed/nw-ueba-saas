@@ -17,15 +17,88 @@ test('it can get preferences for given preference type', function(assert) {
   const request = service.get('request');
   request.promiseRequest = () => {
     return new rsvp.Promise(function(resolve) {
-      resolve({ defaultAnalysisView: 'text' });
+      resolve({ data: { defaultAnalysisView: 'text' } });
     });
   };
   const done = assert.async();
   service.getPreferences('events').then((response) => {
     assert.ok(response, 'Expected promise callback to be invoked with a response.');
-    assert.equal(response.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
+    assert.equal(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
     done();
   });
+});
+
+/**
+ * @private
+ * @Test:: This will validate get preferences should not server call next time. If preference is already called once for same module.
+ * In this case service will be caching preferences and next time preferences should return from cache not from server.
+ */
+test('it should not make server call if preferences requested for same module next time', function(assert) {
+  const service = this.subject();
+  let preferencesRequestedFromServer = 0;
+  assert.ok(service);
+
+  const request = service.get('request');
+  request.promiseRequest = () => {
+    preferencesRequestedFromServer++;
+    if (preferencesRequestedFromServer > 1) {
+      assert.notOk(false, 'Should not come here next time');
+    }
+    return new rsvp.Promise(function(resolve) {
+      resolve({ data: { defaultAnalysisView: 'text' } });
+    });
+  };
+  const done = assert.async(2);
+  service.getPreferences('someModule').then((response) => {
+    assert.ok(response, 'Expected promise callback to be invoked with a response.');
+    assert.equal(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
+    done();
+
+    //  Calling getPreferences again to test server call.
+    service.getPreferences('someModule').then((response) => {
+      assert.ok(response, 'Expected promise callback to be invoked with a response.');
+      assert.equal(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
+      done();
+    });
+  });
+
+});
+
+/**
+ * @private
+ * @Test:: This will validate get preferences should not make server call if preference is already saved. In this case service will be
+ * caching preferences and next time preferences should return from cache not from server.
+ */
+test('it should not make server call if preferences is saved ', function(assert) {
+  const service = this.subject();
+  let preferencesRequestedFromServer = 0;
+  assert.ok(service);
+
+  const request = service.get('request');
+  request.promiseRequest = () => {
+    preferencesRequestedFromServer++;
+    if (preferencesRequestedFromServer > 1) {
+      assert.notOk('Should not come here next time');
+    }
+    return new rsvp.Promise(function(resolve) {
+      resolve({ data: { defaultAnalysisView: 'text' } });
+    });
+  };
+  const done = assert.async(2);
+  service.setPreferences('someModule', { data: 'someData' }).then((response) => {
+    assert.ok(response, 'Expected promise callback to be invoked with a response.');
+    assert.equal(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
+    done();
+
+    //  Calling getPreferences again to test server call.
+    service.getPreferences('someModule').then((response) => {
+      assert.ok(response, 'Expected promise callback to be invoked with a response.');
+      assert.ok(response.data, 'someData', 'Expected promise callback to be invoked with a response.');
+      assert.notOk(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
+      done();
+    });
+  });
+
 });
 
 /**
@@ -65,7 +138,7 @@ test('it should not get preferences for error conditions', function(assert) {
     });
   };
   const done = assert.async();
-  service.getPreferences('events').then(() => {
+  service.getPreferences('events1').then(() => {
     assert.fail('Server is throwing error this should not pass.');
     done();
   }).catch((errorObj) => {

@@ -1,6 +1,17 @@
 import Service from 'ember-service';
 import service from 'ember-service/inject';
-import { getSocketDetails } from 'preferences/utils/preference-socket-provider';
+import rsvp from 'rsvp';
+import Immutable from 'seamless-immutable';
+
+/**
+ * This object will cache preferences on module basis. So next time user is requesting for any
+ * module preferences then same will be returned using this cached object.
+ *
+ * This will help to avoid multiple server calls.
+ *   (e.g., For investigate, default view type, default download type ).
+ * @private
+ */
+let preferencesObj = Immutable.from({ });
 
 /**
  * @class Preferences service
@@ -22,9 +33,24 @@ export default Service.extend({
    * @public
    */
   getPreferences(preferenceFor) {
-    const requestPayload = getSocketDetails(preferenceFor, 'get');
-    requestPayload.query = { };
-    return this.get('request').promiseRequest(requestPayload);
+    const modulePref = preferencesObj.getIn([preferenceFor]);
+    if (modulePref) {
+      return new rsvp.Promise(function(resolve) {
+        resolve(modulePref);
+      });
+    }
+    const requestPayload = {
+      modelName: `${preferenceFor}-preferences`,
+      method: 'getPreferences',
+      query: {
+        data: preferenceFor
+      }
+    };
+    const promiseObj = this.get('request').promiseRequest(requestPayload);
+    promiseObj.then((response) => {
+      preferencesObj = preferencesObj.set(preferenceFor, response);
+    });
+    return promiseObj;
   },
 
   /**
@@ -34,22 +60,28 @@ export default Service.extend({
    * @param {Object} [preferenceObject] Need to pass JSON object to save preferences,
    * @example
    * ```js
-   *  {
-        "defaultLandingPage": null,
-        "eventsPreferences": {
-          "defaultAnalysesView": "Text"
-        },
-        "createdOn": 0,
-        "lastModifiedOn": 0
+    {
+      eventsPreferences: {
+        defaultAnalysisView: 'text'
       }
+    }
    * ```
    * @returns {Promise}
    * @public
    */
   setPreferences(preferenceFor, preferences) {
-
-    const requestPayload = getSocketDetails(preferenceFor, 'set');
-    requestPayload.query = { data: preferences };
-    return this.get('request').promiseRequest(requestPayload);
+    const requestPayload = {
+      modelName: `${preferenceFor}-preferences`,
+      method: 'setPreferences',
+      query: {
+        data: preferences
+      }
+    };
+    const promiseObj = this.get('request').promiseRequest(requestPayload);
+    promiseObj.then(() => {
+      const prefObj = preferencesObj.getIn([preferenceFor]);
+      preferencesObj = preferencesObj.set(preferenceFor, prefObj ? prefObj.merge(preferences) : preferences);
+    });
+    return promiseObj;
   }
 });
