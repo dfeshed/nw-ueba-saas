@@ -344,7 +344,8 @@ export default {
   noon: 'Noon',
   investigate: {
     controls: {
-      toggle: 'Show/Hide Events Panel'
+      toggle: 'Show/Hide Events Panel',
+      togglePreferences: 'Toggle Investigate Preferences'
     },
     title: 'Investigate',
     loading: 'Loading',
@@ -1417,6 +1418,12 @@ export default {
         'LiveConnect-File': 'LiveConnect',
         'LiveConnect-Domain': 'LiveConnect'
       }
+    }
+  },
+  preferences: {
+    eventsPreferences: {
+      panelTitle: 'Event Preferences',
+      triggerTip: 'Open/Hide Event Preferences'
     }
   },
   packager: {

@@ -8,15 +8,15 @@ export default Component.extend({
 
   classNames: ['rsa-preferences-panel'],
   classNameBindings: ['isExpanded'],
-  source: null,
+  launchFor: null,
 
-  request: service(),
   eventBus: service(),
 
   init() {
     this._super(arguments);
 
-    this.get('eventBus').on(`rsa-preferences-panel-${this.source}-toggled`, () => {
+    this.get('eventBus').on('toggle-rsa-preferences-panel', (launchFor) => {
+      this.set('launchFor', launchFor);
       this.toggleProperty('isExpanded');
     });
   },

@@ -344,7 +344,8 @@ export default {
   noon: 'ja_Noon',
   investigate: {
     controls: {
-      toggle: 'ja_Show/Hide Events Panel'
+      toggle: 'ja_Show/Hide Events Panel',
+      togglePreferences: 'ja_Toggle Investigate Preferences'
     },
     title: 'ja_Investigate',
     loading: 'ja_Loading',
@@ -1417,6 +1418,12 @@ export default {
         'LiveConnect-File': 'ja_LiveConnect',
         'LiveConnect-Domain': 'ja_LiveConnect'
       }
+    }
+  },
+  preferences: {
+    eventsPreferences: {
+      panelTitle: 'ja_Event Preferences',
+      triggerTip: 'ja_Open/Hide Event Preferences'
     }
   },
   packager: {

@@ -76,7 +76,8 @@
       "../component-lib",
       "../streaming-data",
       "../recon",
-      "../context"
+      "../context",
+      "../preferences"
     ]
   },
   "private": true

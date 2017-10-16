@@ -1,14 +1,12 @@
 <grid responsive>
   <box class="col-xs-3">
     <aside>
-      {{#rsa-form-button style='primary' click=(action 'togglePreferencesPanel' 'investigate')}}
-        Toggle Investigate Preferences
-      {{/rsa-form-button}}
+      {{preferences-panel-trigger launchFor="events"}}
     </aside>
   </box>
   <box class="col-xs-9">
     <page>
-      {{preferences-panel source="investigate" }}
+      {{preferences-panel}}
     </page>
   </box>
 </grid>
