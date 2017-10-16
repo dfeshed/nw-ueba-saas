@@ -194,7 +194,7 @@ public class UserPersistencyServiceTest {
         userList.add(user7);
         userList.add(user8);
         userPersistencyService.save(userList);
-        Page<User> foundUsers=null;
+        Page<User> foundUsers = null;
 
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder().filterByFreeText("free")
