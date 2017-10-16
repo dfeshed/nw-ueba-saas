@@ -3,6 +3,7 @@ package fortscale.ml.model.builder.smart_weights;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.utils.logging.Logger;
+import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,16 +18,29 @@ import java.util.stream.Collectors;
 public class WeightsModelBuilderAlgorithm {
     private static final Logger logger = Logger.getLogger(WeightsModelBuilderAlgorithm.class);
 
-    static final double MAX_ALLOWED_WEIGHT = 0.1;
+    static final double MAX_ALLOWED_WEIGHT_DEFAULT = 0.1;
+    static final double MIN_ALLOWED_WEIGHT_DEFAULT = MAX_ALLOWED_WEIGHT_DEFAULT*0.1;
     private static final double PENALTY_LOG_BASE = 5;
     private static final double SIMULATION_WEIGHT_DECAY_FACTOR = 0.8;
     private BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory;
     private ClustersContributionsSimulator clustersContributionsSimulator;
+    private double maxAllowedWeight = MAX_ALLOWED_WEIGHT_DEFAULT;
+    private double minAllowedWeight = MIN_ALLOWED_WEIGHT_DEFAULT;
 
     public WeightsModelBuilderAlgorithm(BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory,
                                         ClustersContributionsSimulator clustersContributionsSimulator) {
         this.aggregatedFeatureReliabilityFactory = aggregatedFeatureReliabilityFactory;
         this.clustersContributionsSimulator = clustersContributionsSimulator;
+    }
+
+    public WeightsModelBuilderAlgorithm(BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory,
+                                        ClustersContributionsSimulator clustersContributionsSimulator, double maxAllowedWeight, double minAllowedWeight) {
+        this.aggregatedFeatureReliabilityFactory = aggregatedFeatureReliabilityFactory;
+        this.clustersContributionsSimulator = clustersContributionsSimulator;
+        Assert.isTrue(maxAllowedWeight > minAllowedWeight,
+                String.format("max allowed weight should be bigger than min allowed weight. maxAllowedWeight: %f, minAllowedWeight %f",maxAllowedWeight, minAllowedWeight));
+        this.maxAllowedWeight = maxAllowedWeight;
+        this.minAllowedWeight = minAllowedWeight;
     }
 
     /**
@@ -94,6 +108,11 @@ public class WeightsModelBuilderAlgorithm {
                 bestMaxContribution = maxContribution;
                 bestClusterConfs = cloneClusterConfList(currSimulationClusterConfs);
             }
+            long numberOfClustersWithMinAllowedWeight = clusterToContribution.entrySet().stream().
+                    filter(clusterConfDoubleEntry -> clusterConfDoubleEntry.getKey().getWeight()<= minAllowedWeight).count();
+            if(numberOfClustersWithMinAllowedWeight > 0){
+                break;
+            }
             tryToImproveClusterConfs(currSimulationClusterConfs, clusterToContribution);
         }
         return bestClusterConfs;
@@ -151,8 +170,8 @@ public class WeightsModelBuilderAlgorithm {
                             // and take the worst one
                             .max()
                             .getAsDouble();
-                    // transform penalty to weight in the range (0.5 * MAX_ALLOWED_WEIGHT, MAX_ALLOWED_WEIGHT]
-                    clusterConf.setWeight(MAX_ALLOWED_WEIGHT * (1 - maxPenalty * 0.5));
+                    // transform penalty to weight in the range (0.5 * , maxAllowedWeight]
+                    clusterConf.setWeight(maxAllowedWeight * (1 - maxPenalty * 0.5));
                 });
         logger.debug("ClusterConfs based on reliability penalties:\n{}", res.toString());
         return res;

@@ -24,6 +24,10 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
 
     @Value("${presidio.ade.model.smart.weights.builder.use.weight.for.contribution.calc:true}")
     private Boolean useWeightForContributionCalculation;
+    @Value("${presidio.ade.model.smart.weights.builder.max.allowed.weight:0.1}")
+    private Double maxAllowedWeight;
+    @Value("${presidio.ade.model.smart.weights.builder.max.allowed.weight:0.01}")
+    private Double minAllowedWeight;
 
     @Override
     public String getFactoryName() {
@@ -35,7 +39,7 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
         BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> listIntegerAggregatedFeatureReliabilityBiFunction = (smartAggregatedRecordDataContainers, numOfContexts) -> new AggregatedFeatureReliability(smartAggregatedRecordDataContainers, numOfContexts);
         SmartWeightsScorerAlgorithm scorerAlgorithm = new SmartWeightsScorerAlgorithm();
         ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(scorerAlgorithm, useWeightForContributionCalculation);
-        WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator);
+        WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator, maxAllowedWeight, minAllowedWeight);
         return new WeightsModelBuilder((WeightsModelBuilderConf) factoryConfig, algorithm, smartRecordConfService);
     }
 }

@@ -68,7 +68,7 @@ public class WeightsModelBuilderAlgorithmTest {
         List<ClusterConf> clusterConfs = calculateClusterConfsViaReliability(clusterConfsPrototype);
 
         Assert.assertEquals(
-                WeightsModelBuilderAlgorithm.MAX_ALLOWED_WEIGHT,
+                WeightsModelBuilderAlgorithm.MAX_ALLOWED_WEIGHT_DEFAULT,
                 clusterConfs.get(0).getWeight(),
                 0.000001
         );
@@ -83,7 +83,7 @@ public class WeightsModelBuilderAlgorithmTest {
         List<ClusterConf> clusterConfs = calculateClusterConfsViaReliability(clusterConfsPrototype);
 
         Assert.assertEquals(
-                0.5 * WeightsModelBuilderAlgorithm.MAX_ALLOWED_WEIGHT,
+                0.5 * WeightsModelBuilderAlgorithm.MAX_ALLOWED_WEIGHT_DEFAULT,
                 clusterConfs.get(0).getWeight(),
                 0.001
         );
@@ -372,12 +372,12 @@ public class WeightsModelBuilderAlgorithmTest {
         );
         List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"));
 
-        Assert.assertEquals(0.004304264188644563, clusterConfs.get(0).getWeight(), 0.00000001);
-        Assert.assertEquals(0.004304264188644563, clusterConfs.get(1).getWeight(), 0.00000001);
-        Assert.assertEquals(0.00549146521744788, clusterConfs.get(2).getWeight(), 0.00000001);
-        Assert.assertEquals(0.004331392418624891, clusterConfs.get(3).getWeight(), 0.00000001);
-        Assert.assertEquals(9.319418502083594E-4, clusterConfs.get(4).getWeight(), 0.00000001);
-        Assert.assertEquals(9.313135499040338E-4, clusterConfs.get(5).getWeight(), 0.00000001);
+        Assert.assertEquals(0.05010823007492069, clusterConfs.get(0).getWeight(), 0.00000001);
+        Assert.assertEquals(0.05010823007492069, clusterConfs.get(1).getWeight(), 0.00000001);
+        Assert.assertEquals(0.0639290690590613, clusterConfs.get(2).getWeight(), 0.00000001);
+        Assert.assertEquals(0.050424044237296184, clusterConfs.get(3).getWeight(), 0.00000001);
+        Assert.assertEquals(0.010849231041599516, clusterConfs.get(4).getWeight(), 0.00000001);
+        Assert.assertEquals(0.010841916663386316, clusterConfs.get(5).getWeight(), 0.00000001);
         Assert.assertEquals(0.0, clusterConfs.get(6).getWeight(), 0.0);
     }
 }
