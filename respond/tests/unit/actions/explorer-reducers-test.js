@@ -154,3 +154,23 @@ test('The updateItem() reducer sets the "isTransactionUnderway" property to true
   const endState = reducers.updateItem(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });
+
+test('The updateItem() reducer updates the items and focusedItem properties', function(assert) {
+  const item = { id: 'INC-123', priority: 'LOW' };
+  const updatedItem = { id: 'INC-123', priority: 'CRITICAL' };
+  const payload = { request: { entityIds: ['INC-123'], updates: { priority: 'CRITICAL' } } };
+  const initState = {
+    ...initialState,
+    items: [item],
+    focusedItem: item
+  };
+  const expectedEndState = {
+    ...initState,
+    items: [updatedItem],
+    focusedItem: updatedItem
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { payload });
+  const endState = reducers.updateItem(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+

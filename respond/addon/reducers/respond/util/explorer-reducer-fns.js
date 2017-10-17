@@ -42,16 +42,20 @@ const _handleUpdates = (action) => {
   return (state) => {
     const { payload } = action;
     const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+    let updatedFocusItem = null;
 
     const updatedEntities = state.items.map((entity) => {
       const updatedEntity = entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
       // reset the focus item to the newly updated entity, if it exists
       if (state.focusedItem && state.focusedItem.id === updatedEntity.id) {
-        state.set('focusedItem', updatedEntity);
+        updatedFocusItem = updatedEntity;
       }
       return updatedEntity;
     });
-    return state.set('items', updatedEntities);
+    return state.merge({
+      items: updatedEntities,
+      focusedItem: updatedFocusItem ? updatedFocusItem : state.focusedItem
+    });
   };
 };
 
