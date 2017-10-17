@@ -461,6 +461,35 @@ export default {
     }
   },
   respond: {
+    aggregationRules: {
+      ruleBuilder: {
+        addConditionGroup: 'ja_Add Group',
+        removeConditionGroup: 'ja_Remove Group',
+        addCondition: 'ja_Add Condition',
+        field: 'ja_Field',
+        operator: 'ja_Operator',
+        operators: {
+          '=': 'ja_is equal to',
+          '!=': 'ja_is not equal to',
+          'begins': 'ja_begins with',
+          'ends': 'ja_ends with',
+          'contains': 'ja_contains',
+          'regex': 'ja_matches regex',
+          'in': 'ja_in',
+          'nin': 'ja_not in',
+          '>': 'ja_is greater than',
+          '>=': 'ja_is equal or greater than',
+          '<': 'ja_is less than',
+          '<=': 'ja_is equal or less than'
+        },
+        groupOperators: {
+          and: 'ja_All of these',
+          or: 'ja_Any of these',
+          not: 'ja_None of these'
+        },
+        value: 'ja_Value'
+      }
+    },
     title: 'ja_Respond',
     common: {
       yes: 'ja_Yes',

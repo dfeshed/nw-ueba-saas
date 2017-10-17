@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import aggregationRule from './aggregation-rules/aggregation-rule';
 import alertIncidentAssociation from './alerts/add-to-incident';
 import alerts from './alerts/alerts';
 import alert from './alert';
@@ -9,6 +10,7 @@ import users from './users';
 import remediationTasks from './remediation-tasks';
 
 export default combineReducers({
+  aggregationRule,
   alertIncidentAssociation,
   alerts,
   alert,

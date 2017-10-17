@@ -6,5 +6,6 @@ export default buildRoutes(function() {
   this.route('tasks');
   this.route('alerts');
   this.route('alert', { path: '/alert/:alert_id' });
+  this.route('aggregation-rule', { path: '/aggregation-rule/:rule_id' });
   this.route('not-found', { path: '*invalidrespondpath' });
 });

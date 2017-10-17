@@ -67,6 +67,20 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/alerts/delete'
       }
     },
+    'aggregation-rules': {
+      socketUrl,
+      queryRecord: {
+        subscriptionDestination: '/user/queue/aggregation/rule',
+        requestDestination: '/ws/respond/aggregation/rule'
+      }
+    },
+    'aggregation-fields': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/aggregation/fields',
+        requestDestination: '/ws/respond/aggregation/fields'
+      }
+    },
     'alerts-count': {
       socketUrl,
       queryRecord: {

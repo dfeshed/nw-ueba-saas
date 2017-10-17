@@ -4,8 +4,10 @@ import journal from './journal';
 import dictionaries from './dictionaries';
 import alerts from './alerts';
 import RemediationTasks from './remediation-tasks';
+import aggregationRules from './aggregation-rules';
 
 export {
+  aggregationRules,
   Incidents,
   RemediationTasks,
   users,

@@ -1,0 +1,13 @@
+<header>
+  <hbox class="rule-builder-toolbar">
+    {{#rsa-form-button
+      defaultAction='addGroup'}}
+      {{t 'respond.aggregationRules.ruleBuilder.addConditionGroup'}}
+    {{/rsa-form-button}}
+  </hbox>
+</header>
+<section class="condition-groups">
+  {{#if rootGroup}}
+    {{rule-builder/condition-group info=rootGroup isRootGroup=true}}
+  {{/if}}
+</section>

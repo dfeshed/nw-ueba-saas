@@ -461,6 +461,35 @@ export default {
     }
   },
   respond: {
+    aggregationRules: {
+      ruleBuilder: {
+        addConditionGroup: 'Add Group',
+        removeConditionGroup: 'Remove Group',
+        addCondition: 'Add Condition',
+        field: 'Field',
+        operator: 'Operator',
+        operators: {
+          '=': 'is equal to',
+          '!=': 'is not equal to',
+          'begins': 'begins with',
+          'ends': 'ends with',
+          'contains': 'contains',
+          'regex': 'matches regex',
+          'in': 'in',
+          'nin': 'not in',
+          '>': 'is greater than',
+          '>=': 'is equal or greater than',
+          '<': 'is less than',
+          '<=': 'is equal or less than'
+        },
+        groupOperators: {
+          and: 'All of these',
+          or: 'Any of these',
+          not: 'None of these'
+        },
+        value: 'Value'
+      }
+    },
     title: 'Respond',
     common: {
       yes: 'Yes',

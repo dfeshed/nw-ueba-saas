@@ -1,0 +1,60 @@
+<div class="condition-controls">
+  <div class="condition-control field">
+    <label>
+      <span class="rsa-form-label">{{ t 'respond.aggregationRules.ruleBuilder.field'}}</span>
+      {{#power-select
+        options=fields
+        selected=selectedField
+        searchEnabled=false
+        onchange=(action 'handleConditionFieldChange') as |field|}}
+        {{field.name}}
+      {{/power-select}}
+    </label>
+  </div>
+  {{#if selectedField}}
+    <div class="condition-control operator">
+      <label>
+        <span class="rsa-form-label">{{ t 'respond.aggregationRules.ruleBuilder.operator'}}</span>
+        {{#power-select
+          options=operators
+          selected=selectedOperator
+          searchEnabled=false
+          onchange=(action 'handleConditionOperatorChange') as |operator|}}
+          {{t (concat 'respond.aggregationRules.ruleBuilder.operators.' operator)}}
+        {{/power-select}}
+      </label>
+    </div>
+    <div class="condition-control value">
+      {{#if (eq selectedField.type 'combobox')}}
+        <label>
+          <span class="rsa-form-label">{{ t 'respond.aggregationRules.ruleBuilder.value'}}</span>
+          {{#power-select
+            options=selectedField.list
+            selected=selectedCategory
+            searchEnabled=false
+            onchange=(action 'handleCategoryChange') as |field|}}
+            {{field.name}}
+          {{/power-select}}
+        </label>
+      {{else if (eq selectedField.type 'datefield')}}
+        {{rsa-form-datetime
+          value=(unbound info.value)
+          label=(t 'respond.aggregationRules.ruleBuilder.value')
+          onChange=(action 'handleDateChange')}}
+      {{else}}
+        <label class="rsa-form-input">
+          <span class="rsa-form-label">{{ t 'respond.aggregationRules.ruleBuilder.value'}}</span>
+          {{input
+            focus-out='handleInputChange'
+            value=(readonly info.value)
+            type=(if (eq selectedField.type 'numberfield') 'number' 'text') }}
+        </label>
+      {{/if}}
+    </div>
+  {{/if}}
+</div>
+<div class="delete-condition">
+  {{#rsa-form-button class="delete" isIconOnly=true defaultAction=(action 'removeCondition' info.id)}}
+    {{rsa-icon name='close'}}
+  {{/rsa-form-button}}
+</div>
