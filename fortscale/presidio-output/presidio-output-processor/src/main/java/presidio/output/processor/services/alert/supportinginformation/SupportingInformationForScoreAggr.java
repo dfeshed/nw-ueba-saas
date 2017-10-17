@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -27,7 +26,10 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
