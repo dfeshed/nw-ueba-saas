@@ -21,6 +21,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.spring.TestConfig;
 
 import java.util.*;
 
@@ -28,10 +29,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
 public class UserPersistencyServiceTest {
 
     @Autowired

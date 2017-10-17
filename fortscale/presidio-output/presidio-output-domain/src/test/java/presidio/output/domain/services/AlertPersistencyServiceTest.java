@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.spring.TestConfig;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -35,10 +36,9 @@ import static org.junit.Assert.*;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
 public class AlertPersistencyServiceTest {
 
     @Autowired
