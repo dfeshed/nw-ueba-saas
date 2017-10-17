@@ -6,6 +6,8 @@ import { handle } from 'redux-pack';
 // Reducer for handler all gloal state related to adding one or more alerts to an incident. This feature includes
 // searching for incidents, retrieving search results, selecting results.
 
+const CLOSED_STATUSES = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
+
 const initialState = {
   incidentSearchText: null,
   incidentSearchSortBy: 'created',
@@ -40,8 +42,9 @@ const reducer = reduxActions.handleActions({
   },
   [ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopSearchStream', payload),
   [ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
+    const openIncidents = data.filter((incident) => CLOSED_STATUSES.indexOf(incident.status) === -1);
     return state.merge(
-      { incidentSearchResults: [...state.incidentSearchResults, ...data],
+      { incidentSearchResults: [...state.incidentSearchResults, ...openIncidents],
         incidentSearchStatus: meta.complete ? 'complete' : 'streaming'
       }
     );

@@ -50,11 +50,12 @@ test('With ALERTS_SEARCH_INCIDENTS_ERROR fails, the incidentSearchStatus changes
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('With ALERTS_SEARCH_INCIDENTS_RETRIEVE_BATCH, the incidentSearchResults are updated', function(assert) {
-  const incidentSearchResults = [ { id: 'INC-123' }, { id: 'INC-321' }];
+test('With ALERTS_SEARCH_INCIDENTS_RETRIEVE_BATCH, the incidentSearchResults are updated excluding any CLOSED incidents', function(assert) {
+  const closedIncident = { id: 'INC-789', status: 'CLOSED' };
+  const incidentSearchResults = [ { id: 'INC-123' }, { id: 'INC-321' }, closedIncident];
   const expectedEndState = {
     ...initialState,
-    incidentSearchResults,
+    incidentSearchResults: incidentSearchResults.without(closedIncident),
     incidentSearchStatus: 'streaming'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
