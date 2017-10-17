@@ -107,7 +107,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 IndicatorEvent event = new IndicatorEvent();
                 event.setFeatures(rawEventFeatures);
                 event.setIndicatorId(indicator.getId());
-                event.setEventTime(rawEvent.getEventDate().getLong(ChronoField.INSTANT_SECONDS));
+                event.setEventTime(Date.from(rawEvent.getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
 
                 if (CollectionUtils.isNotEmpty(adeScoredEnrichedRecords)) {

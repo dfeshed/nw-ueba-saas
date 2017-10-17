@@ -391,7 +391,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         presidio.webapp.model.Event restEvent = new presidio.webapp.model.Event();
         restEvent.setId(indicatorEvent.getId());
         restEvent.setSchema(indicatorEvent.getSchema().name());
-        restEvent.setTime(BigDecimal.valueOf(indicatorEvent.getEventTime()));
+        restEvent.setTime(BigDecimal.valueOf(indicatorEvent.getEventTime().getTime()/1000));
         restEvent.putAll(indicatorEvent.getFeatures());
         return restEvent;
     }
@@ -404,7 +404,6 @@ public class RestAlertServiceImpl implements RestAlertService {
 
             CountAggregation aggr = (CountAggregation) historicalData.getAggregation();
             List<Bucket<String, Double>> buckets = aggr.getBuckets();
-            CountBucket countBucket = new CountBucket();
             restHistoricalData = new HistoricalDataCountAggregation();
             CountBuckets restBuckets = new CountBuckets();
             for (Bucket<String, Double> bucket : buckets) {
