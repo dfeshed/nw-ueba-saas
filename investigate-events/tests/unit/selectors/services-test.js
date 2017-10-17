@@ -6,32 +6,37 @@ module('Unit | Selectors | services');
 
 const endTime = new Date() / 1000 | 0;
 const startTime = endTime - 3600;
-const services = {
-  data: [
-    { id: 'id1', displayName: 'Service Name', name: 'SN' },
-    { id: 'id2', displayName: 'Service Name2', name: 'SN2' }
-  ]
-};
-const queryNode = {
-  serviceId: 'sd1',
-  startTime,
-  endTime,
-  metaFilter: {
-    conditions: [
-      {
-        queryString: 'foo=foo-value',
-        isKeyValuePair: true,
-        key: 'foo',
-        value: 'foo-value'
+const state = Immutable.from({
+  investigate: {
+    services: {
+      data: [
+        { id: 'id1', displayName: 'Service Name', name: 'SN' },
+        { id: 'id2', displayName: 'Service Name2', name: 'SN2' }
+      ]
+    },
+    queryNode: {
+      serviceId: 'sd1',
+      startTime,
+      endTime,
+      metaFilter: {
+        conditions: [
+          {
+            queryString: 'foo=foo-value',
+            isKeyValuePair: true,
+            key: 'foo',
+            value: 'foo-value'
+          }
+        ]
       }
-    ]
+    }
   }
-};
-const expectedServiceId = services.data[0].id;
-const expectedURI = `${services.data[0].id}/${startTime}/${endTime}/`;
+});
+
+const expectedServiceId = state.investigate.services.data[0].id;
+const expectedURI = `${state.investigate.services.data[0].id}/${startTime}/${endTime}/`;
 
 test('servicesWithURI are computed correctly', function(assert) {
-  const state = Immutable.from({ queryNode, services });
+  // const state = Immutable.from(defaultState);
   const result = servicesWithURI(state);
   assert.equal(result.length, 2);
 

@@ -2,17 +2,17 @@
   <header class="rsa-investigate-query__header">
     {{bread-crumb}}
 
-    {{#if (is-equal model.queryNode.value.results.events.status 'error')}}
+    {{#if (is-equal eventResults.status 'error')}}
       {{#rsa-panel-message messageType='query-error'}}
-        <div class="capitalize">{{or model.queryNode.value.results.events.message (t 'investigate.events.error')}}</div>
+        <div class="capitalize">{{or eventResults.message (t 'investigate.events.error')}}</div>
       {{/rsa-panel-message}}
     {{else}}
       {{time-line
-        data=model.queryNode.value.results.eventTimeline.data
-        status=model.queryNode.value.results.eventTimeline.status
-        retryAction=(route-action "eventTimelineGet" model.queryNode true)
-        startTime=model.queryNode.value.definition.startTime
-        endTime=model.queryNode.value.definition.endTime}}
+        data=eventTimeline.data
+        status=eventTimeline.status
+        retryAction=(route-action "eventTimelineGet" queryNode true)
+        startTime=queryNode.startTime
+        endTime=queryNode.endTime}}
     {{/if}}
   </header>
   <section class="{{queryBodyClass}}">
@@ -20,48 +20,48 @@
       <aside class="rsa-investigate-query__body-master-aside">
         {{meta-view
           group=defaultMetaGroup
-          metaKeyStates=model.queryNode.value.results.metaKeyStates
-          query=model.queryNode.value.definition
+          metaKeyStates=eventResults.metaKeyStates
+          query=queryNode
           minSizeAction=(route-action "metaPanelSize" 'min')
           maxSizeAction=(route-action "metaPanelSize" 'max')
           defaultSizeAction=(route-action "metaPanelSize" 'default')
-          onBack=(route-action "metaGroupSet" model.queryNode)
-          onFwd=(route-action "metaGroupSet" model.queryNode)
-          clickValueAction=(route-action "navDrill" model.queryNode)
+          onBack=(route-action "metaGroupSet" queryNode)
+          onFwd=(route-action "metaGroupSet" queryNode)
+          clickValueAction=(route-action "navDrill" queryNode)
           contextLookupAction=(route-action "contextPanelOpen")
-          toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
+          toggleAction=(route-action "metaGroupKeyToggle" queryNode)}}
       </aside>
       <section class="rsa-investigate-query__body-master-main">
         {{events-table
-          items=model.queryNode.value.results.events.data
+          items=eventResults.data
           selectedIndex=selectedIndex
           columnsConfig=model.eventColumnGroups.selected.columns
-          status=model.queryNode.value.results.events.status
-          percent=model.queryNode.value.results.events.percent
-          rowClickAction=(route-action "selectEvent")
-          loadMoreAction=(route-action "eventsGetMore" model.queryNode)
-          loadLogsAction=(route-action "eventsLogsGet" model.queryNode)
-          stopAction=(route-action "eventsStop" model.queryNode)
-          retryAction=(route-action "eventsGetMore" model.queryNode)
-          totalCount=model.queryNode.value.results.eventCount.data
-          totalThreshold=model.queryNode.value.results.eventCount.threshold
-          totalStatus=model.queryNode.value.results.eventCount.status
-          totalRetryAction=(route-action "eventCountGet" model.queryNode)
+          status=eventResults.status
+          percent=percentReturned
+          rowClickAction=(route-action 'selectEvent')
+          loadMoreAction=(action 'eventsGetMore')
+          loadLogsAction=(action 'eventsLogsGet')
+          stopAction=(route-action 'eventsStop' queryNode)
+          retryAction=(route-action 'eventsGetMore' queryNode)
+          totalCount=eventCount.data
+          totalThreshold=eventCount.threshold
+          totalStatus=eventCount.status
+          totalRetryAction=(route-action 'eventCountGet' queryNode)
           isOpen=isReconOpen
         }}
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">
-      {{#if (and serviceId sessionId)}}
+      {{#if (and queryNode.serviceId queryNode.sessionId)}}
         {{recon-container
           aliases=(readonly aliases)
-          endpointId=(readonly serviceId)
-          eventId=(readonly sessionId)
-          index=(readonly eventIndex)
+          endpointId=(readonly queryNode.serviceId)
+          eventId=(readonly queryNode.sessionId)
+          index=(readonly queryNode.eventIndex)
           language=(readonly language)
-          meta=(readonly eventMetas)
+          meta=(readonly queryNode.eventMetas)
           size=(readonly reconSize)
-          total=(readonly eventCount)
+          total=(readonly eventCount.data)
           closeAction=(route-action 'reconClose')
           expandAction=(route-action 'reconSize' 'max')
           linkToFileAction=(route-action 'reconLinkToFile')

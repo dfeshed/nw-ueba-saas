@@ -4,7 +4,7 @@ import { isOpen, isHidden } from './utils';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _language = (state) => state.dictionaries.language;
+const _language = (state) => state.investigate.dictionaries.language;
 
 // UTILS
 const _removeHiddenKeys = (acc, obj) => {

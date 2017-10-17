@@ -12,17 +12,17 @@ import {
 } from 'investigate-events/reducers/investigate/services/selectors';
 import $ from 'jquery';
 
-const stateToComputed = ({ investigate }) => {
+const stateToComputed = (state) => {
   return {
-    serviceObject: selectedService(investigate),
-    servicesWithURI: servicesWithURI(investigate),
-    serviceData: investigate.services.data,
-    queryNode: investigate.queryNode,
-    startTime: investigate.queryNode.startTime,
-    endTime: investigate.queryNode.endTime,
-    language: investigate.dictionaries.language,
-    aliases: investigate.dictionaries.aliases,
-    queryString: investigate.queryNode.queryString
+    serviceObject: selectedService(state),
+    servicesWithURI: servicesWithURI(state),
+    serviceData: state.investigate.services.data,
+    queryNode: state.investigate.queryNode,
+    startTime: state.investigate.queryNode.startTime,
+    endTime: state.investigate.queryNode.endTime,
+    language: state.investigate.dictionaries.language,
+    aliases: state.investigate.dictionaries.aliases,
+    queryString: state.investigate.queryNode.queryString
   };
 };
 

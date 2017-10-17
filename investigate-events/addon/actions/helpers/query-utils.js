@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import hasherizeEventMeta from './hasherize-event-meta';
 import { setEventLogData, setEventLogDataStatus, getEventLogDataStatus } from 'component-lib/utils/log-utils';
+import { nwEncodeMetaFilterConditions } from '../util/query-util';
 
 const {
   assert,
@@ -88,7 +89,7 @@ function makeServerInputsForQuery(query, language) {
     filter: [
       { field: 'endpointId', value: serviceId },
       { field: 'timeRange', range: { from: startTime, to: endTime } },
-      { field: 'query', value: _nwEncodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
+      { field: 'query', value: nwEncodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
     ]
   };
 }
@@ -381,30 +382,6 @@ function uriEncodeMetaFilterConditions(conditions = []) {
         encodeURIComponent(condition.queryString);
     })
     .join('/');
-}
-
-/**
- * Encodes a given list of meta conditions into a "where clause" string that can be used by NetWitness Core.
- * @param {object[]} conditions The array of meta conditions. For structure, @see return value of parseMetaFilterUri.
- * @param {object[]} language Array of meta key definitions form the NetWitness Core endpoint.  This is used for
- * checking the data types of meta keys, which is needed when deciding whether to wrap values in quotes.
- * @returns {string}
- * @public
- */
-function _nwEncodeMetaFilterConditions(conditions = [], language) {
-  return conditions
-    .map((condition) => {
-      const { queryString, isKeyValuePair, key, value } = condition;
-      if (isKeyValuePair) {
-        const keyDefinition = language.findBy('metaName', key);
-        const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
-        const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
-        return `${key}=${valueEncoded}`;
-      } else {
-        return queryString;
-      }
-    })
-    .join(' && ');
 }
 
 export {

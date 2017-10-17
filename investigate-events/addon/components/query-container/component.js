@@ -5,24 +5,30 @@ import { isEmpty } from 'ember-utils';
 import computed from 'ember-computed-decorators';
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
+import { percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setReconPanelSize } from 'investigate-events/actions/interaction-creators';
+import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
 
-const stateToComputed = ({ investigate }) => ({
-  defaultMetaGroup: defaultMetaGroup(investigate),
-  queryBodyClass: queryBodyClass(investigate),
-  aliases: investigate.dictionaries.aliases,
-  language: investigate.dictionaries.language,
-  serviceId: investigate.queryNode.serviceId,
-  sessionId: investigate.queryNode.sessionId,
-  metaPanelSize: investigate.data.metaPanelSize,
-  reconSize: investigate.data.reconSize,
-  isReconOpen: investigate.data.isReconOpen,
-  eventMetas: investigate.data.eventMetas,
-  eventIndex: investigate.data.eventIndex,
-  eventCount: investigate.queryNode.results.eventCount.data
+const stateToComputed = (state) => ({
+  defaultMetaGroup: defaultMetaGroup(state),
+  percentReturned: percentageOfEventsDataReturned(state),
+  queryBodyClass: queryBodyClass(state),
+  aliases: state.investigate.dictionaries.aliases,
+  eventCount: state.investigate.eventCount,
+  eventTimeline: state.investigate.eventTimeline,
+  eventResults: state.investigate.eventResults,
+  isReconOpen: state.investigate.data.isReconOpen,
+  language: state.investigate.dictionaries.language,
+  metaPanelSize: state.investigate.data.metaPanelSize,
+  queryNode: state.investigate.queryNode,
+  reconSize: state.investigate.data.reconSize
 });
 
-const actionsToDispatch = { setReconPanelSize };
+const actionsToDispatch = {
+  eventsGetMore,
+  eventsLogsGet,
+  setReconPanelSize
+};
 
 const QueryContainerComponent = Component.extend({
   /**
@@ -30,7 +36,7 @@ const QueryContainerComponent = Component.extend({
    * -1 otherwise.  This is passed along to the data table.
    * @public
    */
-  @computed('sessionId', 'model.queryNode.value.results.events.data.[]')
+  @computed('queryNode.sessionId', 'eventResults.data')
   selectedIndex(sessionId, items) {
     // TODO - make selector
     let idx = -1;

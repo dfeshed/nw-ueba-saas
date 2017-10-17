@@ -25,10 +25,7 @@ export default handleActions({
         const filter = filters.find((e) => e.field === 'endpointId');
         const { value: serviceId } = filter;
         const languageCache = s.languageCache.setIn([serviceId], action.payload.data);
-        return s.merge({
-          language: action.payload.data,
-          languageCache
-        });
+        return s.merge({ language: action.payload.data, languageCache });
       }
     });
   },
@@ -51,10 +48,7 @@ export default handleActions({
         const filter = filters.find((e) => e.field === 'endpointId');
         const { value: serviceId } = filter;
         const aliasesCache = s.aliasesCache.setIn([serviceId], action.payload.data);
-        return s.merge({
-          aliases: action.payload.data,
-          aliasesCache
-        });
+        return s.merge({ aliases: action.payload.data, aliasesCache });
       }
     });
   },

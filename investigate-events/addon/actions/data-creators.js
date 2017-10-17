@@ -1,50 +1,103 @@
+import RSVP from 'rsvp';
 import * as ACTION_TYPES from './types';
 import { fetchServices } from './fetch/services';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
+import getEventCount from './event-count-creators';
+import getEventTimeline from './event-timeline-creators';
+import { eventsGetFirst } from './events-creators';
+
+const {
+  log
+} = console;
 
 /**
  * Initializes the dictionaries (language and aliases). If we've already
  * retrieved the dictionaries for a specific service, we reuse that data.
- * @public
+ * @private
  */
-export const initializeDictionaries = () => {
-  return (dispatch, getState) => {
+const _initializeDictionaries = (dispatch, getState) => {
+  return new RSVP.Promise((resolve, reject) => {
     const { serviceId } = getState().investigate.queryNode;
     const { aliasesCache, languageCache } = getState().investigate.dictionaries;
-
-    if (!languageCache[serviceId]) {
-      dispatch({
-        type: ACTION_TYPES.LANGUAGE_RETRIEVE,
-        promise: fetchLanguage(serviceId),
-        meta: {
-          onFailure(response) {
-            window.console.warn('Could not retrieve language', response);
+    const languagePromise = new RSVP.Promise((resolve, reject) => {
+      if (!languageCache[serviceId]) {
+        dispatch({
+          type: ACTION_TYPES.LANGUAGE_RETRIEVE,
+          promise: fetchLanguage(serviceId),
+          meta: {
+            onFailure(response) {
+              log('languagePromise, onFailure', response);
+              reject(response);
+            },
+            onFinish() {
+              resolve();
+            }
           }
-        }
-      });
-    } else {
-      dispatch({ type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE, payload: serviceId });
-    }
-
-    if (!aliasesCache[serviceId]) {
-      dispatch({
-        type: ACTION_TYPES.ALIASES_RETRIEVE,
-        promise: fetchAliases(serviceId),
-        meta: {
-          onFailure(response) {
-            window.console.warn('Could not retrieve aliases', response);
+        });
+      } else {
+        dispatch({ type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE, payload: serviceId });
+        log('languagePromise, pull from cache');
+        resolve();
+      }
+    });
+    const aliasesPromise = new RSVP.Promise((resolve, reject) => {
+      if (!aliasesCache[serviceId]) {
+        dispatch({
+          type: ACTION_TYPES.ALIASES_RETRIEVE,
+          promise: fetchAliases(serviceId),
+          meta: {
+            onFailure(response) {
+              log('aliasesPromise, onFailure', response);
+              reject(response);
+            },
+            onFinish() {
+              resolve();
+            }
           }
-        }
-      });
-    } else {
-      dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
-    }
-  };
+        });
+      } else {
+        dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
+        log('aliasesPromise, pull from cache');
+        resolve();
+      }
+    });
+    RSVP.all([languagePromise, aliasesPromise]).then(resolve, reject);
+  });
 };
 
 /**
  * Initializes the list of services (aka endpoints). This list shouldn't really
  * change much, so we only retrieve it once.
+ * @private
+ */
+const _initializeServices = (dispatch, getState) => {
+  return new RSVP.Promise((resolve, reject) => {
+    const { services } = getState().investigate;
+    if (!services.data) {
+      dispatch({
+        type: ACTION_TYPES.SERVICES_RETRIEVE,
+        promise: fetchServices(),
+        meta: {
+          onFailure(response) {
+            log('initializeServices, onFailure', response);
+            reject(response);
+          },
+          onFinish() {
+            resolve();
+          }
+        }
+      });
+    } else {
+      resolve();
+    }
+  });
+};
+
+/**
+ * Redux thunk to get services. This is the same as `_initializeServices`, but
+ * is not wrapped in a promise.
+ * @param {function} dispatch
+ * @param {function} getState
  * @public
  */
 export const initializeServices = () => {
@@ -56,10 +109,35 @@ export const initializeServices = () => {
         promise: fetchServices(),
         meta: {
           onFailure(response) {
-            window.console.error('Failed to retrieve Services.', response);
+            log('initializeServices, onFailure', response);
           }
         }
       });
     }
+  };
+};
+
+/**
+ * Kick off a series of events to initialize Investigate Events. Execution order
+ * needs to be:
+ * 1. initialize dictionaries (language/aliases)
+ * 2. dispatch actions to get other needed data
+ * @param {*} queryParams
+ * @public
+ */
+export const initializeInvestigate = () => {
+  return (dispatch, getState) => {
+    // Initialize all the things
+    _initializeServices(dispatch, getState);
+    _initializeDictionaries(dispatch, getState)
+    .then(() => {
+      dispatch(getEventCount());
+      dispatch(getEventTimeline());
+      // Get first batch of results
+      dispatch(eventsGetFirst());
+
+      // TODO - Later on, we'll get meta values, but skip for now
+      // dispatch(metaGet(forceReload));
+    });
   };
 };

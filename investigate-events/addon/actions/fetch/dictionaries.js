@@ -8,7 +8,9 @@ import { queryPromiseRequest, serviceIdFilter } from '../util/query-util';
  */
 const fetchLanguage = (serviceId) => {
   const query = {
-    filter: serviceIdFilter(serviceId, [])
+    filter: [
+      serviceIdFilter(serviceId)
+    ]
   };
   return queryPromiseRequest(
     'core-meta-key',
@@ -25,7 +27,9 @@ const fetchLanguage = (serviceId) => {
  */
 const fetchAliases = (serviceId) => {
   const query = {
-    filter: serviceIdFilter(serviceId, [])
+    filter: [
+      serviceIdFilter(serviceId)
+    ]
   };
   return queryPromiseRequest(
     'core-meta-alias',

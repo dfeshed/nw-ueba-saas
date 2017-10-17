@@ -4,15 +4,12 @@ import service from 'ember-service/inject';
 
 import Context from 'investigate-events/actions/context';
 import Events from 'investigate-events/actions/events';
-import EventCount from 'investigate-events/actions/event-count';
-import EventTimeline from 'investigate-events/actions/event-timeline';
 import InvestigateState from 'investigate-events/state/index';
 import Meta from 'investigate-events/actions/meta';
 import Nav from 'investigate-events/actions/nav';
-// import Recon from 'investigate-events/actions/recon';
 import Results from 'investigate-events/actions/results';
 
-export default Route.extend(Context, Events, EventCount, EventTimeline, InvestigateState, Meta, Nav, Results, {
+export default Route.extend(Context, Events, InvestigateState, Meta, Nav, Results, {
   i18n: service(),
 
   state: computed(function() {

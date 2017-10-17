@@ -4,9 +4,9 @@ import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-ut
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _services = (state) => state.services.data;
-const _serviceId = (state) => state.queryNode.serviceId;
-const _queryNode = (state) => state.queryNode;
+const _services = (state) => state.investigate.services.data;
+const _serviceId = (state) => state.investigate.queryNode.serviceId;
+const _queryNode = (state) => state.investigate.queryNode;
 
 // SELECTOR FUNCTIONS
 export const selectedService = createSelector(

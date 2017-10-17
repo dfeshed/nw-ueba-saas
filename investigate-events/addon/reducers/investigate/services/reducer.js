@@ -18,14 +18,8 @@ export default handleActions({
   [ACTION_TYPES.SERVICES_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('isLoading', true),
-      failure: (s) => s.merge({
-        isError: true,
-        isLoading: false
-      }),
-      success: (s) => s.merge({
-        data: action.payload.data,
-        isLoading: false
-      })
+      failure: (s) => s.merge({ isError: true, isLoading: false }),
+      success: (s) => s.merge({ data: action.payload.data, isLoading: false })
     });
   }
 }, _initialState);

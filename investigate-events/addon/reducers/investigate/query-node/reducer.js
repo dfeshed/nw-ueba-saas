@@ -4,6 +4,8 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
+  eventIndex: undefined,
+  eventMetas: undefined,
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0,
@@ -11,26 +13,6 @@ const _initialState = Immutable.from({
   metaFilter: {
     uri: undefined,
     conditions: []
-  },
-  results: {
-    events: {
-      status: undefined,
-      data: undefined,
-      reason: undefined,
-      anchor: 0,
-      goal: 0
-    },
-    eventCount: {
-      data: undefined,
-      reason: undefined,
-      status: undefined
-    },
-    eventTimeline: {
-      data: undefined,
-      reason: undefined,
-      status: undefined
-    },
-    metaKeyStates: []
   },
   queryString: ''
 });
@@ -61,5 +43,9 @@ export default handleActions({
       endTime: payload.endTime,
       startTime: payload.startTime
     });
+  },
+
+  [ACTION_TYPES.SET_SELECTED_EVENT]: (state, { payload }) => {
+    return state.merge(payload);
   }
 }, _initialState);

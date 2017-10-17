@@ -1,4 +1,4 @@
-import { test } from 'qunit';
+import { skip, test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
@@ -17,9 +17,10 @@ test('investigate.index redirects to investigate.investigate-events.index', func
 });
 
 // deeply nested URLs do not redirect back
-test('investigate\'s query results page does not redirect back to investigate-events.index', function(assert) {
-  visit('/investigate/events/query/0/0/0');
+skip('investigate\'s query results page does not redirect back to investigate-events.index', function(assert) {
+  const url = '/investigate/events/query/0/0/0';
+  visit(url);
   andThen(function() {
-    assert.equal(currentURL(), '/investigate/events/query/0/0/0', 'correct path remains.');
+    assert.equal(currentURL(), url, 'correct path remains.');
   });
 });

@@ -2,8 +2,7 @@ import Route from 'ember-route';
 import service from 'ember-service/inject';
 
 import {
-  initializeDictionaries,
-  initializeServices
+  initializeInvestigate
 } from 'investigate-events/actions/data-creators';
 import {
   setMetaPanelSize,
@@ -13,7 +12,6 @@ import {
   setReconOpen,
   setReconClosed
 } from 'investigate-events/actions/interaction-creators';
-import { navGoto } from 'investigate-events/actions/navigation-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 
 export default Route.extend({
@@ -24,14 +22,14 @@ export default Route.extend({
 
   queryParams: {
     eventId: {
-      refreshModel: true
+      refreshModel: false
     },
     metaPanelSize: {
-      refreshModel: true, // execute route.model() when metaPanelSize changes
-      replace: true       // prevents adding a new item to browser's history
-    },
+      refreshModel: false, // Don't execute route.model() when metaPanelSize
+      replace: true        // changes for now. Re-evaluate this when we enable
+    },                     // meta panel.
     reconSize: {
-      refreshModel: true,
+      refreshModel: false,
       replace: true
     }
   },
@@ -50,9 +48,6 @@ export default Route.extend({
     // Re-route back to the parent's protected route if we don't have permission
     if (!this.get('accessControl.hasInvestigateAccess')) {
       this.transitionToExternal('protected');
-    } else {
-      // Get services
-      this.get('redux').dispatch(initializeServices());
     }
   },
 
@@ -60,62 +55,24 @@ export default Route.extend({
    * Returns the app state model from the parent route. Is also responsible for
    * parsing the incoming query params and ensuring that the incoming query is
    * included in the app state.
-   * - Checks if a matching query is already in the app state's tree of queries;
-   *   if not, adds it.
-   * - Moves the app state's playhead to point to the query so it will presented
-   *   to the end-user.
-   * Note that we do not modify app state directly here; we merely dispatch
-   * actions to request changes.
    * @param {object} params
    * @returns {object} The state model from the parent route
    * @public
    */
   model(params) {
-    const state = this.modelFor('application');
+    // set query params to state
     const { eventId, metaPanelSize, reconSize } = params;
-    // Parse and save URL query params
-    const filterAttrs = parseEventQueryUri(params.filter);
-    filterAttrs.sessionId = eventId;
-    this.set('filterAttrs', filterAttrs);
-    const { serviceId } = filterAttrs;
-
-    // Apply the route URL queryParams to Redux state
-    if (serviceId) {
-      this.get('redux').dispatch(setQueryParams(filterAttrs));
-      // Get `language` and `aliases` now that we know what service we're using
-      this.get('redux').dispatch(initializeDictionaries());
-      // If there's an event, let's show the recon panel
-      if (eventId && eventId !== -1) {
-        this.get('redux').dispatch(setReconOpen());
-      }
-      // View sizing
-      this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
-      this.get('redux').dispatch(setReconPanelSize(reconSize));
+    const qp = parseEventQueryUri(params.filter);
+    qp.sessionId = eventId;
+    this.get('redux').dispatch(setQueryParams(qp));
+    this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
+    this.get('redux').dispatch(setReconPanelSize(reconSize));
+    if (eventId && eventId !== -1) {
+      this.get('redux').dispatch(setReconOpen());
     }
-
-    // TEMP HACK - We can't continue down our execution path until we get
-    // `aliases` and `language`, so check if they are present before
-    // continuing.
-    setTimeout(this._checkForDictionaries.bind(this), 50);
-    return state;
+    this.get('redux').dispatch(initializeInvestigate());
+    return this.modelFor('application');
   },
-
-  // TEMP HACK - After fully converted to Redux, we will remove this.
-  // This will run for about 5 seconds before timing out.
-  _checkForDictionaries: (() => {
-    let timeout = 100;
-    return function() {
-      --timeout;
-      const { redux, filterAttrs } = this.getProperties('redux', 'filterAttrs');
-      const { aliases, language } = redux.getState().investigate.dictionaries;
-      if (aliases && language) {
-        redux.dispatch(navGoto());
-        this.send('navFindOrAdd', filterAttrs);
-      } else if (timeout) {
-        setTimeout(this._checkForDictionaries.bind(this), 50);
-      }
-    };
-  })(),
 
   actions: {
     selectEvent(event, index) {
@@ -136,6 +93,7 @@ export default Route.extend({
     metaPanelSize(size = 'default') {
       const { metaPanelSize } = this.get('redux').getState().investigate.data;
       if (metaPanelSize !== size) {
+        this.get('redux').dispatch(setMetaPanelSize(size));
         this.transitionTo({ queryParams: { metaPanelSize: size } });
       }
     },
@@ -149,6 +107,7 @@ export default Route.extend({
     reconSize(size = 'max') {
       const { reconSize } = this.get('redux').getState().investigate.data;
       if (reconSize !== size) {
+        this.get('redux').dispatch(setReconPanelSize(size));
         this.transitionTo({ queryParams: { reconSize: size } });
       }
     },

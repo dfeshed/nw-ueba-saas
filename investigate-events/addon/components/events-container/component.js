@@ -4,10 +4,10 @@ import computed, { notEmpty } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { initializeServices } from 'investigate-events/actions/data-creators';
 
-const stateToComputed = ({ investigate }) => ({
-  services: investigate.services.data,
-  isLoadingServices: investigate.services.isLoading,
-  isErrorServices: investigate.services.isError
+const stateToComputed = (state) => ({
+  services: state.investigate.services.data,
+  isLoadingServices: state.investigate.services.isLoading,
+  isErrorServices: state.investigate.services.isError
 });
 
 const dispatchToActions = {

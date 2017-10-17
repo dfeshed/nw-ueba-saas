@@ -6,12 +6,12 @@ import {
   setServiceId
 } from 'investigate-events/actions/interaction-creators';
 
-const stateToComputed = ({ investigate }) => ({
-  endTime: investigate.queryNode.endTime,
-  queryString: investigate.queryNode.queryString,
-  serviceId: investigate.queryNode.serviceId,
-  services: investigate.services.data,
-  startTime: investigate.queryNode.startTime
+const stateToComputed = (state) => ({
+  endTime: state.investigate.queryNode.endTime,
+  queryString: state.investigate.queryNode.queryString,
+  serviceId: state.investigate.queryNode.serviceId,
+  services: state.investigate.services.data,
+  startTime: state.investigate.queryNode.startTime
 });
 
 const dispatchToActions = { setQueryTimeRange, setServiceId };

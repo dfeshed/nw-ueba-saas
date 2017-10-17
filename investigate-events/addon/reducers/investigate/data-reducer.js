@@ -10,8 +10,6 @@ const unknownMetaSize = (val) => valueNotInArray(META_PANEL_SIZES, val);
 const unknownReconSize = (val) => valueNotInArray(RECON_PANEL_SIZES, val);
 
 const _initialState = Immutable.from({
-  eventIndex: undefined,
-  eventMetas: undefined,
   isReconOpen: false,
   metaPanelSize: 'default',
   reconSize: 'max'
@@ -21,7 +19,7 @@ export default handleActions({
   /**
    * Updates the state with a given value for the meta panel size.
    * Typically invoked by route when its URL query params have changed.
-   * @param {string} size Either 'min', 'max' or 'default'.
+   * Either 'min', 'max' or 'default'.
    * @public
    */
   [ACTION_TYPES.SET_META_PANEL_SIZE]: (state, { payload }) => {
@@ -38,16 +36,12 @@ export default handleActions({
   /**
    * Updates the state with a given value for the recon panel size.
    * Typically invoked by route when its URL query params have changed.
-   * @param {string} size Either 'min', 'max' or 'full'.
+   * Either 'min', 'max' or 'full'.
    * @public
    */
   [ACTION_TYPES.SET_RECON_PANEL_SIZE]: (state, { payload }) => {
     const reconSize = unknownReconSize(payload) ? 'max' : payload;
     return state.merge({ reconSize });
-  },
-
-  [ACTION_TYPES.SET_SELECTED_EVENT]: (state, { payload }) => {
-    return state.merge(payload);
   },
 
   [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload }) => {

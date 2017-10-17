@@ -8,7 +8,7 @@ import {
   queryParams,
   hasMetaFilters,
   queryString
-} from 'investigate-events/reducers/investigate/queryNode/selectors';
+} from 'investigate-events/reducers/investigate/query-node/selectors';
 
 const stateToComputed = (state) => ({
   hasMetaFilters: hasMetaFilters(state),

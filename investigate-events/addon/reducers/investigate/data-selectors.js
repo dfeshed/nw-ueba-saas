@@ -3,9 +3,9 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _reconSize = (state) => state.data.reconSize;
-const _isReconOpen = (state) => state.data.isReconOpen;
-const _metaPanelSize = (state) => state.data.metaPanelSize;
+const _reconSize = (state) => state.investigate.data.reconSize;
+const _isReconOpen = (state) => state.investigate.data.isReconOpen;
+const _metaPanelSize = (state) => state.investigate.data.metaPanelSize;
 
 // SELECTOR FUNCTIONS
 export const queryBodyClass = createSelector(
