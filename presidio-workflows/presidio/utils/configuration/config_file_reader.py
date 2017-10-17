@@ -29,7 +29,7 @@ class ConfigFileConfigurationReader(AbstractConfigurationReader):
         :return: json containing the configuration for application,profile 
         """
         conf_file_path = "%s/%s-%s.%s" % (self.path,self.app_name,self.profile, "json")
-        logging.info("reading conf from path: %s",conf_file_path)
+        logging.debug("reading conf from path: %s",conf_file_path)
         if not os.path.exists(conf_file_path):
             raise Exception("configuration file %s is missing, configure schemas and dates by calling manager "
                             "configuration rest" % conf_file_path)
@@ -58,5 +58,5 @@ class ConfigFileConfigurationReader(AbstractConfigurationReader):
         setter to be used in unit test in order to prevent config  usage 
         :param properties: 
         """
-        logging.info("config reader properties are set manually. you must be in testing it...")
+        logging.debug("config reader properties are set manually. you must be in testing it...")
         self.properties = properties

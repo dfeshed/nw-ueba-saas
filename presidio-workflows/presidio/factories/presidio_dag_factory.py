@@ -21,7 +21,7 @@ class PresidioDagFactory(AbstractDagFactory):
         """
         configuration_reader = dag_params.get('conf_reader')
         dags_configs = configuration_reader.read(conf_key='dags.dags_configs')
-        logging.info("creating dynamic dags")
+        logging.debug("creating dynamic dags")
         created_dags = self.create_dags(dags_configs=dags_configs)
         return created_dags
 
@@ -59,7 +59,7 @@ class PresidioDagFactory(AbstractDagFactory):
                 new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval, default_args=args,
                               end_date=end_date, full_filepath=full_filepath, description=description,
                               template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
-                logging.info("dag_id=%s successful initiated", new_dag_id)
+                logging.debug("dag_id=%s successful initiated", new_dag_id)
                 dags.append(new_dag)
 
         return dags
