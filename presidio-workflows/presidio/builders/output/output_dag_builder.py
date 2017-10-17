@@ -50,7 +50,7 @@ class OutputDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the output dag, dag_id=%s ", output_dag.dag_id)
+        logging.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
         # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
         # start only after the defined gap.
