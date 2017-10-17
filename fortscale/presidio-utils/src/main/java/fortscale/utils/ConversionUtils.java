@@ -16,7 +16,6 @@ public final class ConversionUtils {
 	private static final String WHITESPACE_DELIMITER_REGEX = "\\s+"; // i.e. one or more whitespace chars
 	private static final String EMPTY_STR = "";
 
-
 	private static HashMap<Class<?>, Function<String,?>> parser = new HashMap<>();
 	static {
 		parser.put(boolean.class       , Boolean::parseBoolean);
@@ -203,15 +202,17 @@ public final class ConversionUtils {
 		return result;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Object convertToObject(String argString, Class param) {
-		Function<String,?> func = parser.get(param);
+	/**
+     * Returns a {@code clazz} object holding the value given by the specified {@code argString}
+	 *
+	 * The supported classes are the basic java classes and primitives. full list in {@link ConversionUtils#parser} map
+	 * If the class type is not supported the origin string is returned as a fallback.
+	 */
+	public static Object convertToObject(String argString, Class clazz) {
+		Function<String,?> func = parser.get(clazz);
 		if (func != null) {
 			return func.apply(argString);
 		}
-		if (param.isEnum()) {
-			return Enum.valueOf(param, argString);
-		}
-		throw new UnsupportedOperationException("Cannot parse string to " + param.getName());
+		return argString;
 	}
 }

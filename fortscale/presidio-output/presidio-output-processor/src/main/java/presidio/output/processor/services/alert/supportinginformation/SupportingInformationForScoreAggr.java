@@ -15,6 +15,7 @@ import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.processor.config.AnomalyFiltersConfig;
@@ -99,27 +100,25 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
             features.put(anomalyField, featureValue);
         }
-        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features);
+
+        List <ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features);
 
         if (CollectionUtils.isNotEmpty(rawEvents)) {
 
-            // get scored raw events from ade
-            List<String> eventsIds = rawEvents.stream().map(e -> e.getEventId()).collect(Collectors.toList());
-            List<AdeScoredEnrichedRecord> adeScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventsIds, indicatorConfig.getAdeEventType(), 0d);
-
             // build Event for each raw event
-            for (EnrichedEvent rawEvent : rawEvents) {
+            for (ScoredEnrichedEvent rawEvent : rawEvents) {
                 Map<String, Object> rawEventFeatures = new ObjectMapper().convertValue(rawEvent, Map.class);
 
                 IndicatorEvent event = new IndicatorEvent();
                 event.setFeatures(rawEventFeatures);
                 event.setIndicatorId(indicator.getId());
-                event.setEventTime(rawEvent.getEventDate().getLong(ChronoField.INSTANT_SECONDS));
+                event.setEventTime(rawEvent.getEnrichedEvent().getEventDate().getLong(ChronoField.INSTANT_SECONDS));
                 event.setSchema(indicatorConfig.getSchema());
-
-                if (CollectionUtils.isNotEmpty(adeScoredEnrichedRecords)) {
-                    scoreEvent(indicator, anomalyField, adeScoredEnrichedRecords, rawEvent, event);
-
+                if (rawEvent.getScore() > 0) {
+                    Map<String, Double> scores = new HashMap<String, Double>();
+                    scores.put(anomalyField, rawEvent.getScore());
+                    event.setScores(scores);
+                    indicator.setScore(rawEvent.getScore());
                 }
                 events.add(event);
 
@@ -155,8 +154,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     public String getType() {
         return AggregatedFeatureType.SCORE_AGGREGATION.name();
     }
-
-
 
 
     private String getAnomalyValue(Indicator indicator, IndicatorConfig indicatorConfig) {
@@ -198,20 +195,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             }
         }
         return distinctFeatureValues;
-    }
-
-    private void scoreEvent(Indicator indicator, String anomalyField, List<AdeScoredEnrichedRecord> adeScoredEnrichedRecords, EnrichedEvent rawEvent, IndicatorEvent event) {
-        // find scored event with the event id
-        Optional<AdeScoredEnrichedRecord> scoredEnrichedRecord = adeScoredEnrichedRecords.stream()
-                .filter(e -> e.getContext().getEventId().equals(rawEvent.getEventId()))
-                .findFirst();
-        if (scoredEnrichedRecord.isPresent()) {
-            Map<String, Double> scores = new HashMap<String, Double>();
-            scores.put(anomalyField, scoredEnrichedRecord.get().getScore());
-            event.setScores(scores);
-            // TODO: find better way to do it
-            indicator.setScore(scoredEnrichedRecord.get().getScore());
-        }
     }
 
 }
