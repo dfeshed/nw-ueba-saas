@@ -34,7 +34,7 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
+        logging.debug("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
 
         task_sensor_service = TaskSensorService()
 
