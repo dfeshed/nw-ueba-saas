@@ -11,7 +11,6 @@ import fortscale.utils.time.TimestampUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoField;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +60,9 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
             seqReductionHistogram = reduceSequentialHistogramValues(seqReductionHistogram);
             reductionHistogram.add(seqReductionHistogram);
         }
+
+        long distinctDays = calcNumOfDistinctDaysOfFeatureBuckets(featureBuckets);
+        reductionHistogram.setDistinctDays(distinctDays);
 
         return getModelBuilderData(reductionHistogram);
     }

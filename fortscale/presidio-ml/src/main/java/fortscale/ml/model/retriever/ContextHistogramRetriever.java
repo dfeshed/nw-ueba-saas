@@ -8,14 +8,15 @@ import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
-import fortscale.ml.model.retriever.metrics.ContextHistogramRetrieverMetrics;
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ContextHistogramRetriever extends AbstractDataRetriever {
 	protected BucketConfigurationService bucketConfigurationService;
@@ -80,15 +81,22 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 				new TimeRange(startTimeInSeconds, endTimeInSeconds));
 
 //		metrics.featureBuckets += featureBuckets.size();
+		long distinctDays = calcNumOfDistinctDaysOfFeatureBuckets(featureBuckets);
 
 		if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 		createReductionHistogram(endTime, featureValue, featureBuckets, reductionHistogram);
 
+		reductionHistogram.setDistinctDays(distinctDays);
+
 		return getModelBuilderData(reductionHistogram);
 	}
 
-	protected ModelBuilderData getModelBuilderData(GenericHistogram reductionHistogram) {
+	long calcNumOfDistinctDaysOfFeatureBuckets(List<FeatureBucket> featureBuckets) {
+		return featureBuckets.stream().map(x->x.getStartTime().truncatedTo(ChronoUnit.DAYS)).distinct().count();
+	}
+
+	ModelBuilderData getModelBuilderData(GenericHistogram reductionHistogram) {
 		if (reductionHistogram.getN() == 0) {
 			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
 		} else {
@@ -96,7 +104,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		}
 	}
 
-	protected void createReductionHistogram(Date endTime, String featureValue, List<FeatureBucket> featureBuckets, GenericHistogram reductionHistogram) {
+	void createReductionHistogram(Date endTime, String featureValue, List<FeatureBucket> featureBuckets, GenericHistogram reductionHistogram) {
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Date dataTime = Date.from(featureBucket.getStartTime());
 			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
