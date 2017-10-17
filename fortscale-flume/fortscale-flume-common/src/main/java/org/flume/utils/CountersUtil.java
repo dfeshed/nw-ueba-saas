@@ -82,18 +82,18 @@ public class CountersUtil {
     /**
      * This method get the latest ready hour for {@link Schema} name {@code schemaName}
      *
-     * @param schemaName the name of the {@link Schema} whose latest ready hour we return
+     * @param schema the {@link Schema} whose latest ready hour we return
      * @return latest ready hour for {@code schemaName}, null if it doesn't exist or we failed to parse it
      * @throws IOException
      */
-    public Instant getLatestReadyHour(String schemaName) throws IOException {
+    public Instant getLatestReadyHour(Schema schema) throws IOException {
         synchronized (sourceLock) {
             FileLock lock = null;
             FileChannel channel = null;
             FileInputStream in = null;
             try {
                 /* Get the file stuff */
-                File file = createFile(schemaName, SOURCE_COUNTERS_FOLDER_NAME);
+                File file = createFile(schema, SOURCE_COUNTERS_FOLDER_NAME);
                 channel = new RandomAccessFile(file, "rw").getChannel();
                 lock = channel.lock(); // This method blocks until it can retrieve the lock.
 
@@ -104,11 +104,14 @@ public class CountersUtil {
 
                 /* get latest ready hour properties */
                 final String latestReadyHourProperty = countProperties.getProperty(LATEST_READY_HOUR_MARKER);
+                if (latestReadyHourProperty == null) {
+                    return null;
+                }
                 Instant latestReadyHourPropertyAsInstant = null;
                 try {
                     latestReadyHourPropertyAsInstant = Instant.parse(latestReadyHourProperty);
                 } catch (Exception e) {
-                    logger.warn("Can't get latest ready hour for schema {}. Failed to parse latestReadyHourProperty {}.", schemaName, latestReadyHourProperty, e);
+                    logger.warn("Can't get latest ready hour for schema {}. Failed to parse latestReadyHourProperty {}.", schema.getName(), latestReadyHourProperty, e);
                 }
                 return latestReadyHourPropertyAsInstant;
             } finally {
@@ -128,65 +131,6 @@ public class CountersUtil {
         }
     }
 
-    /**
-     * This method updates the latest ready hour for {@link Schema} name {@code schemaName} to {@code newLatestReadyHour}
-     *
-     * @param schemaName         the name of the {@link Schema} whose latest ready hour we are updating
-     * @param newLatestReadyHour the new (end of) hour as {@link Instant}
-     * @throws IOException
-     */
-    public void updateLatestReadyHour(String schemaName, Instant newLatestReadyHour) throws IOException {
-        synchronized (sourceLock) {
-            FileLock lock = null;
-            FileChannel channel = null;
-            FileInputStream in = null;
-            FileOutputStream out = null;
-            try {
-                /* Get the file stuff */
-                File file = createFile(schemaName, SOURCE_COUNTERS_FOLDER_NAME);
-                final String filePath = file.getAbsolutePath();
-                channel = new RandomAccessFile(file, "rw").getChannel();
-                lock = channel.lock(); // This method blocks until it can retrieve the lock.
-
-                /* load existing count properties */
-                Properties countProperties = new OrderedProperties<>(String.class);
-                in = new FileInputStream(file);
-                countProperties.load(in);
-
-                /* update count properties */
-                final String latestReadyHourProperty = countProperties.getProperty(LATEST_READY_HOUR_MARKER);
-                final boolean hasLatestReadyHourProperty = latestReadyHourProperty != null;
-                if (hasLatestReadyHourProperty) {
-                    countProperties.replace(LATEST_READY_HOUR_MARKER, newLatestReadyHour.toString());
-                } else {
-                    countProperties.setProperty(LATEST_READY_HOUR_MARKER, newLatestReadyHour.toString());
-                }
-
-                /* save new count properties */
-                out = new FileOutputStream(filePath);
-                countProperties.store(out, "hour counters for schema " + schemaName);
-            } finally {
-                if (in != null) {
-                    in.close();
-                }
-
-                if (out != null) {
-                    out.close();
-                }
-
-                if (lock != null) {
-                    lock.release();
-                }
-
-                if (channel != null) {
-                    channel.close();
-                }
-            }
-
-        }
-
-    }
-
 
     private int addToCounter(Instant timeDetected, Schema schema, String flumeComponentType, Instant latestReadyHour, int amount) throws IOException {
         final int newCount;
@@ -196,7 +140,7 @@ public class CountersUtil {
         FileOutputStream out = null;
         try {
             /* Get the file stuff */
-            File file = createFile(schema.getName(), flumeComponentType);
+            File file = createFile(schema, flumeComponentType);
             final String filePath = file.getAbsolutePath();
             channel = new RandomAccessFile(file, "rw").getChannel();
             lock = channel.lock(); // This method blocks until it can retrieve the lock.
@@ -266,10 +210,10 @@ public class CountersUtil {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private File createFile(String schemaName, String flumeComponentType) throws IOException {
+    private File createFile(Schema schema, String flumeComponentType) throws IOException {
         final String presidioHome = System.getenv("PRESIDIO_HOME");
         final String folderPath = presidioHome + File.separator + "flume" + File.separator + "counters" + File.separator + flumeComponentType;
-        final String filePath = folderPath + File.separator + schemaName;
+        final String filePath = folderPath + File.separator + schema.getName();
         if (!Files.exists(Paths.get(folderPath))) {
             try {
                 Files.createDirectories(Paths.get(folderPath));
