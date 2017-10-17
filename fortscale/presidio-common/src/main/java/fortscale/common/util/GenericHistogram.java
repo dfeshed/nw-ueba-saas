@@ -20,6 +20,10 @@ public class GenericHistogram implements Serializable, FeatureValue {
 
     public GenericHistogram() {}
 
+    public GenericHistogram(Map<String, Double> histogram) {
+        histogram.forEach(this::add);
+    }
+
     public double getAvg() {
         return totalCount /getN();
     }

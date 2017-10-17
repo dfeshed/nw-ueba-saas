@@ -27,11 +27,12 @@
         "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_retriever",
+        "type" : "context_histogram_sequential_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "srcMachineNameRegexClusterHistogram"
+        "featureName" : "srcMachineNameRegexClusterHistogram",
+        "sequencingResolution": "EPOCH_DAY"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -46,11 +47,12 @@
         "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_retriever",
+        "type" : "context_histogram_sequential_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily",
-        "featureName" : "userIdHistogram"
+        "featureName" : "userIdHistogram",
+        "sequencingResolution": "EPOCH_DAY"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -65,11 +67,12 @@
         "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_retriever",
+        "type" : "context_histogram_sequential_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "dstMachineNameRegexClusterHistogram"
+        "featureName" : "dstMachineNameRegexClusterHistogram",
+        "sequencingResolution": "EPOCH_DAY"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -84,11 +87,12 @@
         "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_retriever",
+        "type" : "context_histogram_sequential_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily",
-        "featureName" : "userIdHistogram"
+        "featureName" : "userIdHistogram",
+        "sequencingResolution": "EPOCH_DAY"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",

@@ -3,6 +3,7 @@ package presidio.ade.processes.shell.scoring.aggregation.config.services;
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
+import fortscale.ml.model.retriever.factories.ContextSequentialReducedHistogramRetrieverFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.Collection;
         // application-specific confs
         ModelScoreAggregationBucketConfigurationServiceConfig.class,
         CustomContextHistogramRetrieverFactoryConfig.class,
+        ContextSequentialReducedHistogramRetrieverFactoryConfig.class,
         // common application confs
         FeatureBucketReaderConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
@@ -29,6 +31,7 @@ import java.util.Collection;
         value = "fortscale.ml.model.retriever.factories",
         // the custom context histogram retriever factory is used instead
         excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextHistogramRetrieverFactory.class),
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextSequentialReducedHistogramRetrieverFactory.class),
                 @Filter(type = FilterType.REGEX, pattern = "fortscale.ml.model.retriever.factories.smart.*")
         }
 )
