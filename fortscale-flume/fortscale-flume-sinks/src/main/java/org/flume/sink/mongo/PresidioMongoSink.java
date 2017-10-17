@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoException;
 import fortscale.domain.core.AbstractDocument;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
@@ -44,6 +44,8 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 
     private static ObjectMapper mapper;
     private static final String RECORD_TYPE = "recordType";
+    private static final String INDEX_FIELD_NAME = "indexFieldName";
+
 
     static {
         mapper = new ObjectMapper();
@@ -62,6 +64,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private String username;
     private int batchSize;
     private Class<T> recordType;
+    private String indexFieldName;
 
     public PresidioMongoSink() {
         this(null);
@@ -106,6 +109,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             host = context.getString(HOST);
             port = Integer.parseInt(context.getString(PORT, "27017"));
             username = context.getString(USERNAME, "");
+            indexFieldName = context.getString(INDEX_FIELD_NAME, "");
             final String password = context.getString(PASSWORD, "");
             if (sinkMongoRepository == null) {
                 sinkMongoRepository = createRepository(dbName, host, port, username, password);
@@ -165,7 +169,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     @SuppressWarnings("unchecked")
     protected int saveEvents(List<T> eventsToSave) throws Exception {
         final int numOfEventsToSave = eventsToSave.size();
-        int numOfSavedEvents = 0;
+        int numOfSavedEvents;
         if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
             sinkMongoRepository.save(eventsToSave.get(0), collectionName);
             numOfSavedEvents = 1;
@@ -175,6 +179,9 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 //                sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
         }
 
+        if (StringUtils.isNotEmpty(indexFieldName)) {
+            sinkMongoRepository.ensureIndex(collectionName, indexFieldName);
+        }
 
         return numOfSavedEvents;
     }
@@ -191,13 +198,19 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+                .append("sinkMongoRepository", sinkMongoRepository)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
                 .append("host", host)
                 .append("port", port)
                 .append("collectionName", collectionName)
                 .append("username", username)
+                .append("batchSize", batchSize)
+                .append("recordType", recordType)
+                .append("indexFieldName", indexFieldName)
+                .append("isBatch", isBatch)
+                .append("isDone", isDone)
                 .toString();
     }
 }

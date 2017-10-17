@@ -3,11 +3,14 @@ package org.apache.flume.persistency.mongo;
 import com.mongodb.BulkWriteResult;
 import com.mongodb.DBObject;
 import fortscale.domain.core.AbstractDocument;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 
 import java.util.List;
 
@@ -47,5 +50,18 @@ public class SinkMongoRepositoryImpl<T extends AbstractDocument> implements Sink
     @Override
     public void save(T event, String collectionName) {
         mongoTemplate.save(event, collectionName);
+    }
+
+    @Override
+    public void ensureIndex(String collectionName, String indexFieldName) {
+        final Index indexDefinition = new Index(indexFieldName, Sort.Direction.ASC);
+        mongoTemplate.indexOps(collectionName).ensureIndex(indexDefinition);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("mongoTemplate", mongoTemplate)
+                .toString();
     }
 }

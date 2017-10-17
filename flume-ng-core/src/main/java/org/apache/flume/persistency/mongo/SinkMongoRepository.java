@@ -11,4 +11,6 @@ public interface SinkMongoRepository<T extends AbstractDocument> {
     int bulkSave(List<DBObject> events, String collectionName);
 
     void save(T event, String collectionName);
+
+    void ensureIndex(String collectionName, String indexFieldName);
 }
