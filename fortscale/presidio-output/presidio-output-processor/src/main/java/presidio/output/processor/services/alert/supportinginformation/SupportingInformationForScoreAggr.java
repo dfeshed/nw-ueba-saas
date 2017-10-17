@@ -40,6 +40,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     @Value("${output.aggregated.feature.historical.period.days: #{30}}")
     private int historicalPeriodInDays;
 
+    @Value("${output.activity.time.historical.period.days: #{90}}")
+    private int historicalActivityTimePeriodInDays;
 
     private AdeManagerSdk adeManagerSdk;
 
@@ -136,7 +138,9 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                                                                                          indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
                                                                                          indicatorConfig.getHistoricalData().getType());
 
-        Instant startInstant = adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
+        Instant startInstant = EnrichedEvent.START_INSTANT_FIELD.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())?
+                                adeAggregationRecord.getStartInstant().minus(historicalActivityTimePeriodInDays, ChronoUnit.DAYS):
+                                adeAggregationRecord.getStartInstant().minus(historicalPeriodInDays, ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startInstant, adeAggregationRecord.getEndInstant());
         String contextField = CommonStrings.CONTEXT_USERID;
         String contextValue =  adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
