@@ -372,12 +372,12 @@ public class WeightsModelBuilderAlgorithmTest {
         );
         List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"));
 
-        Assert.assertEquals(0.05010823007492069, clusterConfs.get(0).getWeight(), 0.00000001);
-        Assert.assertEquals(0.05010823007492069, clusterConfs.get(1).getWeight(), 0.00000001);
-        Assert.assertEquals(0.0639290690590613, clusterConfs.get(2).getWeight(), 0.00000001);
-        Assert.assertEquals(0.050424044237296184, clusterConfs.get(3).getWeight(), 0.00000001);
-        Assert.assertEquals(0.013561538801999394, clusterConfs.get(4).getWeight(), 0.00000001);
-        Assert.assertEquals(0.013552395829232894, clusterConfs.get(5).getWeight(), 0.00000001);
+        Assert.assertEquals(0.0256554137983594, clusterConfs.get(0).getWeight(), 0.00000001);
+        Assert.assertEquals(0.0256554137983594, clusterConfs.get(1).getWeight(), 0.00000001);
+        Assert.assertEquals(0.032731683358239394, clusterConfs.get(2).getWeight(), 0.00000001);
+        Assert.assertEquals(0.025817110649495652, clusterConfs.get(3).getWeight(), 0.00000001);
+        Assert.assertEquals(0.010849231041599516, clusterConfs.get(4).getWeight(), 0.00000001);
+        Assert.assertEquals(0.010841916663386316, clusterConfs.get(5).getWeight(), 0.00000001);
         Assert.assertEquals(0.0, clusterConfs.get(6).getWeight(), 0.0);
     }
 

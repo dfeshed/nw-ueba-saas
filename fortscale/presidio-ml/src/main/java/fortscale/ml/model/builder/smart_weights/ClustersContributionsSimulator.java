@@ -97,7 +97,7 @@ public class ClustersContributionsSimulator {
      * Given a {@link SmartAggregatedRecordDataContainer), calculate how much every cluster of the given {@link List<ClusterConf>}
      * contributes to it. This is done by calculating for every cluster how much will it contibute to the
      * smart value.
-     * There are 2 option t calculate contribution.
+     * There are 2 option to calculate contribution.
      * One using the cluster weight and one giving the same weight to each cluster (which is essentially the maximal score
      * of the aggregated features participating in the cluster).
      * This is configured by the member useWeightForContributionCalculation.
@@ -124,7 +124,7 @@ public class ClustersContributionsSimulator {
                                             clusterConfs
                                     )
                                     .getMaxScore();
-                            return maxScore == null ? 0 : useWeightForContributionCalculation ? maxScore*clusterConfs.getWeight() : maxScore;
+                            return maxScore == null ? 0 : useWeightForContributionCalculation ? scorerAlgorithm.calculateScoreValue(maxScore, clusterConfs.getWeight()) : maxScore;
                         }
                 ));
         return normalizeMapValuesToSumTo(clusterConfToMaxScore, 1);

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
  */
 public class SmartWeightsScorerAlgorithm {
     private double fractionalPower;
+//    private double minimalClusterScore;
 
     public SmartWeightsScorerAlgorithm(double fractionalPower){
         Assert.isTrue(fractionalPower > 0 && fractionalPower < 1,
@@ -128,16 +129,16 @@ public class SmartWeightsScorerAlgorithm {
                 // filter clusters that all of their feature absent from the data
                 .filter(cluster -> !cluster.isEmpty())
                 // map each cluster to its contribution to the entity event value
-                .mapToDouble(cluster -> calculateSmartValue(cluster))
+                .mapToDouble(cluster -> calculateScoreValue(cluster.getMaxScore(), cluster.getWeight()))
                 // add all of the clusters' contributions
                 .sum();
     }
 
-    private double calculateSmartValue(Cluster cluster) {
-        double score = cluster.getMaxScore() / 100;
+    public double calculateScoreValue(double score, double weight) {
+        score = score / 100;
         if(score > 1) {
             score = Math.pow(score, fractionalPower);
         }
-        return score * cluster.getWeight();
+        return score * weight;
     }
 }
