@@ -71,7 +71,7 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
                 final T exampleEvent = hourList.get(0);
                 final Instant startOfHour = DateUtils.floor(getEventTimeForCounter(exampleEvent), ChronoUnit.HOURS);
                 final Schema schema = getEventSchema(exampleEvent);
-                int numOfSavedEvents = super.saveEvents(hourList);
+                int numOfSavedEvents = super.saveEvents(hourList); //can't have empty lists
                 numOfTotalSavedEvents += numOfSavedEvents;
                 try {
                     countersUtil.addToSinkCounter(startOfHour, schema, numOfSavedEvents);
