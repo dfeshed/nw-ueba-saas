@@ -23,10 +23,13 @@ import static fortscale.utils.ConversionUtils.convertToDouble;
 public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModelBuilder {
 
     private int numOfMaxValuesSamples;
+    private int minNumOfMaxValuesSamples;
 
     public ContinuousMaxHistogramModelBuilder(ContinuousMaxHistogramModelBuilderConf builderConf) {
         Assert.isTrue(builderConf.getNumOfMaxValuesSamples() > 0, "numOfMaxValuesSamples should be bigger than zero");
+        Assert.isTrue(builderConf.getMinNumOfMaxValuesSamples() > 0, "nimNumOfMaxValuesSamples should be bigger than zero");
         this.numOfMaxValuesSamples = builderConf.getNumOfMaxValuesSamples();
+        this.minNumOfMaxValuesSamples = builderConf.getMinNumOfMaxValuesSamples();
     }
 
 
@@ -35,20 +38,14 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         TreeMap<Instant, Double> instantToFeatureValue = (TreeMap<Instant, Double>) modelBuilderData;
 
         //create ContinuousDataModel with all data
-        Map<String, Double> histogram = createGenericHistogram(new ArrayList<>(instantToFeatureValue.values())).getHistogramMap();
+        Map<String, Double> histogram = createGenericHistogram(instantToFeatureValue.values()).getHistogramMap();
         ContinuousDataModel continuousDataModel = buildContinuousDataModel(histogram);
 
         //create ContinuousDataModel with max values
         List<Double> maxValues = getMaxValues(instantToFeatureValue);
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
 
-        long N = continuousDataModel.getN();
-        double mean = continuousDataModelOfMaxValues.getMean();
-        double continuousSd = continuousDataModel.getSd();
-        double continuousMaxSd = continuousDataModelOfMaxValues.getSd();
-        double maxValue = continuousDataModelOfMaxValues.getMaxValue();
-
-        return new ContinuousMaxDataModel(N, mean, continuousMaxSd, continuousSd, maxValue);
+        return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues);
     }
 
     /**
@@ -56,25 +53,23 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
      * @return list of max feature values
      */
     private List<Double> getMaxValues(TreeMap<Instant, Double> instantToFeatureValue) {
-        int resolution = 24;
-
         Instant instant = TimeService.floorTime(instantToFeatureValue.firstKey(), Duration.ofDays(1));
         Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), Duration.ofDays(1)).plus(Duration.ofDays(1));
 
-
-        //add skipped instants with Double.MIN_VALUE in order to be able get nax values in various resolutions.
+        //add missed instants with Double.MIN_VALUE in order to be able get max values in various resolutions.
         while (instant.isBefore(lastInstant)) {
             if (!instantToFeatureValue.containsKey(instant)) {
                 instantToFeatureValue.put(instant, Double.MIN_VALUE);
-            } else {
-                instantToFeatureValue.put(instant, instantToFeatureValue.get(instant));
             }
             instant = instant.plus(Duration.ofHours(1));
         }
 
-        //Get max values
+
+        //resolution of 24 hours
+        int resolution = 24;
         List<Double> maxValues = new ArrayList<>();
-        while (maxValues.size() < numOfMaxValuesSamples && resolution > 0) {
+        //Get max values
+        while (maxValues.size() < minNumOfMaxValuesSamples && resolution > 0) {
             maxValues = getMaxValuesByResolution(instantToFeatureValue, resolution);
             resolution--;
         }
@@ -84,10 +79,10 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
 
     /***
      * Create generic histogram
-     * @param featureValue list of feature values
+     * @param featureValue Collection of feature values
      * @return histogram of feature value to count
      */
-    private GenericHistogram createGenericHistogram(List<Double> featureValue) {
+    private GenericHistogram createGenericHistogram(Collection<Double> featureValue) {
         GenericHistogram reductionHistogram = new GenericHistogram();
         featureValue.forEach(aggregatedFeatureValue -> {
             reductionHistogram.add(aggregatedFeatureValue, 1d);
@@ -102,11 +97,11 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
      * @param resolution resolution
      * @return list of max feature values
      */
-    public List<Double> getMaxValuesByResolution(TreeMap<Instant, Double> instantToFeatureValue, int resolution) {
+    private List<Double> getMaxValuesByResolution(TreeMap<Instant, Double> instantToFeatureValue, int resolution) {
 
-        List<Double> list = new ArrayList<>(instantToFeatureValue.values());
+        List<Double> featureValues = new ArrayList<>(instantToFeatureValue.values());
+        List<List<Double>> subLists = Lists.partition(featureValues, resolution);
 
-        List<List<Double>> subLists = Lists.partition(list, resolution);
         List<Double> maxValues = new ArrayList<>();
         subLists.forEach(sublist -> {
             Double maxValue = Collections.max(sublist);

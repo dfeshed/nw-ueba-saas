@@ -38,7 +38,7 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
 
     @Override
     protected double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
-        if (!(model instanceof ContinuousDataModel)) {
+        if (!(model instanceof IContinuousDataModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".calculateScore expects to get a model of type " + ContinuousDataModel.class.getSimpleName());
         }
