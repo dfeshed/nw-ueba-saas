@@ -368,7 +368,7 @@ public class WeightsModelBuilderAlgorithmTest {
 
         WeightsModelBuilderAlgorithm builderAlgorithm = new WeightsModelBuilderAlgorithm(
                 AggregatedFeatureReliability::new,
-                new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm())
+                new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm())
         );
         List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"));
 
@@ -376,8 +376,12 @@ public class WeightsModelBuilderAlgorithmTest {
         Assert.assertEquals(0.05010823007492069, clusterConfs.get(1).getWeight(), 0.00000001);
         Assert.assertEquals(0.0639290690590613, clusterConfs.get(2).getWeight(), 0.00000001);
         Assert.assertEquals(0.050424044237296184, clusterConfs.get(3).getWeight(), 0.00000001);
-        Assert.assertEquals(0.010849231041599516, clusterConfs.get(4).getWeight(), 0.00000001);
-        Assert.assertEquals(0.010841916663386316, clusterConfs.get(5).getWeight(), 0.00000001);
+        Assert.assertEquals(0.013561538801999394, clusterConfs.get(4).getWeight(), 0.00000001);
+        Assert.assertEquals(0.013552395829232894, clusterConfs.get(5).getWeight(), 0.00000001);
         Assert.assertEquals(0.0, clusterConfs.get(6).getWeight(), 0.0);
+    }
+
+    private SmartWeightsScorerAlgorithm createSmartWeightsScorerAlgorithm(){
+        return new SmartWeightsScorerAlgorithm(0.5);
     }
 }

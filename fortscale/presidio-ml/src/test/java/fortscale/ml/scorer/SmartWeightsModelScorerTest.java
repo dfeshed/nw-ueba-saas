@@ -7,6 +7,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class SmartWeightsModelScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenEmptyModelName() {
-        new SmartWeightsModelScorer( "scorerName","",eventModelsCacheService);
+        new SmartWeightsModelScorer( "scorerName","",createSmartWeightsScorerAlgorithm(),eventModelsCacheService);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -174,10 +175,16 @@ public class SmartWeightsModelScorerTest {
     }
 
     private FeatureScore calculateScore(AdeRecord adeRecord) {
-        return new SmartWeightsModelScorer("scorerName","modelName",eventModelsCacheService).calculateScore(new AdeRecordReader(adeRecord));
+        SmartWeightsModelScorer smartWeightsModelScorer = new SmartWeightsModelScorer("scorerName",
+                "modelName"
+                ,createSmartWeightsScorerAlgorithm(),
+                eventModelsCacheService);
+        return smartWeightsModelScorer.calculateScore(new AdeRecordReader(adeRecord));
     }
 
-
+    private SmartWeightsScorerAlgorithm createSmartWeightsScorerAlgorithm(){
+        return new SmartWeightsScorerAlgorithm(0.5);
+    }
 
 
 

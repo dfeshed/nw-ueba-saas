@@ -1,6 +1,7 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.ml.scorer.ScoringService;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
 import fortscale.ml.scorer.enriched_events.AdeEnrichedScoredRecordBuilder;
 import fortscale.ml.scorer.enriched_events.AdeEnrichedScoredRecordBuilderConfig;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
@@ -19,6 +20,7 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 @Configuration
 @Import({
 //        application-specific confs
+        SmartWeightsScorerAlgorithmConfig.class,
         ScoringServiceConfig.class,
         ScoringAggregationsRecordReaderFactoryServiceConfig.class,
 //        common application confs

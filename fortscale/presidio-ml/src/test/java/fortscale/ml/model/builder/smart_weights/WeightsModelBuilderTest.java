@@ -31,8 +31,12 @@ public class WeightsModelBuilderTest {
         ;
         modelBuilderAlgorithm = new WeightsModelBuilderAlgorithm(
                 AggregatedFeatureReliability::new,
-                new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm())
+                new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm())
         );
+    }
+
+    private SmartWeightsScorerAlgorithm createSmartWeightsScorerAlgorithm(){
+        return new SmartWeightsScorerAlgorithm(0.5);
     }
 
     private WeightsModelBuilderConf createAndRegisterWeightsModelBuilderConf() {

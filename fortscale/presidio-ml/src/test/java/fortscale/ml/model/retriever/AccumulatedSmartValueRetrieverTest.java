@@ -8,6 +8,7 @@ import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -87,7 +88,7 @@ public class AccumulatedSmartValueRetrieverTest {
         when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(eq(smartWeightsModelConf), eq(globalContextId), any(), any()))
                 .thenReturn((modelDAO));
 
-        retriever = new AccumulatedSmartValueRetriever(smartValueRetrieverConf, smartAccumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff);
+        retriever = new AccumulatedSmartValueRetriever(smartValueRetrieverConf, smartAccumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, new SmartWeightsScorerAlgorithm(0.5));
 
         IContextSelector contextSelector = Mockito.mock(AccumulatedSmartContextSelector.class);
         when(contextSelector.getContexts(any())).thenReturn(Sets.newHashSet(contextId1, contextId2, contextId3));

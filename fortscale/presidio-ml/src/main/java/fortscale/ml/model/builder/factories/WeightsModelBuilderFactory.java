@@ -21,6 +21,8 @@ import static fortscale.ml.model.builder.smart_weights.WeightsModelBuilderConf.W
 public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory<IModelBuilder> {
     @Autowired
     private SmartRecordConfService smartRecordConfService;
+    @Autowired
+    private SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
 
     @Value("${presidio.ade.model.smart.weights.builder.use.weight.for.contribution.calc:true}")
     private Boolean useWeightForContributionCalculation;
@@ -33,6 +35,7 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     @Value("${presidio.ade.model.smart.weights.builder.simulation.weight.decay.factor:0.8}")
     private Double simulationWeightDecayFactor;
 
+
     @Override
     public String getFactoryName() {
         return WEIGHTS_MODEL_BUILDER;
@@ -41,8 +44,7 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     @Override
     public IModelBuilder getProduct(FactoryConfig factoryConfig) {
         BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> listIntegerAggregatedFeatureReliabilityBiFunction = (smartAggregatedRecordDataContainers, numOfContexts) -> new AggregatedFeatureReliability(smartAggregatedRecordDataContainers, numOfContexts);
-        SmartWeightsScorerAlgorithm scorerAlgorithm = new SmartWeightsScorerAlgorithm();
-        ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(scorerAlgorithm, useWeightForContributionCalculation);
+        ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(smartWeightsScorerAlgorithm, useWeightForContributionCalculation);
         WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator,
                 maxAllowedWeight, minAllowedWeight,
                 peneltyLogBase, simulationWeightDecayFactor);

@@ -67,7 +67,7 @@ public class ClustersContributionsSimulatorTest {
     @Test
     public void shouldReturnEmptyListAsTopEntitiesGivenEmptyList() {
 
-        List<SmartAggregatedRecordDataContainer> topEntityEvents = new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm())
+        List<SmartAggregatedRecordDataContainer> topEntityEvents = new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm())
                 .calcTopSmartEvents(
                         Collections.emptyList(),
                         createClusterConfs(createClusterConf("F1")),
@@ -318,19 +318,23 @@ public class ClustersContributionsSimulatorTest {
         // called in the right order. This test tests exactly that)
         SmartWeightModelTestUtils.TestData testData = new SmartWeightModelTestUtils.TestData();
 
-        ClustersContributionsSimulator simulator = new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm());
+        ClustersContributionsSimulator simulator = new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm());
         Map<ClusterConf, Double> contributions = simulator.simulate(testData.smartAggregatedRecordDataContainers, testData.clusterConfs);
 
         Map<ClusterConf, Double> expectedContributions = new HashMap<ClusterConf, Double>() {{
-            put(testData.clusterConfs.get(0), 0.04507233044160597);
-            put(testData.clusterConfs.get(1), 0.052289474027702884);
-            put(testData.clusterConfs.get(2), 0.050066470289609255);
-            put(testData.clusterConfs.get(3), 0.05773153766577976);
-            put(testData.clusterConfs.get(4), 0.3903772390719948);
-            put(testData.clusterConfs.get(5), 0.3593906180617014);
-            put(testData.clusterConfs.get(6), 0.04507233044160597);
+            put(testData.clusterConfs.get(0), 0.07597496156092572);
+            put(testData.clusterConfs.get(1), 0.07758648277521146);
+            put(testData.clusterConfs.get(2), 0.045229681772263004);
+            put(testData.clusterConfs.get(3), 0.08020161921214618);
+            put(testData.clusterConfs.get(4), 0.3636749431114823);
+            put(testData.clusterConfs.get(5), 0.2813573500070457);
+            put(testData.clusterConfs.get(6), 0.07597496156092572);
         }};
         assertContributions(expectedContributions, contributions);
+    }
+
+    private SmartWeightsScorerAlgorithm createSmartWeightsScorerAlgorithm(){
+        return new SmartWeightsScorerAlgorithm(0.5);
     }
 
 }

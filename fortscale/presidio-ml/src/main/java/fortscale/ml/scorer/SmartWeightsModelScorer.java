@@ -13,16 +13,20 @@ import java.util.Collections;
 
 public class SmartWeightsModelScorer extends AbstractScorer{
     private String modelName;
+    private double fractionalPower;
 
     private EventModelsCacheService eventModelsCacheService;
+    private SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
 
 
-    public SmartWeightsModelScorer(String scorerName, String modelName,
+    public SmartWeightsModelScorer(String scorerName, String modelName, SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm,
                                    EventModelsCacheService eventModelsCacheService) {
         super(scorerName);
         Assert.hasText(modelName, "model name must be provided and cannot be empty or blank.");
+        Assert.notNull(smartWeightsScorerAlgorithm, "smartWeightsScorerAlgorithm should not be null");
         this.modelName = modelName;
         this.eventModelsCacheService = eventModelsCacheService;
+        this.smartWeightsScorerAlgorithm = smartWeightsScorerAlgorithm;
     }
 
     @Override
@@ -40,7 +44,6 @@ public class SmartWeightsModelScorer extends AbstractScorer{
     }
 
     private double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
-        SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm = new SmartWeightsScorerAlgorithm();
         return smartWeightsScorerAlgorithm.calculateScore(smartRecord,smartWeightsModel);
     }
 }

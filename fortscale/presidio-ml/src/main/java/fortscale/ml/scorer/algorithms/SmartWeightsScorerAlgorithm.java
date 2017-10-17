@@ -16,6 +16,13 @@ import java.util.stream.Collectors;
  * Created by barak_schuster on 29/08/2017.
  */
 public class SmartWeightsScorerAlgorithm {
+    private double fractionalPower;
+
+    public SmartWeightsScorerAlgorithm(double fractionalPower){
+        Assert.isTrue(fractionalPower > 0 && fractionalPower < 1,
+                String.format("fractional power should be in the range (0,1). fractionalPower: %f", fractionalPower));
+        this.fractionalPower = fractionalPower;
+    }
 
     /**
      * Cluster represents an instantiation of a {@link ClusterConf}
@@ -121,8 +128,16 @@ public class SmartWeightsScorerAlgorithm {
                 // filter clusters that all of their feature absent from the data
                 .filter(cluster -> !cluster.isEmpty())
                 // map each cluster to its contribution to the entity event value
-                .mapToDouble(cluster -> cluster.getMaxScore() * cluster.getWeight() / 100)
+                .mapToDouble(cluster -> calculateSmartValue(cluster))
                 // add all of the clusters' contributions
                 .sum();
+    }
+
+    private double calculateSmartValue(Cluster cluster) {
+        double score = cluster.getMaxScore() / 100;
+        if(score > 1) {
+            score = Math.pow(score, fractionalPower);
+        }
+        return score * cluster.getWeight();
     }
 }
