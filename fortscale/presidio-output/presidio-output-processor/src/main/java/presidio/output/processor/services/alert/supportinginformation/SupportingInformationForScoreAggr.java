@@ -3,6 +3,7 @@ package presidio.output.processor.services.alert.supportinginformation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -94,8 +95,9 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         Map<String, Object> features = new HashMap<String, Object>();
         String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
-        if (StringUtils.isNoneEmpty(anomalyValue,indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
-            features.put(anomalyField, anomalyValue);
+        if (StringUtils.isNoneEmpty(anomalyValue,anomalyField)) {
+            Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
+            features.put(anomalyField, featureValue);
         }
         List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features);
 
@@ -172,27 +174,28 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             return distinctFeatureValues;
         }
 
-        // start instance case -> WORKAROUND - start_instant is not part of the ADE context
-        if (START_INSTANT.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
-            distinctFeatureValues.add(adeAggregationRecord.getStartInstant().toString());
-        } else {
-            // get distinct values of all the scored events
-            Map<String, Object> features = new HashMap<String, Object>();
-            AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
-            if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
-                String fieldName = anomalyFiltersConfig.getFieldName();
-                String fieldValue = anomalyFiltersConfig.getFieldValue();
-                Object featureValue = eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName).cast(fieldValue);
-                features.put(anomalyFiltersConfig.getFieldName(), featureValue);
-            }
-            List<Object> featureValues =
-                    scoredEventService.findDistinctScoredFeatureValue(indicatorConfig.getSchema(),
-                    indicatorConfig.getAdeEventType(),
-                    contextFieldAndValue,
-                    timeRange,
-                    indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features);
+        // get distinct values of all the scored events
+        Map<String, Object> features = new HashMap<String, Object>();
+        AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
+        if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
+            String fieldName = anomalyFiltersConfig.getFieldName();
+            String fieldValue = anomalyFiltersConfig.getFieldValue();
+            Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
+            features.put(anomalyFiltersConfig.getFieldName(), featureValue);
+        }
+        List<Object> featureValues =
+                scoredEventService.findDistinctScoredFeatureValue(indicatorConfig.getSchema(),
+                indicatorConfig.getAdeEventType(),
+                contextFieldAndValue,
+                timeRange,
+                indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features);
 
-            distinctFeatureValues.addAll(featureValues.stream().map(Object::toString).collect(Collectors.toList()));
+        if (CollectionUtils.isNotEmpty(featureValues)) {
+            if (EnrichedEvent.START_INSTANT_FIELD.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
+                distinctFeatureValues.add(featureValues.get(0).toString());
+            } else {
+                distinctFeatureValues.addAll(featureValues.stream().map(Object::toString).collect(Collectors.toList()));
+            }
         }
         return distinctFeatureValues;
     }
