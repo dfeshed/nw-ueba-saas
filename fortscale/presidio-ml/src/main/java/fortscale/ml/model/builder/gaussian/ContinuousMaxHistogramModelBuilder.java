@@ -42,7 +42,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         List<Double> maxValues = getMaxValues(instantToFeatureValue);
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
 
-        long N = continuousDataModelOfMaxValues.getN();
+        long N = continuousDataModel.getN();
         double mean = continuousDataModelOfMaxValues.getMean();
         double continuousSd = continuousDataModel.getSd();
         double continuousMaxSd = continuousDataModelOfMaxValues.getSd();
