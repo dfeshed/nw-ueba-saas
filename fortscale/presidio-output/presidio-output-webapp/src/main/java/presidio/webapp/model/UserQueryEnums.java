@@ -7,7 +7,7 @@ import presidio.output.domain.records.users.User;
 public class UserQueryEnums {
 
     public enum UserQuerySortFieldName {
-        SCORE(User.SCORE_FIELD_NAME), ALERT_NUM(User.ALERTS_COUNT_FIELD_NAME);
+        SCORE(User.SCORE_FIELD_NAME), ALERT_NUM(User.ALERTS_COUNT_FIELD_NAME), USER_NAME(User.USER_NAME_FIELD_NAME);
 
         private String value;
 

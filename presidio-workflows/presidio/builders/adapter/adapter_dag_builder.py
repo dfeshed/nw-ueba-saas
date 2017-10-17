@@ -39,7 +39,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
+        logging.debug("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
 
         # Iterate all configured data sources
         for data_source in self.data_sources:

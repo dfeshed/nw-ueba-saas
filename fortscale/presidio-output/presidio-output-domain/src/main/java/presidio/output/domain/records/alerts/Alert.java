@@ -38,7 +38,7 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(CLASSIFICATIONS)
     private List<String> classifications;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_NAME)
     private String userName;
 

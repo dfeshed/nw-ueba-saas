@@ -42,7 +42,7 @@ class OutputDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the output dag, dag_id=%s ", output_dag.dag_id)
+        logging.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
         # Create jar operators
         hourly_output_operator = FixedDurationJarOperator(
