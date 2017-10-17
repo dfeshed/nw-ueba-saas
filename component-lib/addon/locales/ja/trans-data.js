@@ -651,10 +651,10 @@ export default {
       createIncident: 'ja_Create Incident',
       addToIncident: 'ja_Add to Incident',
       incidentSearch: {
-        searchInputLabel: 'ja_Search',
+        searchInputLabel: 'ja_Search Open Incidents',
         searchInputPlaceholder: 'ja_Search by incident ID (e.g., INC-123) or incident name',
-        noResults: 'ja_No Incidents found',
-        noQuery: 'ja_Use the search box above to search for incidents by name or ID. Your search must contain at least (3) characters.',
+        noResults: 'ja_No open Incidents found',
+        noQuery: 'ja_Use the search box above to search for open incidents by name or ID. Your search must contain at least (3) characters.',
         error: 'ja_There was a problem searching for incidents'
       },
       actions: {
