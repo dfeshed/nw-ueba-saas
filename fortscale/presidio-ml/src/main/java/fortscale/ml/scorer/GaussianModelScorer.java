@@ -4,6 +4,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
@@ -53,6 +54,6 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
         }
 
         double value = (double)((FeatureNumericValue)feature.getValue()).getValue();
-        return algorithm.calculateScore(value, (ContinuousDataModel)model, (GaussianPriorModel)additionalModels.get(0));
+        return algorithm.calculateScore(value, (IContinuousDataModel)model, (GaussianPriorModel)additionalModels.get(0));
     }
 }

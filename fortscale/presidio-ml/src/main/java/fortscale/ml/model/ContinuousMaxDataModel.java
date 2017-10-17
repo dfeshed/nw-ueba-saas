@@ -6,20 +6,30 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class ContinuousDataModel implements IContinuousDataModel {
+public class ContinuousMaxDataModel implements IContinuousDataModel{
 	private long N; // population size
 	private double mean; // average
-	private double sd; // standard deviation
+	private double continuousMaxSd; // standard deviation of max
+	private double continuousSd; // standard deviation of all the records
 	private double maxValue; // the maximal value the model encountered
 
 	/**
 	 * ContinuousDataModel constructor.
 	 */
-	public ContinuousDataModel() {
+	public ContinuousMaxDataModel() {
 		N = 0;
 		mean = 0;
-		sd = 0;
+		continuousMaxSd = 0;
+		continuousSd = 0;
 		maxValue = 0;
+	}
+
+	public ContinuousMaxDataModel(long N, double mean, double continuousMaxSd, double continuousSd, double maxValue) {
+		this.N = N;
+		this.mean = mean;
+		this.continuousMaxSd = continuousMaxSd;
+		this.continuousSd = continuousSd;
+		this.maxValue = maxValue;
 	}
 
 	/**
@@ -27,33 +37,35 @@ public class ContinuousDataModel implements IContinuousDataModel {
 	 *
 	 * @param N			new population size.
 	 * @param mean		new mean.
-	 * @param sd		new standard deviation.
+	 * @param continuousMaxSd		new standard deviation.
+	 * @param continuousSd		new standard deviation.
 	 * @param maxValue	new maximal value.
 	 * @return			this (for chaining).
 	 */
-	public ContinuousDataModel setParameters(long N, double mean, double sd, double maxValue) {
+	public ContinuousMaxDataModel setParameters(long N, double mean, double continuousMaxSd, double continuousSd, double maxValue) {
 		this.N = N;
 		this.mean = mean;
-		this.sd = sd;
+		this.continuousMaxSd = continuousMaxSd;
+		this.continuousSd = continuousSd;
 		this.maxValue = maxValue;
 		return this;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ContinuousDataModel)) {
+		if (!(obj instanceof ContinuousMaxDataModel)) {
 			return false;
 		}
-		ContinuousDataModel o = (ContinuousDataModel) obj;
+		ContinuousMaxDataModel o = (ContinuousMaxDataModel) obj;
 		if (N == 0) {
 			return o.N == 0;
 		}
-		return o.N == N && o.mean == mean && o.sd == sd && o.maxValue == maxValue;
+		return o.N == N && o.mean == mean && o.getSd() == getSd() && o.maxValue == maxValue;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("<ContinuousDataModel: N=%d, mean=%f, sd=%f, maxValue=%f>", N, mean, sd, maxValue);
+		return String.format("<ContinuousDataModel: N=%d, mean=%f, sd=%f, maxValue=%f>", N, mean, getSd(), maxValue);
 	}
 
 	@Override
@@ -73,7 +85,7 @@ public class ContinuousDataModel implements IContinuousDataModel {
 
 	@Override
 	public double getSd() {
-		return sd;
+		return Math.max(continuousMaxSd, continuousSd);
 	}
 
 	@Override
