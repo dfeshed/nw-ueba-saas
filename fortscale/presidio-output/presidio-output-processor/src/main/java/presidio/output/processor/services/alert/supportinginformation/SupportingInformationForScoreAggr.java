@@ -35,8 +35,6 @@ import java.util.stream.Collectors;
  */
 public class SupportingInformationForScoreAggr implements SupportingInformationGenerator {
 
-    public static final String START_INSTANT = "startInstant";
-
     @Value("${output.aggregated.feature.historical.period.days: #{30}}")
     private int historicalPeriodInDays;
 
