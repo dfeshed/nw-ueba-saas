@@ -7,7 +7,7 @@ import presidio.output.domain.records.users.User;
 public class UserQueryEnums {
 
     public enum UserQuerySortFieldName {
-        SCORE(User.SCORE_FIELD_NAME), ALERT_NUM(User.ALERTS_COUNT_FIELD_NAME);
+        SCORE(User.SCORE_FIELD_NAME), ALERT_NUM(User.ALERTS_COUNT_FIELD_NAME), USER_NAME(User.USER_NAME_FIELD_NAME);
 
         private String value;
 
@@ -33,7 +33,9 @@ public class UserQueryEnums {
     }
 
     public enum UserQueryAggregationFieldName {
-        SEVERITY(User.SEVERITY_FIELD_NAME), TAGS(User.TAGS_FIELD_NAME), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME);
+        SEVERITY(User.SEVERITY_FIELD_NAME), TAGS(User.TAGS_FIELD_NAME), ALERT_CLASSIFICATIONS(User.ALERT_CLASSIFICATIONS_FIELD_NAME),
+        INDICATORS(User.INDICATORS_FIELD_NAME);
+
         private String value;
 
         UserQueryAggregationFieldName(String value) {

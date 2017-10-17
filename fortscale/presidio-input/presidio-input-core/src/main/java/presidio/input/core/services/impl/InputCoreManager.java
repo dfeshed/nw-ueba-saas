@@ -69,23 +69,26 @@ public class InputCoreManager {
                 logger.debug("Processing {} events", nextEvents.size());
 
                 transformedEvents = transformationService.run(nextEvents, schema);
-                storeToAde(schema, startDate, endDate, transformedEvents);
+
                 try {
+                    storeToAde(schema, startDate, endDate, transformedEvents);
                     storeToOutput(transformedEvents, schema);
                 } catch (Exception e) {
-                    logger.error("Error storing transformed data to output ", e);
+                    logger.error("Error storing transformed data , number of transformed events: {} ", transformedEvents != null ? transformedEvents.size() : 0, e);
                 }
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
             } finally {
-                metricCollectingService.addMetric(TOTAL_EVENTS_PROCESSEd_METRIC_NAME, transformedEvents.size(), new HashSet(Arrays.asList(schema.toString())), TYPE_LONG);
+                metricCollectingService.addMetric(TOTAL_EVENTS_PROCESSEd_METRIC_NAME,
+                        transformedEvents != null ? transformedEvents.size() : 0,
+                        new HashSet(Arrays.asList(schema.toString())), TYPE_LONG);
             }
         }
         if (CollectionUtils.isNotEmpty(nextEvents)) {
             long time = ((AbstractInputDocument) nextEvents.get(nextEvents.size() - 1)).getDateTime().toEpochMilli();
             Set tags = new HashSet();
             tags.add(schema.toString());
-            tags.add(startDate.toEpochMilli());
+            tags.add(startDate.toString());
             metricCollectingService.addMetric(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
         }
     }

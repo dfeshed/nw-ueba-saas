@@ -98,8 +98,9 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
 
     @Override
     public void resetCache() {
-       int lruModelCacheSize = this.lruModelsMap.size();
-        this.lruModelsMap = new LRUMap(lruModelCacheSize);
+        if (!lruModelsMap.isEmpty()) {
+            this.lruModelsMap = new LRUMap(this.lruModelsMap.size());
+        }
     }
 
     private String getContextId(Map<String, String> contextFieldsToValueMap) {

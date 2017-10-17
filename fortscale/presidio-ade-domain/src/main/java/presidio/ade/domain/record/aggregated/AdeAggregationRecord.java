@@ -1,7 +1,5 @@
 package presidio.ade.domain.record.aggregated;
 
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -11,13 +9,10 @@ import java.util.Map;
 
 /**
  * Created by barak_schuster on 7/9/17.
+ *
  * @see AggregatedFeatureType
  */
 @Document
-@CompoundIndexes({
-        @CompoundIndex(name = "start", def = "{'startInstant': 1}"),
-        @CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true)
-})
 public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     public static final String ADE_AGGR_EVENT_TYPE_PREFIX = "aggr_event";
     public static final String FEATURE_VALUE_FIELD_NAME = "featureValue";
@@ -57,7 +52,6 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     }
 
     /**
-     *
      * @return the aggregated value itself (i.e. the sum itself)
      */
     public Double getFeatureValue() {
@@ -65,7 +59,6 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     }
 
     /**
-     *
      * @return The bucket the aggregation relay upon. i.e. the contextual hourly bucket the aggregation relay upon
      */
     public String getFeatureBucketConfName() {
@@ -73,7 +66,6 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     }
 
     /**
-     *
      * @return context of the aggregation in field_name, field_value map
      */
     public Map<String, String> getContext() {
@@ -81,7 +73,6 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     }
 
     /**
-     *
      * @return aggregation feature type
      */
     public AggregatedFeatureType getAggregatedFeatureType() {
@@ -90,6 +81,7 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
 
     /**
      * Set feature name
+     *
      * @param featureName feature name
      */
     public void setFeatureName(String featureName) {
@@ -97,7 +89,6 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     }
 
     /**
-     *
      * @return name of the aggregated feature. i.e. sum_of_xxx_daily or highest_xxx_score_daily
      */
     public String getFeatureName() {

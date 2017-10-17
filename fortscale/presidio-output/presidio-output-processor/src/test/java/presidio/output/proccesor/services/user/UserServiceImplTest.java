@@ -1,5 +1,6 @@
 package presidio.output.proccesor.services.user;
 
+import fortscale.domain.core.EventResult;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -23,6 +25,7 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -130,5 +133,33 @@ public class UserServiceImplTest {
         Assert.assertEquals(3, user1.getAlertClassifications().size());
 
     }
+
+    @Test
+    public void createUserFromEnrichedEventWithIsAdminFalseTest() {
+        EventResult result = EventResult.SUCCESS;
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "false");
+        EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
+                "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
+        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
+
+        User user = userService.createUserEntity("event1");
+        Assert.assertEquals(0, user.getTags().size());
+    }
+
+    @Test
+    public void createUserFromEnrichedEventWithIsAdminTrueTest() {
+        EventResult result = EventResult.SUCCESS;
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
+                "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
+        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
+
+        User user = userService.createUserEntity("event1");
+        Assert.assertEquals(1, user.getTags().size());
+        Assert.assertEquals("admin", user.getTags().get(0));
+    }
+
 
 }

@@ -1,21 +1,22 @@
 package fortscale.ml.model.store;
 
 import fortscale.ml.model.Model;
+import fortscale.utils.mongodb.index.DynamicIndexing;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
 @Document
-@CompoundIndexes({
+@DynamicIndexing(compoundIndexes = {
         @CompoundIndex(name = "end", def = "{'endTime': 1}"),
         @CompoundIndex(name = "sessionEnd", def = "{'sessionId': 1, 'endTime': 1}"),
-        @CompoundIndex(name = "ctxEnd", def = "{'contextId': 1, 'endTime': 1}")
+        @CompoundIndex(name = "ctxEnd", def = "{'contextId': 1, 'endTime': 1}"),
+        @CompoundIndex(name = "sessionCtxEnd", def = "{'sessionId': 1, 'contextId': 1, 'endTime': 1}", unique = true)
 })
 public class ModelDAO {
     public static final String SESSION_ID_FIELD = "sessionId";

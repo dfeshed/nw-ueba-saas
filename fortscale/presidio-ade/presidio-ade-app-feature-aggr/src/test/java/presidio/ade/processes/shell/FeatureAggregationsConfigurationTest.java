@@ -26,7 +26,6 @@ public class FeatureAggregationsConfigurationTest extends FeatureAggregationsCon
         //        end ASL paths configurations
         properties.put("fortscale.model.cache.maxDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
-        properties.put("streaming.event.field.type.aggr_event","aggr_event");
         properties.put("feature.aggregation.pageIterator.pageSize",1000);
         properties.put("feature.aggregation.pageIterator.maxGroupSize",100);
         properties.put("spring.application.name", "test-app-name");

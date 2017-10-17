@@ -33,18 +33,24 @@ import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
+import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
-import presidio.output.processor.spring.OutputProcessorConfiguration;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Ignore
+//this test is ignored since it is using elastic. we should run this test after we will have solution for tests with elastic
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = {OutputProcessorConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
 public class OutputExecutionServiceTest {
     public static final String USER_ID_TEST_USER = "userId#testUser";
 

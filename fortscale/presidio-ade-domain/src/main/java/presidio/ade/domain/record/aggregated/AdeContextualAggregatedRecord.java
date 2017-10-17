@@ -1,6 +1,8 @@
 package presidio.ade.domain.record.aggregated;
 
+import fortscale.utils.mongodb.index.DynamicIndexing;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.ade.domain.record.AdeRecord;
 
@@ -12,6 +14,9 @@ import java.util.stream.Collectors;
 /**
  * @author Maria Dorohin
  */
+@DynamicIndexing(compoundIndexes = {
+        @CompoundIndex(name = "ctxStart", def = "{'contextId': 1, 'startInstant': 1}", unique = true)
+})
 public abstract class AdeContextualAggregatedRecord extends AdeRecord {
     private static final String CONTEXT_ID_SEPARATOR = "#";
     public static final String END_INSTANT_FIELD = "endInstant";
@@ -22,11 +27,11 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
     @Field(CONTEXT_ID_FIELD)
     private String contextId;
 
-    public AdeContextualAggregatedRecord(){
+    public AdeContextualAggregatedRecord() {
         super();
     }
 
-    public AdeContextualAggregatedRecord(Instant startInstant, Instant endInstant, String contextId){
+    public AdeContextualAggregatedRecord(Instant startInstant, Instant endInstant, String contextId) {
         super(startInstant);
         this.endInstant = endInstant;
         this.contextId = contextId;
@@ -34,6 +39,7 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
 
     /**
      * create contextId. i.e. contextType#contextId
+     *
      * @return String
      */
     public static String getAggregatedFeatureContextId(Map<String, String> context) {
@@ -42,7 +48,6 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
                 .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
     }
-
 
     /**
      * @return end Instant
@@ -67,6 +72,7 @@ public abstract class AdeContextualAggregatedRecord extends AdeRecord {
 
     /**
      * Set Context id
+     *
      * @param contextId Context id
      */
     public void setContextId(String contextId) {

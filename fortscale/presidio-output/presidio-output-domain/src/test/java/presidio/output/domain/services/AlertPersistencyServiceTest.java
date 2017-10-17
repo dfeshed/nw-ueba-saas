@@ -31,9 +31,7 @@ import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
@@ -75,9 +73,8 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         Alert alert =
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         Alert testAlert = alertPersistencyService.save(alert);
-
         assertNotNull(testAlert.getId());
         assertEquals(testAlert.getId(), alert.getId());
         assertEquals(testAlert.getUserName(), alert.getUserName());
@@ -90,9 +87,9 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId1", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", classifications3, "user2", startDate, endDate, 10.0d, 7, AlertTimeframe.DAILY, AlertSeverity.CRITICAL, null,5D));
+                new Alert("userId2", "smartId", classifications3, "user2", startDate, endDate, 10.0d, 7, AlertTimeframe.DAILY, AlertSeverity.CRITICAL, null, 5D));
         Iterable<Alert> testAlert = alertPersistencyService.save(alertList);
 
         assertThat(Lists.newArrayList(testAlert).size(), is(2));
@@ -104,17 +101,25 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         Alert alert =
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        Date createAtDate = alert.getCreatedDate();
 
         alertPersistencyService.save(alert);
-
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
+        testAlert.setUserName("smartId1");
+        alertPersistencyService.save(testAlert);
+        testAlert = alertPersistencyService.findOne(alert.getId());
 
         assertNotNull(testAlert.getId());
-        assertEquals(testAlert.getId(), alert.getId());
-        assertEquals(testAlert.getUserName(), alert.getUserName());
-        // assertEquals(testAlert.getStartDate(), alert.getStartDate());
+        assertEquals(testAlert.getCreatedDate(), createAtDate);
 
+        assertEquals(testAlert.getId(), alert.getId());
+        assertEquals("smartId1", testAlert.getUserName());
+        testAlert.setIndicatorsNum(100);
+        alertPersistencyService.save(testAlert);
+        Alert testAlert2 = alertPersistencyService.findOne(alert.getId());
+        assertEquals(testAlert2.getCreatedDate(), createAtDate);
+        assertEquals(100, testAlert2.getIndicatorsNum());
     }
 
     @Test
@@ -123,9 +128,9 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -142,9 +147,9 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -164,7 +169,7 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         Alert alert =
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alertPersistencyService.save(alert);
         alertPersistencyService.delete(alert);
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
@@ -174,21 +179,21 @@ public class AlertPersistencyServiceTest {
     @Test
     public void testFindByQuery() {
         Date startDate = new Date();
-        Date endDate = new Date(startDate.getTime() + 1000*60);
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime()-1), new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId3", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime()+1), new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId3", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() + 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId4", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime()+2), new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId4", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() + 2), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId6",  "smartId",classifications1,  "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null,5D));
+                new Alert("userId6", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D));
         alertList.add(
-                new Alert("userId5", "smartId", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, new Date(endDate.getTime()+5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId5", "smartId", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertPersistencyService.save(alertList);
 
         List<String> aggregationFields = new ArrayList<>();
@@ -196,7 +201,7 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .filterByUserName(new ArrayList<>(Arrays.asList("normalized_username_ipusr3")))
+                        .filterByUserName(new ArrayList<>(Arrays.asList("normalized_username_ipusr3@somebigcompany.com")))
                         .filterBySeverity(new ArrayList<>(Arrays.asList(AlertSeverity.HIGH.name())))
                         .filterByStartDate(startDate.getTime())
                         .filterByEndDate(startDate.getTime() + 1)
@@ -217,11 +222,11 @@ public class AlertPersistencyServiceTest {
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications3, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications3, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications4, "normalized_username_ipusr5@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications4, "normalized_username_ipusr5@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -248,11 +253,11 @@ public class AlertPersistencyServiceTest {
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications4, "normalized_username_ipusr5@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications4, "normalized_username_ipusr5@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -279,9 +284,9 @@ public class AlertPersistencyServiceTest {
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -308,11 +313,11 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications4, "normalized_username_ipusr5@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications4, "normalized_username_ipusr5@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -340,9 +345,9 @@ public class AlertPersistencyServiceTest {
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, tags,5D));
+                new Alert("userId", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, tags, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId", "smartId", classifications2, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -363,17 +368,17 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId3", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId3", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId4", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId4", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId5", "smartId", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId5", "smartId", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId6", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null,5D));
+                new Alert("userId6", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D));
         alertPersistencyService.save(alertList);
 
         List<String> aggregationFields = new ArrayList<>();
@@ -401,15 +406,15 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId3", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId3", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId4", "smartId", Arrays.asList("b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId4", "smartId", Arrays.asList("b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId5", "smartId", Arrays.asList("c"), "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId5", "smartId", Arrays.asList("c"), "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertPersistencyService.save(alertList);
 
         List<String> aggregationFields = new ArrayList<>();
@@ -438,15 +443,15 @@ public class AlertPersistencyServiceTest {
 
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId3", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null,5D));
+                new Alert("userId3", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null, 5D));
         alertList.add(
-                new Alert("userId4", "smartId", Arrays.asList("b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.LOW, null,5D));
+                new Alert("userId4", "smartId", Arrays.asList("b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.LOW, null, 5D));
         alertList.add(
-                new Alert("userId5", "smartId", Arrays.asList("c"), "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId5", "smartId", Arrays.asList("c"), "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertPersistencyService.save(alertList);
 
         List<String> aggregationFields = new ArrayList<>();
@@ -486,27 +491,27 @@ public class AlertPersistencyServiceTest {
         List<Alert> alertList = new ArrayList<>();
         //alerts for first day (instant1):
         alertList.add(
-                new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D));
+                new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null,5D));
+                new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null, 5D));
         alertList.add(
-                new Alert("userId4", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null,5D));
+                new Alert("userId4", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null, 5D));
         alertList.add(
-                new Alert("userId5", "smartId", null, "normalized_username_ipusr4@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null,5D));
+                new Alert("userId5", "smartId", null, "normalized_username_ipusr4@somebigcompany.com", startDate1, startDate1, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D));
 
         //alerts for second day (instant2):
         alertList.add(
-                new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null,5D));
+                new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null,5D));
+                new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D));
         alertList.add(
-                new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null,5D));
+                new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null, 5D));
         alertList.add(
-                new Alert("userId4", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null,5D));
+                new Alert("userId4", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.CRITICAL, null, 5D));
         alertList.add(
-                new Alert("userId5", "smartId", null, "normalized_username_ipusr4@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.LOW, null,5D));
+                new Alert("userId5", "smartId", null, "normalized_username_ipusr4@somebigcompany.com", startDate2, startDate2, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.LOW, null, 5D));
         alertPersistencyService.save(alertList);
 
         List<String> aggregationFields = new ArrayList<>();
@@ -524,13 +529,13 @@ public class AlertPersistencyServiceTest {
         assertEquals(2, severityPerDayAggr.getBuckets().size()); //bucket per day- 2 buckets
         for (Histogram.Bucket entry : buckets) {
             StringTerms severityAggregation = (StringTerms) entry.getAggregations().asMap().get(Alert.SEVERITY);
-            if(entry.getKeyAsString().startsWith("2016-04-17")) {
+            if (entry.getKeyAsString().startsWith("2016-04-17")) {
                 assertEquals(3L, severityAggregation.getBuckets().size());
                 assertEquals(1L, severityAggregation.getBucketByKey(AlertSeverity.MEDIUM.name()).getDocCount());
                 assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.CRITICAL.name()).getDocCount());
                 assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.HIGH.name()).getDocCount());
             }
-            if(entry.getKeyAsString().startsWith("2016-04-18")) {
+            if (entry.getKeyAsString().startsWith("2016-04-18")) {
                 assertEquals(3L, severityAggregation.getBuckets().size());
                 assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.MEDIUM.name()).getDocCount());
                 assertEquals(2L, severityAggregation.getBucketByKey(AlertSeverity.CRITICAL.name()).getDocCount());
@@ -545,13 +550,13 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         List<String> indicatorNames1 = Arrays.asList("a");
-        List<String> indicatorNames2 = Arrays.asList("a","b");
-        List<String> indicatorNames3 = Arrays.asList("a","b","c");
-        Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+        List<String> indicatorNames2 = Arrays.asList("a", "b");
+        List<String> indicatorNames3 = Arrays.asList("a", "b", "c");
+        Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alert1.setIndicatorsNames(indicatorNames1);
-        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alert2.setIndicatorsNames(indicatorNames2);
-        Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+        Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alert3.setIndicatorsNames(indicatorNames3);
         List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
         alertPersistencyService.save(alertList);
@@ -580,13 +585,13 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         List<String> indicatorNames1 = Arrays.asList("a");
-        List<String> indicatorNames2 = Arrays.asList("a","b");
-        List<String> indicatorNames3 = Arrays.asList("a","b","c");
-        Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+        List<String> indicatorNames2 = Arrays.asList("a", "b");
+        List<String> indicatorNames3 = Arrays.asList("a", "b", "c");
+        Alert alert1 = new Alert("userId1", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alert1.setIndicatorsNames(indicatorNames1);
-        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+        Alert alert2 = new Alert("userId2", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alert2.setIndicatorsNames(indicatorNames2);
-        Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null,5D);
+        Alert alert3 = new Alert("userId3", "smartId", null, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         alert3.setIndicatorsNames(indicatorNames3);
         List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
         alertPersistencyService.save(alertList);
@@ -598,10 +603,41 @@ public class AlertPersistencyServiceTest {
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         Assert.assertEquals(2, testAlert.getTotalElements());
-        Alert firstAlert = testAlert.iterator().next();
-        Assert.assertTrue(firstAlert.getIndicatorsNames().contains("c") || firstAlert.getIndicatorsNames().contains("b") );
-        Alert secondAlert = testAlert.iterator().next();
-        Assert.assertTrue(secondAlert.getIndicatorsNames().contains("c") || secondAlert.getIndicatorsNames().contains("b") );
+        Iterator<Alert> iterator = testAlert.iterator();
+        Alert firstAlert = iterator.next();
+        Assert.assertTrue(firstAlert.getIndicatorsNames().contains("c") || firstAlert.getIndicatorsNames().contains("b"));
+        Alert secondAlert = iterator.next();
+        Assert.assertTrue(secondAlert.getIndicatorsNames().contains("c") || secondAlert.getIndicatorsNames().contains("b"));
     }
 
+    @Test
+    public void testSortByUserName() {
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
+        String secondUserName = "W_normalized_username_ipusr2@somebigcompany.com";
+        String thirdUserName = "X_normalized_username_ipusr3@somebigcompany.com";
+        Alert alert1 = new Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert1.setIndicatorsNames(indicatorNames1);
+        Alert alert2 = new Alert("userId2", "smartId", null, secondUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert2.setIndicatorsNames(indicatorNames1);
+        Alert alert3 = new Alert("userId3", "smartId", null, thirdUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert3.setIndicatorsNames(indicatorNames1);
+        List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
+        alertPersistencyService.save(alertList);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .sortField(Alert.USER_NAME, true)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Assert.assertEquals(3, testAlert.getTotalElements());
+        Iterator<Alert> iterator = testAlert.iterator();
+        Assert.assertEquals(secondUserName, iterator.next().getUserName());
+        Assert.assertEquals(thirdUserName, iterator.next().getUserName());
+        Assert.assertEquals(firstUserName, iterator.next().getUserName());
+    }
 }
