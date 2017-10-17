@@ -6,7 +6,8 @@ import presidio.output.domain.records.alerts.Alert;
 
 public class AlertQueryEnums {
     public enum AlertQuerySortFieldName {
-        SCORE(Alert.SCORE), START_DATE(Alert.START_DATE), END_DATE(Alert.END_DATE), INDICATORS_NUM(Alert.INDICATORS_NUM);
+        SCORE(Alert.SCORE), START_DATE(Alert.START_DATE), END_DATE(Alert.END_DATE), INDICATORS_NUM(Alert.INDICATORS_NUM),
+        USER_NAME(Alert.USER_NAME);
 
         private String value;
 
@@ -32,7 +33,8 @@ public class AlertQueryEnums {
     }
 
     public enum AlertQueryAggregationFieldName {
-        SEVERITY(Alert.SEVERITY), CLASSIFICATIONS(Alert.CLASSIFICATIONS), SEVERITY_DAILY(Alert.AGGR_SEVERITY_PER_DAY), INDICATOR_NAMES(Alert.INDICATOR_NAMES);
+        SEVERITY(Alert.SEVERITY), CLASSIFICATIONS(Alert.CLASSIFICATIONS), SEVERITY_DAILY(Alert.AGGR_SEVERITY_PER_DAY),
+        INDICATOR_NAMES(Alert.INDICATOR_NAMES);
         private String value;
 
         AlertQueryAggregationFieldName(String value) {

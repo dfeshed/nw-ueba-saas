@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.domain.services.event.ScoredEventService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForFeatureAggr;
@@ -38,6 +39,9 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     @Autowired
     private SupportingInformationConfig supportingInformationConfig;
 
+    @Autowired
+    private ScoredEventService scoredEventService;
+
     @Bean
     public HistoricalDataCountByTimePopulator historicalDataCountByTimePopulator() {
         return new HistoricalDataCountByTimePopulator(historicalDataFetcher);
@@ -64,7 +68,8 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
                 supportingInformationConfig,
                 adeManagerSdk,
                 eventPersistencyService,
-                historicalDataPopulatorFactory());
+                historicalDataPopulatorFactory(),
+                scoredEventService);
     }
 
     @Bean
