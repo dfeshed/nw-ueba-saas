@@ -10,7 +10,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -22,7 +23,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulAuthentications.userId.authentication.hourly"
+        "modelConfName": "numberOfSuccessfulAuthentications.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -41,7 +43,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFailedAuthenticationsUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfFailedAuthenticationsUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -53,7 +56,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFailedAuthentications.userId.authentication.hourly"
+        "modelConfName": "numberOfFailedAuthentications.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -72,7 +76,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -84,7 +89,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctDstMachineDomain.userId.authentication.hourly"
+        "modelConfName": "numberOfDistinctDstMachineDomain.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -103,7 +109,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -115,7 +122,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctSrcMachineId.userId.authentication.hourly"
+        "modelConfName": "numberOfDistinctSrcMachineId.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -134,7 +142,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineIdUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -146,7 +155,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctDstMachineId.userId.authentication.hourly"
+        "modelConfName": "numberOfDistinctDstMachineId.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -165,7 +175,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -177,7 +188,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly"
+        "modelConfName": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -196,7 +208,8 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly"
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -208,7 +221,8 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly"
+        "modelConfName": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly",
+        "partitioningResolutionInSeconds": 86400
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
