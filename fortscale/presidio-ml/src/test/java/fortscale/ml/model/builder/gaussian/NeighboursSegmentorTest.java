@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.NeighboursSegmentor;
 import fortscale.ml.model.builder.gaussian.prior.Segmentor;
 import org.junit.Assert;
@@ -32,7 +33,7 @@ public class NeighboursSegmentorTest {
 		new NeighboursSegmentor(100, 0.1, 0, -1);
 	}
 
-	private List<ContinuousDataModel> createModels(double... means) {
+	private List<IContinuousDataModel> createModels(double... means) {
 		return DoubleStream.of(means)
 				.mapToObj(mean -> new ContinuousDataModel().setParameters(0, mean, 0, 0))
 				.collect(Collectors.toList());
@@ -41,7 +42,7 @@ public class NeighboursSegmentorTest {
 	@Test
 	public void shouldCreateSegmentOfZeroWidthWhenNumberOfNeighboursIsOne() {
 		double segmentCenter = 1;
-		List<ContinuousDataModel> sortedModels = createModels(segmentCenter - 1, segmentCenter, segmentCenter + 1);
+		List<IContinuousDataModel> sortedModels = createModels(segmentCenter - 1, segmentCenter, segmentCenter + 1);
 		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, 0)
 				.createSegment(sortedModels, segmentCenter);
 		Assert.assertEquals(segmentCenter, segment.leftMean, 0.00001);
@@ -52,7 +53,7 @@ public class NeighboursSegmentorTest {
 	@Test
 	public void shouldNotCreateSegmentIfNotBigEnoughConcentrationOfMeans() {
 		NeighboursSegmentor segments = new NeighboursSegmentor(1, 0.000001, 0, 0);
-		List<ContinuousDataModel> sortedModels = createModels(0, 1);
+		List<IContinuousDataModel> sortedModels = createModels(0, 1);
 		Assert.assertNull(segments.createSegment(sortedModels, 100.0));
 	}
 
@@ -60,7 +61,7 @@ public class NeighboursSegmentorTest {
 	public void shouldCreateSegmentBigEnoughToContainDesiredNumberOfNeighbours() {
 		double segmentCenter = 10;
 		double segmentRadius = 1;
-		List<ContinuousDataModel> sortedModels = createModels(
+		List<IContinuousDataModel> sortedModels = createModels(
 				segmentCenter - 2 * segmentRadius,
 				segmentCenter - segmentRadius,
 				segmentCenter,
@@ -79,7 +80,7 @@ public class NeighboursSegmentorTest {
 	public void shouldCreateSmallestSymmetricPossibleSegmentWhichContainDesiredNumberOfNeighbours() {
 		double segmentCenter = 10;
 		double segmentRadius = 1;
-		List<ContinuousDataModel> sortedModels = createModels(
+		List<IContinuousDataModel> sortedModels = createModels(
 				segmentCenter - 2 * segmentRadius,
 				segmentCenter,
 				segmentCenter + segmentRadius / 2,
@@ -97,7 +98,7 @@ public class NeighboursSegmentorTest {
 	public void shouldAddPaddingToTheCreatedSegment() {
 		double segmentCenter = 1;
 		double padding = 1;
-		List<ContinuousDataModel> sortedModels = createModels(segmentCenter);
+		List<IContinuousDataModel> sortedModels = createModels(segmentCenter);
 		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, padding)
 				.createSegment(sortedModels, segmentCenter);
 
@@ -108,9 +109,9 @@ public class NeighboursSegmentorTest {
 
 	@Test
 	public void shouldDiscardSegmentIfTooBigRelativeToItsCenter() {
-		List<ContinuousDataModel> sortedModelsCluster1 = createModels(94.9, 100.0, 105.1);
-		List<ContinuousDataModel> sortedModelsCluster2 = createModels(950.0, 1000.0, 1050.0);
-		List<ContinuousDataModel> sortedModelsAll = Stream
+		List<IContinuousDataModel> sortedModelsCluster1 = createModels(94.9, 100.0, 105.1);
+		List<IContinuousDataModel> sortedModelsCluster2 = createModels(950.0, 1000.0, 1050.0);
+		List<IContinuousDataModel> sortedModelsAll = Stream
 				.concat(sortedModelsCluster1.stream(), sortedModelsCluster2.stream())
 				.collect(Collectors.toList());
 		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 0, 0);
@@ -124,9 +125,9 @@ public class NeighboursSegmentorTest {
 
 	@Test
 	public void shouldDiscardSegmentIfTooBigRelativeToItsCenterOnlyIfBiggerThanMaxSegmentWidthToNotDiscardBecauseOfBadRatio() {
-		List<ContinuousDataModel> sortedModelsCluster1 = createModels(94.9, 100.0, 105.1);
-		List<ContinuousDataModel> sortedModelsCluster2 = createModels(950.0, 1000.0, 1050.0);
-		List<ContinuousDataModel> sortedModelsAll = Stream
+		List<IContinuousDataModel> sortedModelsCluster1 = createModels(94.9, 100.0, 105.1);
+		List<IContinuousDataModel> sortedModelsCluster2 = createModels(950.0, 1000.0, 1050.0);
+		List<IContinuousDataModel> sortedModelsAll = Stream
 				.concat(sortedModelsCluster1.stream(), sortedModelsCluster2.stream())
 				.collect(Collectors.toList());
 		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 100000, 0);
@@ -140,7 +141,7 @@ public class NeighboursSegmentorTest {
 	@Test
 	public void shouldCreateSegmentContainingTheCenterEvenIfModelsAreOnOneSideOfTheCenter() {
 		int mean = 5;
-		List<ContinuousDataModel> sortedModels = createModels(mean);
+		List<IContinuousDataModel> sortedModels = createModels(mean);
 		NeighboursSegmentor segments = new NeighboursSegmentor(1, 0.1, 100000, 0);
 		Segmentor.Segment segment = segments.createSegment(sortedModels, 0);
 

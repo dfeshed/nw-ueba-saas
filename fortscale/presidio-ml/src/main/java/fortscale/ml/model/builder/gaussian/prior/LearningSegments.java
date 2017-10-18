@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
-import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -77,7 +77,7 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 			return center;
 		}
 
-		public List<ContinuousDataModel> getModels() {
+		public List<IContinuousDataModel> getModels() {
 			return segment.models;
 		}
 
@@ -98,11 +98,11 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		}
 	}
 
-	private List<ContinuousDataModel> sortedModels;
+	private List<IContinuousDataModel> sortedModels;
 	private SegmentCenters segmentCenters;
 	private Segmentor segmentor;
 
-	public LearningSegments(List<ContinuousDataModel> models,
+	public LearningSegments(List<IContinuousDataModel> models,
 							SegmentCenters segmentCenters,
 							Segmentor segmentor) {
 		Assert.notNull(models, "models can't be null");
@@ -111,7 +111,7 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		this.segmentCenters = segmentCenters;
 		this.segmentor = segmentor;
 		sortedModels = models.stream()
-				.sorted(Comparator.comparing(ContinuousDataModel::getMean))
+				.sorted(Comparator.comparing(IContinuousDataModel::getMean))
 				.collect(Collectors.toList());
 	}
 

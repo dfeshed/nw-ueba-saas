@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
@@ -36,10 +37,10 @@ public class NeighboursSegmentor implements Segmentor {
 		this.padding = padding;
 	}
 
-	private int findModelIndexClosestToMean(List<ContinuousDataModel> sortedModels, double mean) {
+	private int findModelIndexClosestToMean(List<IContinuousDataModel> sortedModels, double mean) {
 		int meanIndexClosestToMean = Collections.binarySearch(
 				sortedModels,
-				new ContinuousDataModel().setParameters(0, mean, 0, 0), Comparator.comparing(ContinuousDataModel::getMean)
+				new ContinuousDataModel().setParameters(0, mean, 0, 0), Comparator.comparing(IContinuousDataModel::getMean)
 		);
 		if (meanIndexClosestToMean < 0) {
 			meanIndexClosestToMean = -meanIndexClosestToMean - 1;
@@ -54,7 +55,7 @@ public class NeighboursSegmentor implements Segmentor {
 	}
 
 	@Override
-	public Segment createSegment(List<ContinuousDataModel> sortedModels, double segmentCenter) {
+	public Segment createSegment(List<IContinuousDataModel> sortedModels, double segmentCenter) {
 		Double segmentWidth = findBestSegmentWidth(sortedModels, segmentCenter);
 		if (segmentWidth == null) {
 			return null;
@@ -76,7 +77,7 @@ public class NeighboursSegmentor implements Segmentor {
 		);
 	}
 
-	private Double findBestSegmentWidth(List<ContinuousDataModel> sortedModels, double segmentCenter) {
+	private Double findBestSegmentWidth(List<IContinuousDataModel> sortedModels, double segmentCenter) {
 		int meanIndexClosestToSegmentCenter = findModelIndexClosestToMean(sortedModels, segmentCenter);
 		return IntStream.range(-numberOfNeighbours + 1, 1)
 				// create segment candidates (which contain meanIndexClosestToSegmentCenter neighbours)
