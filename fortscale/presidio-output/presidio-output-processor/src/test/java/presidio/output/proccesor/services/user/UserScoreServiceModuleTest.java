@@ -4,6 +4,7 @@ import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-//@Ignore
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
