@@ -8,6 +8,7 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,6 +21,20 @@ import static fortscale.ml.model.builder.smart_weights.WeightsModelBuilderConf.W
 public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory<IModelBuilder> {
     @Autowired
     private SmartRecordConfService smartRecordConfService;
+    @Autowired
+    private SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
+
+    @Value("${presidio.ade.model.smart.weights.builder.use.weight.for.contribution.calc:true}")
+    private Boolean useWeightForContributionCalculation;
+    @Value("${presidio.ade.model.smart.weights.builder.max.allowed.weight:0.1}")
+    private Double maxAllowedWeight;
+    @Value("${presidio.ade.model.smart.weights.builder.max.allowed.weight:0.01}")
+    private Double minAllowedWeight;
+    @Value("${presidio.ade.model.smart.weights.builder.penelty.log.base:5}")
+    private Double peneltyLogBase;
+    @Value("${presidio.ade.model.smart.weights.builder.simulation.weight.decay.factor:0.8}")
+    private Double simulationWeightDecayFactor;
+
 
     @Override
     public String getFactoryName() {
@@ -29,9 +44,10 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     @Override
     public IModelBuilder getProduct(FactoryConfig factoryConfig) {
         BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> listIntegerAggregatedFeatureReliabilityBiFunction = (smartAggregatedRecordDataContainers, numOfContexts) -> new AggregatedFeatureReliability(smartAggregatedRecordDataContainers, numOfContexts);
-        SmartWeightsScorerAlgorithm scorerAlgorithm = new SmartWeightsScorerAlgorithm();
-        ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(scorerAlgorithm);
-        WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator);
+        ClustersContributionsSimulator clustersContributionsSimulator = new ClustersContributionsSimulator(smartWeightsScorerAlgorithm, useWeightForContributionCalculation);
+        WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator,
+                maxAllowedWeight, minAllowedWeight,
+                peneltyLogBase, simulationWeightDecayFactor);
         return new WeightsModelBuilder((WeightsModelBuilderConf) factoryConfig, algorithm, smartRecordConfService);
     }
 }

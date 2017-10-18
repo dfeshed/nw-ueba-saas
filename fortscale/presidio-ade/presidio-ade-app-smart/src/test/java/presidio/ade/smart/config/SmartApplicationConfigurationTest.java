@@ -37,6 +37,7 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff","PT48H");
         properties.put("fortscale.model.cache.maxDiffBetweenCachedModelAndEvent", "PT48H");
         properties.put("fortscale.model.cache.size", 100);
+        properties.put("presidio.ade.model.smart.weights.score.minimal.cluster.score", 0);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
