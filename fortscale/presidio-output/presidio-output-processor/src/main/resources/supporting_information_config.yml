@@ -25,8 +25,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      field_name: operationTypeCategories
-      field_value: FILE_PERMISSION_CHANGE
+      fieldName: operationTypeCategories
+      fieldValue: FILE_PERMISSION_CHANGE
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -55,8 +55,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: result
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -70,8 +70,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: result
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -85,8 +85,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
-      field_name: result
-      field_value: FAILURE
+      fieldName: result
+      fieldValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -100,8 +100,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
     anomalyFilters:
-      field_name: result
-      field_value: FAILURE
+      fieldName: result
+      fieldValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -142,7 +142,7 @@ indicators:
     anomalyValue: FILE_DELETED
   historicalData:
     type: hourly_aggregations
-  classification: data_exfiltration
+  classification: abnormal_file_access
 
 - id: numberOfSuccessfulFileRenamedUserIdFileHourly
   type: FEATURE_AGGREGATION
@@ -153,8 +153,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_RENAMED
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: result
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_file_rename
@@ -180,8 +180,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
     anomalyFilters:
-      field_name: isSrcDriveShared
-      field_value: true
+      fieldName: isSrcDriveShared
+      fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -195,8 +195,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
     anomalyFilters:
-      field_name: isDstDriveShared
-      field_value: true
+      fieldName: isDstDriveShared
+      fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -227,8 +227,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      field_name: operationTypeCategories
-      field_value: SECURITY_SENSITIVE_OPERATION
+      fieldName: operationTypeCategories
+      fieldValue: SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -244,8 +244,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
-        field_name: operationTypeCategories
-        field_value: GROUP_MEMBERSHIP
+        fieldName: operationTypeCategories
+        fieldValue: GROUP_MEMBERSHIP
   historicalData:
     type: hourly_aggregations
   classification: mass_changes_to_critical_enterprise_groups
@@ -284,8 +284,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: result
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -311,8 +311,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: PASSWORD_CHANGED
     anomalyFilters:
-        field_name: isUserAdmin
-        field_value: true
+        fieldName: isUserAdmin
+        fieldValue: true
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -328,8 +328,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: PASSWORD_CHANGED
     anomalyFilters:
-      field_name: isUserAdmin
-      field_value: false
+      fieldName: isUserAdmin
+      fieldValue: false
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily

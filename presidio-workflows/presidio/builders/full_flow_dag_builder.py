@@ -30,7 +30,7 @@ class FullFlowDagBuilder(PresidioDagBuilder):
 
         default_args = full_flow_dag.default_args
         data_sources = [item.strip() for item in default_args.get("data_sources").split(',')]
-        logging.info("populating the full flow dag, dag_id=%s for data sources:%s ", full_flow_dag.dag_id, data_sources)
+        logging.debug("populating the full flow dag, dag_id=%s for data sources:%s ", full_flow_dag.dag_id, data_sources)
 
         task_sensor_service = TaskSensorService()
 
@@ -43,7 +43,7 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(data_sources, full_flow_dag)
 
         root_dag_gap_sensor_operator >> adapter_sub_dag >> presidio_core_sub_dag
-        logging.info("Finished creating dag - %s", full_flow_dag.dag_id)
+        logging.debug("Finished creating dag - %s", full_flow_dag.dag_id)
 
         return full_flow_dag
 

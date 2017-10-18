@@ -20,8 +20,8 @@ public class IndicatorEvent extends AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     Schema schema;
 
-    @Field(type = FieldType.Long, store = true)
-    long eventTime;
+    @Field(type = FieldType.Date, store = true)
+    Date eventTime;
 
     @Field(type = FieldType.Object, store = true)
     Map<String, Object> features;
@@ -54,11 +54,11 @@ public class IndicatorEvent extends AbstractElasticDocument {
         this.schema = schema;
     }
 
-    public long getEventTime() {
+    public Date getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(long eventTime) {
+    public void setEventTime(Date eventTime) {
         this.eventTime = eventTime;
     }
 
