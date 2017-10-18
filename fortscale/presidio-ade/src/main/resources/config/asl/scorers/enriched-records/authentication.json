@@ -31,8 +31,7 @@
                   "name": "srcMachineNameRegexCluster.userId.authentication"
                 },
                 "max-rare-count": 5,
-                "max-num-of-rare-features": 15,
-                "number-of-samples-to-influence-enough": 30
+                "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
                 "type": "score-and-certainty-multiplier-scorer",
@@ -59,8 +58,7 @@
                   "name": "dstMachineNameRegexCluster.userId.authentication"
                 },
                 "max-rare-count": 5,
-                "max-num-of-rare-features": 15,
-                "number-of-samples-to-influence-enough": 30
+                "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
                 "type": "score-and-certainty-multiplier-scorer",
