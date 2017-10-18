@@ -1,32 +1,33 @@
 package fortscale.aggregation.feature.bucket;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.aggregation.filter.JsonFilter;
+import net.minidev.json.JSONObject;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.springframework.util.Assert;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.springframework.util.Assert;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import fortscale.common.event.Event;
-import fortscale.aggregation.filter.JsonFilter;
-import net.minidev.json.JSONObject;
-
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY,
+		getterVisibility = Visibility.NONE,
+		isGetterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE
+)
 public class AggregatedFeatureConf implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 	private Map<String, List<String>> featureNamesMap;
 	private Set<String> allFeatureNames;
-    private JSONObject aggrFeatureFuncJson;
-    private JsonFilter filter;
+	private JSONObject aggrFeatureFuncJson;
+	private JsonFilter filter;
 
 	public AggregatedFeatureConf(
 			@JsonProperty("name") String name,
@@ -34,19 +35,19 @@ public class AggregatedFeatureConf implements Serializable {
 			@JsonProperty("aggrFeatureFuncJson") JSONObject aggrFeatureFuncJson) {
 
 		// Validate name
-		Assert.isTrue(StringUtils.isNotBlank(name));
+		Assert.hasText(name, "name cannot be blank.");
 
 		// Validate featureNamesMap
 		for (Map.Entry<String, List<String>> entry : featureNamesMap.entrySet()) {
-			Assert.isTrue(StringUtils.isNotBlank(entry.getKey()));
-			Assert.notEmpty(entry.getValue());
+			Assert.hasText(entry.getKey(), "featureNamesMap keys cannot be blank.");
+			Assert.notEmpty(entry.getValue(), "featureNamesMap values cannot be empty.");
 			for (String featureName : entry.getValue()) {
-				Assert.isTrue(StringUtils.isNotBlank(featureName));
+				Assert.hasText(featureName, "featureNames cannot be blank.");
 			}
 		}
 
 		// Validate aggrFeatureFuncJson
-		Assert.notNull(aggrFeatureFuncJson);
+		Assert.notNull(aggrFeatureFuncJson, "aggrFeatureFuncJson cannot be null.");
 
 		this.name = name;
 		this.featureNamesMap = featureNamesMap;
@@ -72,15 +73,15 @@ public class AggregatedFeatureConf implements Serializable {
 	public JSONObject getAggrFeatureFuncJson() {
 		return aggrFeatureFuncJson;
 	}
-    
-    public void setFilter(JsonFilter filter) {
+
+	public void setFilter(JsonFilter filter) {
 		this.filter = filter;
 	}
 
-	public boolean passedFilter(JSONObject jSONObject){
-    	return filter == null ? true : filter.passedFilter(jSONObject);
-    }
-	
+	public boolean passedFilter(JSONObject jsonObject) {
+		return filter == null || filter.passedFilter(jsonObject);
+	}
+
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
@@ -92,6 +93,11 @@ public class AggregatedFeatureConf implements Serializable {
 			return false;
 		}
 		AggregatedFeatureConf other = (AggregatedFeatureConf) obj;
-		return new EqualsBuilder().append(this.name, other.name).append(this.aggrFeatureFuncJson, other.aggrFeatureFuncJson).append(this.allFeatureNames, other.allFeatureNames).append(this.filter, other.filter).isEquals();
+		return new EqualsBuilder()
+				.append(this.name, other.name)
+				.append(this.aggrFeatureFuncJson, other.aggrFeatureFuncJson)
+				.append(this.allFeatureNames, other.allFeatureNames)
+				.append(this.filter, other.filter)
+				.isEquals();
 	}
 }
