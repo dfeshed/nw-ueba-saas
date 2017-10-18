@@ -28,7 +28,6 @@ public class User extends AbstractElasticDocument {
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
-    public static final String CREATED_BY = "createdBy";
 
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_ID_FIELD_NAME)
@@ -42,9 +41,6 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
 
-    @Field(type = FieldType.Date, store = true)
-    @JsonProperty(CREATED_BY)
-    private Date createdBy;
 
     @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE_FIELD_NAME)
@@ -174,14 +170,6 @@ public class User extends AbstractElasticDocument {
 
     public void incrementAlertsCountByNumber(int number) {
         this.alertsCount = alertsCount + number;
-    }
-
-    public Date getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(Date createdBy) {
-        this.createdBy = createdBy;
     }
 
     public void setAlertClassifications(List<String> alertClassifications) {
