@@ -14,10 +14,7 @@ export default handleActions({
     expanded: !state.expanded
   }),
 
-  [ACTION_TYPES.CLOSE_PREFERENCES_PANEL]: (state) => ({
-    ...state,
-    expanded: false
-  }),
+  [ACTION_TYPES.CLOSE_PREFERENCES_PANEL]: (state) => ({ ...state, expanded: false }),
 
   [ACTION_TYPES.RESET_PREFERENCES_PANEL]: () => ({ ...initialState })
 

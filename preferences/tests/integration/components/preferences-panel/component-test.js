@@ -31,6 +31,10 @@ test('Preferences panel opens correctly', function(assert) {
 test('Preferences panel closes correctly', function(assert) {
   this.render(hbs `{{preferences-panel}}`);
   this.get('redux').dispatch({
+    type: ACTION_TYPES.TOGGLE_PREFERENCES_PANEL,
+    payload: 'investigate-events'
+  });
+  this.get('redux').dispatch({
     type: ACTION_TYPES.CLOSE_PREFERENCES_PANEL
   });
   return wait().then(() => {

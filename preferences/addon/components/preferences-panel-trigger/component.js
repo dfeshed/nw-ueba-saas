@@ -13,19 +13,7 @@ const dispatchToActions = {
 
 const PreferencesTrigger = Component.extend({
   layout,
-  classNames: ['rsa-preferences-panel-trigger'],
-
-  launchFor: null,
-
-  actions: {
-    /**
-     * Opens/Closes the preferences panel
-     * @public
-     */
-    toggleSettingsPanel() {
-      this.send('togglePreferencesPanel', this.get('launchFor'));
-    }
-  }
+  classNames: ['rsa-preferences-panel-trigger']
 });
 
 export default connect(stateToComputed, dispatchToActions)(PreferencesTrigger);

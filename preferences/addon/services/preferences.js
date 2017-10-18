@@ -80,7 +80,7 @@ export default Service.extend({
     const promiseObj = this.get('request').promiseRequest(requestPayload);
     promiseObj.then(() => {
       const prefObj = preferencesObj.getIn([preferenceFor]);
-      preferencesObj = preferencesObj.set(preferenceFor, prefObj ? prefObj.merge(preferences) : preferences);
+      preferencesObj = preferencesObj.set(preferenceFor, prefObj ? prefObj.merge({ data: preferences }) : preferences);
     });
     return promiseObj;
   }

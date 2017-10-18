@@ -5,8 +5,8 @@ import { connect } from 'ember-redux';
 import { closePreferencesPanel, resetPreferencesPanel } from 'preferences/actions/interaction-creators';
 
 const stateToComputed = ({ preferences }) => ({
-  launchFor: preferences.launchFor,
-  isExpanded: preferences.expanded
+  isExpanded: preferences.expanded,
+  launchFor: preferences.launchFor
 });
 
 const dispatchToActions = {
