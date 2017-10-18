@@ -48,14 +48,19 @@ public class EventMongoRepositoryImpl implements EventRepository {
                 .addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
                         .gte(timeRange.getStart())
                         .lt(timeRange.getEnd()));
+
+        List<Criteria> criterias = new ArrayList<>();
         features.forEach((k, v) -> {
 
-            query.addCriteria(new Criteria().orOperator(
+            criterias.add(new Criteria().orOperator(
                     Criteria.where(k).is(v), // for single object
                     Criteria.where(k).in(v)) // for array
             );
 
         });
+        if (criterias.size() > 0){
+            query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
+        }
         query.limit(limitEvents);
 
         return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
