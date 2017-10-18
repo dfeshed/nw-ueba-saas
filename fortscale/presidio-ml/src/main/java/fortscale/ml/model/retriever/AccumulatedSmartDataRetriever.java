@@ -14,6 +14,7 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,8 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
                 .flatMap(context -> readSmartAggregatedRecordData(smartRecordConfName, context, startTime, endTimeInstant).stream())
                 .collect(Collectors.toList());
         int amountOfContextIds = contextIds.size();
-        return new ModelBuilderData(new SmartWeightsModelBuilderData(amountOfContextIds,smartAggregatedRecordDataContainers));
+        long distinctDays = calcNumOfDistinctDays(smartAggregatedRecordDataContainers);
+        return new ModelBuilderData(new SmartWeightsModelBuilderData(amountOfContextIds,smartAggregatedRecordDataContainers,distinctDays));
     }
 
     private List<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordData(
@@ -66,6 +68,10 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
         throw new UnsupportedOperationException(String.format(
                 "%s does not support retrieval of a single feature",
                 getClass().getSimpleName()));
+    }
+
+    protected long calcNumOfDistinctDays(List<SmartAggregatedRecordDataContainer> data) {
+        return data.stream().map(x->x.getStartTime().truncatedTo(ChronoUnit.DAYS)).distinct().count();
     }
 
     @Override
