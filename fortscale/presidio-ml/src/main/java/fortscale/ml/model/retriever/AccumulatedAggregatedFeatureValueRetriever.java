@@ -2,10 +2,13 @@ package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
-import java.util.Date;
-import java.util.stream.DoubleStream;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+
 
 public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregatedFeatureValueRetriever {
 
@@ -18,18 +21,28 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
     }
 
     @Override
-    protected DoubleStream readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
-                                                       String contextId,
-                                                       Date startTime,
-                                                       Date endTime) {
-        return aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
+    protected TreeMap<Instant, Double> readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                                   String contextId,
+                                                                   Date startTime,
+                                                                   Date endTime) {
+
+        List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
                 aggregatedFeatureEventConf.getName(),
                 contextId,
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()
-        ).stream().flatMapToDouble(accAggEvent -> accAggEvent
-                .getAggregatedFeatureValuesAsList()
-                .stream()
-                .mapToDouble(v -> v));
+        );
+
+        TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
+
+        accumulatedAggregationFeatureRecords.forEach(accumulatedRecord -> {
+                    accumulatedRecord.getAggregatedFeatureValues().entrySet().stream().
+                            forEach(entry -> startInstantToValue.put(accumulatedRecord.getStartInstant().plus(Duration.ofHours(entry.getKey())), entry.getValue()));
+                }
+        );
+
+        return startInstantToValue;
     }
+
+
 }

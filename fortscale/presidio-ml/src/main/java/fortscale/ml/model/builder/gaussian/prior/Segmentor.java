@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
-import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -14,11 +14,11 @@ public interface Segmentor {
 	class Segment {
 		public double leftMean;
 		public double rightMean;
-		public List<ContinuousDataModel> models;
+		public List<IContinuousDataModel> models;
 
 		public Segment(double leftMean,
 					   double rightMean,
-					   List<ContinuousDataModel> models) {
+					   List<IContinuousDataModel> models) {
 			this.leftMean = leftMean;
 			this.rightMean = rightMean;
 			this.models = models;
@@ -55,5 +55,5 @@ public interface Segmentor {
 		}
 	}
 
-	Segment createSegment(List<ContinuousDataModel> sortedModels, double segmentCenter);
+	Segment createSegment(List<IContinuousDataModel> sortedModels, double segmentCenter);
 }
