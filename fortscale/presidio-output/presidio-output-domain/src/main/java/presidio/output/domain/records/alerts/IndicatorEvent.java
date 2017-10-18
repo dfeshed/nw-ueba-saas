@@ -4,13 +4,12 @@ import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.util.Pair;
 import presidio.output.domain.records.AbstractElasticDocument;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + IndicatorEvent.EVENT_TYPE , type = IndicatorEvent.EVENT_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + IndicatorEvent.EVENT_TYPE, type = IndicatorEvent.EVENT_TYPE)
 public class IndicatorEvent extends AbstractElasticDocument {
 
     public static final String EVENT_TYPE = "event";
@@ -21,8 +20,8 @@ public class IndicatorEvent extends AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     Schema schema;
 
-    @Field(type = FieldType.Long, store = true)
-    long eventTime;
+    @Field(type = FieldType.Date, store = true)
+    Date eventTime;
 
     @Field(type = FieldType.Object, store = true)
     Map<String, Object> features;
@@ -33,6 +32,11 @@ public class IndicatorEvent extends AbstractElasticDocument {
     public IndicatorEvent() {
         super();
     }
+
+    public IndicatorEvent(String id, Date createdDate, Date updatedDate) {
+        super(id, createdDate, updatedDate);
+    }
+
 
     public String getIndicatorId() {
         return indicatorId;
@@ -50,11 +54,11 @@ public class IndicatorEvent extends AbstractElasticDocument {
         this.schema = schema;
     }
 
-    public long getEventTime() {
+    public Date getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(long eventTime) {
+    public void setEventTime(Date eventTime) {
         this.eventTime = eventTime;
     }
 

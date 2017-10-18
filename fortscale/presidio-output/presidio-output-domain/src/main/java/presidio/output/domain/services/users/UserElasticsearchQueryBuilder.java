@@ -37,6 +37,20 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             }
         }
 
+        // filter by freeText
+        if (StringUtils.isNotEmpty(userQuery.getFilterByFreeText())) {
+            BoolQueryBuilder freeTextQuery = new BoolQueryBuilder();
+            if (userQuery.isPrefix()) {
+                freeTextQuery.should(prefixQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+                freeTextQuery.should(prefixQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+            } else {
+                freeTextQuery.should(matchQuery(User.USER_NAME_FIELD_NAME, userQuery.getFilterByFreeText()));
+                freeTextQuery.should(matchQuery(User.USER_DISPLAY_NAME_FIELD_NAME, userQuery.getFilterByFreeText()).operator(Operator.AND));
+            }
+
+            boolQueryBuilder.must(freeTextQuery);
+        }
+
         // filter by alert classifications
         if (CollectionUtils.isNotEmpty(userQuery.getFilterByAlertClassifications())) {
             BoolQueryBuilder classificationQuery = new BoolQueryBuilder();
@@ -85,8 +99,10 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
         // filter by min or max score
         if (userQuery.getMinScore() > 0 || userQuery.getMaxScore() > 0) {
             RangeQueryBuilder rangeQuery = rangeQuery(User.SCORE_FIELD_NAME);
-            rangeQuery.gte(userQuery.getMinScore() > 0 ? userQuery.getMinScore() : 0);
-            rangeQuery.lte(userQuery.getMaxScore() > 0 ? userQuery.getMaxScore() : 100);
+            if (userQuery.getMinScore() > -1)
+                rangeQuery.gte(userQuery.getMinScore());
+            if (userQuery.getMaxScore() > -1)
+                rangeQuery.lte(userQuery.getMaxScore());
             boolQueryBuilder.must(rangeQuery);
         }
 
@@ -130,6 +146,9 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             }
             if (userQuery.getAggregateByFields().contains(User.ALERT_CLASSIFICATIONS_FIELD_NAME)) {
                 super.addAggregation(AggregationBuilders.terms(User.ALERT_CLASSIFICATIONS_FIELD_NAME).field(User.ALERT_CLASSIFICATIONS_FIELD_NAME));
+            }
+            if (userQuery.getAggregateByFields().contains(User.INDICATORS_FIELD_NAME)) {
+                super.addAggregation(AggregationBuilders.terms(User.INDICATORS_FIELD_NAME).field(User.INDICATORS_FIELD_NAME));
             }
         }
     }

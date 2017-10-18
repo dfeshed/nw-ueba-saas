@@ -40,7 +40,7 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
         request_path = "%s-%s.%s" % (self.app_name,self.profile, OUTPUT_FORMAT)
 
         config_server_address = str(os.sep).join((self.config_server, request_path))
-        logging.info("connecting to config server address: %s",config_server_address)
+        logging.debug("connecting to config server address: %s",config_server_address)
         try:
             config_server_properties = requests.get(config_server_address, auth=self.auth).json()
         except ConnectionError as e:
@@ -70,7 +70,7 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
         setter to be used in unit test in order to prevent config server usage 
         :param properties: 
         """
-        logging.info("config reader properties are set manually. you must be in testing it...")
+        logging.debug("config reader properties are set manually. you must be in testing it...")
         self.properties = properties
 
 

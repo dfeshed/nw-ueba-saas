@@ -46,7 +46,7 @@
               "scorer": {
                 "type": "constant-regex-scorer",
                 "name": "adminPasswordChanged.userId.activeDirectory.score",
-                "regex": "PASSWORD_CHANGED",
+                "regex": "USER_PASSWORD_CHANGED",
                 "regex-field-name": "operationType",
                 "constant-score": 10
               }
@@ -59,7 +59,7 @@
               "scorer": {
                 "type": "constant-regex-scorer",
                 "name": "nonAdminPasswordChanged.userId.activeDirectory.score",
-                "regex": "PASSWORD_CHANGED",
+                "regex": "USER_PASSWORD_CHANGED",
                 "regex-field-name": "operationType",
                 "constant-score": 10
               }
@@ -109,7 +109,7 @@
             {
               "type": "constant-regex-scorer",
               "name": "passwordChangedByNonOwner.userId.activeDirectory.score",
-              "regex": "PASSWORD_CHANGED_BY_NON_OWNER",
+              "regex": "USER_PASSWORD_CHANGED_BY_NON_OWNER",
               "regex-field-name": "operationType",
               "constant-score": 10
             },

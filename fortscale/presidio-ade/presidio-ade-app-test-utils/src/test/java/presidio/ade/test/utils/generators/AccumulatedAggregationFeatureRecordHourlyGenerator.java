@@ -28,7 +28,7 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEven
                                                               Map<Integer, Double> aggregatedFeatureValuesMap,
                                                               int startHourOfDay, int endHourOfDay) throws GeneratorException {
         this.featureNameGenerator = new CustomStringGenerator(featureName);
-        this.startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay,0),LocalTime.of(endHourOfDay,0), 60,30,1);
+        this.startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, 30, 1);
         this.contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
 
         this.aggregatedFeatureValuesGenerator = new CyclicMapGenerator<>(Lists.newArrayList(aggregatedFeatureValuesMap));
@@ -39,16 +39,16 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEven
     @Override
     public List<AccumulatedAggregationFeatureRecord> generate() throws GeneratorException {
 
-        List<AccumulatedAggregationFeatureRecord> evList = new ArrayList<>() ;
+        List<AccumulatedAggregationFeatureRecord> evList = new ArrayList<>();
 
         // fill list of events
         while (startInstantGenerator.hasNext()) {
             Instant startInstant = startInstantGenerator.getNext();
             Instant endInstant = startInstant.plus(FixedDurationStrategy.HOURLY.toDuration());
             String contextId = contextIdGenerator.getNext();
-            String featureName= featureNameGenerator.getNext();
-            Map<Integer,Double> aggregatedFeatureValues = aggregatedFeatureValuesGenerator.getNext();
-            AccumulatedAggregationFeatureRecord record = new AccumulatedAggregationFeatureRecord(startInstant,endInstant,contextId,featureName);
+            String featureName = featureNameGenerator.getNext();
+            Map<Integer, Double> aggregatedFeatureValues = aggregatedFeatureValuesGenerator.getNext();
+            AccumulatedAggregationFeatureRecord record = new AccumulatedAggregationFeatureRecord(startInstant, endInstant, contextId, featureName);
             record.setAggregatedFeatureValues(aggregatedFeatureValues);
 
             evList.add(record);

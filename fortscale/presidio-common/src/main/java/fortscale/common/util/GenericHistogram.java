@@ -17,8 +17,17 @@ public class GenericHistogram implements Serializable, FeatureValue {
     private Map<String, Double> histogram = new HashMap<>();
     private double totalCount = 0;
     private Object maxObject = null;
+    private long distinctDays = 0;
 
     public GenericHistogram() {}
+
+    public GenericHistogram(Map<String, Double> histogram) {
+        histogram.forEach(this::add);
+    }
+
+    public void setDistinctDays(long distinctDays) {
+        this.distinctDays = distinctDays;
+    }
 
     public double getAvg() {
         return totalCount /getN();
@@ -137,6 +146,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
 
         if (Math.abs(histogram1.totalCount - totalCount) > 0.0000000001) return false;
         if (!histogram.equals(histogram1.histogram)) return false;
+        if(distinctDays!=histogram1.distinctDays) return false;
         return maxObject.equals(histogram1.maxObject);
 
     }

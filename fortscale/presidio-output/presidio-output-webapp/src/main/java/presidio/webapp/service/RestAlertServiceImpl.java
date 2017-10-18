@@ -19,6 +19,7 @@ import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
@@ -364,8 +365,8 @@ public class RestAlertServiceImpl implements RestAlertService {
         restIndicator.setId(indicator.getId());
         restIndicator.setName(indicator.getName());
         restIndicator.setAnomalyValue(indicator.getAnomalyValue());
-        restIndicator.setStartDate(BigDecimal.valueOf(indicator.getStartDate()));
-        restIndicator.setEndDate(BigDecimal.valueOf(indicator.getEndDate()));
+        restIndicator.setStartDate(BigDecimal.valueOf(TimeUnit.SECONDS.convert(indicator.getStartDate().getTime(), TimeUnit.MILLISECONDS)));
+        restIndicator.setEndDate(BigDecimal.valueOf(TimeUnit.SECONDS.convert(indicator.getEndDate().getTime(), TimeUnit.MILLISECONDS)));
         restIndicator.setSchema(indicator.getSchema().name());
         restIndicator.setScore(indicator.getScore());
         restIndicator.setEventsNum(indicator.getEventsNum());
@@ -391,7 +392,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         presidio.webapp.model.Event restEvent = new presidio.webapp.model.Event();
         restEvent.setId(indicatorEvent.getId());
         restEvent.setSchema(indicatorEvent.getSchema().name());
-        restEvent.setTime(BigDecimal.valueOf(indicatorEvent.getEventTime()));
+        restEvent.setTime(BigDecimal.valueOf(TimeUnit.SECONDS.convert(indicatorEvent.getEventTime().getTime(), TimeUnit.MILLISECONDS)));
         restEvent.putAll(indicatorEvent.getFeatures());
         return restEvent;
     }
@@ -404,7 +405,6 @@ public class RestAlertServiceImpl implements RestAlertService {
 
             CountAggregation aggr = (CountAggregation) historicalData.getAggregation();
             List<Bucket<String, Double>> buckets = aggr.getBuckets();
-            CountBucket countBucket = new CountBucket();
             restHistoricalData = new HistoricalDataCountAggregation();
             CountBuckets restBuckets = new CountBuckets();
             for (Bucket<String, Double> bucket : buckets) {

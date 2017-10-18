@@ -8,25 +8,23 @@ import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
-import fortscale.ml.model.retriever.metrics.ContextHistogramRetrieverMetrics;
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ContextHistogramRetriever extends AbstractDataRetriever {
-	private BucketConfigurationService bucketConfigurationService;
-	private FeatureBucketReader featureBucketReader;
+	protected BucketConfigurationService bucketConfigurationService;
+	protected FeatureBucketReader featureBucketReader;
 
-	@Autowired
-	private StatsService statsService;
-
-	private FeatureBucketConf featureBucketConf;
-	private String featureName;
-	private ContextHistogramRetrieverMetrics metrics;
+	protected FeatureBucketConf featureBucketConf;
+	protected String featureName;
+//	TODO private ContextHistogramRetrieverMetrics metrics;
 
 	public ContextHistogramRetriever(
 			ContextHistogramRetrieverConf config,
@@ -39,53 +37,74 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		String featureBucketConfName = config.getFeatureBucketConfName();
 		featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
 		featureName = config.getFeatureName();
-		metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
+//		metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
 		validate(config);
 	}
 
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
-		metrics.retrieveAllFeatureValues++;
+//		metrics.retrieveAllFeatureValues++;
 		return doRetrieve(contextId, endTime, null);
 	}
 
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
-		metrics.retrieveSingleFeatureValue++;
+//		metrics.retrieveSingleFeatureValue++;
 		return doRetrieve(contextId, endTime, feature.getValue().toString());
 	}
 
 	@Override
 	public Set<String> getEventFeatureNames() {
-		metrics.getEventFeatureNames++;
+//		metrics.getEventFeatureNames++;
 		return featureBucketConf.getAggregatedFeatureConf(featureName).getAllFeatureNames();
 	}
 
 	@Override
 	public List<String> getContextFieldNames() {
-		metrics.getContextFieldNames++;
+//		metrics.getContextFieldNames++;
 		return featureBucketConf.getContextFieldNames();
 	}
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		metrics.getContextId++;
+//		metrics.getContextId++;
 		Assert.notEmpty(context, "context cannot be empty.");
 		return FeatureBucketUtils.buildContextId(context);
 	}
 
-	private ModelBuilderData doRetrieve(String contextId, Date endTime, String featureValue) {
+	protected ModelBuilderData doRetrieve(String contextId, Date endTime, String featureValue) {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
 		List<FeatureBucket> featureBuckets = featureBucketReader.getFeatureBuckets(
-				featureBucketConf.getName(), Collections.singleton(contextId),
+				featureBucketConf.getName(), contextId,
 				new TimeRange(startTimeInSeconds, endTimeInSeconds));
 
-		metrics.featureBuckets += featureBuckets.size();
-		GenericHistogram reductionHistogram = new GenericHistogram();
-		if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+//		metrics.featureBuckets += featureBuckets.size();
+		long distinctDays = calcNumOfDistinctDaysOfFeatureBuckets(featureBuckets);
 
+		if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+		GenericHistogram reductionHistogram = new GenericHistogram();
+		createReductionHistogram(endTime, featureValue, featureBuckets, reductionHistogram);
+
+		reductionHistogram.setDistinctDays(distinctDays);
+
+		return getModelBuilderData(reductionHistogram);
+	}
+
+	long calcNumOfDistinctDaysOfFeatureBuckets(List<FeatureBucket> featureBuckets) {
+		return featureBuckets.stream().map(x->x.getStartTime().truncatedTo(ChronoUnit.DAYS)).distinct().count();
+	}
+
+	ModelBuilderData getModelBuilderData(GenericHistogram reductionHistogram) {
+		if (reductionHistogram.getN() == 0) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(reductionHistogram);
+		}
+	}
+
+	void createReductionHistogram(Date endTime, String featureValue, List<FeatureBucket> featureBuckets, GenericHistogram reductionHistogram) {
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Date dataTime = Date.from(featureBucket.getStartTime());
 			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
@@ -101,12 +120,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 				reductionHistogram.add(histogram);
 			}
 		}
-
-		if (reductionHistogram.getN() == 0) {
-			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
-		} else {
-			return new ModelBuilderData(reductionHistogram);
-		}
 	}
 
 	private void validate(ContextHistogramRetrieverConf config) {
@@ -121,7 +134,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		throw new InvalidFeatureNameException(featureName, config.getFeatureBucketConfName());
 	}
 
-	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
+	protected GenericHistogram doFilter(GenericHistogram original, String featureValue) {
 		Double value = original.get(featureValue);
 		GenericHistogram filtered = new GenericHistogram();
 		if (value != null) filtered.add(featureValue, value);

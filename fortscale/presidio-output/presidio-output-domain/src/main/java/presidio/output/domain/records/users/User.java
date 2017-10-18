@@ -9,10 +9,7 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 20/08/2017.
@@ -37,7 +34,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_NAME_FIELD_NAME)
     private String userName;
 
@@ -53,7 +50,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(ALERT_CLASSIFICATIONS_FIELD_NAME)
     private List<String> alertClassifications = new ArrayList<>();
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(INDICATORS_FIELD_NAME)
     private List<String> indicators = new ArrayList<>();
 
@@ -78,6 +75,20 @@ public class User extends AbstractElasticDocument {
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
                 int alertsCount) {
         super();
+        this.userId = userId;
+        this.userName = userName;
+        this.userDisplayName = userDisplayName;
+        this.score = score;
+        this.alertClassifications = alertClassifications;
+        this.indicators = indicators;
+        this.tags = tags;
+        this.severity = severity;
+        this.alertsCount = alertsCount;
+    }
+
+    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
+                int alertsCount, String id, Date createdDate, Date updatedDate) {
+        super(id, createdDate, updatedDate);
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;

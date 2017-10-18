@@ -32,7 +32,7 @@ class AbstractDagFactory:
          once DAG is registered -> it can be scheduled and executed  
         """
         dag_id = dag.dag_id
-        logging.info("registering dag_id=%s", dag_id)
+        logging.debug("registering dag_id=%s", dag_id)
         name_space[dag_id] = dag
 
 
@@ -65,5 +65,5 @@ class AbstractDagFactory:
         :param dag_builder: a service that adds tasks to a given dag
         :param dag: the airflow dag, containing scheduling params etc.
         """
-        logging.info("building dag_id=%s tasks", dag.dag_id)
+        logging.debug("building dag_id=%s tasks", dag.dag_id)
         dag_builder.build(dag)

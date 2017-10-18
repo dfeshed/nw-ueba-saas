@@ -30,7 +30,13 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
         }
     }
 
+    // todo: is this abstraction still required?
     protected abstract DoubleStream readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                                String contextId,
+                                                                Date startTime,
+                                                                Date endTime);
+
+    protected abstract long getAmountOfDistinctDays(AggregatedFeatureEventConf aggregatedFeatureEventConf,
                                                                 String contextId,
                                                                 Date startTime,
                                                                 Date endTime);
@@ -39,8 +45,9 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
     public ModelBuilderData retrieve(String contextId, Date endTime) {
 
         //TODO: metrics.retrieve++;
+        Date startTime = getStartTime(endTime);
         DoubleStream aggregatedFeatureValues = readAggregatedFeatureValues(
-                aggregatedFeatureEventConf, contextId, getStartTime(endTime), endTime);
+                aggregatedFeatureEventConf, contextId, startTime, endTime);
         GenericHistogram reductionHistogram = new GenericHistogram();
         final boolean[] noDataInDatabase = {true};
 
@@ -58,6 +65,8 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
                 return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
             }
         } else {
+            long distinctDays = getAmountOfDistinctDays(aggregatedFeatureEventConf,contextId,startTime,endTime);
+            reductionHistogram.setDistinctDays(distinctDays);
             return new ModelBuilderData(reductionHistogram);
         }
     }

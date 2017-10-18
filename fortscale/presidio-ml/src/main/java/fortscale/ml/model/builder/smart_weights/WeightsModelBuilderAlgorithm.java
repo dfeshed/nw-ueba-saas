@@ -3,6 +3,7 @@ package fortscale.ml.model.builder.smart_weights;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.utils.logging.Logger;
+import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,16 +18,37 @@ import java.util.stream.Collectors;
 public class WeightsModelBuilderAlgorithm {
     private static final Logger logger = Logger.getLogger(WeightsModelBuilderAlgorithm.class);
 
-    static final double MAX_ALLOWED_WEIGHT = 0.1;
-    private static final double PENALTY_LOG_BASE = 5;
-    private static final double SIMULATION_WEIGHT_DECAY_FACTOR = 0.8;
+    static final double MAX_ALLOWED_WEIGHT_DEFAULT = 0.1;
+    static final double MIN_ALLOWED_WEIGHT_DEFAULT = MAX_ALLOWED_WEIGHT_DEFAULT*0.1;
+    private static final double PENALTY_LOG_BASE_DEFAULT = 5;
+    private static final double SIMULATION_WEIGHT_DECAY_FACTOR_DEFAULT = 0.8;
     private BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory;
     private ClustersContributionsSimulator clustersContributionsSimulator;
+    private double maxAllowedWeight = MAX_ALLOWED_WEIGHT_DEFAULT;
+    private double minAllowedWeight = MIN_ALLOWED_WEIGHT_DEFAULT;
+    double peneltyLogBase = PENALTY_LOG_BASE_DEFAULT;
+    double simulationWeightDecayFactor = SIMULATION_WEIGHT_DECAY_FACTOR_DEFAULT;
 
     public WeightsModelBuilderAlgorithm(BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory,
                                         ClustersContributionsSimulator clustersContributionsSimulator) {
         this.aggregatedFeatureReliabilityFactory = aggregatedFeatureReliabilityFactory;
         this.clustersContributionsSimulator = clustersContributionsSimulator;
+    }
+
+    public WeightsModelBuilderAlgorithm(BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory,
+                                        ClustersContributionsSimulator clustersContributionsSimulator, double maxAllowedWeight, double minAllowedWeight,
+                                        double peneltyLogBase, double simulationWeightDecayFactor) {
+        this.aggregatedFeatureReliabilityFactory = aggregatedFeatureReliabilityFactory;
+        this.clustersContributionsSimulator = clustersContributionsSimulator;
+        Assert.isTrue(maxAllowedWeight > minAllowedWeight,
+                String.format("max allowed weight should be bigger than min allowed weight. maxAllowedWeight: %f, minAllowedWeight %f",maxAllowedWeight, minAllowedWeight));
+        Assert.isTrue(peneltyLogBase > 1, String.format("penelty log base  should be bigger than 1. peneltyLogBase: %f", peneltyLogBase));
+        Assert.isTrue(simulationWeightDecayFactor > 0 && simulationWeightDecayFactor < 1,
+                String.format("simulation weight decay factor is expected to be in the range (0,1). simulationWeightDecayFactor: %f",simulationWeightDecayFactor));
+        this.maxAllowedWeight = maxAllowedWeight;
+        this.minAllowedWeight = minAllowedWeight;
+        this.peneltyLogBase = peneltyLogBase;
+        this.simulationWeightDecayFactor = simulationWeightDecayFactor;
     }
 
     /**
@@ -41,7 +63,7 @@ public class WeightsModelBuilderAlgorithm {
      * @param numOfSimulations the number of simulations to perform in the simulations phase.
      * @return a new list of {@link ClusterConf} , or clusterConfsPrototype if no data available in smartAggregatedRecordDataContainers.
      */
-    public List<ClusterConf> createWeightsClusterConfs(List<ClusterConf> clusterConfsPrototype, List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers, int numOfContexts, int numOfSimulations) {
+    public List<ClusterConf> createWeightsClusterConfs(List<ClusterConf> clusterConfsPrototype, List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers, int numOfContexts, int numOfSimulations, List<String> zeroWeightFeatures) {
         if(smartAggregatedRecordDataContainers.isEmpty())
         {
             logger.warn("building model from empty data");
@@ -49,8 +71,23 @@ public class WeightsModelBuilderAlgorithm {
         }
         // first give a penalty to every feature based on how reliable it is (it shouldn't be too noisy)
         List<ClusterConf> clusterConfs = calculateClusterConfsViaReliability(smartAggregatedRecordDataContainers, clusterConfsPrototype, numOfContexts);
+        // set zero weight to cluster which contains feature that should get zero weight.
+        if(zeroWeightFeatures != null && !zeroWeightFeatures.isEmpty()){
+            for(ClusterConf clusterConf: clusterConfs){
+                for(String aggregationRecordName: clusterConf.getAggregationRecordNames()){
+                    if(zeroWeightFeatures.contains(aggregationRecordName)){
+                        clusterConf.setWeight(0.0);
+                        break;
+                    }
+                }
+            }
+        }
         // then, after setting the initial guess, perform many simulations in order to make the initial guess better
-        return calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
+        List<ClusterConf> zeroWeightFeaturesClusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()==0).collect(Collectors.toList());
+        clusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()>0).collect(Collectors.toList());
+        clusterConfs = calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
+        clusterConfs.addAll(zeroWeightFeaturesClusterConfs);
+        return clusterConfs;
     }
 
     private List<ClusterConf> cloneClusterConfList(List<ClusterConf> clusterConfsPrototype) {
@@ -79,6 +116,11 @@ public class WeightsModelBuilderAlgorithm {
                 bestMaxContribution = maxContribution;
                 bestClusterConfs = cloneClusterConfList(currSimulationClusterConfs);
             }
+            long numberOfClustersWithMinAllowedWeight = clusterToContribution.entrySet().stream().
+                    filter(clusterConfDoubleEntry -> clusterConfDoubleEntry.getKey().getWeight()<= minAllowedWeight).count();
+            if(numberOfClustersWithMinAllowedWeight > 0){
+                break;
+            }
             tryToImproveClusterConfs(currSimulationClusterConfs, clusterToContribution);
         }
         return bestClusterConfs;
@@ -96,7 +138,7 @@ public class WeightsModelBuilderAlgorithm {
                 .filter(clusterConf -> clusterToContribution.get(clusterConf) == maxContribution)
                 // and decrease their weight in hope the next simulation will be better
                 .forEach(clusterConfConsumer -> {
-                    clusterConfConsumer.setWeight(clusterConfConsumer.getWeight() * SIMULATION_WEIGHT_DECAY_FACTOR);
+                    clusterConfConsumer.setWeight(clusterConfConsumer.getWeight() * simulationWeightDecayFactor);
                     logger.debug("updating weight: {}", clusterConfConsumer.toString());
                 });
     }
@@ -136,8 +178,8 @@ public class WeightsModelBuilderAlgorithm {
                             // and take the worst one
                             .max()
                             .getAsDouble();
-                    // transform penalty to weight in the range (0.5 * MAX_ALLOWED_WEIGHT, MAX_ALLOWED_WEIGHT]
-                    clusterConf.setWeight(MAX_ALLOWED_WEIGHT * (1 - maxPenalty * 0.5));
+                    // transform penalty to weight in the range (0.5 * , maxAllowedWeight]
+                    clusterConf.setWeight(maxAllowedWeight * (1 - maxPenalty * 0.5));
                 });
         logger.debug("ClusterConfs based on reliability penalties:\n{}", res.toString());
         return res;
@@ -148,7 +190,7 @@ public class WeightsModelBuilderAlgorithm {
      */
     private double normalizePenalty(double penalty) {
         // penalty >= 0
-        double penaltyLog = Math.log(PENALTY_LOG_BASE + penalty / 10.0) / Math.log(PENALTY_LOG_BASE);
+        double penaltyLog = Math.log(peneltyLogBase + penalty / 10.0) / Math.log(peneltyLogBase);
         // penaltyLog >= 1
         double normalizedPenalty = 1.0 - 1.0 / penaltyLog;
         // 0 <= normalizedPenalty < 1

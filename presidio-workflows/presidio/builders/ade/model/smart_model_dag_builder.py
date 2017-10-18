@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import ShortCircuitOperator
 
@@ -8,6 +6,9 @@ from presidio.operators.model.smart_model_accumulate_operator import SmartModelA
 from presidio.operators.model.smart_model_operator import SmartModelOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY
+from presidio.utils.configuration.config_server_configuration_reader_singleton import ConfigServerConfigurationReaderSingleton
+from aggr_model_dag_builder import AggrModelDagBuilder
+from raw_model_dag_builder import RawModelDagBuilder
 
 
 class SmartModelDagBuilder(PresidioDagBuilder):
@@ -25,6 +26,13 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         returns the DAG according to the given data source and fixed duration strategy
         """
 
+    build_model_interval_conf_key = "components.ade.models.smart_records.build_model_interval_in_days"
+    build_model_interval_default_value = 1
+    accumulate_interval_conf_key = "components.ade.models.smart_records.accumulate_interval_in_days"
+    accumulate_interval_default_value = 1
+    min_data_time_range_for_building_models_conf_key = "components.ade.models.smart_records.min_data_time_range_for_building_models_in_days"
+    min_data_time_range_for_building_models_default_value = 14
+
     def __init__(self, fixed_duration_strategy, smart_events_conf):
         """
         C'tor.
@@ -34,9 +42,28 @@ class SmartModelDagBuilder(PresidioDagBuilder):
 
         self._fixed_duration_strategy = fixed_duration_strategy
         self._smart_events_conf = smart_events_conf
-        self._build_model_interval = timedelta(days=2)
-        self._accumulate_interval = timedelta(days=1)
-        self._accumulate_operator_gap_from_smart_model_operator_in_timedelta = timedelta(days=2)
+
+        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+
+        self._build_model_interval = config_reader.read_daily_timedelta(SmartModelDagBuilder.build_model_interval_conf_key,
+                                                                        SmartModelDagBuilder.build_model_interval_default_value)
+        self._accumulate_interval = config_reader.read_daily_timedelta(SmartModelDagBuilder.accumulate_interval_conf_key,
+                                                                       SmartModelDagBuilder.accumulate_interval_default_value)
+
+        self._min_gap_from_dag_start_date_to_start_accumulating = SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_accumulating(config_reader)
+        self._min_gap_from_dag_start_date_to_start_modeling = SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
+
+    @staticmethod
+    def get_min_gap_from_dag_start_date_to_start_accumulating(config_reader):
+        raw_model_min_gap_from_dag_start_date_to_start_modeling = RawModelDagBuilder.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
+        aggr_model_min_gap_from_dag_start_date_to_start_modeling = AggrModelDagBuilder.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
+        return max(raw_model_min_gap_from_dag_start_date_to_start_modeling, aggr_model_min_gap_from_dag_start_date_to_start_modeling)
+
+    @staticmethod
+    def get_min_gap_from_dag_start_date_to_start_modeling(config_reader):
+        return SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_accumulating(config_reader) + \
+               config_reader.read_daily_timedelta(SmartModelDagBuilder.min_data_time_range_for_building_models_conf_key,
+                                                  SmartModelDagBuilder.min_data_time_range_for_building_models_default_value)
 
     def build(self, smart_model_dag):
         """
@@ -63,7 +90,10 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             dag=smart_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._accumulate_interval,
-                                                                     smart_model_dag.schedule_interval),
+                                                                     smart_model_dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_accumulating,
+                                                                                                                                   kwargs['execution_date']),
             provide_context=True
         )
         task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, smart_accumulate_short_circuit_operator)
@@ -79,15 +109,16 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             dag=smart_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._build_model_interval,
-                                                                     smart_model_dag.schedule_interval),
+                                                                     smart_model_dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
+                                                                                                                                   kwargs['execution_date']),
             provide_context=True
         )
+        task_sensor_service.add_task_sequential_sensor(smart_model_operator)
         task_sensor_service.add_task_short_circuit(smart_model_operator, smart_model_short_circuit_operator)
 
         #defining the dependencies between the operators
-        task_sensor_service.add_task_gap_sensor(smart_model_accumulate_operator,
-                                                smart_model_operator,
-                                                self._accumulate_operator_gap_from_smart_model_operator_in_timedelta)
         smart_model_accumulate_operator.set_downstream(smart_model_short_circuit_operator)
 
 

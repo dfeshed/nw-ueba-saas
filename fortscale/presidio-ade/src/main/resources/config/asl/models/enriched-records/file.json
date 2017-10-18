@@ -11,8 +11,7 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "startInstantHistogramUserIdFileDaily",
-        "featureName" : "startInstantHistogram",
-        "partitioningResolutionInSeconds": 86400
+        "featureName" : "startInstantHistogram"
       },
       "builder" : {
         "type" : "time_model_builder",
@@ -33,8 +32,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdFileDaily",
         "featureName" : "operationTypeHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitioningResolutionInSeconds": 86400
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -54,8 +52,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
         "featureName" : "operationTypeHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitioningResolutionInSeconds": 86400
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -75,8 +72,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdFileActionFileDaily",
         "featureName" : "operationTypeHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitioningResolutionInSeconds": 86400
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",

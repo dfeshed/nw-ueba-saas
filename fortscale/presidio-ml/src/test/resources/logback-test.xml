@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %-5level %logger{50}.%M\(%line\): [%thread] [%X{}] %msg%n%xEx{full}</Pattern>
+        </encoder>
+    </appender>
+    <logger name="com.github.fakemongo" level="INFO"/>
+    <logger name="com.mongodb.FongoDBCollection" level="INFO"/>
+    <logger name="com.mongodb.FongoDB" level="INFO"/>
+    <logger name="org.springframework.data.mongodb" level="INFO"/>
+    <logger name="org.springframework.data" level="INFO"/>
+    <logger name="org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver" level="WARN"/>
 
-<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-	<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-		<Pattern>%d %-5level %logger{50}.%M\(%line\): [%thread] [%X{}] %msg%n%xEx{full}</Pattern>
-	</encoder>
-</appender>
-<logger name="com.github.fakemongo" level="INFO" />
-<logger name="com.mongodb.FongoDBCollection" level="INFO" />
-<logger name="com.mongodb.FongoDB" level="INFO" />
-<logger name="org.springframework.data.mongodb" level="INFO" />
-<logger name="org.springframework.data" level="INFO"/>
-
-<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	<file>target/ml-tests.log</file>
-	<append>true</append>
-	<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-		<fileNamePattern>target/dpm-tests.%i.log</fileNamePattern>
-		<minIndex>1</minIndex>
-		<maxIndex>5</maxIndex>
-	</rollingPolicy>
-
-	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-		<maxFileSize>20MB</maxFileSize>
-	</triggeringPolicy>
-
-	<encoder>
-		<Pattern>%d %-5level %logger{50}.%M\(%line\): [%thread] [%X{}] %msg%n%xEx{full}</Pattern>
-	</encoder>
-</appender>
-
-<root level="debug">
-	<appender-ref ref="STDOUT" />
-	<!--<appender-ref ref="LogFile" />-->
-</root>
-
+    <appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>target/ml-tests.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>target/dpm-tests.%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>20MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <Pattern>%d %-5level %logger{50}.%M\(%line\): [%thread] [%X{}] %msg%n%xEx{full}</Pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
 </configuration>

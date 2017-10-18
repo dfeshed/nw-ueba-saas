@@ -5,13 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.IndicatorSummary;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,6 +32,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     private IndicatorEventRepository indicatorEventRepository;
 
     public Alert save(Alert alert) {
+        alert.setUpdatedDate(new Date());
         return alertRepository.save(alert);
     }
 
@@ -49,8 +55,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         // save events
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
         indicators.stream()
-                  .filter(indicator -> indicator.getEvents() != null)
-                  .forEach(indicator -> events.addAll(indicator.getEvents()));
+                .filter(indicator -> indicator.getEvents() != null)
+                .forEach(indicator -> events.addAll(indicator.getEvents()));
         if (CollectionUtils.isNotEmpty(events)) {
             indicatorEventRepository.save(events);
         }

@@ -47,6 +47,14 @@ public class ClustersContributionsSimulatorTest {
             return smartAggregatedRecordDataContainer;
         }
 
+        public static SmartAggregatedRecordDataContainer createSmartAggregatedRecordDataContainer(long startTime,
+                                                                                                  Map<String, Double> fullAggregatedFeatureEventNameToScore) {
+            Instant startTimeInstant = Instant.ofEpochMilli(startTime);
+            SmartAggregatedRecordDataContainer smartAggregatedRecordDataContainer = new SmartAggregatedRecordDataContainer(startTimeInstant, fullAggregatedFeatureEventNameToScore);
+
+            return smartAggregatedRecordDataContainer;
+        }
+
         /**
          * Create a {@link SmartAggregatedRecordDataContainer} with the given startTime, such that calling
          * {@link SmartWeightsScorerAlgorithm ::calculateScore} on the result {@link SmartAggregatedRecordDataContainer} will
@@ -67,7 +75,7 @@ public class ClustersContributionsSimulatorTest {
     @Test
     public void shouldReturnEmptyListAsTopEntitiesGivenEmptyList() {
 
-        List<SmartAggregatedRecordDataContainer> topEntityEvents = new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm())
+        List<SmartAggregatedRecordDataContainer> topEntityEvents = new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm())
                 .calcTopSmartEvents(
                         Collections.emptyList(),
                         createClusterConfs(createClusterConf("F1")),
@@ -168,14 +176,12 @@ public class ClustersContributionsSimulatorTest {
 
     @Test
     public void shouldAssociateAllContributionToSingleClusterGivenOneEntityAndOneCluster() {
-        SmartWeightsScorerAlgorithm scorerAlgorithm = Mockito.mock(SmartWeightsScorerAlgorithm.class);
+        SmartWeightsScorerAlgorithm scorerAlgorithm = createSmartWeightsScorerAlgorithm();
         String featureName = "F1";
         ClusterConf c = createClusterConf(featureName);
         SmartAggregatedRecordDataContainer e = SmartAggregatedRecordDataContainerGenerator.createSmartAggregatedRecordDataContainer(
-                scorerAlgorithm,
                 1234,
-                Collections.singletonMap(featureName, 50.0),
-                0.01
+                Collections.singletonMap(featureName, 50.0)
         );
 
         Map<ClusterConf, Double> contributions = new ClustersContributionsSimulator(scorerAlgorithm).calcContributions(
@@ -189,7 +195,7 @@ public class ClustersContributionsSimulatorTest {
 
     @Test
     public void shouldDivideContributionBetweenParticipatingClusters() {
-        SmartWeightsScorerAlgorithm scorerAlgorithm = Mockito.mock(SmartWeightsScorerAlgorithm.class);
+        SmartWeightsScorerAlgorithm scorerAlgorithm = createSmartWeightsScorerAlgorithm();
         String featureName1 = "F1";
         ClusterConf c1 = createClusterConf(featureName1);
         String featureName2 = "F2";
@@ -197,13 +203,11 @@ public class ClustersContributionsSimulatorTest {
         String featureName3 = "non participating feature";
         ClusterConf c3 = createClusterConf(featureName3);
         SmartAggregatedRecordDataContainer e = SmartAggregatedRecordDataContainerGenerator.createSmartAggregatedRecordDataContainer(
-                scorerAlgorithm,
                 1234,
                 new HashMap<String, Double>() {{
                     put(featureName1, 40.0);
                     put(featureName2, 80.0);
-                }},
-                0.01
+                }}
         );
 
         Map<ClusterConf, Double> contributions = new ClustersContributionsSimulator(scorerAlgorithm).calcContributions(
@@ -221,21 +225,19 @@ public class ClustersContributionsSimulatorTest {
 
     @Test
     public void shouldDivideContributionBetweenParticipatingClustersAccordingToMaxScoreWithinCluster() {
-        SmartWeightsScorerAlgorithm scorerAlgorithm = Mockito.mock(SmartWeightsScorerAlgorithm.class);
+        SmartWeightsScorerAlgorithm scorerAlgorithm = createSmartWeightsScorerAlgorithm();
         String featureName1 = "F1";
         String featureName2 = "F2";
         ClusterConf c1 = createClusterConf(featureName1, featureName2);
         String featureName3 = "F3";
         ClusterConf c2 = createClusterConf(featureName3);
         SmartAggregatedRecordDataContainer e = SmartAggregatedRecordDataContainerGenerator.createSmartAggregatedRecordDataContainer(
-                scorerAlgorithm,
                 1234,
                 new HashMap<String, Double>() {{
                     put(featureName1, 30.0);
                     put(featureName2, 40.0);
                     put(featureName3, 80.0);
-                }},
-                0.01
+                }}
         );
 
         Map<ClusterConf, Double> contributions = new ClustersContributionsSimulator(scorerAlgorithm).calcContributions(
@@ -252,14 +254,12 @@ public class ClustersContributionsSimulatorTest {
 
     @Test
     public void shouldAssociateAllContributionToSingleClusterGivenManyEntitiesAndOneCluster() {
-        SmartWeightsScorerAlgorithm scorerAlgorithm = Mockito.mock(SmartWeightsScorerAlgorithm.class);
+        SmartWeightsScorerAlgorithm scorerAlgorithm = createSmartWeightsScorerAlgorithm();
         String featureName = "F1";
         ClusterConf c = createClusterConf(featureName);
         SmartAggregatedRecordDataContainer e = SmartAggregatedRecordDataContainerGenerator.createSmartAggregatedRecordDataContainer(
-                scorerAlgorithm,
                 1234,
-                Collections.singletonMap(featureName, 50.0),
-                0.01
+                Collections.singletonMap(featureName, 50.0)
         );
 
         Map<ClusterConf, Double> contributions = new ClustersContributionsSimulator(scorerAlgorithm).calcContributions(
@@ -273,26 +273,22 @@ public class ClustersContributionsSimulatorTest {
 
     @Test
     public void shouldDivideContributionBetweenParticipatingClustersAccordingToEntityEventValue() {
-        SmartWeightsScorerAlgorithm scorerAlgorithm = Mockito.mock(SmartWeightsScorerAlgorithm.class);
+        SmartWeightsScorerAlgorithm scorerAlgorithm = createSmartWeightsScorerAlgorithm();
         String featureName1 = "F1";
-        ClusterConf c1 = createClusterConf(featureName1);
+        ClusterConf c1 = createClusterConf(0.01, featureName1);
         String featureName2 = "F2";
-        ClusterConf c2 = createClusterConf(featureName2);
+        ClusterConf c2 = createClusterConf(0.02, featureName2);
         SmartAggregatedRecordDataContainer e1 = SmartAggregatedRecordDataContainerGenerator.createSmartAggregatedRecordDataContainer(
-                scorerAlgorithm,
                 1234,
                 new HashMap<String, Double>() {{
                     put(featureName1, 30.0);
-                }},
-                0.01
+                }}
         );
         SmartAggregatedRecordDataContainer e2 = SmartAggregatedRecordDataContainerGenerator.createSmartAggregatedRecordDataContainer(
-                scorerAlgorithm,
                 1234,
                 new HashMap<String, Double>() {{
                     put(featureName2, 30.0);
-                }},
-                0.02
+                }}
         );
 
         Map<ClusterConf, Double> contributions = new ClustersContributionsSimulator(scorerAlgorithm).calcContributions(
@@ -318,18 +314,23 @@ public class ClustersContributionsSimulatorTest {
         // called in the right order. This test tests exactly that)
         SmartWeightModelTestUtils.TestData testData = new SmartWeightModelTestUtils.TestData();
 
-        ClustersContributionsSimulator simulator = new ClustersContributionsSimulator(new SmartWeightsScorerAlgorithm());
+        ClustersContributionsSimulator simulator = new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm());
         Map<ClusterConf, Double> contributions = simulator.simulate(testData.smartAggregatedRecordDataContainers, testData.clusterConfs);
 
         Map<ClusterConf, Double> expectedContributions = new HashMap<ClusterConf, Double>() {{
-            put(testData.clusterConfs.get(0), 0.04151121074767802);
-            put(testData.clusterConfs.get(1), 0.05148374087884419);
-            put(testData.clusterConfs.get(2), 0.05948251185304837);
-            put(testData.clusterConfs.get(3), 0.065353006722243163);
-            put(testData.clusterConfs.get(4), 0.4053629140199955);
-            put(testData.clusterConfs.get(5), 0.3768066157781908);
+            put(testData.clusterConfs.get(0), 0.10759049316767456);
+            put(testData.clusterConfs.get(1), 0.10986261960385699);
+            put(testData.clusterConfs.get(2), 0.06563529456879252);
+            put(testData.clusterConfs.get(3), 0.11432847489520896);
+            put(testData.clusterConfs.get(4), 0.26396639329694793);
+            put(testData.clusterConfs.get(5), 0.23102623129984445);
+            put(testData.clusterConfs.get(6), 0.10759049316767456);
         }};
         assertContributions(expectedContributions, contributions);
+    }
+
+    private SmartWeightsScorerAlgorithm createSmartWeightsScorerAlgorithm(){
+        return new SmartWeightsScorerAlgorithm(0.5, 30);
     }
 
 }

@@ -64,7 +64,7 @@ public class AdeManagerSdkTest {
         List<AdeScoredFileRecord> generatedScoredRecords = scoredEnrichedFileGenerator.generateAndPersistSanityData(30);
         String adeEventType = generatedScoredRecords.get(0).getAdeEventType();
         List<String> eventIds = generatedScoredRecords.stream().map(x -> x.getContext().getEventId()).collect(Collectors.toList());
-        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE);
+        List<AdeScoredEnrichedRecord> retrievedScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventIds, adeEventType, GENERATED_SCORE-0.01);
         Assert.assertEquals(generatedScoredRecords.size(), retrievedScoredEnrichedRecords.size());
         Instant startInstant = retrievedScoredEnrichedRecords.stream().min(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
         Instant endInstant = retrievedScoredEnrichedRecords.stream().max(Comparator.comparing(AdeRecord::getStartInstant)).get().getStartInstant();
@@ -111,8 +111,6 @@ public class AdeManagerSdkTest {
         @Bean
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.put("streaming.event.field.type.aggr_event", "aggr_event");
-            properties.put("streaming.aggr_event.field.context", "context");
             properties.put("spring.application.name", "test-app-name");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
