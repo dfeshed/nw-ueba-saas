@@ -1,15 +1,13 @@
 package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,19 +52,38 @@ public class AlertPersistencyServiceTest {
 
     Sort sort;
 
+    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
+
+    @BeforeClass
+    public static void setupElasticsearch() {
+        try {
+            embeddedElasticsearchUtils.setupLocalElasticsearch();
+        } catch (Exception e) {
+            Assert.fail("Failed to start elasticsearch");
+            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+        }
+    }
+
     @Before
-    public void before() {
-        esTemplate.deleteIndex(Alert.class);
-        esTemplate.createIndex(Alert.class);
-        esTemplate.putMapping(Alert.class);
-        esTemplate.refresh(Alert.class);
+    public void setupTestdata() {
         classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
         classifications2 = new ArrayList<>(Arrays.asList("b"));
         classifications3 = new ArrayList<>(Arrays.asList("a"));
         classifications4 = new ArrayList<>(Arrays.asList("d"));
         classifications5 = null;
         sort = new Sort(new Sort.Order(Sort.Direction.ASC, Alert.SCORE));
+
+        esTemplate.deleteIndex(Alert.class);
+        esTemplate.createIndex(Alert.class);
+        esTemplate.putMapping(Alert.class);
+        esTemplate.refresh(Alert.class);
     }
+
+    @AfterClass
+    public static void stopElasticsearch() throws Exception {
+        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+    }
+
 
     @Test
     public void testSave() {

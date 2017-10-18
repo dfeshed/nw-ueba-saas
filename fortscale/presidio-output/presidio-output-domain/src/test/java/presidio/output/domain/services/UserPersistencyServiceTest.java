@@ -1,14 +1,12 @@
 package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +38,8 @@ public class UserPersistencyServiceTest {
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
 
+    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
+
     List<String> classifications1;
     List<String> classifications2;
     List<String> classifications3;
@@ -53,6 +53,16 @@ public class UserPersistencyServiceTest {
     User user6;
     User user7;
     User user8;
+
+    @BeforeClass
+    public static void setupElasticsearch() {
+        try {
+            embeddedElasticsearchUtils.setupLocalElasticsearch();
+        } catch (Exception e) {
+            Assert.fail("Failed to start elasticsearch");
+            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+        }
+    }
 
     @Before
     public void before() {
@@ -73,6 +83,11 @@ public class UserPersistencyServiceTest {
         user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
         user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
         user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
+    }
+
+    @AfterClass
+    public static void stopElasticsearch() throws Exception {
+        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
     }
 
     @Test
