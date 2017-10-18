@@ -53,7 +53,7 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
 
         try {
             /* divide the list of events to groups by time */
-            List<List<T>> hourLists = groupBy(eventsToSave, Collectors.groupingBy(x -> DateUtils.ceiling(getEventTimeForCounter(x), ChronoUnit.HOURS)));
+            List<List<T>> hourLists = groupBy(eventsToSave, Collectors.groupingBy(x -> DateUtils.floor(getEventTimeForCounter(x), ChronoUnit.HOURS)));
 
             /* divide all the group of events(group-per-time) by schema */
             for (List<T> hourList : hourLists) {
@@ -69,19 +69,18 @@ public abstract class CountingPresidioMongoSink<T extends AbstractDocument> exte
         for (List<List<T>> hourListPerSchema : hourListsPerSchema) { //going over lists of hours per schema
             for (List<T> hourList : hourListPerSchema) {//going over lists of events per hour
                 final T exampleEvent = hourList.get(0);
-                final Instant endOfHourForTimeDetected = DateUtils.ceiling(getEventTimeForCounter(exampleEvent), ChronoUnit.HOURS);
+                final Instant startOfHour = DateUtils.floor(getEventTimeForCounter(exampleEvent), ChronoUnit.HOURS);
                 final Schema schema = getEventSchema(exampleEvent);
                 int numOfSavedEvents = super.saveEvents(hourList);
                 numOfTotalSavedEvents += numOfSavedEvents;
                 try {
-                    countersUtil.addToSinkCounter(endOfHourForTimeDetected, schema, numOfSavedEvents);
+                    countersUtil.addToSinkCounter(startOfHour, schema, numOfSavedEvents);
                 } catch (IOException e1) {
-                    final Instant hourEndTime = DateUtils.ceiling(endOfHourForTimeDetected, ChronoUnit.HOURS);
-                    logger.warn("Failed to update sink counters for schema {} and time {}. Trying again.", schema, hourEndTime, e1);
+                    logger.warn("Failed to update sink counters for schema {} and time {}. Trying again.", schema, startOfHour, e1);
                     try {
-                        countersUtil.addToSinkCounter(hourEndTime, schema, numOfSavedEvents);
+                        countersUtil.addToSinkCounter(startOfHour, schema, numOfSavedEvents);
                     } catch (IOException e2) {
-                        logger.error("Failed to update sink counters (2nd try) for schema {} and time {}. This means that the adapter will wait the full time (timeout) until it starts processing this hour.", schema, hourEndTime, e2);
+                        logger.error("Failed to update sink counters (2nd try) for schema {} and time {}. This means that the adapter will wait the full time (timeout) until it starts processing this hour.", schema, startOfHour, e2);
                         handleCounterUpdateFailed(e1, e2);
                     }
 
