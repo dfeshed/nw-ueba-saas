@@ -23,6 +23,7 @@ public class CountersUtil {
     private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
 
 
+    public static String USER = "presidio";
     public static final String LATEST_READY_HOUR_MARKER = "LATEST_READY_HOUR";
     public static final String SINK_COUNTERS_FOLDER_NAME = "sink";
     public static final String SOURCE_COUNTERS_FOLDER_NAME = "source";
@@ -225,7 +226,7 @@ public class CountersUtil {
         }
         File file = new File(filePath);
         file.createNewFile();
-        setOwner(Paths.get(folderPath), "presidio");
+        setOwner(Paths.get(folderPath), USER);
         return file;
     }
 
