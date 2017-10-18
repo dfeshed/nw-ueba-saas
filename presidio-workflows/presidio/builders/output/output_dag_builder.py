@@ -103,6 +103,6 @@ class OutputDagBuilder(PresidioDagBuilder):
         task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
 
         #defining the dependencies between the operators
-        hourly_output_operator >> user_score_operator
+        hourly_output_operator >> daily_short_circuit_operator
 
         return output_dag
