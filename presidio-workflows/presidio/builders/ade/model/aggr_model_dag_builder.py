@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -7,6 +5,7 @@ from presidio.operators.model.aggr_model_accumulate_aggregation_operator import 
 from presidio.operators.model.aggr_model_operator import AggrModelOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.services.fixed_duration_strategy import FIX_DURATION_STRATEGY_DAILY, is_execution_date_valid
+from presidio.utils.configuration.config_server_configuration_reader_singleton import ConfigServerConfigurationReaderSingleton
 
 
 class AggrModelDagBuilder(PresidioDagBuilder):
@@ -24,6 +23,13 @@ class AggrModelDagBuilder(PresidioDagBuilder):
         returns the DAG according to the given data source and fixed duration strategy
         """
 
+    build_model_interval_conf_key = "components.ade.models.feature_aggregation_records.build_model_interval_in_days"
+    build_model_interval_default_value = 1
+    accumulate_interval_conf_key = "components.ade.models.feature_aggregation_records.accumulate_interval_in_days"
+    accumulate_interval_default_value = 1
+    min_gap_from_dag_start_date_to_start_modeling_conf_key = "components.ade.models.feature_aggregation_records.min_data_time_range_for_building_models_in_days"
+    min_gap_from_dag_start_date_to_start_modeling_default_value = 14
+
     def __init__(self, data_source, fixed_duration_strategy):
         """
         C'tor.
@@ -35,9 +41,18 @@ class AggrModelDagBuilder(PresidioDagBuilder):
 
         self._data_source = data_source
         self._fixed_duration_strategy = fixed_duration_strategy
-        self._build_model_interval = timedelta(days=2)
-        self._accumulate_interval = timedelta(days=1)
-        self._accumulate_operator_gap_from_aggr_model_operator_in_timedelta = timedelta(days=2)
+
+        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+        self._build_model_interval = config_reader.read_daily_timedelta(AggrModelDagBuilder.build_model_interval_conf_key,
+                                                                        AggrModelDagBuilder.build_model_interval_default_value)
+        self._accumulate_interval = config_reader.read_daily_timedelta(AggrModelDagBuilder.accumulate_interval_conf_key,
+                                                                       AggrModelDagBuilder.accumulate_interval_default_value)
+        self._min_gap_from_dag_start_date_to_start_modeling = self.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
+
+    @staticmethod
+    def get_min_gap_from_dag_start_date_to_start_modeling(config_reader):
+        return config_reader.read_daily_timedelta(AggrModelDagBuilder.min_gap_from_dag_start_date_to_start_modeling_conf_key,
+                                                  AggrModelDagBuilder.min_gap_from_dag_start_date_to_start_modeling_default_value)
 
     def build(self, aggr_model_dag):
         """
@@ -76,15 +91,16 @@ class AggrModelDagBuilder(PresidioDagBuilder):
             dag=aggr_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._build_model_interval,
-                                                                     aggr_model_dag.schedule_interval),
+                                                                     aggr_model_dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(aggr_model_dag,
+                                                                                                                                   self._min_gap_from_dag_start_date_to_start_modeling,
+                                                                                                                                   kwargs['execution_date']),
             provide_context=True
         )
+        task_sensor_service.add_task_sequential_sensor(aggr_model_operator)
         task_sensor_service.add_task_short_circuit(aggr_model_operator, aggr_model_short_circuit_operator)
 
         # defining the dependencies between the operators
-        task_sensor_service.add_task_gap_sensor(aggr_model_accumulate_aggregations_operator,
-                                                aggr_model_operator,
-                                                self._accumulate_operator_gap_from_aggr_model_operator_in_timedelta)
         aggr_model_accumulate_aggregations_operator.set_downstream(aggr_model_short_circuit_operator)
 
         return aggr_model_dag
