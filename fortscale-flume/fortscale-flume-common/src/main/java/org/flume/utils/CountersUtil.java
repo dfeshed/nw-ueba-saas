@@ -12,6 +12,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.GroupPrincipal;
+import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.UserPrincipal;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.time.Instant;
@@ -24,6 +26,7 @@ public class CountersUtil {
 
 
     public static String USER = "presidio";
+    public static String GROUP = "presidio";
     public static final String LATEST_READY_HOUR_MARKER = "LATEST_READY_HOUR";
     public static final String SINK_COUNTERS_FOLDER_NAME = "sink";
     public static final String SOURCE_COUNTERS_FOLDER_NAME = "source";
@@ -213,7 +216,8 @@ public class CountersUtil {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private File createFile(Schema schema, String flumeComponentType) throws IOException {
         final String presidioHome = System.getenv("PRESIDIO_HOME");
-        final String folderPath = presidioHome + File.separator + "flume" + File.separator + "counters" + File.separator + flumeComponentType;
+        final String countersFolderPath = presidioHome + File.separator + "flume" + File.separator + "counters" + File.separator;
+        final String folderPath = countersFolderPath + flumeComponentType;
         final String filePath = folderPath + File.separator + schema.getName();
         if (!Files.exists(Paths.get(folderPath))) {
             try {
@@ -226,14 +230,25 @@ public class CountersUtil {
         }
         File file = new File(filePath);
         file.createNewFile();
-        setOwner(Paths.get(folderPath), USER);
+        ownCounterFolderAndFiles(countersFolderPath, folderPath, filePath);
         return file;
     }
 
-    private void setOwner(Path folderPath, String user) throws IOException {
-        UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
-        UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(user);
-        Files.setOwner(folderPath, userPrincipal);
+    private void ownCounterFolderAndFiles(String countersFolderPath, String folderPath, String filePath) throws IOException {
+        setOwnership(Paths.get(folderPath), USER, GROUP);
+        setOwnership(Paths.get(countersFolderPath), USER, GROUP);
+        setOwnership(Paths.get(filePath), USER, GROUP);
+    }
+
+    private void setOwnership(Path path, String user, String group) throws IOException {
+        final UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
+
+        final UserPrincipal userPrincipal = lookupService.lookupPrincipalByName(user);
+        Files.setOwner(path, userPrincipal);
+
+        final GroupPrincipal groupPrincipal = lookupService.lookupPrincipalByGroupName(group);
+        final PosixFileAttributeView fileAttributeView = Files.getFileAttributeView(path, PosixFileAttributeView.class);
+        fileAttributeView.setGroup(groupPrincipal);
     }
 
 
@@ -244,7 +259,6 @@ public class CountersUtil {
         if (flumeComponentType.equals(SOURCE_COUNTERS_FOLDER_NAME) && latestReadyHour != null) {
             updateLatestReadyHourProperty(properties, latestReadyHour);
         }
-
 
         return Integer.parseInt(newCount);
     }

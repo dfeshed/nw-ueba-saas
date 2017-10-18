@@ -37,6 +37,7 @@ public class CountersUtilTest {
     @Before
     public void setUp() throws Exception {
         CountersUtil.USER = System.getProperty("user.name");
+        CountersUtil.GROUP = CountersUtil.USER;
         String currentDirectory = Paths.get("").toAbsolutePath().toString();
         mockedPresidioHome = currentDirectory + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator;
         mockedCountersFolder = mockedPresidioHome + File.separator + "flume" + File.separator + "counters" + File.separator;
