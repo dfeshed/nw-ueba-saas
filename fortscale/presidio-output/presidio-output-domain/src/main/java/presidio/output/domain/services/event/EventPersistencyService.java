@@ -29,8 +29,16 @@ public interface EventPersistencyService {
      * @param features
      * @return
      */
-    List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, Map<String, Object> features) throws Exception;
+    List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, Map<String, Object> features);
 
     EnrichedEvent findLatestEventForUser(String userId);
+
+    /**
+     * Determine the feature property type
+     * @param schema the schema of the event
+     * @param feature the feature name (i.e: operationType
+     * @return the property type, or {@code Object.class} as fallback
+     */
+    Class findFeatureType(Schema schema, String feature);
 
 }

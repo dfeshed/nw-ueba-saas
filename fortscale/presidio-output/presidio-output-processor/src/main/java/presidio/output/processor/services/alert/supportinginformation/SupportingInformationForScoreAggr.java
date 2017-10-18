@@ -19,6 +19,8 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.domain.services.event.ScoredEventService;
+import presidio.output.processor.config.AnomalyFiltersConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
@@ -54,12 +56,15 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private HistoricalDataPopulatorFactory historicalDataPopulatorFactory;
 
+    private ScoredEventService scoredEventService;
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory) {
+
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService) {
         this.config = supportingInformationConfig;
         this.adeManagerSdk = adeManagerSdk;
         this.eventPersistencyService = eventPersistencyService;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
+        this.scoredEventService = scoredEventService;
     }
 
 
@@ -75,8 +80,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             Indicator indicator = new Indicator(alert.getId());
             indicator.setUpdatedBy(SUPPORTING_INFORMATION_FOR_SCORE_AGGR + new Date().toString());
             indicator.setName(indicatorConfig.getName());
-            indicator.setStartDate(adeAggregationRecord.getStartInstant().getLong(ChronoField.INSTANT_SECONDS));
-            indicator.setEndDate(adeAggregationRecord.getEndInstant().getLong(ChronoField.INSTANT_SECONDS));
+            indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
+            indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
             indicator.setAnomalyValue(featureValue);
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
@@ -118,7 +123,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 event.setUpdatedBy(SUPPORTING_INFORMATION_FOR_SCORE_AGGR + new Date().toString());
                 event.setFeatures(rawEventFeatures);
                 event.setIndicatorId(indicator.getId());
-                event.setEventTime(rawEvent.getEventDate().getLong(ChronoField.INSTANT_SECONDS));
+                event.setEventTime(Date.from(rawEvent.getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
 
                 if (CollectionUtils.isNotEmpty(adeScoredEnrichedRecords)) {
@@ -180,8 +185,23 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         if (START_INSTANT.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {
             distinctFeatureValues.add(adeAggregationRecord.getStartInstant().toString());
         } else {
-            // get distinct values of all the scored events from ADE
-            distinctFeatureValues.addAll(adeManagerSdk.findScoredEnrichedRecordsDistinctFeatureValues(indicatorConfig.getAdeEventType(), contextFieldAndValue, timeRange, indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0));
+            // get distinct values of all the scored events
+            Map<String, Object> features = new HashMap<String, Object>();
+            AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
+            if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
+                String fieldName = anomalyFiltersConfig.getFieldName();
+                String fieldValue = anomalyFiltersConfig.getFieldValue();
+                Object featureValue = eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName).cast(fieldValue);
+                features.put(anomalyFiltersConfig.getFieldName(), featureValue);
+            }
+            List<Object> featureValues =
+                    scoredEventService.findDistinctScoredFeatureValue(indicatorConfig.getSchema(),
+                    indicatorConfig.getAdeEventType(),
+                    contextFieldAndValue,
+                    timeRange,
+                    indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features);
+
+            distinctFeatureValues.addAll(featureValues.stream().map(Object::toString).collect(Collectors.toList()));
         }
         return distinctFeatureValues;
     }

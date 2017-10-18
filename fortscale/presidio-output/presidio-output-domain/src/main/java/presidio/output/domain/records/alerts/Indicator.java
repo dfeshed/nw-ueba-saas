@@ -44,10 +44,10 @@ public class Indicator extends AbstractElasticDocument {
     private HistoricalData historicalData;
 
     @JsonProperty(START_DATE)
-    private long startDate;
+    private Date startDate;
 
     @JsonProperty(END_DATE)
-    private long endDate;
+    private Date endDate;
 
     @JsonProperty(SCHEMA)
     Schema schema;
@@ -107,19 +107,19 @@ public class Indicator extends AbstractElasticDocument {
         this.alertId = alertId;
     }
 
-    public long getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(long startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public long getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(long endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 

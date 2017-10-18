@@ -45,9 +45,9 @@ class SpringBootJarOperator(BashOperator):
 
     @apply_defaults
     def __init__(self, command,jvm_args={}, java_args={}, *args, **kwargs):
-        logging.info("creating operator %s" % str(self.__class__ ))
+        logging.debug("creating operator %s" % str(self.__class__ ))
         self.task_id = kwargs['task_id']
-        logging.info("task %s" % str(kwargs['task_id']))
+        logging.debug("task %s" % str(kwargs['task_id']))
 
         self._calc_jvm_args(jvm_args)
         self.java_args = java_args
@@ -65,13 +65,13 @@ class SpringBootJarOperator(BashOperator):
                 self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_jvm_args_task_instance_conf_key_prefix())
             if not self.jvm_args:
                 # read operator jvm args
-                logging.info((
+                logging.debug((
                              "did not found task configuration for task_id=%s. settling for operator=%s configuration" % (
                              self.task_id, self.__class__.__name__)))
                 self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_jvm_args_operator_conf_key_prefix())
             if not self.jvm_args:
                 # read default jvm args
-                logging.info((
+                logging.debug((
                     "did not found operator configuration for operator=%s. settling for default configuration" % (
                          self.__class__.__name__)))
                 self.jvm_args = SpringBootJarOperator.conf_reader.read(

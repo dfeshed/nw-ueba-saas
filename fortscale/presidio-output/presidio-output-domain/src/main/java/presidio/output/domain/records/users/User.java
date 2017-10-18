@@ -9,11 +9,7 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 20/08/2017.
@@ -38,7 +34,7 @@ public class User extends AbstractElasticDocument {
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_NAME_FIELD_NAME)
     private String userName;
 

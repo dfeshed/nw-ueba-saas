@@ -61,8 +61,8 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         Indicator indicator = new Indicator(alert.getId());
         indicator.setUpdatedBy(SUPPORTING_INFORMATION_FOR_FEATURE_AGGR + new Date().toString());
         indicator.setName(indicatorConfig.getName());
-        indicator.setStartDate(adeAggregationRecord.getStartInstant().getLong(ChronoField.INSTANT_SECONDS));
-        indicator.setEndDate(adeAggregationRecord.getEndInstant().getLong(ChronoField.INSTANT_SECONDS));
+        indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
+        indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
         indicator.setAnomalyValue(String.valueOf(adeAggregationRecord.getFeatureValue()));
         indicator.setSchema(indicatorConfig.getSchema());
         indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
@@ -94,7 +94,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
             event.setUpdatedBy(SUPPORTING_INFORMATION_FOR_FEATURE_AGGR + new Date().toString());
             event.setFeatures(rawEventFeatures);
             event.setIndicatorId(indicator.getId());
-            event.setEventTime(rawEvent.getEventDate().getLong(ChronoField.INSTANT_SECONDS));
+            event.setEventTime(Date.from(rawEvent.getEventDate()));
             event.setSchema(indicatorConfig.getSchema());
             events.add(event);
 

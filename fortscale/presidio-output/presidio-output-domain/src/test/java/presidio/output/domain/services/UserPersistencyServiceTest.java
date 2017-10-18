@@ -25,6 +25,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -111,7 +112,6 @@ public class UserPersistencyServiceTest {
     private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
         ArrayList<String> indicators = new ArrayList<String>();
         indicators.add("indicator");
-
         return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
@@ -616,5 +616,32 @@ public class UserPersistencyServiceTest {
         assertEquals(severityAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(severityAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(severityAgg.getBucketByKey("c").getDocCount(), 1L);
+    }
+
+    @Test
+    public void testSortByUserName() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .sort(new Sort(Sort.Direction.ASC, User.USER_NAME_FIELD_NAME))
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(result.getContent().size(), 3L); //two buckets- admin and watch
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("B_userName", iterator.next().getUserName());
+        Assert.assertEquals("C_userName", iterator.next().getUserName());
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
     }
 }

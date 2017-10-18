@@ -32,13 +32,13 @@ public class UserServiceConfig {
     @Value("${alert.affect.duration.days:1000}")
     private int alertEffectiveDurationInDays;
 
-    @Value("${user.severities.percent.threshold.critical:75}")
+    @Value("${user.severities.percent.threshold.critical:95}")
     private int percentThresholdCritical;
 
-    @Value("${user.severities.percent.threshold.high:50}")
+    @Value("${user.severities.percent.threshold.high:80}")
     private int percentThresholdHigh;
 
-    @Value("${user.severities.percent.threshold.medium:25}")
+    @Value("${user.severities.percent.threshold.medium:70}")
     private int percentThresholdMedium;
 
 
