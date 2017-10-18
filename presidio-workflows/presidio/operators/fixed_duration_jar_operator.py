@@ -49,7 +49,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
             # e.g: execution_date = datetime(2014, 11, 28, 13, 50, 0)
             # interval = timedelta(minutes=5)
             # fixed_duration = timedelta(days=1)
-            logging.info(
+            logging.debug(
                 'Create short_circuit_operator in order to skip the task.')
             raise InvalidExecutionDateError(execution_date, self.fixed_duration_strategy)
 

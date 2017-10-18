@@ -2,7 +2,6 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.builder.IModelBuilder;
-import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
@@ -59,8 +58,8 @@ public class ModelingEngine {
 		long numOfFailures = 0;
 
 		for (String contextId : contextIds) {
-			ModelBuildingStatus status = process(sessionId, endInstant, contextId);
-			if (!status.isFailure()) numOfSuccesses++;
+			boolean success = process(sessionId, endInstant, contextId);
+			if (success) numOfSuccesses++;
 			else numOfFailures++;
 		}
 
@@ -97,7 +96,7 @@ public class ModelingEngine {
 	/*
 	 * Run the retriever, builder and store steps for the given context ID.
 	 */
-	private ModelBuildingStatus process(String sessionId, Instant endInstant, String contextId) {
+	private boolean process(String sessionId, Instant endInstant, String contextId) {
 		ModelBuilderData modelBuilderData;
 		Model model;
 
@@ -106,11 +105,11 @@ public class ModelingEngine {
 			modelBuilderData = dataRetriever.retrieve(contextId, Date.from(endInstant));
 		} catch (Exception e) {
 			logger.error("Failed to retrieve data for context ID {}.", contextId, e);
-			return ModelBuildingStatus.RETRIEVER_FAILURE;
+			return false;
 		}
 
 		if (!modelBuilderData.dataExists()) {
-			return noDataReasonToModelBuildingStatus(modelBuilderData, contextId);
+			return noDataReasonToBoolean(modelBuilderData, contextId);
 		}
 
 		// Builder
@@ -118,12 +117,12 @@ public class ModelingEngine {
 			model = modelBuilder.build(modelBuilderData.getData());
 		} catch (Exception e) {
 			logger.error("Failed to build model for context ID {}.", contextId, e);
-			return ModelBuildingStatus.BUILDER_FAILURE;
+			return false;
 		}
 
 		if (model == null) {
 			logger.error("Built model for context ID {} is null.", contextId);
-			return ModelBuildingStatus.BUILDER_FAILURE;
+			return false;
 		}
 
 		// Store
@@ -132,23 +131,37 @@ public class ModelingEngine {
 			modelStore.save(modelConf, sessionId, contextId, model, timeRange);
 		} catch (Exception e) {
 			logger.error("Failed to store model for context ID {}.", contextId, e);
-			return ModelBuildingStatus.STORE_FAILURE;
+			return false;
 		}
 
 		logger.debug("Retriever, builder and store steps successfully finished for context ID {}.", contextId);
-		return ModelBuildingStatus.SUCCESS;
+		return true;
 	}
 
-	private ModelBuildingStatus noDataReasonToModelBuildingStatus(ModelBuilderData modelBuilderData, String contextId) {
+	private boolean noDataReasonToBoolean(ModelBuilderData modelBuilderData, String contextId) {
 		NoDataReason noDataReason = modelBuilderData.getNoDataReason();
 
 		switch (noDataReason) {
-			case NO_DATA_IN_DATABASE:
-				logger.error("No data in database for context ID {}.", contextId);
-				return ModelBuildingStatus.RETRIEVER_FAILURE;
 			case ALL_DATA_FILTERED:
-				logger.info("All data filtered out for context ID {}.", contextId);
-				return ModelBuildingStatus.DATA_FILTERED_OUT;
+				// TODO: Add metric
+				return true;
+			case NO_DATA_IN_DATABASE:
+				if (contextId == null) {
+					/*
+					 * If the context ID is null, then it's a global model, and there isn't a selector.
+					 * Therefore it is possible that there's simply no data for this model in the database.
+					 */
+					// TODO: Add metric
+					return true;
+				} else {
+					/*
+					 * If the context ID is not null, then it's not a global model, and there is a selector.
+					 * If there's no data in the database, then the selector and the retriever are inconsistent.
+					 */
+					// TODO: Add metric
+					logger.error("No data in database for context ID {}.", contextId);
+					return false;
+				}
 			default:
 				String s = String.format("Unsupported %s %s.", NoDataReason.class.getSimpleName(), noDataReason);
 				throw new IllegalArgumentException(s);

@@ -26,10 +26,7 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -74,8 +71,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
             Indicator indicator = new Indicator(alert.getId());
             indicator.setName(indicatorConfig.getName());
-            indicator.setStartDate(adeAggregationRecord.getStartInstant().getLong(ChronoField.INSTANT_SECONDS));
-            indicator.setEndDate(adeAggregationRecord.getEndInstant().getLong(ChronoField.INSTANT_SECONDS));
+            indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
+            indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
             indicator.setAnomalyValue(featureValue);
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
@@ -114,7 +111,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 IndicatorEvent event = new IndicatorEvent();
                 event.setFeatures(rawEventFeatures);
                 event.setIndicatorId(indicator.getId());
-                event.setEventTime(rawEvent.getEnrichedEvent().getEventDate().getLong(ChronoField.INSTANT_SECONDS));
+                event.setEventTime(Date.from(rawEvent.getEnrichedEvent().getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
                 if (rawEvent.getScore() > 0) {
                     Map<String, Double> scores = new HashMap<String, Double>();
