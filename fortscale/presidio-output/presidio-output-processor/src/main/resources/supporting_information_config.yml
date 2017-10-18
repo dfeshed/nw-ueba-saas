@@ -10,7 +10,7 @@ indicators:
   adeEventType: scored_enriched.file.startInstant.userId.file.score
   schema: FILE
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdFileDaily
@@ -212,7 +212,7 @@ indicators:
   adeEventType: scored_enriched.active_directory.startInstant.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdActiveDirectoryDaily
@@ -474,7 +474,7 @@ indicators:
   adeEventType: scored_enriched.authentication.startInstant.userId.authentication.score
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdAuthenticationDaily
