@@ -1,18 +1,24 @@
+$powerSelectDisabledColor: border-color(primary);
+
 .rsa-investigate-query-bar {
   @include rsa-row(left, bottom);
 
-  &__service,
+  &__service {
+    @include rsa-vendor-prefix(flex-grow, 0);
+    margin-right: rsa-whitespace();
+  }
   &__time-range {
     @include rsa-vendor-prefix(flex-grow, 0);
     margin-right: rsa-whitespace();
-    /*
-    @workaround The arrow icon in these dropdowns will not align properly if we
-    omit the label (.rsa-form-label). But we don't actually want to show any labels.
-    So we include the label in the DOM, for alignment, but make it invisible.
-    In the future, we'll be replacing these components with ember-power-select.
-    */
-    .rsa-form-label {
-      visibility: hidden;
+    .ember-power-select-trigger[aria-disabled] {
+      /* To show the disabled state of the Time Range */
+      background-color: background-color(primary, base, transparent);
+      border-bottom: 1px solid $powerSelectDisabledColor;
+      cursor: default;
+      .ember-power-select-placeholder,
+      .ember-power-select-status-icon {
+        color: $powerSelectDisabledColor;
+      }
     }
   }
   &__submit {

@@ -1,4 +1,5 @@
 import * as ACTION_TYPES from './types';
+import { getServiceSummary } from './data-creators';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -65,10 +66,15 @@ export const setSessionId = (serviceId) => ({
   payload: serviceId
 });
 
-export const setServiceId = (serviceId) => ({
-  type: ACTION_TYPES.SERVICE_SELECTED,
-  payload: serviceId
-});
+export const setServiceId = (serviceId) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SERVICE_SELECTED,
+      payload: serviceId
+    });
+    dispatch(getServiceSummary());
+  };
+};
 
 export const setReconOpen = () => ({
   type: ACTION_TYPES.SET_RECON_VIEWABLE,

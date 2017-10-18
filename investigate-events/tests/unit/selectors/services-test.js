@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { servicesWithURI } from 'investigate-events/reducers/investigate/services/selectors';
+import { servicesWithURI, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 
 module('Unit | Selectors | services');
 
@@ -12,7 +12,11 @@ const state = Immutable.from({
       data: [
         { id: 'id1', displayName: 'Service Name', name: 'SN' },
         { id: 'id2', displayName: 'Service Name2', name: 'SN2' }
-      ]
+      ],
+      summaryData: {
+        startTime: '1234',
+        endTime: '6789'
+      }
     },
     queryNode: {
       serviceId: 'sd1',
@@ -44,4 +48,8 @@ test('servicesWithURI are computed correctly', function(assert) {
   assert.equal(firstServiceWithURI.id, expectedServiceId, 'has matching IDs');
 
   assert.equal(firstServiceWithURI.queryURI, expectedURI, 'has matching URIs');
+});
+
+test('hasSummaryData are computed correctly', function(assert) {
+  assert.equal(hasSummaryData(state), true, 'The returned value from hasSummaryData selector is as expected');
 });

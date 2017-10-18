@@ -7,6 +7,7 @@ const { createSelector } = reselect;
 const _services = (state) => state.investigate.services.data;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _queryNode = (state) => state.investigate.queryNode;
+const _summaryData = (state) => state.investigate.services.summaryData;
 
 // SELECTOR FUNCTIONS
 export const selectedService = createSelector(
@@ -18,6 +19,12 @@ export const selectedService = createSelector(
     }
     return ret;
   }
+);
+
+// If summaryData object exists in state, returns true
+export const hasSummaryData = createSelector(
+  [_summaryData],
+  (summaryData) => !!summaryData
 );
 
 export const servicesWithURI = createSelector(

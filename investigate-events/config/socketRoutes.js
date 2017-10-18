@@ -58,6 +58,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/aliases'
       }
     },
+    'core-summary': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/summary',
+        requestDestination: '/ws/investigate/summary'
+      }
+    },
     'core-meta-value': {
       socketUrl,
       stream: {

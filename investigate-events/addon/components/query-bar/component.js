@@ -1,12 +1,14 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { and } from 'ember-computed-decorators';
+import { hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 import {
   setQueryTimeRange,
   setServiceId
 } from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = (state) => ({
+  hasSummaryData: hasSummaryData(state),
   endTime: state.investigate.queryNode.endTime,
   queryString: state.investigate.queryNode.queryString,
   serviceId: state.investigate.queryNode.serviceId,

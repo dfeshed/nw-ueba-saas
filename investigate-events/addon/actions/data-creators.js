@@ -1,6 +1,6 @@
 import RSVP from 'rsvp';
 import * as ACTION_TYPES from './types';
-import { fetchServices } from './fetch/services';
+import { fetchServices, fetchSummary } from './fetch/services';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
@@ -114,6 +114,26 @@ export const initializeServices = () => {
         }
       });
     }
+  };
+};
+
+/**
+ * Get attribute summary for a selected service. Results include aggregation times that change
+ * frequently. So we are not caching these results and instead making a server call everytime.
+ * @public
+ */
+export const getServiceSummary = () => {
+  return (dispatch, getState) => {
+    const { serviceId } = getState().investigate.queryNode;
+    dispatch({
+      type: ACTION_TYPES.SUMMARY_RETRIEVE,
+      promise: fetchSummary(serviceId),
+      meta: {
+        onFailure(response) {
+          log('getServiceSummary, onFailure', response);
+        }
+      }
+    });
   };
 };
 

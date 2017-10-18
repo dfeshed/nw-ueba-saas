@@ -14,6 +14,7 @@
   class='rsa-investigate-query-bar__time-range'
   matchTriggerWidth=false
   onchange=(action 'updateRange')
+  disabled=(not hasSummaryData)
   options=timeRanges
   placeholder='Select a Time Range'
   searchEnabled=false
