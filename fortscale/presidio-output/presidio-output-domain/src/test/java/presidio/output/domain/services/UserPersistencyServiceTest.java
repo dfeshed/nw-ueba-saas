@@ -31,6 +31,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -132,6 +133,25 @@ public class UserPersistencyServiceTest {
         assertTrue(foundUser.getScore() == user.getScore());
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
+
+    }
+
+    @Test
+    public void testUpdatedBY() {
+        User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
+        user.setUpdatedBy("created");
+        userPersistencyService.save(user);
+        User foundUser = userPersistencyService.findUserById(user.getId());
+        String createdBy = foundUser.getUpdatedBy();
+        foundUser.setUpdatedBy("updatedByTest");
+        userPersistencyService.save(foundUser);
+        foundUser = userPersistencyService.findUserById(user.getId());
+        String updatedByAgain = foundUser.getUpdatedBy();
+
+        assertNotNull(foundUser.getId());
+        assertEquals(foundUser.getId(), user.getId());
+        assertEquals("created", createdBy);
+        assertNotEquals(createdBy, updatedByAgain);
 
     }
 
@@ -304,7 +324,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByListOfIds() {
-        String date = new Date().toString();
+
         User user1 = new User("userId1", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         User user2 = new User("userId2", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         User user3 = new User("userId3", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
@@ -328,7 +348,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByUserScore() {
-        String date = new Date().toString();
+
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
 
@@ -356,7 +376,7 @@ public class UserPersistencyServiceTest {
     @Test
     public void testFindByUserId() {
         List<String> tags = new ArrayList<>();
-        String date = new Date().toString();
+
 
         User user1 = new User("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
         User user2 = new User("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
@@ -424,7 +444,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByQueryWithSeverityAggregation() {
-        String date = new Date().toString();
+
         List<String> classification = new ArrayList<>();
         classification.add("a");
         User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
@@ -460,7 +480,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByQueryWithTagsAggregation() {
-        String date = new Date().toString();
+
         List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
         List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
 
@@ -500,7 +520,7 @@ public class UserPersistencyServiceTest {
 
         List<String> tags1 = Arrays.asList("admin", "watch");
         List<String> tags2 = Arrays.asList("admin");
-        String date = new Date().toString();
+
 
         List<String> classificationA = Arrays.asList("a");
         List<String> classificationB = Arrays.asList("a", "b");
@@ -568,7 +588,7 @@ public class UserPersistencyServiceTest {
         List<String> tags1 = Arrays.asList("admin", "watch");
         List<String> tags2 = Arrays.asList("admin");
 
-        String date = new Date().toString();
+
         List<String> indicatorsA = Arrays.asList("a");
         List<String> indicatorsB = Arrays.asList("a", "b");
         List<String> indicatorsC = Arrays.asList("a", "b", "c");
