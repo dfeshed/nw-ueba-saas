@@ -118,9 +118,7 @@ public class UserScoreServiceModuleTest {
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
-        String date = new Date().toString();
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-        ;
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
         alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
@@ -158,9 +156,7 @@ public class UserScoreServiceModuleTest {
     @Test
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
-        String date = new Date().toString();
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-        ;
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
         alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(60), getMinusDay(59), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
@@ -234,7 +230,6 @@ public class UserScoreServiceModuleTest {
 
     @Test
     public void testBulkUserScoreLargeScale() throws InterruptedException {
-        String date = new Date().toString();
         final int DAYS_COUNT = 110;
         final int USERS_COUNT = 4000;
         userScoreService = new UserScoreServiceImpl(
@@ -259,7 +254,6 @@ public class UserScoreServiceModuleTest {
         //For each user generate user and list of alerts - 2 alerts per days
         for (int i = 0; i < USERS_COUNT; i++) {
             User user1 = new User("userId" + i, "username" + 1, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-            ;
             user1.setSeverity(null);
             List<Alert> alerts = new ArrayList<>();
             //For each day generate to alerts
@@ -317,9 +311,7 @@ public class UserScoreServiceModuleTest {
     }
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
-        String date = new Date().toString();
         User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
-        ;
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
 
