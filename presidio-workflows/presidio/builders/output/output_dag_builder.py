@@ -52,6 +52,8 @@ class OutputDagBuilder(PresidioDagBuilder):
 
         logging.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
+        task_sensor_service = TaskSensorService()
+
         # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
         # start only after the defined gap.
         output_short_circuit_operator = ShortCircuitOperator(
@@ -75,6 +77,9 @@ class OutputDagBuilder(PresidioDagBuilder):
             jvm_args=self.jvm_args,
             dag=output_dag)
 
+        task_sensor_service.add_task_sequential_sensor(hourly_output_operator)
+        task_sensor_service.add_task_short_circuit(hourly_output_operator, output_short_circuit_operator);
+
         user_score_operator = FixedDurationJarOperator(
             task_id='user_score_processor',
             fixed_duration_strategy=timedelta(days=1),
@@ -82,7 +87,7 @@ class OutputDagBuilder(PresidioDagBuilder):
             jvm_args=self.jvm_args,
             dag=output_dag)
 
-        task_sensor_service = TaskSensorService()
+
 
         # Create daily short circuit operator to wire the output processing and the user score recalculation
         daily_short_circuit_operator = ShortCircuitOperator(
@@ -94,9 +99,10 @@ class OutputDagBuilder(PresidioDagBuilder):
             provide_context=True
         )
 
+        task_sensor_service.add_task_sequential_sensor(user_score_operator)
         task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
 
         #defining the dependencies between the operators
-        output_short_circuit_operator >> hourly_output_operator >> daily_short_circuit_operator
+        hourly_output_operator >> daily_short_circuit_operator
 
         return output_dag
