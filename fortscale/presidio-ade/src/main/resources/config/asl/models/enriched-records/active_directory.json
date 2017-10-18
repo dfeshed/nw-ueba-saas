@@ -27,11 +27,12 @@
         "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_retriever",
+        "type" : "context_histogram_sequential_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
-        "featureName" : "operationTypeHistogram"
+        "featureName" : "operationTypeHistogram",
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
