@@ -6,6 +6,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.retriever.factories.ContextSequentialReducedHistogramRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -43,6 +43,8 @@ public class ContextSequentialReducedHistogramRetrieverTest {
 
     @Autowired
     private FeatureBucketReader featureBucketReader;
+    @Autowired
+    private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 
     static ContextSequentialReducedHistogramRetrieverConf contextSequentialReducedHistogramRetrieverConf;
     static ContextSequentialReducedHistogramRetriever retriever;
@@ -71,6 +73,16 @@ public class ContextSequentialReducedHistogramRetrieverTest {
         Assert.assertNotNull(genericHistogram);
         Assert.assertTrue(genericHistogram.getN()>0);
         genericHistogram.getHistogramMap().forEach((key, value) -> Assert.assertEquals(EXPECTED_HISTOGRAM_VALUE, value.intValue()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionOnBadSequencingResolution()
+    {
+        ContextSequentialReducedHistogramRetrieverConf contextSequentialReducedHistogramRetrieverConfWithLowSequencing =
+                new ContextSequentialReducedHistogramRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
+                Collections.emptyList(),
+                FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 1);
+        dataRetrieverFactoryService.getProduct(contextSequentialReducedHistogramRetrieverConfWithLowSequencing);
     }
 
     private LinkedList<FeatureBucket> generateHourlyFeatureBuckets(Instant fromInstant, Instant toInstant) {
@@ -130,6 +142,7 @@ public class ContextSequentialReducedHistogramRetrieverTest {
         private void confsSetup() {
             FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
             when(featureBucketConf.getName()).thenReturn(FEATURE_BUCKET_CONF_NAME);
+            when(featureBucketConf.getStrategyName()).thenReturn(FixedDurationStrategy.HOURLY.toStrategyName());
             when(bucketConfigurationService.getBucketConf(FEATURE_BUCKET_CONF_NAME)).thenReturn(featureBucketConf);
 
             AggregatedFeatureConf aggregatedFeatureConf = mock(AggregatedFeatureConf.class);
@@ -141,7 +154,7 @@ public class ContextSequentialReducedHistogramRetrieverTest {
             when(aggregatedFeatureConf.getName()).thenReturn(TEST_FEATURE_NAME);
             contextSequentialReducedHistogramRetrieverConf = new ContextSequentialReducedHistogramRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
                     Collections.emptyList(),
-                    FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, ChronoField.EPOCH_DAY.name());
+                    FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 86400);
         }
 
     }

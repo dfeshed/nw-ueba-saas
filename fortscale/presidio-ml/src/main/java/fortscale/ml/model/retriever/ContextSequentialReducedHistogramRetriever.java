@@ -5,12 +5,13 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ModelBuilderData;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
+import org.springframework.util.Assert;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoField;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +30,23 @@ import java.util.stream.Collectors;
 public class ContextSequentialReducedHistogramRetriever extends ContextHistogramRetriever {
     public static final double SEQUENTIAL_BUCKETS_REDUCED_VALUE = 1.0D;
     private final ContextSequentialReducedHistogramRetrieverConf config;
-    private ChronoField sequencingResolution;
+    private long sequencingResolutionInSeconds;
+    private String featureBucketConfName;
 
     public ContextSequentialReducedHistogramRetriever(ContextSequentialReducedHistogramRetrieverConf config, BucketConfigurationService bucketConfigurationService, FeatureBucketReader featureBucketReader) {
         super(config, bucketConfigurationService, featureBucketReader);
         this.config = config;
-        this.sequencingResolution = config.getSequencingResolution();
+        this.sequencingResolutionInSeconds = config.getSequencingResolutionInSeconds();
+        validateSequencingResolution();
+    }
+
+    private void validateSequencingResolution() {
+        FixedDurationStrategy bucketStrategy = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName());
+        Duration bucketStrategyDuration = bucketStrategy.toDuration();
+        Duration sequencingResolutionDuration = Duration.of(sequencingResolutionInSeconds, ChronoUnit.SECONDS);
+        String assertionMessage = String.format("sequencing resolution=%s must be larger then bucketStrategyDuration=%s, fix bucketConf=%s or retrieverConf=%s", sequencingResolutionDuration.toString(), bucketStrategyDuration.toString(), featureBucketConfName,this.config.getFactoryName());
+        Assert.isTrue(sequencingResolutionDuration.compareTo(bucketStrategyDuration)>=0,
+                assertionMessage);
     }
 
     protected ModelBuilderData doRetrieve(String contextId, Date endTime, String featureValue) {
@@ -42,8 +54,9 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
         long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
         TimeRange retrievedBucketsTimeRange = new TimeRange(startTimeInSeconds, endTimeInSeconds);
 
+        featureBucketConfName = featureBucketConf.getName();
         List<FeatureBucket> featureBuckets = featureBucketReader.getFeatureBuckets(
-                featureBucketConf.getName(), contextId,
+                featureBucketConfName, contextId,
                 retrievedBucketsTimeRange);
 
         if (featureBuckets.isEmpty()) return new ModelBuilderData(ModelBuilderData.NoDataReason.NO_DATA_IN_DATABASE);
@@ -70,11 +83,14 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
     /**
      *
      * @param featureBuckets
-     * @return grouped buckets by resolution. i.e. if {@link #sequencingResolution} is ChronoField.EPOCH_DAY and all the buckets are Hourly - they will be grouped by their day (start-time field's day).
-     * if {@link #sequencingResolution} is smaller then the buckets resolution and grouping is in smaller resolution, the the grouping will probably be all of the startTimes of the bucket. currently there is no validation to assure it would not happen.
+     * @return grouped buckets by resolution. i.e. if {@link #sequencingResolutionInSeconds} is daily (86400 seconds) and all the buckets are Hourly - they will be grouped by their day (start-time field's day).
+     * if {@link #sequencingResolutionInSeconds} is smaller then the buckets resolution and grouping is in smaller resolution, the the grouping will probably be all of the startTimes of the bucket. currently there is no validation to assure it would not happen.
      */
     Map<Long, List<FeatureBucket>> groupBucketsBySequencingResolution(List<FeatureBucket> featureBuckets) {
-        return featureBuckets.stream().collect(Collectors.groupingBy(x -> LocalDateTime.ofInstant(x.getStartTime(), ZoneId.of("UTC")).getLong(sequencingResolution)));
+        return featureBuckets.stream().collect(Collectors.groupingBy(x -> {
+            long epochSecond = x.getStartTime().getEpochSecond();
+            return ((long)(epochSecond / sequencingResolutionInSeconds)) * sequencingResolutionInSeconds;
+        }));
     }
 
     private GenericHistogram reduceSequentialHistogramValues(GenericHistogram seqReductionHistogram) {

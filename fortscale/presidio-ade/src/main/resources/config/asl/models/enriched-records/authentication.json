@@ -32,7 +32,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
         "featureName" : "srcMachineNameRegexClusterHistogram",
-        "sequencingResolution": "EPOCH_DAY"
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -52,7 +52,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily",
         "featureName" : "userIdHistogram",
-        "sequencingResolution": "EPOCH_DAY"
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -72,7 +72,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
         "featureName" : "dstMachineNameRegexClusterHistogram",
-        "sequencingResolution": "EPOCH_DAY"
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
@@ -92,7 +92,7 @@
         "functions" : [ ],
         "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily",
         "featureName" : "userIdHistogram",
-        "sequencingResolution": "EPOCH_DAY"
+        "sequencingResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "category_rarity_model_builder",

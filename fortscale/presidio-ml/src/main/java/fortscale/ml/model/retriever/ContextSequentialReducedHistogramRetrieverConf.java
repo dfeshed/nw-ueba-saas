@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
 
-import java.time.temporal.ChronoField;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ import java.util.List;
 public class ContextSequentialReducedHistogramRetrieverConf extends ContextHistogramRetrieverConf {
 
     public static final String CONTEXT_HISTOGRAM_SEQUENTIAL_REDUCED_RETRIEVER = "context_histogram_sequential_retriever";
-    private final ChronoField sequencingResolution;
+    private final long sequencingResolutionInSeconds;
 
     @JsonCreator
     public ContextSequentialReducedHistogramRetrieverConf(
@@ -23,9 +22,9 @@ public class ContextSequentialReducedHistogramRetrieverConf extends ContextHisto
             @JsonProperty("functions") List<JSONObject> functions,
             @JsonProperty("featureBucketConfName") String featureBucketConfName,
             @JsonProperty("featureName") String featureName,
-            @JsonProperty("sequencingResolution") String sequencingResolution) {
+            @JsonProperty("sequencingResolutionInSeconds") long sequencingResolutionInSeconds) {
         super(timeRangeInSeconds, functions, featureBucketConfName, featureName);
-        this.sequencingResolution = ChronoField.valueOf(sequencingResolution);
+        this.sequencingResolutionInSeconds = sequencingResolutionInSeconds;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class ContextSequentialReducedHistogramRetrieverConf extends ContextHisto
         return CONTEXT_HISTOGRAM_SEQUENTIAL_REDUCED_RETRIEVER;
     }
 
-    public ChronoField getSequencingResolution() {
-        return sequencingResolution;
+    public long getSequencingResolutionInSeconds() {
+        return sequencingResolutionInSeconds;
     }
 }
