@@ -2,7 +2,9 @@ package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
-import fortscale.ml.model.retriever.*;
+import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.retriever.ContextSequentialReducedHistogramRetriever;
+import fortscale.ml.model.retriever.ContextSequentialReducedHistogramRetrieverConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,11 @@ public class ContextSequentialReducedHistogramRetrieverFactoryConfig {
     private FeatureBucketReader featureBucketReader;
 
     @Bean
-    public AbstractServiceAutowiringFactory<AbstractDataRetriever> ContextSequentialReducedHistogramRetrieverFactory() {
+    public AbstractServiceAutowiringFactory<AbstractDataRetriever> contextSequentialReducedHistogramRetrieverFactory() {
         return new AbstractServiceAutowiringFactory<AbstractDataRetriever>() {
             @Override
             public String getFactoryName() {
-                return ContextSequentialReducedHistogramRetrieverConf.CONTEXT_HISTOGRAM_SEQUENTIAL_RETRIEVER;
+                return ContextSequentialReducedHistogramRetrieverConf.CONTEXT_HISTOGRAM_SEQUENTIAL_REDUCED_RETRIEVER;
             }
 
             @Override

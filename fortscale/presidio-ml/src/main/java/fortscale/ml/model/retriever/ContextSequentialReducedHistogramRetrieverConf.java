@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
-import org.springframework.util.Assert;
 
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ContextSequentialReducedHistogramRetrieverConf extends ContextHistogramRetrieverConf {
 
-    public static final String CONTEXT_HISTOGRAM_SEQUENTIAL_RETRIEVER = "context_histogram_sequential_retriever";
+    public static final String CONTEXT_HISTOGRAM_SEQUENTIAL_REDUCED_RETRIEVER = "context_histogram_sequential_retriever";
     private final ChronoField sequencingResolution;
 
     @JsonCreator
@@ -31,7 +30,7 @@ public class ContextSequentialReducedHistogramRetrieverConf extends ContextHisto
 
     @Override
     public String getFactoryName() {
-        return CONTEXT_HISTOGRAM_SEQUENTIAL_RETRIEVER;
+        return CONTEXT_HISTOGRAM_SEQUENTIAL_REDUCED_RETRIEVER;
     }
 
     public ChronoField getSequencingResolution() {
