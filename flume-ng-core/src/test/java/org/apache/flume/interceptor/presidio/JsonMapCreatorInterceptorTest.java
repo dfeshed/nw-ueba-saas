@@ -104,5 +104,31 @@ public class JsonMapCreatorInterceptorTest {
         Assert.assertEquals("{\"additionalInfo\":{\"isUserAdmin\":\"true\",\"name\":\"user\",\"ip\":\"127.0.0.1\"}}", interceptValue);
     }
 
+    @Test
+    public void interceptAndAddToExistingMap() throws Exception {
 
+        Context ctx = new Context();
+        ctx.put(JsonMapCreatorInterceptor.Builder.FIELDS_TO_PUT_CONF_NAME, "isUserAdmin,name,ip");
+        ctx.put(JsonMapCreatorInterceptor.Builder.MAP_KEY_NAME_CONF_NAME, "additionalInfo");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DELETE_FIELDS_CONF_NAME, "true");
+        ctx.put(JsonMapCreatorInterceptor.Builder.OVERRIDE_EXISTING_MAP_NAME, "false");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DEFAULT_VALUES_DELIMITER_CONF_NAME, ">");
+        ctx.put(JsonMapCreatorInterceptor.Builder.DEFAULT_VALUES_CONF_NAME, "isUserAdmin>false");
+
+
+        builder.configure(ctx);
+
+        interceptor = builder.build();
+
+        final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\",\"isUserAdmin\":\"true\", \"additionalInfo\" : { \"operationType\" : \"USER_AUTHENTICATED_THROUGH_KERBEROS\" } }";
+
+        Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
+
+        event = interceptor.intercept(event);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
+
+
+        Assert.assertEquals("{\"additionalInfo\":{\"operationType\":\"USER_AUTHENTICATED_THROUGH_KERBEROS\",\"isUserAdmin\":\"true\",\"name\":\"user\",\"ip\":\"127.0.0.1\"}}", interceptValue);
+    }
 }

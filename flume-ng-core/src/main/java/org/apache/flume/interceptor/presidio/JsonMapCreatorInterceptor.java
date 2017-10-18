@@ -27,13 +27,16 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
     private final List<String> fieldsToPut;
     private final String mapKeyName;
     private final Boolean deleteFields;
+    private final Boolean overrideExistingMap;
     private final Map<String, String> defaultValueConfigurations;
 
-    JsonMapCreatorInterceptor(List<String> fieldsToPut, String mapKeyName, Boolean deleteFields, Map<String, String> defaultValueConfigurations) {
+    JsonMapCreatorInterceptor(List<String> fieldsToPut, String mapKeyName, Boolean deleteFields,
+                              Map<String, String> defaultValueConfigurations, Boolean overrideExistingMap) {
         this.fieldsToPut = fieldsToPut;
         this.mapKeyName = mapKeyName;
         this.deleteFields = deleteFields;
         this.defaultValueConfigurations = defaultValueConfigurations;
+        this.overrideExistingMap = overrideExistingMap;
     }
 
     @Override
@@ -41,7 +44,12 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
-        JsonObject mapToAdd = new JsonObject();
+        JsonObject mapToAdd;
+        if (overrideExistingMap || !eventBodyAsJson.has(mapKeyName)) {
+            mapToAdd = new JsonObject();
+        } else {
+            mapToAdd = eventBodyAsJson.getAsJsonObject(mapKeyName);
+        }
 
         for (String fieldToPut : fieldsToPut) {
             if (eventBodyAsJson.has(fieldToPut)) {
@@ -86,10 +94,13 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         static final String DEFAULT_DELIMITER_VALUE = ",";
         static final String DEFAULT_VALUES_DELIMITER_CONF_NAME = "defaultValuesDelimiter";
         static final String DEFAULT_VALUES_DELIMITER_DEFAULT_VALUE = ">";
+        static final String OVERRIDE_EXISTING_MAP_NAME = "overrideExistingMap";
+        static final Boolean OVERRIDE_EXISTING_MAP_DEFAULT_VALUE = false;
 
         private List<String> fieldsToPut;
         private String mapKey;
         private Boolean deleteFields;
+        private Boolean overrideExistingMap;
         private Map<String, String> defaultValueConfigurations;
 
         @Override
@@ -97,6 +108,8 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
 
             deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, false);
+
+            overrideExistingMap = context.getBoolean(OVERRIDE_EXISTING_MAP_NAME, OVERRIDE_EXISTING_MAP_DEFAULT_VALUE);
 
             mapKey = context.getString(MAP_KEY_NAME_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(mapKey), MAP_KEY_NAME_CONF_NAME + " can not be empty.");
@@ -134,7 +147,8 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
 
         @Override
         public Interceptor build() {
-            final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToPut, mapKey, deleteFields, defaultValueConfigurations);
+            final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToPut, mapKey,
+                    deleteFields, defaultValueConfigurations, overrideExistingMap);
             logger.info("Creating JsonMapCreatorInterceptor: {}", jsonMapCreatorInterceptor);
             return jsonMapCreatorInterceptor;
         }
