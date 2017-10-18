@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.LearningSegments;
 import fortscale.ml.model.builder.gaussian.prior.SegmentCenters;
 import fortscale.ml.model.builder.gaussian.prior.Segmentor;
@@ -22,7 +23,7 @@ import java.util.stream.DoubleStream;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LearningSegmentsTest {
-	private List<ContinuousDataModel> createModels(double... means) {
+	private List<IContinuousDataModel> createModels(double... means) {
 		return DoubleStream.of(means)
 				.mapToObj(mean -> new ContinuousDataModel().setParameters(0, mean, 0, 0))
 				.collect(Collectors.toList());
@@ -71,7 +72,7 @@ public class LearningSegmentsTest {
 	public void shouldSaveAllSegmentsTheSegmentorCreates() {
 		double segmentCenterResultingInSegment = 1;
 		double[] segmentCenters = {0.0, segmentCenterResultingInSegment, 2.0};
-		List<ContinuousDataModel> models = createModels(0.0, 1.0, 2.0);
+		List<IContinuousDataModel> models = createModels(0.0, 1.0, 2.0);
 		Segmentor.Segment segment = new Segmentor.Segment(0, 2, models.subList(0, 2));
 		Mockito.when(segmentorMock.createSegment(models, segmentCenterResultingInSegment)).thenReturn(segment);
 		LearningSegments segments = new LearningSegments(models, createSegmentCenters(segmentCenters), segmentorMock);
@@ -84,13 +85,13 @@ public class LearningSegmentsTest {
 
 	@Test
 	public void shouldPassSortedMeansToSegmentor() {
-		List<ContinuousDataModel> models = createModels(1, 3, 2, 0);
+		List<IContinuousDataModel> models = createModels(1, 3, 2, 0);
 		double segmentCenter = 1;
 		new LearningSegments(models, createSegmentCenters(segmentCenter), segmentorMock)
 				.forEach(segment -> {});
 
-		List<ContinuousDataModel> sortedModels = models.stream()
-				.sorted(Comparator.comparing(ContinuousDataModel::getMean))
+		List<IContinuousDataModel> sortedModels = models.stream()
+				.sorted(Comparator.comparing(IContinuousDataModel::getMean))
 				.collect(Collectors.toList());
 
 		Mockito.verify(segmentorMock).createSegment(sortedModels, segmentCenter);

@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
-import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import org.springframework.util.Assert;
 
 import java.util.Comparator;
@@ -29,7 +29,7 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 	}
 
 	@Override
-	public Double calcPrior(List<ContinuousDataModel> models, double mean) {
+	public Double calcPrior(List<IContinuousDataModel> models, double mean) {
 		if (models.isEmpty()) {
 			return null;
 		}
@@ -37,7 +37,7 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 		int quantileIndex = Math.min(Math.max(0, models.size() - 1 - minQuantileComplementSize),
 				(int) Math.floor((models.size() - 1) * this.quantile));
 		double maxValueOverModels = models.stream()
-				.sorted(Comparator.comparing(ContinuousDataModel::getMaxValue))
+				.sorted(Comparator.comparing(IContinuousDataModel::getMaxValue))
 				.collect(Collectors.toList())
 				.get(quantileIndex)
 				.getMaxValue();

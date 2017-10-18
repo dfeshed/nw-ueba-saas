@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
-import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
@@ -19,14 +19,14 @@ public class UniformSegmentCenters implements SegmentCenters {
 	}
 
 	@Override
-	public Iterator<Double> iterate(List<ContinuousDataModel> models) {
+	public Iterator<Double> iterate(List<IContinuousDataModel> models) {
 		Assert.notNull(models, "models can't be null");
 		double maxMean = models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
+				.mapToDouble(IContinuousDataModel::getMean)
 				.max()
 				.orElse(-1);
 		double minMean = models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
+				.mapToDouble(IContinuousDataModel::getMean)
 				.min()
 				.orElse(-1);
 		return new Iterator<Double>() {
