@@ -2,6 +2,7 @@ package presidio.ade.smart.config;
 
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScoringService;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
 import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.config.ScorerConfServiceImpl;
 import presidio.ade.domain.record.AdeRecordReaderFactoriesConfig;
@@ -20,7 +21,13 @@ import presidio.ade.smart.SmartScoringService;
  * @author Lior Govrin
  */
 @Configuration
-@Import({AdeRecordReaderFactoriesConfig.class, TransformationConfig.class, RecordReaderFactoryServiceConfig.class, SmartApplicationSmartScorersFactoryConfig.class})
+@Import({
+		SmartWeightsScorerAlgorithmConfig.class,
+		AdeRecordReaderFactoriesConfig.class,
+		TransformationConfig.class,
+		RecordReaderFactoryServiceConfig.class,
+		SmartApplicationSmartScorersFactoryConfig.class
+})
 public class SmartApplicationSmartScoringServiceConfig {
 	@Value("${presidio.ade.scorer.base.configurations.path}")
 	private String scorerBaseConfigurationsPath;
