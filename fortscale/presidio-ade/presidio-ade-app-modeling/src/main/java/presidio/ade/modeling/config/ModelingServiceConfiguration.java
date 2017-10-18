@@ -12,6 +12,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.ttl.TtlService;
 import fortscale.utils.ttl.TtlServiceConfig;
@@ -27,6 +28,7 @@ import java.util.Collection;
 
 @Configuration
 @Import({
+		SmartWeightsScorerAlgorithmConfig.class,
 		ContextSelectorFactoryServiceConfig.class,
 		DataRetrieverFactoryServiceConfig.class,
 		ModelBuilderFactoryServiceConfig.class,

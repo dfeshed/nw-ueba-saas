@@ -109,3 +109,18 @@ components:
       main_class: presidio.output.processor.FortscaleOutputProcessorApplication
       xmx: 500
       xms: 70
+  ade:
+    models:
+      feature_aggregation_records:
+        build_model_interval_in_days: 1
+        accumulate_interval_in_days: 1
+        min_data_time_range_for_building_models_in_days: 14
+      enriched_records:
+        build_model_interval_in_days: 1
+        feature_aggregation_buckets_interval_in_days: 1
+        min_data_time_range_for_building_models_in_days: 14
+      smart_records:
+        build_model_interval_in_days: 1
+        accumulate_interval_in_days: 1
+        min_data_time_range_for_building_models_in_days: 14
+

@@ -45,7 +45,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     private final SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
     private final Duration oldestAllowedModelDurationDiff;
 
-    public AccumulatedSmartValueRetriever(AccumulatedSmartValueRetrieverConf dataRetrieverConf, SmartAccumulationDataReader accumulationDataReader, SmartRecordConfService smartRecordConfService, FactoryService<IContextSelector> contextSelectorFactoryService, ModelStore modelStore, Duration oldestAllowedModelDurationDiff) {
+    public AccumulatedSmartValueRetriever(AccumulatedSmartValueRetrieverConf dataRetrieverConf, SmartAccumulationDataReader accumulationDataReader, SmartRecordConfService smartRecordConfService, FactoryService<IContextSelector> contextSelectorFactoryService, ModelStore modelStore, Duration oldestAllowedModelDurationDiff, SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm) {
         super(dataRetrieverConf);
         this.smartRecordConfName = dataRetrieverConf.getSmartRecordConfName();
         this.modelStore = modelStore;
@@ -57,7 +57,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         this.weightsModelName = dataRetrieverConf.getWeightsModelName();
         Assert.hasText(weightsModelName ,String.format("weightsModelName must be defined for retriever name=%s",this.smartRecordConfName));
 
-        this.smartWeightsScorerAlgorithm = new SmartWeightsScorerAlgorithm();
+        this.smartWeightsScorerAlgorithm = smartWeightsScorerAlgorithm;
     }
 
     @Override

@@ -15,6 +15,10 @@ public class SmartWeightModelTestUtils {
     public static ClusterConf createClusterConf(String... featureName) {
         return new ClusterConf(Arrays.asList(featureName), 0.01);
     }
+
+    public static ClusterConf createClusterConf(double weight, String... featureName) {
+        return new ClusterConf(Arrays.asList(featureName), weight);
+    }
     public static List<ClusterConf> createClusterConfs(ClusterConf ...clusterConfs) {
         return Lists.newArrayList(clusterConfs);
     }

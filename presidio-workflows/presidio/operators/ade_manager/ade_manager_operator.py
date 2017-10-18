@@ -9,7 +9,7 @@ from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBoot
 
 class AdeManagerOperator(SpringBootJarOperator):
     """
-    Runs a "ManagerOperator" task (JAR).
+    Runs a "AdeManagerOperator" task (JAR).
     The jar cleanup all the enriched collections.
     """
 
@@ -17,7 +17,7 @@ class AdeManagerOperator(SpringBootJarOperator):
     ui_color = '#1abc9c'
     ui_fgcolor = '#000000'
 
-    cleanup_command = "enriched_ttl_cleanup"
+    enriched_ttl_cleanup_command = "enriched_ttl_cleanup"
 
     @apply_defaults
     def __init__(self, command, *args, **kwargs):
@@ -39,8 +39,7 @@ class AdeManagerOperator(SpringBootJarOperator):
         super(AdeManagerOperator, self).update_java_args(java_args)
         super(AdeManagerOperator, self).execute(context)
 
-    @staticmethod
-    def get_task_id():
+    def get_task_id(self):
         """
         :return: The task id
         """
