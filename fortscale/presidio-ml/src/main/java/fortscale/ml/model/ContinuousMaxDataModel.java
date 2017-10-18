@@ -12,7 +12,7 @@ public class ContinuousMaxDataModel implements IContinuousDataModel {
 
     /**
      *
-     * @param continuousDataModel  model will all data
+     * @param continuousDataModel  model with all the data
      * @param continuousMaxDataModel model with max values
      */
     public ContinuousMaxDataModel(ContinuousDataModel continuousDataModel, ContinuousDataModel continuousMaxDataModel) {
