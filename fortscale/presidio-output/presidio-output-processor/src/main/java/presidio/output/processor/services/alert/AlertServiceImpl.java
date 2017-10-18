@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  */
 public class AlertServiceImpl implements AlertService {
 
-    private final String ALERT_CREATED_FROM_SMART = "alertCreatedFromSmart";
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
     private final AlertEnumsSeverityService alertEnumsSeverityService;
@@ -57,7 +56,6 @@ public class AlertServiceImpl implements AlertService {
         AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
         Double alertContributionToUserScore = userScoreService.getUserScoreContributionFromSeverity(severity);
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags(), alertContributionToUserScore);
-        alert.setUpdatedBy(ALERT_CREATED_FROM_SMART + new Date().toString());
         // supporting information
         List<Indicator> supportingInfo = new ArrayList<>();
         for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {

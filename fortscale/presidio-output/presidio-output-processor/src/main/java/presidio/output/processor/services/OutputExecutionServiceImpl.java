@@ -102,7 +102,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 if ((userEntity = getCreatedUser(users, userId)) == null && (userEntity = getSingleUserEntityById(userId)) == null) {
                     //Need to create user and add it to about to be created list
                     userEntity = userService.createUserEntity(userId, startDate);
-                    userEntity.setUpdatedBy(updatedBy);
                     users.add(userEntity);
                     if (userEntity == null) {
                         logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());
@@ -120,7 +119,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     metricCollectingService.addMetric(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
-                    userEntity.setUpdatedBy(updatedBy);
                     users.add(userEntity);
                 }
             }

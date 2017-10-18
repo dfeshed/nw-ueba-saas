@@ -7,7 +7,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -121,9 +120,9 @@ public class UserPersistencyServiceTest {
         User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
         userPersistencyService.save(user);
 
-        Date createdByBeforeFind = user.getCreatedBy();
+        Date createdByBeforeFind = user.getCreatedDate();
         User foundUser = userPersistencyService.findUserById(user.getId());
-        Date createdByAfterFind = foundUser.getCreatedBy();
+        Date createdByAfterFind = foundUser.getCreatedDate();
 
         assertNotNull(foundUser.getId());
         assertEquals(createdByBeforeFind, createdByAfterFind);
@@ -137,22 +136,29 @@ public class UserPersistencyServiceTest {
     }
 
     @Test
-    public void testUpdatedBY() {
+    public void testUpdatedBY() throws InterruptedException {
+        Thread.currentThread().setName("TEST");
         User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
-        user.setUpdatedBy("created");
+        String created = user.getUpdatedBy();
         userPersistencyService.save(user);
         User foundUser = userPersistencyService.findUserById(user.getId());
         String createdBy = foundUser.getUpdatedBy();
-        foundUser.setUpdatedBy("updatedByTest");
+        Thread.sleep(1000);
         userPersistencyService.save(foundUser);
         foundUser = userPersistencyService.findUserById(user.getId());
         String updatedByAgain = foundUser.getUpdatedBy();
+        Thread.currentThread().setName("TEST2");
+        Thread.sleep(1000);
+        userPersistencyService.save(foundUser);
+        foundUser = userPersistencyService.findUserById(user.getId());
+        String updatedByAgain2 = foundUser.getUpdatedBy();
 
         assertNotNull(foundUser.getId());
         assertEquals(foundUser.getId(), user.getId());
-        assertEquals("created", createdBy);
-        assertNotEquals(createdBy, updatedByAgain);
-
+        assertEquals(created, null);
+        assertNotEquals(createdBy, null);
+        assertEquals(createdBy, updatedByAgain);
+        assertNotEquals(createdBy, updatedByAgain2);
     }
 
     @Test

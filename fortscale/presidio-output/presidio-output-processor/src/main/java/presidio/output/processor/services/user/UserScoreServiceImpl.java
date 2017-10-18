@@ -32,8 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class UserScoreServiceImpl implements UserScoreService {
 
-    private final String CLEAR_USER_SCORE = "clearUserScore";
-    private final String UPDATE_SEVERITIES = "updateSeverities";
     private UserPersistencyService userPersistencyService;
 
     private int percentThresholdCritical;
@@ -144,13 +142,11 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         log.debug("found " + usersPage.getTotalElements() + " users which score that should be reset");
         List<User> clearedUsersList = new ArrayList<>();
-        String updatedBy = CLEAR_USER_SCORE + new Date().toString();
         while (usersPage != null && usersPage.hasContent()) {
             usersPage.getContent().forEach(user -> {
                 if (!excludedUsersIds.contains(user.getUserId())) {
                     user.setScore(0D);
                     user.setSeverity(null);
-                    user.setUpdatedBy(updatedBy);
                     clearedUsersList.add(user);
                 }
             });
@@ -244,7 +240,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         if (users == null) {
             return;
         }
-        String updateBy = UPDATE_SEVERITIES + new Date().toString();
         users.forEach(user -> {
             double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getSeverity(userScore);
@@ -252,7 +247,6 @@ public class UserScoreServiceImpl implements UserScoreService {
             log.debug("Updating user severity for userId: " + user.getUserId());
             if (!newUserSeverity.equals(user.getSeverity())) {
                 user.setSeverity(newUserSeverity);
-                user.setUpdatedBy(updateBy);
                 updatedUsers.add(user); //Update user only if severity changes
             }
         });

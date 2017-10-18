@@ -27,11 +27,11 @@ public abstract class AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     private String updatedBy;
 
-    public AbstractElasticDocument(String id, Date createdDate, Date updatedDate, String updatedBy) {
+    public AbstractElasticDocument(String id, Date createdDate, Date updatedDate) {
         this.id = id;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
-        this.updatedBy = updatedBy;
+        this.updatedBy = Thread.currentThread().getName();
     }
 
     public AbstractElasticDocument() {
@@ -71,5 +71,12 @@ public abstract class AbstractElasticDocument {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public void updateFieldsBeforeSave() {
+        Date date = new Date();
+        String updatedBy = Thread.currentThread().getName();
+        setUpdatedDate(date);
+        setUpdatedBy(updatedBy);
     }
 }
