@@ -23,6 +23,7 @@ public class CountersUtil {
     private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
 
 
+    public static String USER = "presidio";
     public static final String LATEST_READY_HOUR_MARKER = "LATEST_READY_HOUR";
     public static final String SINK_COUNTERS_FOLDER_NAME = "sink";
     public static final String SOURCE_COUNTERS_FOLDER_NAME = "source";
@@ -47,8 +48,8 @@ public class CountersUtil {
 
     /**
      * This method attributes the event to the relevant hour {@code time} (for hour-is-ready-detection) - meaning we will add {@code amount} to the counter
-     * of events that need to be 'sinked' for this hour {@code time} (by hour ceiling).
-     * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T15:00:00Z
+     * of events that need to be 'sinked' for this hour {@code time} (by hour floor).
+     * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T14:00:00Z
      *
      * @param time            the time of the event
      * @param schema          the {@link Schema} of the event
@@ -64,8 +65,8 @@ public class CountersUtil {
 
     /**
      * This method attributes several events to the relevant hour {@code time} (for hour-is-ready-detection) - meaning we will add {@code amount} to the counter
-     * of events that were 'sinked' for this hour {@code time} (by hour ceiling).
-     * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T15:00:00Z
+     * of events that were 'sinked' for this hour {@code time} (by hour floor).
+     * i.e, all events between 2017-08-03T14:00:00Z---2017-08-03T15:00:00Z will be under 2017-08-03T14:00:00Z
      *
      * @param time   the time of the events
      * @param schema the {@link Schema} of the event
@@ -151,7 +152,7 @@ public class CountersUtil {
             countProperties.load(in);
 
             /* update count properties */
-            newCount = updateCountProperties(timeDetected, latestReadyHour, countProperties, amount, flumeComponentType);
+            newCount = updateProperties(timeDetected, latestReadyHour, countProperties, amount, flumeComponentType);
 
             if (propertyTimeout > 0) {
                 countProperties = removeTimedOutProperties(flumeComponentType, countProperties);
@@ -225,7 +226,7 @@ public class CountersUtil {
         }
         File file = new File(filePath);
         file.createNewFile();
-        setOwner(Paths.get(folderPath), "presidio");
+        setOwner(Paths.get(folderPath), USER);
         return file;
     }
 
@@ -236,9 +237,9 @@ public class CountersUtil {
     }
 
 
-    private int updateCountProperties(Instant timeDetected, Instant latestReadyHour, Properties properties, int amount, String flumeComponentType) throws IllegalStateException {
-        final Instant endOfHour = DateUtils.ceiling(timeDetected, ChronoUnit.HOURS);
-        String newCount = updateHourProperty(timeDetected, properties, amount, endOfHour);
+    private int updateProperties(Instant timeDetected, Instant latestReadyHour, Properties properties, int amount, String flumeComponentType) throws IllegalStateException {
+        final Instant startOfHour = DateUtils.floor(timeDetected, ChronoUnit.HOURS);
+        String newCount = updateHourCountProperty(timeDetected, properties, amount, startOfHour);
 
         if (flumeComponentType.equals(SOURCE_COUNTERS_FOLDER_NAME) && latestReadyHour != null) {
             updateLatestReadyHourProperty(properties, latestReadyHour);
@@ -259,8 +260,8 @@ public class CountersUtil {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private String updateHourProperty(Instant timeDetected, Properties properties, int amount, Instant endOfHour) {
-        String currCount = properties.getProperty(endOfHour.toString());
+    private String updateHourCountProperty(Instant timeDetected, Properties properties, int amount, Instant startOfHour) {
+        String currCount = properties.getProperty(startOfHour.toString());
         final boolean firstCountForHour = currCount == null;
         if (firstCountForHour) { // first edit for this hour
             currCount = "0";
@@ -276,9 +277,9 @@ public class CountersUtil {
 
         String newCount = String.valueOf(Integer.parseInt(currCount) + amount);
         if (firstCountForHour) {
-            properties.put(endOfHour.toString(), newCount);
+            properties.put(startOfHour.toString(), newCount);
         } else {
-            properties.replace(endOfHour.toString(), newCount);
+            properties.replace(startOfHour.toString(), newCount);
         }
         return newCount;
     }
