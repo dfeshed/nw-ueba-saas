@@ -17,12 +17,13 @@ import java.util.stream.Collectors;
  */
 public class SmartWeightsScorerAlgorithm {
     private double fractionalPower;
-//    private double minimalClusterScore;
+    private double minimalClusterScore;
 
-    public SmartWeightsScorerAlgorithm(double fractionalPower){
+    public SmartWeightsScorerAlgorithm(double fractionalPower, double minimalClusterScore){
         Assert.isTrue(fractionalPower > 0 && fractionalPower < 1,
                 String.format("fractional power should be in the range (0,1). fractionalPower: %f", fractionalPower));
         this.fractionalPower = fractionalPower;
+        this.minimalClusterScore = minimalClusterScore;
     }
 
     /**
@@ -125,6 +126,9 @@ public class SmartWeightsScorerAlgorithm {
      * Sum the contributions made by the given {@link List<Cluster>} into a single entity event value.
      */
     private double calculateSmartValue(List<Cluster> clusters) {
+        if(clusters.stream().filter(cluster -> !cluster.isEmpty() && cluster.getMaxScore() >= minimalClusterScore).count() == 0){
+            return 0;
+        }
         return clusters.stream()
                 // filter clusters that all of their feature absent from the data
                 .filter(cluster -> !cluster.isEmpty())

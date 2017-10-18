@@ -36,7 +36,7 @@ public class WeightsModelBuilderTest {
     }
 
     private SmartWeightsScorerAlgorithm createSmartWeightsScorerAlgorithm(){
-        return new SmartWeightsScorerAlgorithm(0.5);
+        return new SmartWeightsScorerAlgorithm(0.5, 50);
     }
 
     private WeightsModelBuilderConf createAndRegisterWeightsModelBuilderConf() {

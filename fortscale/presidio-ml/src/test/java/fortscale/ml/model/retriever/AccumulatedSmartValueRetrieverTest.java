@@ -88,7 +88,7 @@ public class AccumulatedSmartValueRetrieverTest {
         when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(eq(smartWeightsModelConf), eq(globalContextId), any(), any()))
                 .thenReturn((modelDAO));
 
-        retriever = new AccumulatedSmartValueRetriever(smartValueRetrieverConf, smartAccumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, new SmartWeightsScorerAlgorithm(0.5));
+        retriever = new AccumulatedSmartValueRetriever(smartValueRetrieverConf, smartAccumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, new SmartWeightsScorerAlgorithm(0.5, 50));
 
         IContextSelector contextSelector = Mockito.mock(AccumulatedSmartContextSelector.class);
         when(contextSelector.getContexts(any())).thenReturn(Sets.newHashSet(contextId1, contextId2, contextId3));
