@@ -23,8 +23,8 @@ public class CountersUtilTest {
 
     private String mockedPresidioHome;
     private static Instant exampleDate;
-    private static String exampleDateHourEnd;
-    private static String exampleDatePreviousHourEnd;
+    private static String exampleDateHourStart;
+    private static String exampleDatePreviousHourStart;
 
     private static Instant exampleOldDateInsideTimeout;
     private static String exampleOldDateInsideTimeoutHourEnd;
@@ -43,14 +43,14 @@ public class CountersUtilTest {
         environmentVariables.set("PRESIDIO_HOME", mockedPresidioHome);
 
         exampleDate = Instant.now();
-        exampleDateHourEnd = DateUtils.ceiling(exampleDate, ChronoUnit.HOURS).toString();
-        exampleDatePreviousHourEnd = DateUtils.floor(exampleDate, ChronoUnit.HOURS).toString();
+        exampleDateHourStart = DateUtils.floor(exampleDate, ChronoUnit.HOURS).toString();
+        exampleDatePreviousHourStart = DateUtils.floor(exampleDate.minus(1, ChronoUnit.HOURS), ChronoUnit.HOURS).toString();
 
-        exampleOldDateInsideTimeout = exampleDate.minus(TIMEOUT, ChronoUnit.MILLIS).plus(1, ChronoUnit.MILLIS);
-        exampleOldDateInsideTimeoutHourEnd = DateUtils.ceiling(exampleOldDateInsideTimeout, ChronoUnit.HOURS).toString();
+        exampleOldDateInsideTimeout = exampleDate.minus(TIMEOUT, ChronoUnit.MILLIS).plus(1, ChronoUnit.DAYS);
+        exampleOldDateInsideTimeoutHourEnd = DateUtils.floor(exampleOldDateInsideTimeout, ChronoUnit.HOURS).toString();
 
-        exampleOldDateOutsideTimeout = DateUtils.floor(exampleOldDateInsideTimeout, ChronoUnit.HOURS).minus(1, ChronoUnit.MILLIS); //to assure previous hour
-        exampleOldDateOutsideTimeoutHourEnd = DateUtils.ceiling(exampleOldDateOutsideTimeout, ChronoUnit.HOURS).toString();
+        exampleOldDateOutsideTimeout = DateUtils.floor(exampleOldDateInsideTimeout, ChronoUnit.HOURS).minus(1, ChronoUnit.DAYS); //to assure previous hour
+        exampleOldDateOutsideTimeoutHourEnd = DateUtils.floor(exampleOldDateOutsideTimeout, ChronoUnit.HOURS).toString();
 
     }
 
@@ -65,11 +65,11 @@ public class CountersUtilTest {
 
     @Test
     public void addToCounterSourceCanClosePreviousHour() throws Exception {
-        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
+        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourStart), 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
-        Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
-        Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), exampleDatePreviousHourEnd);
+        Assert.assertEquals(properties.getProperty(exampleDateHourStart), "1");
+        Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), exampleDatePreviousHourStart);
     }
 
     @Test
@@ -77,18 +77,19 @@ public class CountersUtilTest {
         testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, null, 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
-        Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
+        Assert.assertEquals(properties.getProperty(exampleDateHourStart), "1");
         Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), null);
     }
 
     @Test
     public void addToCounterClean() throws Exception {
-        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
-        testSubject.addToSourceCounter(exampleOldDateInsideTimeout, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
-        testSubject.addToSourceCounter(exampleOldDateOutsideTimeout, Schema.ACTIVE_DIRECTORY, Instant.parse(exampleDatePreviousHourEnd), 1);
+        final Instant latestReadyHour = Instant.parse(exampleDatePreviousHourStart);
+        testSubject.addToSourceCounter(exampleDate, Schema.ACTIVE_DIRECTORY, latestReadyHour, 1);
+        testSubject.addToSourceCounter(exampleOldDateInsideTimeout, Schema.ACTIVE_DIRECTORY, latestReadyHour, 1);
+        testSubject.addToSourceCounter(exampleOldDateOutsideTimeout, Schema.ACTIVE_DIRECTORY, latestReadyHour, 1);
 
         final Properties properties = getProperties(CountersUtil.SOURCE_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
-        Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
+        Assert.assertEquals(properties.getProperty(exampleDateHourStart), "1");
         Assert.assertEquals(properties.getProperty(exampleOldDateInsideTimeoutHourEnd), "1");
         Assert.assertEquals(properties.getProperty(exampleOldDateOutsideTimeoutHourEnd), null);
     }
@@ -98,7 +99,7 @@ public class CountersUtilTest {
         testSubject.addToSinkCounter(exampleDate, Schema.ACTIVE_DIRECTORY, 1);
 
         final Properties properties = getProperties(CountersUtil.SINK_COUNTERS_FOLDER_NAME, Schema.ACTIVE_DIRECTORY);
-        Assert.assertEquals(properties.getProperty(exampleDateHourEnd), "1");
+        Assert.assertEquals(properties.getProperty(exampleDateHourStart), "1");
         Assert.assertEquals(properties.getProperty(CountersUtil.LATEST_READY_HOUR_MARKER), null);
 
     }
