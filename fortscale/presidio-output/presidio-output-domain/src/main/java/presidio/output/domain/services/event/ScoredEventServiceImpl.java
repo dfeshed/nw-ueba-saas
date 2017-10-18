@@ -3,15 +3,14 @@ package presidio.output.domain.services.event;
 import fortscale.common.general.Schema;
 import fortscale.utils.recordreader.ReflectionRecordReader;
 import fortscale.utils.time.TimeRange;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.records.events.ScoredEnrichedEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ScoredEventServiceImpl implements ScoredEventService {
@@ -44,5 +43,34 @@ public class ScoredEventServiceImpl implements ScoredEventService {
                               .collect(Collectors.toSet()));
 
         return distinctValues;
+    }
+
+
+    public List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, Map<String, Object> featuresFilters) {
+
+        List<ScoredEnrichedEvent> scoredEnrichedEvents = new ArrayList<ScoredEnrichedEvent>();
+
+        // get raw events from output_ collections
+        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(schema, userId, timeRange, featuresFilters);
+
+        if (CollectionUtils.isNotEmpty(rawEvents)) {
+
+            // get scored raw events from ade
+            List<String> eventsIds = rawEvents.stream().map(e -> e.getEventId()).collect(Collectors.toList());
+            List<AdeScoredEnrichedRecord> adeScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventsIds, adeEventType, 0d);
+
+            // create ScoredEnrichedEvents
+            for (EnrichedEvent rawEvent :rawEvents) {
+
+                Optional<Double> enrichedRecordScore = adeScoredEnrichedRecords.stream()
+                        .filter(e -> e.getContext().getEventId().equals(rawEvent.getEventId()))
+                        .findFirst()
+                        .map(e -> e.getScore());
+                ScoredEnrichedEvent scoredEnrichedEvent = new ScoredEnrichedEvent(rawEvent, enrichedRecordScore.orElse(0d));
+                scoredEnrichedEvents.add(scoredEnrichedEvent);
+            }
+
+        }
+        return scoredEnrichedEvents;
     }
 }

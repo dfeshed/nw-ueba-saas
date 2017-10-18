@@ -16,6 +16,15 @@ import java.util.stream.Collectors;
  * Created by barak_schuster on 29/08/2017.
  */
 public class SmartWeightsScorerAlgorithm {
+    private double fractionalPower;
+    private double minimalClusterScore;
+
+    public SmartWeightsScorerAlgorithm(double fractionalPower, double minimalClusterScore){
+        Assert.isTrue(fractionalPower > 0 && fractionalPower < 1,
+                String.format("fractional power should be in the range (0,1). fractionalPower: %f", fractionalPower));
+        this.fractionalPower = fractionalPower;
+        this.minimalClusterScore = minimalClusterScore;
+    }
 
     /**
      * Cluster represents an instantiation of a {@link ClusterConf}
@@ -117,12 +126,23 @@ public class SmartWeightsScorerAlgorithm {
      * Sum the contributions made by the given {@link List<Cluster>} into a single entity event value.
      */
     private double calculateSmartValue(List<Cluster> clusters) {
+        if(clusters.stream().filter(cluster -> !cluster.isEmpty() && cluster.getMaxScore() >= minimalClusterScore).count() == 0){
+            return 0;
+        }
         return clusters.stream()
                 // filter clusters that all of their feature absent from the data
                 .filter(cluster -> !cluster.isEmpty())
                 // map each cluster to its contribution to the entity event value
-                .mapToDouble(cluster -> cluster.getMaxScore() * cluster.getWeight() / 100)
+                .mapToDouble(cluster -> calculateScoreValue(cluster.getMaxScore(), cluster.getWeight()))
                 // add all of the clusters' contributions
                 .sum();
+    }
+
+    public double calculateScoreValue(double score, double weight) {
+        score = score / 100;
+        if(score > 1) {
+            score = Math.pow(score, fractionalPower);
+        }
+        return score * weight;
     }
 }
