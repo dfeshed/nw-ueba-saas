@@ -84,10 +84,4 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
         return seqReductionHistogram;
     }
 
-    /**
-     * Setter - used for tests only!
-     */
-    public void setSequencingResolution(ChronoField sequencingResolution) {
-        this.sequencingResolution = sequencingResolution;
-    }
 }
