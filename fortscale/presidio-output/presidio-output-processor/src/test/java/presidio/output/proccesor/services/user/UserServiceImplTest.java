@@ -72,9 +72,9 @@ public class UserServiceImplTest {
     public void testUpdateUserScoreBatch() throws Exception {
         String date = new Date().toString();
         List<User> usersWithOldScore = Arrays.asList(
-                new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date),
-                new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date),
-                new User("user3", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date)
+                new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
+                new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
+                new User("user3", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0)
         );
 
         Pageable pageable1 = new PageRequest(0, 3);
@@ -113,7 +113,7 @@ public class UserServiceImplTest {
     @Test
     public void testSetUserAlertData() {
         String date = new Date().toString();
-        User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
         List<String> classification1 = null, classification2, classification3;
         List<String> indicators1 = null, indicators2, indicators3;
         classification2 = new ArrayList<>(Arrays.asList("a", "b"));

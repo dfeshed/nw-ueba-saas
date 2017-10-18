@@ -118,7 +118,7 @@ public class UserScoreServiceModuleTest {
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
         String date = new Date().toString();
-        User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         ;
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
@@ -158,7 +158,7 @@ public class UserScoreServiceModuleTest {
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
         String date = new Date().toString();
-        User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         ;
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
@@ -257,7 +257,7 @@ public class UserScoreServiceModuleTest {
 
         //For each user generate user and list of alerts - 2 alerts per days
         for (int i = 0; i < USERS_COUNT; i++) {
-            User user1 = new User("userId" + i, "username" + 1, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
+            User user1 = new User("userId" + i, "username" + 1, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
             ;
             user1.setSeverity(null);
             List<Alert> alerts = new ArrayList<>();
@@ -317,7 +317,7 @@ public class UserScoreServiceModuleTest {
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
         String date = new Date().toString();
-        User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         ;
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();

@@ -110,8 +110,8 @@ public class UserPersistencyServiceTest {
     private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
         ArrayList<String> indicators = new ArrayList<String>();
         indicators.add("indicator");
-        String date = new Date().toString();
-        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0, date);
+
+        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
 
@@ -305,10 +305,10 @@ public class UserPersistencyServiceTest {
     @Test
     public void testFindByListOfIds() {
         String date = new Date().toString();
-        User user1 = new User("userId1", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId2", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user3 = new User("userId3", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user4 = new User("userId4", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId3", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
 
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -334,10 +334,10 @@ public class UserPersistencyServiceTest {
 
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0);
 
 
         List<User> userList = new ArrayList<>();
@@ -358,9 +358,9 @@ public class UserPersistencyServiceTest {
         List<String> tags = new ArrayList<>();
         String date = new Date().toString();
 
-        User user1 = new User("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user3 = new User("userId1", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1-1234-5678", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId1@somecompany.com", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId1", "userName", "displayName", 21d, null, null, null, UserSeverity.CRITICAL, 0);
 
 
         List<User> userList = new ArrayList<>();
@@ -427,10 +427,10 @@ public class UserPersistencyServiceTest {
         String date = new Date().toString();
         List<String> classification = new ArrayList<>();
         classification.add("a");
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.MEDIUM, 0, date);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0, date);
-        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0, date);
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, null, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0);
 
 
         List<User> userList = new ArrayList<>();
@@ -464,10 +464,10 @@ public class UserPersistencyServiceTest {
         List<String> tags1 = new ArrayList<>(Arrays.asList("admin", "watch"));
         List<String> tags2 = new ArrayList<>(Arrays.asList("admin"));
 
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, tags1, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, tags2, UserSeverity.MEDIUM, 0, date);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, tags1, UserSeverity.CRITICAL, 0, date);
-        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0, date);
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, null, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, null, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, null, tags1, UserSeverity.CRITICAL, 0);
+        User user4 = new User("userId4", "userName", "displayName", 21d, null, null, null, UserSeverity.MEDIUM, 0);
 
 
         List<User> userList = new ArrayList<>();
@@ -505,9 +505,9 @@ public class UserPersistencyServiceTest {
         List<String> classificationA = Arrays.asList("a");
         List<String> classificationB = Arrays.asList("a", "b");
         List<String> classificationC = Arrays.asList("a", "b", "c");
-        User user1 = new User("userId1", "userName", "displayName", 5d, classificationA, null, tags1, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId2", "userName", "displayName", 10d, classificationB, null, tags2, UserSeverity.MEDIUM, 0, date);
-        User user3 = new User("userId3", "userName", "displayName", 20d, classificationC, null, tags1, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1", "userName", "displayName", 5d, classificationA, null, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, classificationB, null, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, classificationC, null, tags1, UserSeverity.CRITICAL, 0);
 
 
         List<User> userList = Arrays.asList(user1, user2, user3);
@@ -572,9 +572,9 @@ public class UserPersistencyServiceTest {
         List<String> indicatorsA = Arrays.asList("a");
         List<String> indicatorsB = Arrays.asList("a", "b");
         List<String> indicatorsC = Arrays.asList("a", "b", "c");
-        User user1 = new User("userId1", "userName", "displayName", 5d, null, indicatorsA, tags1, UserSeverity.CRITICAL, 0, date);
-        User user2 = new User("userId2", "userName", "displayName", 10d, null, indicatorsB, tags2, UserSeverity.MEDIUM, 0, date);
-        User user3 = new User("userId3", "userName", "displayName", 20d, null, indicatorsC, tags1, UserSeverity.CRITICAL, 0, date);
+        User user1 = new User("userId1", "userName", "displayName", 5d, null, indicatorsA, tags1, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "userName", "displayName", 10d, null, indicatorsB, tags2, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "userName", "displayName", 20d, null, indicatorsC, tags1, UserSeverity.CRITICAL, 0);
 
 
         List<User> userList = Arrays.asList(user1, user2, user3);

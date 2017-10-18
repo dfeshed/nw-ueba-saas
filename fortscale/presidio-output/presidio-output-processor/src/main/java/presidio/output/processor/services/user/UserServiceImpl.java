@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
     private static Logger log = Logger.getLogger(UserServiceImpl.class);
 
+    private final String UPDATE_USER_ALERT_DATA = "UPDATE_USER_ALERT_DATA";
     private static final int USERS_SAVE_PAGE_SIZE = 1000;
 
     private final EventPersistencyService eventPersistencyService;
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
         if (userDetails == null) {
             return null;
         }
-        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags(), Date.from(startDate).toString());
+        return new User(userDetails.getUserId(), userDetails.getUserName(), userDetails.getUserDisplayName(), userDetails.getTags());
     }
 
     @Override
@@ -163,11 +164,13 @@ public class UserServiceImpl implements UserService {
                 .pageSize(usersIDForBatch.size());
         UserQuery userQuery = userQueryBuilder.build();
         Page<User> users = userPersistencyService.find(userQuery);
+        String updatedBy = UPDATE_USER_ALERT_DATA + new Date().toString();
         users.forEach(user -> {
             double newUserScore = aggregatedUserScore.get(user.getUserId()).getUserScore();
             if (user.getScore() != newUserScore) {
                 user.setScore(newUserScore);
                 user.incrementAlertsCountByOne();
+                user.setUpdatedBy(updatedBy);
                 changedUsers.add(user);
             }
         });

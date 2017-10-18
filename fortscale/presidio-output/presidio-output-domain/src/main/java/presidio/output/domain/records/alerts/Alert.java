@@ -109,8 +109,8 @@ public class Alert extends AbstractElasticDocument {
         this.contributionToUserScore = contributionToUserScore;
     }
 
-    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore, String id, Date createdDate, Date updatedDate) {
-        super(id, createdDate, updatedDate);
+    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore, String id, Date createdDate, Date updatedDate, String updatedBy) {
+        super(id, createdDate, updatedDate, updatedBy);
         this.classifications = classifications;
         this.userId = userId;
         this.smartId = smartId;

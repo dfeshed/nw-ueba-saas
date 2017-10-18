@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -187,7 +186,7 @@ public class UserApiControllerModuleTest {
 
 
     private presidio.output.domain.records.users.User generateUser(List<String> classifications, String userName, String userId, String displayName, double score, List<String> indicators) {
-        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, indicators, new ArrayList<>(), UserSeverity.CRITICAL, 0, new Date().toString());
+        return new presidio.output.domain.records.users.User(userId, userName, displayName, score, classifications, indicators, new ArrayList<>(), UserSeverity.CRITICAL, 0);
     }
 
     private User convertDomainUserToRestUser(presidio.output.domain.records.users.User user) {
