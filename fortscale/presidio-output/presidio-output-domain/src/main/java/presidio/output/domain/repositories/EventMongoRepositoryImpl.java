@@ -2,6 +2,7 @@ package presidio.output.domain.repositories;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -58,7 +59,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
             );
 
         });
-        if (criterias.size() > 0){
+        if (CollectionUtils.isNotEmpty(criterias)){
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
         query.limit(limitEvents);
