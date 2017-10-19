@@ -135,6 +135,65 @@ public class CountersUtil {
         }
     }
 
+    /**
+     * This method updates the latest ready hour for {@link Schema} name {@code schemaName} to {@code newLatestReadyHour}
+     *
+     * @param schema             the {@link Schema} whose latest ready hour we are updating
+     * @param newLatestReadyHour the new (end of) hour as {@link Instant}
+     * @throws IOException
+     */
+    public void updateLatestReadyHour(Schema schema, Instant newLatestReadyHour) throws IOException {
+        synchronized (sourceLock) {
+            FileLock lock = null;
+            FileChannel channel = null;
+            FileInputStream in = null;
+            FileOutputStream out = null;
+            try {
+                /* Get the file stuff */
+                File file = createFile(schema, SOURCE_COUNTERS_FOLDER_NAME);
+                final String filePath = file.getAbsolutePath();
+                channel = new RandomAccessFile(file, "rw").getChannel();
+                lock = channel.lock(); // This method blocks until it can retrieve the lock.
+
+                /* load existing count properties */
+                Properties countProperties = new OrderedProperties<>(String.class);
+                in = new FileInputStream(file);
+                countProperties.load(in);
+
+                /* update count properties */
+                final String latestReadyHourProperty = countProperties.getProperty(LATEST_READY_HOUR_MARKER);
+                final boolean hasLatestReadyHourProperty = latestReadyHourProperty != null;
+                if (hasLatestReadyHourProperty) {
+                    countProperties.replace(LATEST_READY_HOUR_MARKER, newLatestReadyHour.toString());
+                } else {
+                    countProperties.setProperty(LATEST_READY_HOUR_MARKER, newLatestReadyHour.toString());
+                }
+
+                /* save new count properties */
+                out = new FileOutputStream(filePath);
+                countProperties.store(out, "hour counters for schema " + schema.getName());
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
+
+                if (out != null) {
+                    out.close();
+                }
+
+                if (lock != null) {
+                    lock.release();
+                }
+
+                if (channel != null) {
+                    channel.close();
+                }
+            }
+
+        }
+
+    }
+
 
     private int addToCounter(Instant timeDetected, Schema schema, String flumeComponentType, Instant latestReadyHour, int amount) throws IOException {
         final int newCount;
