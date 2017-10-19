@@ -24,16 +24,14 @@ public abstract class AbstractElasticDocument {
     @Field(type = FieldType.Date, store = true)
     private Date updatedDate;
 
+    @Field(type = FieldType.String, store = true)
+    private String updatedBy;
+
     public AbstractElasticDocument(String id, Date createdDate, Date updatedDate) {
         this.id = id;
-        if (this.createdDate == null) {
-            Date date = new Date();
-            this.createdDate = createdDate;
-            this.updatedDate = date;
-        } else {
-            this.createdDate = createdDate;
-            this.updatedDate = updatedDate;
-        }
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.updatedBy = Thread.currentThread().getName();
     }
 
     public AbstractElasticDocument() {
@@ -63,8 +61,22 @@ public abstract class AbstractElasticDocument {
         return updatedDate;
     }
 
-
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public void updateFieldsBeforeSave() {
+        Date date = new Date();
+        String updatedBy = Thread.currentThread().getName();
+        setUpdatedDate(date);
+        setUpdatedBy(updatedBy);
     }
 }

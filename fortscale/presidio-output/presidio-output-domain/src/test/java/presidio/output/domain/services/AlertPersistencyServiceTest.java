@@ -27,11 +27,19 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
@@ -105,16 +113,24 @@ public class AlertPersistencyServiceTest {
         Date createAtDate = alert.getCreatedDate();
 
         alertPersistencyService.save(alert);
+
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
+        Date updateAtDateFirstFind = testAlert.getUpdatedDate();
+        Date createAtDateFirstFind = testAlert.getCreatedDate();
         testAlert.setUserName("smartId1");
         alertPersistencyService.save(testAlert);
         testAlert = alertPersistencyService.findOne(alert.getId());
+        Date createAtDateSecondFind = testAlert.getCreatedDate();
+        Date updateAtDateSecondFind = testAlert.getUpdatedDate();
 
         assertNotNull(testAlert.getId());
-        assertEquals(testAlert.getCreatedDate(), createAtDate);
+        assertEquals(createAtDate, createAtDateFirstFind);
+        assertEquals(createAtDateSecondFind, createAtDateFirstFind);
+        assertNotEquals(createAtDateSecondFind, updateAtDateSecondFind);
+        assertNotEquals(updateAtDateFirstFind, updateAtDateSecondFind);
 
         assertEquals(testAlert.getId(), alert.getId());
-        assertEquals("smartId1", testAlert.getUserName());
+        assertEquals(testAlert.getUserName(), "smartId1");
         testAlert.setIndicatorsNum(100);
         alertPersistencyService.save(testAlert);
         Alert testAlert2 = alertPersistencyService.findOne(alert.getId());

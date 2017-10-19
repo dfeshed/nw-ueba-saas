@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +70,7 @@ public class UserServiceImplTest {
 
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
+        String date = new Date().toString();
         List<User> usersWithOldScore = Arrays.asList(
                 new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
                 new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
@@ -110,6 +112,7 @@ public class UserServiceImplTest {
 
     @Test
     public void testSetUserAlertData() {
+        String date = new Date().toString();
         User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
         List<String> classification1 = null, classification2, classification3;
         List<String> indicators1 = null, indicators2, indicators3;
@@ -143,7 +146,7 @@ public class UserServiceImplTest {
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
-        User user = userService.createUserEntity("event1");
+        User user = userService.createUserEntity("event1", Instant.now());
         Assert.assertEquals(0, user.getTags().size());
     }
 
@@ -156,7 +159,7 @@ public class UserServiceImplTest {
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
-        User user = userService.createUserEntity("event1");
+        User user = userService.createUserEntity("event1", Instant.now());
         Assert.assertEquals(1, user.getTags().size());
         Assert.assertEquals("admin", user.getTags().get(0));
     }
