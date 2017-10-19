@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import hasherizeEventMeta from './hasherize-event-meta';
-import { setEventLogData, setEventLogDataStatus, getEventLogDataStatus } from 'component-lib/utils/log-utils';
 import { nwEncodeMetaFilterConditions } from '../util/query-util';
 
 const {
@@ -231,60 +230,6 @@ function makeServerInputsForServiceInfo(serviceId) {
   };
 }
 
-function buildEventLogStreamInputs(serviceId, eventIds = []) {
-  assert(
-    'Cannot make a core log query without an event id.',
-    eventIds.length
-  );
-  const inputs = makeServerInputsForServiceInfo(serviceId);
-  inputs.filter.pushObject({ field: 'sessionIds', values: eventIds });
-  return inputs;
-}
-
-function executeLogDataRequest(request, inputs, events = []) {
-  return new RSVP.Promise((resolve, reject) => {
-
-    // Mark the event objects as waiting.
-    events.forEach((item) => {
-      setEventLogDataStatus(item, 'wait');
-    });
-
-    request.streamRequest({
-      method: 'stream',
-      modelName: 'core-event-log',
-      query: inputs,
-      onResponse({ data: { sessionId, log, code } }) {
-
-        // Each event (i.e., sessionId) gets its own response message with its own error code.
-        const item = events.findBy('sessionId', sessionId);
-
-        if (item) {
-          if (code) {
-            // Any non-zero code means there was an error.
-            setEventLogDataStatus(item, 'rejected');
-          } else {
-            // No error, cache the log data into the event object itself.
-            setEventLogData(item, log);
-            setEventLogDataStatus(item, 'resolved');
-          }
-        }
-      },
-      onCompleted: resolve,
-      onError() {
-        // The request won't complete, so mark any events still pending as error.
-        events
-          .filter((item) => {
-            return getEventLogDataStatus(item) === 'wait';
-          })
-          .forEach((item) => {
-            setEventLogDataStatus(item, 'rejected');
-          });
-        reject();
-      }
-    });
-  });
-}
-
 /**
  * Parses a given URI string that represents a filter for a Core Events query.
  * Assumes the URI is of the following syntax: `serviceId/startTime/endTime/metaFilterUri`.
@@ -393,7 +338,5 @@ export {
   executeMetaValuesRequest,
   makeServerInputsForServiceInfo,
   parseEventQueryUri,
-  uriEncodeEventQuery,
-  buildEventLogStreamInputs,
-  executeLogDataRequest
+  uriEncodeEventQuery
 };

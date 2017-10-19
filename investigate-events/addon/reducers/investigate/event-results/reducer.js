@@ -1,12 +1,11 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
-import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
   status: undefined,
-  data: [],
+  data: [], // *
   reason: undefined,
   anchor: 0,
   goal: 0,
@@ -16,6 +15,15 @@ const _initialState = Immutable.from({
   metaKeyStates: [],
   message: undefined
 });
+// * `data` is an array of objects with the following properties
+// {
+//   sessionId,
+//   time,
+//   metas,
+//   ...metas converted to props,
+//   log, // if log
+//   logStatus
+// }
 
 export default handleActions({
   [ACTION_TYPES.SET_ANCHOR]: (state, { payload }) => state.set('anchor', payload),
@@ -45,43 +53,34 @@ export default handleActions({
     return state.merge(payload);
   },
 
-  [ACTION_TYPES.GET_LOG]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => {
-        // Mark the event objects as waiting.
-        // events.forEach((item) => {
-        //   setEventLogDataStatus(item, 'wait');
-        // });
-        return s;
-      },
-      failure: (s) => {
-        // The request won't complete, so mark any events still pending as error.
-        // events
-        // .filter((item) => {
-        //   return getEventLogDataStatus(item) === 'wait';
-        // })
-        // .forEach((item) => {
-        //   setEventLogDataStatus(item, 'rejected');
-        // });
-        return s;
-      },
-      success: (s) => {
-        // const { data: { sessionId, log, code } } = action.payload;
-        // Each event (i.e., sessionId) gets its own response message with its own error code.
-        // const item = events.findBy('sessionId', sessionId);
-        // if (item) {
-        //   if (code) {
-        //     // Any non-zero code means there was an error.
-        //     setEventLogDataStatus(item, 'rejected');
-        //   } else {
-        //     // No error, cache the log data into the event object itself.
-        //     setEventLogData(item, log);
-        //     setEventLogDataStatus(item, 'resolved');
-        //   }
-        // }
-        return s;
-      }
-    });
+  [ACTION_TYPES.SET_LOG]: (state, { payload }) => {
+    const { code, data: { log, sessionId } } = payload;
+    const item = _find(state.data, sessionId);
+    let updatedItem;
+    if (code) {
+      // codes other than 0 are errors
+      updatedItem = item.set('logStatus', 'rejected');
+    } else {
+      // set new log and status
+      updatedItem = item.merge({ log, logStatus: 'resolved' });
+    }
+    // replace event in array
+    const newData = _update(state.data, sessionId, updatedItem);
+    return state.set('data', newData);
+  },
+
+  [ACTION_TYPES.SET_LOG_STATUS]: (state, { sessionId, status }) => {
+    // Update event's logStatus property
+    const item = _find(state.data, sessionId);
+    const updatedItem = item.set('logStatus', status);
+    // replace event in array
+    const newData = _update(state.data, sessionId, updatedItem);
+    return state.set('data', newData);
   }
 }, _initialState);
 
+const _find = (data, sessionId) => data.find((d) => d.sessionId === sessionId);
+
+const _update = (data, sessionId, updatedItem) => data.map((d) => {
+  return (d.sessionId === sessionId) ? updatedItem : d;
+});

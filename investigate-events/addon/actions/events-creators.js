@@ -1,12 +1,6 @@
 import fetchStreamingEvents from './fetch/events';
 import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
-// import {
-//   buildEventStreamInputs,
-//   executeEventsRequest,
-//   buildEventLogStreamInputs,
-//   executeLogDataRequest
-// } from './helpers/query-utils';
 
 const {
   log
@@ -152,12 +146,30 @@ export const eventsGetMore = () => {
  */
 export const eventsLogsGet = (events = []) => {
   return (dispatch, getState) => {
-    const { serviceId } = getState().investigate.queryNode;
+    const state = getState().investigate;
+    const { serviceId } = state.queryNode;
     const sessionIds = events.mapBy('sessionId');
+    const handlers = {
+      onResponse(response) {
+        dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
+      },
+      onError(response) {
+        // The request won't complete, so mark any events still pending as error.
+        const waiting = events.filter((el) => el.logStatus === 'wait');
+        waiting.forEach((item) => {
+          dispatch({
+            type: ACTION_TYPES.SET_LOG_STATUS,
+            sessionId: item.sessionId,
+            status: 'rejected'
+          });
+        });
+        log('GET_LOG', response);
+      }
+    };
 
     dispatch({
       type: ACTION_TYPES.GET_LOG,
-      promise: fetchLog(serviceId, sessionIds),
+      promise: fetchLog(serviceId, sessionIds, handlers),
       meta: {
         onFailure(response) {
           log('GET_LOG', response);

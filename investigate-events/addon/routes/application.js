@@ -3,13 +3,12 @@ import Route from 'ember-route';
 import service from 'ember-service/inject';
 
 import Context from 'investigate-events/actions/context';
-import Events from 'investigate-events/actions/events';
 import InvestigateState from 'investigate-events/state/index';
 import Meta from 'investigate-events/actions/meta';
 import Nav from 'investigate-events/actions/nav';
 import Results from 'investigate-events/actions/results';
 
-export default Route.extend(Context, Events, InvestigateState, Meta, Nav, Results, {
+export default Route.extend(Context, InvestigateState, Meta, Nav, Results, {
   i18n: service(),
 
   state: computed(function() {

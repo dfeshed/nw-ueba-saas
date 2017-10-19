@@ -26,10 +26,9 @@ export default DataTableBody.extend({
     // Minor hack: rsa-data-table always renders the first item (in order to measure its height), and therefore never
     // includes it in the `_visibleItems` array. So we manually include it here, in case it needs log data fetched too.
     const visibles = [ first, ...this.get('_visibleItems') ];
-
     // Find all the visible items that need to have their log data fetched.
     const logEvents = visibles.filter((event) => {
-      return isLogEvent(event) && !eventHasLogData(event) && !eventLogDataIsPending(event);
+      return isLogEvent(event) && !eventHasLogData(event) && eventLogDataIsPending(event);
     });
 
     if (logEvents.length) {

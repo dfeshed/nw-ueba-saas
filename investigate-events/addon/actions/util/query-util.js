@@ -116,11 +116,11 @@ export const streamPromiseRequest = (modelName, query = {}, streamOptions = {}) 
  * events
  * @param {object} query - (Optional) Query params for request
  * @param {object} streamOptions - (Optional) Stream params
- * @return {object} An RSVP Promise
+ * @return {null}
  * @public
  */
 export const streamingRequest = (modelName, query = {}, handlers = {}, streamOptions = {}) => {
-  return streamRequest({
+  streamRequest({
     method: 'stream',
     modelName,
     query,

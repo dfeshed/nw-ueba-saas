@@ -1,17 +1,18 @@
 import {
   sessionIdsFilter,
   serviceIdFilter,
-  streamPromiseRequest
+  streamingRequest
 } from '../util/query-util';
 
 /**
  * Fetch a single log of a log event.
  * @param {string|number} serviceId
  * @param {object[]} sessionIds
- * @return {object} RSVP Promise
+ * @param {object} handlers - Stream event handlers
+ * @return {null}
  * @public
  */
-export function fetchLog(serviceId, sessionIds = []) {
+export function fetchLog(serviceId, sessionIds = [], handlers = {}) {
   const query = {
     filter: [
       serviceIdFilter(serviceId),
@@ -19,8 +20,9 @@ export function fetchLog(serviceId, sessionIds = []) {
     ]
   };
 
-  return streamPromiseRequest(
+  streamingRequest(
     'core-event-log',
-    query
+    query,
+    handlers
   );
 }

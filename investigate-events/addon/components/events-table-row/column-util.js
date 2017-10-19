@@ -1,11 +1,7 @@
 import get from 'ember-metal/get';
 import isEmberArray from 'ember-array/utils';
 import formatUtil from './format-util';
-import {
-  isLogEvent,
-  getEventLogData,
-  getEventLogDataStatus
-} from 'component-lib/utils/log-utils';
+import { isLogEvent } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
 
 const RESERVED_KEYS = [ 'eth.src', 'eth.dst', 'ip.src', 'ipv6.src', 'ip.dst', 'ipv6.dst', 'tcp.srcport', 'tcp.dstport', 'udp.srcport', 'udp.dstport', 'session.split'];
@@ -302,8 +298,8 @@ function buildDefaultCellContent($content, field, item, opts) {
  * @private
  */
 function buildLogContent(item) {
-  const status = getEventLogDataStatus(item) || '';
-  const data = getEventLogData(item) || '';
+  const status = item.logStatus || '';
+  const data = item.log || '';
   let text = '';
   let tooltip = '';
 

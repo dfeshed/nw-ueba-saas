@@ -6,7 +6,6 @@ import observer from 'ember-metal/observer';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import computed from 'ember-computed-decorators';
 import columnUtil from './column-util';
-import { UI_KEY_LOG_DATA_STATUS } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
 
 // Default column width if none given.
@@ -18,24 +17,6 @@ export default Component.extend(RowMixin, {
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
-
-  // Triggers a repaint when timezone changes to update time value formatting.
-  datetimeDidChange: observer('timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
-    this._renderCells();
-  }),
-
-  didInsertElement() {
-    this._super(...arguments);
-    run.schedule('afterRender', this, this.afterRender);
-  },
-
-  // Triggers the initial rendering of cell contents.  Ensures that this is done first, before
-  // any inherited `afterRender` logic from `_super`. Why? Because the `_super` in this case is a data table row,
-  // which measures its own height once the DOM is ready. We want to render the cell contents before that happens.
-  afterRender() {
-    this._renderCells();
-    this._super(...arguments);
-  },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
   @computed('table.aliases.data', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n', 'timezone.selected.zoneId')
@@ -65,12 +46,62 @@ export default Component.extend(RowMixin, {
     };
   },
 
-  // Builds the DOM for the table cells.
-  // Typically in Ember this is handled declaratively by defining DOM in a template.hbs file. But that approach
-  // yields to sluggish performance when lazy rendering is turned on, and the user scrolls rapidly through hundreds
-  // of records.  As Ember creates & destroys components on scroll, performance degrades proportionally as the
-  // number & complexity of the components increases. As a @workaround, we implement this component's DOM content
-  // imperatively using D3 rather than template bindings. The performance improvement is quite significant.
+  /**
+   * Triggers a repaint when timezone changes to update time value formatting.
+   * @private
+   */
+  _datetimeDidChange: observer('timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
+    this._renderCells();
+  }),
+
+  /**
+   * Triggers a redraw of the cells when either:
+   * 1. The data item changes
+   * 2. The columns model changes
+   * @private
+   */
+  _columnsOrDataDidChange: observer('item', 'table.columns.[]', function() {
+    run.once(this, this._renderCells);
+  }),
+
+  /**
+   * Triggers an update of the cell DOM widths whenever the column model's width
+   * changes.
+   * @private
+   */
+  _columnWidthDidChange: observer('table.columns.@each.width', function() {
+    run(this, this._repaintCellWidths);
+  }),
+
+  didInsertElement() {
+    this._super(...arguments);
+    run.schedule('afterRender', this, this._afterRender);
+  },
+
+  /**
+   * Triggers the initial rendering of cell contents.  Ensures that this is done
+   * first, beforeany inherited `afterRender` logic from `_super`. Why? Because
+   * the `_super` in this case is a data table row, which measures its own
+   * height once the DOM is ready. We want to render the cell contents before
+   * that happens.
+   * @private
+   */
+  _afterRender() {
+    this._renderCells();
+    this._super(...arguments);
+  },
+
+  /**
+   * Builds the DOM for the table cells. Typically in Ember this is handled
+   * declaratively by defining DOM in a template.hbs file. But that approach
+   * yields to sluggish performance when lazy rendering is turned on, and the
+   * user scrolls rapidly through hundreds of records.  As Ember creates &
+   * destroys components on scroll, performance degrades proportionally as the
+   * number & complexity of the components increases. As a @workaround, we
+   * implement this component's DOM content imperatively using D3 rather than
+   * template bindings. The performance improvement is quite significant.
+   * @private
+   */
   _renderCells() {
     if (!this.element) {
       return;
@@ -88,26 +119,32 @@ export default Component.extend(RowMixin, {
     });
   },
 
-  // Builds the DOM for an individual table cell.
-  // Responsible for building the root cell element, then invoking utils for setting the element's width & inner DOM.
+  /**
+   * Builds the DOM for an individual table cell. Responsible for building the
+   * root cell element, then invoking utils for setting the element's width &
+   * inner DOM.
+   * @private
+   */
   _renderCell($row, column, item) {
     const field = get(column, 'field');
     const _opts = this.get('_opts');
     const isEndpoint = item.metas && item.metas.some((d) => d[0] === 'nwe.callback_id');
     const opts = Object.assign(_opts, { isEndpoint });
-
     const $cell = $row.append('div')
       .classed('rsa-data-table-body-cell', true)
       .attr('data-field', field);
 
     columnUtil.applyCellWidth($cell, column, opts);
-
     columnUtil.buildCellContent($cell, field, item, opts);
   },
 
-  // Updates the widths of the existing cell DOMs (if any) to match those in the column models.
-  // Normally this could be done declaratively via Ember's template bindings, but due to performance issues this
-  // component builds the cells' DOM imperatively rather than declaratively.
+  /**
+   * Updates the widths of the existing cell DOMs (if any) to match those in the
+   * column models. Normally this could be done declaratively via Ember's
+   * template bindings, but due to performance issues this component builds the
+   * cells' DOM imperatively rather than declaratively.
+   * @private
+   */
   _repaintCellWidths() {
     if (!this.element) {
       return;
@@ -118,16 +155,5 @@ export default Component.extend(RowMixin, {
       const $cell = select(cells[index]);
       columnUtil.applyCellWidth($cell, column, opts);
     });
-  },
-
-  // Triggers a redraw of the cells whenever either (1) the data item changes, (2) the columns model changes, or
-  // (3) the status of the item's log data changes (log data is fetched async on-demand as the user scrolls).
-  _columnsOrDataDidChange: observer('item', 'table.columns.[]', `item.${UI_KEY_LOG_DATA_STATUS}`, function() {
-    run.once(this, this._renderCells);
-  }),
-
-  // Triggers an update of the cell DOM widths whenever the column model's width changes.
-  _columnWidthDidChange: observer('table.columns.@each.width', function() {
-    run(this, this._repaintCellWidths);
-  })
+  }
 });
