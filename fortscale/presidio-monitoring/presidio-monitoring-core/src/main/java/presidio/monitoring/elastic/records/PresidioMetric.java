@@ -42,14 +42,14 @@ public class PresidioMetric {
     @Field(type = FieldType.Boolean, store = true)
     private boolean exportOnlyOnFlush;
 
-    public PresidioMetric(String name, long value, Set<String> tags, String unit) {
+    public PresidioMetric(String name, long value, Set<String> tags, String unit,boolean exportOnlyOnFlush) {
         this.id = System.nanoTime() + "";
         this.name = name;
         this.value = value;
         this.timestamp = new Date();
         this.tags = tags;
         this.unit = unit;
-        this.exportOnlyOnFlush = false;
+        this.exportOnlyOnFlush = exportOnlyOnFlush;
     }
 
     public void setId(String id) {

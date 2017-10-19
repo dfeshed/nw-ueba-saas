@@ -21,7 +21,7 @@ public class PresidioCustomMetrics implements PublicMetrics {
         customInMethodMetrics = new LinkedHashSet<>();
     }
 
-    public static void addInMethodMetric(String metricName, long metricValue, Set tags, String unit) {
+    public static void addInMethodMetric(String metricName, long metricValue, Set tags, String unit,boolean exportOnlyOnFlush) {
         java.util.Iterator<PresidioMetric> itr = customInMethodMetrics.iterator();
         while (itr.hasNext()) {
             PresidioMetric metric = itr.next();
@@ -30,11 +30,11 @@ public class PresidioCustomMetrics implements PublicMetrics {
                 return;
             }
         }
-        customInMethodMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
+        customInMethodMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit,exportOnlyOnFlush));
     }
 
 
-    public void addMetric(String metricName, long metricValue, Set tags, String unit) {
+    public void addMetric(String metricName, long metricValue, Set tags, String unit, boolean exportOnlyOnFlush) {
         java.util.Iterator<PresidioMetric> itr = applicationMetrics.iterator();
         while (itr.hasNext()) {
             PresidioMetric metric = itr.next();
@@ -43,7 +43,7 @@ public class PresidioCustomMetrics implements PublicMetrics {
                 return;
             }
         }
-        applicationMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
+        applicationMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit,exportOnlyOnFlush));
     }
 
 

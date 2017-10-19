@@ -22,6 +22,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     private MetricsEndpoint metricsEndpoint;
     private Set<String> tags;
     private ThreadPoolTaskScheduler scheduler;
+    private boolean isFlush;
 
 
     MetricsExporter(MetricsEndpoint metricsEndpoint, String applicationName, ThreadPoolTaskScheduler scheduler) {
@@ -29,10 +30,11 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         this.scheduler = scheduler;
         this.tags = new HashSet<>();
         tags.add(applicationName);
+        this.isFlush = false;
     }
 
-    List<PresidioMetric> filterRepeatMetrics(boolean isFlush) {
-        List<PresidioMetric> metricsForExport = new ArrayList<PresidioMetric>(Arrays.asList());
+    List<PresidioMetric> filterRepeatMetrics() {
+        List<PresidioMetric> metricsForExport = new ArrayList<>(Arrays.asList());
         PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -50,10 +52,11 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         return metricsForExport;
     }
 
-    public abstract void export(boolean isFlush);
+    public abstract void export();
 
     public void flush() {
-        export(true);
+        this.isFlush = true;
+        export();
     }
 
     @Override

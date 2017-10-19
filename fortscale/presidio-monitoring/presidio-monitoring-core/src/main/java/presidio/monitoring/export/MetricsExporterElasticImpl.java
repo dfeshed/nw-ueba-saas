@@ -22,9 +22,9 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
 
 
     @Scheduled(fixedRateString = "${monitoring.fixed.rate}")
-    public void export(boolean isFlush) {
+    public void export() {
         logger.debug("Exporting metrics to elastic");
-        metricExportService.save(filterRepeatMetrics(isFlush));
+        metricExportService.save(filterRepeatMetrics());
         logger.debug("Ended Exporting metrics to elastic");
     }
 
