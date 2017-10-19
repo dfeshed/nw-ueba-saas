@@ -73,12 +73,14 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
             instant = instant.plus(fixedDurationStrategy.toDuration());
         }
 
-        long resolution = partitionsResolutionInSeconds / fixedDurationStrategy.toDuration().getSeconds();
+        long partitionsResolution = partitionsResolutionInSeconds;
+        long resolution = partitionsResolution / fixedDurationStrategy.toDuration().getSeconds();
         List<Double> maxValues = new ArrayList<>();
         //Get max values
         while (maxValues.size() < minNumOfMaxValuesSamples && resolution > 0) {
             maxValues = getMaxValuesByResolution(instantToFeatureValue, resolution);
-            resolution = (partitionsResolutionInSeconds - fixedDurationStrategy.toDuration().getSeconds()) / fixedDurationStrategy.toDuration().getSeconds();
+            partitionsResolution = (partitionsResolution - fixedDurationStrategy.toDuration().getSeconds());
+            resolution = partitionsResolution / fixedDurationStrategy.toDuration().getSeconds();
         }
 
         return maxValues;
