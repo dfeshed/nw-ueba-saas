@@ -9,11 +9,11 @@ import java.time.Instant;
 public class TimeService {
 
     public static Instant floorTime(Instant date, Duration timeDelta){
-        long roundDown = date.getEpochSecond() / timeDelta.getSeconds() * timeDelta.getSeconds();
-        return Instant.ofEpochSecond(roundDown);
+        return floorTime(date, timeDelta.getSeconds());
     }
 
     public static Instant floorTime(Instant date, long timeDeltaInSeconds){
-        return floorTime(date, Duration.ofSeconds(timeDeltaInSeconds));
+        long roundDown = date.getEpochSecond() / timeDeltaInSeconds * timeDeltaInSeconds;
+        return Instant.ofEpochSecond(roundDown);
     }
 }
