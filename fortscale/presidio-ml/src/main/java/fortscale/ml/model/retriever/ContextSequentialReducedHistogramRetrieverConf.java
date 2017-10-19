@@ -22,8 +22,9 @@ public class ContextSequentialReducedHistogramRetrieverConf extends ContextHisto
             @JsonProperty("functions") List<JSONObject> functions,
             @JsonProperty("featureBucketConfName") String featureBucketConfName,
             @JsonProperty("featureName") String featureName,
-            @JsonProperty("sequencingResolutionInSeconds") long sequencingResolutionInSeconds) {
-        super(timeRangeInSeconds, functions, featureBucketConfName, featureName);
+            @JsonProperty("sequencingResolutionInSeconds") long sequencingResolutionInSeconds,
+            @JsonProperty("partitionsResolutionInSeconds") long partitionsResolutionInSeconds) {
+        super(timeRangeInSeconds, functions, featureBucketConfName, featureName, partitionsResolutionInSeconds);
         this.sequencingResolutionInSeconds = sequencingResolutionInSeconds;
     }
 

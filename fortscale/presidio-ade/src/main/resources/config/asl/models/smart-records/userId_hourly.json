@@ -6,8 +6,7 @@
         "type": "accumulated_smart_data_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
-        "smartRecordConfName": "userId_hourly",
-        "partitioningResolutionInSeconds": 86400
+        "smartRecordConfName": "userId_hourly"
       },
       "builder": {
         "type": "weights_model_builder",
@@ -26,8 +25,7 @@
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "smartRecordConfName": "userId_hourly",
-        "weightsModelName": "smart.global.weights.userId.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "weightsModelName": "smart.global.weights.userId.hourly"
       },
       "builder": {
         "type": "smart_values_model_builder"

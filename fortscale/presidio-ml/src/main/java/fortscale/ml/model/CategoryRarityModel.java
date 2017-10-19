@@ -19,6 +19,8 @@ public class CategoryRarityModel implements Model {
 	private long numOfSamples;
 	private long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
+	// number of partitions we found data on. can be used for certainty calculation.
+	private long numOfPartitions;
 
 	// The entriesToSaveInModel value from the model conf from which this model was built.
 	// We store this information in the model to help us reduce the number of calls to
@@ -28,11 +30,12 @@ public class CategoryRarityModel implements Model {
 	// building this model.
 	private int numberOfEntriesToSaveInModel;
 
-	public void init(Map<Long, Double> occurrencesToNumOfFeatures, int numOfBuckets) {
+	public void init(Map<Long, Double> occurrencesToNumOfFeatures, int numOfBuckets, long numOfPartitions) {
 		buckets = new double[numOfBuckets];
 		numOfSamples = 0;
 		numDistinctFeatures = 0;
 		featureOccurrences = new HashMap<>();
+		this.numOfPartitions = numOfPartitions;
 
 		for (Map.Entry<Long, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
 			long occurrences = entry.getKey();
@@ -100,5 +103,9 @@ public class CategoryRarityModel implements Model {
 
 	public boolean isModelLoadedWithNumberOfEntries() {
 		return getNumOfSavedFeatures() >= numberOfEntriesToSaveInModel;
+	}
+
+	public long getNumOfPartitions() {
+		return numOfPartitions;
 	}
 }

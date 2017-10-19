@@ -22,9 +22,11 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        Map<String, Long> featureValueToCountMap = castModelBuilderData(modelBuilderData);
+        GenericHistogram genericHistogram = getGenericHistogram(modelBuilderData);
+        Map<String, Long> featureValueToCountMap = castModelBuilderData(genericHistogram);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
-        categoryRarityModel.init(getOccurrencesToNumOfFeatures(featureValueToCountMap), numOfBuckets);
+        long numOfPartitions = genericHistogram.getNumberOfPartitions();
+        categoryRarityModel.init(getOccurrencesToNumOfFeatures(featureValueToCountMap), numOfBuckets, numOfPartitions);
         saveTopEntriesInModel(featureValueToCountMap, categoryRarityModel);
         return categoryRarityModel;
     }
@@ -42,12 +44,16 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return occurrencesToNumOfFeatures;
     }
 
-    private Map<String, Long> castModelBuilderData(Object modelBuilderData) {
-        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+    private Map<String, Long> castModelBuilderData(GenericHistogram modelBuilderData) {
         Map<String, Long> map = new HashMap<>();
-        ((GenericHistogram)modelBuilderData).getHistogramMap().entrySet()
-                .forEach(entry -> map.put(entry.getKey(), entry.getValue().longValue()));
+
+        modelBuilderData.getHistogramMap().forEach((key, value) -> map.put(key, value.longValue()));
         return map;
+    }
+
+    private GenericHistogram getGenericHistogram(Object modelBuilderData) {
+        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+        return (GenericHistogram) modelBuilderData;
     }
 
     private void saveTopEntriesInModel(Map<String, Long> countMap, CategoryRarityModel model) {

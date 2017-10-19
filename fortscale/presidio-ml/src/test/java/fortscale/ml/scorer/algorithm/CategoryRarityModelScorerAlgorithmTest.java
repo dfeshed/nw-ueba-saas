@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -82,7 +81,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         Map<Long, Double> occurrencesToNumOfFeatures = new HashMap<>();
         occurrencesToNumOfFeatures.put(1L, 1D);
         int numOfBuckets = 10;
-        model.init(occurrencesToNumOfFeatures, numOfBuckets);
+        model.init(occurrencesToNumOfFeatures, numOfBuckets, 0);
         new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1).calculateScore(1, model);
     }
 

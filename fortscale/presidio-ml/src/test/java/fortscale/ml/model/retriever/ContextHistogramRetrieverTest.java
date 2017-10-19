@@ -38,7 +38,7 @@ public class ContextHistogramRetrieverTest {
         ContextHistogramRetrieverConf contextHistogramRetrieverConf =
                 new ContextHistogramRetrieverConf(1,
                         Collections.emptyList(),
-                        "test_conf_name", "test_feature_name");
+                        "test_conf_name", "test_feature_name", 86400);
 
         FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
         when(bucketConfigurationService.getBucketConf("test_conf_name")).thenReturn(featureBucketConf);

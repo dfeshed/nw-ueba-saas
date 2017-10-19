@@ -10,8 +10,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -23,8 +22,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -43,8 +41,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -56,8 +53,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulFileActions.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfSuccessfulFileActions.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -76,8 +72,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -89,8 +84,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFailedFilePermissionChanges.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFailedFilePermissionChanges.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -109,8 +103,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -122,8 +115,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFailedFileActions.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFailedFileActions.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -142,8 +134,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctFileOpenedUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfDistinctFileOpenedUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -155,8 +146,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctFileOpened.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfDistinctFileOpened.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -175,8 +165,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfDistinctFolderOpenedUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfDistinctFolderOpenedUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -188,8 +177,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfDistinctFolderOpened.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfDistinctFolderOpened.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -208,8 +196,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFileDeletedUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFileDeletedUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -221,8 +208,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFileDeleted.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFileDeleted.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -241,8 +227,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileRenamedUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileRenamedUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -254,8 +239,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulFileRenamed.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfSuccessfulFileRenamed.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -274,8 +258,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -287,8 +270,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFileMoved.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFileMoved.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -307,8 +289,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFileMovedFromSharedDriveUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFileMovedFromSharedDriveUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -320,8 +301,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFileMovedFromSharedDrive.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFileMovedFromSharedDrive.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -340,8 +320,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFileMovedToSharedDriveUserIdFileHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFileMovedToSharedDriveUserIdFileHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -353,8 +332,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFileMovedToSharedDrive.userId.file.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFileMovedToSharedDrive.userId.file.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",

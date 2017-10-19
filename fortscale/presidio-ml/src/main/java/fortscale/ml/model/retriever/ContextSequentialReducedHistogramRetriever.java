@@ -74,8 +74,8 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
             reductionHistogram.add(seqReductionHistogram);
         }
 
-        long distinctDays = calcNumOfDistinctDaysOfFeatureBuckets(featureBuckets);
-        reductionHistogram.setDistinctDays(distinctDays);
+        long distinctDays = calcNumOfPartitionsOfFeatureBuckets(featureBuckets);
+        reductionHistogram.setNumberOfPartitions(distinctDays);
 
         return getModelBuilderData(reductionHistogram);
     }

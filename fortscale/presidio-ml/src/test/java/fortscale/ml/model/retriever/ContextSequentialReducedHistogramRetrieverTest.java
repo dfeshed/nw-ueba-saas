@@ -81,7 +81,7 @@ public class ContextSequentialReducedHistogramRetrieverTest {
         ContextSequentialReducedHistogramRetrieverConf contextSequentialReducedHistogramRetrieverConfWithLowSequencing =
                 new ContextSequentialReducedHistogramRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
                 Collections.emptyList(),
-                FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 1);
+                FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 1, 86400);
         dataRetrieverFactoryService.getProduct(contextSequentialReducedHistogramRetrieverConfWithLowSequencing);
     }
 
@@ -154,7 +154,7 @@ public class ContextSequentialReducedHistogramRetrieverTest {
             when(aggregatedFeatureConf.getName()).thenReturn(TEST_FEATURE_NAME);
             contextSequentialReducedHistogramRetrieverConf = new ContextSequentialReducedHistogramRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
                     Collections.emptyList(),
-                    FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 86400);
+                    FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 86400, 86400);
         }
 
     }

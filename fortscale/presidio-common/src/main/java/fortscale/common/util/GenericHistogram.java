@@ -17,7 +17,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
     private Map<String, Double> histogram = new HashMap<>();
     private double totalCount = 0;
     private Object maxObject = null;
-    private long distinctDays = 0;
+    private long numberOfPartitions = 0;
 
     public GenericHistogram() {}
 
@@ -25,8 +25,16 @@ public class GenericHistogram implements Serializable, FeatureValue {
         histogram.forEach(this::add);
     }
 
-    public void setDistinctDays(long distinctDays) {
-        this.distinctDays = distinctDays;
+    public void setNumberOfPartitions(long numberOfPartitions) {
+        this.numberOfPartitions = numberOfPartitions;
+    }
+
+    /**
+     *
+     * @return number of time partitions which the generic histogram data is scattered in
+     */
+    public long getNumberOfPartitions() {
+        return numberOfPartitions;
     }
 
     public double getAvg() {
@@ -146,7 +154,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
 
         if (Math.abs(histogram1.totalCount - totalCount) > 0.0000000001) return false;
         if (!histogram.equals(histogram1.histogram)) return false;
-        if(distinctDays!=histogram1.distinctDays) return false;
+        if(numberOfPartitions !=histogram1.numberOfPartitions) return false;
         return maxObject.equals(histogram1.maxObject);
 
     }

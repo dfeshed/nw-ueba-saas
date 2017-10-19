@@ -10,8 +10,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -23,8 +22,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -43,8 +41,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -56,8 +53,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -76,8 +72,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -89,8 +84,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -109,8 +103,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -122,8 +115,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfFailedOperationType.userId.activeDirectory.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfFailedOperationType.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -142,8 +134,7 @@
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly",
-        "partitioningResolutionInSeconds": 86400
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder"
@@ -155,8 +146,7 @@
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly",
-        "partitioningResolutionInSeconds": 86400
+        "modelConfName": "numberOfSuccessfulSecuritySensitiveOperation.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
