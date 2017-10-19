@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.TreeMap;
 
 /**
- * AggregatedFeatureValuesData contains strategy of AggregatedFeatureValues buckets (e.g: 3600) and instantToAggregatedFeatureValues map.
+ * AggregatedFeatureValuesData contains strategy of AggregatedFeatureValues buckets and instantToAggregatedFeatureValues map.
  */
 public class AggregatedFeatureValuesData {
 
