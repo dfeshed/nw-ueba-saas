@@ -144,7 +144,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
             FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(strategyName);
 
             Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() % fixedDurationStrategy.toDuration().getSeconds() == 0 );
-            Assert.assertTrue(fixedDurationStrategy.toDuration().getSeconds() <= ((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds());
+            Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() > 0);
         });
     }
 
