@@ -1,7 +1,6 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.bucket.*;
-import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.retriever.factories.ContextSequentialReducedHistogramRetrieverFactory;
@@ -20,10 +19,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static fortscale.ml.model.ModelBuilderData.NoDataReason.NO_DATA_IN_DATABASE;
+import static fortscale.ml.model.retriever.ContextHistogramRetrieverTestUtil.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -34,10 +33,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringRunner.class)
 public class ContextSequentialReducedHistogramRetrieverTest {
-    static final String FEATURE_BUCKET_CONF_NAME = "test_conf_name";
-    static final String TEST_FEATURE_NAME = "test_feature_name";
-    private static final String CONTEXTID_WITH_NO_DATA = "contextId_with_no_data";
-    private static final String CONTEXT_ID_WITH_DATA = "contextId_with_data";
+
     static final int AMOUNT_OF_DAYS_TO_RETRIEVE = 28;
     private static final int EXPECTED_HISTOGRAM_VALUE = 28;
 
@@ -85,32 +81,7 @@ public class ContextSequentialReducedHistogramRetrieverTest {
         dataRetrieverFactoryService.getProduct(contextSequentialReducedHistogramRetrieverConfWithLowSequencing);
     }
 
-    private LinkedList<FeatureBucket> generateHourlyFeatureBuckets(Instant fromInstant, Instant toInstant) {
-        Instant cursor = Instant.ofEpochSecond(fromInstant.getEpochSecond());
-        LinkedList<FeatureBucket> featureBuckets = new LinkedList<>();
 
-        while (cursor.isBefore(toInstant))
-        {
-            FeatureBucket featureBucket = new FeatureBucket();
-
-            featureBucket.setStartTime(cursor);
-            featureBucket.setEndTime(cursor.plus(1, ChronoUnit.HOURS));
-            featureBucket.setContextId(CONTEXT_ID_WITH_DATA);
-            featureBucket.setFeatureBucketConfName(FEATURE_BUCKET_CONF_NAME);
-
-            cursor = cursor.plus(1, ChronoUnit.HOURS);
-            Map<String,Double> genericHistogramMap = new HashMap<>();
-            genericHistogramMap.put("a",55d);
-            genericHistogramMap.put("b",56d);
-            genericHistogramMap.put("c",57d);
-            GenericHistogram genericHistogram = new GenericHistogram(genericHistogramMap);
-            featureBucket.getAggregatedFeatures().put(TEST_FEATURE_NAME,new Feature(TEST_FEATURE_NAME, genericHistogram));
-            featureBucket.getAggregatedFeatures().put(TEST_FEATURE_NAME+"2",new Feature(TEST_FEATURE_NAME,33));
-            featureBuckets.add(featureBucket);
-        }
-
-        return featureBuckets;
-    }
 
     @Configuration
     public static class ContextSequentialHistogramRetrieverTestConfig {

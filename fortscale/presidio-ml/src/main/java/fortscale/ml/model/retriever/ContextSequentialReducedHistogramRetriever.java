@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * if data is sequential in given resolution, it will be reduced and counted as 1.
  *
  * example for sequential data:
- * context X1 occurred with feature value F1 5 times per a hour, in 6 different values times of day
+ * context X1 occurred with feature value F1 5 every 5 minutes in each day day
  * expected result would be a reduced histogram with count value of 1 for the whole day.
  *
  * Created by barak_schuster on 10/16/17.
@@ -44,8 +44,8 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
         FixedDurationStrategy bucketStrategy = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName());
         Duration bucketStrategyDuration = bucketStrategy.toDuration();
         Duration sequencingResolutionDuration = Duration.of(sequencingResolutionInSeconds, ChronoUnit.SECONDS);
-        String assertionMessage = String.format("sequencing resolution=%s must be larger then bucketStrategyDuration=%s, fix bucketConf=%s or retrieverConf=%s", sequencingResolutionDuration.toString(), bucketStrategyDuration.toString(), featureBucketConfName,this.config.getFactoryName());
-        Assert.isTrue(sequencingResolutionDuration.compareTo(bucketStrategyDuration)>=0,
+        String assertionMessage = String.format("sequencing resolution=%s must be multiplication of bucketStrategyDuration=%s, fix bucketConf=%s or retrieverConf=%s", sequencingResolutionDuration.toString(), bucketStrategyDuration.toString(), featureBucketConfName,this.config.getFactoryName());
+        Assert.isTrue(sequencingResolutionDuration.getSeconds() % bucketStrategyDuration.getSeconds() ==0,
                 assertionMessage);
     }
 
@@ -74,8 +74,8 @@ public class ContextSequentialReducedHistogramRetriever extends ContextHistogram
             reductionHistogram.add(seqReductionHistogram);
         }
 
-        long distinctDays = calcNumOfPartitionsOfFeatureBuckets(featureBuckets);
-        reductionHistogram.setNumberOfPartitions(distinctDays);
+        long numOfPartitionsOfFeatureBuckets = calcNumOfPartitionsOfFeatureBuckets(featureBuckets);
+        reductionHistogram.setNumberOfPartitions(numOfPartitionsOfFeatureBuckets);
 
         return getModelBuilderData(reductionHistogram);
     }

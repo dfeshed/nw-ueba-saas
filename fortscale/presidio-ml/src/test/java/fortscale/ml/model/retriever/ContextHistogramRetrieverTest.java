@@ -1,9 +1,6 @@
 package fortscale.ml.model.retriever;
 
-import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketReader;
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
@@ -16,10 +13,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import static fortscale.ml.model.retriever.ContextHistogramRetrieverTestUtil.generateHourlyFeatureBuckets;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,8 +53,13 @@ public class ContextHistogramRetrieverTest {
 
         when(aggregatedFeatureConf.getName()).thenReturn("test_feature_name");
 
-        AbstractDataRetriever abstractDataRetriever = factoryService.getProduct(contextHistogramRetrieverConf);
-        Assert.assertTrue(abstractDataRetriever instanceof AbstractDataRetriever);
+        ContextHistogramRetriever retriever = (ContextHistogramRetriever)factoryService.getProduct(contextHistogramRetrieverConf);
+        Instant fromInstant = Instant.parse("2017-01-01T00:00:00Z");
+        Instant toInstant = fromInstant.plus(25,ChronoUnit.DAYS);
+
+        LinkedList<FeatureBucket> featureBuckets = generateHourlyFeatureBuckets(fromInstant, toInstant);
+        long numOfPartitionsOfFeatureBuckets = retriever.calcNumOfPartitionsOfFeatureBuckets(featureBuckets);
+        Assert.assertEquals(25,numOfPartitionsOfFeatureBuckets);
     }
 
     @Configuration
