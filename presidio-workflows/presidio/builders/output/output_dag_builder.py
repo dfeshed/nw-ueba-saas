@@ -11,6 +11,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY, \
     FIX_DURATION_STRATEGY_HOURLY
 from presidio.builders.ade.anomaly_detection_engine_scoring_dag_builder import AnomalyDetectionEngineScoringDagBuilder
+from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 
 OUTPUT_JVM_ARGS_CONFIG_PATH = 'components.output.jvm_args'
 OUTPUT_RUN_DAILY_COMMAND = 'recalculate-user-score'
@@ -41,6 +42,9 @@ class OutputDagBuilder(PresidioDagBuilder):
         # currently the output should start when smart scoring starts.
         self._min_gap_from_dag_start_date_to_start_running = AnomalyDetectionEngineScoringDagBuilder.get_min_gap_from_dag_start_date_to_start_scoring(config_reader)
 
+        # the daily output job should start when there are smarts in the system (after start modeling)
+        self._min_gap_from_dag_start_date_to_start_modeling = SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
+
     def build(self, output_dag):
         """
         Builds jar operators for each data source and adds them to the given DAG.
@@ -51,8 +55,6 @@ class OutputDagBuilder(PresidioDagBuilder):
         """
 
         logging.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
-
-        task_sensor_service = TaskSensorService()
 
         # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
         # start only after the defined gap.
@@ -77,9 +79,6 @@ class OutputDagBuilder(PresidioDagBuilder):
             jvm_args=self.jvm_args,
             dag=output_dag)
 
-        task_sensor_service.add_task_sequential_sensor(hourly_output_operator)
-        task_sensor_service.add_task_short_circuit(hourly_output_operator, output_short_circuit_operator);
-
         user_score_operator = FixedDurationJarOperator(
             task_id='user_score_processor',
             fixed_duration_strategy=timedelta(days=1),
@@ -87,7 +86,7 @@ class OutputDagBuilder(PresidioDagBuilder):
             jvm_args=self.jvm_args,
             dag=output_dag)
 
-
+        task_sensor_service = TaskSensorService()
 
         # Create daily short circuit operator to wire the output processing and the user score recalculation
         daily_short_circuit_operator = ShortCircuitOperator(
@@ -95,14 +94,17 @@ class OutputDagBuilder(PresidioDagBuilder):
             dag=output_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,
-                                                                     output_dag.schedule_interval),
+                                                                     output_dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                 output_dag,
+                                                 self._min_gap_from_dag_start_date_to_start_modeling,
+                                                 kwargs['execution_date']),
             provide_context=True
         )
 
-        task_sensor_service.add_task_sequential_sensor(user_score_operator)
         task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
 
         #defining the dependencies between the operators
-        hourly_output_operator >> daily_short_circuit_operator
+        output_short_circuit_operator >> hourly_output_operator >> daily_short_circuit_operator
 
         return output_dag
