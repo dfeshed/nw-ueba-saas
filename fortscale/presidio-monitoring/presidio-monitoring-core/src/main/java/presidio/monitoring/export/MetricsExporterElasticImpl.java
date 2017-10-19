@@ -10,21 +10,21 @@ import presidio.monitoring.elastic.services.MetricExportService;
 
 public class MetricsExporterElasticImpl extends MetricsExporter {
 
-    private final Logger logger=Logger.getLogger(MetricsExporterElasticImpl.class);
+    private final Logger logger = Logger.getLogger(MetricsExporterElasticImpl.class);
 
     private MetricExportService metricExportService;
 
 
-    public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName,MetricExportService metricExportService,ThreadPoolTaskScheduler scheduler) {
-        super(metricsEndpoint,applicationName,scheduler);
-        this.metricExportService=metricExportService;
+    public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName, MetricExportService metricExportService, ThreadPoolTaskScheduler scheduler) {
+        super(metricsEndpoint, applicationName, scheduler);
+        this.metricExportService = metricExportService;
     }
 
 
     @Scheduled(fixedRateString = "${monitoring.fixed.rate}")
-    public void export() {
+    public void export(boolean isFlush) {
         logger.debug("Exporting metrics to elastic");
-        metricExportService.save(filterRepeatMetrics());
+        metricExportService.save(filterRepeatMetrics(isFlush));
         logger.debug("Ended Exporting metrics to elastic");
     }
 

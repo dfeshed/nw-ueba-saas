@@ -14,7 +14,7 @@ import static presidio.monitoring.elastic.records.PresidioMetric.TYPE;
 
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
-public class PresidioMetric{
+public class PresidioMetric {
 
 
     public static final String METRIC_INDEX_NAME = "presidio-monitoring";
@@ -39,13 +39,17 @@ public class PresidioMetric{
     @Field(type = FieldType.String, store = true)
     private String unit;
 
-    public PresidioMetric(String name, long value, Set<String>  tags, String unit) {
-        this.id=System.nanoTime()+"";
+    @Field(type = FieldType.Boolean, store = true)
+    private boolean exportOnlyOnFlush;
+
+    public PresidioMetric(String name, long value, Set<String> tags, String unit) {
+        this.id = System.nanoTime() + "";
         this.name = name;
         this.value = value;
         this.timestamp = new Date();
         this.tags = tags;
         this.unit = unit;
+        this.exportOnlyOnFlush = false;
     }
 
     public void setId(String id) {
@@ -91,12 +95,20 @@ public class PresidioMetric{
         return timestamp;
     }
 
-    public Set<String>  getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
     public String getUnit() {
         return unit;
+    }
+
+    public void setExportOnlyOnFlush(boolean exportOnlyOnFlush) {
+        this.exportOnlyOnFlush = exportOnlyOnFlush;
+    }
+
+    public boolean getExportOnlyOnFlush() {
+        return exportOnlyOnFlush;
     }
 
     @Override
@@ -111,7 +123,7 @@ public class PresidioMetric{
                 '}';
     }
 
-    public boolean equals(PresidioMetric presidioMetric){
+    public boolean equals(PresidioMetric presidioMetric) {
         return this.value == presidioMetric.getValue();
     }
 

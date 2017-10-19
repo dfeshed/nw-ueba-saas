@@ -31,22 +31,29 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         tags.add(applicationName);
     }
 
-    List<PresidioMetric> filterRepeatMetrics() {
+    List<PresidioMetric> filterRepeatMetrics(boolean isFlush) {
         List<PresidioMetric> metricsForExport = new ArrayList<PresidioMetric>(Arrays.asList());
         PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             value = (PresidioMetric) entry.getValue();
             value.setTags(tags);
-            metricsForExport.add(value);
+            if (!value.getExportOnlyOnFlush()) {
+                metricsForExport.add(value);
+            } else {
+                if (isFlush) {
+                    metricsForExport.add(value);
+                }
+            }
+
         }
         return metricsForExport;
     }
 
-    public abstract void export();
+    public abstract void export(boolean isFlush);
 
     public void flush() {
-        export();
+        export(true);
     }
 
     @Override
