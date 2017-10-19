@@ -15,6 +15,7 @@ import java.util.List;
 )
 public class SmartWeightsModel implements Model {
     private List<ClusterConf> clusterConfs;
+    private long numOfPartitions;
 
     //This empty constructor is needed for mongo
     public SmartWeightsModel(){}
@@ -32,5 +33,10 @@ public class SmartWeightsModel implements Model {
 
     public List<ClusterConf> getClusterConfs() {
         return clusterConfs;
+    }
+
+    public SmartWeightsModel setNumOfPartitions(long numOfPartitions) {
+        this.numOfPartitions = numOfPartitions;
+        return this;
     }
 }

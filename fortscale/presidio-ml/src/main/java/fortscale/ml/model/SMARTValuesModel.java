@@ -10,11 +10,13 @@ public class SMARTValuesModel implements Model {
 	private long numOfZeroValues;
 	private long numOfPositiveValues;
 	private double sumOfValues;
+	private long numOfPartitions;
 
-	public void init(long numOfZeroValues, long numOfPositiveValues, double sumOfValues) {
+	public void init(long numOfZeroValues, long numOfPositiveValues, double sumOfValues, long numOfPartitions) {
 		this.numOfZeroValues = numOfZeroValues;
 		this.numOfPositiveValues = numOfPositiveValues;
 		this.sumOfValues = sumOfValues;
+		this.numOfPartitions = numOfPartitions;
 	}
 
 	@Override
@@ -37,5 +39,13 @@ public class SMARTValuesModel implements Model {
 
 	public long getNumOfZeroValues() {
 		return numOfZeroValues;
+	}
+
+	public long getNumOfPartitions() {
+		return numOfPartitions;
+	}
+
+	public void setNumOfPartitions(long numOfPartitions) {
+		this.numOfPartitions = numOfPartitions;
 	}
 }

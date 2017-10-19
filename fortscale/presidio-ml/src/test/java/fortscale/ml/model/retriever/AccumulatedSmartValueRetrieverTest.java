@@ -13,6 +13,7 @@ import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import net.minidev.json.JSONObject;
 import org.assertj.core.util.Maps;
 import org.junit.Before;
@@ -68,8 +69,8 @@ public class AccumulatedSmartValueRetrieverTest {
 
         SmartRecordConf smartRecordConf = mock(SmartRecordConf.class);
         when(smartRecordConf.getName()).thenReturn(smartRecordConfName);
-
-        AccumulatedSmartValueRetrieverConf smartValueRetrieverConf = new AccumulatedSmartValueRetrieverConf(timeRangeInSeconds, functions, smartRecordConfName, weightsModelName);
+        when(smartRecordConf.getFixedDurationStrategy()).thenReturn(FixedDurationStrategy.HOURLY);
+        AccumulatedSmartValueRetrieverConf smartValueRetrieverConf = new AccumulatedSmartValueRetrieverConf(timeRangeInSeconds, functions, smartRecordConfName, weightsModelName,86400);
         when(smartRecordConfService.getSmartRecordConf(smartValueRetrieverConf.getSmartRecordConfName())).thenReturn(smartRecordConf);
 
         String featureName = "featureName";
