@@ -14,7 +14,7 @@
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
-        "resolutionInSeconds": 86400
+        "partitionspartitionsResolutionInSeconds  ": 86400
       }
     },
     {
@@ -46,7 +46,7 @@
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
-        "resolutionInSeconds": 86400
+        "partitionsResolutionInSeconds ": 86400
       }
     },
     {
@@ -78,7 +78,7 @@
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
-        "resolutionInSeconds": 86400
+        "partitionsResolutionInSeconds ": 86400
       }
     },
     {
@@ -110,7 +110,7 @@
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
-        "resolutionInSeconds": 86400
+        "partitionsResolutionInSeconds ": 86400
       }
     },
     {
@@ -142,7 +142,7 @@
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
-        "resolutionInSeconds": 86400
+        "partitionsResolutionInSeconds ": 86400
       }
     },
     {

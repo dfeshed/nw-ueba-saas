@@ -143,8 +143,8 @@ public class ModelingServiceApplicationContinuousModelsTest {
             String strategyName = aggregatedFeatureEventConf.getBucketConf().getStrategyName();
             FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(strategyName);
 
-            Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getResolutionInSeconds() % fixedDurationStrategy.toDuration().getSeconds() == 0 );
-            Assert.assertTrue(fixedDurationStrategy.toDuration().getSeconds() <= ((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getResolutionInSeconds());
+            Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() % fixedDurationStrategy.toDuration().getSeconds() == 0 );
+            Assert.assertTrue(fixedDurationStrategy.toDuration().getSeconds() <= ((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds());
         });
     }
 

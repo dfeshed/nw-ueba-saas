@@ -26,14 +26,14 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
 
     private int numOfMaxValuesSamples;
     private int minNumOfMaxValuesSamples;
-    private long resolutionInSeconds;
+    private long partitionsResolutionInSeconds;
 
     public ContinuousMaxHistogramModelBuilder(ContinuousMaxHistogramModelBuilderConf builderConf) {
         Assert.isTrue(builderConf.getNumOfMaxValuesSamples() > 0, "numOfMaxValuesSamples should be bigger than zero");
         Assert.isTrue(builderConf.getMinNumOfMaxValuesSamples() > 0, "nimNumOfMaxValuesSamples should be bigger than zero");
         this.numOfMaxValuesSamples = builderConf.getNumOfMaxValuesSamples();
         this.minNumOfMaxValuesSamples = builderConf.getMinNumOfMaxValuesSamples();
-        this.resolutionInSeconds = builderConf.getResolutionInSeconds();
+        this.partitionsResolutionInSeconds = builderConf.getPartitionsResolutionInSeconds();
     }
 
 
@@ -73,12 +73,12 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
             instant = instant.plus(fixedDurationStrategy.toDuration());
         }
 
-        long resolution = resolutionInSeconds / fixedDurationStrategy.toDuration().getSeconds();
+        long resolution = partitionsResolutionInSeconds / fixedDurationStrategy.toDuration().getSeconds();
         List<Double> maxValues = new ArrayList<>();
         //Get max values
         while (maxValues.size() < minNumOfMaxValuesSamples && resolution > 0) {
             maxValues = getMaxValuesByResolution(instantToFeatureValue, resolution);
-            resolution = (resolutionInSeconds - fixedDurationStrategy.toDuration().getSeconds()) / fixedDurationStrategy.toDuration().getSeconds();
+            resolution = (partitionsResolutionInSeconds - fixedDurationStrategy.toDuration().getSeconds()) / fixedDurationStrategy.toDuration().getSeconds();
         }
 
         return maxValues;
