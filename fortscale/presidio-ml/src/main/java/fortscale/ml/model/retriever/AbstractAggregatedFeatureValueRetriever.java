@@ -43,7 +43,7 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
 
         String strategyName = aggregatedFeatureEventConf.getBucketConf().getStrategyName();
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(strategyName);
-        AggregatedFeatureValuesData aggregatedFeatureValuesData = new AggregatedFeatureValuesData(fixedDurationStrategy, instantToaggregatedFeatureValues);
+        AggregatedFeatureValuesData aggregatedFeatureValuesData = new AggregatedFeatureValuesData(fixedDurationStrategy.toDuration(), instantToaggregatedFeatureValues);
 
         return new ModelBuilderData(aggregatedFeatureValuesData);
     }

@@ -1,25 +1,24 @@
 package fortscale.ml.model;
 
-import fortscale.utils.fixedduration.FixedDurationStrategy;
-
+import java.time.Duration;
 import java.time.Instant;
 import java.util.TreeMap;
 
 /**
- * AggregatedFeatureValuesData contains strategy of AggregatedFeatureValues buckets and instantToAggregatedFeatureValues map.
+ * AggregatedFeatureValuesData contains strategy of AggregatedFeatureValues buckets (e.g: 3600) and instantToAggregatedFeatureValues map.
  */
 public class AggregatedFeatureValuesData {
 
-    private FixedDurationStrategy fixedDurationStrategy;
+    private Duration instantStep;
     private TreeMap<Instant, Double> instantToAggregatedFeatureValues;
 
-    public AggregatedFeatureValuesData(FixedDurationStrategy fixedDurationStrategy, TreeMap<Instant, Double> instantToAggregatedFeatureValues){
-        this.fixedDurationStrategy = fixedDurationStrategy;
+    public AggregatedFeatureValuesData(Duration instantStep, TreeMap<Instant, Double> instantToAggregatedFeatureValues){
+        this.instantStep = instantStep;
         this.instantToAggregatedFeatureValues = instantToAggregatedFeatureValues;
     }
 
-    public FixedDurationStrategy getFixedDurationStrategy() {
-        return fixedDurationStrategy;
+    public Duration getInstantStep() {
+        return instantStep;
     }
 
     public TreeMap<Instant, Double> getInstantToAggregatedFeatureValues() {
