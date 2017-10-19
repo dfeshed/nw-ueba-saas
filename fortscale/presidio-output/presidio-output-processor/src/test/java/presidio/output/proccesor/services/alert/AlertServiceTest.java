@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -203,6 +204,38 @@ public class AlertServiceTest {
 
         assertNotNull(alert);
         assertEquals(2, alert.getIndicatorsNum());
+    }
+
+    @Test
+    public void testAlertWithFailureStatusEvent() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        Instant eventTime = Instant.now();
+        Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
+        Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
+
+        // indicator
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0,new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedPermissionChangeUserIdFileHourly",
+                +10d, "numberOfFailedPermissionChangeUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
+
+        // raw event
+        EnrichedEvent fileEvent1 = new FileEnrichedEvent(Instant.now(), eventTime, "eventId1", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),
+                EventResult.FAILURE, "FAILURE", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+
+        EnrichedEvent fileEvent2 = new FileEnrichedEvent(Instant.now(), eventTime, "eventId2", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),
+                EventResult.SUCCESS, "SUCCESS", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        mongoTemplate.save(fileEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
+        mongoTemplate.save(fileEvent2, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
+
+        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        assertNotNull(alert);
+        assertEquals(1, alert.getIndicators().size());
+        assertEquals(1, alert.getIndicators().get(0).getEventsNum());
     }
 
     @Test

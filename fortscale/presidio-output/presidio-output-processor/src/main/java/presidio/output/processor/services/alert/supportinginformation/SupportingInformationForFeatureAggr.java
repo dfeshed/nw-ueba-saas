@@ -3,6 +3,7 @@ package presidio.output.processor.services.alert.supportinginformation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.processor.config.AnomalyFiltersConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
@@ -84,6 +86,14 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
                         indicatorConfig.getAnomalyDescriptior().getAnomalyValue())) {
             features.put(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), indicatorConfig.getAnomalyDescriptior().getAnomalyValue());
         }
+        AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
+        if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
+            String fieldName = anomalyFiltersConfig.getFieldName();
+            String fieldValue = anomalyFiltersConfig.getFieldValue();
+            Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
+            features.put(fieldName, featureValue);
+        }
+
         List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features);
 
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
