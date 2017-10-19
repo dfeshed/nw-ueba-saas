@@ -2,6 +2,7 @@ package fortscale.ml.scorer.algorithms;
 
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
+import fortscale.ml.model.IContinuousDataModel;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.springframework.util.Assert;
 
@@ -18,7 +19,7 @@ public class GaussianModelScorerAlgorithm {
 		this.globalInfluence = globalInfluence;
 	}
 
-	public double calculateScore(double value, ContinuousDataModel model, GaussianPriorModel priorModel) {
+	public double calculateScore(double value, IContinuousDataModel model, GaussianPriorModel priorModel) {
 		Assert.notNull(model);
 		return IntStream.of(0, globalInfluence)
 				.mapToDouble(globalInfluence -> calcProbOfLessThan(model, priorModel, globalInfluence, value))
@@ -27,7 +28,7 @@ public class GaussianModelScorerAlgorithm {
 				.getAsDouble();
 	}
 
-	private double calcProbOfLessThan(ContinuousDataModel model,
+	private double calcProbOfLessThan(IContinuousDataModel model,
 									  GaussianPriorModel priorModel,
 									  int globalInfluence,
 									  double value) {
@@ -42,7 +43,7 @@ public class GaussianModelScorerAlgorithm {
 		return new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 	}
 
-	private static Double calcPriorSd(GaussianPriorModel priorModel, ContinuousDataModel model) {
+	private static Double calcPriorSd(GaussianPriorModel priorModel, IContinuousDataModel model) {
 		if (priorModel == null) {
 			return null;
 		}
@@ -53,7 +54,7 @@ public class GaussianModelScorerAlgorithm {
 		return prior;
 	}
 
-	private static double calcPosteriorSd(ContinuousDataModel model,
+	private static double calcPosteriorSd(IContinuousDataModel model,
 										  Double priorSd,
 										  int globalInfluence) {
 		if (priorSd == null) {
@@ -63,7 +64,7 @@ public class GaussianModelScorerAlgorithm {
 				(globalInfluence + model.getN()));
 	}
 
-	private static double calcDegreesOfFreedom(ContinuousDataModel model,
+	private static double calcDegreesOfFreedom(IContinuousDataModel model,
 											   GaussianPriorModel priorModel,
 											   int globalInfluence) {
 		double df = model.getN() - 1;

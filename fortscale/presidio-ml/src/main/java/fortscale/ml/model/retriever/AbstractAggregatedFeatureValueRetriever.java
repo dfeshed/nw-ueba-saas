@@ -4,15 +4,14 @@ import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameExc
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.feature.Feature;
-import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
+import java.time.Instant;
 import java.util.*;
-import java.util.stream.DoubleStream;
+
 
 public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDataRetriever {
 
@@ -30,36 +29,17 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
         }
     }
 
-    protected abstract DoubleStream readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
-                                                                String contextId,
-                                                                Date startTime,
-                                                                Date endTime);
+    protected abstract TreeMap<Instant, Double> readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                                        String contextId,
+                                                                        Date startTime,
+                                                                        Date endTime);
 
     @Override
     public ModelBuilderData retrieve(String contextId, Date endTime) {
-
-        //TODO: metrics.retrieve++;
-        DoubleStream aggregatedFeatureValues = readAggregatedFeatureValues(
+        Map<Instant, Double> InstantToaggregatedFeatureValues = readAggregatedFeatureValues(
                 aggregatedFeatureEventConf, contextId, getStartTime(endTime), endTime);
-        GenericHistogram reductionHistogram = new GenericHistogram();
-        final boolean[] noDataInDatabase = {true};
 
-        aggregatedFeatureValues.forEach(aggregatedFeatureValue -> {
-            noDataInDatabase[0] = false;
-            //TODO: metrics.aggregatedFeatureValues++;
-            // TODO: Retriever functions should be iterated and executed here.
-            reductionHistogram.add(aggregatedFeatureValue, 1d);
-        });
-
-        if (reductionHistogram.getN() == 0) {
-            if (noDataInDatabase[0]) {
-                return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
-            } else {
-                return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
-            }
-        } else {
-            return new ModelBuilderData(reductionHistogram);
-        }
+        return new ModelBuilderData(InstantToaggregatedFeatureValues);
     }
 
     @Override

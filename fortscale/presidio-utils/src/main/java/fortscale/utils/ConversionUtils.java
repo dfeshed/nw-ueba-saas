@@ -1,6 +1,10 @@
 package fortscale.utils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -11,6 +15,39 @@ public final class ConversionUtils {
 	private static final String CSV_DELIMITER = ",";
 	private static final String WHITESPACE_DELIMITER_REGEX = "\\s+"; // i.e. one or more whitespace chars
 	private static final String EMPTY_STR = "";
+
+	private static HashMap<Class<?>, Function<String,?>> parser = new HashMap<>();
+	static {
+		parser.put(boolean.class       , Boolean::parseBoolean);
+		parser.put(byte.class          , Byte::parseByte);
+		parser.put(short.class         , Short::parseShort);
+		parser.put(int.class           , Integer::parseInt);
+		parser.put(long.class          , Long::parseLong);
+		parser.put(double.class        , Double::parseDouble);
+		parser.put(float.class         , Float::parseFloat);
+		parser.put(Boolean.class       , Boolean::valueOf);
+		parser.put(Byte.class          , Byte::valueOf);
+		parser.put(Short.class         , Short::valueOf);
+		parser.put(Integer.class       , Integer::valueOf);
+		parser.put(Long.class          , Long::valueOf);
+		parser.put(Double.class        , Double::valueOf);
+		parser.put(Float.class         , Float::valueOf);
+		parser.put(String.class        , String::valueOf);
+		parser.put(BigDecimal.class    , BigDecimal::new);
+		parser.put(BigInteger.class    , BigInteger::new);
+		parser.put(LocalDate.class     , LocalDate::parse);
+		parser.put(LocalDateTime.class , LocalDateTime::parse);
+		parser.put(LocalTime.class     , LocalTime::parse);
+		parser.put(MonthDay.class      , MonthDay::parse);
+		parser.put(OffsetDateTime.class, OffsetDateTime::parse);
+		parser.put(OffsetTime.class    , OffsetTime::parse);
+		parser.put(Year.class          , Year::parse);
+		parser.put(YearMonth.class     , YearMonth::parse);
+		parser.put(ZonedDateTime.class , ZonedDateTime::parse);
+		parser.put(ZoneId.class        , ZoneId::of);
+		parser.put(ZoneOffset.class    , ZoneOffset::of);
+		parser.put(Instant.class       , Instant::parse);
+	}
 
 	public static Long convertToLong(Object value) {
 		try {
@@ -163,5 +200,19 @@ public final class ConversionUtils {
 		}
 
 		return result;
+	}
+
+	/**
+     * Returns a {@code clazz} object holding the value given by the specified {@code argString}
+	 *
+	 * The supported classes are the basic java classes and primitives. full list in {@link ConversionUtils#parser} map
+	 * If the class type is not supported the origin string is returned as a fallback.
+	 */
+	public static Object convertToObject(String argString, Class clazz) {
+		Function<String,?> func = parser.get(clazz);
+		if (func != null) {
+			return func.apply(argString);
+		}
+		return argString;
 	}
 }

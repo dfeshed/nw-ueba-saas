@@ -1,5 +1,7 @@
 package fortscale.utils.fixedduration;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.time.Duration;
 
 /**
@@ -59,5 +61,13 @@ public enum FixedDurationStrategy {
         private static final Duration DURATION_FIXED_DURATION_HOURLY = Duration.ofHours(1);
         private static final String STRATEGY_NAME_FIXED_DURATION_DAILY = "fixed_duration_daily";
         private static final Duration DURATION_FIXED_DURATION_DAILY = Duration.ofDays(1);
+    }
+
+    /**
+     * @return ToString you know...
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

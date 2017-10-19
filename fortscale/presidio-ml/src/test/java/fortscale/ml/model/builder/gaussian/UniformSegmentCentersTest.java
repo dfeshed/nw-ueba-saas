@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.UniformSegmentCenters;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.Assert;
@@ -34,7 +35,7 @@ public class UniformSegmentCentersTest {
     @Test
     public void shouldUniformlyGenerateNumbersFromMinMeanToMaxMean() {
         UniformSegmentCenters segmentCenters = new UniformSegmentCenters(1);
-        List<ContinuousDataModel> models = DoubleStream.of(2.0, 2.2, 5.1)
+        List<IContinuousDataModel> models = DoubleStream.of(2.0, 2.2, 5.1)
                 .mapToObj(mean -> new ContinuousDataModel().setParameters(0, mean, 0, 0))
                 .collect(Collectors.toList());
 

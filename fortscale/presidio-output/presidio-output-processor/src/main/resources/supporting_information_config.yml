@@ -10,7 +10,7 @@ indicators:
   adeEventType: scored_enriched.file.startInstant.userId.file.score
   schema: FILE
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdFileDaily
@@ -46,7 +46,7 @@ indicators:
     featureName: operationTypeHistogram
   classification: abnormal_file_access
 
-- id: numberOfSuccessfulPermissionChangeUserIdFileHourly
+- id: numberOfSuccessfulFilePermissionChangesUserIdFileHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_file_permission_change
   schema: FILE
@@ -76,7 +76,7 @@ indicators:
     type: hourly_aggregations
   classification: snooping_user
 
-- id: numberOfFailedPermissionChangeUserIdFileHourly
+- id: numberOfFailedFilePermissionChangesUserIdFileHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_failed_file_permission_change_attempts
   schema: FILE
@@ -212,7 +212,7 @@ indicators:
   adeEventType: scored_enriched.active_directory.startInstant.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdActiveDirectoryDaily
@@ -309,7 +309,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
-    anomalyValue: PASSWORD_CHANGED
+    anomalyValue: USER_PASSWORD_CHANGED
     anomalyFilters:
         fieldName: isUserAdmin
         fieldValue: true
@@ -326,7 +326,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
-    anomalyValue: PASSWORD_CHANGED
+    anomalyValue: USER_PASSWORD_CHANGED
     anomalyFilters:
       fieldName: isUserAdmin
       fieldValue: false
@@ -428,7 +428,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
       anomalyField: operationType
-      anomalyValue: PASSWORD_CHANGED_BY_NON_OWNER
+      anomalyValue: USER_PASSWORD_CHANGED_BY_NON_OWNER
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -474,7 +474,7 @@ indicators:
   adeEventType: scored_enriched.authentication.startInstant.userId.authentication.score
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdAuthenticationDaily

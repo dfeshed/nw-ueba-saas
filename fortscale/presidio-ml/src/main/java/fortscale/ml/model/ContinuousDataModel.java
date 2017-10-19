@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class ContinuousDataModel implements Model {
+public class ContinuousDataModel implements IContinuousDataModel {
 	private long N; // population size
 	private double mean; // average
 	private double sd; // standard deviation
@@ -61,18 +61,22 @@ public class ContinuousDataModel implements Model {
 		return N;
 	}
 
+	@Override
 	public long getN() {
 		return N;
 	}
 
+	@Override
 	public double getMean() {
 		return mean;
 	}
 
+	@Override
 	public double getSd() {
 		return sd;
 	}
 
+	@Override
 	public double getMaxValue() {
 		return maxValue;
 	}
