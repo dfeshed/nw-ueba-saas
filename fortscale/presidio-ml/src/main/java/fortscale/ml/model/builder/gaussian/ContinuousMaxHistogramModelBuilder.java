@@ -58,8 +58,8 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
      * @return list of max feature values
      */
     private List<Double> getMaxValues(TreeMap<Instant, Double> instantToFeatureValue, Duration instantStep) {
-        Instant instantCursor = TimeService.floorTime(instantToFeatureValue.firstKey(), Duration.ofDays(1));
-        Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), Duration.ofDays(1)).plus(Duration.ofDays(1));
+        Instant instantCursor = TimeService.floorTime(instantToFeatureValue.firstKey(), partitionsResolutionInSeconds);
+        Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), partitionsResolutionInSeconds).plus(Duration.ofSeconds(partitionsResolutionInSeconds));
 
         //add missed instants with Double.MIN_VALUE in order to be able get max values in various resolutions.
         while (instantCursor.isBefore(lastInstant)) {

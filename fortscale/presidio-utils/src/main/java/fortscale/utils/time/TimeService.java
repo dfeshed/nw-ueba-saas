@@ -12,4 +12,8 @@ public class TimeService {
         long roundDown = date.getEpochSecond() / timeDelta.getSeconds() * timeDelta.getSeconds();
         return Instant.ofEpochSecond(roundDown);
     }
+
+    public static Instant floorTime(Instant date, long timeDeltaInSeconds){
+        return floorTime(date, Duration.ofSeconds(timeDeltaInSeconds));
+    }
 }
