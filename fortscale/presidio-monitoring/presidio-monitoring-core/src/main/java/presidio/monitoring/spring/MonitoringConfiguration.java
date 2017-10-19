@@ -18,8 +18,6 @@ import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
-import presidio.monitoring.aspect.services.MetricCollectingService;
-import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.MetricExportService;
 import presidio.monitoring.elastic.services.MetricExportServiceImpl;
@@ -76,12 +74,6 @@ public class MonitoringConfiguration {
     public MetricsExporter fileMetricsExporter() {
         return new MetricsExporterElasticImpl(metricsEndpoint(), processName, metricExportService(), taskScheduler());
     }
-
-    @Bean
-    public MetricCollectingService metricCollectingService() {
-        return new MetricCollectingServiceImpl();
-    }
-
 
     @Bean
     public ThreadPoolTaskScheduler taskScheduler() {

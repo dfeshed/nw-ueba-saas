@@ -5,10 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
-import presidio.monitoring.spring.MonitoringConfiguration;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 @Configuration
-@Import(MonitoringConfiguration.class)
+@Import(PresidioMonitoringConfiguration.class)
 public class ExternalMonitoringConfiguration {
 
 
