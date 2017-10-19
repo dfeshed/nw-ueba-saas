@@ -22,11 +22,19 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @Ignore
 @RunWith(SpringRunner.class)
@@ -110,12 +118,15 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindOne() {
-        User user = user1;
+        User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
         userPersistencyService.save(user);
 
+        Date createdByBeforeFind = user.getCreatedDate();
         User foundUser = userPersistencyService.findUserById(user.getId());
+        Date createdByAfterFind = foundUser.getCreatedDate();
 
         assertNotNull(foundUser.getId());
+        assertEquals(createdByBeforeFind, createdByAfterFind);
         assertEquals(foundUser.getId(), user.getId());
         assertEquals(foundUser.getUserName(), user.getUserName());
         assertEquals(foundUser.getUserDisplayName(), user.getUserDisplayName());
@@ -123,6 +134,32 @@ public class UserPersistencyServiceTest {
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
 
+    }
+
+    @Test
+    public void testUpdatedBY() throws InterruptedException {
+        Thread.currentThread().setName("TEST");
+        User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
+        String created = user.getUpdatedBy();
+        userPersistencyService.save(user);
+        User foundUser = userPersistencyService.findUserById(user.getId());
+        String createdBy = foundUser.getUpdatedBy();
+        Thread.sleep(1000);
+        userPersistencyService.save(foundUser);
+        foundUser = userPersistencyService.findUserById(user.getId());
+        String updatedByAgain = foundUser.getUpdatedBy();
+        Thread.currentThread().setName("TEST2");
+        Thread.sleep(1000);
+        userPersistencyService.save(foundUser);
+        foundUser = userPersistencyService.findUserById(user.getId());
+        String updatedByAgain2 = foundUser.getUpdatedBy();
+
+        assertNotNull(foundUser.getId());
+        assertEquals(foundUser.getId(), user.getId());
+        assertEquals(created, null);
+        assertNotEquals(createdBy, null);
+        assertEquals(createdBy, updatedByAgain);
+        assertNotEquals(createdBy, updatedByAgain2);
     }
 
     @Test
@@ -318,6 +355,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByUserScore() {
+
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
 

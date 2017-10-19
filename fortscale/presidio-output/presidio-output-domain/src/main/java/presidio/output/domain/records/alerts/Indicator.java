@@ -77,12 +77,6 @@ public class Indicator extends AbstractElasticDocument {
         this.alertId = alertId;
     }
 
-    public Indicator(String alertId, String id, Date createdDate, Date updatedDate) {
-        super(id, createdDate, updatedDate);
-        events = new ArrayList<IndicatorEvent>();
-        this.alertId = alertId;
-    }
-
     public String getName() {
         return name;
     }

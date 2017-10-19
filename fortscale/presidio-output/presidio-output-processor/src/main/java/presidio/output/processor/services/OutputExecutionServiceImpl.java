@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final String LAST_SMART_TIME_METRIC_NAME = "last.smart.time.in.output";
     private final String TYPE_LONG = "long";
     private static final String ADE_SMART_USER_ID = "userId";
+    private final String USER_GOT_SMART = "userGotSmart";
 
     @Autowired
     MetricCollectingService metricCollectingService;
@@ -86,6 +88,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         Set tags = new HashSet();
         tags.add(startDate.toString());
         List<SmartRecord> smarts = null;
+        String updatedBy = USER_GOT_SMART + new Date().toString();
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
@@ -98,7 +101,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 }
                 if ((userEntity = getCreatedUser(users, userId)) == null && (userEntity = getSingleUserEntityById(userId)) == null) {
                     //Need to create user and add it to about to be created list
-                    userEntity = userService.createUserEntity(userId);
+                    userEntity = userService.createUserEntity(userId, startDate);
                     users.add(userEntity);
                     if (userEntity == null) {
                         logger.error("Failed to process user details for smart {}, skipping to next smart in the batch", smart.getId());

@@ -173,11 +173,13 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecordsInMemory = new ArrayList<AccumulatedAggregationFeatureRecord>();
 
         Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
-        Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd().plus(1, ChronoUnit.DAYS), FixedDurationStrategy.DAILY.toDuration());
+        Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd().minus(1, ChronoUnit.DAYS), FixedDurationStrategy.DAILY.toDuration());
         TimeRange flooredTimeRange = new TimeRange(start,end);
+        List<TimeRange> dayPartitions = FixedDurationStrategyUtils.splitTimeRangeByStrategy(flooredTimeRange, FixedDurationStrategy.DAILY);
+        dayPartitions.add(new TimeRange(end, inMemoryTimeRange.getEnd())); //add last partial day
 
         // go over days in the range
-        for (TimeRange dayPartition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(flooredTimeRange, FixedDurationStrategy.DAILY)) {
+        for (TimeRange dayPartition : dayPartitions) {
             List<FeatureBucket> featureBucketsInMemory = new ArrayList<FeatureBucket>();
 
             // create feature bucket per hour
