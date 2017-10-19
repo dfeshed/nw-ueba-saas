@@ -146,7 +146,7 @@ public class UserServiceImplTest {
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
-        User user = userService.createUserEntity("event1", Instant.now());
+        User user = userService.createUserEntity("event1");
         Assert.assertEquals(0, user.getTags().size());
     }
 
@@ -159,7 +159,7 @@ public class UserServiceImplTest {
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
-        User user = userService.createUserEntity("event1", Instant.now());
+        User user = userService.createUserEntity("event1");
         Assert.assertEquals(1, user.getTags().size());
         Assert.assertEquals("admin", user.getTags().get(0));
     }
