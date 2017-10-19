@@ -9,7 +9,10 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by efratn on 20/08/2017.
@@ -29,7 +32,6 @@ public class User extends AbstractElasticDocument {
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
 
-
     @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
@@ -41,6 +43,7 @@ public class User extends AbstractElasticDocument {
     @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
+
 
     @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE_FIELD_NAME)
@@ -75,20 +78,6 @@ public class User extends AbstractElasticDocument {
     public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
                 int alertsCount) {
         super();
-        this.userId = userId;
-        this.userName = userName;
-        this.userDisplayName = userDisplayName;
-        this.score = score;
-        this.alertClassifications = alertClassifications;
-        this.indicators = indicators;
-        this.tags = tags;
-        this.severity = severity;
-        this.alertsCount = alertsCount;
-    }
-
-    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount, String id, Date createdDate, Date updatedDate) {
-        super(id, createdDate, updatedDate);
         this.userId = userId;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
@@ -175,6 +164,7 @@ public class User extends AbstractElasticDocument {
     public void setAlertClassifications(List<String> alertClassifications) {
         this.alertClassifications = alertClassifications;
     }
+
 
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);

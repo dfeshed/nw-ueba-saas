@@ -5,6 +5,7 @@ import fortscale.ml.model.retriever.AccumulatedSmartValueRetriever;
 import fortscale.ml.model.retriever.AccumulatedSmartValueRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
@@ -30,8 +31,12 @@ public class AccumulatedSmartValueRetrieverFactory extends AbstractServiceAutowi
     private FactoryService<IContextSelector> contextSelectorFactoryService;
     @Autowired
     private ModelStore modelStore;
+    @Autowired
+    private SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
+
     @Value("#{T(java.time.Duration).parse('${fortscale.model.retriever.smart.oldestAllowedModelDurationDiff}')}")
     private Duration oldestAllowedModelDurationDiff;
+
 
     @Override
     public String getFactoryName() {
@@ -41,6 +46,6 @@ public class AccumulatedSmartValueRetrieverFactory extends AbstractServiceAutowi
     @Override
     public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
         AccumulatedSmartValueRetrieverConf config = (AccumulatedSmartValueRetrieverConf)factoryConfig;
-        return new AccumulatedSmartValueRetriever(config, accumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff);
+        return new AccumulatedSmartValueRetriever(config, accumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, smartWeightsScorerAlgorithm);
     }
 }

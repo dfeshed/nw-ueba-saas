@@ -8,7 +8,10 @@ from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOpera
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY
+from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY, \
+    FIX_DURATION_STRATEGY_HOURLY
+from presidio.builders.ade.anomaly_detection_engine_scoring_dag_builder import AnomalyDetectionEngineScoringDagBuilder
+from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
 
 OUTPUT_JVM_ARGS_CONFIG_PATH = 'components.output.jvm_args'
 OUTPUT_RUN_DAILY_COMMAND = 'recalculate-user-score'
@@ -31,7 +34,16 @@ class OutputDagBuilder(PresidioDagBuilder):
         """
 
         self.data_sources = data_sources
-        self.jvm_args = OutputDagBuilder.conf_reader.read(conf_key=OUTPUT_JVM_ARGS_CONFIG_PATH)
+
+        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
+
+        self.jvm_args = config_reader.read(conf_key=OUTPUT_JVM_ARGS_CONFIG_PATH)
+
+        # currently the output should start when smart scoring starts.
+        self._min_gap_from_dag_start_date_to_start_running = AnomalyDetectionEngineScoringDagBuilder.get_min_gap_from_dag_start_date_to_start_scoring(config_reader)
+
+        # the daily output job should start when there are smarts in the system (after start modeling)
+        self._min_gap_from_dag_start_date_to_start_modeling = SmartModelDagBuilder.get_min_gap_from_dag_start_date_to_start_modeling(config_reader)
 
     def build(self, output_dag):
         """
@@ -42,7 +54,22 @@ class OutputDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the output dag, dag_id=%s ", output_dag.dag_id)
+        logging.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
+
+        # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
+        # start only after the defined gap.
+        output_short_circuit_operator = ShortCircuitOperator(
+            task_id='output_short_circuit',
+            dag=output_dag,
+            python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
+                                                                     FIX_DURATION_STRATEGY_HOURLY,
+                                                                     output_dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                 output_dag,
+                                                 self._min_gap_from_dag_start_date_to_start_running,
+                                                 kwargs['execution_date']),
+            provide_context=True
+        )
 
         # Create jar operators
         hourly_output_operator = FixedDurationJarOperator(
@@ -67,13 +94,17 @@ class OutputDagBuilder(PresidioDagBuilder):
             dag=output_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,
-                                                                     output_dag.schedule_interval),
+                                                                     output_dag.schedule_interval) &
+                                             PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
+                                                 output_dag,
+                                                 self._min_gap_from_dag_start_date_to_start_modeling,
+                                                 kwargs['execution_date']),
             provide_context=True
         )
 
         task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
 
         #defining the dependencies between the operators
-        hourly_output_operator >> daily_short_circuit_operator
+        output_short_circuit_operator >> hourly_output_operator >> daily_short_circuit_operator
 
         return output_dag

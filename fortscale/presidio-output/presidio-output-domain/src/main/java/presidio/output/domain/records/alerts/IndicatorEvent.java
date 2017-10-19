@@ -33,11 +33,6 @@ public class IndicatorEvent extends AbstractElasticDocument {
         super();
     }
 
-    public IndicatorEvent(String id, Date createdDate, Date updatedDate) {
-        super(id, createdDate, updatedDate);
-    }
-
-
     public String getIndicatorId() {
         return indicatorId;
     }

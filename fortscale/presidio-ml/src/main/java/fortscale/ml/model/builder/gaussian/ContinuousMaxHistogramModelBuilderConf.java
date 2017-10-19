@@ -12,9 +12,17 @@ public class ContinuousMaxHistogramModelBuilderConf implements IModelBuilderConf
     public static final String CONTINUOUS_MAX_HISTOGRAM_MODEL_BUILDER = "continuous_max_histogram_model_builder";
 
     public static final int NUM_OF_MAX_VALUES_SAMPLES = 30;
+    public static final int MIN_NUM_OF_MAX_VALUES_SAMPLES = 20;
+    public static final long DEFAULT_RESOLUTION = 86400;
 
     @JsonProperty("numOfMaxValuesSamples")
     private int numOfMaxValuesSamples = NUM_OF_MAX_VALUES_SAMPLES;
+
+    @JsonProperty("minNumOfMaxValuesSamples")
+    private int minNumOfMaxValuesSamples = MIN_NUM_OF_MAX_VALUES_SAMPLES;
+
+    @JsonProperty("partitionsResolutionInSeconds")
+    private long partitionsResolutionInSeconds = DEFAULT_RESOLUTION;
 
     public ContinuousMaxHistogramModelBuilderConf(){}
 
@@ -24,6 +32,22 @@ public class ContinuousMaxHistogramModelBuilderConf implements IModelBuilderConf
 
     public void setNumOfMaxValuesSamples(int numOfMaxValuesSamples) {
         this.numOfMaxValuesSamples = numOfMaxValuesSamples;
+    }
+
+    public int getMinNumOfMaxValuesSamples() {
+        return minNumOfMaxValuesSamples;
+    }
+
+    public void setMinNumOfMaxValuesSamples(int minNumOfMaxValuesSamples) {
+        this.minNumOfMaxValuesSamples = minNumOfMaxValuesSamples;
+    }
+
+    public long getPartitionsResolutionInSeconds() {
+        return partitionsResolutionInSeconds;
+    }
+
+    public void setPartitionsResolutionInSeconds(long partitionsResolutionInSeconds) {
+        this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
     }
 
     @Override

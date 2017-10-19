@@ -10,7 +10,7 @@ indicators:
   adeEventType: scored_enriched.file.startInstant.userId.file.score
   schema: FILE
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdFileDaily
@@ -25,8 +25,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      field_name: operationTypeCategories
-      field_value: FILE_PERMISSION_CHANGE
+      fieldName: operationTypeCategories
+      fieldValue: FILE_PERMISSION_CHANGE
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdFileDaily
@@ -46,7 +46,7 @@ indicators:
     featureName: operationTypeHistogram
   classification: abnormal_file_access
 
-- id: numberOfSuccessfulPermissionChangeUserIdFileHourly
+- id: numberOfSuccessfulFilePermissionChangesUserIdFileHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_file_permission_change
   schema: FILE
@@ -55,8 +55,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: resultCode
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -70,13 +70,13 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: resultCode
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
 
-- id: numberOfFailedPermissionChangeUserIdFileHourly
+- id: numberOfFailedFilePermissionChangesUserIdFileHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_failed_file_permission_change_attempts
   schema: FILE
@@ -85,8 +85,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_PERMISSION_CHANGE
     anomalyFilters:
-      field_name: result
-      field_value: FAILURE
+      fieldName: resultCode
+      fieldValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: mass_permission_changes
@@ -100,8 +100,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: FILE_ACTION
     anomalyFilters:
-      field_name: result
-      field_value: FAILURE
+      fieldName: resultCode
+      fieldValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: snooping_user
@@ -153,8 +153,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_RENAMED
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: resultCode
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: mass_file_rename
@@ -180,8 +180,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
     anomalyFilters:
-      field_name: isSrcDriveShared
-      field_value: true
+      fieldName: isSrcDriveShared
+      fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -195,8 +195,8 @@ indicators:
     anomalyField: operationType
     anomalyValue: FILE_MOVED
     anomalyFilters:
-      field_name: isDstDriveShared
-      field_value: true
+      fieldName: isDstDriveShared
+      fieldValue: true
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -212,7 +212,7 @@ indicators:
   adeEventType: scored_enriched.active_directory.startInstant.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdActiveDirectoryDaily
@@ -227,8 +227,8 @@ indicators:
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
-      field_name: operationTypeCategories
-      field_value: SECURITY_SENSITIVE_OPERATION
+      fieldName: operationTypeCategories
+      fieldValue: SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -244,8 +244,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
-        field_name: operationTypeCategories
-        field_value: GROUP_MEMBERSHIP
+        fieldName: operationTypeCategories
+        fieldValue: GROUP_MEMBERSHIP
   historicalData:
     type: hourly_aggregations
   classification: mass_changes_to_critical_enterprise_groups
@@ -268,7 +268,7 @@ indicators:
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: result
+    anomalyField: resultCode
     anomalyValue: SUCCESS
   historicalData:
     type: hourly_aggregations
@@ -284,8 +284,8 @@ indicators:
     anomalyField: operationTypeCategories
     anomalyValue: SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
-      field_name: result
-      field_value: SUCCESS
+      fieldName: resultCode
+      fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -296,7 +296,7 @@ indicators:
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: result
+    anomalyField: resultCode
     anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations
@@ -309,10 +309,10 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
-    anomalyValue: PASSWORD_CHANGED
+    anomalyValue: USER_PASSWORD_CHANGED
     anomalyFilters:
-        field_name: isUserAdmin
-        field_value: true
+        fieldName: isUserAdmin
+        fieldValue: true
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -326,10 +326,10 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
-    anomalyValue: PASSWORD_CHANGED
+    anomalyValue: USER_PASSWORD_CHANGED
     anomalyFilters:
-      field_name: isUserAdmin
-      field_value: false
+      fieldName: isUserAdmin
+      fieldValue: false
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -428,7 +428,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
       anomalyField: operationType
-      anomalyValue: PASSWORD_CHANGED_BY_NON_OWNER
+      anomalyValue: USER_PASSWORD_CHANGED_BY_NON_OWNER
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -474,7 +474,7 @@ indicators:
   adeEventType: scored_enriched.authentication.startInstant.userId.authentication.score
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: startInstant
+    anomalyField: eventDate
   historicalData:
     type: weekday_aggregations
     featureBucketConfName: startInstantHistogramUserIdAuthenticationDaily
@@ -513,7 +513,7 @@ indicators:
   adeEventType: authentication
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: result
+    anomalyField: resultCode
     anomalyValue: SUCCESS
   historicalData:
     type: hourly_aggregations
@@ -525,7 +525,7 @@ indicators:
   adeEventType: authentication
   schema: AUTHENTICATION
   anomalyDescriptior:
-    anomalyField: result
+    anomalyField: resultCode
     anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations

@@ -1,6 +1,5 @@
 package presidio.ade.sdk.common;
 
-import fortscale.common.SDK.DataPipelineSDK;
 import presidio.ade.sdk.aggregation_records.AggregationRecordsManagerSdk;
 import presidio.ade.sdk.cleanup.CleanupManagerSdk;
 import presidio.ade.sdk.enriched_records.EnrichedRecordsManagerSdk;
@@ -27,8 +26,7 @@ public interface AdeManagerSdk extends
         ScoredEnrichedRecordsManagerSdk,
         AggregationRecordsManagerSdk,
         SmartRecordsManagerSdk,
-        TtlServiceSdk
-{
+        TtlServiceSdk {
 
     /**
      * @return The data characteristics that mark records as dirty.

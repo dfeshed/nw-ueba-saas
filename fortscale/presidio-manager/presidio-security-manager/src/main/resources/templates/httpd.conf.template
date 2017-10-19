@@ -43,7 +43,7 @@ ServerRoot "/etc/httpd"
 # prevent Apache from glomming onto all bound IP addresses.
 #
 #Listen 12.34.56.78:80
-Listen 80 
+Listen 443 https
 
 #
 # Dynamic Shared Object (DSO) Support
@@ -356,15 +356,25 @@ EnableSendfile on
 
 IncludeOptional conf.d/*.conf
 
+SSLSessionCache         shmcb:/run/httpd/sslcache(512000)
+SSLSessionCacheTimeout  300
+
 <VirtualHost *:443>
   ServerAlias *
-  RewriteEngine on  
 
   SSLEngine on
   SSLOptions +StrictRequire
   SSLCertificateFile /etc/ssl/certs/server.crt
   SSLCertificateKeyFile /etc/ssl/private/server.key
-  
+
+  <Location />
+    RedirectMatch 301 ^/$ /caui-webapp/index.html
+  </Location>
+
+  <Location /kibana>
+    RedirectMatch 301 ^/$ /kibana/app/kibana#/management/kibana/index?_g=()
+  </Location>
+
   <Location /caui-webapp>
     SSLRequireSSL
     AuthType Kerberos
@@ -410,24 +420,18 @@ IncludeOptional conf.d/*.conf
 
     RewriteEngine on
 
-     RewriteRule /app/kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /app/kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /app/(.*)$ http://localhost:5601/app/$1 [NE,R,P]
-     RewriteRule /kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
-     RewriteRule /(.*)$ http://localhost:5601/app/$1 [NE,R,P]
+    RewriteRule /kibana/bundles/(.*)$ http://localhost:5601/bundles/$1 [NE,R,P]
+    RewriteRule /kibana/ui/(.*)$ http://localhost:5601/ui/$1 [NE,R,P]
+    RewriteRule /kibana/plugins/(.*)$ http://localhost:5601/plugins/$1 [NE,R,P]
+    RewriteRule /kibana/es_admin/(.*)$ http://localhost:5601/es_admin/$1 [NE,R,P]
+    RewriteRule /kibana/elasticsearch/(.*)$ http://localhost:5601/elasticsearch/$1 [NE,R,P]
+    RewriteRule /kibana/status/(.*)$ http://localhost:5601/status/$1 [NE,R,P]
+    RewriteRule /kibana/api/console/(.*)$ http://localhost:5601/api/console/$1 [NE,R,P]
+    RewriteRule /kibana/api/status/(.*)$ http://localhost:5601/api/status/$1 [NE,R,P]
+    RewriteRule /kibana/api/timelion/(.*)$ http://localhost:5601/api/timelion/$1 [NE,R,P]
+    RewriteRule /kibana/app/sense/(.*)$ http://localhost:5601/app/sense/$1 [NE,R,P]
 
-     RewriteRule /kibana/bundles/(.*)$ http://localhost:5601/bundles/$1 [NE,R,P]
-     RewriteRule /kibana/ui/(.*)$ http://localhost:5601/ui/$1 [NE,R,P]
-     RewriteRule /kibana/plugins/(.*)$ http://localhost:5601/plugins/$1 [NE,R,P]
-     RewriteRule /kibana/es_admin/(.*)$ http://localhost:5601/es_admin/$1 [NE,R,P]
-     RewriteRule /kibana/elasticsearch/(.*)$ http://localhost:5601/elasticsearch/$1 [NE,R,P]
-     RewriteRule /kibana/status/(.*)$ http://localhost:5601/status/$1 [NE,R,P]
-     RewriteRule /kibana/api/console/(.*)$ http://localhost:5601/api/console/$1 [NE,R,P]
-     RewriteRule /kibana/api/status/(.*)$ http://localhost:5601/api/status/$1 [NE,R,P]
-     RewriteRule /kibana/api/timelion/(.*)$ http://localhost:5601/api/timelion/$1 [NE,R,P]
-     RewriteRule /kibana/app/sense/(.*)$ http://localhost:5601/app/sense/$1 [NE,R,P]
-
+    RewriteRule /kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
   </Location>
 
   <Location /app>
@@ -454,13 +458,6 @@ IncludeOptional conf.d/*.conf
     RewriteRule /app/(.*)$ http://localhost:5601/app/$1 [NE,R,P]
 
   </Location>
-
-
-  # Airflow
-  #RewriteRule "^/airflow/(.*)$" "http://localhost:8000/$1" [NE,R,P]
-
-  #RewriteRule /config/(.*)$ http://localhost:8888/$1 [NE,R,P]
-
 
   <Location /connector/webhook/register>
      #Deny from all
@@ -525,13 +522,18 @@ IncludeOptional conf.d/*.conf
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule /(.*) "http://localhost:8080/control/$1" [P,L]
+     RewriteRule /(.*) "http://localhost:8080/presidio-manager/control/$1" [P,L]
   </Location>
   
   <Location /api/v1.0/webhook>
      RewriteEngine on
      RewriteRule /(.*) "http://localhost:7777/api/v1.0/webhook" [P,L]
   </Location>
- 
+
+  <Location /api/v1.0/heartbeat>
+     RewriteEngine on
+     RewriteRule /(.*) "http://localhost:7777/api/v1.0/heartbeat" [P,L]
+  </Location>
+
 </VirtualHost>
 
