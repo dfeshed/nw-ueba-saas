@@ -65,6 +65,8 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         try {
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
+            freeMakerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
+
             // Handle httpd conf
             Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
             String httpdTemplatePath = getClass().getResource(HTTPD_CONF_TEMPLATE_FILENAME).getPath();
