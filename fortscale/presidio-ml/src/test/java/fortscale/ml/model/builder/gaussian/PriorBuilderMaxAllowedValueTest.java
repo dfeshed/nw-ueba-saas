@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.PriorBuilderMaxAllowedValue;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class PriorBuilderMaxAllowedValueTest {
 	public void shouldReturnTheDifferenceBetweenTheMaxValueOfTheQuantileModelToTheReferenceMeanDividedByTwo() {
 		double quantile = 0.9;
 		double meanOfReference = 8;
-		List<ContinuousDataModel> models = IntStream.range(0, 100)
+		List<IContinuousDataModel> models = IntStream.range(0, 100)
 				.mapToObj(maxValue -> new ContinuousDataModel().setParameters(10, 10, 0.1, maxValue))
 				.collect(Collectors.toList());
 		Double prior = new PriorBuilderMaxAllowedValue(quantile, 0, null).calcPrior(models, meanOfReference);
@@ -65,7 +66,7 @@ public class PriorBuilderMaxAllowedValueTest {
 		double quantile = 1;
 		int minQuantileComplementSize = 50;
 		double meanOfReference = 8;
-		List<ContinuousDataModel> models = IntStream.range(0, 100)
+		List<IContinuousDataModel> models = IntStream.range(0, 100)
 				.mapToObj(maxValue -> new ContinuousDataModel().setParameters(10, 10, 0.1, maxValue))
 				.collect(Collectors.toList());
 		Double prior = new PriorBuilderMaxAllowedValue(quantile, minQuantileComplementSize, null)

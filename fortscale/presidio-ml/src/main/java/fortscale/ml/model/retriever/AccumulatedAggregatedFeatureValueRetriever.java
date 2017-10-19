@@ -5,10 +5,10 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.DoubleStream;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+
 
 public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregatedFeatureValueRetriever {
 
@@ -21,27 +21,28 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
     }
 
     @Override
-    protected DoubleStream readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
-                                                       String contextId,
-                                                       Date startTime,
-                                                       Date endTime) {
-        return getAccumulatedEventsByContextIdAndStartTimeRange(aggregatedFeatureEventConf, contextId, endTime).stream().flatMapToDouble(accAggEvent -> accAggEvent
-                .getAggregatedFeatureValuesAsList()
-                .stream()
-                .mapToDouble(v -> v));
-    }
+    protected TreeMap<Instant, Double> readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                                   String contextId,
+                                                                   Date startTime,
+                                                                   Date endTime) {
 
-    @Override
-    protected long getAmountOfDistinctDays(AggregatedFeatureEventConf aggregatedFeatureEventConf, String contextId, Date startTime, Date endTime) {
-        return getAccumulatedEventsByContextIdAndStartTimeRange(aggregatedFeatureEventConf, contextId, endTime).stream().map(x->x.getStartInstant().truncatedTo(ChronoUnit.DAYS)).distinct().count();
-    }
-
-    private List<AccumulatedAggregationFeatureRecord> getAccumulatedEventsByContextIdAndStartTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf, String contextId, Date endTime) {
-        return aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
+        List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = aggregationEventsAccumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
                 aggregatedFeatureEventConf.getName(),
                 contextId,
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()
         );
+
+        TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
+
+        accumulatedAggregationFeatureRecords.forEach(accumulatedRecord -> {
+                    accumulatedRecord.getAggregatedFeatureValues().entrySet().stream().
+                            forEach(entry -> startInstantToValue.put(accumulatedRecord.getStartInstant().plus(Duration.ofHours(entry.getKey())), entry.getValue()));
+                }
+        );
+
+        return startInstantToValue;
     }
+
+
 }

@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
@@ -42,7 +43,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 
 	@Override
 	public Model build(Object modelBuilderData) {
-		List<ContinuousDataModel> models = castModelBuilderData(modelBuilderData);
+		List<IContinuousDataModel> models = castModelBuilderData(modelBuilderData);
 		models = getModelsWithEnoughSamples(models);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		LearningSegments segments = new LearningSegments(models, segmentCenters, segmentor);
@@ -63,15 +64,15 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		return new GaussianPriorModel().init(segmentPriors);
 	}
 
-	private List<ContinuousDataModel> getModelsWithEnoughSamples(List<ContinuousDataModel> models) {
+	private List<IContinuousDataModel> getModelsWithEnoughSamples(List<IContinuousDataModel> models) {
 		return models.stream()
 				.filter(model -> model.getNumOfSamples() >= minNumOfSamplesToLearnFrom)
 				.collect(Collectors.toList());
 	}
 
-	private List<ContinuousDataModel> castModelBuilderData(Object modelBuilderData) {
+	private List<IContinuousDataModel> castModelBuilderData(Object modelBuilderData) {
 		Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
 		Assert.isInstanceOf(List.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
-		return (List<ContinuousDataModel>) modelBuilderData;
+		return (List<IContinuousDataModel>) modelBuilderData;
 	}
 }
