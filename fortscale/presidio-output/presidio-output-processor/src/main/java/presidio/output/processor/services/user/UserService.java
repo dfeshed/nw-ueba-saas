@@ -3,14 +3,13 @@ package presidio.output.processor.services.user;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 
-import java.time.Instant;
 import java.util.List;
 
 /**
  * Created by efratn on 22/08/2017.
  */
 public interface UserService {
-    User createUserEntity(String userId, Instant startDate);
+    User createUserEntity(String userId);
 
     List<User> save(List<User> users);
 

@@ -22,7 +22,6 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
 
 import java.time.Instant;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +37,6 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     @Value("${output.feature.historical.period.days: #{30}}")
     private int historicalPeriodInDays;
 
-    private final String SUPPORTING_INFORMATION_FOR_FEATURE_AGGR = "supportingInformationForFeatureAggr";
     private SupportingInformationConfig config;
 
     private EventPersistencyService eventPersistencyService;
@@ -59,7 +57,6 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
 
 
         Indicator indicator = new Indicator(alert.getId());
-        indicator.setUpdatedBy(SUPPORTING_INFORMATION_FOR_FEATURE_AGGR + new Date().toString());
         indicator.setName(indicatorConfig.getName());
         indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
         indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
@@ -91,7 +88,6 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         for (EnrichedEvent rawEvent : rawEvents) {
             Map<String, Object> rawEventFeatures = new ObjectMapper().convertValue(rawEvent, Map.class);
             IndicatorEvent event = new IndicatorEvent();
-            event.setUpdatedBy(SUPPORTING_INFORMATION_FOR_FEATURE_AGGR + new Date().toString());
             event.setFeatures(rawEventFeatures);
             event.setIndicatorId(indicator.getId());
             event.setEventTime(Date.from(rawEvent.getEventDate()));

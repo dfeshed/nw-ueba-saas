@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class SupportingInformationForScoreAggr implements SupportingInformationGenerator {
 
     public static final String START_INSTANT = "startInstant";
-    private final String SUPPORTING_INFORMATION_FOR_SCORE_AGGR = "SupportingInformationForScoreAggr";
+
     @Value("${output.aggregated.feature.historical.period.days: #{30}}")
     private int historicalPeriodInDays;
 
@@ -79,7 +79,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         for (String featureValue : distinctFeatureValues) {
 
             Indicator indicator = new Indicator(alert.getId());
-            indicator.setUpdatedBy(SUPPORTING_INFORMATION_FOR_SCORE_AGGR + new Date().toString());
             indicator.setName(indicatorConfig.getName());
             indicator.setStartDate(Date.from(adeAggregationRecord.getStartInstant()));
             indicator.setEndDate(Date.from(adeAggregationRecord.getEndInstant()));
@@ -119,7 +118,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 Map<String, Object> rawEventFeatures = new ObjectMapper().convertValue(rawEvent, Map.class);
 
                 IndicatorEvent event = new IndicatorEvent();
-                event.setUpdatedBy(SUPPORTING_INFORMATION_FOR_SCORE_AGGR + new Date().toString());
                 event.setFeatures(rawEventFeatures);
                 event.setIndicatorId(indicator.getId());
                 event.setEventTime(Date.from(rawEvent.getEnrichedEvent().getEventDate()));
