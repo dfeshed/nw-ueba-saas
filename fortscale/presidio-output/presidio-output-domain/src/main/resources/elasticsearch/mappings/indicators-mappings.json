@@ -18,11 +18,11 @@
       },
       "startDate":{
         "store":true,
-        "type":"Date"
+        "type":"date"
       },
       "endDate":{
         "store":true,
-        "type":"Date"
+        "type":"date"
       },
       "schema":{
         "store":true,

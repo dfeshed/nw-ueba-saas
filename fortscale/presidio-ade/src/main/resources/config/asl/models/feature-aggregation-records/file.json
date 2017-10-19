@@ -13,7 +13,8 @@
         "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -44,7 +45,8 @@
         "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -75,7 +77,8 @@
         "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -106,7 +109,8 @@
         "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -137,7 +141,8 @@
         "aggregatedFeatureEventConfName": "numberOfDistinctFileOpenedUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -168,7 +173,8 @@
         "aggregatedFeatureEventConfName": "numberOfDistinctFolderOpenedUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -199,7 +205,8 @@
         "aggregatedFeatureEventConfName": "numberOfFileDeletedUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -230,7 +237,8 @@
         "aggregatedFeatureEventConfName": "numberOfSuccessfulFileRenamedUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -261,7 +269,8 @@
         "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -292,7 +301,8 @@
         "aggregatedFeatureEventConfName": "numberOfFileMovedFromSharedDriveUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -323,7 +333,8 @@
         "aggregatedFeatureEventConfName": "numberOfFileMovedToSharedDriveUserIdFileHourly"
       },
       "builder": {
-        "type": "continuous_max_histogram_model_builder"
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {

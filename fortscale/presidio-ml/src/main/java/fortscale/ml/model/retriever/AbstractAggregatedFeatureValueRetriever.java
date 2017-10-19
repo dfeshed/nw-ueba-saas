@@ -4,7 +4,9 @@ import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameExc
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.feature.Feature;
+import fortscale.ml.model.AggregatedFeatureValuesData;
 import fortscale.ml.model.ModelBuilderData;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
@@ -36,10 +38,14 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
 
     @Override
     public ModelBuilderData retrieve(String contextId, Date endTime) {
-        Map<Instant, Double> InstantToaggregatedFeatureValues = readAggregatedFeatureValues(
+        TreeMap<Instant, Double> instantToaggregatedFeatureValues = readAggregatedFeatureValues(
                 aggregatedFeatureEventConf, contextId, getStartTime(endTime), endTime);
 
-        return new ModelBuilderData(InstantToaggregatedFeatureValues);
+        String strategyName = aggregatedFeatureEventConf.getBucketConf().getStrategyName();
+        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(strategyName);
+        AggregatedFeatureValuesData aggregatedFeatureValuesData = new AggregatedFeatureValuesData(fixedDurationStrategy.toDuration(), instantToaggregatedFeatureValues);
+
+        return new ModelBuilderData(aggregatedFeatureValuesData);
     }
 
     @Override

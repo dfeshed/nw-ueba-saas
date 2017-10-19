@@ -17,7 +17,13 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -25,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by shays on 27/08/2017.
  */
 public class UserScoreServiceImpl implements UserScoreService {
+
     private UserPersistencyService userPersistencyService;
 
     private int percentThresholdCritical;
