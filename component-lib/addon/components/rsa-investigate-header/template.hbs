@@ -7,9 +7,9 @@
         {{else if tab.isClassic}}
           <a href={{tab.url}} class={{concat 'js-test-investigate-' tab.label '-classic'}}>{{tab.label}}</a>
         {{else}}
-          {{#link-to tab.name class=(concat 'js-test-investigate-' tab.name '-classic')}}
+          {{#link-to-external tab.name class=(concat 'js-test-investigate-' tab.name '-classic')}}
             {{tab.label}}
-          {{/link-to}}
+          {{/link-to-external}}
         {{/if}}
       </li>
     {{/each}}

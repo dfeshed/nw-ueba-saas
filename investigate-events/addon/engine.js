@@ -27,7 +27,8 @@ const Eng = Engine.extend({
       'flashMessages'
     ],
     externalRoutes: [
-      'protected'
+      'protected',
+      'investigate-files'
     ]
   }
 });

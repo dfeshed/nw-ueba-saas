@@ -10,6 +10,7 @@ page.investigate-files-engine {
   overflow: hidden;
   @include rsa-vendor-prefix(transition-property, background-color, color);
   @include rsa-vendor-prefix(transition-duration, 0.3s);
+  height: calc(100vh - 82px);
 
   .main-zone {
     overflow: hidden;

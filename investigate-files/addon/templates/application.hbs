@@ -1,3 +1,5 @@
-<page class="investigate-files-engine">
-  {{outlet}}
-</page>
+{{#rsa-investigate-header activeTab='investigate-files' as |section| }}
+  {{#if section.isMain}}
+    {{outlet}}
+  {{/if}}
+{{/rsa-investigate-header}}

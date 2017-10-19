@@ -1,10 +1,3 @@
-import Ember from 'ember';
+import Route from 'ember-route';
 
-const { Route } = Ember;
-
-export default Route.extend({
-  // Always transition to files page directly if the user hits the base /files/ path
-  beforeModel() {
-    this.transitionTo('files');
-  }
-});
+export default Route.extend({});

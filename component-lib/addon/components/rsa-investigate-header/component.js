@@ -14,6 +14,10 @@ const TABS = [
     label: 'Events'
   },
   {
+    name: 'investigate-files',
+    label: 'Files'
+  },
+  {
     isClassic: true,
     url: '/investigation/malware',
     label: 'Malware Analysis'

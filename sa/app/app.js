@@ -22,7 +22,8 @@ const App = Application.extend({
           'flashMessages'
         ],
         externalRoutes: {
-          protected: 'protected'
+          protected: 'protected',
+          'investigate-files': 'protected.investigate.investigate-files'
         }
       }
     },
@@ -41,6 +42,23 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected'
+        }
+      }
+    },
+    investigateFiles: {
+      dependencies: {
+        services: [
+          '-document',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus'
+        ],
+        externalRoutes: {
+          protected: 'protected',
+          'investigate-events': 'protected.investigate.investigate-events'
         }
       }
     }
