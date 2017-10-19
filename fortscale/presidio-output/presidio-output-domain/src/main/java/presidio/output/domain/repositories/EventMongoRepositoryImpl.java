@@ -2,6 +2,7 @@ package presidio.output.domain.repositories;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -48,14 +49,19 @@ public class EventMongoRepositoryImpl implements EventRepository {
                 .addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
                         .gte(timeRange.getStart())
                         .lt(timeRange.getEnd()));
+
+        List<Criteria> criterias = new ArrayList<>();
         features.forEach((k, v) -> {
 
-            query.addCriteria(new Criteria().orOperator(
+            criterias.add(new Criteria().orOperator(
                     Criteria.where(k).is(v), // for single object
                     Criteria.where(k).in(v)) // for array
             );
 
         });
+        if (CollectionUtils.isNotEmpty(criterias)){
+            query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
+        }
         query.limit(limitEvents);
 
         return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
