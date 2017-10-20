@@ -3,17 +3,7 @@
   as |section| }}
 
   {{#if section.isIconBar}}
-    {{!-- {{rsa-icon
-      active=(not-eq model.recon.size 'full')
-      disabled=(not model.recon.isOpen)
-      click=(route-action 'toggleSlaveFullScreen')
-      name='layout-1'
-      title=(t 'investigate.controls.toggle')}} --}}
-
-    {{rsa-icon
-      name='layout-1'
-      title=(t 'investigate.controls.toggle')}}
-
+    {{recon-size-toggle}}
     {{preferences-panel-trigger launchFor='investigate-events'}}
   {{/if}}
 

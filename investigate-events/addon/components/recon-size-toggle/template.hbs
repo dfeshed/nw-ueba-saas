@@ -1,0 +1,7 @@
+{{#if isReconOpen}}
+  {{rsa-icon
+    active=(not isReconFullSize)
+    click=(action 'setReconPanelSize' reconToggleGoToSize )
+    name='layout-1'
+    title=(t 'investigate.controls.toggle')}}
+{{/if}}

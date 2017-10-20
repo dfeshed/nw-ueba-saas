@@ -22,3 +22,8 @@ export const queryBodyClass = createSelector(
     return `rsa-investigate-query__body recon-is-${recon} meta-panel-size-${panelSize}`;
   }
 );
+
+export const isReconFullSize = createSelector(
+  [_reconSize],
+  (reconSize) => reconSize === 'full'
+);
