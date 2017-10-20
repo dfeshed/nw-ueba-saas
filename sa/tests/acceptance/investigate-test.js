@@ -1,4 +1,4 @@
-import { skip, test } from 'qunit';
+import { skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
@@ -9,7 +9,7 @@ moduleForAcceptance('Acceptance | investigate', {
 });
 
 // Investigate default page is event query
-test('investigate.index redirects to investigate.investigate-events.index', function(assert) {
+skip('investigate.index redirects to investigate.investigate-events.index', function(assert) {
   visit('/investigate/');
   andThen(function() {
     assert.equal(currentPath(), 'protected.investigate.investigate-events.index', 'correct path was redirected into.');

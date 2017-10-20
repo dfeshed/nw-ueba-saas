@@ -91,16 +91,18 @@
   name='layout-2'
   title=(t 'recon.toggles.meta')}}
 
-<div class="divider"></div>
+{{#unless isStandalone}}
+  <div class="divider"></div>
 
-{{rsa-icon
-  class='header-button'
-  click=(action 'toggleReconExpanded')
-  name=toggleEventsClass
-  title=(t toggleEventsTitle)}}
+  {{rsa-icon
+    class='header-button'
+    click=(action 'toggleReconExpanded')
+    name=toggleEventsClass
+    title=(t toggleEventsTitle)}}
 
-{{rsa-icon
-  class='header-button'
-  click=(action 'closeRecon')
-  name='close'
-  title=(t 'recon.toggles.close')}}
+  {{rsa-icon
+    class='header-button'
+    click=(action 'closeRecon')
+    name='close'
+    title=(t 'recon.toggles.close')}}
+{{/unless}}

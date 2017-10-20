@@ -1,4 +1,12 @@
 .recon-meta-content {
+  margin-left: 1px; /* let a sliver of background shows thru as a border */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+
   .meta-heading {
     @include rsa-font(header, small);
     font-size: 0.85rem;
@@ -8,6 +16,7 @@
 }
 
 .recon-meta-content-item {
+  color: text-color(neutral);
   @include rsa-word-wrap();
   line-height: 1.71rem;
   padding: 0 0 0 rsa-whitespace();

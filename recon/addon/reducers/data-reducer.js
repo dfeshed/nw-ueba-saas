@@ -8,14 +8,15 @@ const dataInitialState = Immutable.from({
   endpointId: null,
   eventId: null,
   contentError: null,
-  contentLoading: false
+  contentLoading: false,
+  isStandalone: false
 });
 
 const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);
 
 const data = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId } }) => {
-    return dataInitialState.merge({ endpointId, eventId });
+  [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId, isStandalone } }) => {
+    return dataInitialState.merge({ endpointId, eventId, isStandalone });
   },
 
   // Generic content handling

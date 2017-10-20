@@ -23,7 +23,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
-          'investigate-events': 'events'
+          'protected.investigate.investigate-events': 'events'
         }
       }
     }

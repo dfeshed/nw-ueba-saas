@@ -10,11 +10,11 @@ const TABS = [
     label: 'Navigate'
   },
   {
-    name: 'investigate-events',
+    name: 'protected.investigate.investigate-events',
     label: 'Events'
   },
   {
-    name: 'investigate-files',
+    name: 'protected.investigate.investigate-files',
     label: 'Files'
   },
   {
@@ -29,7 +29,7 @@ export default Component.extend({
   tagName: 'article',
   layout,
 
-  activeTab: 'investigate-events',
+  activeTab: 'protected.investigate.investigate-events',
   iconBar: { isIconBar: true },
   main: { isMain: true },
 

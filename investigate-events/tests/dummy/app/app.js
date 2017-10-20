@@ -24,7 +24,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
-          'investigate-files': 'files'
+          'protected.investigate.investigate-files': 'files'
         }
       }
     }

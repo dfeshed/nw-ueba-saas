@@ -23,7 +23,8 @@ const stateToComputed = ({ recon, recon: { visuals } }) => ({
   isReconExpanded: visuals.isReconExpanded,
   isLogEvent: isLogEvent(recon),
   isEndpointEvent: isEndpointEvent(recon),
-  lacksPackets: lacksPackets(recon)
+  lacksPackets: lacksPackets(recon),
+  isStandalone: recon.data.isStandalone
 });
 
 const dispatchToActions = {

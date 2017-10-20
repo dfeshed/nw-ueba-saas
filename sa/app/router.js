@@ -31,6 +31,7 @@ Router.map(function() {
     this.route('investigate', function() {
       this.mount('investigate-events', { path: 'events' });
       this.mount('investigate-files', { path: 'files' });
+      this.route('recon');
     });
   });
 

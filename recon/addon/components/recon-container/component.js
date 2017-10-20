@@ -106,6 +106,12 @@ const ReconContainer = Component.extend({
     } = this.getProperties('oldEventId', 'index', 'total', 'size');
     const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction');
 
+    // Checking whether or not Recon is open in standalone mode by checking
+    // if closeAction is present or not. If a parent/containing addon/engine
+    // exists, it would pass a closeAction
+    const close = this.getProperties('closeAction');
+    inputs.isStandalone = !close.closeAction;
+
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
 
     // guard against re-running init on any redux state change,

@@ -23,7 +23,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
-          'investigate-files': 'protected.investigate.investigate-files'
+          'protected.investigate.investigate-files': 'protected.investigate.investigate-files'
         }
       }
     },
@@ -58,7 +58,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
-          'investigate-events': 'protected.investigate.investigate-events'
+          'protected.investigate.investigate-events': 'protected.investigate.investigate-events'
         }
       }
     }

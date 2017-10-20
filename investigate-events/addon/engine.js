@@ -28,7 +28,7 @@ const Eng = Engine.extend({
     ],
     externalRoutes: [
       'protected',
-      'investigate-files'
+      'protected.investigate.investigate-files'
     ]
   }
 });
