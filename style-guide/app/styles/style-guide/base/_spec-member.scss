@@ -2,7 +2,7 @@
 
 .spec-member {
   background-color: background-color(primary, darkest, translucent);
-  border: 1px solid border-color(primary, darkest);
+  @include border(1px, solid, primary, darkest);
   padding: rsa-whitespace();
   color: text-color(primary, lighter);
   margin-bottom: rsa-whitespace();

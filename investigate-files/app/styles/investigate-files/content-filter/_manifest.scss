@@ -25,7 +25,7 @@
       padding: rsa-whitespace(less) rsa-whitespace(less);
       &:hover {
         cursor: pointer;
-        border: 1px solid;
+        @include border(1px, solid, primary);
       }
       .rsa-icon-remove-circle-2 {
         font-size: .9rem;
@@ -45,7 +45,7 @@
       }
       &:hover, &.is-active {
         .rsa-form-button {
-          border: 1px solid $formButtonHoverBorderColor;
+          @include border(1px, solid, primary, lightest);
         }
       }
       &:active, &.is-active {

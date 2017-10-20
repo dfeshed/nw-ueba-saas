@@ -71,7 +71,7 @@
   .rsa-button {
     padding: rsa-whitespace(least) rsa-whitespace(less);
     height: 2rem;
-    border: 1px solid transparent;
+    @include border(1px, solid, primary, base, transparent);
     cursor: pointer;
 
     &[disabled="true"],

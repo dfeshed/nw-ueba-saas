@@ -11,7 +11,7 @@
   }
 
   .rsa-form-button {
-    border: 1px solid transparent;
+    @include border(1px, solid, primary, base, transparent);
     padding: rsa-whitespace(less) rsa-whitespace();
     color: $formButtonTypeColor;
     box-sizing: border-box;

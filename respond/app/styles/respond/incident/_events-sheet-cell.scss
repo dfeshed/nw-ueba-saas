@@ -1,6 +1,6 @@
 .rsa-items-sheet {
   .rsa-data-table-body-cell {
-    border-bottom: 1px solid border-color(primary, darkest);
+    @include border-bottom(1px, solid, primary, darkest);
 
     .has-context-data {
       @include rsa-has-context-data();

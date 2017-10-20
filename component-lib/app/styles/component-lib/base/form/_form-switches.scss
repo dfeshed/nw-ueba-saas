@@ -25,7 +25,7 @@
 
     label > .x-toggle-btn.x-toggle-default {
       background-color: transparent;
-      border: 1px solid border-color(primary);
+      @include border(1px, solid, primary);
       border-radius: 16px;
       flex-basis: 4.5rem;
       height: 16px;
@@ -51,7 +51,7 @@
       }
 
       &.x-toggle-disabled {
-        border: 1px solid border-color(primary, dark);
+        @include border(1px, solid, primary, dark);
         &::after {
           background-color: background-color(primary, dark);
         }

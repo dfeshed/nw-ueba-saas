@@ -25,7 +25,7 @@
     display: none;
     position: relative;
     @include rsa-layer(above);
-    border: 1px solid $applicationModalBorderColor;
+    @include border(1px, solid, secondary);
     background-color: $applicationModalBackgroundColor;
     color: $applicationModalTypeColor;
     margin: 0 auto;
@@ -66,7 +66,7 @@
     }
 
     &.error {
-      border: 1px solid border-color(accentOne, dark);
+      @include border(1px, solid, accentOne, dark);
 
       h3 {
         background-color: background-color(accentOne);

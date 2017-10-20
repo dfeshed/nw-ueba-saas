@@ -37,7 +37,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       background-color: $applicationBodyBackgroundColor;
 
       i {
-        border: 1px solid $applicationBodyBackgroundColor;
+        @include border(1px, solid, primary, dark);
         padding: rsa-whitespace(less);
       }
     }

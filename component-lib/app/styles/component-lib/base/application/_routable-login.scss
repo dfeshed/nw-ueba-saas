@@ -19,7 +19,7 @@
 
   .eula-content {
     margin-bottom: rsa-whitespace(more);
-    border: 1px solid border-color(primary);
+    @include border(1px, solid, primary);
     height: 65vh;
     overflow: auto;
     width: 50vw;
@@ -59,10 +59,10 @@
   .login-wrapper {
     padding: rsa-whitespace(more);
     background: $applicationLoginBackgroundColor;
-    border: 1px solid $applicationLoginBorderColor;
+    @include border(1px, solid, primary, darker);
 
     &.has-error {
-      border: 1px solid $applicationLoginErrorBorderColor;
+      @include border(1px, solid, accentOne);
       animation: shake 0.65s cubic-bezier(.36,.07,.19,.97) both;
 
       @keyframes shake {

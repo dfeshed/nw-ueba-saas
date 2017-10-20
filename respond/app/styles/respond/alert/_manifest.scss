@@ -19,7 +19,7 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
   .rsa-data-table-body {
     max-height: $maxHeightAlertNamesTable;
     overflow: auto;
-    border: 1px solid border-color(primary);
+    @include border(1px, solid, primary);
     overflow-x: hidden;
   }
   .rsa-data-table-body-row {

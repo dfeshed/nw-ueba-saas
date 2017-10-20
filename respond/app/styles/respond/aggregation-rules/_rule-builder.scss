@@ -8,7 +8,7 @@ $ruleBuilderControlsFontSize: 0.8rem;
 
   header {
     padding: rsa-whitespace();
-    border-bottom: 1px solid border-color(primary);
+    @include border-bottom(1px, solid, primary);
     .rule-builder-toolbar {
       flex-direction: row-reverse;
     }
@@ -54,7 +54,7 @@ $ruleBuilderControlsFontSize: 0.8rem;
     position: relative;
     padding: rsa-whitespace(less);
     background-color: background-color(primary, darker);
-    border: 1px solid border-color(primary, darker);
+    @include border(1px, solid, primary, darker);
     border-radius: 4px;
     margin-top: rsa-whitespace(least);
 

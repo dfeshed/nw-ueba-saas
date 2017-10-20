@@ -18,7 +18,7 @@ $inputHeight: 33px;
     box-sizing: border-box;
     display: inline-block;
     padding: rsa-whitespace(less);
-    border: 1px solid transparent;
+    @include border(1px, solid, primary, base, transparent);
     @include rsa-font(body);
 
     &.placeholder {
@@ -38,7 +38,7 @@ $inputHeight: 33px;
     .rsa-form-button-wrapper {
       line-height: inherit;
       padding: rsa-whitespace(less);
-      border: 1px solid border-color(primary, base, transparent);
+      @include border(1px, solid, primary, base, transparent);
       visibility: visible;
 
       .rsa-form-button {
@@ -82,7 +82,7 @@ $inputHeight: 33px;
 
       .rsa-form-button-wrapper {
         cursor: pointer;
-        border: 1px solid border-color(primary);
+        @include border(1px, solid, primary);
         visibility: visible;
         height: 100%;
         background-color: background-color(primary, dark, somewhat-opaque);
@@ -129,7 +129,7 @@ $inputHeight: 33px;
       height: 100%;
       line-height: inherit;
       padding: 0 rsa-whitespace(less);
-      border: 1px solid border-color(secondary);
+      @include border(1px, solid, secondary);
       box-sizing: border-box;
       @include rsa-font(body);
     }
@@ -142,7 +142,7 @@ $inputHeight: 33px;
       color: inherit;
       line-height: inherit;
       padding: rsa-whitespace(less);
-      border: 1px solid border-color(secondary);
+      @include border(1px, solid, secondary);
       box-sizing: border-box;
       @include rsa-font(body);
       outline: none;
@@ -158,7 +158,7 @@ $inputHeight: 33px;
       position: absolute;
       @include rsa-layer(controls);
       background-color: background-color(primary, darker, nearly-opaque);
-      border: 1px solid border-color(secondary);
+      @include border(1px, solid, secondary);
 
       button {
         padding: 0;

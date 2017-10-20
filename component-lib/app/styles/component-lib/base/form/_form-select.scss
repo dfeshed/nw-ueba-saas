@@ -35,11 +35,11 @@ $ember-power-select-line-height: 2rem;
 
 
 .ember-power-select-dropdown {
-  border: 1px solid border-color(secondary)!important;
+  @include border(1px, solid, secondary);
   background: background-color(primary, darkest);
 
   &.is-error {
-    border: 1px solid border-color(accentOne)!important;
+    @include border(1px, solid, accentOne);
 
     .ember-power-select-option {
       &[aria-selected="true"] {
@@ -157,7 +157,7 @@ $ember-power-select-line-height: 2rem;
 }
 
 .ember-power-select-multiple-option {
-  border: 1px solid border-color(primary, lightest);
+  @include border(1px, solid, primary, lightest);
   background: transparent;
   border-radius: 3px;
   color: text-color(primary, lightest);

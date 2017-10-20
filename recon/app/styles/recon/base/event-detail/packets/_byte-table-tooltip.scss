@@ -1,6 +1,6 @@
 .rsa-byte-table-tooltip {
   background-color: background-color(secondary);
-  border: 1px solid border-color(secondary);
+  @include border(1px, solid, secondary);
   box-shadow: 1px 1px 2px 0 $dark-box-shadow-color;
   display: none; /* to be set at run-time by javascript */
   min-width: 5rem;
@@ -14,7 +14,7 @@
 
   &.is-signature {
     background-color: background-color(accentThree);
-    border: 1px solid border-color(accentThree);
+    @include border(1px, solid, accentThree);
     svg {
       line, polygon {
         stroke: text-color(accentThree);

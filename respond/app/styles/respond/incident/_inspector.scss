@@ -92,7 +92,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
         width: 2 * $incidentRiskScoreRadius;
         height: 2 * $incidentRiskScoreRadius;
         line-height: 2 * $incidentRiskScoreRadius;
-        border: 4px double border-color(primary);
+        @include border(4px, double, primary);
         border-radius: 2 * $incidentRiskScoreRadius;
         text-align: center;
         overflow: hidden;
@@ -104,7 +104,7 @@ $incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
 
   &__toolbar {
     min-height: 25px;
-    border-bottom: 1px solid border-color(primary,light,nearly-transparent);
+    @include border-bottom(1px, solid, primary, light, nearly-transparent);
 
     .rsa-tab {
       margin: 0 rsa-whitespace();

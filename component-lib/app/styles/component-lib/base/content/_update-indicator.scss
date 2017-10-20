@@ -17,7 +17,7 @@
     height: 7px;
     width: 7px;
     background: $contentUpdateIndicatorBackgroundColor;
-    border: solid thin $contentUpdateIndicatorBorderColor;
+    @include border(thin, solid, primary, lightest);
   }
 
   &.is-icon-only {

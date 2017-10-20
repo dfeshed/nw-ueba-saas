@@ -2,7 +2,7 @@ $base-color: white;
 
 .rsa-packet {
 
-  border-top: 1px border-color(secondary) solid;
+  @include border-top(1px, solid, secondary);
   min-width: 56rem;
 
   &:first-of-type {

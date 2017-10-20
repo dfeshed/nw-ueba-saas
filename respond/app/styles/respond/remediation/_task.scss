@@ -1,7 +1,7 @@
 .remediation-task, .new-remediation-task {
   padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
   position: relative;
-  border-top: 1px solid border-color(primary);
+  @include border-top(1px, solid, primary);
 
   span.required-field::after {
     content: '*';
@@ -87,7 +87,7 @@
     input[type="text"] {
       padding: rsa-whitespace(less);
       width: 100%;
-      border: 1px solid border-color(primary, base);
+      @include border(1px, solid, primary);
       box-sizing: border-box;
     }
     textarea {
@@ -114,7 +114,7 @@
     }
  }
   .controls {
-    border-top: 1px solid border-color(primary);
+    @include border-top(1px, solid, primary);
     text-align: right;
     padding: rsa-whitespace() 0;
 

@@ -31,7 +31,7 @@ $tasksAndJournalPanelWidth: 400px;
       position: relative;
       z-index: 2;
       background-color: $respondBackgroundColor;
-      border-right: 1px solid $respondBorderColor;
+      @include border-right(1px, solid, primary, lightest, nearly-transparent);
 
       // this section DOES capture mouse events
       pointer-events: auto;
@@ -48,7 +48,7 @@ $tasksAndJournalPanelWidth: 400px;
       width: $tasksAndJournalPanelWidth;
       max-width: $tasksAndJournalPanelWidth;
       background-color: $respondBackgroundColor;
-      border-left: 1px solid $respondBorderColor;
+      @include border-left(1px, solid, primary, lightest, nearly-transparent);
 
       .close-panel {
         cursor: pointer;

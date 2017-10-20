@@ -37,7 +37,7 @@ $headerHeight: 30px;
 
   &__create-entry {
     @include rsa-font(body);
-    border-top: 1px solid border-color(primary);
+    @include border-top(1px, solid, primary);
     max-height: 225px;
     padding: rsa-whitespace();
 
@@ -59,7 +59,7 @@ $headerHeight: 30px;
   &-entry {
     position: relative;
     padding: rsa-whitespace(less);
-    border-bottom: 1px dashed border-color(primary);
+    @include border-bottom(1px, dashed, primary);
 
     &:last-of-type {
       border-bottom: 0;
@@ -112,7 +112,7 @@ $headerHeight: 30px;
         box-sizing: border-box;
         width: 100%;
         height: 5rem;
-        border: 1px solid border-color(primary);
+        @include border(1px, solid, primary);
         background: background-color(neutral,base,translucent);
         padding: rsa-whitespace(less) rsa-whitespace(least);
         color: text-color(neutral);

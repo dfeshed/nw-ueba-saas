@@ -2,7 +2,7 @@
   background-color: background-color(neutral, dark);
   display: inline-block;
   vertical-align: top;
-  border: 1px solid border-color(primary, lightest);
+  @include border(1px, solid, primary, lightest);
 
   div {
     @include rsa-font(paragraph);

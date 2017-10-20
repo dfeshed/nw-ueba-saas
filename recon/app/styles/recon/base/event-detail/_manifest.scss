@@ -47,7 +47,7 @@
     // Handles borders for text view
     // TODO, move packet view so this'll work for it as well
     > div {
-      border-top: 1px border-color(secondary) solid;
+      @include border-top(1px, solid, secondary);
 
       &:first-of-type {
         border-top: none;

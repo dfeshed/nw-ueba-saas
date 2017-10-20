@@ -50,7 +50,7 @@
     display: block;
     color: $formSliderToolTipTextColor;
     padding: rsa-whitespace(least);
-    border: 1px solid $formSliderToolTipBoxBorderColor;
+    @include border(1px, solid, primary);
     background: $formSliderToolTipBoxBackgroundColor;
   }
 
@@ -130,7 +130,7 @@
   }
 
   .noUi-active {
-    border: 1.5px solid $formSliderActiveColor;
+    @include border(1.5px, solid, secondary);
   }
 
   &.is-error {
@@ -147,7 +147,7 @@
     }
 
     .noUi-active {
-      border: 1.5px solid $formSliderErrorActiveColor;
+      @include border(1.5px, solid, accentOne);
     }
   }
 }

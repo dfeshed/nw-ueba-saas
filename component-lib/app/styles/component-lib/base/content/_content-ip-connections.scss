@@ -4,7 +4,7 @@
   position: relative;
 
   .circle {
-    border: 1px solid $contentIpConnectionsCircleColor;
+    @include border(1px, solid, primary, light);
     width: .65rem;
     height: .65rem;
     border-radius: 10rem;
@@ -20,7 +20,7 @@
     margin: 0;
     text-align: center;
     overflow: hidden;
-    border: 1px solid transparent;
+    @include border(1px, solid, primary, base, transparent);
     color: $contentIpConnectionsDirectionIconColor;
   }
 

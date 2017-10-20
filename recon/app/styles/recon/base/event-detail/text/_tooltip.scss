@@ -11,7 +11,7 @@
 
 .recon-tooltip.panel-content {
   &.standard {
-    border: 1px solid border-color(primary);
+    @include border(1px, solid, primary);
     background-color: background-color(primary);
     svg {
       line, polygon {

@@ -16,7 +16,7 @@
     }
 
     img {
-      border: 1px solid border-color(neutral, dark);
+      @include border(1px, solid, neutral, dark);
       margin: rsa-whitespace() auto 0;
       display: block;
       max-width: calc(100% - 4rem);

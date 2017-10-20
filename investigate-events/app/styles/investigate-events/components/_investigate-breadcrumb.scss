@@ -37,7 +37,7 @@
       padding-left: rsa-whitespace(less) + rsa-whitespace(more);
       white-space: nowrap;
       margin-right: rsa-whitespace(least);
-      border: 1px solid border-color(primary)!important;
+      @include border(1px, solid, primary);
       color: text-color(primary, light)!important;
 
       .rsa-icon {

@@ -9,7 +9,7 @@
 
   .button {
     background:none!important;
-    border:none;
+    border: none;
     padding-left:50%;
     color: text-color(secondary);
     @include rsa-font(default, small);
@@ -21,7 +21,7 @@
     padding-left: rsa-whitespace(base);
     padding-top: rsa-whitespace(less);
     padding-bottom: rsa-whitespace(less);
-    border-bottom: 1px solid border-color(neutral, dark, nearly-transparent);
+    @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
 
   }
   .heading-text {
@@ -37,7 +37,7 @@
   }
   .rsa-content-accordion {
 
-    border-bottom: 1px solid border-color(neutral, dark, nearly-transparent);
+    @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
     @include rsa-font(body,small);
     color: text-color(primary, lighter);
     .rsa-icon {
@@ -49,7 +49,7 @@
     }
     h3 {
       text-transform: inherit;
-      border-bottom: 1px solid border-color(neutral, dark, nearly-transparent);
+      @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
       span{
         max-width: 100%;
         overflow: hidden;
@@ -69,7 +69,7 @@
   }
 
   &__createList-button{
-    border-bottom: 1px solid border-color(primary);
+    @include border-bottom(1px, solid, primary);
     padding: rsa-whitespace(less);
 
     .rsa-form-button{
@@ -168,7 +168,7 @@
     @include rsa-font(header,small);
     color: text-color(neutral);
     padding-left:rsa-whitespace(more);
-    border-bottom: 1px solid border-color(neutral, dark);
+    @include border-bottom(1px, solid, neutral, dark);
   }
 
   &__listDetails{
@@ -200,20 +200,20 @@
     padding-left: rsa-whitespace(base);
     padding-top: rsa-whitespace(less);
     padding-bottom: rsa-whitespace(less);
-    border-bottom: 1px solid border-color(neutral, dark, nearly-transparent);
+    @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
   }
 
   &__columntitle {
     @include rsa-font(header,small);
     padding-top: rsa-whitespace(more);
     padding-bottom: rsa-whitespace(less);
-    border-bottom: 1px solid border-color(neutral, dark);
+    @include border-bottom(1px, solid, neutral, dark);
   }
 
   &__checkbox {
     padding-top: rsa-whitespace(less);
     padding-bottom: rsa-whitespace(less);
-    border-bottom: 1px solid border-color(neutral, dark);
+    @include border-bottom(1px, solid, neutral, dark);
     padding-left: rsa-whitespace(less);
     @include rsa-word-wrap();
   }

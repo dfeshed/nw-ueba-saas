@@ -5,7 +5,7 @@ $searchInputHeight: 75.5px;
 
   .rsa-panel-message .message {
     width: 33%;
-    border: 1px solid border-color(primary,light);
+    @include border(1px, solid, primary, light);
     padding: rsa-whitespace();
     border-radius: 5px;
     line-height: 2rem;

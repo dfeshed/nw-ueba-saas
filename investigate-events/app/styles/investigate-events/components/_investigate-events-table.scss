@@ -4,7 +4,7 @@
   &__header {
     @include rsa-vendor-prefix(flex-grow,0);
     background-color: background-color(primary, darker);
-    border-bottom: 1px solid border-color(primary, dark);
+    @include border-bottom(1px, solid, primary, dark);
     align-items: baseline;
     justify-content: space-between;
     h2 {

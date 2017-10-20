@@ -33,7 +33,7 @@ $contextTooltipDatumPadding: 0px;
   }
 
   &__content {
-    border-right: 1px solid border-color(primary, dark);
+    @include border-right(1px, solid, primary, dark);
     padding-right: rsa-whitespace(less);
 
     &-body {
@@ -84,7 +84,7 @@ $contextTooltipDatumPadding: 0px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border-bottom: 3px solid transparent;
+    @include border-bottom(3px, solid, primary, base, transparent);
 
     &:hover {
       border-bottom-color: border-color(secondary, light);

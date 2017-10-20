@@ -12,7 +12,7 @@ $alertsSearchLineHeight: 2rem;
   }
 
   &-form {
-    border-bottom: 1px solid border-color(primary,light,nearly-transparent);
+    @include border-bottom(1px, solid, primary, light, nearly-transparent);
 
     &__subtext {
       @include rsa-font(paragraph, small);
@@ -50,7 +50,7 @@ $alertsSearchLineHeight: 2rem;
         input[type="text"] {
           /* for consistency with ember-power-select's styling */
           line-height: $alertsSearchLineHeight;
-          border-bottom: 1px solid border-color(primary, light);
+          @include border-bottom(1px, solid, primary, light);
           height: 30px;
           &:-ms-input-placeholder {
             color: text-color(primary);
@@ -79,7 +79,7 @@ $alertsSearchLineHeight: 2rem;
 
   &-results {
     &__header {
-      border-bottom: 1px solid border-color(primary,light,nearly-transparent);
+      @include border-bottom(1px, solid, primary, light, nearly-transparent);
 
       &-text,
       &-wait {

@@ -14,22 +14,22 @@
     margin-bottom: rsa-whitespace();
 
     &.alert-info {
-      border: 1px solid border-color(secondary);
+      @include border(1px, solid, secondary);
       background-color: background-color(secondary, base, nearly-opaque);
     }
 
     &.alert-success {
-      border: 1px solid border-color(accentTwo);
+      @include border(1px, solid, accentTwo);
       background-color: background-color(accentTwo, dark, nearly-opaque);
     }
 
     &.alert-warning {
-      border: 1px solid border-color(accentFour);
+      @include border(1px, solid, accentFour);
       background-color: background-color(accentFour, dark, nearly-opaque);
     }
 
     &.alert-error {
-      border: 1px solid border-color(accentOne);
+      @include border(1px, solid, accentOne);
       background-color: background-color(accentOne, base, nearly-opaque);
     }
 

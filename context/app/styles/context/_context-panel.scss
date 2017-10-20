@@ -17,7 +17,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
   &__linkButton {
     text-decoration: none;
     padding: rsa-whitespace(less) rsa-whitespace();
-    border: 1px solid border-color(primary, light);
+    @include border(1px, solid, primary, light);
     margin-left: rsa-whitespace(least);
     color: text-color(primary, lighter);
     &:hover {
@@ -136,7 +136,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       height: calc(100% - 240px);
       display: flex;
       >div {
-        border: 1px solid border-color(neutral, dark, nearly-transparent);
+        @include border(1px, solid, neutral, dark, nearly-transparent);
       }
     }
   }
@@ -257,7 +257,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       padding-left: rsa-whitespace(base);
       padding-top: rsa-whitespace(less);
       padding-bottom: rsa-whitespace(less);
-      border-bottom: 1px solid border-color(neutral, dark, nearly-transparent);
+      @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
       border-bottom-style: ridge;
     }
     &__host-details,
@@ -409,7 +409,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       @include rsa-font(header, large);
       color: text-color(primary, lighter);
       padding: rsa-whitespace();
-      border-top: 3px solid border-color(primary, darkest);
+      @include border-top(3px, solid, primary, darkest);
     }
     &__heading>span {
       float: right;

@@ -27,7 +27,7 @@
   }
 
   .rsa-data-table-header {
-    border-bottom: 1px solid border-color(primary, dark);
+    @include border-bottom(1px, solid, primary, dark);
     .rsa-data-table-header-cell {
       // 20px padding on the right gives space for the column sort button
       padding: 0 20px 0 rsa-whitespace(less);

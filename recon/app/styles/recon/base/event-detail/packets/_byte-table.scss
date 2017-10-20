@@ -57,7 +57,7 @@ $packet-byte-border-width: 1px;
 
       span {
         display: block;
-        border: $packet-byte-border-width solid transparent;
+        @include border(1px, solid, primary, base, transparent);
         padding: $packet-byte-padding-x;
         margin: $packet-byte-margin-x;
       }

@@ -1,7 +1,7 @@
 .recon-pager {
   @include rsa-font(body, small);
   color: text-color(primary);
-  border-top: 1px solid border-color(primary, dark);
+  @include border-top(1px, solid, primary, dark);
   background-color: background-color(primary, darkest, translucent);
   position: absolute;
   bottom: 0;

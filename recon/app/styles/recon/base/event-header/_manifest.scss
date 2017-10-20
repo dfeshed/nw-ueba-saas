@@ -4,13 +4,13 @@
   background-color: background-color(primary, darkest, nearly-opaque);
 
   .divider {
-    border-left: 1px solid border-color(neutral);
+    @include border-left(1px, solid, neutral);
     height: 1.5rem;
     margin: 5px;
   }
 
   .header-data {
-    border-top: 1px solid border-color(primary, dark);
+    @include border-top(1px, solid, primary, dark);
     background-color: background-color(primary, darkest, transparent);
     padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
     .header-item {
@@ -88,7 +88,7 @@
         &.seperator {
           padding: 0;
           margin: 0.5rem .3rem 0.5rem 1.1rem;
-          border: 0 solid border-color(primary);
+          @include border(0, solid, primary);
           border-right-width: .1rem;
         }
       }
@@ -113,7 +113,7 @@
     }
     .header-toggle {
       &.active:not(.disabled) {
-        border-bottom: border-color(secondary) 3px solid;
+        @include border-bottom(3px, solid, secondary);
       }
     }
   }

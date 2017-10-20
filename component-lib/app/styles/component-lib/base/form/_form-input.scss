@@ -60,7 +60,7 @@ input:-webkit-autofill:active {
   }
 
   textarea {
-    border: 1px solid $formInputBorderColor;
+    @include border(1px, solid, primary, light);
     background: none;
     outline: none;
     min-height: 10rem;

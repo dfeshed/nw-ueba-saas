@@ -10,7 +10,7 @@
   @include rsa-font();
   flex: none;
   display: inline-block;
-  border: thin solid;
+  @include border(thin, solid, primary);
   border-radius: rsa-whitespace(least);
   margin: calc(#{rsa-whitespace(least)} / 2) rsa-whitespace(least) calc(#{rsa-whitespace(least)} / 2) 0;
   box-sizing: border-box;

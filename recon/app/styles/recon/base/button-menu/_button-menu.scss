@@ -9,7 +9,7 @@
   list-style: none;
   background-color: background-color(primary, darkest);
   background-clip: padding-box;
-  border: 1px solid border-color(secondary);
+  @include border(1px, solid, secondary);
   box-shadow: 1px 1px 2px background-color(primary, darkest);
 
   &.expanded {

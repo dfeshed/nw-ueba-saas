@@ -1,6 +1,5 @@
 $alertsTableDarkBgColor: background-color(primary, light, translucent);
 $alertsTableDarkerBgColor: background-color(primary, light, nearly-transparent);
-$alertsTableDarkPlusBgColor: border-color(primary, base, translucent);
 $alertsTableSeverityRadius: 1rem;
 $alertsTableLineHeight: 1.5;
 $alertsTableHeadingSize: 1rem;
@@ -112,7 +111,7 @@ $alertsTableDotSize: 5px;
     cursor: pointer;
     display: inline-block;
     white-space: nowrap;
-    border: 1px solid transparent;
+    @include border(1px, solid, primary, base, transparent);
     padding: 0 rsa-whitespace(less);
 
     .rsa-icon {
@@ -238,7 +237,7 @@ $alertsTableDotSize: 5px;
 
 .rsa-alerts-table {
   .rsa-group-table-group {
-    border-bottom: 1px solid $alertsTableDarkPlusBgColor;
+    @include border-bottom(1px, solid, primary, base, translucent);
     transition: top linear 0.1s;
   }
 }

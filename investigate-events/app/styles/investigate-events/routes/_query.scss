@@ -25,7 +25,7 @@ $investigateReconFullWidth: 100%;
 
   &__header {
     background-color: background-color(primary,darkest,translucent);
-    border-bottom: 1px solid border-color(neutral, dark);
+    @include border-bottom(1px, solid, neutral, dark);
     @include rsa-vendor-prefix(flex-shrink, 1);
     padding: rsa-whitespace(least) rsa-whitespace();
     .rsa-investigate-breadcrumb {
@@ -171,7 +171,7 @@ $investigateReconFullWidth: 100%;
     }
 
     &-key-values {
-      border-bottom: 1px solid border-color(primary, base, nearly-transparent);
+      @include border-bottom(1px, solid, primary, base, nearly-transparent);
       color: text-color(primary,lightest);
       &:last-child {
         h2,
@@ -180,7 +180,7 @@ $investigateReconFullWidth: 100%;
         }
       }
       &__value {
-        border: 1px solid border-color(neutral, base, nearly-transparent);
+        @include border(1px, solid, neutral, base, nearly-transparent);
         border-radius: 2px;
         &.selected,
         &:hover {
@@ -289,7 +289,7 @@ $investigateReconFullWidth: 100%;
   }
 
   .recon-event-wrapper {
-    border-top: 1px solid border-color(secondary);
+    @include border-top(1px, solid, secondary);
     flex: 1 1 auto;
   }
 

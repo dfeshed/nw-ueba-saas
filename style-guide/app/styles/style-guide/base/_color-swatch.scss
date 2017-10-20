@@ -1,7 +1,7 @@
 .color-swatch {
   display: block;
   background-color: background-color(neutral);
-  border: 1px solid border-color(neutral, dark);
+  @include border(1px, solid, neutral, dark);
   margin-bottom: rsa-whitespace();
   background-color: background-color(primary, darker, nearly-transparent);
   color: text-color(primary, lighter);

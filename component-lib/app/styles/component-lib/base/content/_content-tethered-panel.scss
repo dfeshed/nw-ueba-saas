@@ -69,7 +69,7 @@
   }
 
   &.standard {
-    border: 1px solid border-color(primary, lightest);
+    @include border(1px, solid, primary, lightest);
 
     svg line {
       stroke: text-color(primary, lightest);
@@ -78,7 +78,7 @@
 
   &.primary,
   &.highlighted {
-    border: 1px solid border-color(secondary);
+    @include border(1px, solid, secondary);
 
     header {
       color: text-color(secondary);
@@ -111,7 +111,7 @@
   }
 
   &.error {
-    border: 1px solid border-color(accentOne);
+    @include border(1px, solid, accentOne);
 
     header {
       color: text-color(accentOne);

@@ -72,3 +72,33 @@ $border-colors: (
   $opacityVar: opacity-value($opacity);
   @return rgbx($colorVar, $opacityVar);
 }
+
+@mixin border($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-width: $width;
+  border-style: $style;
+}
+
+@mixin border-top($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-top-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-top-width: $width;
+  border-top-style: $style;
+}
+
+@mixin border-bottom($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-bottom-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-bottom-width: $width;
+  border-bottom-style: $style;
+}
+
+@mixin border-left($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-left-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-left-width: $width;
+  border-left-style: $style;
+}
+
+@mixin border-right($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-right-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-right-width: $width;
+  border-right-style: $style;
+}
