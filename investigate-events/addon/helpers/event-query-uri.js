@@ -11,7 +11,7 @@ const {
 /**
  * Composes a URI component string for a given query definition, plus (optional) drill path.
  * Useful for creating hyperlinks for drilling to the results of a NetWitness Core query for Events.
- * @param {object} queryAttrs @see protected/investigate-events/state/query-definition
+ * @param {object} queryAttrs
  * @param {string} [drillKey] Optional meta key to be appended to the given query.
  * @param {*} [drillValue] Optional meta key value to be appended to the given query.
  * @returns {*}

@@ -1,6 +1,5 @@
 import Ember from 'ember';
-import hasherizeEventMeta from './hasherize-event-meta';
-import { nwEncodeMetaFilterConditions } from '../util/query-util';
+import { encodeMetaFilterConditions } from '../fetch/utils';
 
 const {
   assert,
@@ -36,7 +35,7 @@ function addSessionIdFilter(filter, startSessionId) {
 /**
  * Creates (but does not start) a stream to fetch a given number of events.
  * To start the stream, the caller should call `stream.start()`.
- * @param {object} query Represents the Core query inputs (@see investigate-events/state/query-definition)
+ * @param {object} query Represents the Core query inputs
  * @param {object[]} language Array of meta key definitions from Core SDK `language` call.
  * @param {number} limit The maximum number of records to stream to the client.
  * @param {number} batch The maximum number of records to include in a single socket response message.
@@ -68,7 +67,7 @@ function buildMetaValueStreamInputs(metaName, query, language, queryOptions, lim
 /**
  * Given an object representing a query, computes the input parameters required to submit that
  * query to the server.
- * @param {object} query The query object. @see investigate-events/state/query-definition
+ * @param {object} query The query object.
  * @param {object[]} language Array of meta key definitions. @see investigate-events/state/query
  * @public
  */
@@ -88,73 +87,9 @@ function makeServerInputsForQuery(query, language) {
     filter: [
       { field: 'endpointId', value: serviceId },
       { field: 'timeRange', range: { from: startTime, to: endTime } },
-      { field: 'query', value: nwEncodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
+      { field: 'query', value: encodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
     ]
   };
-}
-
-/**
- * Given an object representing a query, and a count threshold, computes the input parameters required to submit that
- * query's event count request to the server.
- * @param {object} query The query object. @see investigate-events/state/query
- * @param {object} language The language object. @see investigate-events/state/language
- * @param {number} [threshold] Optional precision limit. Counts will not go higher than this number.
- * @public
- */
-function makeServerInputsForEventCount(query, language, threshold) {
-  const out = makeServerInputsForQuery(query, language);
-  if (threshold) {
-    out.filter.push({ field: 'threshold', value: threshold });
-  }
-  return out;
-}
-
-function executeEventsRequest(request, inputs, events) {
-  events.setProperties({
-    status: 'streaming',
-    reason: undefined
-  });
-
-  // let rendering for request about to go out happen
-  // before request goes out
-  run.next(function() {
-    request.streamRequest({
-      method: 'stream',
-      modelName: 'core-event',
-      query: inputs,
-      onInit(stopStream) {
-        events.set('stopStreaming', stopStream);
-      },
-      onResponse(response) {
-        const arr = response && response.data;
-        if (arr) {
-          run.next(function() {
-            arr.forEach(hasherizeEventMeta);
-            const data = events.get('data');
-            const goal = events.get('goal');
-            data.pushObjects(arr);
-            if (goal && data.length >= goal) {
-              events.get('stopStreaming')();
-            }
-          });
-        }
-      },
-      onError(response = {}) {
-        const { code, meta: { message } = {} } = response;
-        events.setProperties({
-          status: 'error',
-          reason: code,
-          message
-        });
-      },
-      onCompleted() {
-        events.set('status', 'complete');
-      },
-      onStopped() {
-        events.set('status', 'stopped');
-      }
-    });
-  });
 }
 
 function executeMetaValuesRequest(request, inputs, values) {
@@ -209,25 +144,6 @@ function executeMetaValuesRequest(request, inputs, values) {
       });
     });
   });
-}
-
-/**
- * Given a Core service ID, computes the input parameters required to submit that request info about that service.
- * For example, a list of meta keys, a hashtable of meta value aliases, etc.
- * @param {string|number} serviceId The ID of the Core service whose info is to be queried.
- * @public
- */
-function makeServerInputsForServiceInfo(serviceId) {
-  assert(
-    'Cannot make a core query without a service id.',
-    !isBlank(serviceId)
-  );
-
-  return {
-    filter: [
-      { field: 'endpointId', value: serviceId }
-    ]
-  };
 }
 
 /**
@@ -332,11 +248,8 @@ function uriEncodeMetaFilterConditions(conditions = []) {
 export {
   buildEventStreamInputs,
   makeServerInputsForQuery,
-  makeServerInputsForEventCount,
-  executeEventsRequest,
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
-  makeServerInputsForServiceInfo,
   parseEventQueryUri,
   uriEncodeEventQuery
 };

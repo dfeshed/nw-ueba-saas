@@ -1,4 +1,7 @@
-import { queryPromiseRequest, serviceIdFilter } from '../util/query-util';
+import {
+  queryPromiseRequest,
+  serviceIdFilter
+} from './utils';
 
 /**
  * Fetch the language for a given service.

@@ -1,10 +1,10 @@
 import {
   conditionsFilter,
-  nwEncodeMetaFilterConditions,
+  encodeMetaFilterConditions,
   serviceIdFilter,
   streamingRequest,
   timeRangeFilter
-} from '../util/query-util';
+} from './utils';
 
 /**
  * Fetch the number of event results for a given query.
@@ -22,7 +22,7 @@ export default function fetchStreamingEvents(queryNode, language, limit, batch, 
     filter: [
       serviceIdFilter(queryNode.serviceId),
       timeRangeFilter(queryNode.startTime, queryNode.endTime),
-      conditionsFilter(nwEncodeMetaFilterConditions(queryNode.metaFilter.conditions, language))
+      conditionsFilter(encodeMetaFilterConditions(queryNode.metaFilter.conditions, language))
     ],
     stream: { limit, batch }
   };

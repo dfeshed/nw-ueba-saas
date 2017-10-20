@@ -1,11 +1,11 @@
 import {
   conditionsFilter,
-  nwEncodeMetaFilterConditions,
+  encodeMetaFilterConditions,
   serviceIdFilter,
   streamPromiseRequest,
   thresholdFilter,
   timeRangeFilter
-} from '../util/query-util';
+} from './utils';
 
 /**
  * Fetch the number of event results for a given query.
@@ -24,7 +24,7 @@ export default function fetchCount(serviceId, startTime, endTime, conditions, la
       serviceIdFilter(serviceId),
       thresholdFilter(threshold),
       timeRangeFilter(startTime, endTime),
-      conditionsFilter(nwEncodeMetaFilterConditions(conditions, language))
+      conditionsFilter(encodeMetaFilterConditions(conditions, language))
     ]
   };
   return streamPromiseRequest(

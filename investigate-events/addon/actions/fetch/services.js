@@ -1,4 +1,8 @@
-import { findAllPromiseRequest, queryPromiseRequest, serviceIdFilter } from '../util/query-util';
+import {
+  findAllPromiseRequest,
+  queryPromiseRequest,
+  serviceIdFilter
+} from './utils';
 
 /**
  * Fetch all of the services to which we're connected.

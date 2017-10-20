@@ -4,24 +4,24 @@ The recon addon can be used by defining just one component in your template:
 
 ```hbs
 {{recon-container
-  endpointId=model.recon.endpointId
-  eventId=model.recon.sessionId
-  meta=model.recon.metas
-  index=model.recon.index
-  total=model.recon.total
-  isExpanded=model.recon.isExpanded
+  endpointId=state.recon.serviceId
+  eventId=state.recon.sessionId
+  meta=state.recon.metas
+  index=state.recon.index
+  total=state.recon.total
+  isExpanded=state.recon.isExpanded
   closeAction=(route-action 'reconClose')
   expandAction=(route-action 'reconExpand')
   shrinkAction=(route-action 'reconShrink')
-  language=model.queryNode.value.language
-  aliases=model.queryNode.value.aliases
+  language=state.dictionaries.language
+  aliases=state.dictionaries.aliases
 }}
 ```
 
 ## Inputs
 
-* `endpointId`, `Number`, __required__, the id for the endpoint for the event being reconstructed
-* `eventId`, `Number`, __required__, the id of the event being reconstructed
+* `endpointId`, `Number`, __required__, the id for the service for the event being reconstructed
+* `eventId`, `Number`, __required__, the id of the session being reconstructed
 * `meta`, `Array: Meta`, an array of meta for meta details, if this array is not provided, Recon will fetch it
 * `index`, `Number`, 0 based index of item in result set (if viewing item from result set)
 * `total`, `Number`, Total number of results in result (if viewing item from result set)

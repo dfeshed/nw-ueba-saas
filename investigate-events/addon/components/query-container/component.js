@@ -8,6 +8,7 @@ import { queryBodyClass } from 'investigate-events/reducers/investigate/data-sel
 import { percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setReconPanelSize } from 'investigate-events/actions/interaction-creators';
 import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
+import EventColumnGroups from 'investigate-events/helpers/event-column-config';
 
 const stateToComputed = (state) => ({
   defaultMetaGroup: defaultMetaGroup(state),
@@ -41,11 +42,14 @@ const QueryContainerComponent = Component.extend({
     // TODO - make selector
     let idx = -1;
     if (sessionId && !isEmpty(items)) {
-      const index = this._indexOfBy(items, 'sessionId', sessionId);
-      this.set('model.recon.index', index);
-      idx = index;
+      idx = this._indexOfBy(items, 'sessionId', sessionId);
     }
     return idx;
+  },
+
+  init() {
+    this._super(...arguments);
+    this.set('eventColumnGroups', EventColumnGroups.create());
   },
 
   /**

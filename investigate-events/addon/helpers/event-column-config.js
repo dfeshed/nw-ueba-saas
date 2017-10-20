@@ -1,32 +1,28 @@
-import Ember from 'ember';
+import EmberObject from 'ember-object';
+import computed from 'ember-computed';
 
-const {
-  computed,
-  Object: EmberObject
-} = Ember;
-
-const baseColumns = [
+const BASE_COLUMNS = [
   { field: 'time', title: 'Time', width: 100 },
   { field: 'medium', title: 'Event Type' },
   { field: 'custom.theme', title: 'Theme' },
   { field: 'size', title: 'Size' }
 ];
 
-const groups = [
+const GROUPS = [
   {
     name: 'List View',
-    columns: baseColumns.concat([
+    columns: BASE_COLUMNS.concat([
       { field: 'custom.meta-summary', title: 'Summary', width: 'auto' }
     ])
   }, {
     name: 'Details View',
-    columns: baseColumns.concat([
+    columns: BASE_COLUMNS.concat([
       { field: 'custom.theme', title: 'Event Theme' },
       { field: 'custom.meta-details', title: 'Details', width: 'auto' }
     ])
   }, {
     name: 'Log View',
-    columns: baseColumns.concat([
+    columns: BASE_COLUMNS.concat([
       { field: 'log', width: 'auto' },
       { field: 'ip.src' },
       { field: 'ip.dst' },
@@ -35,7 +31,7 @@ const groups = [
     ])
   }, {
     name: 'Network View',
-    columns: baseColumns.concat([
+    columns: BASE_COLUMNS.concat([
       { field: 'ip.proto' },
       { field: 'ip.src' },
       { field: 'tcp.srcport' },
@@ -46,12 +42,14 @@ const groups = [
 ];
 
 export default EmberObject.extend({
+  _selected: undefined,
+
   /**
    * List of all available column groups.
    * @type {object[]}
    * @public
    */
-  all: groups,
+  all: GROUPS,
 
   /**
    * The group from `all` that is currently selected.
@@ -59,7 +57,6 @@ export default EmberObject.extend({
    * @type {object}
    * @public
    */
-  _selected: undefined,
   selected: computed('all', {
     get() {
       return this._selected || this.get('all.firstObject');

@@ -2,7 +2,7 @@ import {
   sessionIdsFilter,
   serviceIdFilter,
   streamingRequest
-} from '../util/query-util';
+} from './utils';
 
 /**
  * Fetch a single log of a log event.

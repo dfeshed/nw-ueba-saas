@@ -15,11 +15,5 @@ export default Route.extend({
       // Get services
       this.get('redux').dispatch(initializeServices());
     }
-  },
-
-  model() {
-    // Expose the parent route's state data to this child route's template.
-    // TODO - eventually remove this when all Reduxed-up
-    return this.modelFor('application');
   }
 });

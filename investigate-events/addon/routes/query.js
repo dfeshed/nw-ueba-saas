@@ -13,6 +13,8 @@ import {
   setReconClosed
 } from 'investigate-events/actions/interaction-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
+import { eventQueryUri } from 'investigate-events/helpers/event-query-uri';
+// TODO - parseEventQueryUri/eventQueryUri What's the diff?
 
 export default Route.extend({
   accessControl: service(),
@@ -71,25 +73,9 @@ export default Route.extend({
       this.get('redux').dispatch(setReconOpen());
     }
     this.get('redux').dispatch(initializeInvestigate());
-    return this.modelFor('application');
   },
 
   actions: {
-    selectEvent(event, index) {
-      const { reconSize } = this.get('redux').getState().investigate.data;
-      const { sessionId } = event;
-      this.get('redux').dispatch(setSelectedEvent(event, index));
-      this.get('redux').dispatch(setReconOpen());
-      // this.send('contextPanelClose');
-      this.transitionTo({
-        queryParams: {
-          eventId: sessionId,
-          reconSize,
-          metaPanelSize: 'min'
-        }
-      });
-    },
-
     metaPanelSize(size = 'default') {
       const { metaPanelSize } = this.get('redux').getState().investigate.data;
       if (metaPanelSize !== size) {
@@ -98,18 +84,19 @@ export default Route.extend({
       }
     },
 
+    // TODO - Make this work
+    navDrill(queryNode, metaName, metaValue) {
+      this.transitionTo('query', eventQueryUri([
+        queryNode.get('value.definition'),
+        metaName,
+        metaValue
+      ]));
+    },
+
     reconClose() {
       this.get('redux').dispatch(setReconClosed());
       this.get('redux').dispatch(setSelectedEvent(null));
       this.transitionTo({ queryParams: { eventId: undefined, metaPanelSize: 'default' } });
-    },
-
-    reconSize(size = 'max') {
-      const { reconSize } = this.get('redux').getState().investigate.data;
-      if (reconSize !== size) {
-        this.get('redux').dispatch(setReconPanelSize(size));
-        this.transitionTo({ queryParams: { reconSize: size } });
-      }
     },
 
     reconLinkToFile(file = {}) {
@@ -132,6 +119,29 @@ export default Route.extend({
         );
         window.open(url, '_blank');
       }
+    },
+
+    reconSize(size = 'max') {
+      const { reconSize } = this.get('redux').getState().investigate.data;
+      if (reconSize !== size) {
+        this.get('redux').dispatch(setReconPanelSize(size));
+        this.transitionTo({ queryParams: { reconSize: size } });
+      }
+    },
+
+    selectEvent(event, index) {
+      const { reconSize } = this.get('redux').getState().investigate.data;
+      const { sessionId } = event;
+      this.get('redux').dispatch(setSelectedEvent(event, index));
+      this.get('redux').dispatch(setReconOpen());
+      // this.send('contextPanelClose');
+      this.transitionTo({
+        queryParams: {
+          eventId: sessionId,
+          reconSize,
+          metaPanelSize: 'min'
+        }
+      });
     },
 
     toggleReconSize() {

@@ -139,7 +139,7 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
  * @returns {string}
  * @public
  */
-export const nwEncodeMetaFilterConditions = (conditions = [], language) => {
+export const encodeMetaFilterConditions = (conditions = [], language) => {
   return conditions
     .map((condition) => {
       const { queryString, isKeyValuePair, key, value } = condition;

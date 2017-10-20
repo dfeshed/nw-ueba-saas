@@ -1,10 +1,10 @@
 import {
   conditionsFilter,
-  nwEncodeMetaFilterConditions,
+  encodeMetaFilterConditions,
   queryPromiseRequest,
   serviceIdFilter,
   timeRangeFilter
-} from '../util/query-util';
+} from './utils';
 
 /**
  * Fetch the number of event results for a given query.
@@ -21,7 +21,7 @@ export default function fetchTimeline(serviceId, startTime, endTime, conditions,
     filter: [
       serviceIdFilter(serviceId),
       timeRangeFilter(startTime, endTime),
-      conditionsFilter(nwEncodeMetaFilterConditions(conditions, language))
+      conditionsFilter(encodeMetaFilterConditions(conditions, language))
     ]
   };
   return queryPromiseRequest(
