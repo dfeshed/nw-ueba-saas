@@ -3,9 +3,17 @@
 var reconMocks = require('../recon').mockDestinations;
 var respondMocks = require('../respond').mockDestinations;
 var contextMocks = require('../context').mockDestinations;
-var investigateMocks = require('../investigate-events').mockDestinations;
+var investigateEventsMocks = require('../investigate-events').mockDestinations;
+var investigateFilesMocks = require('../investigate-files').mockDestinations;
 var preferencesMocks = require('../preferences').mockDestinations;
 
 require('mock-server').startServer({
-  subscriptionLocations: [reconMocks, respondMocks, contextMocks, investigateMocks, preferencesMocks]
+  subscriptionLocations: [
+    reconMocks,
+    respondMocks,
+    contextMocks,
+    investigateEventsMocks,
+    investigateFilesMocks,
+    preferencesMocks
+  ]
 });
