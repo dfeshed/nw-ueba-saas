@@ -20,7 +20,11 @@ const App = Application.extend({
           'i18n',
           'eventBus',
           'flashMessages'
-        ]
+        ],
+        externalRoutes: {
+          protected: 'protected',
+          'investigate-events': 'events'
+        }
       }
     }
   }

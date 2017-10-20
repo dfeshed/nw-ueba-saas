@@ -23,7 +23,8 @@ const App = Application.extend({
           'flashMessages'
         ],
         externalRoutes: {
-          protected: 'protected'
+          protected: 'protected',
+          'investigate-files': 'files'
         }
       }
     }
