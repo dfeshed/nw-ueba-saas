@@ -2,35 +2,39 @@
   <header class="rsa-investigate-query__header">
     {{bread-crumb}}
 
-    {{#if (is-equal eventResults.status 'error')}}
-      {{#rsa-panel-message messageType='query-error'}}
-        <div class="capitalize">{{or eventResults.message (t 'investigate.events.error')}}</div>
-      {{/rsa-panel-message}}
-    {{else}}
-      {{time-line
-        data=eventTimeline.data
-        status=eventTimeline.status
-        retryAction=(route-action "eventTimelineGet" queryNode true)
-        startTime=queryNode.startTime
-        endTime=queryNode.endTime}}
+    {{#if showFutureFeatures}}
+      {{#if (is-equal eventResults.status 'error')}}
+        {{#rsa-panel-message messageType='query-error'}}
+          <div class="capitalize">{{or eventResults.message (t 'investigate.events.error')}}</div>
+        {{/rsa-panel-message}}
+      {{else}}
+        {{time-line
+          data=eventTimeline.data
+          status=eventTimeline.status
+          retryAction=(route-action "eventTimelineGet" queryNode true)
+          startTime=queryNode.startTime
+          endTime=queryNode.endTime}}
+      {{/if}}
     {{/if}}
   </header>
   <section class="{{queryBodyClass}}">
     <section class="rsa-investigate-query__body-master">
-      <aside class="rsa-investigate-query__body-master-aside">
-        {{meta-view
-          group=defaultMetaGroup
-          metaKeyStates=eventResults.metaKeyStates
-          query=queryNode
-          minSizeAction=(route-action "metaPanelSize" 'min')
-          maxSizeAction=(route-action "metaPanelSize" 'max')
-          defaultSizeAction=(route-action "metaPanelSize" 'default')
-          onBack=(route-action "metaGroupSet" queryNode)
-          onFwd=(route-action "metaGroupSet" queryNode)
-          clickValueAction=(route-action "navDrill" queryNode)
-          contextLookupAction=(route-action "contextPanelOpen")
-          toggleAction=(route-action "metaGroupKeyToggle" queryNode)}}
-      </aside>
+      {{#if showFutureFeatures}}
+        <aside class="rsa-investigate-query__body-master-aside">
+          {{meta-view
+            group=defaultMetaGroup
+            metaKeyStates=eventResults.metaKeyStates
+            query=queryNode
+            minSizeAction=(route-action "metaPanelSize" 'min')
+            maxSizeAction=(route-action "metaPanelSize" 'max')
+            defaultSizeAction=(route-action "metaPanelSize" 'default')
+            onBack=(route-action "metaGroupSet" queryNode)
+            onFwd=(route-action "metaGroupSet" queryNode)
+            clickValueAction=(route-action "navDrill" queryNode)
+            contextLookupAction=(route-action "contextPanelOpen")
+            toggleAction=(route-action "metaGroupKeyToggle" queryNode)}}
+        </aside>
+      {{/if}}
       <section class="rsa-investigate-query__body-master-main">
         {{events-table
           items=eventResults.data

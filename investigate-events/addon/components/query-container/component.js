@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import get from 'ember-metal/get';
 import { isEmpty } from 'ember-utils';
 import computed from 'ember-computed-decorators';
+import config from 'ember-get-config';
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
 import { percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
@@ -32,6 +33,8 @@ const actionsToDispatch = {
 };
 
 const QueryContainerComponent = Component.extend({
+  showFutureFeatures: config.featureFlags.future,
+
   /**
    * The index of the `items` member whose id matches `selectedEventId`, if any;
    * -1 otherwise.  This is passed along to the data table.
