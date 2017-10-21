@@ -30,7 +30,7 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByUserName())) {
             BoolQueryBuilder userNameQuery = new BoolQueryBuilder();
             for (String userName : alertQuery.getFilterByUserName()) {
-                userNameQuery.should(matchQuery(Alert.USER_NAME, userName));
+                userNameQuery.should(matchQuery(Alert.USER_NAME, userName).operator(Operator.AND));
             }
             boolQueryBuilder.must(userNameQuery);
         }
