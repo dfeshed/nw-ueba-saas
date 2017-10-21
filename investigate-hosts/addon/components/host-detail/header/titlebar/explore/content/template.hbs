@@ -1,0 +1,28 @@
+{{#if fileSearchResults.length}}
+  {{#each fileSearchResults as |res index|}}
+    <div>
+      {{#rsa-content-accordion isCollapsed=(not-eq index 0) label=res.title class="host-explore__content__snapshot"}}
+        {{#each res.files as |file|}}
+          <hbox>
+            <div class="host-explore__content__header">
+              <span class="host-explore__content__header__filename"
+                {{action 'navigateToFile' file.checksumSha256 res.scanStartTime}}>
+                {{file.fileName}}
+              </span>
+              <span class="host-explore__content__header__result__ranas">
+                {{host-detail/explore/file-found-categories file=file scanTime=res.scanStartTime}}
+              </span>
+              <span class="host-explore__content__header__result"> {{file.signature}} </span>
+              <span class="host-explore__content__header__result"> {{file.path}} </span>
+              <span class="host-explore__content__header__result"> {{file.checksumSha256}}</span>
+            </div>
+          </hbox>
+        {{/each}}
+      {{/rsa-content-accordion}}
+    </div>
+  {{/each}}
+{{else if searchResultNotFound}}
+  <centered class="host-explore__no-results">
+    {{t 'investigateHosts.hosts.explore.noResultsFound'}}
+  </centered>
+{{/if}}

@@ -1,0 +1,74 @@
+{{#each appliedFilters as |control|}}
+  {{component control.filterControl config=control}}
+{{/each}}
+
+{{host-list/content-filter/filter-trigger
+  panelId='hostMoreOptions'
+  filterLabel=(t 'investigateHosts.hosts.button.addMore')}}
+
+{{#rsa-content-tethered-panel
+  isPopover=true
+  displayCloseButton=false
+  position='bottom-right'
+  panelId='hostMoreOptions'}}
+  <section class="column-chooser-input">
+    {{rsa-form-input value=searchTerm placeholder=(t 'tables.columnChooser.filterPlaceHolder')}}
+  </section>
+  <ul class="rsa-dropdown-action-list">
+    {{#each filterList as |option|}}
+      <li>
+        <label class="rsa-form-checkbox-label {{if option.selected 'checked'}}">
+          {{rsa-form-checkbox
+            checked=option.selected
+            change=(action 'onSelection' option)}}
+          {{t option.label}}
+        </label>
+      </li>
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}
+{{#rsa-form-button defaultAction=(action 'resetFilters')}}
+  {{t 'investigateHosts.hosts.button.reset'}}
+{{/rsa-form-button}}
+
+{{#rsa-form-button defaultAction=(action 'showSaveFiltersModal')}}
+  {{t 'investigateHosts.hosts.button.save'}}
+{{/rsa-form-button}}
+
+{{#if showSaveFilterModal}}
+  {{#rsa-application-modal style=decorator.style eventId='save-search' label=(t decorator.label)}}
+    <div class='modal-content rsa-save-search rsa-p-md'>
+      <label class="rsa-form-label">
+        {{t 'investigateHosts.hosts.customFilter.save.description'}}
+      </label>
+      <div class='rsa-margin name'>
+        {{rsa-form-input
+          label=(t 'investigateHosts.hosts.customFilter.save.name')
+          isError=decorator.isError
+          value=saveFilterName }}
+      </div>
+      {{#if isNameEmpty}}
+        <label class="rsa-form-label rsa-m-t-xs rsa-m-b-xs">
+          {{t 'investigateHosts.hosts.customFilter.save.emptyMessage'}}
+        </label>
+      {{/if}}
+      {{#if isNameInvalid}}
+        <label class="rsa-form-label rsa-m-t-xs rsa-m-b-xs">
+          {{t 'investigateHosts.hosts.customFilter.save.invalidInput'}}
+        </label>
+      {{/if}}
+      <div class="rsa-btn-group align-right rsa-m-md">
+        {{#rsa-form-button style='primary' class= "rsa-m-r-md" isDisabled=isError click=(action 'saveFilter')}}
+          {{t 'investigateHosts.hosts.button.save'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button click=(action 'closeSaveFilterModal')}}
+          {{t 'investigateHosts.hosts.button.cancel'}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}
+
+
+
+

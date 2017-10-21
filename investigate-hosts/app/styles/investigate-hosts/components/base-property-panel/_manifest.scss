@@ -1,0 +1,76 @@
+$border-color: #03a9f4;
+$panel-background-color: #1b1d1e;
+$checkbox-label-color: #D8D8D8;
+
+.tool-tip-value {
+  padding: rsa-whitespace();
+  width: 200px;
+  word-wrap: break-word
+}
+
+.divider {
+  border-top: 1px solid rsa-color(gray);
+  border-bottom: 0;
+  margin: 1rem 0;
+}
+
+.host-property-panel {
+  padding: 0 rsa-whitespace();
+  border-top: 1px solid $border-color;
+  background: $panel-background-color;
+}
+
+.header-section {
+  &__title {
+    @include rsa-font(header, small);
+    font-size: 0.85rem;
+    color: rsa-color(blue);
+    padding: 1rem 0;
+  }
+  &__search-box {
+    .rsa-form-input {
+      width: 100%;
+      input {
+        padding-left: rsa-whitespace(more);
+      }
+    }
+    .filter-icon {
+      position: absolute;
+      top: 1rem;
+      color: rsa-color(gray);
+    }
+  }
+  &__check-box {
+    label {
+      color: $checkbox-label-color;
+    }
+    padding: rsa-whitespace() 0;
+  }
+}
+
+.content-section {
+  &__section-name {
+    font-size: 14px;
+    line-height: 20px;
+    color: rsa-color(gray);
+  }
+  &__property {
+    height: 1.7rem;
+    .property-name {
+      @include rsa-font(body, small);
+      display: block;
+      text-align: right;
+      padding-right: rsa-whitespace();
+      color: rsa-color(gray, light);
+    }
+    .property-value {
+      @include rsa-font(body, small);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      display: block;
+      line-height: 1.25rem;
+      color: rsa-color(white);
+    }
+  }
+}

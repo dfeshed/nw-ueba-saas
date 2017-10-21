@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+/* putting the engines styles */
+@import 'investigate-hosts/manifest';
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.engine-dummy {
+  color: rsa-color(gray, light);
+
+  .rsa-logo {
+    .rsa-logo__title {
+      color: rsa-color(green);
+      text-align: center;
+      font-size: 25px;
+    }
+  }
+
+  a:-webkit-any-link {
+    text-decoration: none;
+  }
+}
+
+.engine {
+  height: 100vh;
+}
+
+.host-overview .host-properties-box {
+  max-height: 100%;
+}

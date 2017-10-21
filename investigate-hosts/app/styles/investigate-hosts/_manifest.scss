@@ -1,0 +1,91 @@
+@import './_styles';
+@import 'components/manifest';
+
+@mixin detail-sizing($width) {
+  .host-container {
+    &-list {
+      right: $width;
+      background-color: rsa-color(black, base, $rsa-nearly-transparent);
+    }
+    &-detail {
+      width: $width;
+    }
+  }
+}
+
+// overwrite the component-lib scss - rsa-data-table__column-chooser
+.panel-content.left-bottom {
+  section {
+    padding-bottom: 0;
+    padding-right: 0;
+    section.column-chooser-input {
+      margin-right: 15px;
+    }
+    ul.column-chooser-lists {
+      height: 30rem;
+      width: 20.2rem;
+    }
+  }
+}
+
+#rsa-data-table__column-selctor__sorted-columns {
+  .rsa-form-checkbox-label::before {
+    top: 8px;
+  }
+}
+
+.host-container {
+  position: relative;
+  @include rsa-vendor-prefix(flex-grow, 1);
+  @include rsa-col(justify, fill);
+  &-list {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition-property: background-color right;
+    transition-duration: 0.3s;
+    @include rsa-row(justify, fill);
+    overflow: hidden;
+    flex-wrap: nowrap;
+    height: 100%;
+    a {
+      color: #4fc3f7;
+      text-decoration: underline;
+    }
+  }
+  &-detail {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    transition: width .3s;
+    overflow: hidden;
+  }
+  &.detail-is-open {
+    @include detail-sizing(100%)
+  }
+
+  .rsa-data-table-body-row {
+    &.is-selected {
+      .rsa-data-table-body-cell {
+        background-color: transparent;
+      }
+      background-color: rsa-color(blue, base, 0.6);
+      &:hover {
+        .rsa-data-table-body-cell {
+          background-color: transparent;
+        }
+        background-color: rsa-color(blue, base, 0.6);
+      }
+    }
+    &:hover {
+      .rsa-data-table-body-cell {
+        background-color: transparent;
+      }
+      background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+    }
+  }
+}

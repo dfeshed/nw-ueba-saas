@@ -1,0 +1,69 @@
+
+{{#rsa-content-tethered-panel-trigger
+  panel='columnSelectorpanel'
+  triggerEvent='click'
+  class='rsa-data-table-header__column-selector'}}
+  {{rsa-icon
+  name='cog'
+  style='filled'
+  title=(t 'investigateHosts.hosts.button.gearIcon')
+  click=(action 'clearSearchTerm') }}
+{{/rsa-content-tethered-panel-trigger}}
+
+{{#rsa-content-tethered-panel
+  displayCloseButton=false
+  position='left-bottom'
+  panelClass="rsa-data-table-column-selector-panel"
+  panelId='columnSelectorpanel'}}
+  <section>
+    <section class="column-chooser-input">
+      {{rsa-form-input value=searchTerm placeholder=(t 'tables.columnChooser.filterPlaceHolder')}}
+    </section>
+    <ul id="rsa-data-table__column-selctor__sorted-columns" class="column-chooser-lists">
+      {{#each table.sortedColumns as |column|}}
+        {{#if (not-eq column.dataType "checkbox")}}
+          <li>
+            <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
+              {{rsa-form-checkbox
+                checked=column.selected
+                change=(action 'toggleColumn' column)}}
+              {{t column.title}}
+            </label>
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+  </section>
+{{/rsa-content-tethered-panel}}
+
+{{#sortable-group
+  tagName="div"
+  class="rsa-data-table-header-row js-header-row"
+  direction="x"
+  onChange=(action "reorderColumns" target=table) as |group|}}
+  {{#each table.visibleColumns as |column index|}}
+    {{#rsa-data-table/header-cell
+      column=column
+      index=index
+      model=column
+      group=group
+      spacing=3
+      currentSort=currentSort
+      handle=moveHandleSelector
+      translateTitle=translateTitles}}
+      {{#if column.headerComponentClass}}
+        <label class="rsa-form-checkbox-label {{if isAllHostSelected 'checked'}}">
+          {{rsa-form-checkbox checked=isAllHostSelected change=(action 'toggleAllSelection')}}
+        </label>
+      {{else}}
+        <span class="js-move-handle">{{translate-title column}}</span>
+      {{/if}}
+      {{#unless column.disableSort}}
+        {{rsa-icon
+          click=(action 'sort' column)
+          name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+          class="sort"}}
+      {{/unless}}
+    {{/rsa-data-table/header-cell}}
+  {{/each}}
+{{/sortable-group}}

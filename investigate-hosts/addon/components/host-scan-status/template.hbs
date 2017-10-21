@@ -1,0 +1,9 @@
+{{status}}
+
+{{#if agent.hasScanStatus}}
+  {{#if agent.canStartScan}}
+    {{rsa-icon name='control-play' class='rsa-green-color rsa-cursor-pointer' click=(action 'startScan')}}
+  {{else}}
+    {{rsa-icon name='control-stop' class='rsa-red-color rsa-cursor-pointer' click=(action 'stopScan')}}
+  {{/if}}
+{{/if}}

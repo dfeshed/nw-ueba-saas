@@ -50,6 +50,7 @@ prepareApp packager
 prepareApp recon
 prepareApp style-guide
 prepareApp investigate-events
+prepareApp investigate-hosts
 prepareApp investigate-files
 prepareApp respond
 prepareApp context

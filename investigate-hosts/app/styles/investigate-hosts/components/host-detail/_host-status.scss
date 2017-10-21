@@ -1,0 +1,10 @@
+.host-overview.host-item {
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+}
+
+.host-overview.host-item.is-overview-panel-visible {
+  max-height: 100px;
+  transition: max-height 0.25s ease-in;
+}

@@ -1,0 +1,105 @@
+.host-explore {
+  min-width: 250px;
+  flex: 5;
+  border: 1px solid #4A4A4A;
+  background: black;
+  height: 2.5rem;
+
+  &__loader {
+    text-align: right;
+    /* width: 0; */
+    float: right;
+    height: 0;
+    padding-right: 13px;
+    padding-top: 6px;
+  }
+  &__content {
+    height: 593px;
+    width: 100%;
+    border: 1px solid #4A4A4A;
+    background-color: rsa-color(black);
+    position: absolute;
+    margin-top: 2.5rem;
+    z-index: 300;
+    overflow: auto;
+    .rsa-content-accordion .content {
+      padding: 0.3rem;
+    }
+    &__snapshot {
+        padding: 0;
+        h3 {
+        color: rsa-color(blue);
+        font-weight: bold;
+      }
+    }
+
+    &__heaer
+    &__header {
+      word-break: break-all;
+      padding: 0.5rem;
+      font-size:0.8rem;
+      &__filename {
+        color: rsa-color(blue);
+        padding-right: 12px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      &__result {
+        color: rsa-color(gray, light);
+        font-family: rsa-font('Open Sans');
+        padding-right: 12px;
+        &__ranas{
+          color: rsa-color(gray, light);
+          padding-right: 0.5rem;
+          margin-left: -13px;
+          &__list{
+            color: rsa-color(blue);
+          }
+        }
+      }
+    }
+  }
+  &__no-results {
+    color: rsa-color(white);
+    font-weight: bold;
+  }
+
+  .rsa-form-input {
+    width: 93%;
+    input {
+      border: none;
+      background: rsa-color(black);
+      line-height: normal;
+    }
+    .rsa-form-label {
+      display: none;
+    }
+  }
+  .rsa-form-button {
+    border: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding-top: 8px;
+    padding-left: 8px;
+  }
+
+  .content hbox {
+    margin-left: 1rem;
+    line-height: 17px;
+  }
+  .search-label {
+    &__close {
+      cursor: pointer;
+    }
+    &__label {
+      margin: 5px;
+      cursor: pointer;
+    }
+  }
+}
+.titlebar__buttons-holder {
+  padding-left: rsa-whitespace();
+}
+.label-content {
+  width: 93%;
+}

@@ -1,0 +1,20 @@
+{{#rsa-data-table
+  items=processList
+  selectedIndex=0
+  lazy=true
+  onRowClick=(action "handleRowClickAction")
+  columnsConfig=columnsConfig}}
+  {{#rsa-data-table/header as |column|}}
+    {{t column.title}}
+    {{rsa-icon size="small"
+      click=(action 'sort' column)
+      name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body
+    noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
+    as |item index column|}}
+    {{#rsa-data-table/body-cell column=column}}
+      {{get item column.field}}
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

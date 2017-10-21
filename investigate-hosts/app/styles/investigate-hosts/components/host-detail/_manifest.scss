@@ -1,0 +1,53 @@
+@import "variables";
+@import 'host-content';
+@import 'host-detail-datatable';
+@import 'host-autoruns';
+@import 'host-files';
+@import 'security-configuration';
+@import "host-process";
+@import "host-system-information";
+@import 'host-explore';
+@import 'host-overview';
+@import 'simple-detail-display';
+@import 'host-status';
+@import 'file-found-categories';
+@import 'actionbar';
+@import 'header';
+
+.host-overview {
+  border-bottom: 1px solid rsa-color(gray, light);
+  .host-item {
+    background-color: transparent;
+    padding: 0;
+    overflow: auto;
+  }
+  .host-action {
+    padding: 0 3rem;
+    text-transform: uppercase;
+    height: 4rem;
+    &.rsa-content-definition {
+      .label {
+        vertical-align: bottom;
+        box-sizing: border-box;
+        color: $host-detail-label-color;
+        margin-bottom: 0.5rem;
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-size: .7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: left;
+      }
+      .value {
+        color: rsa-color(white);
+        font-weight: bold;
+      }
+    }
+  }
+  .host-properties-box {
+    border-top: 1px solid rsa-color(blue);
+    max-height: calc(100vh - 14rem);
+    background-color: $endpoint-property-panel-box-color;
+  }
+}

@@ -1,0 +1,32 @@
+<box xs='12'>
+  <div class='rsa-form-radio-group'>
+    <h3 class='rsa-form-radio-group-label'>{{t 'investigateHosts.hosts.summary.securityConfig.arrangeBy'}}</h3>
+    <label class="rsa-form-radio-label {{if (eq 'alphabetical' arrangeBy) 'checked'}}">
+      {{radio-button value="alphabetical" groupValue=arrangeBy }}
+      {{t 'investigateHosts.hosts.summary.securityConfig.alphabetical'}}
+    </label>
+
+    <label class="rsa-form-radio-label {{if sameConfigStatus 'disabled'}} {{if (eq 'status' arrangeBy) 'checked'}}">
+      {{radio-button value="status" groupValue=arrangeBy disabled=sameConfigStatus}}
+      {{t 'investigateHosts.hosts.summary.securityConfig.status'}}
+    </label>
+  </div>
+</box>
+<div class="securityConfigWrapper col-xs-12">
+  {{#each osTypeSecurityConfig as |config|}}
+    <box class="security-configuration__column">
+      <box class="securityConfigIcon">
+        {{#if config.disabled}}
+          {{rsa-icon name='delete-1' class="rsa-red-color"}}
+        {{else}}
+          {{rsa-icon name='check-2' class="rsa-green-color"}}
+        {{/if}}
+      </box>
+      <box class="securityConfigDisc">
+        <span title={{config.label}}>
+          {{config.value}}
+        </span>
+      </box>
+    </box>
+  {{/each}}
+</div>

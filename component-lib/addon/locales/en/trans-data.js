@@ -1586,5 +1586,712 @@ export default {
       signatureAscending: 'Signature (ascending)',
       signatureDescending: 'Signature (descending)'
     }
+  },
+  investigateHosts: {
+    title: 'Investigate',
+    loading: 'Loading',
+    loadMore: 'Load More',
+    common: {
+      save: 'Save',
+      enable: 'Enable',
+      saveSuccess: 'Saved successfully',
+      emptyMessage: 'No matching results'
+    },
+    property: {
+      file: {
+        companyName: 'Company Name',
+        checksumMd5: 'MD5',
+        checksumSha1: 'SHA1',
+        checksumSha256: 'SHA256',
+        machineOsType: 'Operating System',
+        timeCreated: 'Created',
+        timeModified: 'Modified',
+        timeAccessed: 'Accessed',
+        createTime: 'Process Created',
+        pid: 'PID',
+        eprocess: 'EPROCESS',
+        path: 'Full Path',
+        sameDirectoryFileCounts: {
+          nonExe: '# Non-Executables',
+          exe: '# Executables',
+          subFolder: '# Folder',
+          exeSameCompany: '#Same company Executables'
+        },
+        elf: {
+          classType: 'Class Type',
+          data: 'Data',
+          entryPoint: 'Entry Point',
+          features: 'Features',
+          type: 'Type',
+          sectionNames: 'Section Names',
+          importedLibraries: 'Imported Libraries'
+        },
+        pe: {
+          timeStamp: 'Timestamp',
+          imageSize: 'Image Size',
+          numberOfExportedFunctions: 'Exported Functions',
+          numberOfNamesExported: 'Exported Names',
+          numberOfExecuteWriteSections: 'Execute Write Sections',
+          features: 'Features',
+          sectionNames: 'Section Names',
+          importedLibraries: 'Imported Libraries',
+          resources: {
+            originalFileName: 'File Name',
+            company: 'Company',
+            description: 'Description',
+            version: 'Version'
+          }
+        },
+        macho: {
+          uuid: 'Uuid',
+          identifier: 'Identifier',
+          minOsxVersion: 'Osx Version',
+          features: 'Features',
+          flags: 'Flags',
+          numberOfLoadCommands: 'Loaded Commands',
+          version: 'Version',
+          sectionNames: 'Section Names',
+          importedLibraries: 'Imported Libraries'
+        },
+        signature: {
+          timeStamp: 'Timestamp',
+          thumbprint: 'Thumbprint',
+          features: 'Features',
+          signer: 'Signer'
+        },
+        process: {
+          title: 'Process',
+          processName: 'Process Name',
+          eprocess: 'EPROCESS',
+          integrityLevel: 'Integrity',
+          parentPath: 'Parent Path',
+          floatingThreadCount: 'Thread Count',
+          owner: 'Owner',
+          sessionId: 'Session Id',
+          createTime: 'Created',
+          imageBase: 'Image Base',
+          imageSize: 'Image Size'
+        },
+        entropy: 'Entropy',
+        firstFileName: 'FileName',
+        format: 'Format',
+        sectionNames: 'Section Names',
+        importedLibraries: 'Imported Libraries',
+        size: 'Size',
+        imageBase: 'Image Base',
+        imageSize: 'Image Size',
+        loaded: 'Loaded'
+      }
+    },
+    process: {
+      title: 'Process',
+      processName: 'Process Name',
+      properties: 'Process Properties',
+      pid: 'PID',
+      parentId: 'Parent Process',
+      userName: 'User Name',
+      hostCount: 'Host Count',
+      creationTime: 'Creation Time',
+      hashlookup: 'Hash Lookup',
+      signature: 'Signature',
+      path: 'Path',
+      launchArguments: 'Launch Arguments',
+      message: {
+        noResultsMessage: 'No process information were found'
+      },
+      dll: {
+        dllName: 'DLL Name',
+        filePath: 'File Path',
+        title: 'Loaded Libraries',
+        message: {
+          noResultsMessage: 'No loaded library information were found'
+        },
+        note: {
+          windows: 'Note: Displays libraries that are not signed by Microsoft',
+          mac: 'Note: Displays libraries that are not signed by Apple.'
+        }
+      }
+    },
+    tabs: {
+      overview: 'Overview',
+      process: 'Process',
+      autoruns: 'Autoruns',
+      files: 'Files',
+      drivers: 'Drivers',
+      systemInformation: 'System Information',
+      services: 'Services',
+      tasks: 'Tasks',
+      hostFileEntries: 'Host File Entries',
+      mountedPaths: 'Mounted Paths',
+      networkShares: 'Network Shares',
+      bashHistories: 'Bash History',
+      libraries: 'Libraries',
+      explore: 'Explore'
+    },
+    systemInformation: {
+      ipAddress: 'IP Address',
+      dnsName: 'DNS Name',
+      fileSystem: 'File System',
+      path: 'Path',
+      remotePath: 'Remote Path',
+      options: 'Options',
+      name: 'Name',
+      description: 'Description',
+      permissions: 'Permissions',
+      type: 'Type',
+      maxUses: 'Max Uses',
+      currentUses: 'Current USES',
+      userName: 'User Name',
+      command: 'Command',
+      commandNote: 'Note: Most recent commands are on the top',
+      filterUser: 'Type to filter user',
+      filterBy: 'Filter By User'
+    },
+    hosts: {
+      title: 'Hosts',
+      search: 'search',
+      button: {
+        addMore: 'Add more +',
+        loadMore: 'Load More',
+        exportCSV: 'Export CSV',
+        export: 'Export to JSON',
+        exportTooltip: 'Exports all scan data categories for the host.',
+        downloading: 'Downloading',
+        initiateScan: 'Start Scan',
+        cancelScan: 'Stop Scan',
+        delete: 'Delete',
+        cancel: 'Cancel',
+        save: 'Save',
+        saveAs: 'Save As...',
+        clear: 'Clear',
+        search: 'Search',
+        ok: 'Ok',
+        moreActions: 'More Actions',
+        explore: 'Explore',
+        gearIcon: 'Click here to manage columns',
+        overview: 'Show/Hide Overview Panel',
+        settings: 'Settings',
+        meta: 'Show/Hide Meta',
+        close: 'Close Reconstruction',
+        shrink: 'Contract View',
+        update: 'Update',
+        reset: 'Reset'
+      },
+      autoruns: {
+        services: {
+          initd: 'INIT.D',
+          systemd: 'SYSTEM.D'
+        }
+      },
+      ranas: {
+        ranas: 'Ran as',
+        categories: {
+          Process: 'Process',
+          Libraries: 'Library',
+          Autorun: 'Autorun',
+          Service: 'Service',
+          Task: 'Task',
+          Driver: 'Driver',
+          Thread: 'Thread'
+        }
+      },
+      explore: {
+        input: {
+          placeholder: 'Search by file name, path or hash'
+        },
+        noResultsFound: 'No Results Found.',
+        fileName: 'File Name: ',
+        path: 'Path: ',
+        hash: 'Hash: ',
+        search: {
+          minimumtext: {
+            required: 'Enter minimum three characters'
+          }
+        }
+      },
+      footerLabel: {
+        files: 'files'
+      },
+      summary: {
+        snapshotTime: 'Snapshot Time',
+        overview: {
+          typeToFilterOptions: 'Type to filter options',
+          noSnapShots: 'No snapshots available'
+        },
+        body: {
+          ipAddresses: 'IP Addresses ({{count}})',
+          securityConfig: 'Security Configuration',
+          loggedUsers: 'Logged-in Users ({{count}})',
+          user: {
+            administrator: 'Administrator',
+            sessionId: 'Session ID',
+            sessionType: 'Session Type',
+            groups: 'Groups'
+          }
+        },
+        securityConfig: {
+          arrangeBy: 'ARRANGE BY',
+          alphabetical: 'Alphabetical',
+          status: 'Status'
+        }
+      },
+      selected: 'selected ({{count}})',
+      list: {
+        noResultsMessage: 'No Results Found.'
+      },
+      filters: {
+        systemFilter: 'This search is system defined and cannot be edited.',
+        since: 'Since',
+        customDateRange: 'Custom Date Range',
+        customStartDate: 'Start Date',
+        customEndDate: 'End Date',
+        agentStatus: {
+          lastSeenTime: 'Agent Not Seen Since'
+        }
+      },
+      restrictionTypeOptions: {
+        EQUALS: 'equals',
+        CONTAINS: 'contains',
+        GT: '>',
+        LT: '<',
+        GTE: '>=',
+        LTE: '<=',
+        NOT_EQ: '!=',
+        BETWEEN: 'between',
+        LAST_5_MINUTES: 'Last 5 Minutes',
+        LAST_10_MINUTES: 'Last 10 Minutes',
+        LAST_15_MINUTES: 'Last 15 Minutes',
+        LAST_30_MINUTES: 'Last 30 Minutes',
+        LAST_HOUR: 'Last 1 Hour',
+        LAST_3_HOURS: 'Last 3 Hours',
+        LAST_6_HOURS: 'Last 6 Hours',
+        LAST_TWELVE_HOURS: 'Last 12 Hours',
+        LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
+        LAST_FORTY_EIGHT_HOURS: 'Last 2 Days',
+        LAST_5_DAYS: 'Last 5 Days',
+        LAST_7_DAYS: 'Last 7 Days',
+        LAST_14_DAYS: 'Last 14 Days',
+        LAST_30_DAYS: 'Last 30 Days',
+        LAST_HOUR_AGO: '1 Hour ago',
+        LAST_TWENTY_FOUR_HOURS_AGO: '24 Hours ago',
+        LAST_5_DAYS_AGO: '5 Days ago',
+        ALL_TIME: 'All Data'
+      },
+      footer: '{{count}} of {{total}} hosts',
+      column: {
+        id: 'Agent ID',
+        analysisData: {
+          iocs: 'IOC Alerts',
+          machineRiskScore: 'Risk Score'
+        },
+        agentStatus: {
+          scanStatus: 'Agent Scan Status',
+          lastSeenTime: 'Agent Last Seen'
+        },
+        machine: {
+          machineOsType: 'Operating System',
+          machineName: 'Machine Name',
+          id: 'Agent ID',
+          agentVersion: 'Agent Version',
+          scanStartTime: 'Last Scan Time',
+          scanRequestTime: 'Scan Request Time',
+          scanType: 'scanType',
+          scanTrigger: 'Scan Trigger',
+          securityConfigurations: 'Security Configurations',
+          hostFileEntries: {
+            ip: 'Host File IP',
+            hosts: 'Host Entires'
+          },
+          users: {
+            name: 'User Name',
+            sessionId: 'User SessionID',
+            sessionType: 'User Session Type',
+            isAdministrator: 'User IsAdmin',
+            groups: 'User Groups',
+            domainUserQualifiedName: 'User QualifiedName',
+            domainUserId: 'User Domain UserID',
+            domainUserOu: 'User Domain User OU',
+            domainUserCanonicalOu: 'User Domain User Canonical OU',
+            host: 'User Host',
+            deviceName: 'User DeviceName'
+          },
+          errors: {
+            time: 'Error - Time',
+            fileID: 'Error - FileID',
+            line: 'Error - Line',
+            number: 'Error - Number',
+            value: 'Error - Value',
+            param1: 'Error - Param1',
+            param2: 'Error - Param2',
+            param3: 'Error - Param3',
+            info: 'Error - Info',
+            level: 'Error - Level',
+            type: 'Error - Type'
+          },
+          networkShares: {
+            path: 'NetworkShare - Path',
+            name: 'NetworkShare - Name',
+            description: 'NetworkShare - Description',
+            type: 'NetworkShare - Type',
+            permissions: 'NetworkShare - Permissions',
+            maxUses: 'NetworkShare - MaxUses',
+            currentUses: 'NetworkShare - CurrentUses'
+          },
+          mountedPaths: {
+            path: 'MountedPaths - Path',
+            fileSystem: 'MountedPaths - FileSystem',
+            options: 'MountedPaths - Options',
+            remotePath: 'MountedPaths - RemotePath'
+          },
+          securityProducts: {
+            type: 'SecurityProducts - Type',
+            instance: 'SecurityProducts - Instance',
+            displayName: 'SecurityProducts - DisplayName',
+            companyName: 'SecurityProducts - CompanyName',
+            version: 'SecurityProducts - Version',
+            features: 'SecurityProducts - Features'
+          },
+          networkInterfaces: {
+            name: 'NetworkInterface - Name',
+            macAddress: 'NetworkInterface - MacAddress',
+            networkId: 'NetworkInterface - NerworkID',
+            ipv4: 'IPv4',
+            ipv6: 'IPv6',
+            gateway: 'NetworkInterface - Gateway',
+            dns: 'NetworkInterface - DNS',
+            promiscuous: 'NetworkInterface - Promiscous'
+          }
+        },
+        riskScore: {
+          moduleScore: 'Module Score',
+          highestScoringModules: 'Highest Scoring Module'
+        },
+        machineIdentity: {
+          machineName: 'Machine Name',
+          group: 'Agent Group',
+          agentMode: 'Agent Mode',
+          agent: {
+            exeCompileTime: 'Agent - User Mode Compile Time',
+            sysCompileTime: 'Agent - Driver Compile Time',
+            packageTime: 'Agent - Package Time',
+            installTime: 'Agent - Install Time',
+            serviceStartTime: 'Agent - Service Start Time',
+            serviceEprocess: 'Agent - Service Eprocess',
+            serviceProcessId: 'Agent - Service ProcessId',
+            serviceErrorCode: 'Agent - Service ErrorCode',
+            serviceStatus: 'Agent - Service Status',
+            driverStatus: 'Agent - Driver Status',
+            driverErrorCode: 'Agent - Driver ErrorCode',
+            blockingEnabled: 'Agent - Blocking Enabled',
+            blockingUpdateTime: 'Agent - Blocking Update Time'
+          },
+          operatingSystem: {
+            description: 'OS - Description',
+            buildNumber: 'OS - BuildNumber',
+            servicePack: 'OS - ServicePack',
+            directory: 'OS - Directory',
+            kernelId: 'OS - Kernel Id',
+            kernelName: 'OS - Kernel Name',
+            kernelRelease: 'OS - Kernel Release',
+            kernelVersion: 'OS - Kernel Version',
+            distribution: 'OS - Distribution',
+            domainComputerId: 'OS - Domain ComputerID',
+            domainComputerOu: 'OS - Domain Computer OU',
+            domainComputerCanonicalOu: 'OS - Domain Computer Canonical OU',
+            domainOrWorkgroup: 'OS - DomainOrWorkgroup',
+            domainRole: 'OS - DomainRole',
+            lastBootTime: 'OS - Last BootTime'
+          },
+          hardware: {
+            processorArchitecture: 'Hardware - Processor Architecture',
+            processorArchitectureBits: 'Hardware - Processor Architecture Bits',
+            processorCount: 'Hardware - Processor Count',
+            processorName: 'Hardware - Processor Name',
+            totalPhysicalMemory: 'Hardware - Total Physical Memory',
+            chassisType: 'Hardware - ChassisType',
+            manufacturer: 'Hardware - Manufacturer',
+            model: 'Hardware - Model',
+            serial: 'Hardware - Serial',
+            bios: 'Hardware - Bios'
+          },
+          locale: {
+            defaultLanguage: 'Locale - Default Language',
+            isoCountryCode: 'Locale - Country Code',
+            timeZone: 'Locale - TimeZone'
+          },
+          knownFolder: {
+            appData: 'Folder - AppData',
+            commonAdminTools: 'Folder - Common Admin Tools',
+            commonAppData: 'Folder - Common App Data',
+            commonDestop: 'Folder - Common Desktop',
+            commonDocuments: 'Folder - Common Documents',
+            commonProgramFiles: 'Folder - Common Program Files',
+            commonProgramFilesX86: 'Folder - Common Program Files (x86)',
+            commonPrograms: 'Folder - Common Programs',
+            commonStartMenu: 'Folder - Common Start Menu',
+            commonStartup: 'Folder - Common Startup',
+            desktop: 'Folder - Desktop',
+            localAppData: 'Folder - LocalAppData',
+            myDocuments: 'Folder - My Documents',
+            programFiles: 'Folder - Program Files',
+            programFilesX86: 'Folder - Program Files (x86)',
+            programs: 'Folder - Programs',
+            startMenu: 'Folder - Start Menu',
+            startup: 'Folder - Startup',
+            system: 'Folder - System',
+            systemX86: 'Folder - System (x86)',
+            windows: 'Folder - Windows'
+          }
+        }
+      },
+
+      properties: {
+        title: 'Host Properties',
+        filter: 'Type to filter list',
+        checkbox: 'Show properties with values only',
+        machine: {
+          securityConfigurations: 'Security Configurations',
+          hostFileEntries: {
+            title: 'Host File Entries',
+            ip: 'Host File IP',
+            hosts: 'Host Entires'
+          },
+          users: {
+            title: 'User',
+            name: 'Name',
+            sessionId: 'SessionID',
+            sessionType: 'Session Type',
+            isAdministrator: 'IsAdmin',
+            administrator: 'Is Admin',
+            groups: 'Groups',
+            domainUserQualifiedName: 'QualifiedName',
+            domainUserId: 'Domain UserID',
+            domainUserOu: 'Domain User OU',
+            domainUserCanonicalOu: 'Domain User Canonical OU',
+            host: 'Host',
+            deviceName: 'DeviceName'
+          },
+          networkInterfaces: {
+            title: 'Network Interfaces',
+            name: 'Name',
+            macAddress: 'MacAddress',
+            networkId: 'NerworkID',
+            ipv4: 'IPv4',
+            ipv6: 'IPv6',
+            gateway: 'Gateway',
+            dns: 'DNS',
+            promiscuous: 'Promiscous'
+          }
+        },
+        machineIdentity: {
+          agent: {
+            agentId: 'Agent Id',
+            agentMode: 'Agent Mode',
+            agentVersion: 'Agent Version',
+            title: 'Agent',
+            exeCompileTime: 'User Mode Compile Time',
+            sysCompileTime: 'Driver Compile Time',
+            packageTime: 'Package Time',
+            installTime: 'Install Time',
+            serviceStartTime: 'Service Start Time',
+            serviceEprocess: 'Service Eprocess',
+            serviceProcessId: 'Service ProcessId',
+            serviceErrorCode: 'Service ErrorCode',
+            serviceStatus: 'Service Status',
+            driverStatus: 'Driver Status',
+            driverErrorCode: 'Driver ErrorCode',
+            blockingEnabled: 'Blocking Enabled',
+            blockingUpdateTime: 'Blocking Update Time'
+          },
+          operatingSystem: {
+            title: 'Operating System',
+            description: 'Description',
+            buildNumber: 'BuildNumber',
+            servicePack: 'ServicePack',
+            directory: 'Directory',
+            kernelId: 'Kernel Id',
+            kernelName: 'Kernel Name',
+            kernelRelease: 'Kernel Release',
+            kernelVersion: 'Kernel Version',
+            distribution: 'Distribution',
+            domainComputerId: 'Domain ComputerID',
+            domainComputerOu: 'Domain Computer OU',
+            domainComputerCanonicalOu: 'Domain Computer Canonical OU',
+            domainOrWorkgroup: 'DomainOrWorkgroup',
+            domainRole: 'DomainRole',
+            lastBootTime: 'Last BootTime'
+          },
+          hardware: {
+            title: 'Hardware',
+            processorArchitecture: 'Processor Architecture',
+            processorArchitectureBits: 'Processor Architecture Bits',
+            processorCount: 'Processor Count',
+            processorName: 'Processor Name',
+            totalPhysicalMemory: 'Total Physical Memory',
+            chassisType: 'ChassisType',
+            manufacturer: 'Manufacturer',
+            model: 'Model',
+            serial: 'Serial',
+            bios: 'Bios'
+          },
+          locale: {
+            title: 'Locale',
+            defaultLanguage: 'Default Language',
+            isoCountryCode: 'Country Code',
+            timeZone: 'TimeZone'
+          }
+        }
+      },
+      medium: {
+        network: 'Network',
+        log: 'Log',
+        correlation: 'Correlation'
+      },
+      empty: {
+        title: 'No events found.',
+        description: 'Your filter criteria did not match any records.'
+      },
+      error: {
+        title: 'Unable to load data.',
+        description: 'An unexpected error occurred when attempting to fetch the data records.'
+      },
+      meta: {
+        title: 'Meta',
+        clickToOpen: 'Click to open'
+      },
+      events: {
+        title: 'Events',
+        error: 'An unexpected error occurred when executing this query.'
+      },
+      services: {
+        loading: 'Loading list of available services',
+        empty: {
+          title: 'Unable to find services.',
+          description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
+        },
+        error: {
+          title: 'Unable to load services.',
+          description: 'Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
+        }
+      },
+      customQuery: {
+        title: 'Enter a query.'
+      },
+      customFilter: {
+        save: {
+          description: 'Provide a name to the search. This name will appear in the search list.',
+          name: 'Name *',
+          errorHeader: 'Unable to save search',
+          header: 'Save search',
+          errorMessage: 'The search cannot be saved. ',
+          emptyMessage: 'Name field is empty.',
+          nameExistsMessage: 'A saved search with the same name.',
+          success: 'Search query saved successfully. Date/time is not saved.',
+          filterFieldEmptyMessage: 'Filter fields are empty',
+          invalidInput: 'Only \'-\' and \'_\' special characters are allowed.'
+        },
+        update: {
+          success: 'Search query updated successfully. Date/time is not saved.'
+        }
+      },
+      initiateScan: {
+        modal: {
+          title: 'Start Scan for {{count}} host(s)',
+          description: 'Select the type of scan for the selected host(s).',
+          error1: '*Select at least one host',
+          error2: 'Maximum 100 hosts allowed to start scan',
+          infoMessage: 'Some of the selected hosts are already being scanned, so a new scan will not be started for them.',
+          quickScan: {
+            label: 'Quick Scan (Default)',
+            description: 'Scans all executable modules loaded in memory. Approximately takes less than 10 minutes.'
+          },
+          fullScan: {
+            label: 'Full Disk Scan',
+            description: 'Select this option to investigate a machine that is infected. This scans all files on the system disk. Approximately takes more than 15 minutes.'
+          }
+        },
+        success: 'Scan initiated successfully',
+        error: 'Scan initiate failed'
+      },
+      cancelScan: {
+        modal: {
+          title: 'Stop Scan for {{count}} host(s)',
+          description: 'Are you sure, you want to stop scanning the selected host(s)?',
+          error1: '*Select at least one host'
+        },
+        success: 'Stop scan initiated successfully',
+        error: 'Stop Scan initiate failed'
+      },
+      deleteHosts: {
+        modal: {
+          title: 'Delete {{count}} host(s)',
+          message: 'Deletes all data for selected host(s). Do you want to continue?',
+          note: 'Note : Use this option for uninstalled agents for which you do not need host data for analysis.'
+        },
+        success: 'Host(s) are deleted successfully',
+        error: 'Host(s) deletion failed'
+      },
+      moreActions: {
+        openIn: 'Open in NWE thick client',
+        openInErrorMessage: 'Select at least one host',
+        cancelScan: 'Stop Scan'
+      }
+    },
+    savedQueries: {
+      headerContent: 'Select a saved query from the list to run it.You can also edit the name of the saved query by clicking the pencil icon next to the name,and set it as default by clicking the star icon.',
+      deleteBtn: 'Delete selected',
+      runBtn: 'Run selected',
+      yesBtn: 'Yes',
+      noBtn: 'No',
+      delete: {
+        successMessage: 'Query/Queries deleted successfully.',
+        failureMessage: 'Query/Queries deletion failed.',
+        confirmMessage: 'Are you sure you want to delete the selected query/queries?'
+      },
+      edit: {
+        successMessage: 'Query name updated successfully',
+        errorMessage: 'Query name updation failed',
+        nameExistsMessage: 'Query name already exists'
+      }
+    },
+    files: {
+      footer: '{{count}} of {{total}} {{label}}',
+      filter: {
+        filters: 'Filters',
+        newFilter: 'New Filter',
+        windows: 'WINDOWS',
+        mac: 'MAC',
+        linux: 'LINUX',
+        favouriteFilters: 'Favourite Filters',
+        addMore: 'Add More',
+        restrictionType: {
+          moreThan: 'Greater than',
+          lessThan: 'Less than',
+          between: 'Between',
+          equals: 'Equals',
+          contains: 'Contains'
+        },
+        save: 'Save',
+        reset: 'Reset',
+        customFilters: {
+          save: {
+            description: 'Provide a name to the search. This name will appear in the search list.',
+            name: 'Name *',
+            errorHeader: 'Unable to save search',
+            header: 'Save search',
+            errorMessage: 'The search cannot be saved. ',
+            emptyMessage: 'Name field is empty.',
+            nameExistsMessage: 'A saved search with the same name.',
+            success: 'Search query saved successfully.',
+            filterFieldEmptyMessage: 'Filter fields are empty',
+            invalidInput: 'Only \'-\' and \'_\' special characters are allowed.'
+          }
+        },
+        button: {
+          cancel: 'Cancel',
+          save: 'Save'
+        }
+      }
+    }
   }
 };

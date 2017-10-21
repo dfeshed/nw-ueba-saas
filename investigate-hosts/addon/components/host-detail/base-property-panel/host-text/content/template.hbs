@@ -1,0 +1,21 @@
+{{#if hasBlock}}
+  {{yield text format}}
+{{else}}
+  <div>
+    {{#if (eq format 'DATE')}}
+      {{#if text}}
+        {{rsa-content-datetime timestamp=text}}
+      {{/if}}
+    {{else if (eq format 'SIZE')}}
+      {{rsa-content-memsize size=text}}
+    {{else if (eq format 'SIGNATURE')}}
+      {{signature-text text}}
+    {{else}}
+      {{text}}
+    {{/if}}
+    {{host-copy-content text=text}}
+  </div>
+{{/if}}
+
+
+

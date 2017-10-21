@@ -1,0 +1,65 @@
+@import "host-table";
+
+.host-container {
+  .filter-zone {
+    border-right: 1px solid rgba(33, 33, 33, 6.2);
+    max-width: 20%;
+    min-width: 250px;
+    overflow: auto;
+    overflow-x: hidden;
+    opacity: 1;
+    height: 100%;
+    color: white;
+    float: left;
+    padding: rsa-whitespace();
+
+    .body {
+      max-width: none;
+    }
+
+    hr {
+      margin: rsa-whitespace() 0;
+      font-style: normal;
+      font-size: 1.725rem;
+      font-weight: 100;
+    }
+
+    h2 {
+      line-height: 2rem;
+      font-size: 1.5rem;
+    }
+
+  }
+
+  .favourite-filters {
+    padding: rsa-whitespace();
+  }
+
+  .filter-list {
+    padding: rsa-whitespace() 0 0;
+  }
+
+  .filter-list__item {
+    cursor: pointer;
+    font-weight: 700;
+    color: rsa-color(gray);
+    line-height: 30px;
+    &.is-active {
+      color: white;
+      transition: color 0.5s ease;
+    }
+  }
+
+  .filter-list__item:hover {
+    color: white;
+    transition: color 0.5s ease;
+  }
+
+  .filter-list__item-label {
+    padding-left: rsa-whitespace();
+  }
+}
+
+.machine-zone {
+  width: calc(100vw - 300px);
+}

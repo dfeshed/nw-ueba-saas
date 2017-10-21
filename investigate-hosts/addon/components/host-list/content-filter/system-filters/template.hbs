@@ -1,0 +1,7 @@
+{{#each systemFilterList as |filter|}}
+  {{host-list/content-filter/system-filters/list-item
+    reset=isFilterReset
+    filter=filter
+    activeFilter=activeFilter
+    applyFilter=(action 'applyFilter')}}
+{{/each}}

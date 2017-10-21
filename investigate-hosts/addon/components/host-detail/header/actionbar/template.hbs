@@ -1,0 +1,43 @@
+<div class="rsa-button-group panel-control-group">
+  <label class="rsa-form-label power-select snapshot-select">
+    <span class="label-text snap-shot-text">{{t 'investigateHosts.hosts.summary.snapshotTime'}}</span>
+    {{#power-select
+      searchEnabled=false
+      triggerClass="inline"
+      options=snapShots
+      selected=scanTime
+      onchange=(action 'setSelect') as |option|}}
+      {{#if option}}
+        {{rsa-content-datetime timestamp=option }}
+      {{/if}}
+    {{/power-select}}
+  </label>
+</div>
+<div class="divider"/>
+<hbox class="rsa-button-group host-action-buttons">
+  <div class="action-button">
+    {{#rsa-form-button click=(action 'toggleInitiateScanModal')}}{{t 'investigateHosts.hosts.button.initiateScan'}}{{/rsa-form-button}}
+  </div>
+  <div class="action-button">
+    {{#rsa-content-tethered-panel-trigger panel='panel1'}}
+      {{#rsa-form-button isDisabled=isExportDisabled withDropdown=true}}{{t 'investigateHosts.hosts.button.moreActions'}}{{/rsa-form-button}}
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel displayCloseButton=false position='bottom-left' panelId='panel1'}}
+      <ul class="rsa-dropdown-action-list">
+        <li><a id="ecatUI" {{action "openInAction"}}>{{t 'investigateHosts.hosts.moreActions.openIn'}}</a></li>
+      </ul>
+    {{/rsa-content-tethered-panel}}
+  </div>
+  <div class="action-button">
+    {{#if isJsonExportCompleted}}
+      <span title="{{t 'investigateHosts.hosts.button.exportTooltip'}}">
+        {{#rsa-form-button click=(action 'export') isDisabled=isExportDisabled}}{{t 'investigateHosts.hosts.button.export'}}{{/rsa-form-button}}
+      </span>
+    {{else}}
+      {{#rsa-form-button isDisabled=true}}
+        {{rsa-loader}} {{t 'investigateHosts.hosts.button.downloading'}}
+      {{/rsa-form-button}}
+    {{/if}}
+  </div>
+</hbox>
+<iframe src="{{downloadLink}}" class="host_export-files-iframe"></iframe>

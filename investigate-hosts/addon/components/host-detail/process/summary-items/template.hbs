@@ -1,0 +1,15 @@
+{{#if hasBlock}}
+  <grid responsive>
+    {{#each summaryData as |item|}}
+      {{yield (hash property=(component propertyComponent item=item))}}
+    {{/each}}
+  </grid>
+{{else}}
+  <grid responsive>
+    {{#each summaryData as |item|}}
+      {{component propertyComponent item=item}}
+    {{/each}}
+  </grid>
+{{/if}}
+
+

@@ -1,0 +1,20 @@
+.file-pager {
+  @include rsa-font(body, small);
+  color: rsa-color(gray);
+  border-top: 1px solid rsa-color(gray, dark);
+  background-color: rsa-color(gray, darkest, $rsa-translucent);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: rsa-whitespace(more);
+  .file-info {
+    position: absolute;
+    top: rsa-whitespace(less);
+    left: rsa-whitespace();
+    text-align: right;
+    width: 97%;
+  }
+  .lighter {
+    color: rsa-color(grey, lighter);
+  }
+}

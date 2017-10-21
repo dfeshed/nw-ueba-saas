@@ -1,0 +1,4 @@
+{{host-detail/utils/host-title-bar tabs=autorunTabs defaultAction=(action 'setAutorunsTabView')}}
+{{#component selectedAutorunTab.componentClass as |compConfig| }}
+  {{host-detail/utils/simple-detail-display detailDisplayInputs=compConfig}}
+{{/component}}

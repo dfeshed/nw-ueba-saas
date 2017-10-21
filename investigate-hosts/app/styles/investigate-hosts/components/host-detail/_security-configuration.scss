@@ -1,0 +1,20 @@
+.security-configuration {
+  margin-top: -0.2rem;
+  .rsa-form-radio-group {
+    @extend .rsa-m-b-md;
+    .rsa-form-radio-group-label {
+      display: inline-block;
+      @extend .rsa-m-r-md;
+    }
+    .rsa-form-radio-label {
+      &.checked {
+        font-weight: bold;
+        color: #fff;
+      }
+    }
+  }
+
+  &__column {
+    padding-bottom: 0.8rem;
+  }
+}

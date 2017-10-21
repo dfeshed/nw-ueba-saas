@@ -28,6 +28,7 @@ nukeNode packager
 nukeNode recon
 nukeNode style-guide
 nukeNode investigate-events
+nukeNode investigate-hosts
 nukeNode investigate-files
 nukeNode respond
 nukeNode context

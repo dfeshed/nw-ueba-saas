@@ -1,0 +1,10 @@
+$alert-info-color: #03a9f4;
+
+.host-message-modal {
+  list-style-type: none;
+  @extend .rsa-white-color;
+  @extend .rsa-p-xs;
+  &.alert-info {
+    background: $alert-info-color;
+  }
+}

@@ -3134,6 +3134,13 @@ ember-cli-normalize-entity-name@^1.0.0:
   dependencies:
     silent-error "^1.0.0"
 
+ember-cli-normalizr-shim@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/ember-cli-normalizr-shim/-/ember-cli-normalizr-shim-1.0.0.tgz#ff606874f2141341448085ff4806c4d3ce57f8dc"
+  dependencies:
+    broccoli-merge-trees "^1.1.4"
+    ember-cli-babel "^6.1.0"
+
 ember-cli-nouislider@0.12.0:
   version "0.12.0"
   resolved "https://registry.npmjs.org/ember-cli-nouislider/-/ember-cli-nouislider-0.12.0.tgz#88e47c1d53f22adbd9dd4bd9a8a6a47d83b6dc31"
@@ -6224,6 +6231,10 @@ normalize-path@^2.0.0, normalize-path@^2.0.1:
 normalize-range@^0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
+
+normalizr@^3.2.2:
+  version "3.2.4"
+  resolved "https://registry.npmjs.org/normalizr/-/normalizr-3.2.4.tgz#16aafc540ca99dc1060ceaa1933556322eac4429"
 
 nouislider@~8.5.1:
   version "8.5.1"

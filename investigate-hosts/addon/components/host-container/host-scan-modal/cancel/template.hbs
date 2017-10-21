@@ -1,0 +1,20 @@
+{{#rsa-application-modal
+  autoOpen=true
+  label=(t 'investigateHosts.hosts.cancelScan.modal.title' count=selectedHostList.length)
+  eventId='cancel-scan'}}
+  <div class='modal-content'>
+    <div class='rsa-p-md'>
+      <label class="rsa-form-label">
+        {{t 'investigateHosts.hosts.cancelScan.modal.description'}}
+      </label>
+    </div>
+    <div class="rsa-btn-group align-right rsa-m-md">
+      {{#rsa-form-button style='primary' class= "rsa-m-r-md" click=(action 'handleCancelScan')}}
+        {{t 'investigateHosts.hosts.button.cancelScan'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button click=(action 'closeCancelScanModal')}}
+        {{t 'investigateHosts.hosts.button.cancel'}}
+      {{/rsa-form-button}}
+    </div>
+  </div>
+{{/rsa-application-modal}}

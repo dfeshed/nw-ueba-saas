@@ -1,0 +1,8 @@
+<span style="{{style}}">
+  {{#if item.hasChild}}
+    <span class="tree-expand-icon {{if isExpanded 'is-expanded'}}" {{action 'toggleExpand' bubbles=false}}>
+      {{rsa-icon name="arrow-down-12"}}
+    </span>
+  {{/if}}
+  <span class="process-name {{unless item.hasChild 'is-leaf'}}">{{item.name}}</span>
+</span>

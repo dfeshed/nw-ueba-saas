@@ -1,0 +1,14 @@
+{{rsa-form-input isError=isError
+                 errorMessage=errMsg
+                 value=searchText
+                 placeholder=(t 'investigateHosts.hosts.explore.input.placeholder')
+                 keyPress=(action 'submitSearch')}}
+{{#if searchResultLoading}}
+  <div class="host-explore__loader">
+    {{rsa-loader}}
+  </div>
+{{else}}
+  {{#rsa-form-button click=(action 'defaultAction')}}
+    {{rsa-icon size='small' name='search'}}
+  {{/rsa-form-button}}
+{{/if}}

@@ -1,0 +1,21 @@
+{{#if schemaLoading}}
+  <centered>
+    {{rsa-loader size='larger'}}
+  </centered>
+{{else}}
+  <box class="filter-zone">
+    {{!-- Going to rewrite the filter in next coming sprint --}}
+    <h2>{{t 'investigateHosts.files.filter.filters'}}</h2>
+    <hr>
+    <section class="favourite-filters">
+      {{t 'investigateHosts.files.filter.favouriteFilters'}}
+      {{host-list/content-filter/system-filters}}
+    </section>
+    <div class="add-filter">
+      {{#rsa-form-button isFullWidth=true defaultAction=(action 'resetFilters')}}
+        Reset
+      {{/rsa-form-button}}
+    </div>
+  </box>
+  {{host-list/host-table}}
+{{/if}}

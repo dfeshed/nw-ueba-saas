@@ -1,0 +1,18 @@
+<hbox class="host-container-list">
+  {{host-list}}
+</hbox>
+<vbox class="host-container-detail host-detail">
+  {{host-detail}}
+</vbox>
+
+{{#if showInitiateScanModal}}
+  {{host-container/host-scan-modal/initiate selectedHostList=selectedHostList showScanningMessage=areSomeScanning}}
+{{/if}}
+
+{{#if showCancelScanModal}}
+  {{host-container/host-scan-modal/cancel selectedHostList=selectedHostList}}
+{{/if}}
+
+{{#if showDeleteHostsModal}}
+  {{host-container/delete-hosts-modal}}
+{{/if}}

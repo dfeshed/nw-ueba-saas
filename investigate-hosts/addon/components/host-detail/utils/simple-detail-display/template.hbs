@@ -1,0 +1,13 @@
+<box xs='9'>
+  {{host-detail/utils/datatable
+    status=detailDisplayInputs.status
+    items=detailDisplayInputs.tableItems
+    columnsConfig=detailDisplayInputs.columnsConfig
+    selectRowAction=detailDisplayInputs.selectRowAction}}
+</box>
+<box xs='3'>
+  {{host-detail/utils/file-property-panel
+    localeNameSpace=detailDisplayInputs.localeNameSpace
+    config=detailDisplayInputs.propertyConfig
+    data=detailDisplayInputs.propertyData}}
+</box>

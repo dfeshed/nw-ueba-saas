@@ -1,0 +1,18 @@
+{{#rsa-application-modal autoOpen=true label=(t 'investigateHosts.hosts.deleteHosts.modal.title' count=selectedHostList.length) eventId='delete-hosts'}}
+  <div class='modal-content rsa-delete-hosts-modal'>
+    <div>
+      {{t 'investigateHosts.hosts.deleteHosts.modal.message'}}
+    </div>
+    <div class='rsa-delete-hosts-modal__note'>
+      {{t 'investigateHosts.hosts.deleteHosts.modal.note'}}
+    </div>
+    <div class="rsa-btn-group align-right rsa-m-md">
+      {{#rsa-form-button style='danger' class= "rsa-m-r-md" click=(action 'handleDeleteHosts')}}
+        {{t 'investigateHosts.hosts.button.delete'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button click=(action 'closeDeleteHostsModal')}}
+        {{t 'investigateHosts.hosts.button.cancel'}}
+      {{/rsa-form-button}}
+    </div>
+  </div>
+{{/rsa-application-modal}}

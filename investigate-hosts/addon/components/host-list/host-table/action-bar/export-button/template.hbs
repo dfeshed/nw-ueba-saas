@@ -1,0 +1,8 @@
+{{#if (eq hostExportStatus 'completed')}}
+  {{#rsa-form-button click=(action 'exportAsFile')}}{{t 'investigateHosts.hosts.button.exportCSV'}}{{/rsa-form-button}}
+{{else}}
+  {{#rsa-form-button isDisabled=true}}
+    {{rsa-loader}} {{t 'investigateHosts.hosts.button.downloading'}}
+  {{/rsa-form-button}}
+{{/if}}
+<iframe src="{{exportLink}}" class="export-machines-iframe"></iframe>

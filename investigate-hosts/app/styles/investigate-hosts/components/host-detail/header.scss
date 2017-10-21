@@ -1,0 +1,125 @@
+@import 'host-status';
+@import 'file-found-categories';
+@import 'actionbar';
+
+.left {
+  justify-content: flex-start;
+}
+
+.right {
+  justify-content: flex-end;
+}
+
+.center {
+  align-items: center;
+}
+
+.host-header {
+  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+
+  .divider {
+    border-left: 1px solid rsa-color(white);
+    height: 1.5rem;
+    margin: 5px;
+  }
+}
+
+.titlebar {
+  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+  .heading {
+    .rsa-nav-tab.is-left-aligned-primary {
+      margin: 0 .8rem 0;
+      padding: .5rem .1rem .36rem .1rem;
+      border-bottom-width: 3px;
+    }
+    .host-title {
+      @include rsa-font(header, larger);
+      color: rsa-color(gray, lightest);
+      text-transform: capitalize;
+      border-bottom-width: 3px;
+      &.seperator {
+        padding: 0;
+        margin: 0.5rem .3rem 0.5rem 1.1rem;
+        border: 0 solid rsa-color(gray);
+        border-right-width: .1rem;
+      }
+    }
+    .host-title-icon {
+      padding: 0 10px 0 0;
+      margin-top: 3px;
+    }
+  }
+
+  .header-toggle,
+  .header-button {
+    color: rsa-color(gray);
+    cursor: pointer;
+    margin: 0 rsa-whitespace(least);
+    padding: rsa-whitespace(less) rsa-whitespace(least);
+    &:hover {
+      color: rsa-color(gray, lightest);
+    }
+    &.active:not(.disabled) {
+      color: rsa-color(gray, lightest);
+    }
+    &.disabled {
+      color: rsa-color(gray, dark);
+      cursor: default;
+    }
+  }
+  .header-toggle {
+    &.active:not(.disabled) {
+      border-bottom: rsa-color(blue) 3px solid;
+    }
+  }
+}
+
+.actionbar {
+  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+
+  .snapshot-select {
+    width: 100px;
+  }
+
+  .snap-shot-text {
+    margin-bottom: 0;
+  }
+
+  .divider {
+    border-left: 1px solid rsa-color(gray);
+    height: 1.75rem;
+    margin-left: rsa-whitespace(more);
+  }
+
+  .host-action-buttons {
+    .action-button {
+      padding-left: 20px;
+    }
+    .rsa-form-button {
+      height: 32px;
+      width: 151px;
+    }
+    .rsa-loader {
+      float: left;
+    }
+  }
+}
+
+.titlebar {
+  @media (min-width: 1731px) {
+    .heading-select {
+      display: block;
+    }
+    .heading-tabs {
+      display: inherit;
+    }
+  }
+
+  @media (max-width: 1730px) {
+    .heading-tabs {
+      display: inherit;
+    }
+  }
+}
+
+

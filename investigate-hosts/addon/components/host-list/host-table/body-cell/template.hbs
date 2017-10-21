@@ -1,0 +1,21 @@
+{{#if column.componentClass}}
+  <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
+    {{rsa-form-checkbox checked=item.checked change=checkBoxAction}}
+  </label>
+{{else if (eq column.field 'analysisData.machineRiskScore')}}
+  {{host-list/host-table/risk-score-badge score=item.analysisData.machineRiskScore}}
+{{else if (eq column.field 'machine.machineName')}}
+  <span class="host-name">
+    {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW')}}{{get item column.field}}{{/link-to}}
+  </span>
+{{else if (eq column.field 'agentStatus.lastSeenTime')}}
+  <span title="{{get-field item column}}">
+    {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
+  </span>
+{{else if (eq column.field 'agentStatus.scanStatus')}}
+  <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}}>
+    {{host-scan-status  agent=item onButtonClick=onButtonClick}}
+  </div>
+{{else}}
+  <span title="{{get-field item column}}"> {{get-field item column}}</span>
+{{/if}}

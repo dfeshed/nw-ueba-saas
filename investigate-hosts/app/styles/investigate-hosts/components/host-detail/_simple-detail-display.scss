@@ -1,0 +1,6 @@
+.simple-detail-display-wrapper {
+  background-color: $host-detail-background;
+  .host-property-panel {
+    overflow: auto;
+  }
+}

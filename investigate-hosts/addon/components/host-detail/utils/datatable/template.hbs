@@ -1,0 +1,32 @@
+<box>
+  {{#rsa-data-table
+  lazy=true
+  items=data
+  selectedIndex=0
+  columnsConfig=columnsConfig
+  onRowClick=(action 'toggleSelectedRow')}}
+    {{#rsa-data-table/header as |column|}}
+      {{column.title}}
+      {{#unless column.disableSort}}
+        {{rsa-icon
+          click=(action 'sort' column)
+          name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+          class="sort"}}
+      {{/unless}}
+    {{/rsa-data-table/header}}
+    {{#if isDataLoading}}
+      <centered>
+        {{rsa-loader size="larger"}}
+      </centered>
+    {{else}}
+      {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
+        {{#rsa-data-table/body-cell item=item column=column}}
+          {{host-detail/utils/table-cell item=item column=column}}
+        {{/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/if}}
+  {{/rsa-data-table}}
+</box>
+<box class="files-footer" fit>
+  {{host-table-footer index=items.length total=items.length label=type}}
+</box>

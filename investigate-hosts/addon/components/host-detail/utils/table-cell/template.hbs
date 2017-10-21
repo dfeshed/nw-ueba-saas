@@ -1,0 +1,13 @@
+{{#if (eq column.format 'DATE')}}
+  {{#if (get item column.field)}}
+    {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+  {{/if}}
+{{else if (eq column.format 'SIZE')}}
+  {{rsa-content-memsize size=(get item column.field)}}
+{{else if (eq column.format 'DECIMAL')}}
+  {{rsa-round-decimal value=column.field}}
+{{else if (eq column.format 'SIGNATURE')}}
+  {{signature-text (get item column.field) (get item column.signer)}}
+{{else}}
+  {{get item column.field}}
+{{/if}}

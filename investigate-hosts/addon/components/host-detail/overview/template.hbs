@@ -1,0 +1,19 @@
+{{#liquid-bind host use=(if host animation "default") as |hostData|}}
+  {{#if host}}
+    <vbox xs="9" class="host-detail-box scroll-box">
+      {{host-detail/overview/summary}}
+    </vbox>
+    <vbox xs="3" class="host-properties-box scroll-box">
+      {{#if domIsReady}}
+        {{host-detail/overview/property-panel
+          title=(t 'investigateHosts.hosts.properties.title')
+          data=hostData
+          localeNameSpace='investigateHosts.hosts.properties'}}
+      {{else}}
+        <centered>
+          {{rsa-loader size='medium'}}
+        </centered>
+      {{/if}}
+    </vbox>
+  {{/if}}
+{{/liquid-bind}}

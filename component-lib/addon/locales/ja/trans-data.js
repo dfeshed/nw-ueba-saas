@@ -1587,5 +1587,711 @@ export default {
       signatureAscending: 'ja_Signature (ascending)',
       signatureDescending: 'ja_Signature (descending)'
     }
+  },
+  investigateHosts: {
+    title: 'ja_Investigate',
+    loading: 'ja_Loading',
+    loadMore: 'ja_Load More',
+    common: {
+      save: 'ja_Save',
+      enable: 'ja_Enable',
+      saveSuccess: 'ja_Saved successfully',
+      emptyMessage: 'ja_No matching results'
+    },
+    property: {
+      file: {
+        companyName: 'ja_Company Name',
+        checksumMd5: 'ja_MD5',
+        checksumSha1: 'ja_SHA1',
+        checksumSha256: 'ja_SHA256',
+        machineOsType: 'ja_Operating System',
+        timeCreated: 'ja_Created',
+        timeModified: 'ja_Modified',
+        timeAccessed: 'ja_Accessed',
+        createTime: 'ja_Process Created',
+        pid: 'ja_PID',
+        eprocess: 'ja_EPROCESS',
+        path: 'ja_Full Path',
+        sameDirectoryFileCounts: {
+          nonExe: 'ja_# Non-Executables',
+          exe: 'ja_# Executables',
+          subFolder: 'ja_# Folder',
+          exeSameCompany: 'ja_#Same company Executables'
+        },
+        elf: {
+          classType: 'ja_Class Type',
+          data: 'ja_Data',
+          entryPoint: 'ja_Entry Point',
+          features: 'ja_Features',
+          type: 'ja_Type',
+          sectionNames: 'ja_Section Names',
+          importedLibraries: 'ja_Imported Libraries'
+        },
+        pe: {
+          timeStamp: 'ja_Timestamp',
+          imageSize: 'ja_Image Size',
+          numberOfExportedFunctions: 'ja_Exported Functions',
+          numberOfNamesExported: 'ja_Exported Names',
+          numberOfExecuteWriteSections: 'ja_Execute Write Sections',
+          features: 'ja_Features',
+          sectionNames: 'ja_Section Names',
+          importedLibraries: 'ja_Imported Libraries',
+          resources: {
+            originalFileName: 'ja_File Name',
+            company: 'ja_Company',
+            description: 'ja_Description',
+            version: 'ja_Version'
+          }
+        },
+        macho: {
+          uuid: 'ja_Uuid',
+          identifier: 'ja_Identifier',
+          minOsxVersion: 'ja_Osx Version',
+          features: 'ja_Features',
+          flags: 'ja_Flags',
+          numberOfLoadCommands: 'ja_Loaded Commands',
+          version: 'ja_Version',
+          sectionNames: 'ja_Section Names',
+          importedLibraries: 'ja_Imported Libraries'
+        },
+        signature: {
+          timeStamp: 'ja_Timestamp',
+          thumbprint: 'ja_Thumbprint',
+          features: 'ja_Signature',
+          signer: 'ja_Signer'
+        },
+        process: {
+          title: 'ja_Process',
+          processName: 'ja_Process Name',
+          eprocess: 'ja_EPROCESS',
+          integrityLevel: 'ja_Integrity',
+          parentPath: 'ja_Parent Path',
+          floatingThreadCount: 'ja_Thread Count',
+          owner: 'ja_Owner',
+          sessionId: 'ja_Session Id',
+          createTime: 'ja_Created',
+          imageBase: 'ja_Image Base',
+          imageSize: 'ja_Image Size'
+        },
+        entropy: 'ja_Entropy',
+        firstFileName: 'ja_FileName',
+        format: 'ja_Format',
+        sectionNames: 'ja_Section Names',
+        importedLibraries: 'ja_Imported Libraries',
+        size: 'ja_Size',
+        imageBase: 'ja_Image Base',
+        imageSize: 'ja_Image Size',
+        loaded: 'ja_Loaded'
+      }
+    },
+    tabs: {
+      overview: 'ja_Overview',
+      process: 'ja_Process',
+      autoruns: 'ja_Autoruns',
+      files: 'ja_Files',
+      drivers: 'ja_Drivers',
+      systemInformation: 'ja_System Information',
+      services: 'ja_Services',
+      tasks: 'ja_Tasks',
+      hostFileEntries: 'ja_Host File Entries',
+      mountedPaths: 'ja_Mounted Paths',
+      networkShares: 'ja_Network Shares',
+      bashHistories: 'ja_Bash History',
+      libraries: 'ja_Libraries',
+      explore: 'ja_explore'
+    },
+    systemInformation: {
+      ipAddress: 'ja_IP Address',
+      dnsName: 'ja_DNS Name',
+      fileSystem: 'ja_File System',
+      path: 'ja_Path',
+      remotePath: 'ja_Remote Path',
+      options: 'ja_Options',
+      name: 'ja_Name',
+      description: 'ja_Description',
+      permissions: 'ja_Permissions',
+      type: 'ja_Type',
+      maxUses: 'ja_Max Uses',
+      currentUses: 'ja_Current USES',
+      userName: 'ja_User Name',
+      command: 'ja_Command',
+      commandNote: 'ja_Note: Most recent commands are on the top',
+      filterUser: 'ja_Type to filter user',
+      filterBy: 'ja_Filter By User'
+    },
+    process: {
+      title: 'ja_Process',
+      processName: 'ja_Process Name',
+      properties: 'ja_Process Properties',
+      pid: 'ja_PID',
+      parentId: 'ja_Parent Process',
+      userName: 'ja_User Name',
+      hostCount: 'ja_Host Count',
+      creationTime: 'ja_Creation Time',
+      hashlookup: 'ja_Hash Lookup',
+      signature: 'ja_Signature',
+      path: 'ja_Path',
+      launchArguments: 'ja_Launch Arguments',
+      message: {
+        noResultsMessage: 'ja_No process information were found'
+      },
+      dll: {
+        dllName: 'ja_DLL Name',
+        filePath: 'ja_File Path',
+        title: 'ja_Loaded Libraries',
+        message: {
+          noResultsMessage: 'ja_No loaded library information were found'
+        },
+        note: {
+          windows: 'ja_Note: Displays libraries that are not signed by Microsoft',
+          mac: 'ja_Note: Displays libraries that are not signed by Apple.'
+        }
+      }
+    },
+    hosts: {
+      title: 'ja_Hosts',
+      search: 'search',
+      button: {
+        addMore: 'Add more +',
+        loadMore: 'Load More',
+        exportCSV: 'ja_Export CSV',
+        export: 'ja_Export to JSON',
+        exportTooltip: 'ja_Exports all scan data categories for the host.',
+        downloading: 'ja_Downloading',
+        initiateScan: 'ja_Start Scan',
+        cancelScan: 'ja_Stop Scan',
+        delete: 'ja_Delete',
+        cancel: 'ja_Cancel',
+        save: 'ja_Save',
+        saveAs: 'ja_Save As...',
+        clear: 'ja_Clear',
+        search: 'ja_Search',
+        ok: 'ja_Ok',
+        moreActions: 'ja_More Actions',
+        explore: 'ja_Explore',
+        gearIcon: 'ja_Click here to manage columns',
+        overview: 'ja_Show/Hide Overview Panel',
+        settings: 'ja_Settings',
+        meta: 'ja_Show/Hide Meta',
+        close: 'ja_Close Reconstruction',
+        shrink: 'ja_Contract View',
+        update: 'ja_update',
+        reset: 'ja_Reset'
+      },
+      autoruns: {
+        services: {
+          initd: 'ja_INIT.D',
+          systemd: 'ja_SYSTEM.D'
+        }
+      },
+      ranas: {
+        ranas: 'ja_Ran as',
+        categories: {
+          Process: 'ja_Process',
+          Libraries: 'ja_Library',
+          Autorun: 'ja_Autorun',
+          Service: 'ja_Service',
+          Task: 'ja_Task',
+          Driver: 'ja_Driver',
+          Thread: 'ja_Thread'
+        }
+      },
+      explore: {
+        input: {
+          placeholder: 'ja_Search by file name, path or hash'
+        },
+        noResultsFound: 'ja_No Results Found.',
+        fileName: 'ja_File Name: ',
+        path: 'ja_Path: ',
+        hash: 'ja_Hash: ',
+        search: {
+          minimumtext: {
+            required: 'ja_Enter minimum three characters'
+          }
+        }
+      },
+      footerLabel: {
+        files: 'ja_files'
+      },
+      summary: {
+        snapshotTime: 'ja_Snapshot Time',
+        overview: {
+          typeToFilterOptions: 'ja_Type to filter options',
+          noSnapShots: 'ja_No snapshots available'
+        },
+        body: {
+          ipAddresses: 'ja_IP Addresses ({{count}})',
+          securityConfig: 'ja_Security Configuration',
+          loggedUsers: 'ja_Logged-in Users ({{count}})',
+          user: {
+            administrator: 'ja_Administrator',
+            sessionId: 'ja_Session ID',
+            sessionType: 'ja_Session Type',
+            groups: 'ja_Groups'
+          }
+        },
+        securityConfig: {
+          arrangeBy: 'ja_ARRANGE BY',
+          alphabetical: 'ja_Alphabetical',
+          status: 'ja_Status'
+        }
+      },
+      selected: 'ja_selected ({{count}})',
+      list: {
+        noResultsMessage: 'ja_No Results Found'
+      },
+      filters: {
+        systemFilter: 'ja_This search is system defined and cannot be edited.',
+        since: 'ja_Since',
+        customDateRange: 'ja_Custom Date Range',
+        customStartDate: 'ja_Start Date',
+        customEndDate: 'ja_End Date',
+        agentStatus: {
+          lastSeenTime: 'ja_Agent Not Seen Since'
+        }
+      },
+      restrictionTypeOptions: {
+        EQUALS: 'ja_equals',
+        CONTAINS: 'ja_contains',
+        GT: '>',
+        LT: '<',
+        GTE: '>=',
+        LTE: '<=',
+        NOT_EQ: '!=',
+        BETWEEN: 'ja_between',
+        LAST_5_MINUTES: 'ja_Last 5 Minutes',
+        LAST_10_MINUTES: 'ja_Last 10 Minutes',
+        LAST_15_MINUTES: 'ja_Last 15 Minutes',
+        LAST_30_MINUTES: 'ja_Last 30 Minutes',
+        LAST_HOUR: 'ja_Last 1 Hour',
+        LAST_3_HOURS: 'ja_Last 3 Hours',
+        LAST_6_HOURS: 'ja_Last 6 Hours',
+        LAST_TWELVE_HOURS: 'ja_Last 12 Hours',
+        LAST_TWENTY_FOUR_HOURS: 'ja_Last 24 Hours',
+        LAST_FORTY_EIGHT_HOURS: 'ja_Last 2 Days',
+        LAST_5_DAYS: 'ja_Last 5 Days',
+        LAST_7_DAYS: 'ja_Last 7 Days',
+        LAST_14_DAYS: 'ja_Last 14 Days',
+        LAST_30_DAYS: 'ja_Last 30 Days',
+        LAST_HOUR_AGO: 'ja_1 Hour ago',
+        LAST_TWENTY_FOUR_HOURS_AGO: 'ja_24 Hours ago',
+        LAST_5_DAYS_AGO: 'ja_5 Days ago',
+        ALL_TIME: 'ja_All Data'
+      },
+      footer: 'ja_showing {{count}} of {{total}} ja_hosts',
+      column: {
+        id: 'ja_Agent ID',
+        analysisData: {
+          iocs: 'ja_IOC Alerts',
+          machineRiskScore: 'ja_Risk Score'
+        },
+        agentStatus: {
+          scanStatus: 'ja_Agent Scan Status',
+          lastSeenTime: 'ja_Agent Last Seen'
+        },
+        machine: {
+          machineOsType: 'ja_Operating System',
+          machineName: 'ja_Machine Name',
+          id: 'ja_Agent ID',
+          agentVersion: 'ja_Agent Version',
+          scanStartTime: 'ja_Last Scan Time',
+          scanRequestTime: 'ja_Scan Request Time',
+          scanType: 'ja_Scan Type',
+          scanTrigger: 'ja_Scan Trigger',
+          securityConfigurations: 'ja_Security Configurations',
+          hostFileEntries: {
+            ip: 'ja_Host File IP',
+            hosts: 'ja_Host Entires'
+          },
+          users: {
+            name: 'ja_Users - Name',
+            sessionId: 'ja_Users - SessionID',
+            sessionType: 'ja_Users - Session Type',
+            isAdministrator: 'ja_Users - IsAdmin',
+            groups: 'ja_Users - Groups',
+            domainUserQualifiedName: 'ja_Users - QualifiedName',
+            domainUserId: 'ja_Users - Domain UserID',
+            domainUserOu: 'ja_Users - Domain User OU',
+            domainUserCanonicalOu: 'ja_Users - Domain User Canonical OU',
+            host: 'ja_Users - Host',
+            deviceName: 'ja_Users - DeviceName'
+          },
+          errors: {
+            time: 'ja_Error - Time',
+            fileID: 'ja_Error - FileID',
+            line: 'ja_Error - Line',
+            number: 'ja_Error - Number',
+            value: 'ja_Error - Value',
+            param1: 'ja_Error - Param1',
+            param2: 'ja_Error - Param2',
+            param3: 'ja_Error - Param3',
+            info: 'ja_Error - Info',
+            level: 'ja_Error - Level',
+            type: 'ja_Error - Type'
+          },
+          networkShares: {
+            path: 'ja_NetworkShare - Path',
+            name: 'ja_NetworkShare - Name',
+            description: 'ja_NetworkShare - Description',
+            type: 'ja_NetworkShare - Type',
+            permissions: 'ja_NetworkShare - Permissions',
+            maxUses: 'ja_NetworkShare - MaxUses',
+            currentUses: 'ja_NetworkShare - CurrentUses'
+          },
+          mountedPaths: {
+            path: 'ja_MountedPaths - Path',
+            fileSystem: 'ja_MountedPaths - FileSystem',
+            options: 'ja_MountedPaths - Options',
+            remotePath: 'ja_MountedPaths - RemotePath'
+          },
+          securityProducts: {
+            type: 'ja_SecurityProducts - Type',
+            instance: 'ja_SecurityProducts - Instance',
+            displayName: 'ja_SecurityProducts - DisplayName',
+            companyName: 'ja_SecurityProducts - CompanyName',
+            version: 'ja_SecurityProducts - Version',
+            features: 'ja_SecurityProducts - Features'
+          },
+          networkInterfaces: {
+            name: 'ja_NetworkInterface - Name',
+            macAddress: 'ja_NetworkInterface - MacAddress',
+            networkId: 'ja_NetworkInterface - NerworkID',
+            ipv4: 'ja_IPv4',
+            ipv6: 'ja_IPv6',
+            gateway: 'ja_NetworkInterface - Gateway',
+            dns: 'ja_NetworkInterface - DNS',
+            promiscuous: 'ja_NetworkInterface - Promiscous'
+          }
+        },
+        riskScore: {
+          moduleScore: 'ja_Module Score',
+          highestScoringModules: 'ja_Highest Scoring Module'
+        },
+        machineIdentity: {
+          machineName: 'ja_Machine Name',
+          group: 'ja_Agent Group',
+          agentMode: 'ja_Agent Mode',
+          agent: {
+            exeCompileTime: 'ja_Agent - User Mode Compile Time',
+            sysCompileTime: 'ja_Agent - Driver Compile Time',
+            packageTime: 'ja_Agent - Package Time',
+            installTime: 'ja_Agent - Install Time',
+            serviceStartTime: 'ja_Agent - Service Start Time',
+            serviceEprocess: 'ja_Agent - Service Eprocess',
+            serviceProcessId: 'ja_Agent - Service ProcessId',
+            serviceErrorCode: 'ja_Agent - Service ErrorCode',
+            serviceStatus: 'ja_Agent - Service Status',
+            driverStatus: 'ja_Agent - Driver Status',
+            driverErrorCode: 'ja_Agent - Driver ErrorCode',
+            blockingEnabled: 'ja_Agent - Blocking Enabled',
+            blockingUpdateTime: 'ja_Agent - Blocking Update Time'
+          },
+          operatingSystem: {
+            description: 'ja_OS - Description',
+            buildNumber: 'ja_OS - BuildNumber',
+            servicePack: 'ja_OS - ServicePack',
+            directory: 'ja_OS - Directory',
+            kernelId: 'ja_OS - Kernel Id',
+            kernelName: 'ja_OS - Kernel Name',
+            kernelRelease: 'ja_OS - Kernel Release',
+            kernelVersion: 'ja_OS - Kernel Version',
+            distribution: 'ja_OS - Distribution',
+            domainComputerId: 'ja_OS - Domain ComputerID',
+            domainComputerOu: 'ja_OS - Domain Computer OU',
+            domainComputerCanonicalOu: 'ja_OS - Domain Computer Canonical OU',
+            domainOrWorkgroup: 'ja_OS - DomainOrWorkgroup',
+            domainRole: 'ja_OS - DomainRole',
+            lastBootTime: 'ja_OS - Last BootTime'
+          },
+          hardware: {
+            processorArchitecture: 'ja_Hardware - Processor Architecture',
+            processorArchitectureBits: 'ja_Hardware - Processor Architecture Bits',
+            processorCount: 'ja_Hardware - Processor Count',
+            processorName: 'ja_Hardware - Processor Name',
+            totalPhysicalMemory: 'ja_Hardware - Total Physical Memory',
+            chassisType: 'ja_Hardware - ChassisType',
+            manufacturer: 'ja_Hardware - Manufacturer',
+            model: 'ja_Hardware - Model',
+            serial: 'ja_Hardware - Serial',
+            bios: 'ja_Hardware - Bios'
+          },
+          locale: {
+            defaultLanguage: 'ja_Locale - Default Language',
+            isoCountryCode: 'ja_Locale - Country Code',
+            timeZone: 'ja_Locale - TimeZone'
+          },
+          knownFolder: {
+            appData: 'ja_Folder - AppData',
+            commonAdminTools: 'ja_Folder - Common Admin Tools',
+            commonAppData: 'ja_Folder - Common App Data',
+            commonDestop: 'ja_Folder - Common Desktop',
+            commonDocuments: 'ja_Folder - Common Documents',
+            commonProgramFiles: 'ja_Folder - Common Program Files',
+            commonProgramFilesX86: 'ja_Folder - Common Program Files (x86)',
+            commonPrograms: 'ja_Folder - Common Programs',
+            commonStartMenu: 'ja_Folder - Common Start Menu',
+            commonStartup: 'ja_Folder - Common Startup',
+            desktop: 'ja_Folder - Desktop',
+            localAppData: 'ja_Folder - LocalAppData',
+            myDocuments: 'ja_Folder - My Documents',
+            programFiles: 'ja_Folder - Program Files',
+            programFilesX86: 'ja_Folder - Program Files (x86)',
+            programs: 'ja_Folder - Programs',
+            startMenu: 'ja_Folder - Start Menu',
+            startup: 'ja_Folder - Startup',
+            system: 'ja_Folder - System',
+            systemX86: 'ja_Folder - System (x86)',
+            windows: 'ja_Folder - Windows'
+          }
+        }
+      },
+      properties: {
+        title: 'ja_Host Properties',
+        filter: 'ja_Type to filter list',
+        checkbox: 'ja_Show properties with values only',
+        machine: {
+          securityConfigurations: 'ja_Security Configurations',
+          hostFileEntries: {
+            title: 'ja_Host File Entries',
+            ip: 'ja_Host File IP',
+            hosts: 'ja_Host Entires'
+          },
+          users: {
+            title: 'ja_User',
+            name: 'ja_Name',
+            sessionId: 'ja_SessionID',
+            sessionType: 'ja_Session Type',
+            isAdministrator: 'ja_IsAdmin',
+            administrator: 'ja_Is Admin',
+            groups: 'ja_Groups',
+            domainUserQualifiedName: 'ja_QualifiedName',
+            domainUserId: 'ja_Domain UserID',
+            domainUserOu: 'ja_Domain User OU',
+            domainUserCanonicalOu: 'ja_Domain User Canonical OU',
+            host: 'ja_Host',
+            deviceName: 'ja_DeviceName'
+          },
+          networkInterfaces: {
+            title: 'ja_Network Interfaces',
+            name: 'ja_Name',
+            macAddress: 'ja_MacAddress',
+            networkId: 'ja_NerworkID',
+            ipv4: 'ja_IPv4',
+            ipv6: 'ja_IPv6',
+            gateway: 'ja_Gateway',
+            dns: 'ja_DNS',
+            promiscuous: 'ja_Promiscous'
+          }
+        },
+        machineIdentity: {
+          agent: {
+            agentId: 'ja_Agent Id',
+            agentMode: 'ja_Agent Mode',
+            agentVersion: 'ja_Agent Version',
+            title: 'ja_Agent',
+            exeCompileTime: 'ja_User Mode Compile Time',
+            sysCompileTime: 'ja_Driver Compile Time',
+            packageTime: 'ja_Package Time',
+            installTime: 'ja_Install Time',
+            serviceStartTime: 'ja_Service Start Time',
+            serviceEprocess: 'ja_Service Eprocess',
+            serviceProcessId: 'ja_Service ProcessId',
+            serviceErrorCode: 'ja_Service ErrorCode',
+            serviceStatus: 'ja_Service Status',
+            driverStatus: 'ja_Driver Status',
+            driverErrorCode: 'ja_Driver ErrorCode',
+            blockingEnabled: 'ja_Blocking Enabled',
+            blockingUpdateTime: 'ja_Blocking Update Time'
+          },
+          operatingSystem: {
+            title: 'ja_Operating System',
+            description: 'ja_Description',
+            buildNumber: 'ja_BuildNumber',
+            servicePack: 'ja_ServicePack',
+            directory: 'ja_Directory',
+            kernelId: 'ja_Kernel Id',
+            kernelName: 'ja_Kernel Name',
+            kernelRelease: 'ja_Kernel Release',
+            kernelVersion: 'ja_Kernel Version',
+            distribution: 'ja_Distribution',
+            domainComputerId: 'ja_Domain ComputerID',
+            domainComputerOu: 'ja_Domain Computer OU',
+            domainComputerCanonicalOu: 'ja_Domain Computer Canonical OU',
+            domainOrWorkgroup: 'ja_DomainOrWorkgroup',
+            domainRole: 'ja_DomainRole',
+            lastBootTime: 'ja_Last BootTime'
+          },
+          hardware: {
+            title: 'ja_Hardware',
+            processorArchitecture: 'ja_Processor Architecture',
+            processorArchitectureBits: 'ja_Processor Architecture Bits',
+            processorCount: 'ja_Processor Count',
+            processorName: 'ja_Processor Name',
+            totalPhysicalMemory: 'ja_Total Physical Memory',
+            chassisType: 'ja_ChassisType',
+            manufacturer: 'ja_Manufacturer',
+            model: 'ja_Model',
+            serial: 'ja_Serial',
+            bios: 'ja_Bios'
+          },
+          locale: {
+            title: 'ja_Locale',
+            defaultLanguage: 'ja_Default Language',
+            isoCountryCode: 'ja_Country Code',
+            timeZone: 'ja_TimeZone'
+          }
+        }
+      },
+      medium: {
+        network: 'ja_Network',
+        log: 'ja_Log',
+        correlation: 'ja_Correlation'
+      },
+      empty: {
+        title: 'ja_No events found.',
+        description: 'ja_Your filter criteria did not match any records.'
+      },
+      error: {
+        title: 'ja_Unable to load data.',
+        description: 'ja_An unexpected error occurred when attempting to fetch the data records.'
+      },
+      meta: {
+        title: 'ja_Meta',
+        clickToOpen: 'ja_Click to open'
+      },
+      events: {
+        title: 'ja_Events',
+        error: 'ja_An unexpected error occurred when executing this query.'
+      },
+      services: {
+        loading: 'ja_Loading list of available services',
+        empty: {
+          title: 'ja_Unable to find services.',
+          description: 'ja_No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
+        },
+        error: {
+          title: 'ja_Unable to load services.',
+          description: 'ja_Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
+        }
+      },
+      customQuery: {
+        title: 'ja_Enter a query.'
+      },
+      customFilter: {
+        save: {
+          description: 'ja_Provide a name to the search. This name will appear in the search list.',
+          name: 'ja_Name *',
+          errorHeader: 'ja_Unable to save search',
+          header: 'ja_Save search',
+          errorMessage: 'ja_The search cannot be saved. ',
+          emptyMessage: 'ja_Name field is empty.',
+          nameExistsMessage: 'ja_A saved search with the same name.',
+          success: 'ja_Search query saved successfully. Date/time is not saved.',
+          filterFieldEmptyMessage: 'ja_Filter fields are empty',
+          invalidInput: 'ja_Only \'-\' and \'_\' special characters are allowed.'
+        },
+        update: {
+          success: 'ja_Search query updated successfully. Date/time is not saved.'
+        }
+      },
+      initiateScan: {
+        modal: {
+          title: 'ja_Start Scan for {{count}} host(s)',
+          description: 'ja_Select the type of scan for the selected host(s).',
+          error1: 'ja_*Select atleast one host',
+          error2: 'ja_*Maximum 100 hosts allowed to start scan',
+          infoMessage: 'ja_Some of the selected hosts are already being scanned, so a new scan will not be started for them.',
+          quickScan: {
+            label: 'ja_Quick Scan (Default)',
+            description: 'ja_Scans all executable modules loaded in memory. Approximately takes less than 10 minutes.'
+          },
+          fullScan: {
+            label: 'ja_Full Disk Scan',
+            description: 'ja_Select this option to investigate a machine that is infected. This scans all files on the system disk. Approximately takes more than 15 minutes.'
+          }
+        },
+        success: 'ja_Scan initiated successfully',
+        error: 'ja_Scan initiate failed'
+      },
+      cancelScan: {
+        modal: {
+          title: 'ja_Stop Scan for {{count}} host(s)',
+          description: 'ja_Are you sure, you want to stop scanning the selected host(s)?',
+          error1: 'ja_*Select at least one host'
+        },
+        success: 'ja_Stop scan initiated successfully',
+        error: 'ja_Stop Scan initiate failed'
+      },
+      deleteHosts: {
+        modal: {
+          title: 'ja_Delete {{count}} host(s)',
+          message: 'ja_Deletes all data for selected host(s). Do you want to continue?',
+          note: 'ja_Note : Use this option for uninstalled agents for which you do not need host data for analysis.'
+        },
+        success: 'ja_Host(s) are deleted successfully',
+        error: 'ja_Host(s) deletion failed'
+      },
+      moreActions: {
+        openIn: 'ja_Open in NWE thick client',
+        openInErrorMessage: 'ja_Select at least one host',
+        cancelScan: 'ja_Stop Scan'
+      }
+    },
+    savedQueries: {
+      headerContent: 'ja_Select a saved query from the list to run it.You can also edit the name of the saved query by clicking the pencil icon next to the name,and set it as default by clicking the star icon.',
+      deleteBtn: 'ja_Delete selected',
+      runBtn: 'ja_Run selected',
+      yesBtn: 'ja_Yes',
+      noBtn: 'ja_No',
+      delete: {
+        successMessage: 'ja_Query/Queries deleted successfully.',
+        failureMessage: 'ja_Query/Queries deletion failed.',
+        confirmMessage: 'ja_Are you sure you want to delete the selected query/queries?'
+      },
+      edit: {
+        successMessage: 'ja_Query name updated successfully',
+        errorMessage: 'ja_Query name updation failed',
+        nameExistsMessage: 'ja_Query name already exists'
+      }
+    },
+    files: {
+      footer: '{{count}} of {{total}} {{label}}',
+      filter: {
+        filters: 'ja_Filters',
+        newFilter: 'ja_New Filter',
+        windows: 'ja_WINDOWS',
+        mac: 'ja_MAC',
+        linux: 'ja_LINUX',
+        favouriteFilters: 'ja_Favourite Filters',
+        addMore: 'ja_Add More',
+        restrictionType: {
+          moreThan: 'ja_Greater than',
+          lessThan: 'ja_Less than',
+          between: 'ja_Between',
+          equals: 'ja_Equals',
+          contains: 'ja_Contains'
+        },
+        save: 'ja_Save',
+        reset: 'ja_Reset',
+        customFilters: {
+          save: {
+            description: 'ja_Provide a name to the search. This name will appear in the search list.',
+            name: 'ja_Name *',
+            errorHeader: 'ja_Unable to save search',
+            header: 'ja_Save search',
+            errorMessage: 'ja_The search cannot be saved. ',
+            emptyMessage: 'ja_Name field is empty.',
+            nameExistsMessage: 'ja_A saved search with the same name.',
+            success: 'ja_Search query saved successfully.',
+            filterFieldEmptyMessage: 'ja_Filter fields are empty',
+            invalidInput: 'ja_Only \'-\' and \'_\' special characters are allowed.'
+          }
+        },
+        button: {
+          cancel: 'ja_Cancel',
+          save: 'ja_Save'
+        }
+      }
+    }
   }
 };

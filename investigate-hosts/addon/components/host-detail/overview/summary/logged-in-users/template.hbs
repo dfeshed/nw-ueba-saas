@@ -1,0 +1,35 @@
+<span class='host-content__user-details__icon'>
+  {{rsa-icon style='lined' size='larger' name='account-circle-1'}}
+</span>
+<vbox xs='2'>
+  <box class='host-content__user-details__name'>
+    {{user.name}}
+  </box>
+  <box class='host-content__user-details__administrator'>
+    {{#if user.administrator}} {{t 'investigateHosts.hosts.summary.body.user.administrator'}} {{/if}}
+  </box>
+</vbox>
+<vbox xs='2'>
+  <box>
+    <h4 class='label'>{{t 'investigateHosts.hosts.summary.body.user.sessionId'}}</h4>
+  </box>
+  <box>
+    {{user.sessionId}}
+  </box>
+</vbox>
+<vbox xs='2'>
+  <box>
+    <h4 class='label'>{{t 'investigateHosts.hosts.summary.body.user.sessionType'}}</h4>
+  </box>
+  <box>
+    {{user.sessionType}}
+  </box>
+</vbox>
+<vbox xs='5'>
+  <box>
+    <h4 class='label'>{{t 'investigateHosts.hosts.summary.body.user.groups'}}</h4>
+  </box>
+  <box>
+    {{user.groups}}
+  </box>
+</vbox>

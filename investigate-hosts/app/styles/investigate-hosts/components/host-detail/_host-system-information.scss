@@ -1,0 +1,38 @@
+$table-header-color: rgba(28, 30, 30, 1);
+$tree-row-color: rgba(37, 41, 43, 1);
+$note-color: #bdbdbd;
+
+.system-information {
+  .liquid-container,
+  .liquid-child {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+  .system-information__content {
+    padding: 20px 18px 5px;
+  }
+  .rsa-data-table-header {
+    background-color: $table-header-color;
+  }
+  .rsa-data-table {
+    max-height: 100vh;
+    min-height: 130px;
+    background-color: $tree-row-color;
+  }
+  .user-filter {
+    padding-bottom: rsa-whitespace();
+    .ember-power-select-trigger {
+      width: 10rem;
+    }
+    .command-note {
+      padding-top: rsa-whitespace(less);
+      color: $note-color;
+    }
+    .ember-power-select-dropdown {
+      width: 10rem;
+    }
+  }
+}

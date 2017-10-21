@@ -1,0 +1,34 @@
+<vbox xs="3" class="process-list-box">
+  <div class="process-list-header">
+    <span class="title">{{t 'investigateHosts.process.title'}}</span>
+    <span class="toggle-icon" {{action 'toggleProcessView'}}>
+      {{rsa-icon active=isTreeView class="tree-icon" name='hierarchy-1' is-filled=true}}
+    </span>
+  </div>
+  {{#if isTreeView}}
+    {{host-detail/process/process-tree}}
+  {{else}}
+    {{host-detail/process/process-list}}
+  {{/if}}
+</vbox>
+<vbox xs="6" class="process-content-box panel-shadow">
+  {{host-detail/process/summary-items config=summaryConfig data=process}}
+  <box class="process-content-box__accordion-content">
+    {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.dll.title')}}
+      <div class="process-dll-note">{{loadedDLLNote}}</div>
+      {{host-detail/process/process-dll-list}}
+    {{/rsa-content-accordion}}
+  </box>
+</vbox>
+<vbox xs="3" class="process-property-box">
+  {{host-detail/utils/file-property-panel
+    config=propertyConfig
+    localeNameSpace='investigateHosts.property.file'
+    data=process
+    title=(t 'investigateHosts.process.properties')}}
+</vbox>
+
+
+
+
+

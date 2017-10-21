@@ -1,0 +1,6 @@
+.rsa-agent-scan-status {
+  & .rsa-icon {
+    margin-bottom: -2px;
+    @extend .rsa-m-l-xs
+  }
+}

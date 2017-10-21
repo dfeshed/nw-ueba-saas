@@ -1,0 +1,9 @@
+ {{#if categories}}
+   <span>
+     ({{t "investigateHosts.hosts.ranas.ranas"}}
+     {{#each categories as |category|}}
+       <span class="file-found-categories__list" {{action 'navigateToTab' category}}>{{category}} </span>
+     {{/each}}
+     )
+   </span>
+ {{/if}}
