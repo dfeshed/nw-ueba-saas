@@ -3,6 +3,7 @@ package fortscale.ml.model.retriever;
 import com.google.common.collect.Sets;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.*;
+import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelector;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
@@ -16,6 +17,7 @@ import fortscale.utils.factory.FactoryService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import net.minidev.json.JSONObject;
 import org.assertj.core.util.Maps;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +28,7 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -137,6 +137,20 @@ public class AccumulatedSmartValueRetrieverTest {
 
         assertEquals(genericHistogram.getTotalCount(),1,0);
         assertEquals(1.0,genericHistogram.get(0.95),0);
+    }
+
+    @Test
+    public void calcNumOfPartitions()
+    {
+        List<SmartAggregatedRecordDataContainer> data = new LinkedList<>();
+        Instant startTime = Instant.EPOCH;
+        for (int i=0; i<42 ; i++)
+        {
+            data.add(new SmartAggregatedRecordDataContainer(startTime,new HashMap<>()));
+            startTime = startTime.plus(Duration.ofHours(1));
+        }
+        Set<Long> partitionIds = retriever.calcNumOfPartitions(data);
+        Assert.assertEquals("dividing 42 hours into partitions in daily resolution should be 2",2,partitionIds.size());
     }
 
 }

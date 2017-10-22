@@ -177,7 +177,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         return AccumulatedSmartRecord.getAggregatedFeatureContextId(context);
     }
 
-    private Set<Long> calcNumOfPartitions(List<SmartAggregatedRecordDataContainer> data) {
+    Set<Long> calcNumOfPartitions(List<SmartAggregatedRecordDataContainer> data) {
         return data.stream().map(x -> {
             long partitionId = ((long) x.getStartTime().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
             return partitionId;
