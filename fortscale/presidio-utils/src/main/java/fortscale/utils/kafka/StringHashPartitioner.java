@@ -1,4 +1,4 @@
-package fortscale.utils.kafka.partitions;
+package fortscale.utils.kafka;
 
 import kafka.producer.Partitioner;
 import kafka.utils.VerifiableProperties;
@@ -14,7 +14,6 @@ import java.security.NoSuchAlgorithmException;
  * resort to using MD5 algorithm, as it is consistent and performs better than SHA based variants
  */
 public class StringHashPartitioner implements Partitioner {
-
     MessageDigest digest;
 
     public StringHashPartitioner(VerifiableProperties props) {
@@ -28,11 +27,11 @@ public class StringHashPartitioner implements Partitioner {
     @Override
     public int partition(Object key, int numPartitions) {
         // save some time when there are no partitions
-        if (numPartitions==1)
+        if (numPartitions == 1)
             return 0;
 
         // convert key to string
-        String stringKey = (key==null)? "place-holder" : ((key instanceof String)? (String)key : key.toString());
+        String stringKey = (key == null) ? "place-holder" : ((key instanceof String) ? (String)key : key.toString());
 
         // calculate hash value for the key
         BigInteger hashed = new BigInteger(1, digest.digest(stringKey.getBytes()));
