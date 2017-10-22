@@ -261,7 +261,7 @@
                             <configOptions>
                                 <groupId>fortscale</groupId>
                                 <artifactId>presidio-output-generated-client</artifactId>
-                                <version>${project.version}</version>
+                                <artifactVersion>${project.version}</artifactVersion>
                             </configOptions>
                         </configuration>
                     </execution>
