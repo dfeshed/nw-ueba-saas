@@ -171,8 +171,7 @@ public class UserPersistencyServiceTest {
 
         assertNotNull(foundUser.getId());
         assertEquals(foundUser.getId(), user.getId());
-        assertEquals(created, null);
-        assertNotEquals(createdBy, null);
+        assertNotEquals(null, createdBy);
         assertEquals(createdBy, updatedByAgain);
         assertNotEquals(createdBy, updatedByAgain2);
     }
