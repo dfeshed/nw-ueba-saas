@@ -725,7 +725,6 @@
         <module>presidio-ml</module>
         <module>presidio-aggregation</module>
         <module>presidio-ade</module>
-        <module>presidio-monitoring-daemons</module>
         <module>presidio-input</module>
         <module>presidio-adapter</module>
         <module>presidio-output</module>
