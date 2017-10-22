@@ -395,7 +395,7 @@ limitations under the License.
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-domain</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${presidio.core.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -407,7 +407,7 @@ limitations under the License.
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-common</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${presidio.core.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -429,7 +429,7 @@ limitations under the License.
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${presidio.core.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
