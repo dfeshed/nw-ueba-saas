@@ -50,7 +50,7 @@ public class Indicator extends AbstractElasticDocument {
     private Date endDate;
 
     @JsonProperty(SCHEMA)
-    Schema schema;
+    private Schema schema;
 
     @JsonProperty(SCORE)
     private double score;

@@ -3,9 +3,8 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
+import org.springframework.data.elasticsearch.annotations.Setting;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
@@ -14,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE, type = Alert.ALERT_TYPE)
+@Mapping(mappingPath = "elasticsearch/mappings/alerts-mappings.json")
+@Setting(settingPath = "elasticsearch/mappings/settings.json")
 public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
@@ -33,50 +34,43 @@ public class Alert extends AbstractElasticDocument {
     public static final String USER_TAGS_FIELD_NAME = "userTags";
     public static final String CONTRIBUTION_TO_USER_SCORE_FIELD_NAME = "contributionToUserScore";
     public static final String AGGR_SEVERITY_PER_DAY = "severityPerDay";
+    public static final String INDEXED_USER_NAME = "indexedUserName";
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(CLASSIFICATIONS)
     private List<String> classifications;
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_NAME)
     private String userName;
 
-    @Field(type = FieldType.String, store = true)
+    @JsonProperty(INDEXED_USER_NAME)
+    private String indexedUserName;
+
     @JsonProperty(SMART_ID)
     private String smartId;
 
-    @Field(type = FieldType.String, store = true)
     @JsonProperty(USER_ID)
     private String userId;
 
-    @Field(type = FieldType.Date, store = true)
     @JsonProperty(START_DATE)
     private Date startDate;
 
-    @Field(type = FieldType.Date, store = true)
     @JsonProperty(END_DATE)
     private Date endDate;
 
-    @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE)
     private double score;
 
-    @Field(type = FieldType.Integer, store = true)
     @JsonProperty(INDICATORS_NUM)
     private int indicatorsNum;
 
-    @Field(type = FieldType.String, store = true)
     @Enumerated(EnumType.STRING)
     @JsonProperty(TIMEFRAME)
     private AlertEnums.AlertTimeframe timeframe;
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
     @JsonProperty(SEVERITY)
     private AlertEnums.AlertSeverity severity;
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(INDICATOR_NAMES)
     private List<String> indicatorsNames;
 
@@ -99,6 +93,7 @@ public class Alert extends AbstractElasticDocument {
         this.userId = userId;
         this.smartId = smartId;
         this.userName = userName;
+        this.indexedUserName = userName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.score = score;
@@ -139,6 +134,14 @@ public class Alert extends AbstractElasticDocument {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getIndexedUserName() {
+        return indexedUserName;
+    }
+
+    public void setIndexedUserName(String indexedUserName) {
+        this.indexedUserName = indexedUserName;
     }
 
     public Date getStartDate() {
