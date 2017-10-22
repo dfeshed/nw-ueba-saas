@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class SMARTValuesModel implements Model {
+public class SMARTValuesModel implements PartitionedDataModel {
 	private long numOfZeroValues;
 	private long numOfPositiveValues;
 	private double sumOfValues;
@@ -41,6 +41,7 @@ public class SMARTValuesModel implements Model {
 		return numOfZeroValues;
 	}
 
+	@Override
 	public long getNumOfPartitions() {
 		return numOfPartitions;
 	}

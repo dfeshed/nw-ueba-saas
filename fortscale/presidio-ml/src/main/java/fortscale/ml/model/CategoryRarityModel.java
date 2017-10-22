@@ -14,7 +14,7 @@ import java.util.Map;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class CategoryRarityModel implements Model {
+public class CategoryRarityModel implements PartitionedDataModel {
 	private double[] buckets;
 	private long numOfSamples;
 	private long numDistinctFeatures;
@@ -70,6 +70,7 @@ public class CategoryRarityModel implements Model {
 		return numOfSamples;
 	}
 
+
 	public long getNumOfDistinctFeatures() {
 		return numDistinctFeatures;
 	}
@@ -105,6 +106,7 @@ public class CategoryRarityModel implements Model {
 		return getNumOfSavedFeatures() >= numberOfEntriesToSaveInModel;
 	}
 
+	@Override
 	public long getNumOfPartitions() {
 		return numOfPartitions;
 	}

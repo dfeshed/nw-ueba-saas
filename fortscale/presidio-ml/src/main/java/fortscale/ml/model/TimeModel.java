@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class TimeModel implements Model {
+public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
 
 	private int timeResolution;
@@ -124,7 +124,8 @@ public class TimeModel implements Model {
 		return categoryRarityModel;
 	}
 
-	public long getNumberOfPartitions() {
+	@Override
+	public long getNumOfPartitions() {
 		return categoryRarityModel.getNumOfPartitions();
 	}
 }

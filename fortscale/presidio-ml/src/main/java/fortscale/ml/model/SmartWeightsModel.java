@@ -13,7 +13,7 @@ import java.util.List;
         setterVisibility = Visibility.NONE,
         isGetterVisibility = Visibility.NONE
 )
-public class SmartWeightsModel implements Model {
+public class SmartWeightsModel implements PartitionedDataModel {
     private List<ClusterConf> clusterConfs;
     private long numOfPartitions;
 
@@ -38,5 +38,10 @@ public class SmartWeightsModel implements Model {
     public SmartWeightsModel setNumOfPartitions(long numOfPartitions) {
         this.numOfPartitions = numOfPartitions;
         return this;
+    }
+
+    @Override
+    public long getNumOfPartitions() {
+        return numOfPartitions;
     }
 }
