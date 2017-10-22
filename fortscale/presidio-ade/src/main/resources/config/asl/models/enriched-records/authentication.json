@@ -37,7 +37,7 @@
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100000
       }
     },
     {
@@ -57,7 +57,7 @@
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100000
       }
     },
     {
@@ -77,7 +77,7 @@
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100000
       }
     },
     {
@@ -97,7 +97,7 @@
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100000
       }
     }
   ]
