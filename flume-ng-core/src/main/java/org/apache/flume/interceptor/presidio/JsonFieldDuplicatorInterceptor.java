@@ -15,20 +15,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
-
+/**
+ * This interceptor is used to duplicate certain values  in the received JSON.
+ * Returns the same JSON without new keys.
+ */
+public class JsonFieldDuplicatorInterceptor extends AbstractInterceptor{
     private static final Logger logger = LoggerFactory
-            .getLogger(JsonFieldRenamerInterceptor.class);
+            .getLogger(JsonFieldDuplicatorInterceptor.class);
 
     private final List<String> originFields;
     private final List<String> destinationFields;
     private final Boolean deleteNullFields;
 
-    JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields, Boolean deleteMissingFields) {
+    public JsonFieldDuplicatorInterceptor(List<String> originFields, List<String> destinationFields, Boolean deleteNullFields) {
         this.originFields = originFields;
         this.destinationFields = destinationFields;
-        this.deleteNullFields = deleteMissingFields;
+        this.deleteNullFields = deleteNullFields;
     }
 
     @Override
@@ -50,7 +52,6 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
                     }
                 } else {
                     eventBodyAsJson.add(destinationFields.get(i), jsonElement);
-                    eventBodyAsJson.remove(currField);
                 }
             }
         }
@@ -59,9 +60,8 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
         return event;
     }
 
-
     /**
-     * Builder which builds new instance of the JsonFieldRenamerInterceptor.
+     * Builder which builds new instance of the JsonFieldDuplicatorInterceptor.
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
@@ -112,9 +112,9 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
 
         @Override
         public Interceptor build() {
-            logger.info("Creating JsonFieldRenamerInterceptor: {}={}, {}={}",
+            logger.info("Creating JsonFieldDuplicatorInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
-            return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields);
+            return new JsonFieldDuplicatorInterceptor(originFields, destinationFields, deleteNullFields);
         }
 
     }
