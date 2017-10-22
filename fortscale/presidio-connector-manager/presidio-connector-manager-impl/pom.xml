@@ -35,10 +35,5 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-configuration-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>

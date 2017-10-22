@@ -15,22 +15,7 @@ package fortscale.utils.elasticsearch;
  * limitations under the License.
  */
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.apache.commons.lang.StringUtils.isBlank;
-
-import static org.elasticsearch.client.Requests.*;
-
-import static org.elasticsearch.index.VersionType.*;
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
-import static org.springframework.util.CollectionUtils.isEmpty;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
-
-import fortscale.utils.elasticsearch.PresidioResultMapper;
+import fortscale.utils.logging.Logger;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -42,7 +27,6 @@ import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetRequest;
 import org.elasticsearch.action.get.MultiGetRequestBuilder;
@@ -50,19 +34,10 @@ import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-
-import org.elasticsearch.index.query.MoreLikeThisQueryBuilder;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.data.elasticsearch.core.query.MoreLikeThisQuery;
-
-
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.cluster.metadata.AliasAction;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.MapBuilder;
 import org.elasticsearch.common.unit.TimeValue;
@@ -71,23 +46,19 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-
-
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.elasticsearch.search.suggest.SuggestBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
-import org.springframework.data.elasticsearch.core.SearchResultMapper;
+import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
@@ -95,14 +66,20 @@ import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMa
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.util.CloseableIterator;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.util.Assert;
-import org.springframework.data.elasticsearch.core.ResultsMapper;
-import org.springframework.data.elasticsearch.core.DefaultResultMapper;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-import org.springframework.data.elasticsearch.core.GetResultMapper;
-import org.springframework.data.elasticsearch.core.ResultsExtractor;
-import org.springframework.data.elasticsearch.core.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.elasticsearch.client.Requests.indicesExistsRequest;
+import static org.elasticsearch.client.Requests.refreshRequest;
+import static org.elasticsearch.index.VersionType.EXTERNAL;
+import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * PresidioElasticsearchTemplate
@@ -115,10 +92,9 @@ import org.springframework.data.elasticsearch.core.*;
  * @author Young Gu
  * @author Oliver Gierke
  */
-
 public class PresidioElasticsearchTemplate implements ElasticsearchOperations, ApplicationContextAware {
+    private static final Logger logger = Logger.getLogger(PresidioElasticsearchTemplate.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(PresidioElasticsearchTemplate.class);
     private Client client;
     private ElasticsearchConverter elasticsearchConverter;
     private ResultsMapper resultsMapper;

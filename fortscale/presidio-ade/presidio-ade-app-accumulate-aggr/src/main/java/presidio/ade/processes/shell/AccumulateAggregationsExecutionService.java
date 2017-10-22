@@ -6,8 +6,6 @@ import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.TtlService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketService;
@@ -19,8 +17,6 @@ import java.time.Instant;
  * Created by maria_dorohin on 7/26/17.
  */
 public class AccumulateAggregationsExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(AccumulateAggregationsExecutionService.class);
-
     private final BucketConfigurationService bucketConfigurationService;
     private final EnrichedDataStore enrichedDataStore;
     private final AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore;

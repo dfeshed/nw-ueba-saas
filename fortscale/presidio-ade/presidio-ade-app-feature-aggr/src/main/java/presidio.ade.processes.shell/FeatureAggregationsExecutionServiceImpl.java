@@ -9,8 +9,6 @@ import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringS
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.TtlService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.aggregation.FeatureAggregationService;
@@ -18,9 +16,6 @@ import presidio.ade.processes.shell.aggregation.FeatureAggregationService;
 import java.time.Instant;
 
 public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(FeatureAggregationsExecutionServiceImpl.class);
-
-
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
