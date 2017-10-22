@@ -12,8 +12,8 @@ public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator
 
     private static final String[] DEFAULT_AD_OPERATION_TYPE = {
             AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value,
-            AD_OPERATION_TYPE.PASSWORD_CHANGED.value,
-            AD_OPERATION_TYPE.PASSWORD_CHANGED_BY_NON_OWNER.value,
+            AD_OPERATION_TYPE.USER_PASSWORD_CHANGED.value,
+            AD_OPERATION_TYPE.USER_PASSWORD_CHANGED_BY_NON_OWNER.value,
             AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value,
             AD_OPERATION_TYPE.USER_ACCOUNT_ENABLED.value,
             AD_OPERATION_TYPE.USER_ACCOUNT_DISABLED.value,

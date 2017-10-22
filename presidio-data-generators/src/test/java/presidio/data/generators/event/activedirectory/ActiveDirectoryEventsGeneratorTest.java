@@ -78,8 +78,8 @@ public class ActiveDirectoryEventsGeneratorTest {
     public void OperationTypeTest () {
         // Operation types - see that all included, in the same order as enum
         Assert.assertEquals(AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value, events.get(0).getOperation().getOperationType());
-        Assert.assertEquals(AD_OPERATION_TYPE.PASSWORD_CHANGED.value, events.get(1).getOperation().getOperationType());
-        Assert.assertEquals(AD_OPERATION_TYPE.PASSWORD_CHANGED_BY_NON_OWNER.value, events.get(2).getOperation().getOperationType());
+        Assert.assertEquals(AD_OPERATION_TYPE.USER_PASSWORD_CHANGED.value, events.get(1).getOperation().getOperationType());
+        Assert.assertEquals(AD_OPERATION_TYPE.USER_PASSWORD_CHANGED_BY_NON_OWNER.value, events.get(2).getOperation().getOperationType());
         Assert.assertEquals(AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value, events.get(3).getOperation().getOperationType());
         Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_ENABLED.value, events.get(4).getOperation().getOperationType());
         Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_DISABLED.value, events.get(5).getOperation().getOperationType());
