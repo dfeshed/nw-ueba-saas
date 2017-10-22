@@ -18,6 +18,8 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<UserQuery> {
 
+    public static final int DEFAULT_AGG_BULK_SIZE = 1000;
+
     public UserElasticsearchQueryBuilder(UserQuery userQuery) {
         super(userQuery);
     }
@@ -140,13 +142,13 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
                 super.addAggregation(AggregationBuilders.terms(User.SEVERITY_FIELD_NAME).field(User.SEVERITY_FIELD_NAME));
             }
             if (userQuery.getAggregateByFields().contains(User.TAGS_FIELD_NAME)) {
-                super.addAggregation(AggregationBuilders.terms(User.TAGS_FIELD_NAME).field(User.TAGS_FIELD_NAME));
+                super.addAggregation(AggregationBuilders.terms(User.TAGS_FIELD_NAME).field(User.TAGS_FIELD_NAME).size(DEFAULT_AGG_BULK_SIZE));
             }
             if (userQuery.getAggregateByFields().contains(User.ALERT_CLASSIFICATIONS_FIELD_NAME)) {
-                super.addAggregation(AggregationBuilders.terms(User.ALERT_CLASSIFICATIONS_FIELD_NAME).field(User.ALERT_CLASSIFICATIONS_FIELD_NAME));
+                super.addAggregation(AggregationBuilders.terms(User.ALERT_CLASSIFICATIONS_FIELD_NAME).field(User.ALERT_CLASSIFICATIONS_FIELD_NAME).size(DEFAULT_AGG_BULK_SIZE));
             }
             if (userQuery.getAggregateByFields().contains(User.INDICATORS_FIELD_NAME)) {
-                super.addAggregation(AggregationBuilders.terms(User.INDICATORS_FIELD_NAME).field(User.INDICATORS_FIELD_NAME));
+                super.addAggregation(AggregationBuilders.terms(User.INDICATORS_FIELD_NAME).field(User.INDICATORS_FIELD_NAME).size(DEFAULT_AGG_BULK_SIZE));
             }
         }
     }
