@@ -532,6 +532,11 @@ IncludeOptional conf.d/*.conf
      RewriteEngine on
      RewriteRule /(.*) "http://localhost:7777/api/v1.0/webhook" [P,L]
   </Location>
+
+  <Location /api/v1.0/heartbeat>
+     RewriteEngine on
+     RewriteRule /(.*) "http://localhost:7777/api/v1.0/heartbeat" [P,L]
+  </Location>
  
 </VirtualHost>
 
