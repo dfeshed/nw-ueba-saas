@@ -656,14 +656,63 @@ public class UserPersistencyServiceTest {
 
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
-                        .sort(new Sort(Sort.Direction.ASC, User.USER_NAME_FIELD_NAME))
+                        .sort(new Sort(Sort.Direction.ASC, User.INDEXED_USER_NAME_FIELD_NAME))
                         .build();
 
         Page<User> result = userPersistencyService.find(userQuery);
-        assertEquals(result.getContent().size(), 3L); //two buckets- admin and watch
+        assertEquals(3L, result.getContent().size());
         Iterator<User> iterator = result.iterator();
         Assert.assertEquals("B_userName", iterator.next().getUserName());
         Assert.assertEquals("C_userName", iterator.next().getUserName());
         Assert.assertEquals("W_userName", iterator.next().getUserName());
+    }
+
+    @Test
+    public void testFindByUserNameCaseInsensitive() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByUserName("w_userName")
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(1L, result.getContent().size());
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
+    }
+
+
+    @Test
+    public void testFindByUserNameContains() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "Donald Duck", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "Mini Mous", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "Donkey", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByUserName("duck")
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(1L, result.getContent().size());
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("Donald Duck", iterator.next().getUserName());
     }
 }
