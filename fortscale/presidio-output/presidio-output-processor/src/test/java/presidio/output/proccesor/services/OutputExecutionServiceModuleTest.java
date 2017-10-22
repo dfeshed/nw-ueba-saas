@@ -3,19 +3,19 @@ package presidio.output.proccesor.services;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
 import org.assertj.core.util.Lists;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,6 +25,7 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
+import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
@@ -47,11 +48,10 @@ import java.util.List;
 import java.util.Map;
 
 @Ignore
-//this test is ignored since it is using elastic. we should run this test after we will have solution for tests with elastic
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
-public class OutputExecutionServiceTest {
+public class OutputExecutionServiceModuleTest {
     public static final String USER_ID_TEST_USER = "userId#testUser";
 
     @Autowired
@@ -68,6 +68,23 @@ public class OutputExecutionServiceTest {
 
     @Autowired
     AlertPersistencyService alertPersistencyService;
+
+    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
+
+    @BeforeClass
+    public static void setupElasticsearch() {
+        try {
+            embeddedElasticsearchUtils.setupLocalElasticsearch();
+        } catch (Exception e) {
+            Assert.fail("Failed to start elasticsearch");
+            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+        }
+    }
+
+    @AfterClass
+    public static void stopElasticsearch() throws Exception {
+        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+    }
 
     @Before
     public void setup() {

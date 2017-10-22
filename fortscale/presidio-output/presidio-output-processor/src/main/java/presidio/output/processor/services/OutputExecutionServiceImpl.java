@@ -88,7 +88,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         Set tags = new HashSet();
         tags.add(startDate.toString());
         List<SmartRecord> smarts = null;
-        String updatedBy = USER_GOT_SMART + new Date().toString();
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
