@@ -50,7 +50,7 @@ public class Indicator extends AbstractElasticDocument {
     private Date endDate;
 
     @JsonProperty(SCHEMA)
-    Schema schema;
+    private Schema schema;
 
     @JsonProperty(SCORE)
     private double score;
@@ -73,12 +73,6 @@ public class Indicator extends AbstractElasticDocument {
 
     public Indicator(String alertId) {
         super();
-        events = new ArrayList<IndicatorEvent>();
-        this.alertId = alertId;
-    }
-
-    public Indicator(String alertId, String id, Date createdDate, Date updatedDate) {
-        super(id, createdDate, updatedDate);
         events = new ArrayList<IndicatorEvent>();
         this.alertId = alertId;
     }

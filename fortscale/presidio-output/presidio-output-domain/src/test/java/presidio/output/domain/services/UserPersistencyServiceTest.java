@@ -7,8 +7,8 @@ import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -110,12 +110,15 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindOne() {
-        User user = user1;
+        User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
         userPersistencyService.save(user);
 
+        Date createdByBeforeFind = user.getCreatedDate();
         User foundUser = userPersistencyService.findUserById(user.getId());
+        Date createdByAfterFind = foundUser.getCreatedDate();
 
         assertNotNull(foundUser.getId());
+        assertEquals(createdByBeforeFind, createdByAfterFind);
         assertEquals(foundUser.getId(), user.getId());
         assertEquals(foundUser.getUserName(), user.getUserName());
         assertEquals(foundUser.getUserDisplayName(), user.getUserDisplayName());
@@ -123,6 +126,32 @@ public class UserPersistencyServiceTest {
         assertEquals(foundUser.getAlertClassifications().size(), user.getAlertClassifications().size());
         assertEquals(foundUser.getIndicators().size(), user.getIndicators().size());
 
+    }
+
+    @Test
+    public void testUpdatedBY() throws InterruptedException {
+        Thread.currentThread().setName("TEST");
+        User user = generateUser(classifications1, "user1", "userId1", "user1", 50d);
+        String created = user.getUpdatedBy();
+        userPersistencyService.save(user);
+        User foundUser = userPersistencyService.findUserById(user.getId());
+        String createdBy = foundUser.getUpdatedBy();
+        Thread.sleep(1000);
+        userPersistencyService.save(foundUser);
+        foundUser = userPersistencyService.findUserById(user.getId());
+        String updatedByAgain = foundUser.getUpdatedBy();
+        Thread.currentThread().setName("TEST2");
+        Thread.sleep(1000);
+        userPersistencyService.save(foundUser);
+        foundUser = userPersistencyService.findUserById(user.getId());
+        String updatedByAgain2 = foundUser.getUpdatedBy();
+
+        assertNotNull(foundUser.getId());
+        assertEquals(foundUser.getId(), user.getId());
+        assertEquals(created, null);
+        assertNotEquals(createdBy, null);
+        assertEquals(createdBy, updatedByAgain);
+        assertNotEquals(createdBy, updatedByAgain2);
     }
 
     @Test
@@ -318,6 +347,7 @@ public class UserPersistencyServiceTest {
 
     @Test
     public void testFindByUserScore() {
+
         List<String> tags = new ArrayList<>();
         tags.add("ADMIN");
 
@@ -603,14 +633,63 @@ public class UserPersistencyServiceTest {
 
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
-                        .sort(new Sort(Sort.Direction.ASC, User.USER_NAME_FIELD_NAME))
+                        .sort(new Sort(Sort.Direction.ASC, User.INDEXED_USER_NAME_FIELD_NAME))
                         .build();
 
         Page<User> result = userPersistencyService.find(userQuery);
-        assertEquals(result.getContent().size(), 3L); //two buckets- admin and watch
+        assertEquals(3L, result.getContent().size());
         Iterator<User> iterator = result.iterator();
         Assert.assertEquals("B_userName", iterator.next().getUserName());
         Assert.assertEquals("C_userName", iterator.next().getUserName());
         Assert.assertEquals("W_userName", iterator.next().getUserName());
+    }
+
+    @Test
+    public void testFindByUserNameCaseInsensitive() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByUserName("w_userName")
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(1L, result.getContent().size());
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
+    }
+
+
+    @Test
+    public void testFindByUserNameContains() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "Donald Duck", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user2 = new User("userId2", "Mini Mous", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
+        User user3 = new User("userId3", "Donkey", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder().filterByUserName("duck")
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(1L, result.getContent().size());
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("Donald Duck", iterator.next().getUserName());
     }
 }

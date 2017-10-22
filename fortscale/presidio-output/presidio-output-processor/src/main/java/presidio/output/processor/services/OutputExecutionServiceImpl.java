@@ -47,6 +47,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final String LAST_SMART_TIME_METRIC_NAME = "last.smart.time.in.output";
     private final String TYPE_LONG = "long";
     private static final String ADE_SMART_USER_ID = "userId";
+    private final String USER_GOT_SMART = "userGotSmart";
 
     @Autowired
     MetricCollectingService metricCollectingService;

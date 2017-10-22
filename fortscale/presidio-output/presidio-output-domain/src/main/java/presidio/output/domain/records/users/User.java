@@ -2,19 +2,20 @@ package presidio.output.domain.records.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
+import org.springframework.data.elasticsearch.annotations.Setting;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-/**
- * Created by efratn on 20/08/2017.
- */
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
+@Mapping(mappingPath = "elasticsearch/mappings/users-mappings.json")
+@Setting(settingPath = "elasticsearch/mappings/settings.json")
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
@@ -25,48 +26,41 @@ public class User extends AbstractElasticDocument {
     public static final String SCORE_FIELD_NAME = "score";
     public static final String USER_ID_FIELD_NAME = "userId";
     public static final String USER_NAME_FIELD_NAME = "userName";
+    public static final String INDEXED_USER_NAME_FIELD_NAME = "indexedUserName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
 
-
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(USER_NAME_FIELD_NAME)
     private String userName;
 
-    @Field(type = FieldType.String, store = true)
+    @JsonProperty(INDEXED_USER_NAME_FIELD_NAME)
+    private String indexedUserName;
+
     @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
 
-    @Field(type = FieldType.Double, store = true)
     @JsonProperty(SCORE_FIELD_NAME)
     private double score;
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(ALERT_CLASSIFICATIONS_FIELD_NAME)
     private List<String> alertClassifications = new ArrayList<>();
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(INDICATORS_FIELD_NAME)
     private List<String> indicators = new ArrayList<>();
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @Enumerated(EnumType.STRING)
     @JsonProperty(SEVERITY_FIELD_NAME)
     private UserSeverity severity;
 
-    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     @JsonProperty(TAGS_FIELD_NAME)
     private List<String> tags = new ArrayList<>();
 
-    @Field(type = FieldType.Integer, store = true)
     @JsonProperty(ALERTS_COUNT_FIELD_NAME)
     private int alertsCount;
-
 
     public User() {
         // empty const for JSON deserialization
@@ -77,20 +71,7 @@ public class User extends AbstractElasticDocument {
         super();
         this.userId = userId;
         this.userName = userName;
-        this.userDisplayName = userDisplayName;
-        this.score = score;
-        this.alertClassifications = alertClassifications;
-        this.indicators = indicators;
-        this.tags = tags;
-        this.severity = severity;
-        this.alertsCount = alertsCount;
-    }
-
-    public User(String userId, String userName, String userDisplayName, double score, List<String> alertClassifications, List<String> indicators, List<String> tags, UserSeverity severity,
-                int alertsCount, String id, Date createdDate, Date updatedDate) {
-        super(id, createdDate, updatedDate);
-        this.userId = userId;
-        this.userName = userName;
+        this.indexedUserName = userName;
         this.userDisplayName = userDisplayName;
         this.score = score;
         this.alertClassifications = alertClassifications;
@@ -104,6 +85,7 @@ public class User extends AbstractElasticDocument {
         super();
         this.userId = userId;
         this.userName = userName;
+        this.indexedUserName = userName;
         this.userDisplayName = userDisplayName;
         this.tags = tags;
     }
@@ -122,6 +104,14 @@ public class User extends AbstractElasticDocument {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getIndexedUserName() {
+        return indexedUserName;
+    }
+
+    public void setIndexedUserName(String indexedUserName) {
+        this.indexedUserName = indexedUserName;
     }
 
     public void setUserDisplayName(String userDisplayName) {
@@ -176,6 +166,7 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
     }
 
+
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
         newAlertClassifications.addAll(alertClassifications);
@@ -209,5 +200,4 @@ public class User extends AbstractElasticDocument {
     public int hashCode() {
         return userId.hashCode();
     }
-
 }

@@ -16,7 +16,6 @@ import presidio.output.domain.repositories.IndicatorRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,12 +31,14 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     private IndicatorEventRepository indicatorEventRepository;
 
     public Alert save(Alert alert) {
-        alert.setUpdatedDate(new Date());
+        alert.updateFieldsBeforeSave();
         return alertRepository.save(alert);
     }
 
     public Iterable<Alert> save(List<Alert> alerts) {
-
+        alerts.forEach(alert -> {
+            alert.updateFieldsBeforeSave();
+        });
         // atomic save for the entire alert entities
 
         // save alerts

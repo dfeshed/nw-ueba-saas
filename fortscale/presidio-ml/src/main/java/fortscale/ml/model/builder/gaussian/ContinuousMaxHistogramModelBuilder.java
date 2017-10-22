@@ -1,12 +1,11 @@
 package fortscale.ml.model.builder.gaussian;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.AggregatedFeatureValuesData;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.ContinuousMaxDataModel;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.utils.time.TimeService;
 import org.springframework.util.Assert;
 
@@ -24,25 +23,31 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
 
     private int numOfMaxValuesSamples;
     private int minNumOfMaxValuesSamples;
+    private long partitionsResolutionInSeconds;
 
     public ContinuousMaxHistogramModelBuilder(ContinuousMaxHistogramModelBuilderConf builderConf) {
         Assert.isTrue(builderConf.getNumOfMaxValuesSamples() > 0, "numOfMaxValuesSamples should be bigger than zero");
         Assert.isTrue(builderConf.getMinNumOfMaxValuesSamples() > 0, "nimNumOfMaxValuesSamples should be bigger than zero");
         this.numOfMaxValuesSamples = builderConf.getNumOfMaxValuesSamples();
         this.minNumOfMaxValuesSamples = builderConf.getMinNumOfMaxValuesSamples();
+        this.partitionsResolutionInSeconds = builderConf.getPartitionsResolutionInSeconds();
     }
 
 
     @Override
     public Model build(Object modelBuilderData) {
-        TreeMap<Instant, Double> instantToFeatureValue = (TreeMap<Instant, Double>) modelBuilderData;
+
+        AggregatedFeatureValuesData aggregatedFeatureValuesData = (AggregatedFeatureValuesData) modelBuilderData;
+
+        Duration instantStep = aggregatedFeatureValuesData.getInstantStep();
+        TreeMap<Instant, Double> instantToFeatureValue = aggregatedFeatureValuesData.getInstantToAggregatedFeatureValues();
 
         //create ContinuousDataModel with all data
         Map<String, Double> histogram = createGenericHistogram(instantToFeatureValue.values()).getHistogramMap();
         ContinuousDataModel continuousDataModel = buildContinuousDataModel(histogram);
 
         //create ContinuousDataModel with max values
-        List<Double> maxValues = getMaxValues(instantToFeatureValue);
+        List<Double> maxValues = getMaxValues(instantToFeatureValue, instantStep);
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
 
         return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues);
@@ -52,21 +57,19 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
      * @param instantToFeatureValue start instant to featureValue treeMap
      * @return list of max feature values
      */
-    private List<Double> getMaxValues(TreeMap<Instant, Double> instantToFeatureValue) {
-        Instant instant = TimeService.floorTime(instantToFeatureValue.firstKey(), Duration.ofDays(1));
-        Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), Duration.ofDays(1)).plus(Duration.ofDays(1));
+    private List<Double> getMaxValues(TreeMap<Instant, Double> instantToFeatureValue, Duration instantStep) {
+        Instant instantCursor = TimeService.floorTime(instantToFeatureValue.firstKey(), partitionsResolutionInSeconds);
+        Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), partitionsResolutionInSeconds).plus(Duration.ofSeconds(partitionsResolutionInSeconds));
 
         //add missed instants with Double.MIN_VALUE in order to be able get max values in various resolutions.
-        while (instant.isBefore(lastInstant)) {
-            if (!instantToFeatureValue.containsKey(instant)) {
-                instantToFeatureValue.put(instant, Double.MIN_VALUE);
+        while (instantCursor.isBefore(lastInstant)) {
+            if (!instantToFeatureValue.containsKey(instantCursor)) {
+                instantToFeatureValue.put(instantCursor, Double.MIN_VALUE);
             }
-            instant = instant.plus(Duration.ofHours(1));
+            instantCursor = instantCursor.plus(instantStep);
         }
 
-
-        //resolution of 24 hours
-        int resolution = 24;
+        int resolution = (int) (partitionsResolutionInSeconds / instantStep.getSeconds());
         List<Double> maxValues = new ArrayList<>();
         //Get max values
         while (maxValues.size() < minNumOfMaxValuesSamples && resolution > 0) {
@@ -93,8 +96,9 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
 
     /**
      * Split instantToFeatureValue by resolution, get max value of each part.
-     * @param instantToFeatureValue  start instant to featureValue treeMap
-     * @param resolution resolution
+     *
+     * @param instantToFeatureValue start instant to featureValue treeMap
+     * @param resolution            resolution
      * @return list of max feature values
      */
     private List<Double> getMaxValuesByResolution(TreeMap<Instant, Double> instantToFeatureValue, int resolution) {

@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +70,7 @@ public class UserServiceImplTest {
 
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
+        String date = new Date().toString();
         List<User> usersWithOldScore = Arrays.asList(
                 new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
                 new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
@@ -110,6 +112,7 @@ public class UserServiceImplTest {
 
     @Test
     public void testSetUserAlertData() {
+        String date = new Date().toString();
         User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
         List<String> classification1 = null, classification2, classification3;
         List<String> indicators1 = null, indicators2, indicators3;
