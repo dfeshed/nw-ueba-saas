@@ -3,7 +3,6 @@ package presidio.data.generators.activedirectoryop;
 import presidio.data.domain.event.activedirectory.ACTIVEDIRECTORY_OP_TYPE_CATEGORIES;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.dlpfileop.OperationTypeCyclicGenerator;
 
 import java.util.HashMap;
 
@@ -18,8 +17,8 @@ public class ActiveDirectoryOpGeneratorTemplateFactory {
         opType2OpCategoryMap.put(AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value,
                 new String[] {ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value});
 
-        opType2OpCategoryMap.put(AD_OPERATION_TYPE.PASSWORD_CHANGED.value, categories);
-        opType2OpCategoryMap.put(AD_OPERATION_TYPE.PASSWORD_CHANGED_BY_NON_OWNER.value, categories);
+        opType2OpCategoryMap.put(AD_OPERATION_TYPE.USER_PASSWORD_CHANGED.value, categories);
+        opType2OpCategoryMap.put(AD_OPERATION_TYPE.USER_PASSWORD_CHANGED_BY_NON_OWNER.value, categories);
         opType2OpCategoryMap.put(AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value, categories);
         opType2OpCategoryMap.put(AD_OPERATION_TYPE.USER_ACCOUNT_ENABLED.value, categories);
         opType2OpCategoryMap.put(AD_OPERATION_TYPE.USER_ACCOUNT_DISABLED.value, categories);
