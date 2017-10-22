@@ -8,7 +8,7 @@ import fortscale.ml.model.*;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.builder.factories.GaussianPriorModelBuilderFactory;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
-import fortscale.ml.model.builder.gaussian.prior.*;
+import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
@@ -33,8 +33,8 @@ import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import presidio.ade.test.utils.generators.FileOperationGenerator;
 import presidio.ade.test.utils.generators.EnrichedRandomDeterministicFileGenerator;
+import presidio.ade.test.utils.generators.FileOperationGenerator;
 import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.ade.AdeFileOperationGeneratorTemplateFactory;
 import presidio.data.generators.common.GeneratorException;
@@ -527,7 +527,8 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
             if (modelConf.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf) {
                 for (String contextId : contextIds) {
                     ContinuousDataModel continuousDataModel = new ContinuousDataModel().setParameters(N, round(mean), round(sd), round(maxValue));
-                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, continuousDataModel, endDate.minus(Duration.ofDays(90)), endDate);
+                    ContinuousMaxDataModel model = new ContinuousMaxDataModel(continuousDataModel,continuousDataModel,N);
+                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, model, endDate.minus(Duration.ofDays(90)), endDate);
                     mongoTemplate.insert(modelDao, "model_" + modelConf.getName());
                     models.add(continuousDataModel);
 

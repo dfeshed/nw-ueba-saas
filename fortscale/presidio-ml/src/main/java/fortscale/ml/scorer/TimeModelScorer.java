@@ -18,15 +18,15 @@ public class TimeModelScorer extends AbstractModelTerminalScorer {
                            List<String> contextFieldNames,
                            List<List<String>> additionalContextFieldNames,
                            String featureName,
-                           int minNumOfSamplesToInfluence,
-                           int enoughNumOfSamplesToInfluence,
+                           int minNumOfPartitionsToInfluence,
+                           int enoughNumOfPartitionsToInfluence,
                            boolean isUseCertaintyToCalculateScore,
                            int maxRareTimestampCount,
                            int maxNumOfRareTimestamps,
                            EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
-                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
+                minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
         algorithm = new TimeModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps);
     }
 

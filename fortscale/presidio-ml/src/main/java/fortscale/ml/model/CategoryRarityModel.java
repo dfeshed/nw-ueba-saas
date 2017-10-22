@@ -110,4 +110,8 @@ public class CategoryRarityModel implements PartitionedDataModel {
 	public long getNumOfPartitions() {
 		return numOfPartitions;
 	}
+
+	public void setNumOfPartitions(long numOfPartitions) {
+		this.numOfPartitions = numOfPartitions;
+	}
 }

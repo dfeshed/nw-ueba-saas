@@ -45,8 +45,8 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals((long)params.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
         Assert.assertEquals(params.getMinimumNumberOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
         Assert.assertEquals((long)params.getEnoughNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
-        Assert.assertEquals((long)params.getNumberOfSamplesToInfluenceEnough(), scorer.getEnoughNumOfSamplesToInfluence());
-        Assert.assertEquals((long)params.getMinNumOfSamplesToInfluence(), scorer.getMinNumOfSamplesToInfluence());
+        Assert.assertEquals((long)params.getNumberOfPartitionsToInfluenceEnough(), scorer.getEnoughNumOfPartitionsToInfluence());
+        Assert.assertEquals((long)params.getMinNumOfPartitionsToInfluence(), scorer.getMinNumOfPartitionsToInfluence());
         Assert.assertEquals(params.getUseCertaintyToCalculateScore(), scorer.isUseCertaintyToCalculateScore());
 
     }
@@ -58,8 +58,8 @@ public class CategoryRarityModelScorerTest {
                 params.getContextFieldNames(),
                 Collections.emptyList(),
                 params.getFeatureName(),
-                params.getMinNumOfSamplesToInfluence(),
-                params.getNumberOfSamplesToInfluenceEnough(),
+                params.getMinNumOfPartitionsToInfluence(),
+                params.getNumberOfPartitionsToInfluenceEnough(),
                 params.getUseCertaintyToCalculateScore(),
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
@@ -292,6 +292,7 @@ public class CategoryRarityModelScorerTest {
         String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
+        model.setNumOfPartitions(10);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
@@ -407,6 +408,7 @@ public class CategoryRarityModelScorerTest {
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         model.setFeatureCount(feature, count);
+        model.setNumOfPartitions(count);
         return model;
     }
 
@@ -621,7 +623,7 @@ public class CategoryRarityModelScorerTest {
             return this;
         }
 
-        public Integer getNumberOfSamplesToInfluenceEnough() {
+        public Integer getNumberOfPartitionsToInfluenceEnough() {
             return numberOfSamplesToInfluenceEnough;
         }
 
@@ -630,7 +632,7 @@ public class CategoryRarityModelScorerTest {
             return this;
         }
 
-        public Integer getMinNumOfSamplesToInfluence() {
+        public Integer getMinNumOfPartitionsToInfluence() {
             return minNumOfSamplesToInfluence;
         }
 

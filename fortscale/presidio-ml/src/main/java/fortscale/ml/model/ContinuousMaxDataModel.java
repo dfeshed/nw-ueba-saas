@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(
         fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class ContinuousMaxDataModel implements IContinuousDataModel {
+public class ContinuousMaxDataModel implements IContinuousDataModel,PartitionedDataModel {
     private final long numOfPartitions;
     private ContinuousDataModel continuousDataModel;
     private ContinuousDataModel continuousMaxDataModel;
@@ -57,6 +57,7 @@ public class ContinuousMaxDataModel implements IContinuousDataModel {
         return continuousMaxDataModel.getMaxValue();
     }
 
+    @Override
     public long getNumOfPartitions() {
         return numOfPartitions;
     }
