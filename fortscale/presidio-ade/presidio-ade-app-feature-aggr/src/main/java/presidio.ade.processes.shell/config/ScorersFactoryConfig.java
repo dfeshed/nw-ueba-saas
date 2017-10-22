@@ -6,10 +6,7 @@ import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 import java.util.List;
 
@@ -17,10 +14,12 @@ import java.util.List;
  * Created by barak_schuster on 7/30/17.
  */
 @Configuration
-@ComponentScan(value = {"fortscale.ml.scorer.factory"})
+@ComponentScan(
+        value = {"fortscale.ml.scorer.factory"},
+        excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.ml.scorer.factory.smart.*")}
+        )
 @Import({
 //        application-specific confs
-        SmartWeightsScorerAlgorithmConfig.class,
         FeatureAggregationDataRetrieverFactoryServiceConfig.class,
         ScorersModelConfServiceConfig.class,
         EventModelsCacheServiceConfig.class
