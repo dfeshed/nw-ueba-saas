@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		@Type(value = GaussianPriorModel.class, name = "gaussian-prior-model"),
 		@Type(value = CategoryRarityModel.class, name = "category-rarity-model"),
 		@Type(value = ContinuousDataModel.class, name = "continuous-data-model"),
+		@Type(value = ContinuousMaxDataModel.class, name = "continuous-max-data-model"),
 		@Type(value = TimeModel.class, name = "time-model"),
 		@Type(value = SMARTValuesModel.class, name = "smart-values-model"),
 		@Type(value = ScoreMappingModel.class, name = "score-mapping-model"),
