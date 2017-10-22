@@ -86,7 +86,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 FileWriter fileWriter = new FileWriter(file,false);
                 fileWriter.write(newConfJson);
                 fileWriter.close();
-                //Files.setPosixFilePermissions(Paths.get(filePath),perms);
+                Files.setPosixFilePermissions(Paths.get(filePath),perms);
             }
             return true;
         } catch (Exception e) {
