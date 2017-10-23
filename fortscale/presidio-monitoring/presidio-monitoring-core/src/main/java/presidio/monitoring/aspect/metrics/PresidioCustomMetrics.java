@@ -3,9 +3,12 @@ package presidio.monitoring.aspect.metrics;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import presidio.monitoring.elastic.records.PresidioMetric;
+import presidio.monitoring.elastic.records.PresidioMetricWithLogicTime;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,7 +37,7 @@ public class PresidioCustomMetrics implements PublicMetrics {
     }
 */
 
-    public void addMetric(String metricName, long metricValue, Set tags, String unit) {
+    public void addMetric(String metricName, long metricValue, Set tags, String unit, Date logicTime) {
         java.util.Iterator<PresidioMetric> itr = reportEveryTimeMetrics.iterator();
         while (itr.hasNext()) {
             PresidioMetric metric = itr.next();
@@ -43,10 +46,10 @@ public class PresidioCustomMetrics implements PublicMetrics {
                 return;
             }
         }
-        reportEveryTimeMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
+        reportEveryTimeMetrics.add(createMetric(metricName, metricValue, tags, unit, logicTime));
     }
 
-    public void addMetricReportOnce(String metricName, long metricValue, Set tags, String unit) {
+    public void addMetricReportOnce(String metricName, long metricValue, Set tags, String unit, Date logicTime) {
         java.util.Iterator<PresidioMetric> itr = reportOnlyOnceMetrics.iterator();
         while (itr.hasNext()) {
             PresidioMetric metric = itr.next();
@@ -55,9 +58,17 @@ public class PresidioCustomMetrics implements PublicMetrics {
                 return;
             }
         }
-        reportOnlyOnceMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
+        reportOnlyOnceMetrics.add(createMetric(metricName, metricValue, tags, unit, logicTime));
     }
 
+
+    private PresidioMetric createMetric(String metricName, long metricValue, Set<String> tags, String unit, Date logicTime) {
+        if (ObjectUtils.isEmpty(logicTime)) {
+            return new PresidioMetric(metricName, metricValue, tags, unit);
+        } else {
+            return new PresidioMetricWithLogicTime(metricName, metricValue, tags, unit, logicTime);
+        }
+    }
 
     @Override
     public Collection<Metric<?>> metrics() {

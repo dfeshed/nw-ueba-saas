@@ -16,6 +16,7 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -81,7 +82,7 @@ public class InputCoreManager {
             } finally {
                 metricCollectingService.addMetricReportOnce(TOTAL_EVENTS_PROCESSEd_METRIC_NAME,
                         transformedEvents != null ? transformedEvents.size() : 0,
-                        new HashSet(Arrays.asList(schema.toString())), TYPE_LONG);
+                        new HashSet(Arrays.asList(schema.toString())), TYPE_LONG, Date.from(startDate));
             }
         }
         if (CollectionUtils.isNotEmpty(nextEvents)) {
@@ -89,7 +90,7 @@ public class InputCoreManager {
             Set tags = new HashSet();
             tags.add(schema.toString());
             tags.add(startDate.toString());
-            metricCollectingService.addMetricReportOnce(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
+            metricCollectingService.addMetricReportOnce(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS, Date.from(startDate));
         }
     }
 

@@ -17,6 +17,7 @@ import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,7 +114,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetricReportOnce(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
+                    metricCollectingService.addMetricReportOnce(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG, Date.from(startDate));
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
@@ -129,9 +130,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        metricCollectingService.addMetricReportOnce(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG);
+        metricCollectingService.addMetricReportOnce(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG, Date.from(startDate));
         if (CollectionUtils.isNotEmpty(smarts)) {
-            metricCollectingService.addMetricReportOnce(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG);
+            metricCollectingService.addMetricReportOnce(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG, Date.from(startDate));
         }
     }
 

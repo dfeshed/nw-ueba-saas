@@ -30,4 +30,17 @@ public class PresidioMetricWithLogicTime extends PresidioMetric {
     public void setLogicTime(Date logicTime) {
         this.logicTime = logicTime;
     }
+
+    @Override
+    public String toString() {
+        return "PresidioMetric{" +
+                "id='" + getId() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", value=" + getValue() +
+                ", timestamp=" + getTimestamp() +
+                ", logicTime=" + logicTime +
+                ", tags=" + getTags() +
+                ", unit='" + getUnit() + '\'' +
+                '}';
+    }
 }
