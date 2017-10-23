@@ -46,7 +46,7 @@ public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
         this.objectId = objectId;
     }
 
-    public Boolean getUserAdmin() {
+    public Boolean getIsUserAdmin() {
         return isUserAdmin;
     }
 
@@ -54,7 +54,7 @@ public class ActiveDirectoryEnrichedEvent extends EnrichedEvent{
         return objectId;
     }
 
-    public void setUserAdmin(Boolean userAdmin) {
+    public void setIsUserAdmin(Boolean userAdmin) {
         isUserAdmin = userAdmin;
     }
 
