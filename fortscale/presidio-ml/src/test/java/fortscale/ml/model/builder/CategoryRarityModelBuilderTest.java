@@ -1,10 +1,13 @@
 package fortscale.ml.model.builder;
 
+import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.DoubleStream;
@@ -13,7 +16,9 @@ public class CategoryRarityModelBuilderTest {
 	private static final int MAX_RARE_COUNT = 15;
 
 	private static CategoryRarityModelBuilderConf getConfig(int maxRareCount) {
-		return new CategoryRarityModelBuilderConf(maxRareCount);
+		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(maxRareCount);
+		categoryRarityModelBuilderConf.setPartitionsResolutionInSeconds(86400);
+		return categoryRarityModelBuilderConf;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -122,9 +127,12 @@ public class CategoryRarityModelBuilderTest {
 		Assert.assertNull(model.getFeatureCount("e"));
 	}
 
-	private static GenericHistogram castModelBuilderData(Map<String, Long> map) {
+	private static CategoricalFeatureValue castModelBuilderData(Map<String, Long> map) {
+		CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
 		GenericHistogram histogram = new GenericHistogram();
 		map.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-		return histogram;
+		categoricalFeatureValue.add(histogram,Instant.parse("2007-12-03T00:00:00.00Z"));
+		return categoricalFeatureValue;
 	}
 }

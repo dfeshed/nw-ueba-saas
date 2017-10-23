@@ -28,18 +28,17 @@
         "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_sequential_retriever",
+        "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "srcMachineNameRegexClusterHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitionsResolutionInSeconds": 86400
+        "featureName" : "srcMachineNameRegexClusterHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100,
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -49,18 +48,17 @@
         "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_sequential_retriever",
+        "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "userIdHistogramSrcMachineIdAuthenticationDaily",
-        "featureName" : "userIdHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitionsResolutionInSeconds": 86400
+        "featureName" : "userIdHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100,
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -70,18 +68,17 @@
         "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_sequential_retriever",
+        "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
-        "featureName" : "dstMachineNameRegexClusterHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitionsResolutionInSeconds": 86400
+        "featureName" : "dstMachineNameRegexClusterHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100,
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {
@@ -91,18 +88,17 @@
         "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_sequential_retriever",
+        "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily",
-        "featureName" : "userIdHistogram",
-        "sequencingResolutionInSeconds": 86400,
-        "partitionsResolutionInSeconds": 86400
+        "featureName" : "userIdHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100,
+        "partitionsResolutionInSeconds": 86400
       }
     }
   ]
