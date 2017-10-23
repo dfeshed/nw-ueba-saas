@@ -35,9 +35,13 @@
 }
 
 .host-container {
-  position: relative;
-  @include rsa-vendor-prefix(flex-grow, 1);
-  @include rsa-col(justify, fill);
+  position: absolute;
+  top: 40px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: text-color(neutral);
+  @include rsa-col(justify,fill);
   &-list {
     position: absolute;
     top: 0;
@@ -46,7 +50,6 @@
     right: 0;
     transition-property: background-color right;
     transition-duration: 0.3s;
-    @include rsa-row(justify, fill);
     overflow: hidden;
     flex-wrap: nowrap;
     height: 100%;

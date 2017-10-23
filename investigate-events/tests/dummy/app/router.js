@@ -11,6 +11,7 @@ DummyRouter.map(function() {
   this.route('not-found', { path: '*invalidinvestigatepath' });
   this.route('protected');
   this.route('files');
+  this.route('hosts');
 });
 
 export default DummyRouter;

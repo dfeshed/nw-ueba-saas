@@ -31,24 +31,6 @@ const HostTable = Component.extend({
 
   classNames: 'machine-zone',
 
-  didRender() {
-    this._super(...arguments);
-    const rsaDataTableBody = this.$('.rsa-data-table-body');
-    if (rsaDataTableBody.length !== 0) {
-
-      // To make the rsa-data-table-load-more button at center of the screen, even if horizontal scroll moves
-      const initialWidth = (rsaDataTableBody[0].clientWidth) / 2;
-      rsaDataTableBody.scroll(() => {
-        const scrolledWidth = rsaDataTableBody.scrollLeft();
-        this.$('.rsa-data-table-load-more.rsa-hosts-load-more').css('left', initialWidth + scrolledWidth);
-      });
-
-      // Increase the rsa-data-table-body-rows border dynamically
-      const dataTableTotalWidth = rsaDataTableBody[0].scrollWidth;
-      this.$('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
-    }
-  },
-
   actions: {
     handleRowClick({ id }) {
       this.send('toggleMachineSelected', id);

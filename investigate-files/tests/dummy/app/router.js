@@ -11,6 +11,7 @@ const Router = ERouter.extend({
 Router.map(function() {
   this.mount('investigate-files');
   this.route('events');
+  this.route('hosts');
 });
 
 export default Router;

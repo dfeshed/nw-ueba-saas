@@ -19,7 +19,8 @@ const Eng = Engine.extend({
     ],
     externalRoutes: [
       'protected',
-      'protected.investigate.investigate-events'
+      'protected.investigate.investigate-events',
+      'protected.investigate.investigate-hosts'
     ]
   }
 });

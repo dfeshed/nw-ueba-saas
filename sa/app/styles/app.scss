@@ -21,5 +21,9 @@
 /* Import investigate files styles from engine */
 @import 'investigate-files/manifest';
 
+/* Import investigate hosts styles from engine */
+@import 'investigate-hosts/manifest';
+
+
 /* Imports styles specific for this sa app. */
 @import 'sa/manifest';

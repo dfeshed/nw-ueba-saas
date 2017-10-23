@@ -20,7 +20,12 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'router'
-        ]
+        ],
+        externalRoutes: {
+          protected: 'protected',
+          'protected.investigate.investigate-events': 'events',
+          'protected.investigate.investigate-files': 'files'
+        }
       }
     }
   }

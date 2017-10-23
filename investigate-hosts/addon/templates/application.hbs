@@ -1,1 +1,5 @@
-{{outlet}}
+{{#rsa-investigate-header activeTab='protected.investigate.investigate-hosts' as |section| }}
+  {{#if section.isMain}}
+    {{outlet}}
+  {{/if}}
+{{/rsa-investigate-header}}

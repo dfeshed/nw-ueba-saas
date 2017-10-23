@@ -15,8 +15,12 @@ const Eng = Engine.extend({
       'timeFormat',
       'timezone',
       'i18n',
-      'flashMessages',
-      'router'
+      'flashMessages'
+    ],
+    externalRoutes: [
+      'protected',
+      'protected.investigate.investigate-files',
+      'protected.investigate.investigate-events'
     ]
   }
 });

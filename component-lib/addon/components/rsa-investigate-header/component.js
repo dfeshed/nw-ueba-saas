@@ -14,6 +14,10 @@ const TABS = [
     label: 'Events'
   },
   {
+    name: 'protected.investigate.investigate-hosts',
+    label: 'Hosts'
+  },
+  {
     name: 'protected.investigate.investigate-files',
     label: 'Files'
   },

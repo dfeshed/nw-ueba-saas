@@ -30,6 +30,7 @@ Router.map(function() {
     this.mount('respond');
     this.route('investigate', function() {
       this.mount('investigate-events', { path: 'events' });
+      this.mount('investigate-hosts', { path: 'hosts' });
       this.mount('investigate-files', { path: 'files' });
       this.route('recon');
     });

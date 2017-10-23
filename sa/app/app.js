@@ -23,7 +23,8 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
-          'protected.investigate.investigate-files': 'protected.investigate.investigate-files'
+          'protected.investigate.investigate-files': 'protected.investigate.investigate-files',
+          'protected.investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
         }
       }
     },
@@ -58,7 +59,26 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
-          'protected.investigate.investigate-events': 'protected.investigate.investigate-events'
+          'protected.investigate.investigate-events': 'protected.investigate.investigate-events',
+          'protected.investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
+        }
+      }
+    },
+    investigateHosts: {
+      dependencies: {
+        services: [
+          '-document',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus'
+        ],
+        externalRoutes: {
+          protected: 'protected',
+          'protected.investigate.investigate-events': 'protected.investigate.investigate-events',
+          'protected.investigate.investigate-files': 'protected.investigate.investigate-files'
         }
       }
     }
