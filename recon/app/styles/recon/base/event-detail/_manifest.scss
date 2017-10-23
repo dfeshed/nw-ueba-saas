@@ -25,11 +25,11 @@
 .recon-event-content {
 
   .request {
-    background-color: background-color(primary, darker);
+    background-color: $baseColorNoTransparency;
   }
 
   .response {
-    background-color: $baseColorNoTransparency;
+    background-color: background-color(primary, darkest);
   }
 
   .is-sticky {
