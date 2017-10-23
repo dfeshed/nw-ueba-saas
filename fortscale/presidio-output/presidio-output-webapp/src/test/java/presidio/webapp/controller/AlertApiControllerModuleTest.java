@@ -1,6 +1,7 @@
 package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.*;
@@ -28,7 +29,6 @@ import java.util.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore //TODO- remove this when we will have solution for elastic tests
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
@@ -38,6 +38,8 @@ public class AlertApiControllerModuleTest {
     private static final String ALERT_BY_ID_URI = "/alerts/{alertId}";
 
     private MockMvc alertsApiMVC;
+
+    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
 
     @Autowired
     private AlertsApi alertsApi;
@@ -63,6 +65,16 @@ public class AlertApiControllerModuleTest {
         }
     };
 
+    @BeforeClass
+    public static void setupElasticsearch() {
+        try {
+            embeddedElasticsearchUtils.setupLocalElasticsearch();
+        } catch (Exception e) {
+            Assert.fail("Failed to start elasticsearch");
+            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+        }
+    }
+
     @Before
     public void setup() {
         //starting up the webapp server
@@ -75,6 +87,11 @@ public class AlertApiControllerModuleTest {
         alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         alertRepository.save(Arrays.asList(alert1, alert2));
+    }
+
+    @AfterClass
+    public static void stopElasticsearch() throws Exception {
+        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
     }
 
     @After

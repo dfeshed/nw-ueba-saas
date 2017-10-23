@@ -2,13 +2,10 @@ package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +33,6 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore //TODO- remove this when we will have solution for elastic tests
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
@@ -63,6 +59,7 @@ public class UserApiControllerModuleTest {
     private PresidioElasticsearchTemplate esTemplate;
 
     private ObjectMapper objectMapper;
+    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
 
     private presidio.output.domain.records.users.User user1;
     private presidio.output.domain.records.users.User user2;
@@ -73,6 +70,16 @@ public class UserApiControllerModuleTest {
             return o1.getId().compareTo(o2.getId());
         }
     };
+
+    @BeforeClass
+    public static void setupElasticsearch() {
+        try {
+            embeddedElasticsearchUtils.setupLocalElasticsearch();
+        } catch (Exception e) {
+            Assert.fail("Failed to start elasticsearch");
+            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+        }
+    }
 
     @Before
     public void setup() {
@@ -98,6 +105,11 @@ public class UserApiControllerModuleTest {
         //delete the created users
         userRepository.delete(user1);
         userRepository.delete(user2);
+    }
+
+    @AfterClass
+    public static void stopElasticsearch() throws Exception {
+        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
     }
 
     @Test
