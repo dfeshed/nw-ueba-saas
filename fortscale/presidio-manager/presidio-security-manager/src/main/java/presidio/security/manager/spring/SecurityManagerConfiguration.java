@@ -11,11 +11,10 @@ import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
 import presidio.security.manager.service.ConfigurationSecurityService;
 
-import java.io.File;
-
 @Configuration
 @Import(ConfigServerClientServiceConfiguration.class)
 public class SecurityManagerConfiguration {
+    public static final String FILE_RESOURCE = "file:/";
     @Value("${manager.security.securityConfPath:/etc/httpd/conf/httpd.conf}")
     private String securityConfPath;
 
@@ -43,7 +42,8 @@ public class SecurityManagerConfiguration {
     public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration() {
         FreeMarkerConfigurationFactoryBean fmConfigFactoryBean = new FreeMarkerConfigurationFactoryBean();
         String resourceName = ConfigurationSecurityService.TEMPLATE_DIRECTORY;
-        String templateDir = new File(getClass().getResource(resourceName).getPath()).getAbsolutePath();
+        String templateDir = FILE_RESOURCE + getClass().getResource(resourceName).getPath();
+        fmConfigFactoryBean.setPreferFileSystemAccess(true);
         fmConfigFactoryBean.setTemplateLoaderPath(templateDir);
         return fmConfigFactoryBean;
     }
