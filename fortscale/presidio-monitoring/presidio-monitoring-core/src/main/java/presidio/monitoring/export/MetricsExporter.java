@@ -6,6 +6,7 @@ import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     private MetricsEndpoint metricsEndpoint;
     private Set<String> tags;
     private ThreadPoolTaskScheduler scheduler;
-    private boolean isFlush;
 
 
     MetricsExporter(MetricsEndpoint metricsEndpoint, String applicationName, ThreadPoolTaskScheduler scheduler) {
@@ -30,23 +30,17 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         this.scheduler = scheduler;
         this.tags = new HashSet<>();
         tags.add(applicationName);
-        this.isFlush = false;
     }
 
-    List<PresidioMetric> filterRepeatMetrics() {
+    List<PresidioMetric> metricsForExport() {
         List<PresidioMetric> metricsForExport = new ArrayList<>(Arrays.asList());
         PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             value = (PresidioMetric) entry.getValue();
             value.setTags(tags);
-            if (!value.getExportOnlyOnFlush()) {
-                metricsForExport.add(value);
-            } else {
-                if (isFlush) {
-                    metricsForExport.add(value);
-                }
-            }
+            metricsForExport.add(value);
+
 
         }
         return metricsForExport;
@@ -55,7 +49,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     public abstract void export();
 
     public void flush() {
-        this.isFlush = true;
+        ((CustomMetricEndpoint) metricsEndpoint).setFlush(true);
         export();
     }
 

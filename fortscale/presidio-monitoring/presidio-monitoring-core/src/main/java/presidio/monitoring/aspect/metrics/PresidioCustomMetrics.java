@@ -12,17 +12,17 @@ import java.util.Set;
 @Component
 public class PresidioCustomMetrics implements PublicMetrics {
 
-    private Collection<PresidioMetric> applicationMetrics;
+    private Collection<PresidioMetric> reportEveryTimeMetrics;
 
-    public static Collection<PresidioMetric> customInMethodMetrics;
+    public static Collection<PresidioMetric> reportOnlyOnceMetrics;
 
     public PresidioCustomMetrics() {
-        applicationMetrics = new LinkedHashSet<>();
-        customInMethodMetrics = new LinkedHashSet<>();
+        reportEveryTimeMetrics = new LinkedHashSet<>();
+        reportOnlyOnceMetrics = new LinkedHashSet<>();
     }
-
-    public static void addInMethodMetric(String metricName, long metricValue, Set tags, String unit,boolean exportOnlyOnFlush) {
-        java.util.Iterator<PresidioMetric> itr = customInMethodMetrics.iterator();
+/*
+    public static void addInMethodMetric(String metricName, long metricValue, Set tags, String unit) {
+        java.util.Iterator<PresidioMetric> itr = reportOnlyOnceMetrics.iterator();
         while (itr.hasNext()) {
             PresidioMetric metric = itr.next();
             if (metric.getName().equals(metricName)) {
@@ -30,12 +30,12 @@ public class PresidioCustomMetrics implements PublicMetrics {
                 return;
             }
         }
-        customInMethodMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit,exportOnlyOnFlush));
+        reportOnlyOnceMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
     }
+*/
 
-
-    public void addMetric(String metricName, long metricValue, Set tags, String unit, boolean exportOnlyOnFlush) {
-        java.util.Iterator<PresidioMetric> itr = applicationMetrics.iterator();
+    public void addMetric(String metricName, long metricValue, Set tags, String unit) {
+        java.util.Iterator<PresidioMetric> itr = reportEveryTimeMetrics.iterator();
         while (itr.hasNext()) {
             PresidioMetric metric = itr.next();
             if (metric.getName().equals(metricName)) {
@@ -43,7 +43,19 @@ public class PresidioCustomMetrics implements PublicMetrics {
                 return;
             }
         }
-        applicationMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit,exportOnlyOnFlush));
+        reportEveryTimeMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
+    }
+
+    public void addMetricReportOnce(String metricName, long metricValue, Set tags, String unit) {
+        java.util.Iterator<PresidioMetric> itr = reportOnlyOnceMetrics.iterator();
+        while (itr.hasNext()) {
+            PresidioMetric metric = itr.next();
+            if (metric.getName().equals(metricName)) {
+                metric.setValue(metricValue + metric.getValue());
+                return;
+            }
+        }
+        reportOnlyOnceMetrics.add(new PresidioMetric(metricName, metricValue, tags, unit));
     }
 
 
@@ -52,12 +64,12 @@ public class PresidioCustomMetrics implements PublicMetrics {
         return null;
     }
 
-    public Collection<PresidioMetric> applicationMetrics() {
-        if (customInMethodMetrics.isEmpty()) {
-            return applicationMetrics;
+    public Collection<PresidioMetric> applicationMetrics(boolean isFlush) {
+        if (!isFlush) {
+            return reportEveryTimeMetrics;
         }
-        applicationMetrics.addAll(customInMethodMetrics);
-        return applicationMetrics;
+        reportEveryTimeMetrics.addAll(reportOnlyOnceMetrics);
+        return reportEveryTimeMetrics;
     }
 
 }

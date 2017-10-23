@@ -4,13 +4,13 @@ import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.monitoring.aspect.services.MetricCollectingService;
-import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
@@ -34,10 +34,8 @@ import presidio.output.processor.spring.UserServiceConfig;
         EventPersistencyServiceConfig.class})
 public class OutputProcessorTestConfiguration {
 
-    @Bean
-    public MetricCollectingService metricCollectingService() {
-        return new MetricCollectingServiceImpl();
-    }
+    @MockBean
+    public MetricCollectingService metricCollectingService;
 
     @Autowired
     private AdeManagerSdk adeManagerSdk;

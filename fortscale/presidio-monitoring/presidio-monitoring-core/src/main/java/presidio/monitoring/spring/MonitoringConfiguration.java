@@ -51,14 +51,12 @@ public class MonitoringConfiguration {
     @Value("${spring.application.name}")
     String processName;
 
-    @Bean
-    public PresidioCustomMetrics presidioCustomMetrics() {
-        return new PresidioCustomMetrics();
-    }
+    @Autowired
+    public PresidioCustomMetrics presidioCustomMetrics;
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics());
+        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics);
     }
 
     @Autowired

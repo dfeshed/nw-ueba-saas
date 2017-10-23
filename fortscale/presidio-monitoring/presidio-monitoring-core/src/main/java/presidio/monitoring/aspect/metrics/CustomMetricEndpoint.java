@@ -24,10 +24,13 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
 
     private final List<PublicMetrics> publicMetrics;
 
-    private final String UNIT_TYPE_LONG ="long";
+    private final String UNIT_TYPE_LONG = "long";
+
+    private boolean isFlush;
 
     /**
      * Create a new {@link CustomMetricEndpoint} instance.
+     *
      * @param publicMetrics the metrics to expose
      */
     public CustomMetricEndpoint(PublicMetrics publicMetrics) {
@@ -36,14 +39,16 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
 
     /**
      * Create a new {@link MetricsEndpoint} instance.
+     *
      * @param publicMetrics the metrics to expose. The collection will be sorted using the
-     * {@link AnnotationAwareOrderComparator}.
+     *                      {@link AnnotationAwareOrderComparator}.
      */
     public CustomMetricEndpoint(Collection<PublicMetrics> publicMetrics) {
         super(publicMetrics);
         Assert.notNull(publicMetrics, "PublicMetrics must not be null");
         this.publicMetrics = new ArrayList<PublicMetrics>(publicMetrics);
         AnnotationAwareOrderComparator.sort(this.publicMetrics);
+        this.isFlush = false;
     }
 
     public void registerPublicMetrics(PublicMetrics metrics) {
@@ -61,37 +66,36 @@ public class CustomMetricEndpoint extends MetricsEndpoint {
         List<PublicMetrics> metrics = new ArrayList<PublicMetrics>(this.publicMetrics);
         for (PublicMetrics publicMetric : metrics) {
             try {
-                if(publicMetric instanceof PresidioCustomMetrics){
-                    for (PresidioMetric metric : ((PresidioCustomMetrics) publicMetric).applicationMetrics()) {
+                if (publicMetric instanceof PresidioCustomMetrics) {
+                    for (PresidioMetric metric : ((PresidioCustomMetrics) publicMetric).applicationMetrics(this.isFlush)) {
                         result.put(metric.getName(), metric);
                     }
-                }
-                else {
+                } else {
                     for (Metric<?> metric : publicMetric.metrics()) {
-                        result.put(metric.getName(), new PresidioMetric(metric.getName(),getLong(metric.getValue()),new HashSet(),UNIT_TYPE_LONG));
+                        result.put(metric.getName(), new PresidioMetric(metric.getName(), getLong(metric.getValue()), new HashSet(), UNIT_TYPE_LONG));
                     }
                 }
-            }
-            catch (Exception ex) {
-                logger.info("Error happened when trying to get all metrics. ",ex);
+            } catch (Exception ex) {
+                logger.info("Error happened when trying to get all metrics. ", ex);
             }
         }
         return result;
     }
 
 
-    private <T extends Number>long getLong(T value){
+    private <T extends Number> long getLong(T value) {
         Long longNumber;
-        if(value instanceof Double){
-            longNumber = ((Double)value).longValue();
-        }
-
-        else if(value instanceof Integer){
-            longNumber = ((Integer)value).longValue();
-        }
-        else {
+        if (value instanceof Double) {
+            longNumber = ((Double) value).longValue();
+        } else if (value instanceof Integer) {
+            longNumber = ((Integer) value).longValue();
+        } else {
             longNumber = (Long) value;
         }
         return longNumber.longValue();
+    }
+
+    public void setFlush(boolean flush) {
+        isFlush = flush;
     }
 }

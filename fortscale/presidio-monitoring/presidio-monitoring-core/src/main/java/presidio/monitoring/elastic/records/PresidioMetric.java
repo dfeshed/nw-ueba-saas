@@ -39,17 +39,13 @@ public class PresidioMetric {
     @Field(type = FieldType.String, store = true)
     private String unit;
 
-    @Field(type = FieldType.Boolean, store = true)
-    private boolean exportOnlyOnFlush;
-
-    public PresidioMetric(String name, long value, Set<String> tags, String unit,boolean exportOnlyOnFlush) {
+    public PresidioMetric(String name, long value, Set<String> tags, String unit) {
         this.id = System.nanoTime() + "";
         this.name = name;
         this.value = value;
         this.timestamp = new Date();
         this.tags = tags;
         this.unit = unit;
-        this.exportOnlyOnFlush = exportOnlyOnFlush;
     }
 
     public void setId(String id) {
@@ -101,14 +97,6 @@ public class PresidioMetric {
 
     public String getUnit() {
         return unit;
-    }
-
-    public void setExportOnlyOnFlush(boolean exportOnlyOnFlush) {
-        this.exportOnlyOnFlush = exportOnlyOnFlush;
-    }
-
-    public boolean getExportOnlyOnFlush() {
-        return exportOnlyOnFlush;
     }
 
     @Override
