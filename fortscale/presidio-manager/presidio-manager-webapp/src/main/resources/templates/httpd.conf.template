@@ -361,6 +361,7 @@ SSLSessionCacheTimeout  300
 
 <VirtualHost *:443>
   ServerAlias *
+  RewriteEngine on  
 
   SSLEngine on
   SSLOptions +StrictRequire

@@ -215,8 +215,8 @@ public class AlertServiceTest {
         Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0,new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedPermissionChangeUserIdFileHourly",
-                +10d, "numberOfFailedPermissionChangeUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0,new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+                +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
         EnrichedEvent fileEvent1 = new FileEnrichedEvent(Instant.now(), eventTime, "eventId1", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),

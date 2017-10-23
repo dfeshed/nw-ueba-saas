@@ -20,7 +20,6 @@ import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 @Configuration
 @Import({
 //        application-specific confs
-        SmartWeightsScorerAlgorithmConfig.class,
         ScoringServiceConfig.class,
         ScoringAggregationsRecordReaderFactoryServiceConfig.class,
 //        common application confs
