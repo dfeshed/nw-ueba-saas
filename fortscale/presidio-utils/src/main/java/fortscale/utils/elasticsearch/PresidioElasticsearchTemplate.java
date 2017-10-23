@@ -15,7 +15,6 @@ package fortscale.utils.elasticsearch;
  * limitations under the License.
  */
 
-import fortscale.utils.logging.Logger;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -48,6 +47,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -93,7 +94,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  * @author Oliver Gierke
  */
 public class PresidioElasticsearchTemplate implements ElasticsearchOperations, ApplicationContextAware {
-    private static final Logger logger = Logger.getLogger(PresidioElasticsearchTemplate.class);
+    private static final Logger logger = LoggerFactory.getLogger(PresidioElasticsearchTemplate.class);
 
     private Client client;
     private ElasticsearchConverter elasticsearchConverter;

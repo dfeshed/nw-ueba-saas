@@ -166,6 +166,7 @@
         <jackson-datatype-json-org.version>2.9.0.pr4</jackson-datatype-json-org.version>
         <swagger-annotations.version>1.5.16</swagger-annotations.version>
         <json-patch.version>1.9</json-patch.version>
+        <javax.el-version>3.0.0</javax.el-version>
     </properties>
 
     <dependencyManagement>
@@ -493,8 +494,32 @@
                 <artifactId>json-patch</artifactId>
                 <version>${json-patch.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
+                <version>${javax.el-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
