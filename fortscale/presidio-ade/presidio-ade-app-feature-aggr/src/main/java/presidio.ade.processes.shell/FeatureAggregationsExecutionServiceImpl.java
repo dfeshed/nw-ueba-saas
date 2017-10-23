@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -30,6 +31,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     private int pageSize;
     private int maxGroupSize;
     private TtlService ttlService;
+    private ModelsCacheService modelCacheServiceInMemory;
 
     public FeatureAggregationsExecutionServiceImpl(BucketConfigurationService bucketConfigurationService,
                                                    EnrichedDataStore enrichedDataStore,
@@ -37,7 +39,8 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
                                                    FeatureAggregationScoringService featureAggregationScoringService,
                                                    AggregationRecordsCreator featureAggregationsCreator,
                                                    AggregatedDataStore scoredFeatureAggregatedStore,
-                                                   TtlService ttlService, int pageSize, int maxGroupSize) {
+                                                   TtlService ttlService, int pageSize, int maxGroupSize,
+                                                   ModelsCacheService modelCacheServiceInMemory) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureAggregationScoringService = featureAggregationScoringService;
@@ -47,13 +50,14 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
         this.ttlService = ttlService;
+        this.modelCacheServiceInMemory = modelCacheServiceInMemory;
     }
 
     //todo: data source should be event_type
     @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
-        FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize);
+        FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize, modelCacheServiceInMemory);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());
         ttlService.cleanupCollections(startDate);

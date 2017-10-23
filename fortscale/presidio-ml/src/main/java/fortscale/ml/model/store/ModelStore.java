@@ -4,11 +4,15 @@ import com.mongodb.DBObject;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.TtlService;
 import fortscale.utils.ttl.TtlServiceAware;
+import javafx.util.Pair;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -16,14 +20,15 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.util.CollectionUtils;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class ModelStore implements TtlServiceAware {
@@ -32,9 +37,11 @@ public class ModelStore implements TtlServiceAware {
 
 	private MongoTemplate mongoTemplate;
 	private TtlService ttlService;
+	private Duration ttlOldestAllowedModel;
 
-	public ModelStore(MongoTemplate mongoTemplate) {
+	public ModelStore(MongoTemplate mongoTemplate, Duration ttlOldestAllowedModel) {
 		this.mongoTemplate = mongoTemplate;
+		this.ttlOldestAllowedModel = ttlOldestAllowedModel;
 	}
 
 	/**
@@ -107,9 +114,52 @@ public class ModelStore implements TtlServiceAware {
 
 	@Override
 	public void remove(String collectionName, Instant until) {
-		Query query = new Query()
-				.addCriteria(where(ModelDAO.END_TIME_FIELD).lte(until));
-		mongoTemplate.remove(query, collectionName);
+
+		//remove models that older than ttlOldestAllowedModel
+		removeOldestModels(collectionName, until);
+
+		//remove models of contextIds, where contextId has at least one model that greater than until instant.
+		removeContextIdOldModels(collectionName, until);
+	}
+
+	/**
+	 * Remove models of contextIds, where contextId has at least one model that greater than until instant.
+	 * @param collectionName collectionName
+	 * @param until until instant
+	 */
+	private void removeContextIdOldModels(String collectionName, Instant until) {
+		Aggregation agg = newAggregation(
+				match(where(ModelDAO.END_TIME_FIELD).gte(Date.from(until))),
+				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD),
+				Aggregation.project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD).andExclude("_id")
+		);
+
+		AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+		List<DBObject> results = aggrResult.getMappedResults();
+
+		List<String> contextIds = new ArrayList<>();
+		for (DBObject result : results) {
+			contextIds.add((String) result.get(ModelDAO.CONTEXT_ID_FIELD));
+		}
+
+		Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds);
+		Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lt(Date.from(until));
+
+		Query records = new Query(contextCriteria).addCriteria(dateCriteria);
+
+		mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName).remove(records).execute();
+	}
+
+	/**
+	 * Remove models that older than ttlOldestAllowedModel
+	 *
+	 * @param collectionName collectionName
+	 * @param until until instant
+	 */
+	private void removeOldestModels(String collectionName, Instant until){
+		Query OldestModelQuery = new Query()
+				.addCriteria(where(ModelDAO.END_TIME_FIELD).lt(until.minus(ttlOldestAllowedModel)));
+		mongoTemplate.remove(OldestModelQuery, collectionName);
 	}
 
 }

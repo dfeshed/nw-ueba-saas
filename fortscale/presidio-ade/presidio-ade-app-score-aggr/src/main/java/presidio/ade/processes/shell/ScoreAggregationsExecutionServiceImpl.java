@@ -4,6 +4,7 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -25,13 +26,15 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	private AggregationRecordsCreator aggregationRecordsCreator;
 	private AggregatedDataStore aggregatedDataStore;
 	private TtlService ttlService;
+	private ModelsCacheService modelCacheServiceInMemory;
 
 	public ScoreAggregationsExecutionServiceImpl(
 			EnrichedEventsScoringService enrichedEventsScoringService,
 			EnrichedDataStore enrichedDataStore,
 			ScoreAggregationsBucketService scoreAggregationsBucketService,
 			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
-			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService, int pageSize, int maxGroupSize) {
+			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService, int pageSize, int maxGroupSize,
+			ModelsCacheService modelCacheServiceInMemory) {
 
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -43,6 +46,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		this.ttlService = ttlService;
 		this.pageSize = pageSize;
 		this.maxGroupSize = maxGroupSize;
+		this.modelCacheServiceInMemory = modelCacheServiceInMemory;
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
 		ScoreAggregationsService service = new ScoreAggregationsService(
 				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize);
+				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize, modelCacheServiceInMemory);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
 		ttlService.cleanupCollections(startInstant);

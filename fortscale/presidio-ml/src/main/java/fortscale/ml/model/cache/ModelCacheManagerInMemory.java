@@ -65,24 +65,25 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
             // if the model in the cache is too old -> throw it away
             else {
                 logger.debug("too old model={} found , deleting it from cache", cachedModelDao);
-                deleteFromCache(modelConf.getName(), contextId);
             }
         }
-        logger.debug("no matching model found in cache. retrieving model from db");
-        ModelDAO retrievedModelDAO =
-                modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf, contextId, eventTime, oldestAllowedModelTime);
-        if (retrievedModelDAO!=null) {
-            if (isModelTimeValid(retrievedModelDAO, oldestAllowedModelTime)) {
-                logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
-                // insert the model into cache
-                lruModelsMap.put(contextId, retrievedModelDAO);
-                return retrievedModelDAO.getModel();
-            } else {
-                logger.debug("retrieved model is too old");
+        else {
+            logger.debug("no matching model found in cache. retrieving model from db");
+            ModelDAO retrievedModelDAO =
+                    modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf, contextId, eventTime, oldestAllowedModelTime);
+            if (retrievedModelDAO != null) {
+                if (isModelTimeValid(retrievedModelDAO, oldestAllowedModelTime)) {
+                    logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
+                    // insert the model into cache
+                    lruModelsMap.put(contextId, retrievedModelDAO);
+                    return retrievedModelDAO.getModel();
+                } else {
+                    logger.debug("retrieved model is too old");
+                }
             }
+            logger.debug("did not find matching model in db. caching empty model");
+            lruModelsMap.put(contextId, new EmptyModelDao(eventTime));
         }
-        logger.debug("did not find matching model in db. caching empty model");
-        lruModelsMap.put(contextId, new EmptyModelDao(eventTime));
 
         return null;
     }
@@ -94,13 +95,6 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     @Override
     public void deleteFromCache(String modelConfName, String contextId) {
         lruModelsMap.remove(contextId);
-    }
-
-    @Override
-    public void resetCache() {
-        if (!lruModelsMap.isEmpty()) {
-            this.lruModelsMap = new LRUMap(this.lruModelsMap.size());
-        }
     }
 
     private String getContextId(Map<String, String> contextFieldsToValueMap) {

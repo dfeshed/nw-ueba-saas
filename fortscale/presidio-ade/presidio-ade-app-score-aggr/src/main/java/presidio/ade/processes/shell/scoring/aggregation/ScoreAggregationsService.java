@@ -4,6 +4,7 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -39,6 +40,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
     private int pageSize;
     private int maxGroupSize;
+    private ModelsCacheService modelCacheServiceInMemory;
 
     /**
      * C'tor
@@ -54,7 +56,11 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, int pageSize, int maxGroupSize) {
+                                    AggregationRecordsCreator aggregationRecordsCreator,
+                                    AggregatedDataStore aggregatedDataStore,
+                                    AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+                                    int pageSize, int maxGroupSize,
+                                    ModelsCacheService modelCacheServiceInMemory) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -64,11 +70,14 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
+        this.modelCacheServiceInMemory = modelCacheServiceInMemory;
     }
 
 
     @Override
     public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
+
+        modelCacheServiceInMemory.resetCache();
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);

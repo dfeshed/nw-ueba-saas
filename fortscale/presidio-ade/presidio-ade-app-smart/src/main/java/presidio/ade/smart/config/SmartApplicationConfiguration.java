@@ -1,5 +1,6 @@
 package presidio.ade.smart.config;
 
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.ttl.TtlService;
@@ -46,6 +47,8 @@ public class SmartApplicationConfiguration {
     private SmartDataStore smartDataStore;
     @Autowired
     private TtlService ttlService;
+    @Autowired
+    private ModelsCacheService modelCacheServiceInMemory;
 
 
     @Bean
@@ -55,6 +58,6 @@ public class SmartApplicationConfiguration {
                 aggregationRecordsThreshold,
                 aggregatedDataReader,
                 smartScoringService,
-                smartDataStore, ttlService);
+                smartDataStore, ttlService, modelCacheServiceInMemory);
     }
 }

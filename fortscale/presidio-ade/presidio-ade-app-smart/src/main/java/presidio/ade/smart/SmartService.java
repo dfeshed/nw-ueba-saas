@@ -1,5 +1,6 @@
 package presidio.ade.smart;
 
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.smart.SmartRecordAggregator;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -36,6 +37,7 @@ public class SmartService {
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
 	private final TtlService ttlService;
+	private ModelsCacheService modelCacheServiceInMemory;
 
 	/**
 	 * C'tor.
@@ -53,7 +55,7 @@ public class SmartService {
 			AggregatedDataReader aggregatedDataReader,
 			SmartScoringService smartScoringService,
 			SmartDataStore smartDataStore,
-			TtlService ttlService) {
+			TtlService ttlService, ModelsCacheService modelCacheServiceInMemory) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
@@ -61,6 +63,7 @@ public class SmartService {
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
 		this.ttlService = ttlService;
+		this.modelCacheServiceInMemory = modelCacheServiceInMemory;
 	}
 
 	/**
@@ -74,6 +77,8 @@ public class SmartService {
 		Set<AggregatedDataPaginationParam> params = smartRecordConfService.getPaginationParams(smartRecordConfName);
 
 		for (TimeRange partition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy)) {
+			modelCacheServiceInMemory.resetCache();
+
 			logger.info("Starting to process time range partition {}.", partition);
 			aggregatedDataReader.read(params, partition).forEach(iterator -> {
 				SmartRecordAggregator aggregator = new SmartRecordAggregator(
