@@ -414,7 +414,7 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
                 new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
@@ -437,7 +437,7 @@ public class AlertPersistencyServiceTest {
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
         List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
 
-        assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
+        assertEquals(buckets.size(), 11L);//11 buckets
         assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(classificationsAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(classificationsAgg.getBucketByKey("c").getDocCount(), 3L);
