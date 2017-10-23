@@ -258,6 +258,9 @@
                         </goals>
                         <configuration>
                             <executable>${basedir}/deploy-client${script.extension}</executable>
+                            <arguments>
+                                <argument>${project.version}</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
