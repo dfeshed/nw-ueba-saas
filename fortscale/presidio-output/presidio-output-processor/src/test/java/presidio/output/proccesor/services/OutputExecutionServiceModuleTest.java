@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
@@ -136,6 +135,7 @@ public class OutputExecutionServiceModuleTest {
     }
 
 
+    @Ignore
     @Test
     public void createAlertForNewUser() {
         try {
@@ -156,6 +156,7 @@ public class OutputExecutionServiceModuleTest {
         }
     }
 
+    @Ignore
     @Test
     public void createAlertForExistingUser() {
         User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8);
