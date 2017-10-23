@@ -18,6 +18,8 @@ import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 
 public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<AlertQuery> {
 
+    public static final int DEFAULT_AGG_BULK_SIZE = 1000;
+
     public AlertElasticsearchQueryBuilder(AlertQuery alertQuery) {
         super(alertQuery);
     }
@@ -136,10 +138,10 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
                 super.addAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY));
             }
             if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
-                super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS));
+                super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS).size(DEFAULT_AGG_BULK_SIZE));
             }
             if (alertQuery.getAggregateByFields().contains(Alert.INDICATOR_NAMES)) {
-                super.addAggregation(AggregationBuilders.terms(Alert.INDICATOR_NAMES).field(Alert.INDICATOR_NAMES));
+                super.addAggregation(AggregationBuilders.terms(Alert.INDICATOR_NAMES).field(Alert.INDICATOR_NAMES).size(DEFAULT_AGG_BULK_SIZE));
             }
             if (alertQuery.getAggregateByFields().contains(Alert.AGGR_SEVERITY_PER_DAY)) {
                 super.addAggregation(AggregationBuilders.dateHistogram(Alert.AGGR_SEVERITY_PER_DAY).field(Alert.START_DATE)
