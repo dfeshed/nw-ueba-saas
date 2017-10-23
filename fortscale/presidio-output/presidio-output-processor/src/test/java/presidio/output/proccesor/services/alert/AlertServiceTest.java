@@ -68,7 +68,7 @@ import static org.mockito.Matchers.eq;
 /**
  * Created by efratn on 24/07/2017.
  */
-//@Ignore
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
