@@ -1,4 +1,5 @@
 import RSVP from 'rsvp';
+import config from 'ember-get-config';
 import * as ACTION_TYPES from './types';
 import { fetchServices, fetchSummary } from './fetch/services';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
@@ -9,6 +10,8 @@ import { eventsGetFirst } from './events-creators';
 const {
   log
 } = console;
+
+const _showFutureFeatures = config.featureFlags.future;
 
 /**
  * Initializes the dictionaries (language and aliases). If we've already
@@ -152,12 +155,13 @@ export const initializeInvestigate = () => {
     _initializeDictionaries(dispatch, getState)
     .then(() => {
       dispatch(getEventCount());
-      dispatch(getEventTimeline());
+      if (_showFutureFeatures) {
+        dispatch(getEventTimeline());
+        // TODO - Later on, we'll get meta values, but skip for now
+        // dispatch(metaGet(forceReload));
+      }
       // Get first batch of results
       dispatch(eventsGetFirst());
-
-      // TODO - Later on, we'll get meta values, but skip for now
-      // dispatch(metaGet(forceReload));
     });
   };
 };
