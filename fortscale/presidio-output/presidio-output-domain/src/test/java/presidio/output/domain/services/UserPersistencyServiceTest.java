@@ -1,8 +1,10 @@
 package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import org.assertj.core.util.Lists;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.AbstractElasticDocument;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -37,16 +41,14 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
-public class UserPersistencyServiceTest {
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class})
+public class UserPersistencyServiceTest extends EmbeddedElasticsearchTest {
 
     @Autowired
     private UserPersistencyService userPersistencyService;
 
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
-
-    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
 
     List<String> classifications1;
     List<String> classifications2;
@@ -62,22 +64,12 @@ public class UserPersistencyServiceTest {
     User user7;
     User user8;
 
-    @BeforeClass
-    public static void setupElasticsearch() {
-        try {
-            embeddedElasticsearchUtils.setupLocalElasticsearch();
-        } catch (Exception e) {
-            Assert.fail("Failed to start elasticsearch");
-            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-        }
-    }
+    @Autowired
+    public Client client;
 
     @Before
     public void before() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
+        Assume.assumeTrue(embeddedElasticsearchInitialiser.isStarted());
         classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
         classifications2 = new ArrayList<>(Arrays.asList("b"));
         classifications3 = new ArrayList<>(Arrays.asList("a"));
@@ -91,11 +83,16 @@ public class UserPersistencyServiceTest {
         user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
         user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
         user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
+
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE)
+                .get();
     }
 
-    @AfterClass
-    public static void stopElasticsearch() throws Exception {
-        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
+    private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
+        ArrayList<String> indicators = new ArrayList<String>();
+        indicators.add("indicator");
+        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
     @Test
@@ -122,12 +119,6 @@ public class UserPersistencyServiceTest {
 
         assertThat(Lists.newArrayList(createdUsers).size(), is(2));
 
-    }
-
-    private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
-        ArrayList<String> indicators = new ArrayList<String>();
-        indicators.add("indicator");
-        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
 

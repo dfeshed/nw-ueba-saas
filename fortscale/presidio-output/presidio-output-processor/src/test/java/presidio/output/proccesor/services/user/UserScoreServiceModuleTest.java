@@ -1,7 +1,7 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.user.UserScoreService;
@@ -53,12 +52,12 @@ public class UserScoreServiceModuleTest {
 
     private UserScoreService userScoreService;
 
-    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
+    private static EmbeddedElasticsearchInitialiser embeddedElasticsearchUtils = new EmbeddedElasticsearchInitialiser();
 
     @BeforeClass
     public static void setupElasticsearch() {
         try {
-            embeddedElasticsearchUtils.setupLocalElasticsearch();
+            embeddedElasticsearchUtils.setupEmbeddedElasticsearch();
         } catch (Exception e) {
             Assert.fail("Failed to start elasticsearch");
             embeddedElasticsearchUtils.stopEmbeddedElasticsearch();

@@ -2,7 +2,7 @@ package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.ElasticsearchTestUtils;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.*;
@@ -59,7 +59,7 @@ public class UserApiControllerModuleTest {
     private PresidioElasticsearchTemplate esTemplate;
 
     private ObjectMapper objectMapper;
-    private static ElasticsearchTestUtils embeddedElasticsearchUtils = new ElasticsearchTestUtils();
+    private static EmbeddedElasticsearchInitialiser embeddedElasticsearchUtils = new EmbeddedElasticsearchInitialiser();
 
     private presidio.output.domain.records.users.User user1;
     private presidio.output.domain.records.users.User user2;
@@ -74,7 +74,7 @@ public class UserApiControllerModuleTest {
     @BeforeClass
     public static void setupElasticsearch() {
         try {
-            embeddedElasticsearchUtils.setupLocalElasticsearch();
+            embeddedElasticsearchUtils.setupEmbeddedElasticsearch();
         } catch (Exception e) {
             Assert.fail("Failed to start elasticsearch");
             embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
