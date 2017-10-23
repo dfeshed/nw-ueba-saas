@@ -11,6 +11,8 @@ import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
 import presidio.security.manager.service.ConfigurationSecurityService;
 
+import java.io.File;
+
 @Configuration
 @Import(ConfigServerClientServiceConfiguration.class)
 public class SecurityManagerConfiguration {
@@ -40,7 +42,9 @@ public class SecurityManagerConfiguration {
     @Bean
     public FreeMarkerConfigurationFactoryBean getFreeMarkerConfiguration() {
         FreeMarkerConfigurationFactoryBean fmConfigFactoryBean = new FreeMarkerConfigurationFactoryBean();
-        fmConfigFactoryBean.setTemplateLoaderPath("templates/");
+        String resourceName = ConfigurationSecurityService.TEMPLATE_DIRECTORY;
+        String templateDir = new File(getClass().getResource(resourceName).getPath()).getAbsolutePath();
+        fmConfigFactoryBean.setTemplateLoaderPath(templateDir);
         return fmConfigFactoryBean;
     }
 
