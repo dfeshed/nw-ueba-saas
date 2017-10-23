@@ -79,7 +79,7 @@ public class InputCoreManager {
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
             } finally {
-                metricCollectingService.addMetric(TOTAL_EVENTS_PROCESSEd_METRIC_NAME,
+                metricCollectingService.addMetricReportOnce(TOTAL_EVENTS_PROCESSEd_METRIC_NAME,
                         transformedEvents != null ? transformedEvents.size() : 0,
                         new HashSet(Arrays.asList(schema.toString())), TYPE_LONG);
             }
@@ -89,7 +89,7 @@ public class InputCoreManager {
             Set tags = new HashSet();
             tags.add(schema.toString());
             tags.add(startDate.toString());
-            metricCollectingService.addMetric(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
+            metricCollectingService.addMetricReportOnce(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS);
         }
     }
 
