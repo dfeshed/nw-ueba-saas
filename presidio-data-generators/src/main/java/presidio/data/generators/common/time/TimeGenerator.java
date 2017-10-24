@@ -8,96 +8,137 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimeGenerator implements ITimeGenerator {
-    private List<Instant> eventTimes = new ArrayList<>();
-    private int timeIndex = 0;
-    private boolean doShifting = false;
+
+    private LocalTime startLocalTime;
+    private LocalTime endLocalTime;
+    private int interval;
+    private int daysBackFrom;
+    private int daysBackTo;
+    private Instant startInstant;
+    private Instant endInstant;
+    private Integer size = null;
+
+    TimeGeneratorIterator iterator;
 
     public TimeGenerator() throws GeneratorException {
-        LocalTime startTime = LocalTime.of(8,0);
-        LocalTime endTime = LocalTime.of(16,0);
-        int interval = 10;
-        int daysBackFrom = 30;
-        int daysBackTo = 1;
-
-        buildTimeList(startTime, endTime, interval, daysBackFrom, daysBackTo);
+        this(LocalTime.of(8,0), LocalTime.of(16,0), 10, 30, 1);
     }
 
-    public TimeGenerator(LocalTime startTime, LocalTime endTime, int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
-        buildTimeList(startTime, endTime, interval, daysBackFrom, daysBackTo);
+    public TimeGenerator(LocalTime startLocalTime, LocalTime endLocalTime, int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
+        if (interval <= 0) throw new GeneratorException("Interval must be greater than 0");
+        this.startLocalTime = startLocalTime;
+        this.endLocalTime = endLocalTime;
+        this.interval = interval;
+        this.daysBackFrom = daysBackFrom;
+        this.daysBackTo = daysBackTo;
+
+        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+        Instant startDayInstant = utc.toInstant().minus(daysBackFrom, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
+        this.startInstant = startDayInstant.plus(startLocalTime.getHour() * 60 + startLocalTime.getMinute(), ChronoUnit.MINUTES);
+        this.endInstant = calcEndInstantInDay(utc.toInstant().minus(daysBackTo+1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS));
+        
+        this.iterator = new TimeGeneratorIterator();
     }
 
     /***
-     * Build a list of date/time values according to parameters
-     * @param startTime     start of time window during a day where events occur
-     * @param endTime       end of time window during a day where events occur
-     * @param interval      interval betwee two events in minutes (events frequency)
-     * @param daysBackFrom  how many days back from now will start the events
-     * @param daysBackTo    how many days back from now will stop the events
+     * Build a list of all Instant values that the time generator will output.
      */
-    protected void buildTimeList(LocalTime startTime, LocalTime endTime, int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
+    protected List<Instant> buildTimeList(){
+        List<Instant> eventTimes = new ArrayList<>();
+        TimeGeneratorIterator iterator = new TimeGeneratorIterator();
 
-        if (interval <= 0) throw new GeneratorException("Interval must be greater than 0");
-
-        // Initialize start and end time from current time and days back params
-        ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-        Instant start = utc.toInstant().minus(daysBackFrom, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-        Instant end = utc.toInstant().minus(daysBackTo, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-
-        Instant startTimeInDay = start.plus(startTime.getHour() * 60 + startTime.getMinute(), ChronoUnit.MINUTES);
-        Instant endTimeInDay = start.plus(endTime.getHour() * 60 + endTime.getMinute(), ChronoUnit.MINUTES);
-        Instant currentEvTime = startTimeInDay;
-
-
-        // Loop from start to end time, increment bu interval
-        while (currentEvTime.isBefore(end)) {
-            // verify time interval in day scope
-            if ((currentEvTime.isAfter(startTimeInDay) || currentEvTime.equals(startTimeInDay)) &&
-                    currentEvTime.isBefore(endTimeInDay)) {
-                eventTimes.add(currentEvTime);
-            }
-            currentEvTime = currentEvTime.plus(interval, ChronoUnit.MINUTES);
-
-            // if current time is after endTimeInDay, need to move time interval to next day
-            if (currentEvTime.isAfter(endTimeInDay)) {
-                startTimeInDay = startTimeInDay.plus(1, ChronoUnit.DAYS);
-                endTimeInDay = endTimeInDay.plus(1, ChronoUnit.DAYS);
-
-                // rebuild start date
-                if (!doShifting) currentEvTime = startTimeInDay;
-            }
+        while(iterator.hasNext()){
+            eventTimes.add(iterator.getNext());
         }
+        return eventTimes;
    }
 
     public void printIntervals() {
-        for (Instant et : eventTimes){
-            System.out.println(et);
+        TimeGeneratorIterator iterator = new TimeGeneratorIterator();
+        
+        while(iterator.hasNext()){
+            System.out.println(iterator.getNext());
         }
     }
 
     public void reset() {
-        timeIndex = 0;
+        iterator = new TimeGeneratorIterator();
     }
 
     @Override
     public boolean hasNext() {
-        return (timeIndex < eventTimes.size());
+        return iterator.hasNext();
     }
 
     @Override
     public Instant getNext() throws GeneratorException {
         if (!hasNext()) throw new GeneratorException ("Time Generator Exception occurred: End of the LocalTime interval is reached - no more data.");
-        return eventTimes.get(timeIndex++);
+        return iterator.getNext();
     }
 
     public int getSize() {
-        return eventTimes.size();
+        if(size == null){
+            TimeGeneratorIterator iterator = new TimeGeneratorIterator();
+            int cnt = 0;
+            while(iterator.hasNext()){
+                cnt++;
+                iterator.advanceNextInstant();
+            }
+            size = cnt;
+        }
+        
+        return size;
      }
+     
     public Instant getFirst() {
-        return eventTimes.get(0);
+        return startInstant;
     }
-    public Instant getLast() { return eventTimes.get(getSize()-1); }
+    public Instant getLast() { 
+        return endInstant; 
+    }
+    
+    private Instant calcEndInstantInDay(Instant startDay){
+        return startDay.plus(endLocalTime.getHour() * 60 + endLocalTime.getMinute(), ChronoUnit.MINUTES);
+    }
+    
+    public class TimeGeneratorIterator{
+        private Instant nextInstant;
+        private Instant startInstantInCurDay;
+        private Instant endInstantInCurDay;
+        
+        public TimeGeneratorIterator(){
+            nextInstant = startInstant;
+            startInstantInCurDay = startInstant;
+            endInstantInCurDay = calcEndInstantInDay(startInstant.truncatedTo(ChronoUnit.DAYS));
+        }
+        
+        public boolean hasNext(){
+            return nextInstant != null;
+        }
+        
+        public Instant getNext(){
+            Instant ret = nextInstant;
+            advanceNextInstant();
+            return ret;
+        }
+        
+        private void advanceNextInstant(){
+            if(nextInstant == null){
+                return;
+            }
+            
+            nextInstant = nextInstant.plus(interval, ChronoUnit.MINUTES);
 
-    public void doShifting(boolean doShifting) {
-        this.doShifting = doShifting;
+            // if current time is after endTimeInDay, need to move time interval to next day
+            if (nextInstant.getEpochSecond() >= endInstantInCurDay.getEpochSecond()) {
+                startInstantInCurDay = startInstantInCurDay.plus(1, ChronoUnit.DAYS);
+                endInstantInCurDay = endInstantInCurDay.plus(1, ChronoUnit.DAYS);
+
+                nextInstant = startInstantInCurDay;
+            }
+            if(nextInstant.getEpochSecond() >= endInstant.getEpochSecond()){
+                nextInstant = null;
+            }
+        }
     }
 }
