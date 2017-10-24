@@ -44,6 +44,15 @@ export default Component.extend({
     });
   },
 
+  willDestroyElement() {
+    if (this.get('isOpen')) {
+      this.closeModal();
+    }
+    this.get('eventBus').off(`rsa-application-modal-open-${this.get('eventId')}`, this, 'openModal');
+    this.get('eventBus').off(`rsa-application-modal-close-${this.get('eventId')}`, this, 'closeModal');
+    this.get('eventBus').off('rsa-application-modal-close-all', this, 'closeModal');
+  },
+
   listen() {
     this.get('eventBus').on(`rsa-application-modal-open-${this.get('eventId')}`, this, 'openModal');
     this.get('eventBus').on(`rsa-application-modal-close-${this.get('eventId')}`, this, 'closeModal');

@@ -3,6 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import sinon from 'sinon';
+import $ from 'jquery';
 
 const {
   Service,
@@ -140,5 +141,18 @@ test('it closes when a .close-modal element is clicked', function(assert) {
   const that = this;
   return wait().then(function() {
     assert.equal(that.get('isOpen'), false);
+  });
+});
+
+test('it no longer has an active modal destination after the modal is destroyed', function(assert) {
+  $('body').append('<div id="modalDestination"></div>'); // don't render the modalDestination with the modal otherwise it will be removed on clearRender
+  this.render(hbs `{{#rsa-application-modal eventId="test" autoOpen=true}}<button class='modal-trigger'>Click</button><div class='modal-content'><div class='modal-close'>Close</div></div>{{/rsa-application-modal}}`);
+  return wait().then(() => {
+    assert.equal($('#modalDestination.active').length, 1, 'The modal is active');
+    this.clearRender();
+    return wait().then(() => {
+      assert.equal($('#modalDestination.active').length, 0, 'The modal is no longer active');
+      $('#modalDestination').remove(); // clean up
+    });
   });
 });
