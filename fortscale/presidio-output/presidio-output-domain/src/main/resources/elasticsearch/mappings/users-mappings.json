@@ -46,7 +46,7 @@
       },
       "alertsCount": {
         "store": true,
-        "type": "Integer"
+        "type": "integer"
       },
       "id": {
         "type": "string",
