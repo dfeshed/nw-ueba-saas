@@ -12,6 +12,7 @@ const stateToComputed = ({ files }) => ({
   loadMoreStatus: files.fileList.loadMoreStatus,
   areFilesLoading: files.fileList.areFilesLoading,
   files: files.fileList.files, // All visible files
+  totalItems: files.fileList.totalItems,
   sortField: files.fileList.sortField, // Currently applied sort on file list
   isSortDescending: files.fileList.isSortDescending
 });

@@ -78,9 +78,9 @@ const ListFilter = Component.extend(FilterMixin, {
   parseExpression(expression) {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
-      this.set('selected', propertyValues.mapBy('value'));
+      this.set('config.selected', propertyValues.mapBy('value'));
     } else {
-      this.set('selected', []);
+      this.set('config.selected', []);
     }
   },
 
@@ -99,12 +99,12 @@ const ListFilter = Component.extend(FilterMixin, {
      */
     onSelection(option) {
       const { selected } = option;
-      const propertyValues = values.length ? values : null;
+      set(option, 'selected', !selected);
       const {
         config: { propertyName },
         restrictionType,
         checkBoxOptions
-      } = this.getProperties('restrictionType', 'propertyName', 'checkBoxOptions');
+      } = this.getProperties('config', 'restrictionType', 'checkBoxOptions');
 
       const values = checkBoxOptions
         .filterBy('selected', true)
@@ -112,9 +112,7 @@ const ListFilter = Component.extend(FilterMixin, {
         .map((item) => {
           return { value: item.name };
         });
-
-      set(option, 'selected', !selected);
-      this.send('updateFilter', { propertyName, restrictionType, propertyValues });
+      this.send('updateFilter', { propertyName, restrictionType, propertyValues: values });
     }
   }
 });
