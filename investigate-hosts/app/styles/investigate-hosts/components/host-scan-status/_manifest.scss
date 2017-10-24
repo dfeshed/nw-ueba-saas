@@ -1,6 +1,6 @@
 .rsa-agent-scan-status {
   & .rsa-icon {
-    margin-bottom: -2px;
+    margin-bottom: calc(rsa-whitespace(least) * -1);
     @extend .rsa-m-l-xs
   }
 }

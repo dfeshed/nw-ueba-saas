@@ -1,9 +1,9 @@
 .host-detail-wrapper {
   .rsa-nav-tab-group {
-    margin: 0.5rem;
+    margin:rsa-whitespace(less);
     .rsa-nav-tab.is-left-aligned-primary {
-      margin: 0 .8rem 0;
-      padding: .5rem .1rem .36rem .1rem;
+      margin: 0 rsa-whitespace(less) 0;
+      padding: rsa-whitespace(less) 0;
       border-bottom-width: 3px;
     }
   }

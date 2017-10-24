@@ -1,7 +1,9 @@
+$explore-border-color: #4A4A4A;
+
 .host-explore {
   min-width: 250px;
   flex: 5;
-  border: 1px solid #4A4A4A;
+  border: 1px solid $explore-border-color;
   background: black;
   height: 2.5rem;
 
@@ -10,16 +12,16 @@
     /* width: 0; */
     float: right;
     height: 0;
-    padding-right: 13px;
-    padding-top: 6px;
+    padding-right: rsa-whitespace();
+    padding-top: rsa-whitespace(less);
   }
   &__content {
     height: 593px;
     width: 100%;
-    border: 1px solid #4A4A4A;
+    border: 1px solid $explore-border-color;
     background-color: rsa-color(black);
     position: absolute;
-    margin-top: 2.5rem;
+    margin-top: rsa-whitespace(most);
     z-index: 300;
     overflow: auto;
     .rsa-content-accordion .content {
@@ -36,22 +38,22 @@
     &__heaer
     &__header {
       word-break: break-all;
-      padding: 0.5rem;
+      padding: rsa-whitespace(less);
       font-size:0.8rem;
       &__filename {
         color: rsa-color(blue);
-        padding-right: 12px;
+        padding-right: rsa-whitespace();
         font-weight: bold;
         cursor: pointer;
       }
       &__result {
         color: rsa-color(gray, light);
         font-family: rsa-font('Open Sans');
-        padding-right: 12px;
+        padding-right: rsa-whitespace();
         &__ranas{
           color: rsa-color(gray, light);
-          padding-right: 0.5rem;
-          margin-left: -13px;
+          padding-right: rsa-whitespace(less);
+          margin-left: calc(rsa-whitespace() * -1);
           &__list{
             color: rsa-color(blue);
           }
@@ -79,20 +81,20 @@
     border: none;
     width: 1.5rem;
     height: 1.5rem;
-    padding-top: 8px;
-    padding-left: 8px;
+    padding-top: rsa-whitespace(less);
+    padding-left: rsa-whitespace(less);
   }
 
   .content hbox {
-    margin-left: 1rem;
-    line-height: 17px;
+    margin-left: rsa-whitespace();
+    line-height: rsa-whitespace();
   }
   .search-label {
     &__close {
       cursor: pointer;
     }
     &__label {
-      margin: 5px;
+      margin: rsa-whitespace(least);
       cursor: pointer;
     }
   }

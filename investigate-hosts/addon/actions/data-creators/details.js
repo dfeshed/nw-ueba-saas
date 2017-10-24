@@ -4,7 +4,7 @@ import { handleError } from '../creator-utils';
 import { getAllProcess } from './process';
 import { getFileContextAutoruns, setAutorunsTabView } from './autoruns';
 import { getFileContextDrivers } from './drivers';
-import { getFileContextDLLS, getProcessAndLib } from './libraries';
+import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
 
 import Ember from 'ember';
@@ -95,11 +95,7 @@ const _fetchDataForSelectedTab = () => {
         break;
       case 'LIBRARIES':
         if (!libraries.library) {
-          if (process && process.length) {
-            dispatch(getFileContextDLLS());
-          } else {
-            dispatch(getProcessAndLib()); // For lib process name and pid is required so retrieving the process list first
-          }
+          dispatch(getProcessAndLib());
         }
         break;
     }

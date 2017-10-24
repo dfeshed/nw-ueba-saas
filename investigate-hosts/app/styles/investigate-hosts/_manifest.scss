@@ -19,7 +19,7 @@
     padding-bottom: 0;
     padding-right: 0;
     section.column-chooser-input {
-      margin-right: 15px;
+      margin-right: rsa-whitespace();
     }
     ul.column-chooser-lists {
       height: 30rem;
@@ -30,7 +30,7 @@
 
 #rsa-data-table__column-selctor__sorted-columns {
   .rsa-form-checkbox-label::before {
-    top: 8px;
+    top: rsa-whitespace(less);
   }
 }
 

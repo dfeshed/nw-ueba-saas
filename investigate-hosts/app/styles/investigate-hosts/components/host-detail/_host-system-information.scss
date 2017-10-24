@@ -12,7 +12,7 @@ $note-color: #bdbdbd;
     left: 0;
   }
   .system-information__content {
-    padding: 20px 18px 5px;
+    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(least);
   }
   .rsa-data-table-header {
     background-color: $table-header-color;

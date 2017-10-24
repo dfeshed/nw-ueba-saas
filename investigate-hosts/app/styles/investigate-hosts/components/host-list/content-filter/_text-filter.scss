@@ -5,7 +5,7 @@
     top: 1px;
     font-size: .9rem;
     vertical-align: top;
-    margin: 0 calc(0.25rem * -1) 0 0.25rem !important;
+    margin: 0 calc(rsa-whitespace(least) * -1) 0 rsa-whitespace(least) !important;
   }
   &__content {
     padding: rsa-whitespace();

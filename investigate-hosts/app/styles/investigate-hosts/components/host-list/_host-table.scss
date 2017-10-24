@@ -12,12 +12,12 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
     height: 100vh;
   }
   &__footer {
-    max-height: 2rem;
+    max-height: calc(rsa-whitespace() * 2);
     background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
     color: rsa-color(gray, lightest);
     border-top: 1px solid $zoneBorderColor;
     .host-info {
-      padding: 8px 22px 8px 13px;
+      padding: rsa-whitespace(least) rsa-whitespace();
       text-align: right;
       font-size: .85rem;
     }
@@ -32,7 +32,7 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
 .host-table__toolbar {
   background: rsa-color(gray, darkest, $rsa-translucent);
   color: rsa-color(white);
-  padding: 1.5rem 0 0 0.5rem;
+  padding: rsa-whitespace() 0 0 rsa-whitespace(less);
   label {
     line-height: 2rem;
     font-size: 1.5rem;
@@ -60,7 +60,7 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
 }
 
 .rsa-initiate-scan-modal, .rsa-delete-hosts-modal {
-  padding: 20px;
+  padding: rsa-whitespace();
   max-width: 500px;
   line-height: 1.5rem;
   color: rsa-color(gray, light);
@@ -71,16 +71,16 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
     }
   }
   &__scan-option {
-    padding: 10px 0;
+    padding: rsa-whitespace(less) 0;
     .rsa-form-radio-label {
       font-size: larger;
     }
     .rsa-form-radio-label:before,
     .rsa-form-radio-label:after {
-      top: 5px;
+      top: rsa-whitespace(least);
     }
     p {
-      padding-left: 1.5rem;
+      padding-left: rsa-whitespace();
     }
   }
   &__note {

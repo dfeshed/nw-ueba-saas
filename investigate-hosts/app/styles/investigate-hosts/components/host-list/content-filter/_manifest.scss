@@ -25,7 +25,7 @@ $filterPanelMinWidth: 200px;
 
 .content-filter {
 
-  padding-left: 0.5rem;
+  padding-left: rsa-whitespace(less);
   color: rsa-color(white);
   width: calc(100vw - 200px);
   div {

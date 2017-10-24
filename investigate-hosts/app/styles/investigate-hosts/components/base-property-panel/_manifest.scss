@@ -1,17 +1,18 @@
 $border-color: #03a9f4;
 $panel-background-color: #1b1d1e;
 $checkbox-label-color: #D8D8D8;
+$panel-width: 200px;
 
 .tool-tip-value {
   padding: rsa-whitespace();
-  width: 200px;
+  width: $panel-width;
   word-wrap: break-word
 }
 
 .divider {
   border-top: 1px solid rsa-color(gray);
   border-bottom: 0;
-  margin: 1rem 0;
+  margin: rsa-whitespace() 0;
 }
 
 .host-property-panel {
@@ -25,7 +26,7 @@ $checkbox-label-color: #D8D8D8;
     @include rsa-font(header, small);
     font-size: 0.85rem;
     color: rsa-color(blue);
-    padding: 1rem 0;
+    padding: rsa-whitespace() 0;
   }
   &__search-box {
     .rsa-form-input {
@@ -36,7 +37,7 @@ $checkbox-label-color: #D8D8D8;
     }
     .filter-icon {
       position: absolute;
-      top: 1rem;
+      top: rsa-whitespace();
       color: rsa-color(gray);
     }
   }

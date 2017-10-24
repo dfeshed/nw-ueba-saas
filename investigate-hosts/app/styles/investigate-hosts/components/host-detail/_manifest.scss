@@ -22,7 +22,7 @@
     overflow: auto;
   }
   .host-action {
-    padding: 0 3rem;
+    padding: 0 rsa-whitespace();
     text-transform: uppercase;
     height: 4rem;
     &.rsa-content-definition {
@@ -30,7 +30,7 @@
         vertical-align: bottom;
         box-sizing: border-box;
         color: $host-detail-label-color;
-        margin-bottom: 0.5rem;
+        margin-bottom: rsa-whitespace(less);
         font-family: 'Open Sans';
         font-style: normal;
         font-size: .7rem;

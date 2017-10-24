@@ -1,17 +1,17 @@
 .securityConfigWrapper {
   column-count: 3;
   .security-configuration__column {
-    padding: 0.8rem 0 0 0;
+    padding: rsa-whitespace() 0 0 0;
     display: inline-block;
     width: 100%;
     .securityConfigIcon {
       width: 5%;
-      margin-right: 5px;
+      margin-right: rsa-whitespace(least);
       display: inline-block;
     }
     .securityConfigDisc {
       width: 80%;
-      margin-right: 5px;
+      margin-right: rsa-whitespace(least);
       display: inline-block;
     }
   }
