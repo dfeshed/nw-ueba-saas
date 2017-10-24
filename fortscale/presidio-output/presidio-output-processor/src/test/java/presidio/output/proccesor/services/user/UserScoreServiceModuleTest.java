@@ -269,7 +269,7 @@ public class UserScoreServiceModuleTest {
         //For each user generate user and list of alerts - 2 alerts per days
         List<Alert> alertsAllUsers = new ArrayList<>();
         for (int i = 0; i < USERS_COUNT; i++) {
-            User user1 = new User("userId" + i, "username" + 1, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+            User user1 = new User("userId" + i, "username" + i, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
             user1.setSeverity(null);
             //For each day generate to alerts
             for (LocalDateTime day : dates) {
@@ -279,8 +279,8 @@ public class UserScoreServiceModuleTest {
                 Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant());
                 Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant());
                 //Alerts per user per day
-                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + 1, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 0D));
-                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + 1, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
+                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 0D));
+                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
             }
 
 
