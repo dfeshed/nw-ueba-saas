@@ -13,8 +13,8 @@ public class UserQuery {
     private final List<UserSeverity> filterBySeverities;
     private final List<String> filterByUserTags;
     private final List<String> filterByUsersIds;
-    private int minScore;
-    private int maxScore;
+    private int minScore=-1;
+    private int maxScore=-1;
     private boolean isPrefix;
     private String filterByUserName;
     private String filterByFreeText;
