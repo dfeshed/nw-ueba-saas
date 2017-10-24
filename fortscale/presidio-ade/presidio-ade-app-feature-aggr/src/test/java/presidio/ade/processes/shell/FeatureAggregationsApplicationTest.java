@@ -60,8 +60,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
 
     private static final Schema ADE_EVENT_TYPE = Schema.FILE;
     public static final String COMMAND = "run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s";
-    @Autowired
-    private MongoTemplate mongoTemplate;
+
     @Autowired
     private AggregatedDataReader scoredFeatureAggregatedReader;
     @Autowired
