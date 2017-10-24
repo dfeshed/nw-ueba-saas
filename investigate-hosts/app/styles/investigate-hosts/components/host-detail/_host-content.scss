@@ -1,13 +1,13 @@
 .host-content {
-  padding: 0 2.5rem;
+  padding: 0 rsa-whitespace();
   &__title {
     h3 {
-      @extend .rsa-color-info;
+      color: text-color(secondary);
       font-weight: bold;
     }
   }
   &__user-details {
-    @extend .rsa-p-md;
+    padding: rsa-whitespace(more);
     &__name {
       font-size: 1.25rem;
       text-transform: capitalize;
@@ -15,31 +15,28 @@
     &__icon {
       color: $user-icon-color;
       margin-top: -0.43rem;
-      @extend .rsa-m-r-md;
+      margin-right: rsa-whitespace(more)
     }
     &__administrator {
       font-size:0.8rem;
       color: $user-icon-color;
     }
     .label {
+      @include rsa-font();
       vertical-align: bottom;
       box-sizing: border-box;
       color: $host-detail-label-color;
       margin-bottom: rsa-whitespace(less);
-      font-family: 'Open Sans';
-      font-style: normal;
-      font-size: .7rem;
-      font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
       text-align: left;
     }
   }
   &__ip-details {
-    @extend .rsa-p-md;
+    padding: rsa-whitespace();
     &__icon {
       margin-top: -0.19rem;
-      @extend .rsa-m-r-xs;
+      margin-right: rsa-whitespace()
     }
   }
   &__config {

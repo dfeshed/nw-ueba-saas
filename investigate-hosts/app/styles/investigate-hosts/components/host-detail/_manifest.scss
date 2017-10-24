@@ -14,8 +14,11 @@
 @import 'actionbar';
 @import 'header';
 
+.host-detail-wrapper {
+  background-color: $host-detail-background;
+}
 .host-overview {
-  border-bottom: 1px solid rsa-color(gray, light);
+  @include border-bottom(1px, solid, primary, light);
   .host-item {
     background-color: transparent;
     padding: 0;
@@ -27,27 +30,20 @@
     height: 4rem;
     &.rsa-content-definition {
       .label {
+        @include rsa-font(header, small);
         vertical-align: bottom;
         box-sizing: border-box;
         color: $host-detail-label-color;
         margin-bottom: rsa-whitespace(less);
-        font-family: 'Open Sans';
-        font-style: normal;
-        font-size: .7rem;
-        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
         text-align: left;
       }
       .value {
-        color: rsa-color(white);
+        color: text-color(neutral);
         font-weight: bold;
       }
     }
   }
-  .host-properties-box {
-    border-top: 1px solid rsa-color(blue);
-    max-height: calc(100vh - 14rem);
-    background-color: $endpoint-property-panel-box-color;
-  }
+
 }

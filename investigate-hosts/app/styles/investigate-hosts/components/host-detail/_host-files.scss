@@ -1,10 +1,7 @@
 .host-files {
+  background-color: $host-detail-background;;
   .rsa-data-table {
-    background-color: $host-detail-background;
+    background-color: $host-details-table-row-color;
     height: $tableHeight;
-  }
-  .file-property-panel {
-    overflow: auto;
-    background-color: $endpoint-property-panel-box-color;
   }
 }

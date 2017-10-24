@@ -1,12 +1,8 @@
-.host-process-wrapper {
-  background-color: $process-content-color;
-}
-
 .process-list-header {
   height: $process-list-header-height;
   line-height: $process-list-header-height;
   font-weight: 100;
-  color: rsa-color(white);
+  color: text-color(neutral);
   background-color: $table-panel-header-color;
   .title {
     padding-left: rsa-whitespace();
@@ -16,15 +12,15 @@
     .tree-icon {
       font-size: 16px;
       cursor: pointer;
-      color: rsa-color(gray);
+      color: text-color(primary);
       margin: 0 rsa-whitespace();
       padding: rsa-whitespace(less) rsa-whitespace(less);
       &.active {
-        color: rsa-color(gray, lightest);
-        border-bottom: $button-active-color 3px solid;
+        @include border-bottom(3px, solid, secondary);
+        color: text-color(primary, lightest);
       }
       &:hover {
-        color: rsa-color(grey, lightest);
+        color: text-color(primary);
       }
     }
   }
@@ -35,24 +31,17 @@
 }
 
 .process-list-box {
-  border: 1px solid $host-detail-border-color;
-  background-color: $host-details-table-row-color;
+  @include border(1px, solid, primary, dark);
   position: relative;
   .rsa-data-table {
     height: 100%;
+    background-color: $host-details-table-row-color;
   }
 }
 
-.process-property-box {
-  border: 1px solid $host-detail-border-color;
-  background-color: $endpoint-property-panel-box-color;
-  overflow: auto;
-}
-
 .process-content-box {
+  @include border(1px, solid, primary, dark);
   position: relative;
-  background-color: $process-content-color;
-  border: 1px solid $host-detail-border-color;
   border-top: 0;
   border-right: 0;
   padding: rsa-whitespace() rsa-whitespace(more);
@@ -83,7 +72,7 @@
     }
     .accordion-content-title {
       h3 {
-        color: #03a9f4;
+        color: text-color(secondary);
         font-weight: bold;
       }
     }
@@ -91,9 +80,8 @@
 }
 
 .header-data {
-  background-color: rsa-color(gray, darkest, $rsa-transparent);
+  background-color: background-color(primary, darkest, transparent);
   padding: rsa-whitespace(less) 0;
-
   .tool-tip-value {
     padding: rsa-whitespace();
     width: 200px;
@@ -103,7 +91,7 @@
     padding: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
     .name {
       @include rsa-font(header, small);
-      color: rsa-color(gray, light);
+      color: text-color(primary, light);
       padding-bottom: rsa-whitespace(least);
     }
   }

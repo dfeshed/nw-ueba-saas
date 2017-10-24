@@ -1,4 +1,3 @@
-$zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
 
 .export-machines-iframe {
   display: none;
@@ -12,36 +11,24 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
     height: 100vh;
   }
   &__footer {
-    max-height: calc(rsa-whitespace() * 2);
-    background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
-    color: rsa-color(gray, lightest);
-    border-top: 1px solid $zoneBorderColor;
-    .host-info {
-      padding: rsa-whitespace(least) rsa-whitespace();
-      text-align: right;
-      font-size: .85rem;
-    }
+    max-height: 2rem;
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
   }
   .host-name {
     text-decoration: underline;
-    color: rsa-color(blue);
+    color: text-color(secondary);
     cursor: pointer;
   }
 }
 
 .host-table__toolbar {
-  background: rsa-color(gray, darkest, $rsa-translucent);
-  color: rsa-color(white);
-  padding: rsa-whitespace() 0 0 rsa-whitespace(less);
+  background-color: background-color(primary, darker, somewhat-opaque);
+  color: text-color(neutral);
+  padding: rsa-whitespace() 0 0 rsa-whitespace();
   label {
     line-height: 2rem;
     font-size: 1.5rem;
-  }
-
-  .rsa-form-button-wrapper.is-danger:not(.is-disabled):not(.is-icon-only) .rsa-form-button,
-  .rsa-form-button-wrapper.is-danger:not(.is-disabled):not(.is-icon-only):hover .rsa-form-button {
-    background-color: transparent;
-    background-image: none;
   }
 }
 
@@ -52,22 +39,16 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
   }
 }
 
-.rsa-data-table-load-more {
-  &.rsa-hosts-load-more {
-    width: 7.2rem;
-    left: 34%;
-  }
-}
 
 .rsa-initiate-scan-modal, .rsa-delete-hosts-modal {
-  padding: rsa-whitespace();
+  padding: rsa-whitespace(more);
   max-width: 500px;
   line-height: 1.5rem;
-  color: rsa-color(gray, light);
+  color: text-color(primary, light);
   &__description {
     display: block;
     &.error {
-      color: rsa-color(red);
+      color: text-color(accentOne, dark);
     }
   }
   &__scan-option {
@@ -85,7 +66,7 @@ $zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
   }
   &__note {
     padding: rsa-whitespace() 0 rsa-whitespace() 0;
-    color: rsa-color(orange, light);
+    color: text-color(accentFour, light);
     font-size: 80%;
   }
 }

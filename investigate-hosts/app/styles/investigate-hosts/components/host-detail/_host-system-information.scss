@@ -20,7 +20,7 @@ $note-color: #bdbdbd;
   .rsa-data-table {
     max-height: 100vh;
     min-height: 130px;
-    background-color: $tree-row-color;
+    background-color: $host-details-table-row-color;
   }
   .user-filter {
     padding-bottom: rsa-whitespace();
@@ -29,7 +29,7 @@ $note-color: #bdbdbd;
     }
     .command-note {
       padding-top: rsa-whitespace(less);
-      color: $note-color;
+      color: text-color(neutral);
     }
     .ember-power-select-dropdown {
       width: 10rem;

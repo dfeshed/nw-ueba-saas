@@ -1,15 +1,16 @@
 @import "host-table";
+$filter-panel-width: 250px;
 
 .host-container {
   .filter-zone {
-    border-right: 1px solid rgba(33, 33, 33, 6.2);
+    @include border-right(1px, solid, primary, darker);
     max-width: 20%;
-    min-width: 250px;
+    min-width: $filter-panel-width;
     overflow: auto;
     overflow-x: hidden;
     opacity: 1;
     height: 100%;
-    color: white;
+    color: text-color(neutral);
     float: left;
     padding: rsa-whitespace();
 
@@ -42,16 +43,16 @@
   .filter-list__item {
     cursor: pointer;
     font-weight: 700;
-    color: rsa-color(gray);
+    color: text-color(primary);
     line-height: 30px;
     &.is-active {
-      color: white;
+      color: text-color(neutral);
       transition: color 0.5s ease;
     }
   }
 
   .filter-list__item:hover {
-    color: white;
+    color: text-color(neutral);
     transition: color 0.5s ease;
   }
 

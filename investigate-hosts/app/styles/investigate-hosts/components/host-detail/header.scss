@@ -15,10 +15,10 @@
 }
 
 .host-header {
-  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  background-color: background-color(primary, darkest, nearly-opaque);
 
   .divider {
-    border-left: 1px solid rsa-color(white);
+    @include border-left(1px, solid, neutral);
     height: 1.5rem;
     margin: rsa-whitespace(least);
   }
@@ -34,13 +34,12 @@
     }
     .host-title {
       @include rsa-font(header, larger);
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
       text-transform: capitalize;
       border-bottom-width: 3px;
       &.seperator {
         padding: 0;
         margin: rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace();
-        border: 0 solid rsa-color(gray);
         border-right-width: .1rem;
       }
     }
@@ -52,24 +51,24 @@
 
   .header-toggle,
   .header-button {
-    color: rsa-color(gray);
+    color: text-color(primary);
     cursor: pointer;
     margin: 0 rsa-whitespace(least);
     padding: rsa-whitespace(less) rsa-whitespace(least);
     &:hover {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
     &.active:not(.disabled) {
-      color: rsa-color(gray, lightest);
+      color: text-color(primary, lightest);
     }
     &.disabled {
-      color: rsa-color(gray, dark);
+      color: text-color(primary, dark);
       cursor: default;
     }
   }
   .header-toggle {
     &.active:not(.disabled) {
-      border-bottom: rsa-color(blue) 3px solid;
+      @include border-bottom(3px, solid, secondary);
     }
   }
 }
@@ -86,14 +85,14 @@
   }
 
   .divider {
-    border-left: 1px solid rsa-color(gray);
+    @include border-left(1px, solid, primary);
     height: 1.75rem;
     margin-left: rsa-whitespace(more);
   }
 
   .host-action-buttons {
     .action-button {
-      padding-left: rsa-whitespace();
+      padding-left: rsa-whitespace(more);
     }
     .rsa-form-button {
       height: 32px;

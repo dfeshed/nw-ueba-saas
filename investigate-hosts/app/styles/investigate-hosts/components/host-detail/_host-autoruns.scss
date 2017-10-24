@@ -5,10 +5,4 @@
   .rsa-data-table {
     background-color: $host-details-table-row-color;
   }
-  .host-property-panel {
-    height: calc(100% + 3rem);
-    overflow: auto;
-    background-color: $endpoint-property-panel-box-color;
-    top: -45px;
-  }
 }

@@ -4,11 +4,8 @@
 @import "base-property-panel/manifest";
 @import "host-table-footer/manifest";
 @import "host-text/manifest";
-@import "risk-score-badge/manifest";
 @import "host-message-modal/manifest";
-@import "host-scan-status/manifest";
 @import "host-title-bar/manifest";
-@import "rsa-nav-secondary";
 @import "host-list/content-filter/manifest";
 
 .host-detail {
@@ -23,6 +20,6 @@
   }
   &__no-snapshots {
     @include rsa-font(bold);
-    color: rsa-color(gray, lighter);
+    color: text-color(primary, light);
   }
 }

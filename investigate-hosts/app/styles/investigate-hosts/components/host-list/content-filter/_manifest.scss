@@ -2,7 +2,6 @@
 @import "number-filter";
 @import "list-filter";
 
-$zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
 $filterPanelMinWidth: 200px;
 
 .filter-ellipsis {
@@ -26,7 +25,7 @@ $filterPanelMinWidth: 200px;
 .content-filter {
 
   padding-left: rsa-whitespace(less);
-  color: rsa-color(white);
+  color: text-color(neutral);
   width: calc(100vw - 200px);
   div {
     float: left;
@@ -41,14 +40,12 @@ $filterPanelMinWidth: 200px;
     width: 80vw;
   }
   .rsa-form-button-wrapper {
-
     .rsa-form-button {
       padding: rsa-whitespace(less) rsa-whitespace(less);
-      color: rsa-color(gray);
+      color: text-color(primary);
       &:hover {
         cursor: pointer;
-        border: 1px solid;
-        color: rsa-color(white);
+        color: text-color(neutral);
       }
       .rsa-icon-remove-circle-2 {
         font-size: .9rem;
@@ -68,7 +65,7 @@ $filterPanelMinWidth: 200px;
       }
       &:hover, &.is-active {
         .rsa-form-button {
-          border: 1px solid $formButtonHoverBorderColor;
+          @include border(1px, solid, primary, lightest);
         }
       }
       &:active, &.is-active {

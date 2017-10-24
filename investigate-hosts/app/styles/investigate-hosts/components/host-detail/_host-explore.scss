@@ -1,27 +1,31 @@
-$explore-border-color: #4A4A4A;
+$host-explore-min-width: 250px;
+$search-result-content-height: 593px;
+$background-color: background-color(neutral, dark);
+$text-color: text-color(secondary);
+$result-text-color: text-color(primary, light);
+
 
 .host-explore {
-  min-width: 250px;
+  @include border(1px, solid, primary, dark);
+  min-width: $host-explore-min-width;
   flex: 5;
-  border: 1px solid $explore-border-color;
-  background: black;
+  background: $background-color;
   height: 2.5rem;
 
   &__loader {
     text-align: right;
-    /* width: 0; */
     float: right;
     height: 0;
-    padding-right: rsa-whitespace();
-    padding-top: rsa-whitespace(less);
+    padding: rsa-whitespace() rsa-whitespace(more) 0 0;
   }
   &__content {
-    height: 593px;
+    @include border(1px, solid, primary, dark);
+    top: rsa-whitespace(less);
+    height: $search-result-content-height;
     width: 100%;
-    border: 1px solid $explore-border-color;
-    background-color: rsa-color(black);
+    background-color: $background-color;
     position: absolute;
-    margin-top: rsa-whitespace(most);
+    margin-top: rsa-whitespace(more);
     z-index: 300;
     overflow: auto;
     .rsa-content-accordion .content {
@@ -30,39 +34,37 @@ $explore-border-color: #4A4A4A;
     &__snapshot {
         padding: 0;
         h3 {
-        color: rsa-color(blue);
+        color: $text-color;
         font-weight: bold;
       }
     }
 
-    &__heaer
     &__header {
       word-break: break-all;
       padding: rsa-whitespace(less);
       font-size:0.8rem;
       &__filename {
-        color: rsa-color(blue);
+        color: $text-color;
         padding-right: rsa-whitespace();
         font-weight: bold;
         cursor: pointer;
       }
       &__result {
-        color: rsa-color(gray, light);
-        font-family: rsa-font('Open Sans');
+        color: $result-text-color;
         padding-right: rsa-whitespace();
         &__ranas{
-          color: rsa-color(gray, light);
-          padding-right: rsa-whitespace(less);
-          margin-left: calc(rsa-whitespace() * -1);
+          color: $result-text-color;
+          padding-right: 0.5rem;
+          margin-left: -13px;
           &__list{
-            color: rsa-color(blue);
+            color: $text-color;
           }
         }
       }
     }
   }
   &__no-results {
-    color: rsa-color(white);
+    color: text-color(neutral);
     font-weight: bold;
   }
 
@@ -70,7 +72,7 @@ $explore-border-color: #4A4A4A;
     width: 93%;
     input {
       border: none;
-      background: rsa-color(black);
+      background: text-color(neutral, dark);
       line-height: normal;
     }
     .rsa-form-label {
