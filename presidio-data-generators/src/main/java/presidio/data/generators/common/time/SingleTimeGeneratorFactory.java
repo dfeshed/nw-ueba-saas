@@ -23,7 +23,7 @@ public class SingleTimeGeneratorFactory implements ITimeGeneratorFactory{
         this.daysBackTo = daysBackTo;
     }
 
-    public ITimeGenerator createTimeGenerator() throws GeneratorException {
+    public TimeGenerator createTimeGenerator() throws GeneratorException {
         return new TimeGenerator(LocalTime.of(startHourOfDay, MINUTE_DEFAULT), LocalTime.of(endHourOfDay, MINUTE_DEFAULT), INTERVAL_DEFAULT, daysBackFrom, daysBackTo);
     }
 }
