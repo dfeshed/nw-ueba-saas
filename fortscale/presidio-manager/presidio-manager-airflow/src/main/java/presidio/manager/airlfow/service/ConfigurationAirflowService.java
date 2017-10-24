@@ -3,6 +3,7 @@ package presidio.manager.airlfow.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
@@ -18,12 +19,13 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 
-public class ConfigurationAirflowServcie implements ConfigurationProcessingService {
+public class ConfigurationAirflowService implements ConfigurationProcessingService {
 
-    private static final Logger logger = Logger.getLogger(ConfigurationAirflowServcie.class);
+    private static final Logger logger = Logger.getLogger(ConfigurationAirflowService.class);
 
     private final String DATA_PIPE_LINE = "dataPipeline";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
@@ -49,7 +51,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     private final String configurationFolderPath;
     private final ObjectMapper mapper;
 
-    public ConfigurationAirflowServcie(ConfigurationServerClientService configServerClient, String moduleName, List<String> activeProfiles, String configurationFolderPath) {
+    public ConfigurationAirflowService(ConfigurationServerClientService configServerClient, String moduleName, List<String> activeProfiles, String configurationFolderPath) {
         this.configServerClient = configServerClient;
         this.moduleName = moduleName;
         this.activeProfiles = activeProfiles;
@@ -61,7 +63,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
     @Override
     public boolean applyConfiguration() {
         try {
-            for (String profile: activeProfiles) {
+            for (String profile : activeProfiles) {
 
                 Object response = configServerClient.readConfigurationAsJson(moduleName, profile, Object.class);
                 String newConfJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
@@ -69,7 +71,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 dir.mkdirs();
 
                 String filePath = String.format("%s/%s-%s.json", configurationFolderPath, moduleName, profile);
-                logger.info("applying configuration path={}",filePath);
+                logger.info("applying configuration path={}", filePath);
                 File file = new File(filePath);
                 Set<PosixFilePermission> perms = new HashSet<>();
 
@@ -83,15 +85,15 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
                 perms.add(PosixFilePermission.OTHERS_READ);
                 perms.add(PosixFilePermission.OTHERS_WRITE);
 
-                FileWriter fileWriter = new FileWriter(file,false);
+                FileWriter fileWriter = new FileWriter(file, false);
                 fileWriter.write(newConfJson);
                 fileWriter.close();
-                Files.setPosixFilePermissions(Paths.get(filePath),perms);
+                Files.setPosixFilePermissions(Paths.get(filePath), perms);
             }
             return true;
         } catch (Exception e) {
             String msg = "failed to apply configuration";
-            logger.error(msg,e);
+            logger.error(msg, e);
             return false;
         }
     }
@@ -106,7 +108,7 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
             validationResults.addError(error);
             return validationResults;
         }
-        if (!dataPipeLineConfiguration.isStracturValid()) {
+        if (!dataPipeLineConfiguration.isStructureValid()) {
             return UnsupportedError(dataPipeLineConfiguration);
         }
 
@@ -123,7 +125,12 @@ public class ConfigurationAirflowServcie implements ConfigurationProcessingServi
             ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(DATA_PIPE_LINE, LOCATION_TYPE_START_TIME, MISSING_PROPERTY, LOCATION_TYPE, MISSIG_START_TIME_ERROR_MESSAGE);
             validationResults.addError(error);
         } else {
-            validationResults.addErrors(startTimeValidation(startTime));
+            List<ConfigurationBadParamDetails> startTimeValidation = startTimeValidation(startTime);
+            if (CollectionUtils.isEmpty(startTimeValidation)) {
+                startTime = Instant.parse(startTime).truncatedTo(ChronoUnit.HOURS).toString();
+                dataPipeLineConfiguration.setStartTime(startTime);
+            }
+            validationResults.addErrors(startTimeValidation);
         }
 
         return validationResults;

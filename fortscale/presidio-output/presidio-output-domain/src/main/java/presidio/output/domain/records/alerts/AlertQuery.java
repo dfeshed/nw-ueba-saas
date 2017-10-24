@@ -123,8 +123,8 @@ public class AlertQuery {
         private long filterByStartDate;
         private long filterByEndDate;
         private List<String> filterByFeedback;
-        private double filterByMinScore;
-        private double filterByMaxScore;
+        private double filterByMinScore = -1;
+        private double filterByMaxScore = -1;
         private List<String> filterByTags;
         private List<String> filterByAlertsIds;
         private List<String> filterByIndicatorNames;

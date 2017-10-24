@@ -30,8 +30,10 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private static final String DOMAIN_SYSTEM = "System";
     private static final String REASON_UNKNOWN_PROPERTY = "unknownProperty";
     private static final String REASON_MISSING_PROPERTY = "missingProperty";
-    private static final String HTTPD_CONF_TEMPLATE_FILENAME = "/templates/httpd.conf.template";
-    private static final String KRB5_CONF_TEMPLATE_FILENAME = "/templates/krb5.conf.template";
+
+    public static final String TEMPLATE_DIRECTORY = "/templates";
+    public static final String HTTPD_CONF_TEMPLATE_FILENAME = "httpd.conf.template";
+    public static final String KRB5_CONF_TEMPLATE_FILENAME = "krb5.conf.template";
 
     private final ConfigurationServerClientService configurationServerClientService;
 
@@ -65,12 +67,9 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         try {
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
-            freeMakerConfiguration.setClassForTemplateLoading(this.getClass(), "/templates/");
-
             // Handle httpd conf
             Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
-            String httpdTemplatePath = getClass().getResource(HTTPD_CONF_TEMPLATE_FILENAME).getPath();
-            String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(httpdTemplatePath), securityConfiguration);
+            String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE_FILENAME), securityConfiguration);
 
             File file = new File(securityConfPath);
             fileWriter = new FileWriter(file,false);
@@ -84,8 +83,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             securityConfiguration.put(UPPER_CASE_REALM, upperCaseRealm);
 
             // Handle krb5 conf
-            String krb5TemplatePath = getClass().getResource(KRB5_CONF_TEMPLATE_FILENAME).getPath();
-            String krb5Conf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(krb5TemplatePath), securityConfiguration);
+            String krb5Conf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(KRB5_CONF_TEMPLATE_FILENAME), securityConfiguration);
 
             File krb5ConfFile = new File(krb5ConfPath);
             krb5ConfFileWriter = new FileWriter(krb5ConfFile,false);
