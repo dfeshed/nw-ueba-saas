@@ -1452,7 +1452,10 @@ export default {
   preferences: {
     'investigate-events-preferences': {
       panelTitle: 'Event Preferences',
-      triggerTip: 'Open/Hide Event Preferences'
+      triggerTip: 'Open/Hide Event Preferences',
+      defaultEventView: {
+        title: 'Default Event Ananlysis View'
+      }
     }
   },
   packager: {

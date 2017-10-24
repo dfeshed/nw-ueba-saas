@@ -2,16 +2,19 @@ import Component from 'ember-component';
 import layout from './template';
 import run from 'ember-runloop';
 import { connect } from 'ember-redux';
-import { closePreferencesPanel, resetPreferencesPanel } from 'preferences/actions/interaction-creators';
+import { closePreferencesPanel, resetPreferencesPanel, loadPreferences } from 'preferences/actions/interaction-creators';
+import computed from 'ember-computed-decorators';
+import service from 'ember-service/inject';
 
-const stateToComputed = ({ preferences }) => ({
-  isExpanded: preferences.expanded,
-  launchFor: preferences.launchFor
+const stateToComputed = ({ preferences: { launchFor, expanded } }) => ({
+  isExpanded: expanded,
+  launchFor
 });
 
 const dispatchToActions = {
   closePreferencesPanel,
-  resetPreferencesPanel
+  resetPreferencesPanel,
+  loadPreferences
 };
 
 const PreferencesPanel = Component.extend({
@@ -21,18 +24,28 @@ const PreferencesPanel = Component.extend({
   classNames: ['rsa-preferences-panel'],
   classNameBindings: ['isExpanded'],
 
+  preferences: service(),
+
   init() {
     this._super(arguments);
-    this.addObserver('isExpanded', this, this.resetPanel);
+    this.addObserver('isExpanded', this, this.loadOrResetPreferences);
   },
 
-  resetPanel() {
-    if (!this.get('isExpanded')) {
-      // wait for the panel to close completely before sending reset action, else the
-      // panel title gets cleared immediately while the panel is still sliding out
-      run.later(() => {
+  loadOrResetPreferences() {
+    // wait for the panel to slide open/close completely before sending action
+    run.later(() => {
+      if (this.get('isExpanded')) {
+        this.send('loadPreferences', this.get('preferences'));
+      } else {
         this.send('resetPreferencesPanel');
-      }, 650);
+      }
+    }, 650);
+  },
+
+  @computed('launchFor')
+  preferencesFor(preferenceFor) {
+    if (preferenceFor) {
+      return `${preferenceFor}-preferences`;
     }
   },
 

@@ -1,0 +1,21 @@
+{{#if isReady}}
+  <div class="rsa-preferences-body-content">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t defaultEventView.name}}
+      </div>
+    </label>
+
+    {{#power-select
+      options=defaultEventView.options
+      selected=defaultEventView.defaultValue
+      searchEnabled=false
+      onchange=(action 'setSelectedEventView') as |option|}}
+      {{t (concat 'recon.titleBar.views.' option)}}
+    {{/power-select}}
+   </div>
+{{else}}
+  <centered class="rsa-loader-position">
+    {{rsa-loader size='largest'}}
+  </centered>
+{{/if}}

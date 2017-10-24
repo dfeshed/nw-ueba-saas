@@ -7,7 +7,7 @@ module.exports = function(environment) {
   const socketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
   return {
-    'events-preferences': {
+    'investigate-events-preferences': {
       socketUrl,
       getPreferences: {
         subscriptionDestination: '/user/queue/investigate/preferences/get',

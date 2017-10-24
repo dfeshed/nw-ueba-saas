@@ -54,10 +54,12 @@
     "ember-resolver": "^4.0.0",
     "ember-source": "2.15.0",
     "ember-symbol-observable": "1.0.0",
+    "ember-wait-for-test-helper": "1.1.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "seamless-immutable": "7.1.2",
     "loader.js": "^4.2.3",
-    "lodash-es": "4.17.4"
+    "lodash-es": "4.17.4",
+    "ember-dependency-lookup": "1.0.0"
   },
   "engines": {
     "node": "7.5.0"

@@ -20,8 +20,9 @@ test('it can get preferences for given preference type', function(assert) {
       resolve({ data: { defaultAnalysisView: 'text' } });
     });
   };
+  service.set('request', request);
   const done = assert.async();
-  service.getPreferences('investigate-events').then((response) => {
+  service.getPreferences('someNewModule').then((response) => {
     assert.ok(response, 'Expected promise callback to be invoked with a response.');
     assert.equal(response.data.defaultAnalysisView, 'text', 'Expected to return defaultAnalysisView as text.');
     done();
