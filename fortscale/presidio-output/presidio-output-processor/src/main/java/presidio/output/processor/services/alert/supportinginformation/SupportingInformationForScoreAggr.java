@@ -122,7 +122,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
             // build Event for each raw event
             for (ScoredEnrichedEvent rawEvent : rawEvents) {
-                Map<String, Object> rawEventFeatures = new ObjectMapper().convertValue(rawEvent, Map.class);
+                Map<String, Object> rawEventFeatures = new ObjectMapper().convertValue(rawEvent.getEnrichedEvent(), Map.class);
 
                 IndicatorEvent event = new IndicatorEvent();
                 event.setFeatures(rawEventFeatures);
