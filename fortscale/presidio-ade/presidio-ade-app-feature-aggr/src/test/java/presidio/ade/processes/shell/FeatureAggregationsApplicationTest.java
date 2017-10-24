@@ -4,11 +4,14 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
-import fortscale.ml.model.*;
+import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.Model;
+import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.builder.factories.GaussianPriorModelBuilderFactory;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
-import fortscale.ml.model.builder.gaussian.prior.*;
+import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
@@ -33,18 +36,18 @@ import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import presidio.ade.test.utils.generators.FileOperationGenerator;
-import presidio.ade.test.utils.generators.EnrichedRandomDeterministicFileGenerator;
+import presidio.ade.test.utils.generators.MultiFileEventGenerator;
+import presidio.ade.test.utils.generators.factory.FileEventGeneratorTemplateFactory;
 import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.ade.AdeFileOperationGeneratorTemplateFactory;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGeneratorFactory;
+import presidio.data.generators.common.time.SingleTimeGeneratorFactory;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -105,8 +108,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         contextIdSet.add("userId#" + contextId);
 
 
-        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
-        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        TimeRange timeRange = generateData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
         Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
         Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
 
@@ -152,9 +154,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Set<String> contextIdSet = new HashSet<>();
         contextIdSet.add("userId#" + contextId);
 
-        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
-
-        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        TimeRange timeRange = generateData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
         Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
         Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
 
@@ -219,7 +219,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Instant endInstant = Instant.EPOCH;
         int numOfDays = 0;
         for (Pair<Double, Double> pair : meanToMaxValueList) {
-            TimeRange timeRange = generateData(new FileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom - numOfDays, daysBackTo - numOfDays, contextId);
+            TimeRange timeRange = generateData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom - numOfDays, daysBackTo - numOfDays, contextId);
             Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
             Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
             createModels(contextIdSet, start, 50, pair.getKey(), 0.19, pair.getValue());
@@ -284,9 +284,8 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
 
         List<IFileOperationGenerator> fileOperationGenerators = new ArrayList<>();
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createOpenFileOperationsGenerator());
-        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator(fileOperationGenerators);
 
-        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        TimeRange timeRange = generateData(fileOperationGenerators, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
         Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
         Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
 
@@ -337,9 +336,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Set<String> contextIdSet = new HashSet<>();
         contextIdSet.add("userId#" + contextId);
 
-
-        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
-        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        TimeRange timeRange = generateData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
         Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
         Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
 
@@ -377,9 +374,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Set<String> contextIdSet = new HashSet<>();
         contextIdSet.add("userId#" + contextId);
 
-
-        FileOperationGenerator fileOperationTpeGenerator = new FileOperationGenerator();
-        TimeRange timeRange = generateData(fileOperationTpeGenerator, startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
+        TimeRange timeRange = generateData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextId);
         Instant start = TimeService.floorTime(timeRange.getStart(), Duration.ofDays(1));
         Instant end = TimeService.floorTime(timeRange.getEnd().plus(Duration.ofDays(1)), Duration.ofDays(1));
 
@@ -409,7 +404,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
      * Generate records every 10 minutes.
      * create context and time generators.
      *
-     * @param fileOperationTpeGenerator file operationTpe generator
+     * @param fileOperationGeneratorList file operation generator list
      * @param startHourOfDay            start hour of day
      * @param endHourOfDay              end hour of day
      * @param daysBackFrom
@@ -418,14 +413,14 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
      * @return TimeRange of records
      * @throws GeneratorException
      */
-    public TimeRange generateData(FileOperationGenerator fileOperationTpeGenerator, int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, String contextIdPattern) throws GeneratorException {
+    public TimeRange generateData(List<IFileOperationGenerator> fileOperationGeneratorList, int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, String contextIdPattern) throws GeneratorException {
 
         StringRegexCyclicValuesGenerator contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
-        TimeGenerator timeGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 10, daysBackFrom, daysBackTo);
+        ITimeGeneratorFactory timeGeneratorFactory = new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo);
 
-        EnrichedRandomDeterministicFileGenerator enrichedRandomDeterministicFileGenerator =
-                new EnrichedRandomDeterministicFileGenerator(timeGenerator, contextIdGenerator, fileOperationTpeGenerator);
-        List<EnrichedFileRecord> enrichedFileRecords = enrichedRandomDeterministicFileGenerator.generate();
+        FileEventGeneratorTemplateFactory fileEventGeneratorTemplateFactory = new FileEventGeneratorTemplateFactory();
+        MultiFileEventGenerator multiFileEventGenerator = fileEventGeneratorTemplateFactory.createMultiFileEventGenerator(timeGeneratorFactory, contextIdGenerator, fileOperationGeneratorList);
+        List<EnrichedFileRecord> enrichedFileRecords = multiFileEventGenerator.generate();
 
         EnrichedRecordsMetadata recordsMetadata = new EnrichedRecordsMetadata("file", Instant.now(), Instant.now());
         enrichedDataStore.store(recordsMetadata, enrichedFileRecords);
@@ -545,6 +540,29 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     }
 
     /**
+     * Get IFileOperationGenerator that cover all the features
+     *
+     * @return list of fileOperationGenerators
+     * @throws GeneratorException
+     */
+    private List<IFileOperationGenerator> getAllFileOperationGenerator() throws GeneratorException {
+        List<IFileOperationGenerator> fileOperationGenerators = new ArrayList<>();
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createLocalSharePermissionsChangeOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedLocalSharePermissionsChangeOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedOpenFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createOpenFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFolderOpenFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createDeleteFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createRenameFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedRenameFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveFromSharedFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveToSharedFileOperationsGenerator());
+
+        return fileOperationGenerators;
+    }
+
+
+    /**
      *
      * @param value
      * @return rounded value
@@ -558,4 +576,6 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     @Import({FeatureAggregationsConfigurationTest.class, PresidioCommands.class, BaseAppTest.springConfig.class, ModelStoreConfig.class})
     protected static class featureAggregationsTestConfig {
     }
+
+
 }
