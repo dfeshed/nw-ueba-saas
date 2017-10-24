@@ -3,8 +3,6 @@ package presidio.config.server.client;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.*;
@@ -13,13 +11,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
 public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService {
 
-    public static final String DATA_PIPELINE_START_TIME = "dataPipeline.startTime";
     private final String configServerUri;
     private final String configServerUserName;
     private final String configServerPassword;
@@ -39,16 +34,9 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         // set headers with basic auth to config server
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // Round the start time value
-        String fieldValue = configFileContent.get("dataPipeline").get("startTime").asText();
-        if (StringUtils.isNotEmpty(fieldValue)) {
-            Instant startTimeValue = Instant.parse(fieldValue);
-            ((ObjectNode) configFileContent.get("dataPipeline")).put("startTime", startTimeValue.truncatedTo(ChronoUnit.HOURS).toString());
-        }
-
         HttpEntity<String> entity = new HttpEntity<>(configFileContent.toString(), headers);
-        String url = String.format("%s/%s", configServerUri, fileName);
+
+        String url = String.format("%s/%s", configServerUri , fileName);
         return restTemplate.exchange(url, HttpMethod.PUT, entity, Void.class);
     }
 
@@ -62,14 +50,15 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         return restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, responseEntityType);
     }
 
-    private UriComponentsBuilder getConfigServerUriInJsonFormat(String moduleName, String profile) {
-        return getConfigServerUri(moduleName, profile).path(".json");
+    private UriComponentsBuilder getConfigServerUriInJsonFormat(String moduleName, String profile)
+    {
+        return getConfigServerUri(moduleName,profile).path(".json");
     }
 
     private UriComponentsBuilder getConfigServerUri(String moduleName, String profile) {
         return UriComponentsBuilder.fromHttpUrl(configServerUri)
-                .path("/" + moduleName)
-                .path("-" + profile);
+                    .path("/" + moduleName)
+                    .path("-" + profile);
     }
 
     @Override
@@ -82,7 +71,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
         String path = ".properties";
 
-        UriComponentsBuilder builder = getConfigServerUri(moduleName, profile)
+        UriComponentsBuilder builder = getConfigServerUri(moduleName,profile)
                 .path(path);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
@@ -98,7 +87,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     @Override
     public <T> T readConfigurationAsJson(String moduleName, String profile, Class<T> clazz) throws Exception {
 
-        UriComponentsBuilder builder = getConfigServerUriInJsonFormat(moduleName, profile);
+        UriComponentsBuilder builder = getConfigServerUriInJsonFormat(moduleName,profile);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -116,7 +105,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     @Override
     public String readConfigurationAsJsonString(String moduleName, String profile) throws Exception {
 
-        UriComponentsBuilder builder = getConfigServerUriInJsonFormat(moduleName, profile);
+        UriComponentsBuilder builder =getConfigServerUriInJsonFormat(moduleName,profile);
 
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -127,7 +116,7 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
     }
 
-    private HttpHeaders createBasicAuthenticationHeaders(String username, String password) {
+    private HttpHeaders createBasicAuthenticationHeaders(String username, String password){
         final HttpHeaders httpHeaders = new HttpHeaders();
         String auth = String.format("%s:%s", username, password);
         byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("UTF8")));
