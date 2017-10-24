@@ -1,4 +1,4 @@
-package presidio.adapter.util;
+package fortscale.utils.test.runner;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.runner.notification.RunNotifier;

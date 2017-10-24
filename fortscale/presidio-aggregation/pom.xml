@@ -139,7 +139,7 @@
         <!-- fortscale dependencies -->
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>fortscale-global-config</artifactId>
+            <artifactId>presidio-global-config</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
