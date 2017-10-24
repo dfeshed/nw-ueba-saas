@@ -25,72 +25,73 @@ dags:
     default_jar_values:
       java_path: /usr/bin/java
       jvm_args:
-        xms: 100
+        xms: 2048
         xmx: 2048
         timezone: -Duser.timezone=UTC
         remote_debug_enabled: False
         remote_debug_suspend: False
         jmx_enabled: False
+        extra_jvm: -XX:+UseG1GC
     SmartEventsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-smart-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.smart.SmartApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     FeatureAggregationsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-feature-aggr-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.processes.shell.FeatureAggregationsApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     ScoreAggregationsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     RawModelFeatureAggregationBucketsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-model-feature-buckets-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     RawModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     AggrModelAccumulateAggregationsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.processes.shell.AccumulateAggregationsApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     AggrModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     SmartModelAccumulateOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-smart-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.processes.shell.AccumulateSmartApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
     SmartModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
-        xmx: 500
+        xmx: 1024
         xms: 70
     AdeManagerOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.manager.AdeManagerApplication
-        xmx: 500
-        xms: 70
+        xmx: 1024
+        xms: 1024
 components:
   adapter:
     jvm_args:
@@ -100,14 +101,14 @@ components:
     jvm_args:
       jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
       main_class: presidio.input.core.FortscaleInputCoreApplication
-      xmx: 500
-      xms: 70
+      xmx: 2048
+      xms: 2048
   output:
     jvm_args:
       jar_path: ${general.deployment.bins.base_path}/presidio-output-processor-1.0.0-SNAPSHOT.jar
       main_class: presidio.output.processor.FortscaleOutputProcessorApplication
-      xmx: 500
-      xms: 70
+      xmx: 2048
+      xms: 2048
   ade:
     models:
       feature_aggregation_records:

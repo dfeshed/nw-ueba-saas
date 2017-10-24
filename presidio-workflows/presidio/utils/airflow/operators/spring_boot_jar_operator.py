@@ -31,6 +31,7 @@ class SpringBootJarOperator(BashOperator):
             jmx_enabled
             jmx_port,
             java_logback_conf_path,
+            extra_jvm,
             extra_args
     :type jvm_args: dict
     :param java_args: The java args.
@@ -120,6 +121,8 @@ class SpringBootJarOperator(BashOperator):
 
         self.jvm_memory_allocation(bash_command)
 
+        self.extra_jvm(bash_command)
+
         self.timezone(bash_command)
 
         self.spring_profile(bash_command)
@@ -174,6 +177,21 @@ class SpringBootJarOperator(BashOperator):
         if not is_blank(xmx):
             xmx = '-Xmx%sm' % xmx
             bash_command.extend([xmx])
+
+    def extra_jvm(self, bash_command):
+        """
+        
+        Xmx specifies the maximum memory allocation pool for a Java Virtual Machine (JVM),
+        Xms specifies the initial memory allocation pool.
+        
+        :param bash_command: list of bash comments
+        :type bash_command: []
+        :return: 
+        """
+
+        extra_jvm = self.merged_args.get(JVM_ARGS_CONF_KEY).get('extra_jvm')
+        if not is_blank(extra_jvm):
+            bash_command.extend([extra_jvm])
 
     def extra_args(self, bash_command):
         """
