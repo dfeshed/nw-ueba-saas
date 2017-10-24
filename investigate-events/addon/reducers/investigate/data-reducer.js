@@ -2,17 +2,19 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
+import {
+  META_PANEL_SIZES,
+  RECON_PANEL_SIZES
+} from 'investigate-events/panelSizes';
 
-const META_PANEL_SIZES = ['min', 'default', 'max'];
-const RECON_PANEL_SIZES = ['min', 'max', 'full'];
 const valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
-const unknownMetaSize = (val) => valueNotInArray(META_PANEL_SIZES, val);
-const unknownReconSize = (val) => valueNotInArray(RECON_PANEL_SIZES, val);
+const unknownMetaSize = (val) => valueNotInArray(Object.values(META_PANEL_SIZES), val);
+const unknownReconSize = (val) => valueNotInArray(Object.values(RECON_PANEL_SIZES), val);
 
 const _initialState = Immutable.from({
   isReconOpen: false,
-  metaPanelSize: 'default',
-  reconSize: 'max'
+  metaPanelSize: META_PANEL_SIZES.DEFAULT,
+  reconSize: RECON_PANEL_SIZES.MAX
 });
 
 export default handleActions({
@@ -23,7 +25,7 @@ export default handleActions({
    * @public
    */
   [ACTION_TYPES.SET_META_PANEL_SIZE]: (state, { payload }) => {
-    const metaPanelSize = unknownMetaSize(payload) ? 'default' : payload;
+    const metaPanelSize = unknownMetaSize(payload) ? META_PANEL_SIZES.DEFAULT : payload;
     // const { previousSize } = state;
     // // When expanding meta panel from its minimized state, ensure recon panel is
     // // closed.
@@ -40,7 +42,7 @@ export default handleActions({
    * @public
    */
   [ACTION_TYPES.SET_RECON_PANEL_SIZE]: (state, { payload }) => {
-    const reconSize = unknownReconSize(payload) ? 'max' : payload;
+    const reconSize = unknownReconSize(payload) ? RECON_PANEL_SIZES.MAX : payload;
     return state.merge({ reconSize });
   },
 

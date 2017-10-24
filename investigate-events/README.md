@@ -1,6 +1,3 @@
-# TODO
-- Move things like `RECON_PANEL_SIZES` into a constant to be reused across the codebase
-
 # InvestigateEvents
 
 InvestigateEvents is a routable [ember-engine](https://github.com/ember-engines/ember-engines) that is [mounted](https://github.com/ember-engines/ember-engines.com/blob/66759f39726617b3a17f1f0088ccd78ac73380ce/markdown/guide/mounting-engines.md#routable-engines) inside the sa application at `/investigate/events`.

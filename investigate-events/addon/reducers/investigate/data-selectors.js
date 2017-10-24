@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import { RECON_PANEL_SIZES } from 'investigate-events/panelSizes';
 
 const { createSelector } = reselect;
 
@@ -14,9 +15,9 @@ export const queryBodyClass = createSelector(
     let recon = 'open';
     if (!isReconOpen) {
       recon = 'closed';
-    } else if (reconSize === 'max') {
+    } else if (reconSize === RECON_PANEL_SIZES.MAX) {
       recon = 'expanded';
-    } else if (reconSize === 'full') {
+    } else if (reconSize === RECON_PANEL_SIZES.FULL) {
       recon = 'full';
     }
     return `rsa-investigate-query__body recon-is-${recon} meta-panel-size-${panelSize}`;
@@ -25,5 +26,5 @@ export const queryBodyClass = createSelector(
 
 export const isReconFullSize = createSelector(
   [_reconSize],
-  (reconSize) => reconSize === 'full'
+  (reconSize) => reconSize === RECON_PANEL_SIZES.FULL
 );

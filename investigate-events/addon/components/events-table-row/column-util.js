@@ -92,7 +92,6 @@ function buildMetaSummaryContent($content, item, opts) {
     );
   } else {
     const keys = GENERIC_SUMMARY_DATA.concat(NETWORK_SUMMARY_DATA);
-    // TODO addMetaSummaryRow(buildNetworkContent(item));
     addMetaSummaryRow(
       buildMetaKeyValuePairs(keys, item, opts)
     );

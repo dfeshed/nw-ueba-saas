@@ -48,13 +48,12 @@ export const setQueryTimeRange = (timeRange) => {
   };
 };
 
-export const setSelectedEvent = (event, index) => {
+export const setSelectedEvent = (event) => {
   const metas = event ? event.metas : undefined;
   const sessionId = event ? event.sessionId : undefined;
   return {
     type: ACTION_TYPES.SET_SELECTED_EVENT,
     payload: {
-      eventIndex: index,
       eventMetas: metas,
       sessionId
     }

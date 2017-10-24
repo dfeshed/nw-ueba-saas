@@ -4,7 +4,6 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  eventIndex: undefined,
   eventMetas: undefined,
   serviceId: undefined,
   sessionId: undefined,

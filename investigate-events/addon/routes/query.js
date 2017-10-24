@@ -13,8 +13,11 @@ import {
   setReconClosed
 } from 'investigate-events/actions/interaction-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
-import { eventQueryUri } from 'investigate-events/helpers/event-query-uri';
-// TODO - parseEventQueryUri/eventQueryUri What's the diff?
+// import { eventQueryUri } from 'investigate-events/helpers/event-query-uri';
+import {
+  META_PANEL_SIZES,
+  RECON_PANEL_SIZES
+} from 'investigate-events/panelSizes';
 
 export default Route.extend({
   accessControl: service(),
@@ -65,7 +68,7 @@ export default Route.extend({
     // set query params to state
     const { eventId, metaPanelSize, reconSize } = params;
     const qp = parseEventQueryUri(params.filter);
-    qp.sessionId = eventId;
+    qp.sessionId = parseInt(eventId, 10);
     this.get('redux').dispatch(setQueryParams(qp));
     this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
     this.get('redux').dispatch(setReconPanelSize(reconSize));
@@ -76,7 +79,37 @@ export default Route.extend({
   },
 
   actions: {
-    metaPanelSize(size = 'default') {
+    /**
+     * Updates state in order to reveal the Context Panel UI and feed it the
+     * type & ID of an entity to lookup.
+     * @param {string} entityType One of configured entity types; e.g., 'IP',
+     * 'HOST', 'USER', etc.
+     * @param {string|number} entityId The ID of an entity.
+     * @public
+     */
+    contextPanelOpen(entityType, entityId) {
+      this.transitionTo({
+        queryParams: {
+          entityType,
+          entityId
+        }
+      });
+    },
+
+    /**
+     * Updates the UI state in order to hide the Context Panel UI.
+     * @public
+     */
+    contextPanelClose() {
+      this.transitionTo({
+        queryParams: {
+          entityType: undefined,
+          entityId: undefined
+        }
+      });
+    },
+
+    metaPanelSize(size = META_PANEL_SIZES.DEFAULT) {
       const { metaPanelSize } = this.get('redux').getState().investigate.data;
       if (metaPanelSize !== size) {
         this.get('redux').dispatch(setMetaPanelSize(size));
@@ -84,19 +117,24 @@ export default Route.extend({
       }
     },
 
-    // TODO - Make this work
-    navDrill(queryNode, metaName, metaValue) {
-      this.transitionTo('query', eventQueryUri([
-        queryNode.get('value.definition'),
-        metaName,
-        metaValue
-      ]));
-    },
+    // TODO - Make this work when meta panel is reduxed
+    // navDrill(queryNode, metaName, metaValue) {
+    //   this.transitionTo('query', eventQueryUri([
+    //     queryNode.get('value.definition'),
+    //     metaName,
+    //     metaValue
+    //   ]));
+    // },
 
     reconClose() {
       this.get('redux').dispatch(setReconClosed());
       this.get('redux').dispatch(setSelectedEvent(null));
-      this.transitionTo({ queryParams: { eventId: undefined, metaPanelSize: 'default' } });
+      this.transitionTo({
+        queryParams: {
+          eventId: undefined,
+          metaPanelSize: META_PANEL_SIZES.DEFAULT
+        }
+      });
     },
 
     reconLinkToFile(file = {}) {
@@ -121,7 +159,7 @@ export default Route.extend({
       }
     },
 
-    reconSize(size = 'max') {
+    reconSize(size = RECON_PANEL_SIZES.MAX) {
       const { reconSize } = this.get('redux').getState().investigate.data;
       if (reconSize !== size) {
         this.get('redux').dispatch(setReconPanelSize(size));
@@ -129,17 +167,17 @@ export default Route.extend({
       }
     },
 
-    selectEvent(event, index) {
+    selectEvent(event) {
       const { reconSize } = this.get('redux').getState().investigate.data;
       const { sessionId } = event;
-      this.get('redux').dispatch(setSelectedEvent(event, index));
+      this.get('redux').dispatch(setSelectedEvent(event));
       this.get('redux').dispatch(setReconOpen());
-      // this.send('contextPanelClose');
+      this.send('contextPanelClose');
       this.transitionTo({
         queryParams: {
           eventId: sessionId,
           reconSize,
-          metaPanelSize: 'min'
+          metaPanelSize: META_PANEL_SIZES.MIN
         }
       });
     },
@@ -150,7 +188,8 @@ export default Route.extend({
         reconSize
       } = this.get('redux').getState().investigate.data;
       if (isReconOpen) {
-        this.send('reconSize', (reconSize === 'max') ? 'min' : 'max');
+        this.send('reconSize', (reconSize === RECON_PANEL_SIZES.MAX) ?
+          RECON_PANEL_SIZES.MIN : RECON_PANEL_SIZES.MAX);
       }
     },
 
@@ -162,13 +201,14 @@ export default Route.extend({
           reconSize
         } = this.get('redux').getState().investigate.data;
         if (isReconOpen) {
-          if (reconSize === 'full') {
+          if (reconSize === RECON_PANEL_SIZES.FULL) {
             // Set to previous size
-            this.send('reconSize', (_size === 'min') ? 'min' : 'max');
+            this.send('reconSize', (_size === RECON_PANEL_SIZES.MIN) ?
+              RECON_PANEL_SIZES.MIN : RECON_PANEL_SIZES.MAX);
           } else {
             // save off previous size
             _size = reconSize;
-            this.send('reconSize', 'full');
+            this.send('reconSize', RECON_PANEL_SIZES.FULL);
           }
         }
       };

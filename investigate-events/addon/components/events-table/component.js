@@ -2,6 +2,7 @@ import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 
 import { connect } from 'ember-redux';
+import { RECON_PANEL_SIZES } from 'investigate-events/panelSizes';
 
 const stateToComputed = ({ investigate }) => ({
   aliases: investigate.dictionaries.aliases,
@@ -32,10 +33,12 @@ const EventsTable = Component.extend({
   totalRetryAction: undefined,
 
   @computed('reconSize')
-  toggleEventsClass: (size) => (size !== 'max') ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+  toggleEventsClass: (size) => (size !== RECON_PANEL_SIZES.MAX) ?
+    'shrink-diagonal-2' : 'expand-diagonal-4',
 
   @computed('reconSize')
-  toggleEventsTitle: (size) => (size !== 'max') ? 'investigate.events.shrink' : 'investigate.events.expand'
+  toggleEventsTitle: (size) => (size !== RECON_PANEL_SIZES.MAX) ?
+    'investigate.events.shrink' : 'investigate.events.expand'
 });
 
 export default connect(stateToComputed)(EventsTable);

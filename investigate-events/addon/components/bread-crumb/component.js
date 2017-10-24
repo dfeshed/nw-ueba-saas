@@ -146,12 +146,6 @@ const BreadCrumbComponent = Component.extend({
       run.next(this, function() {
         $('.rsa-investigate-query-input input').focus();
       });
-    },
-
-    // TODO: this toggles isAddingMeta when submitting query
-    // why? not sure, come back to this
-    submit() {
-      this.toggleProperty('isAddingMeta');
     }
   }
 });

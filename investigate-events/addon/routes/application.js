@@ -1,9 +1,7 @@
 import Route from 'ember-route';
 import service from 'ember-service/inject';
 
-import Context from 'investigate-events/actions/context';
-
-export default Route.extend(Context, {
+export default Route.extend({
   i18n: service(),
 
   title() {
