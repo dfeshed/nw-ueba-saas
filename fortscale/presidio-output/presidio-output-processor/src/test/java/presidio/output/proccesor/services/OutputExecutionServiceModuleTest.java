@@ -65,33 +65,11 @@ public class OutputExecutionServiceModuleTest {
     @Autowired
     AlertPersistencyService alertPersistencyService;
 
-    private static EmbeddedElasticsearchInitialiser embeddedElasticsearchUtils = new EmbeddedElasticsearchInitialiser();
-
-    @BeforeClass
-    public static void setupElasticsearch() {
-        try {
-            embeddedElasticsearchUtils.setupEmbeddedElasticsearch();
-        } catch (Exception e) {
-            Assert.fail("Failed to start elasticsearch");
-            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-        }
-    }
-
-    @AfterClass
-    public static void stopElasticsearch() throws Exception {
-        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-    }
+    @Autowired
+    protected EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
 
     @Before
     public void setup() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
-        esTemplate.deleteIndex(Alert.class);
-        esTemplate.createIndex(Alert.class);
-        esTemplate.putMapping(Alert.class);
-        esTemplate.refresh(Alert.class);
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
         String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
 
@@ -130,7 +108,6 @@ public class OutputExecutionServiceModuleTest {
         mongoTemplate.insert(smartRecords, smartUserIdHourlyCollectionName);
         mongoTemplate.insert(event, fileEnrichedEventCollectionName);
     }
-
 
     @Ignore
     @Test

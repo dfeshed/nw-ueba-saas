@@ -64,7 +64,6 @@ public class AlertPersistencyServiceTest extends EmbeddedElasticsearchTest {
 
     @Before
     public void setupTestdata() {
-        Assume.assumeTrue(embeddedElasticsearchInitialiser.isStarted());
         classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
         classifications2 = new ArrayList<>(Arrays.asList("b"));
         classifications3 = new ArrayList<>(Arrays.asList("a"));

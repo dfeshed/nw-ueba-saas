@@ -26,4 +26,9 @@ public class TestConfig {
         properties.put("number.of.classifications", 19);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
+
+    @Bean
+    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
+        return new EmbeddedElasticsearchInitialiser();
+    }
 }

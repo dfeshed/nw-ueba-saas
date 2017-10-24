@@ -69,7 +69,6 @@ public class UserPersistencyServiceTest extends EmbeddedElasticsearchTest {
 
     @Before
     public void before() {
-        Assume.assumeTrue(embeddedElasticsearchInitialiser.isStarted());
         classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
         classifications2 = new ArrayList<>(Arrays.asList("b"));
         classifications3 = new ArrayList<>(Arrays.asList("a"));
