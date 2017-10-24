@@ -9,7 +9,7 @@
   position='bottom-right'
   panelId=config.panelId}}
   <section class="number-filter__content">
-    <hbox class='body'>
+    <hbox class="number-filter__body">
       <div class="col-xs-5 select-option">
         {{#power-select
           searchEnabled=false
@@ -23,14 +23,14 @@
         {{/power-select}}
       </div>
       {{#if (eq restrictionType.type 'BETWEEN')}}
-        <div class='body__input col-xs-3'>
+        <div class='number-filter__body__input col-xs-3'>
           {{rsa-form-input type='number' value=start}}
         </div>
-        <div class='body__input col-xs-3'>
+        <div class='number-filter__body__input col-xs-3'>
           {{rsa-form-input type='number' value=end}}
         </div>
       {{else}}
-        <div class='body__input col-xs-6'>
+        <div class='number-filter__body__input col-xs-6'>
           {{rsa-form-input type='number' value=value}}
         </div>
       {{/if}}

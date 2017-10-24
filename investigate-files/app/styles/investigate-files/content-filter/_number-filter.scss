@@ -1,4 +1,4 @@
-.body {
+.number-filter__body {
   min-width: 20rem;
   max-width: 20rem;
   .select-option {
@@ -6,7 +6,7 @@
   }
 }
 
-.body__input {
+.number-filter__body__input {
   padding-left: rsa-whitespace();
 
   /**Hide the arrow buttons for number type */

@@ -33,14 +33,18 @@ $ember-power-select-line-height: 2rem;
   }
 }
 
-
-.ember-power-select-dropdown {
+.ember-power-select-dropdown.ember-basic-dropdown-content--below, .ember-power-select-dropdown.ember-basic-dropdown-content--in-place {
   @include border(1px, solid, secondary);
-  background: background-color(primary, darkest);
 
   &.is-error {
     @include border(1px, solid, accentOne);
+  }
+}
 
+.ember-power-select-dropdown {
+  background: background-color(primary, darkest);
+
+  &.is-error {
     .ember-power-select-option {
       &[aria-selected="true"] {
         background-color: background-color(accentOne);
