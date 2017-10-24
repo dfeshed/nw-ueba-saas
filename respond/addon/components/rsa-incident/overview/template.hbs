@@ -93,7 +93,7 @@
   <label>{{t 'respond.incident.sources'}}:</label>
   <span>
     {{#each info.sources as |source|}}
-      <span class="source">{{source}}</span>
+      <span class="source">{{t (concat 'respond.alert.source.' source)}}</span>
     {{/each}}
   </span>
 </p>
