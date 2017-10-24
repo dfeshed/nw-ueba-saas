@@ -42,6 +42,8 @@
         <xalan.verion>2.7.1</xalan.verion>
         <xerces.version>2.9.1</xerces.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
+        <presidio.core.version>1.0.0-SNAPSHOT</presidio.core.version>
+
     </properties>
 
     <modules>
