@@ -27,16 +27,21 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         CategoricalFeatureValue categoricalFeatureValue = getCategoricalFeatureValue(modelBuilderData);
-        Map<Pair<String, Long/*name,partitionId*/>, Double/*sum of occurrences*/> sequenceReduction = calcPartitionedData(categoricalFeatureValue);
+        Map<Pair<String, Long/*name,partitionId*/>, Double/*sum of occurrences*/> sequenceReduction = calcSequenceReduceData(categoricalFeatureValue);
         Map<String, Long> featureValueToCountMap = castModelBuilderData(sequenceReduction);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
-        categoryRarityModel.init(getOccurrencesToNumOfFeatures(sequenceReduction), numOfBuckets, numOfPartitions);
+        categoryRarityModel.init(calcOccurrencesToNumOfFeatures(sequenceReduction), numOfBuckets, numOfPartitions);
         saveTopEntriesInModel(featureValueToCountMap, categoryRarityModel);
         return categoryRarityModel;
     }
 
-    private Map<Pair<String, Long>, Double> calcPartitionedData(CategoricalFeatureValue categoricalFeatureValue) {
+    /**
+     *
+     * @param categoricalFeatureValue
+     * @return sequence reduced map with number of at most one per partition
+     */
+    Map<Pair<String, Long>, Double> calcSequenceReduceData(CategoricalFeatureValue categoricalFeatureValue) {
         long categoricalFeatureValueStrategy = categoricalFeatureValue.getStrategy().toDuration().getSeconds();
         String assertionMessage = String.format("sequencing resolution=%d must be multiplication of categoricalFeatureValue strategy=%d", partitionsResolutionInSeconds, categoricalFeatureValueStrategy);
         Assert.isTrue( partitionsResolutionInSeconds % categoricalFeatureValueStrategy == 0,
@@ -46,19 +51,13 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         for (Map.Entry<Pair<String, Instant>, Double> entry : categoricalFeatureValue.getHistogram().entrySet()) {
             long partitionEpochSecond = (entry.getKey().getValue().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
             Pair<String, Long> resultKey = new Pair(entry.getKey().getKey(), partitionEpochSecond);
-            Double origValue = result.get(resultKey);
-            Double entryValue = entry.getValue();
-            if (origValue == null) {
-                result.put(resultKey, entryValue);
-            } else {
-                result.put(resultKey, origValue + entryValue);
-            }
+            result.put(resultKey, 1D);
         }
 
         return result;
     }
 
-    private Map<Long, Double> getOccurrencesToNumOfFeatures(Map<Pair<String, Long>, Double> sequenceReducedData) {
+    Map<Long, Double> calcOccurrencesToNumOfFeatures(Map<Pair<String, Long>, Double> sequenceReducedData) {
 
         Map<String, Long> nameToNumOfOccurrences = new HashMap<>();
         for (Pair<String, Long> entry : sequenceReducedData.keySet()) {
@@ -69,7 +68,6 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
             }
             namOfOccurrences++;
             nameToNumOfOccurrences.put(name, namOfOccurrences);
-
         }
 
         Map<Long, Double> occurrencesToNumOfFeatures = new HashMap<>();
@@ -85,7 +83,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return occurrencesToNumOfFeatures;
     }
 
-    private Map<String, Long> castModelBuilderData(Map<Pair<String, Long>, Double> modelBuilderData) {
+    Map<String, Long> castModelBuilderData(Map<Pair<String, Long>, Double> modelBuilderData) {
         Map<String, Long> map = new HashMap<>();
         modelBuilderData.forEach((key, value) -> {
                     String name = key.getKey();
