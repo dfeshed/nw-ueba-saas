@@ -1,5 +1,6 @@
 import * as ACTION_TYPES from './types';
 import { getServiceSummary } from './data-creators';
+import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -37,14 +38,23 @@ export const setQueryString = (queryString) => ({
  * @public
  */
 export const setQueryTimeRange = (timeRange) => {
-  const { seconds } = timeRange;
-  // "/ 1000 | 0" removes milliseconds.
-  const endTime = +new Date() / 1000 | 0;
-  // If user selects "All Data", seconds is zero.
-  const startTime = seconds ? endTime - seconds : 0;
-  return {
-    type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
-    payload: { startTime, endTime }
+  return (dispatch, getState) => {
+    const state = getState();
+    const dbEndTime = getDbEndTime(state);
+    const dbStartTime = getDbStartTime(state);
+
+    const wallClockTime = +new Date() / 1000 | 0; // "/ 1000 | 0" removes milliseconds.
+    const { seconds } = timeRange;
+    // TODO placeholder for the preference setting
+    // Setting for the preferred time option (wallclock vs collection time)
+    // Default option is the collection (db) time
+    const preferencesFlag = false;
+    const endTime = preferencesFlag ? wallClockTime : dbEndTime;
+    const startTime = seconds ? endTime - seconds : dbStartTime;
+    dispatch({
+      type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
+      payload: { startTime, endTime }
+    });
   };
 };
 

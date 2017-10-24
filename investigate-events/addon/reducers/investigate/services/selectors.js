@@ -9,6 +9,8 @@ const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _queryNode = (state) => state.investigate.queryNode;
 const _summaryData = (state) => state.investigate.services.summaryData;
 
+export const getDbEndTime = (state) => state.investigate.services.summaryData.endTime;
+export const getDbStartTime = (state) => state.investigate.services.summaryData.startTime;
 // SELECTOR FUNCTIONS
 export const selectedService = createSelector(
   [_services, _serviceId],
