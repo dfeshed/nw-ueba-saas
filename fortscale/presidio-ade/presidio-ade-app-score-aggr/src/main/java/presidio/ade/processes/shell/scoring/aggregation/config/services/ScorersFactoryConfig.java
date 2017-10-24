@@ -5,10 +5,8 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.ComponentScan.Filter;
 
 import java.util.List;
 
@@ -16,7 +14,10 @@ import java.util.List;
  * Created by barak_schuster on 7/25/17.
  */
 @Configuration
-@ComponentScan(value = {"fortscale.ml.scorer.factory"})
+@ComponentScan(
+        value = {"fortscale.ml.scorer.factory"},
+        excludeFilters = {@Filter(type = FilterType.REGEX, pattern = "fortscale.ml.scorer.factory.smart.*")}
+        )
 @Import({
 //        application-specific confs
         DataRetrieverFactoryServiceConfig.class,

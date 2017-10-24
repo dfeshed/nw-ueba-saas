@@ -66,7 +66,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
-            <artifactId>fortscale-global-config</artifactId>
+            <artifactId>presidio-global-config</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

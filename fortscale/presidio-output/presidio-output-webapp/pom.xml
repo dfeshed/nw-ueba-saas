@@ -261,7 +261,7 @@
                             <configOptions>
                                 <groupId>fortscale</groupId>
                                 <artifactId>presidio-output-generated-client</artifactId>
-                                <version>1.0.0-SNAPSHOT</version>
+                                <artifactVersion>${project.version}</artifactVersion>
                             </configOptions>
                         </configuration>
                     </execution>
@@ -302,6 +302,9 @@
                         </goals>
                         <configuration>
                             <executable>${basedir}/deploy-client${script.extension}</executable>
+                            <arguments>
+                                <argument>${project.version}</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
