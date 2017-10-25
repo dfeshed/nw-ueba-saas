@@ -11,6 +11,24 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  */
 public class ObjectMapperProvider {
 
+    private static ObjectMapperProvider instance = null;
+
+    private ObjectMapper objectMapper;
+    private ObjectMapperProvider() {
+        objectMapper = customJsonObjectMapper();
+    }
+
+    public static ObjectMapperProvider getInstance() {
+        if (instance == null) {
+            instance = new ObjectMapperProvider();
+        }
+        return instance;
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
     public static ObjectMapper customJsonObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
                 .serializationInclusion(JsonInclude.Include.NON_NULL) // Don’t include null values
@@ -18,4 +36,6 @@ public class ObjectMapperProvider {
                 .modules(new JavaTimeModule())
                 .build();
     }
+
+
 }
