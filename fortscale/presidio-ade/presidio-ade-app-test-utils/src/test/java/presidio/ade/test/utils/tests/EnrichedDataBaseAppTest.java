@@ -16,6 +16,7 @@ import presidio.ade.test.utils.generators.factory.FileEventGeneratorTemplateFact
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.ITimeGeneratorFactory;
 import presidio.data.generators.common.time.SingleTimeGeneratorFactory;
@@ -56,13 +57,28 @@ public abstract class EnrichedDataBaseAppTest extends BaseAppTest{
      * @return TimeRange of records
      * @throws GeneratorException
      */
-    public TimeRange generateAndPersistFileEventData(List<IFileOperationGenerator> fileOperationGeneratorList, int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, String contextIdPattern) throws GeneratorException {
+    public TimeRange generateAndPersistFileEventData(List<IFileOperationGenerator> fileOperationGeneratorList, int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, String contextIdPattern, boolean isAdmin) throws GeneratorException {
 
         StringRegexCyclicValuesGenerator contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
         ITimeGeneratorFactory timeGeneratorFactory = new SingleTimeGeneratorFactory(startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo);
 
+        return generateAndPersistFileEventData(fileOperationGeneratorList, timeGeneratorFactory, contextIdGenerator, isAdmin);
+    }
+
+    /**
+     * For each operation generator create file events that belong to specific user
+     * The events are spread as define by the time generator that is returned by the time generator factory.
+     * create context and time generators.
+     *
+     * @param fileOperationGeneratorList file operation generator list
+     * @param timeGeneratorFactory       time generator factory
+     * @param contextIdGenerator         string generator that return context ids.
+     * @return TimeRange of records
+     * @throws GeneratorException
+     */
+    public TimeRange generateAndPersistFileEventData(List<IFileOperationGenerator> fileOperationGeneratorList, ITimeGeneratorFactory timeGeneratorFactory, IStringGenerator contextIdGenerator, boolean isAdmin) throws GeneratorException {
         FileEventGeneratorTemplateFactory fileEventGeneratorTemplateFactory = new FileEventGeneratorTemplateFactory();
-        MultiFileEventGenerator multiFileEventGenerator = fileEventGeneratorTemplateFactory.createMultiFileEventGenerator(timeGeneratorFactory, contextIdGenerator, fileOperationGeneratorList);
+        MultiFileEventGenerator multiFileEventGenerator = fileEventGeneratorTemplateFactory.createMultiFileEventGenerator(timeGeneratorFactory, isAdmin, contextIdGenerator, fileOperationGeneratorList);
         List<EnrichedFileRecord> enrichedFileRecords = multiFileEventGenerator.generate();
 
         TimeRange dataTimeRange = getEnrichedFileRecordsTimeRange(enrichedFileRecords);
@@ -70,49 +86,6 @@ public abstract class EnrichedDataBaseAppTest extends BaseAppTest{
         storeEnrichedData(enrichedFileRecords, dataTimeRange);
 
         return dataTimeRange;
-    }
-
-    /**
-     * Generate every interval an event s.
-     * Operation type of all the events is "open"
-     *
-     * @throws GeneratorException
-     */
-    public List<EnrichedFileRecord> generateAndPersistFileEventData(int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
-
-        FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
-        filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, daysBackFrom, daysBackTo));
-
-        IUserGenerator userGenerator = new SingleUserGenerator("testUser");
-        filePermissionEventGenerator.setUserGenerator(userGenerator);
-        FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
-
-        OperationType permissionOperationType = new OperationType("FILE_ACCESS_RIGHTS_CHANGED", Collections.singletonList("FILE_PERMISSION_CHANGE"));
-        FixedFileOperationTypeGenerator fileOpTypePremmisionCategoriesGenerator = new FixedFileOperationTypeGenerator(permissionOperationType);
-
-        fileOperationGenerator.setOperationTypeGenerator(fileOpTypePremmisionCategoriesGenerator);
-
-        filePermissionEventGenerator.setFileOperationGenerator(fileOperationGenerator);
-        List<FileEvent> event = filePermissionEventGenerator.generate();
-        FileEventsGenerator fileActionEventGenerator = new FileEventsGenerator();
-        FileOperationGenerator fileOperationActionGenerator = new FileOperationGenerator();
-        fileActionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, daysBackFrom, daysBackTo));
-        fileActionEventGenerator.setUserGenerator(userGenerator);
-        ArrayList<String> fileActionCategories = new ArrayList<>();
-        fileActionCategories.add("FILE_ACTION");
-        String actionOperationName = "FOLDER_OPENED";
-        OperationType fileActionOperationType = new OperationType(actionOperationName, fileActionCategories);
-        FixedFileOperationTypeGenerator fileOpTypeActionCategoriesGenerator = new FixedFileOperationTypeGenerator(fileActionOperationType);
-        fileOperationActionGenerator.setOperationTypeGenerator(fileOpTypeActionCategoriesGenerator);
-        fileActionEventGenerator.setFileOperationGenerator(fileOperationActionGenerator);
-        event.addAll(fileActionEventGenerator.generate());
-
-
-        FileRaw2EnrichedConverter converter = new FileRaw2EnrichedConverter();
-        List<EnrichedFileRecord> enrichedRecords = converter.convert(event);
-        storeEnrichedData(enrichedRecords, getEnrichedFileRecordsTimeRange(enrichedRecords));
-
-        return enrichedRecords;
     }
 
     private void storeEnrichedData(List<? extends EnrichedRecord> records, TimeRange dataTimeRange){

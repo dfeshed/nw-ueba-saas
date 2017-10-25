@@ -1,6 +1,7 @@
 package presidio.ade.processes.shell;
 
 
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
@@ -19,23 +20,23 @@ import presidio.data.generators.fileop.IFileOperationGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ContextConfiguration
 public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTest {
-//    private static final int DAYS_BACK_FROM = 3;
-//    private static final int DAYS_BACK_TO = 1;
-//    private static final Schema ADE_EVENT_TYPE = Schema.FILE;
+    private static final int FIX_DURATION_STRATEGY = 86400;
+    private static final int FEATURE_BUCKET_STRATEGY = 3600;
     private static final Duration ACCUMUATION_DURATION = Duration.ofDays(1);
-//    private static final Instant START_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_FROM)), ACCUMUATION_DURATION);
-//    private static final Instant END_DATE = TimeService.floorTime(Instant.now().minus(Duration.ofDays(DAYS_BACK_TO)), ACCUMUATION_DURATION);
+
 
     public static final String EXECUTION_COMMAND_FORMAT = "run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s --feature_bucket_strategy %s";
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Import({ EnrichedDataBaseAppTest.EnrichedDataBaseAppSpringConfig.class, AccumulateAggregationsConfigurationTest.class, AccumulateServiceCommands.class})
     @Configuration
@@ -59,6 +60,10 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         return String.format(EXECUTION_COMMAND_FORMAT, adeEventType, startInstant.toString(), endInstant.toString(), fixDurationStrategy, featureBucketStrategy);
     }
 
+    private Instant calculateRunningInstantParameter(Instant now, int daysBack){
+        return TimeService.floorTime(now.minus(Duration.ofDays(daysBack)), ACCUMUATION_DURATION);
+    }
+
     /**
      * Generate 6 successful file open events per hour along 23 hours for 2 days in the enriched data.
      * Then running the module and then testing the results.
@@ -74,15 +79,15 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         int endHourOfDay = 23;
         int daysBackFrom = 3;
         int daysBackTo = 1;
-        Instant startInstant = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), ACCUMUATION_DURATION);
-        Instant endInstant = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackTo)), ACCUMUATION_DURATION);
+        Instant now = Instant.now();
+        Instant startInstant = calculateRunningInstantParameter(now, daysBackFrom);
+        Instant endInstant = calculateRunningInstantParameter(now, daysBackTo);
         Schema adeEventType = Schema.FILE;
-        int fixDurationStrategy = 86400;
-        int featureBucketStrategy = 3600;
-        String executionCommand = String.format(EXECUTION_COMMAND_FORMAT, adeEventType, startInstant.toString(), endInstant.toString(), fixDurationStrategy, featureBucketStrategy);
+
+        String executionCommand = String.format(EXECUTION_COMMAND_FORMAT, adeEventType, startInstant.toString(), endInstant.toString(), FIX_DURATION_STRATEGY, FEATURE_BUCKET_STRATEGY);
 
         IFileOperationGenerator fileOperationActionGenerator = new AdeFileOperationGeneratorTemplateFactory().createOpenFileOperationsGenerator();
-        generateAndPersistFileEventData(Collections.singletonList(fileOperationActionGenerator), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, "testUser");
+        generateAndPersistFileEventData(Collections.singletonList(fileOperationActionGenerator), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, "testUser", false);
         executeAndAssertCommandSuccess(executionCommand);
 
         String openFileCollectionName = "accm_numberOfSuccessfulFileActionsUserIdFileHourly";
@@ -103,6 +108,71 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         expectedAggregatedFeatureValue = 0;
         Assert.assertTrue(fileOpenFailedAccumulatedRecords.size() == expectedAccumulatedRecordsSize);
         assertRecords(startInstant, fileOpenFailedAccumulatedRecords, expectedAggregatedFeatureValuesSize, expectedAggregatedFeatureValue);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void each_aggr_file_feature_has_accumulation() throws GeneratorException {
+        int startHourOfDay = 8;
+        int endHourOfDay = 16;
+        int daysBackFrom = 4;
+        int daysBackTo = 2;
+        Instant now = Instant.now();
+        Instant startInstant = calculateRunningInstantParameter(now, daysBackFrom);
+        Instant endInstant = calculateRunningInstantParameter(now, daysBackTo);
+        Schema adeEventType = Schema.FILE;
+
+        //generating also data for days that before the startInstant and after endInstant in order to see that they are not counted.
+        generateAndPersistFileEventDataThatOutputAllAggrFeatures(startHourOfDay, endHourOfDay, daysBackFrom+1, daysBackTo-1);
+
+        String executionCommand = String.format(EXECUTION_COMMAND_FORMAT, adeEventType, startInstant.toString(), endInstant.toString(), FIX_DURATION_STRATEGY, FEATURE_BUCKET_STRATEGY);
+        executeAndAssertCommandSuccess(executionCommand);
+
+        List<String> accumulationCollectionNames = mongoTemplate.getCollectionNames().stream().filter(s -> s.startsWith("accm")).collect(Collectors.toList());
+        List<String> fileHourlyConfNames = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream().map(aggregatedFeatureEventConf -> aggregatedFeatureEventConf.getName()).filter(s -> s.endsWith("FileHourly")).collect(Collectors.toList());
+
+        //making sure that all conf names have accumulation collection
+        Assert.assertEquals(fileHourlyConfNames.size(), accumulationCollectionNames.size());
+
+        //making sure that all collection names are built of prefix 'accm_' and the conf name.
+        for (String confName: fileHourlyConfNames){
+            boolean isCollectionExist = accumulationCollectionNames.contains("accm_" + confName);
+            Assert.assertTrue(confName + " does not have collection", isCollectionExist);
+        }
+    }
+
+    public void generateAndPersistFileEventDataThatOutputAllAggrFeatures(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo) throws GeneratorException {
+        //non admin users
+        String contextIdPattern = "testUser[0-9]{3}"; //1000 different context ids: making sure that each file event generator will have different context id.
+        generateAndPersistFileEventData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextIdPattern, false);
+
+        //admin users
+        contextIdPattern = "testAdminUser[0-9]{3}"; //1000 different context ids: making sure that each file event generator will have different context id.
+        generateAndPersistFileEventData(getAllFileOperationGenerator(), startHourOfDay, endHourOfDay, daysBackFrom, daysBackTo, contextIdPattern, true);
+    }
+
+    /**
+     * Get IFileOperationGenerator that cover all the features
+     *
+     * @return list of fileOperationGenerators
+     * @throws GeneratorException
+     */
+    private List<IFileOperationGenerator> getAllFileOperationGenerator() throws GeneratorException {
+        List<IFileOperationGenerator> fileOperationGenerators = new ArrayList<>();
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createLocalSharePermissionsChangeOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedLocalSharePermissionsChangeOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedOpenFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createOpenFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFolderOpenFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createDeleteFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createRenameFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedRenameFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveFromSharedFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveToSharedFileOperationsGenerator());
+
+        return fileOperationGenerators;
     }
 
     /**
