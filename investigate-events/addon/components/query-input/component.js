@@ -1,5 +1,4 @@
 import Component from 'ember-component';
-import { debounce } from 'ember-runloop';
 import { connect } from 'ember-redux';
 import { notEmpty } from 'ember-computed-decorators';
 import { setQueryString } from 'investigate-events/actions/interaction-creators';
@@ -15,19 +14,16 @@ const QueryInputComponent = Component.extend({
   @notEmpty('queryString')
   hasValue: true,
 
-  _onChange(value) {
-    this.send('setQueryString', value);
-  },
-
   actions: {
     clear() {
       this.set('queryString', '');
-      this._onChange('');
+      this.send('setQueryString', '');
     },
     valueChanged(e) {
-      debounce(this, this._onChange, e.target.value, 150);
+      this.send('setQueryString', e.target.value);
     }
   }
+
 });
 
 export default connect(null, dispatchToActions)(QueryInputComponent);
