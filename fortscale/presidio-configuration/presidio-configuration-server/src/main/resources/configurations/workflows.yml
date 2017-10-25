@@ -85,7 +85,7 @@ dags:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 1024
-        xms: 70
+        xms: 1024
     AdeManagerOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-1.0.0-SNAPSHOT.jar
