@@ -142,7 +142,7 @@ public class ConfigurationApiController implements ConfigurationApi {
 
         // Round the start time value
         JsonNode dataPipelineJson = body.get(PresidioManagerConfiguration.DATA_PIPE_LINE);
-        if (StringUtils.isNotEmpty(dataPipelineJson.asText())) {
+        if (!dataPipelineJson.isNull()) {
             String fieldValue = dataPipelineJson.get(PresidioManagerConfiguration.START_TIME).asText();
             if (StringUtils.isNotEmpty(fieldValue)) {
                 Instant startTimeValue = Instant.parse(fieldValue);
