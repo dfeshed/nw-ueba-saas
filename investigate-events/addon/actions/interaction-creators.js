@@ -46,17 +46,21 @@ export const setQueryTimeRange = ({ value, unit }) => {
     // Default option is the collection (db) time
     const useBrowserTime = false;
     let endTime, startTime;
+    // Get the database start/end times. If they are 0, then use browser time
+    // For startTime, set time to 1970 if DB time was 0.
+    const dbEndTime = getDbEndTime(state) || moment().unix();
+    const dbStartTime = getDbStartTime(state) || moment(0).unix();
 
     if (useBrowserTime) {
       endTime = moment().endOf('minute');
     } else {
-      endTime = moment(getDbEndTime(state) * 1000).endOf('minute');
+      endTime = moment(dbEndTime * 1000).endOf('minute');
     }
 
     if (value) {
       startTime = moment(endTime).subtract(value, unit).startOf('minute');
     } else {
-      startTime = moment(getDbStartTime(state) * 1000).startOf('minute');
+      startTime = moment(dbStartTime * 1000).startOf('minute');
     }
 
     dispatch({

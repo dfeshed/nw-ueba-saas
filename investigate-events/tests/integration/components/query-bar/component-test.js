@@ -11,9 +11,8 @@ moduleForComponent('query-bar', 'Integration | Component | query bar', {
   }
 });
 
-// const broker = { id: 123, displayName: 'broker-1', name: 'BROKER' };
 const broker = getBrokerService();
-const timeRange = { id: 'LAST_24_HOURS', name: 'Last 24 Hours', seconds: 24 * 60 * 60 };
+const timeRange = { id: 'LAST_24_HOURS', name: 'Last 24 Hours', value: 1, unit: 'days' };
 
 test('it renders', function(assert) {
   this.render(hbs`{{query-bar}}`);
@@ -23,11 +22,9 @@ test('it renders', function(assert) {
 test('it disables(CSS) the submit button if required inputs are not selected', function(assert) {
   assert.expect(1);
   new DataHelper(this.get('redux'))
-    .initializeData()
-    .setServiceId(null);
+    .initializeData();
   this.set('selectedService', null);
-  this.set('selectedTimeRange', null);
-  this.render(hbs`{{query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange}}`);
+  this.render(hbs`{{query-bar selectedService=selectedService}}`);
   assert.ok(
     this.$('.rsa-investigate-query-bar__submit').hasClass('is-disabled'),
     'Expected is-disabled CSS class on the submit button.'
