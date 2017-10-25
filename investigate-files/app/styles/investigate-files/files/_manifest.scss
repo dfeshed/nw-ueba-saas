@@ -72,7 +72,7 @@ page.investigate-files-engine {
     padding: rsa-whitespace(less);
     overflow: auto;
     overflow-x: hidden;
-    opacity: $rsa-opaque;
+    opacity: opacity-value(opaque);
     @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
     @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
   }
