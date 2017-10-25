@@ -3,8 +3,6 @@ package presidio.config.server.client;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.*;
@@ -13,14 +11,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.StringReader;
 import java.nio.charset.Charset;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
 public class ConfigurationServerClientServiceImpl implements ConfigurationServerClientService {
 
-    public static final String DATA_PIPELINE = "dataPipeline";
-    public static final String START_TIME = "startTime";
     private final String configServerUri;
     private final String configServerUserName;
     private final String configServerPassword;
@@ -40,13 +34,6 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
         // set headers with basic auth to config server
         HttpHeaders headers = createBasicAuthenticationHeaders(configServerUserName, configServerPassword);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // Round the start time value
-        String fieldValue = configFileContent.get(DATA_PIPELINE).get(START_TIME).asText();
-        if (StringUtils.isNotEmpty(fieldValue)) {
-            Instant startTimeValue = Instant.parse(fieldValue);
-            ((ObjectNode) configFileContent.get(DATA_PIPELINE)).put(START_TIME, startTimeValue.truncatedTo(ChronoUnit.HOURS).toString());
-        }
 
         HttpEntity<String> entity = new HttpEntity<>(configFileContent.toString(), headers);
         String url = String.format("%s/%s", configServerUri, fileName);
