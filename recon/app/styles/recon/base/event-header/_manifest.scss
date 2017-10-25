@@ -140,7 +140,8 @@
 }
 
 .recon-is-full,
-.recon-is-expanded {
+.recon-is-expanded,
+.recon-is-standalone {
   @media (min-width: 1161px) {
     .heading-select {
       display: none;
