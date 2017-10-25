@@ -13,7 +13,7 @@ public class ObjectMapperProvider {
 
     private static ObjectMapperProvider instance = null;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     private ObjectMapperProvider() {
         objectMapper = defaultJsonObjectMapper();
     }
@@ -25,7 +25,7 @@ public class ObjectMapperProvider {
         return instance;
     }
 
-    public ObjectMapper getObjectMapper() {
+    public ObjectMapper getDefaultObjectMapper() {
         return objectMapper;
     }
 
