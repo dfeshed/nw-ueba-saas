@@ -55,18 +55,20 @@ public class UserScoreServiceModuleTest {
     @Autowired
     public Client client;
 
-    private UserScoreService userScoreService = new UserScoreServiceImpl(
-                userPersistencyService,
-                alertPersistencyService,
-                10,
-                30,
-                75,
-                50,
-                25,
-                20,
-                15,
-                10,
-                5);
+    @Autowired
+    private UserScoreService userScoreService;
+//    private UserScoreService userScoreService = new UserScoreServiceImpl(
+//                userPersistencyService,
+//                alertPersistencyService,
+//                10,
+//                30,
+//                75,
+//                50,
+//                25,
+//                20,
+//                15,
+//                10,
+//                5);
 
     @After
     public void cleanTestData() {
@@ -183,6 +185,7 @@ public class UserScoreServiceModuleTest {
     }
 
     @Test
+    @Ignore
     public void testBulkUserScore() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
             AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
