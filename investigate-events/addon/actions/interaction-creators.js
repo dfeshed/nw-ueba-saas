@@ -1,6 +1,7 @@
 import * as ACTION_TYPES from './types';
 import { getServiceSummary } from './data-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
+import moment from 'moment';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -33,27 +34,37 @@ export const setQueryString = (queryString) => ({
 /**
  * Takes a time range object and calculates the start and end dates. The
  * timeRange object has the following properties:
- * { id: 'LAST_HOUR', name: 'Last 1 Hour', seconds: 360 }
+ * { id: 'LAST_HOUR', name: 'Last 1 Hour', value: 1, unit: 'hours' }
  * @param {object} timeRange The time range
  * @public
  */
-export const setQueryTimeRange = (timeRange) => {
+export const setQueryTimeRange = ({ value, unit }) => {
   return (dispatch, getState) => {
     const state = getState();
-    const dbEndTime = getDbEndTime(state);
-    const dbStartTime = getDbStartTime(state);
-
-    const wallClockTime = +new Date() / 1000 | 0; // "/ 1000 | 0" removes milliseconds.
-    const { seconds } = timeRange;
     // TODO placeholder for the preference setting
-    // Setting for the preferred time option (wallclock vs collection time)
+    // Setting for the preferred time option (browser time vs collection time)
     // Default option is the collection (db) time
-    const preferencesFlag = false;
-    const endTime = preferencesFlag ? wallClockTime : dbEndTime;
-    const startTime = seconds ? endTime - seconds : dbStartTime;
+    const useBrowserTime = false;
+    let endTime, startTime;
+
+    if (useBrowserTime) {
+      endTime = moment().endOf('minute');
+    } else {
+      endTime = moment(getDbEndTime(state) * 1000).endOf('minute');
+    }
+
+    if (value) {
+      startTime = moment(endTime).subtract(value, unit).startOf('minute');
+    } else {
+      startTime = moment(getDbStartTime(state) * 1000).startOf('minute');
+    }
+
     dispatch({
       type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
-      payload: { startTime, endTime }
+      payload: {
+        startTime: startTime.unix(),
+        endTime: endTime.unix()
+      }
     });
   };
 };

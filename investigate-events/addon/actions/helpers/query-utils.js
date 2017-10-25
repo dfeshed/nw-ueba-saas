@@ -1,21 +1,9 @@
-import Ember from 'ember';
-import { encodeMetaFilterConditions } from '../fetch/utils';
-
-const {
-  assert,
-  get,
-  getProperties,
-  isBlank,
-  RSVP,
-  run
-} = Ember;
-
-const _addMilliseconds = (dateInSeconds) => dateInSeconds * 1000;
-const _removeMilliseconds = (dateInMilliseconds) => dateInMilliseconds / 1000 | 0;
-const _floorMinute = (dateInMilliseconds) => new Date(dateInMilliseconds).setSeconds(0);
-const _ceilMinute = (dateInMilliseconds) => new Date(dateInMilliseconds).setSeconds(59);
-const _floorAtMinute = (dateInSeconds) => _removeMilliseconds(_floorMinute(_addMilliseconds(dateInSeconds)));
-const _ceilAtMinute = (dateInSeconds) => _removeMilliseconds(_ceilMinute(_addMilliseconds(dateInSeconds)));
+import { assert } from 'ember-metal/utils';
+import get, { getProperties } from 'ember-metal/get';
+import { isBlank } from 'ember-utils';
+import run from 'ember-runloop';
+import RSVP from 'rsvp';
+import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
 
 // Adds a session id filter to a given Core query filter.
 // Appends a condition for session id, but only if a session id is given.
@@ -162,8 +150,8 @@ function parseEventQueryUri(uri) {
 
   return {
     serviceId,
-    startTime: _floorAtMinute(startTime),
-    endTime: _ceilAtMinute(endTime),
+    startTime,
+    endTime,
     metaFilter: {
       uri: metaFilterUri,
       conditions: metaFilterConditions
