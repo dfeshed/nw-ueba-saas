@@ -1,12 +1,9 @@
 package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
@@ -19,14 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.spring.TestConfig;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -62,22 +57,15 @@ public class AlertPersistencyServiceTest extends EmbeddedElasticsearchTest {
     @Autowired
     public Client client;
 
-    List<String> classifications1;
-    List<String> classifications2;
-    List<String> classifications3;
-    List<String> classifications4;
-    List<String> classifications5;
+    List<String> classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
+    List<String> classifications2 = new ArrayList<>(Arrays.asList("b"));
+    List<String> classifications3 = new ArrayList<>(Arrays.asList("a"));
+    List<String> classifications4 = new ArrayList<>(Arrays.asList("d"));
 
-    Sort sort;
+    Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, Alert.SCORE));
 
-    @Before
-    public void setupTestdata() {
-        classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
-        classifications2 = new ArrayList<>(Arrays.asList("b"));
-        classifications3 = new ArrayList<>(Arrays.asList("a"));
-        classifications4 = new ArrayList<>(Arrays.asList("d"));
-        classifications5 = null;
-        sort = new Sort(new Sort.Order(Sort.Direction.ASC, Alert.SCORE));
+    @After
+    public void cleanTestdata() {
 
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
                 .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
@@ -422,7 +410,7 @@ public class AlertPersistencyServiceTest extends EmbeddedElasticsearchTest {
                 new AlertQuery.AlertQueryBuilder()
                         .sortField(sort)
                         .aggregateByFields(aggregationFields)
-                        .filterByClassification(classifications5)
+                        .filterByClassification(null)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);

@@ -1,6 +1,7 @@
 package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
@@ -39,8 +40,6 @@ public class AlertApiControllerModuleTest {
 
     private MockMvc alertsApiMVC;
 
-    private static EmbeddedElasticsearchInitialiser embeddedElasticsearchUtils = new EmbeddedElasticsearchInitialiser();
-
     @Autowired
     private AlertsApi alertsApi;
 
@@ -65,16 +64,6 @@ public class AlertApiControllerModuleTest {
         }
     };
 
-    @BeforeClass
-    public static void setupElasticsearch() {
-        try {
-            embeddedElasticsearchUtils.setupEmbeddedElasticsearch();
-        } catch (Exception e) {
-            Assert.fail("Failed to start elasticsearch");
-            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-        }
-    }
-
     @Before
     public void setup() {
         //starting up the webapp server
@@ -89,13 +78,8 @@ public class AlertApiControllerModuleTest {
         alertRepository.save(Arrays.asList(alert1, alert2));
     }
 
-    @AfterClass
-    public static void stopElasticsearch() throws Exception {
-        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-    }
-
     @After
-    public void tearDown() {
+    public void cleanTestData() {
         //delete the created users
         alertRepository.delete(alert1);
         alertRepository.delete(alert2);

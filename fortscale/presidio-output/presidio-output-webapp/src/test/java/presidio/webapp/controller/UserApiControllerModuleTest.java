@@ -55,11 +55,7 @@ public class UserApiControllerModuleTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PresidioElasticsearchTemplate esTemplate;
-
     private ObjectMapper objectMapper;
-    private static EmbeddedElasticsearchInitialiser embeddedElasticsearchUtils = new EmbeddedElasticsearchInitialiser();
 
     private presidio.output.domain.records.users.User user1;
     private presidio.output.domain.records.users.User user2;
@@ -71,27 +67,12 @@ public class UserApiControllerModuleTest {
         }
     };
 
-    @BeforeClass
-    public static void setupElasticsearch() {
-        try {
-            embeddedElasticsearchUtils.setupEmbeddedElasticsearch();
-        } catch (Exception e) {
-            Assert.fail("Failed to start elasticsearch");
-            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-        }
-    }
-
     @Before
     public void setup() {
         //starting up the webapp server
         usersApiMVC = MockMvcBuilders.standaloneSetup(usersApi).setMessageConverters(mappingJackson2HttpMessageConverter).build();
 
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
-
-        esTemplate.deleteIndex(presidio.output.domain.records.users.User.class);
-        esTemplate.createIndex(presidio.output.domain.records.users.User.class);
-        esTemplate.putMapping(presidio.output.domain.records.users.User.class);
-        esTemplate.refresh(presidio.output.domain.records.users.User.class);
 
         //save users in elastic
         user1 = generateUser(Arrays.asList("a"), "user1", "userId1", "user1", 50d, Arrays.asList("indicator1"));
@@ -101,15 +82,10 @@ public class UserApiControllerModuleTest {
     }
 
     @After
-    public void tearDown() {
+    public void cleanTestData() {
         //delete the created users
         userRepository.delete(user1);
         userRepository.delete(user2);
-    }
-
-    @AfterClass
-    public static void stopElasticsearch() throws Exception {
-        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
     }
 
     @Test

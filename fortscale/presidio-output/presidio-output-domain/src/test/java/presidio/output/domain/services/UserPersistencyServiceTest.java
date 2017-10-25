@@ -1,7 +1,6 @@
 package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
@@ -18,12 +17,10 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
-import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.domain.spring.TestConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,39 +47,24 @@ public class UserPersistencyServiceTest extends EmbeddedElasticsearchTest {
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
 
-    List<String> classifications1;
-    List<String> classifications2;
-    List<String> classifications3;
-    List<String> classifications4;
-    List<String> classifications5;
-    User user1;
-    User user2;
-    User user3;
-    User user4;
-    User user5;
-    User user6;
-    User user7;
-    User user8;
+    List<String> classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
+    List<String> classifications2 = new ArrayList<>(Arrays.asList("b"));
+    List<String> classifications3 = new ArrayList<>(Arrays.asList("a"));
+    List<String> classifications4 = new ArrayList<>(Arrays.asList("d"));
+    User user1 = generateUser(classifications1, "user1", "userId1", "user1", 50d);
+    User user2 = generateUser(classifications2, "user2", "userId2", "user2", 60d);
+    User user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
+    User user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
+    User user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
+    User user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
+    User user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
+    User user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
 
     @Autowired
     public Client client;
 
-    @Before
-    public void before() {
-        classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
-        classifications2 = new ArrayList<>(Arrays.asList("b"));
-        classifications3 = new ArrayList<>(Arrays.asList("a"));
-        classifications4 = new ArrayList<>(Arrays.asList("d"));
-        classifications5 = null;
-        user1 = generateUser(classifications1, "user1", "userId1", "user1", 50d);
-        user2 = generateUser(classifications2, "user2", "userId2", "user2", 60d);
-        user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
-        user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
-        user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
-        user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
-        user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
-        user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
-
+    @After
+    public void cleanTestData() {
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
                 .source(AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE)
                 .get();

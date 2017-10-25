@@ -1,7 +1,8 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -50,33 +52,10 @@ public class UserScoreServiceModuleTest {
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
-    private UserScoreService userScoreService;
+    @Autowired
+    public Client client;
 
-    private static EmbeddedElasticsearchInitialiser embeddedElasticsearchUtils = new EmbeddedElasticsearchInitialiser();
-
-    @BeforeClass
-    public static void setupElasticsearch() {
-        try {
-            embeddedElasticsearchUtils.setupEmbeddedElasticsearch();
-        } catch (Exception e) {
-            Assert.fail("Failed to start elasticsearch");
-            embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-        }
-    }
-
-    @AfterClass
-    public static void stopElasticsearch() throws Exception {
-        embeddedElasticsearchUtils.stopEmbeddedElasticsearch();
-    }
-
-    @Before
-    public void before() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
-
-        userScoreService = new UserScoreServiceImpl(
+    private UserScoreService userScoreService = new UserScoreServiceImpl(
                 userPersistencyService,
                 alertPersistencyService,
                 10,
@@ -87,18 +66,16 @@ public class UserScoreServiceModuleTest {
                 20,
                 15,
                 10,
-                5
-
-        );
-    }
+                5);
 
     @After
-    public void after() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
-
+    public void cleanTestData() {
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE)
+                .get();
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
+                .get();
     }
 
     @Ignore

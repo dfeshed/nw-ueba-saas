@@ -25,4 +25,9 @@ public class ApiControllerModuleTestConfig {
         properties.put("elasticsearch.host", "localhost");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
+
+    @Bean
+    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
+        return new EmbeddedElasticsearchInitialiser();
+    }
 }
