@@ -20,7 +20,7 @@ import java.util.Set;
  * Created by Lior Govrin on 19/06/2017.
  */
 public class AdeRecordReader extends ReflectionRecordReader {
-	protected ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
+	private ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 	private AdeRecord adeRecord;
 	private JSONObject adeRecordJson;
 
@@ -102,8 +102,7 @@ public class AdeRecordReader extends ReflectionRecordReader {
 
 	public JSONObject getAdeRecordAsJsonObject() {
 		if (adeRecordJson == null) {
-			Map<String, Object> adeRecordMap = objectMapper.convertValue(adeRecord, Map.class);
-			adeRecordJson = new JSONObject(adeRecordMap);
+			adeRecordJson = objectMapper.convertValue(adeRecord, JSONObject.class);
 		}
 		return adeRecordJson;
 	}

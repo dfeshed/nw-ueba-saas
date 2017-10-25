@@ -79,19 +79,19 @@ public class AggregatedFeatureConf implements Serializable {
 		this.filter = filter;
 	}
 
-	public boolean passedFilter(AdeRecordReader jsonObject) {
+	public boolean passedFilter(AdeRecordReader recordReader) {
 		if (filter == null)
 		{
 			return true;
 		}
 		else {
-			JSONObject adeRecordAsJsonObject = jsonObject.getAdeRecordAsJsonObject();
+			JSONObject adeRecordAsJsonObject = recordReader.getAdeRecordAsJsonObject();
 			return passedFilter(adeRecordAsJsonObject);
 		}
 	}
 
-	private boolean passedFilter(JSONObject adeRecordAsJsonObject) {
-		return filter.passedFilter(adeRecordAsJsonObject);
+	private boolean passedFilter(JSONObject jsonObject) {
+		return filter.passedFilter(jsonObject);
 	}
 
 	public boolean equals(Object obj) {
