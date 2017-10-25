@@ -1,0 +1,1 @@
+export { default } from 'component-lib/components/rsa-context-menu/component';

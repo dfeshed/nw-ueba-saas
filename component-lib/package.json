@@ -64,7 +64,8 @@
     "redux-thunk": "2.2.0",
     "reselect": "3.0.1",
     "seamless-immutable": "7.1.2",
-    "tether": "^1.4.0"
+    "tether": "^1.4.0",
+    "ember-context-menu": "0.4.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

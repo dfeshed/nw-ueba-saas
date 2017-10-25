@@ -44,6 +44,7 @@ export default Component.extend({
       pages: [
         { name: 'Badge Icon', link: 'badgeIcon' },
         { name: 'Badge Score', link: 'badgeScore' },
+        { name: 'Context Menu', link: 'contextMenu' },
         { name: 'Datetime', link: 'datetime' },
         { name: 'Definition', link: 'definition' },
         { name: 'Label', link: 'label' },

@@ -106,7 +106,8 @@
     "seamless-immutable": "7.1.2",
     "sockjs-client-web": "1.1.1",
     "tether": "^1.4.0",
-    "normalizr": "^3.2.2"
+    "normalizr": "^3.2.2",
+    "ember-context-menu": "0.4.0"
   },
   "engines": {
     "node": "7.5.0"
