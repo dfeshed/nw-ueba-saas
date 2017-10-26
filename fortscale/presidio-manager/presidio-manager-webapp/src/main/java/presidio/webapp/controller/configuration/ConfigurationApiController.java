@@ -1,10 +1,12 @@
 package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import fortscale.utils.logging.Logger;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
+import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.model.configuration.ConfigurationResponseError;
@@ -22,6 +25,8 @@ import presidio.webapp.service.ConfigurationManagerService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +95,6 @@ public class ConfigurationApiController implements ConfigurationApi {
         }
 
 
-
     }
 
     public ResponseEntity<ConfigurationResponse> configurationPatch(
@@ -136,6 +140,16 @@ public class ConfigurationApiController implements ConfigurationApi {
             return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.BAD_REQUEST);
         }
 
+        // Round the start time value
+        JsonNode dataPipelineJson = body.get(PresidioManagerConfiguration.DATA_PIPE_LINE);
+        if (!dataPipelineJson.isNull()) {
+            String fieldValue = dataPipelineJson.get(PresidioManagerConfiguration.START_TIME).asText();
+            if (StringUtils.isNotEmpty(fieldValue)) {
+                Instant startTimeValue = Instant.parse(fieldValue);
+                ((ObjectNode) dataPipelineJson).put(PresidioManagerConfiguration.START_TIME, startTimeValue.truncatedTo(ChronoUnit.HOURS).toString());
+            }
+        }
+
         configurationResponse.message("Created");
 
         //storing configuration file into config server
@@ -143,10 +157,9 @@ public class ConfigurationApiController implements ConfigurationApi {
 
         //applying configuration to all consumers
         boolean applyConfigurationResult = configurationManagerService.applyConfiguration();
-        if(!applyConfigurationResult)
-        {
+        if (!applyConfigurationResult) {
             logger.error("failed to apply configuration");
-            return new ResponseEntity<ConfigurationResponse>( HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<ConfigurationResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.CREATED);
