@@ -50,9 +50,6 @@ public class ExternalMonitoringConfiguration {
     @Value("${elasticsearch.clustername}") //todo get from config server
     private String EsClusterName;
 
-    @Value("${spring.application.name}") //todo get from config server
-    private String processName;
-
     @Autowired
     private MetricRepository metricRepository;
 
