@@ -20,6 +20,14 @@
             <div class="label">{{t "respond.entities.remediationTasks"}}</div>
           {{/rsa-nav-tab}}
         {{/if}}
+        {{#if accessControl.hasRespondConfigureAccess}}
+          {{! Only show this tab when the user is in the aggregation-rule-related routes. Temporary until we know where these routes will ultimately live}}
+          {{#if (or (eq routePath 'aggregation-rules') (eq routePath 'aggregation-rule'))}}
+            {{#rsa-nav-tab  align='left' isActive=(or (eq routePath 'aggregation-rules') (eq routePath 'aggregation-rule')) click=(action 'navigateTo' 'aggregation-rules')}}
+              <div class="label">{{t "respond.configure"}}</div>
+            {{/rsa-nav-tab}}
+          {{/if}}
+        {{/if}}
       </div>
       {{outlet}}
   {{/if}}

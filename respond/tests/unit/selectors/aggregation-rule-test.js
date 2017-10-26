@@ -14,9 +14,9 @@ import fields from '../../data/subscriptions/aggregation-fields/findAll/data';
 
 module('Unit | Utility | Aggregation Rule Selectors');
 
-const rootGroup = { id: 0 };
-const conditionGroups = { 0: rootGroup, 1: { id: 1 } };
-const conditions = { 0: { id: 0, groupId: 0 } };
+const rootGroup = { id: 2 };
+const conditionGroups = { 2: rootGroup, 3: { id: 3 } };
+const conditions = { 1: { id: 1, groupId: 2 } };
 
 const aggregationRule = {
   rule,

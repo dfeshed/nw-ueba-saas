@@ -27,7 +27,13 @@ export const getRuleConditions = createSelector(
 export const getRootConditionGroup = createSelector(
   getRuleConditionGroups,
   (groups) => {
-    return groups && groups[0] ? groups[0] : null;
+    groups = groups || {};
+    const keys = Object.keys(groups);
+    if (!keys.length) {
+      return null;
+    }
+    const [rootKey] = keys;
+    return groups[rootKey];
   }
 );
 

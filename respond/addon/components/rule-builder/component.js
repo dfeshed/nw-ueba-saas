@@ -3,9 +3,11 @@ import { getRootConditionGroup } from 'respond/selectors/aggregation-rule';
 import { addGroup } from 'respond/actions/creators/aggregation-rule-creators';
 import { connect } from 'ember-redux';
 
-const stateToComputed = (state) => ({
-  rootGroup: getRootConditionGroup(state)
-});
+const stateToComputed = (state) => {
+  return {
+    rootGroup: getRootConditionGroup(state)
+  };
+};
 
 const dispatchToActions = function(dispatch) {
   return {

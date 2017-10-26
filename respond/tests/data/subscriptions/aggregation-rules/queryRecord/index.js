@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/aggregation/rule',
-  requestDestination: '/ws/respond/aggregation/rule',
+  subscriptionDestination: '/user/queue/alertrules/rule',
+  requestDestination: '/ws/respond/alertrules/rule',
   message(/* frame */) {
     return {
       data

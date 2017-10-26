@@ -1,1 +1,17 @@
 @import 'rule-builder';
+@import 'rules';
+
+.rsa-aggregation-rule {
+  height: calc(100vh - #{$navbarHeight});
+  padding: rsa-whitespace();
+  centered {
+    height: 100%;
+  }
+  .back {
+    justify-content: left;
+    height: 50px;
+    a {
+      text-decoration: none;
+    }
+  }
+}

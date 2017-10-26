@@ -1,0 +1,16 @@
+{{#if isLoading}}
+  <centered>
+    {{rsa-loader size='larger'}}
+  </centered>
+{{else}}
+  <vbox justify="center" class="back">
+    {{#link-to 'aggregation-rules'}}
+      {{rsa-icon name="arrow-left-12" title=backToRouteText}} {{t 'respond.aggregationRules.backToRules'}}
+    {{/link-to}}
+  </vbox>
+  {{rsa-form-input
+    label=(t 'respond.aggregationRules.name')
+    placeholder=(t 'respond.aggregationRules.namePlaceholder')
+    value=(readonly ruleInfo.name)}}
+  {{rule-builder}}
+{{/if}}

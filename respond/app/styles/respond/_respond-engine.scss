@@ -10,4 +10,13 @@
   .error-page .bottom-links {
     display: none;
   }
+
+  .transaction-in-progress .transaction-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
+    }
+  }
 }

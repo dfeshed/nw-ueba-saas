@@ -48,6 +48,11 @@ export default Service.extend({
   },
 
   @computed('roles.[]')
+  hasRespondConfigureAccess(roles) {
+    return this._hasPermission(roles, 'respond-server.alertrule');
+  },
+
+  @computed('roles.[]')
   respondCanManageIncidents(roles) {
     return this._hasPermission(roles, 'respond-server.incident.manage');
   },
@@ -60,6 +65,11 @@ export default Service.extend({
   @computed('roles.[]')
   respondCanManageAlerts(roles) {
     return this._hasPermission(roles, 'respond-server.alert.manage');
+  },
+
+  @computed('roles.[]')
+  respondCanManageAlertRules(roles) {
+    return this._hasPermission(roles, 'respond-server.alertrule.manage');
   },
 
   @computed('roles.[]')

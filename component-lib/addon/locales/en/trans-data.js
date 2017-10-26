@@ -462,6 +462,21 @@ export default {
   },
   respond: {
     aggregationRules: {
+      backToRules: 'Back to Rules',
+      error: 'There was a problem loading alert rules',
+      noResults: 'No alert rules were found',
+      createRule: 'Create Rule',
+      deleteRule: 'Delete',
+      cloneRule: 'Clone',
+      select: 'Select',
+      order: 'Order',
+      enabled: 'Enabled',
+      name: 'Name',
+      namePlaceholder: 'Provide a unique name for the rule',
+      description: 'Description',
+      lastMatched: 'Last Matched',
+      alertsMatchedCount: 'Matched Alerts',
+      incidentsCreatedCount: 'Incidents',
       ruleBuilder: {
         addConditionGroup: 'Add Group',
         removeConditionGroup: 'Remove Group',
@@ -488,6 +503,9 @@ export default {
           not: 'None of these'
         },
         value: 'Value'
+      },
+      actionMessages: {
+        deleteRuleConfirmation: 'Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.'
       }
     },
     title: 'Respond',
@@ -497,6 +515,7 @@ export default {
       true: 'Yes',
       false: 'No'
     },
+    configure: 'Configure',
     none: 'None',
     select: 'Select',
     close: 'Close',
@@ -533,6 +552,7 @@ export default {
         updateFailure: 'There was a problem updating the field for this record',
         createSuccess: 'You successfully added a new record',
         createFailure: 'There was a problem creating this record',
+        deleteSuccess: 'You successfully deleted this record',
         deleteFailure: 'There was a problem deleting this record'
       },
       alert: 'Alert'

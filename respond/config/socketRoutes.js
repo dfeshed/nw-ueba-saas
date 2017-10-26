@@ -67,18 +67,40 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/alerts/delete'
       }
     },
+    'aggregation-rule-clone': {
+      socketUrl,
+      createRecord: {
+        subscriptionDestination: '/user/queue/alertrules/clone',
+        requestDestination: '/ws/respond/alertrules/clone'
+      }
+    },
+    'aggregation-rules-reorder': {
+      socketUrl,
+      updateRecord: {
+        subscriptionDestination: '/user/queue/alertrules/reorder',
+        requestDestination: '/ws/respond/alertrules/reorder'
+      }
+    },
     'aggregation-rules': {
       socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/alertrules',
+        requestDestination: '/ws/respond/alertrules'
+      },
       queryRecord: {
-        subscriptionDestination: '/user/queue/aggregation/rule',
-        requestDestination: '/ws/respond/aggregation/rule'
+        subscriptionDestination: '/user/queue/alertrules/rule',
+        requestDestination: '/ws/respond/alertrules/rule'
+      },
+      deleteRecord: {
+        subscriptionDestination: '/user/queue/alertrules/delete',
+        requestDestination: '/ws/respond/alertrules/delete'
       }
     },
     'aggregation-fields': {
       socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/aggregation/fields',
-        requestDestination: '/ws/respond/aggregation/fields'
+        subscriptionDestination: '/user/queue/alertrules/fields',
+        requestDestination: '/ws/respond/alertrules/fields'
       }
     },
     'alerts-count': {

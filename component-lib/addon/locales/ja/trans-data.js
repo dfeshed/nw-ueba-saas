@@ -462,6 +462,21 @@ export default {
   },
   respond: {
     aggregationRules: {
+      backToRules: 'ja_Back to Rules',
+      error: 'ja_There was a problem loading alert rules',
+      noResults: 'ja_No alert rules were found',
+      createRule: 'ja_Create Rule',
+      cloneRule: 'ja_Clone',
+      deleteRule: 'ja_Delete',
+      select: 'ja_Select',
+      order: 'ja_Order',
+      enabled: 'ja_Enabled',
+      name: 'ja_Name',
+      namePlaceholder: 'ja_Provide a unique name for the rule',
+      description: 'ja_Description',
+      lastMatched: 'ja_Last Matched',
+      alertsMatchedCount: 'ja_Matched Alerts',
+      incidentsCreatedCount: 'ja_Incidents',
       ruleBuilder: {
         addConditionGroup: 'ja_Add Group',
         removeConditionGroup: 'ja_Remove Group',
@@ -488,6 +503,9 @@ export default {
           not: 'ja_None of these'
         },
         value: 'ja_Value'
+      },
+      actionMessages: {
+        deleteRuleConfirmation: 'ja_Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.'
       }
     },
     title: 'ja_Respond',
@@ -497,6 +515,7 @@ export default {
       true: 'ja_Yes',
       false: 'ja_No'
     },
+    configure: 'ja_Configure',
     none: 'ja_None',
     select: 'ja_Select',
     close: 'ja_Close',
@@ -533,6 +552,7 @@ export default {
         updateFailure: 'ja_There was a problem updating the field for this record',
         createSuccess: 'ja_You successfully added a new record',
         createFailure: 'ja_There was a problem creating this record',
+        deleteSuccess: 'ja_You successfully deleted this record',
         deleteFailure: 'ja_There was a problem deleting this record'
       },
       alert: 'ja_Alert'

@@ -11,6 +11,43 @@ const defaultCallbacks = {
 const { Logger } = Ember;
 
 /**
+ * Take the ID of an existing rule and creates a new rule based on that rule's configuration
+ * @method cloneRule
+ * @param templateRuleId
+ * @public
+ */
+const cloneRule = (templateRuleId) => {
+  return {
+    type: ACTION_TYPES.AGGREGATION_RULES_CLONE_SAGA,
+    templateRuleId
+  };
+};
+
+/**
+ * Deletes a given rule by ID
+ * @method deleteRule
+ * @param ruleId
+ * @public
+ */
+const deleteRule = (ruleId) => {
+  return {
+    type: ACTION_TYPES.AGGREGATION_RULES_DELETE_SAGA,
+    ruleId
+  };
+};
+
+/**
+* Returns all known aggregation rules
+* @method getRules
+* @public
+*/
+const getRules = () => {
+  return {
+    type: ACTION_TYPES.FETCH_AGGREGATION_RULES_SAGA
+  };
+};
+
+/**
  * Returns the an individual aggregation rule
  * @method getRule
  * @param id The rule ID to be fetched
@@ -54,6 +91,13 @@ const getFields = (callbacks = defaultCallbacks) => {
   };
 };
 
+const selectRule = (ruleId) => {
+  return {
+    type: ACTION_TYPES.AGGREGATION_RULES_SELECT_RULE,
+    payload: ruleId
+  };
+};
+
 const addGroup = () => {
   return {
     type: ACTION_TYPES.AGGREGATION_RULES_ADD_GROUP
@@ -81,6 +125,13 @@ const removeCondition = (conditionId) => {
   };
 };
 
+const reorderRules = (ruleIds) => {
+  return {
+    type: ACTION_TYPES.AGGREGATION_RULES_REORDER_SAGA,
+    ruleIds
+  };
+};
+
 const updateCondition = (conditionId, changes) => {
   return {
     type: ACTION_TYPES.AGGREGATION_RULES_UPDATE_CONDITION,
@@ -98,10 +149,15 @@ const updateGroup = (groupId, changes) => {
 export {
   addCondition,
   addGroup,
+  cloneRule,
+  deleteRule,
   getFields,
   getRule,
+  getRules,
   removeCondition,
   removeGroup,
+  reorderRules,
+  selectRule,
   updateCondition,
   updateGroup
 };
