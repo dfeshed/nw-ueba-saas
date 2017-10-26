@@ -34,7 +34,10 @@ export const setQueryString = (queryString) => ({
 /**
  * Takes a time range object and calculates the start and end dates. The
  * timeRange object has the following properties:
- * { id: 'LAST_HOUR', name: 'Last 1 Hour', value: 1, unit: 'hours' }
+ * `{ id: 'LAST_HOUR', name: 'Last 1 Hour', value: 1, unit: 'hours' }`
+ * Since we're rounding out to the full minute (start time of 0 seconds and end
+ * time of 59 seconds), the final `startTime` has 1 minute added to it so that
+ * it most closely represents the desired time range.
  * @param {object} timeRange The time range
  * @public
  */
@@ -66,7 +69,7 @@ export const setQueryTimeRange = ({ value, unit }) => {
     dispatch({
       type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
       payload: {
-        startTime: startTime.unix(),
+        startTime: startTime.add(1, 'minutes').unix(),
         endTime: endTime.unix()
       }
     });
