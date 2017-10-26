@@ -8,7 +8,6 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,13 +21,21 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
@@ -277,13 +284,13 @@ public class UserPersistencyServiceTest {
         List<String> classificationFilter = new ArrayList<String>();
         classificationFilter.add("a");
 
-        List<String> sortFields = new ArrayList<>();
-        sortFields.add(User.SCORE_FIELD_NAME);
-        sortFields.add(User.USER_ID_FIELD_NAME);
+        List<String> sort = new ArrayList<>();
+        sort.add(User.SCORE_FIELD_NAME);
+        sort.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
-                        .sortField(new Sort(new Sort.Order(User.SCORE_FIELD_NAME)))
+                        .sort(new Sort(new Sort.Order(User.SCORE_FIELD_NAME)))
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
@@ -425,9 +432,9 @@ public class UserPersistencyServiceTest {
         userList.add(user2);
         userPersistencyService.save(userList);
 
-        List<String> sortFields = new ArrayList<>();
-        sortFields.add(User.SCORE_FIELD_NAME);
-        sortFields.add(User.USER_ID_FIELD_NAME);
+        List<String> sort = new ArrayList<>();
+        sort.add(User.SCORE_FIELD_NAME);
+        sort.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByUserTags(tags)
@@ -642,6 +649,47 @@ public class UserPersistencyServiceTest {
         Assert.assertEquals("B_userName", iterator.next().getUserName());
         Assert.assertEquals("C_userName", iterator.next().getUserName());
         Assert.assertEquals("W_userName", iterator.next().getUserName());
+    }
+
+    @Test
+    public void testSortByAlertsNumber() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 1);
+        User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 2);
+        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 3);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .sort(new Sort(Sort.Direction.DESC, User.ALERTS_COUNT_FIELD_NAME))
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(3L, result.getContent().size());
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("B_userName", iterator.next().getUserName());
+        Assert.assertEquals("C_userName", iterator.next().getUserName());
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
+
+        userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .sort(new Sort(Sort.Direction.ASC, User.ALERTS_COUNT_FIELD_NAME))
+                        .build();
+
+        result = userPersistencyService.find(userQuery);
+        assertEquals(3L, result.getContent().size());
+        iterator = result.iterator();
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
+        Assert.assertEquals("C_userName", iterator.next().getUserName());
+        Assert.assertEquals("B_userName", iterator.next().getUserName());
+
+
     }
 
     @Test

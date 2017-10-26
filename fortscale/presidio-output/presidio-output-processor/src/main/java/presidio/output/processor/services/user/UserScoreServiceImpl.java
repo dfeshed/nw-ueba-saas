@@ -114,7 +114,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     public void updateSeverities() {
         final double[] scores = getScoresArray();
         final UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sortField(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
+        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
         Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
         while (page != null && page.hasContent()) {
