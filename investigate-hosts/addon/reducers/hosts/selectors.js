@@ -4,7 +4,7 @@ const { createSelector } = reselect;
 const _hostList = (state) => state.endpoint.machines.hostList || [];
 const _selectedHostList = (state) => state.endpoint.machines.selectedHostList || [];
 const _hostExportLinkId = (state) => state.endpoint.machines.hostExportLinkId;
-const _hostDetailId = (state) => state.detailsInput ? state.detailsInput.agentId : null;
+const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.detailsInput.agentId : null;
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 
 export const areSomeScanning = createSelector(

@@ -33,14 +33,6 @@ const getAllProcess = () => {
 };
 
 const getProcessDetails = (processId) => {
-  return (dispatch) => {
-    dispatch(_getProcess(processId));
-    dispatch(_getProcessFileContext(processId));
-  };
-};
-
-
-const _getProcess = (processId) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
     dispatch({

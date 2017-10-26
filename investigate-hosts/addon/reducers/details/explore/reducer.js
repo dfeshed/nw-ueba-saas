@@ -47,8 +47,6 @@ const hostSummary = reduxActions.handleActions({
 
   [ACTION_TYPES.FILE_SEARCH_PAGE]: _handleFileSearchPage,
 
-  [ACTION_TYPES.RESET_HOST_DETAILS]: (state) => state.merge(initialState),
-
   [ACTION_TYPES.START_FILE_SEARCH]: (state) => state.merge({ showSearchResults: true, searchStatus: 'wait' }),
 
   [ACTION_TYPES.FILE_SEARCH_END]: (state) => state.set('searchStatus', 'complete'),
