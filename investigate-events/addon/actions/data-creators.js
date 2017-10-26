@@ -158,7 +158,7 @@ export const initializeInvestigate = () => {
       if (_showFutureFeatures) {
         dispatch(getEventTimeline());
         // TODO - Later on, we'll get meta values, but skip for now
-        // dispatch(metaGet(forceReload));
+        // dispatch(metaGet());
       }
       // Get first batch of results
       dispatch(eventsGetFirst());

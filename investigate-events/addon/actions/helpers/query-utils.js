@@ -189,8 +189,8 @@ function parseMetaFilterUri(uri) {
       if (matchPair && !matchAndOr) {
         const [ , key, value ] = matchPair;
         condition.isKeyValuePair = true;
-        condition.key = key;
-        condition.value = value;
+        condition.key = key.trim();
+        condition.value = value.trim();
       }
       return condition;
     });

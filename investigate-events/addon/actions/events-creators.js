@@ -7,37 +7,15 @@ const {
 } = console;
 
 /**
- * Fetches a stream of events for the given query node. Stores the stream's state in node's `value.results.events`.
- * Re-uses any previous results for the same query, UNLESS `forceReload` is truthy.
- * @param {object} queryNode
- * @param {boolean} [forceReload=false] If truthy, any previous results for the same query are discarded.
+ * Fetches a stream of events for the given query node.
  * @public
  */
-export const eventsGetFirst = (forceReload = false) => {
+export const eventsGetFirst = () => {
   return (dispatch, getState) => {
     const state = getState().investigate;
     const { queryNode } = state;
     const { language } = state.dictionaries;
-    const { status, streamLimit, streamBatch } = state.eventResults;
-    const skipLoad = !forceReload && (status || '').match(/streaming|complete|stopped/);
-
-    if (skipLoad) {
-      return;
-    }
-    // @workaround ASOC-22125: Due to a server issue, a query for records that doesn't match any events will never
-    // return a response back to the client. That will cause our UI to wait endlessly. To workaround, before
-    // submitting the query, check if the (separate) server call for the event count has already returned zero.
-    // If so, skip the query for the records.  (If the event count hasn't come back yet, no worries, submit this
-    // query for now. We'll also add a check for count=0 in the count response callback, and that check will
-    // abort this server call if need be.)
-      // const eventCountStatus = queryNode.get('value.results.eventCount.status');
-      // const eventCountData = queryNode.get('value.results.eventCount.data');
-      // const eventCountIsZero = (eventCountStatus === 'resolved') && (eventCountData === 0);
-      // if (eventCountIsZero) {
-      //   events.set('status', 'complete');
-      //   return;
-      // }
-    // end @workaround
+    const { streamLimit, streamBatch } = state.eventResults;
     const handlers = {
       onInit(stopStream) {
         this.stopStreaming = stopStream;
@@ -46,7 +24,7 @@ export const eventsGetFirst = (forceReload = false) => {
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;
         const payload = response && response.data;
-        if (payload) {
+        if (Array.isArray(payload) && payload.length) {
           payload.forEach(_hasherizeEventMeta);
           const count = data.length + payload.length;
           if (count >= goal) {
@@ -80,8 +58,7 @@ export const eventsGetFirst = (forceReload = false) => {
 };
 
 /**
- * Streams additional events for the current query, if the query is not already streaming and not complete.
- * Any previous results found are appended to, not discarded.
+ * Streams additional events for the current query.
  * @public
  */
 export const eventsGetMore = () => {
@@ -104,7 +81,7 @@ export const eventsGetMore = () => {
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;
         const payload = response && response.data;
-        if (payload) {
+        if (Array.isArray(payload) && payload.length) {
           payload.forEach(_hasherizeEventMeta);
           const count = data.length + payload.length;
           if (count >= goal) {
