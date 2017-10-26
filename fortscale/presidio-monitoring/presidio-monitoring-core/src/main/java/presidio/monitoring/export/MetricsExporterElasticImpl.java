@@ -14,12 +14,10 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
 
     private MetricExportService metricExportService;
 
-
     public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName, MetricExportService metricExportService, ThreadPoolTaskScheduler scheduler) {
         super(metricsEndpoint, applicationName, scheduler);
         this.metricExportService = metricExportService;
     }
-
 
     @Scheduled(fixedRateString = "${monitoring.fixed.rate}")
     public void export() {
