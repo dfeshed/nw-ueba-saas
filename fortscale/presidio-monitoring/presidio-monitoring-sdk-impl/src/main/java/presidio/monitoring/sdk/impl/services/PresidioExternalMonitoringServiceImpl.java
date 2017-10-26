@@ -24,17 +24,14 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     }
 
     @Override
-    public void reportNumberOfFilteredEventMetric(long value, Set<String> tags, Date logicTime) {
-        metricCollectingService.addMetric(FILTERED_EVENT_METRIC, value, tags, TYPE_LONG, logicTime);
-    }
-
-    @Override
-    public void reportNumberOfProcessedEventsMetric(long value, Set<String> tags, Date logicTime) {
-        metricCollectingService.addMetric(NUMBER_OF_PROCESSED_EVENTS_METRIC, value, tags, TYPE_LONG, logicTime);
-    }
-
-    @Override
     public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Date logicTime) {
         metricCollectingService.addMetric(metricName, value, tags, valueType, logicTime);
     }
+
+    @Override
+    public void reportCustomMetricReportOnce(String metricName, long value, Set<String> tags, String valueType, Date logicTime) {
+        metricCollectingService.addMetricReportOnce(metricName, value, tags, valueType, logicTime);
+    }
+
+
 }
