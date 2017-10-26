@@ -19,6 +19,10 @@ const ExploreContent = Component.extend({
   tagName: 'box',
 
   classNames: ['col-xs-12', 'host-explore__content'],
+  // click event handler added to stop event bubbling and prevent the search from getting reset.
+  click: (event) => {
+    event.stopPropagation();
+  },
 
   actions: {
     navigateToFile(checksum, scanTime) {
