@@ -16,6 +16,7 @@ $powerSelectDisabledColor: border-color(primary);
       border-bottom: 1px solid $powerSelectDisabledColor;
       cursor: default;
       .ember-power-select-placeholder,
+      .ember-power-select-selected-item,
       .ember-power-select-status-icon {
         color: $powerSelectDisabledColor;
       }

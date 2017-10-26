@@ -41,7 +41,7 @@ export const setQueryString = (queryString) => ({
  * @param {object} timeRange The time range
  * @public
  */
-export const setQueryTimeRange = ({ value, unit }) => {
+export const setQueryTimeRange = ({ id, value, unit }) => {
   return (dispatch, getState) => {
     const state = getState();
     // TODO placeholder for the preference setting
@@ -61,7 +61,7 @@ export const setQueryTimeRange = ({ value, unit }) => {
     }
 
     if (value) {
-      startTime = moment(endTime).subtract(value, unit).startOf('minute');
+      startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
     } else {
       startTime = moment(dbStartTime * 1000).startOf('minute');
     }
@@ -69,8 +69,9 @@ export const setQueryTimeRange = ({ value, unit }) => {
     dispatch({
       type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
       payload: {
-        startTime: startTime.add(1, 'minutes').unix(),
-        endTime: endTime.unix()
+        startTime: startTime.unix(),
+        endTime: endTime.unix(),
+        selectedTimeRangeId: id
       }
     });
   };
@@ -93,11 +94,11 @@ export const setSessionId = (serviceId) => ({
   payload: serviceId
 });
 
-export const setServiceId = (serviceId) => {
+export const setService = (service) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SERVICE_SELECTED,
-      payload: serviceId
+      payload: service.id
     });
     dispatch(getServiceSummary());
   };

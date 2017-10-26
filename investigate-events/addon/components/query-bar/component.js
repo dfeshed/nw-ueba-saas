@@ -1,20 +1,20 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { and } from 'ember-computed-decorators';
-import { hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
+import computed, { and } from 'ember-computed-decorators';
+import { hasSummaryData, selectedService } from 'investigate-events/reducers/investigate/services/selectors';
 import {
   setQueryTimeRange,
-  setServiceId
+  setService
 } from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = (state) => ({
   hasSummaryData: hasSummaryData(state),
-  queryString: state.investigate.queryNode.queryString,
-  serviceId: state.investigate.queryNode.serviceId,
+  selectedService: selectedService(state),
+  selectedTimeRangeId: state.investigate.queryNode.selectedTimeRangeId,
   services: state.investigate.services.data
 });
 
-const dispatchToActions = { setQueryTimeRange, setServiceId };
+const dispatchToActions = { setQueryTimeRange, setService };
 
 const TIME_RANGES = [
   { id: 'LAST_5_MINUTES', name: 'Last 5 Minutes', value: 5, unit: 'minutes' },
@@ -45,33 +45,18 @@ const QueryBarComponent = Component.extend({
   timeRanges: TIME_RANGES,
 
   /**
-   * The selected service object from the `services` list.
-   * @type {object[]}
-   * @private
+   * @public
+   * Loop over the timeRanges array and return the timeRange object that is selected.
+   * This object is wired into the power-select in the template.
+   * {id: "LAST_30_DAYS", value: 1, unit: "months"}
    */
-  selectedService: undefined,
+  @computed('timeRanges', 'selectedTimeRangeId')
+  selectedTimeRange: (timeRanges, selectedTimeRangeId) => {
+    return timeRanges.find((e) => e.id === selectedTimeRangeId);
+  },
 
-  /**
-   * The selected time range object from the `timeRanges` list.
-   * @type {object[]}
-   * @private
-   */
-  selectedTimeRange: undefined,
-
-  @and('serviceId', 'selectedTimeRange')
-  hasRequiredValuesToQuery: false,
-
-  actions: {
-    updateService(selectedService) {
-      this.set('selectedService', selectedService);
-      this.send('setServiceId', selectedService.id);
-    },
-
-    updateRange(selectedTimeRange) {
-      this.set('selectedTimeRange', selectedTimeRange);
-      this.send('setQueryTimeRange', selectedTimeRange);
-    }
-  }
+  @and('selectedService.id', 'hasSummaryData', 'selectedTimeRangeId')
+  hasRequiredValuesToQuery: false
 });
 
 export default connect(stateToComputed, dispatchToActions)(QueryBarComponent);

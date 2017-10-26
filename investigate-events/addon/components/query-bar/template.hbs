@@ -1,7 +1,7 @@
 {{#power-select
   class='rsa-investigate-query-bar__service'
   matchTriggerWidth=false
-  onchange=(action 'updateService')
+  onchange=(action 'setService')
   options=services
   placeholder='Select a Service'
   searchEnabled=false
@@ -13,7 +13,7 @@
 {{#power-select
   class='rsa-investigate-query-bar__time-range'
   matchTriggerWidth=false
-  onchange=(action 'updateRange')
+  onchange=(action 'setQueryTimeRange')
   disabled=(not hasSummaryData)
   options=timeRanges
   placeholder='Select a Time Range'

@@ -9,6 +9,7 @@ const _initialState = Immutable.from({
   sessionId: undefined,
   startTime: 0,
   endTime: 0,
+  selectedTimeRangeId: undefined,
   metaFilter: {
     uri: undefined,
     conditions: []
@@ -40,7 +41,8 @@ export default handleActions({
   [ACTION_TYPES.SET_QUERY_TIME_RANGE]: (state, { payload }) => {
     return state.merge({
       endTime: payload.endTime,
-      startTime: payload.startTime
+      startTime: payload.startTime,
+      selectedTimeRangeId: payload.selectedTimeRangeId
     });
   },
 
