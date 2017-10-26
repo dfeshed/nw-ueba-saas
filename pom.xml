@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>presidio.flume.core</groupId>
     <artifactId>presidio-flume</artifactId>
-    <version>1.7.0</version>
+    <version>1.0-6</version>
     <packaging>pom</packaging>
 
     <name>Presidio Flume</name>
@@ -42,7 +42,7 @@
         <xalan.verion>2.7.1</xalan.verion>
         <xerces.version>2.9.1</xerces.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <presidio.core.version>1.0.0-SNAPSHOT</presidio.core.version>
+        <presidio.core.version>1.0-6</presidio.core.version>
 
     </properties>
 
@@ -960,36 +960,36 @@
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-configuration</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-core</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-tools</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-node</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-file-channel</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-jdbc-channel</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
@@ -1001,7 +1001,7 @@
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-spillable-memory-channel</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
@@ -1013,20 +1013,20 @@
             <dependency>
                 <groupId>presidio.flume.core.flume-shared</groupId>
                 <artifactId>flume-shared-kafka-test</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-hdfs-sink</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-hive-sink</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
@@ -1044,49 +1044,49 @@
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-elasticsearch-sink</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-morphline-solr-sink</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-kafka-sink</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-jms-source</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-kafka-source</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-sdk</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-taildir-source</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-sdk</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
             </dependency>
@@ -1094,26 +1094,26 @@
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-auth</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-clients</groupId>
                 <artifactId>flume-ng-log4jappender</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-clients</groupId>
                 <artifactId>flume-ng-log4jappender</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
                 <classifier>jar-with-dependencies</classifier>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-embedded-agent</artifactId>
-                <version>1.7.0</version>
+                <version>1.0-6</version>
             </dependency>
 
             <dependency>
