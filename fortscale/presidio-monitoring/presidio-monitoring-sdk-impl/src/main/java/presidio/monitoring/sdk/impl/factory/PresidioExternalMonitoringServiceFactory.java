@@ -4,6 +4,7 @@ package presidio.monitoring.sdk.impl.factory;
 import fortscale.utils.logging.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import presidio.monitoring.export.MetricsExporter;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.spring.ExternalMonitoringConfiguration;
 
@@ -15,7 +16,7 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
 
     private ConfigurableApplicationContext context;
 
-    public PresidioExternalMonitoringService createPresidioExternalMonitoringService() throws Exception {
+    public PresidioExternalMonitoringService createPresidioExternalMonitoringService(String applicationName) throws Exception {
         context = new AnnotationConfigApplicationContext(ExternalMonitoringConfiguration.class);
         final PresidioExternalMonitoringService presidioExternalMonitoringServiceBean = context.getBean(PresidioExternalMonitoringService.class);
         if (presidioExternalMonitoringServiceBean == null) {
@@ -23,6 +24,13 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         }
+        final MetricsExporter metricsExporterBean = context.getBean(MetricsExporter.class);
+        if (metricsExporterBean == null) {
+            final String errorMessage = "Failed to create PresidioExternalMonitoringService. Couldn't get MetricsExporter";
+            logger.error(errorMessage);
+            throw new Exception(errorMessage);
+        }
+        metricsExporterBean.setApplicationName(applicationName);
         return presidioExternalMonitoringServiceBean;
     }
 

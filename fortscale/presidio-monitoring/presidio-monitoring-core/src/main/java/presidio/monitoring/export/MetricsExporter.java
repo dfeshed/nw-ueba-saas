@@ -9,12 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class MetricsExporter implements ApplicationListener<ContextClosedEvent> {
 
@@ -23,17 +18,19 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     private MetricsEndpoint metricsEndpoint;
     private Set<String> tags;
     private ThreadPoolTaskScheduler scheduler;
+    private String applicationName;
 
 
     MetricsExporter(MetricsEndpoint metricsEndpoint, String applicationName, ThreadPoolTaskScheduler scheduler) {
         this.metricsEndpoint = metricsEndpoint;
         this.scheduler = scheduler;
         this.tags = new HashSet<>();
-        tags.add(applicationName);
+        this.applicationName = applicationName;
+        tags.add(this.applicationName);
     }
 
     List<PresidioMetric> metricsForExport() {
-        List<PresidioMetric> metricsForExport = new ArrayList<>(Arrays.asList());
+        List<PresidioMetric> metricsForExport = new ArrayList<>();
         PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();
         for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -59,5 +56,9 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         this.flush();
         // shutdown the scheduler
         scheduler.shutdown();
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 }
