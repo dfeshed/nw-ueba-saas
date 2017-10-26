@@ -42,14 +42,8 @@ public class SmartApplicationSmartScoringServiceConfig {
 
 	@Autowired
 	private RecordReaderFactoryService recordReaderFactoryService;
-//	@Autowired
-//	private ScorerConfService scorerConfService;
-//	@Autowired
-//	private FactoryService<Scorer> scorerFactoryService;
 	@Autowired
 	private ScoringService scoringService;
-//	@Autowired
-//	private ModelsCacheService modelCacheService;
 
 	@Bean
 	public ScorerConfService scorerConfService() {
@@ -59,10 +53,6 @@ public class SmartApplicationSmartScoringServiceConfig {
 				scorerAdditionalConfigurationsPath);
 	}
 
-//	@Bean
-//	public ScoringService scoringService() {
-//		return new ScoringService(scorerConfService, scorerFactoryService, modelCacheService);
-//	}
 
 	@Bean
 	public SmartScoringService smartScoringService() {
