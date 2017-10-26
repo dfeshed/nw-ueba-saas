@@ -17,7 +17,6 @@ import presidio.manager.api.records.ValidationResults;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -36,7 +35,7 @@ public class ConfigurationAirflowServiceTest {
     }
 
     @Test
-    public void validConfiguration_roundTheStartTime() throws IOException {
+    public void validConfiguration() throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
         Instant startTime = Instant.parse("2007-12-03T10:15:30Z");
@@ -47,6 +46,6 @@ public class ConfigurationAirflowServiceTest {
         ValidationResults validationResults = configurationAirflowService.validateConfiguration(presidioManagerConfiguration);
 
         assertTrue(CollectionUtils.isEmpty(validationResults.getErrorsList()));
-        assertEquals(startTime.truncatedTo(ChronoUnit.HOURS).toString(), dataPipeline.getStartTime());
+        assertEquals(startTime.toString(), dataPipeline.getStartTime());
     }
 }

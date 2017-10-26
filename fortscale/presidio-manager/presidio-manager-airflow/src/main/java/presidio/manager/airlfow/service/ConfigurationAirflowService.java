@@ -3,7 +3,6 @@ package presidio.manager.airlfow.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
@@ -19,7 +18,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 
@@ -126,10 +124,6 @@ public class ConfigurationAirflowService implements ConfigurationProcessingServi
             validationResults.addError(error);
         } else {
             List<ConfigurationBadParamDetails> startTimeValidation = startTimeValidation(startTime);
-            if (CollectionUtils.isEmpty(startTimeValidation)) {
-                startTime = Instant.parse(startTime).truncatedTo(ChronoUnit.HOURS).toString();
-                dataPipeLineConfiguration.setStartTime(startTime);
-            }
             validationResults.addErrors(startTimeValidation);
         }
 

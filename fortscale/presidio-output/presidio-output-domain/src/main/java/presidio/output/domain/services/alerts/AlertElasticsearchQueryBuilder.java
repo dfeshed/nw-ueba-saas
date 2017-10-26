@@ -101,8 +101,6 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             if (alertQuery.getFilterByMaxScore() > -1)
                 rangeQuery.lte(alertQuery.getFilterByMaxScore());
             boolQueryBuilder.must(rangeQuery);
-
-            boolQueryBuilder.must(rangeQuery);
         }
 
 

@@ -1,11 +1,13 @@
+from datetime import timedelta
+
+import dateutil.parser
+import os
+from airflow.configuration import conf
 from airflow.models import DAG
 from airflow.operators.bash_operator import BashOperator
-from airflow.configuration import conf
-from datetime import datetime, timedelta
-import os
+
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-import dateutil.parser
 
 """
 A maintenance workflow that you can deploy into Airflow to periodically clean out the task logs to avoid those getting too big.
@@ -25,7 +27,7 @@ else:
     raise Exception("could not find start_date in first dag config, currently assuming there should be 1 after system configuration")
 
 BASE_LOG_FOLDER = conf.get("core", "BASE_LOG_FOLDER")
-SCHEDULE_INTERVAL = "@daily"  # How often to Run. @daily - Once a day at Midnight
+SCHEDULE_INTERVAL = timedelta(days=1)  # How often to Run. @daily - Once a day at Midnight
 DAG_OWNER_NAME = "operations"  # Who is listed as the owner of this DAG in the Airflow Web Server
 ALERT_EMAIL_ADDRESSES = []  # List of email address to send email alerts to if this job fails
 DEFAULT_MAX_LOG_AGE_IN_DAYS = 3  # Length to retain the log files if not already provided in the conf. If this is set to 5, the job will remove those files that are 5 days old or older

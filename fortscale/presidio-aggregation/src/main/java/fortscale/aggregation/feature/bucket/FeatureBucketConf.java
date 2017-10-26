@@ -2,13 +2,11 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fortscale.utils.logging.Logger;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.json.ObjectMapperProvider;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -112,7 +110,7 @@ public class FeatureBucketConf implements Serializable {
 	
 	@Override
 	public String toString(){
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = ObjectMapperProvider.getInstance().getObjectMapper();
 
 		try {
 			return mapper.writeValueAsString(this);
