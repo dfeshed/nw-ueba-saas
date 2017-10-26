@@ -62,9 +62,10 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
                 logger.debug("found cached model={}", cachedModelDao);
                 return cachedModelDao.getModel();
             }
-            // if the model in the cache is too old -> throw it away
+            // if the model in the cache is too old -> return null and keep it in cache in order to avoid unnecessary access to store.
             else {
-                logger.debug("too old model={} found , deleting it from cache", cachedModelDao);
+                logger.debug("too old model={} found", cachedModelDao);
+                //todo: add metrics
             }
         }
         else {
@@ -72,14 +73,10 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
             ModelDAO retrievedModelDAO =
                     modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf, contextId, eventTime, oldestAllowedModelTime);
             if (retrievedModelDAO != null) {
-                if (isModelTimeValid(retrievedModelDAO, oldestAllowedModelTime)) {
-                    logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
-                    // insert the model into cache
-                    lruModelsMap.put(contextId, retrievedModelDAO);
-                    return retrievedModelDAO.getModel();
-                } else {
-                    logger.debug("retrieved model is too old");
-                }
+                logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
+                // insert the model into cache
+                lruModelsMap.put(contextId, retrievedModelDAO);
+                return retrievedModelDAO.getModel();
             }
             logger.debug("did not find matching model in db. caching empty model");
             lruModelsMap.put(contextId, new EmptyModelDao(eventTime));

@@ -34,7 +34,6 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     private AggregatedDataStore scoredFeatureAggregatedStore;
     private int pageSize;
     private int maxGroupSize;
-    private ModelsCacheService modelCacheServiceInMemory;
 
     public FeatureAggregationService(FixedDurationStrategy fixedDurationStrategy,
                                      BucketConfigurationService bucketConfigurationService,
@@ -42,8 +41,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
                                      InMemoryFeatureBucketAggregator featureBucketAggregator,
                                      FeatureAggregationScoringService featureAggregationScoringService,
                                      AggregationRecordsCreator featureAggregationsCreator,
-                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize,
-                                     ModelsCacheService modelCacheServiceInMemory) {
+                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -53,13 +51,15 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
-        this.modelCacheServiceInMemory = modelCacheServiceInMemory;
     }
 
     @Override
     protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
 
-        modelCacheServiceInMemory.resetCache();
+        //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
+        //Reset cache required in order to get newer models each partition and not use older models.
+        // If this line will be deleted the model cache will need to have some efficient refresh mechanism.
+        featureAggregationScoringService.resetModelCache();
 
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);

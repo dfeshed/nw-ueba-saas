@@ -40,7 +40,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
     private int pageSize;
     private int maxGroupSize;
-    private ModelsCacheService modelCacheServiceInMemory;
 
     /**
      * C'tor
@@ -59,8 +58,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
                                     AggregationRecordsCreator aggregationRecordsCreator,
                                     AggregatedDataStore aggregatedDataStore,
                                     AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
-                                    int pageSize, int maxGroupSize,
-                                    ModelsCacheService modelCacheServiceInMemory) {
+                                    int pageSize, int maxGroupSize) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -70,14 +68,17 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
-        this.modelCacheServiceInMemory = modelCacheServiceInMemory;
     }
 
 
     @Override
     public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
 
-        modelCacheServiceInMemory.resetCache();
+        //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
+        //Reset cache required in order to get newer models each partition and not use older models.
+        // If this line will be deleted the model cache will need to have some efficient refresh mechanism.
+        enrichedEventsScoringService.resetModelCache();
+
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);

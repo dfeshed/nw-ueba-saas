@@ -4,8 +4,6 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.model.cache.ModelCacheServiceInMemory;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.ttl.TtlService;
@@ -60,11 +58,9 @@ public class FeatureAggregationsConfiguration {
     private int maxGroupSize;
     @Autowired
     private TtlService ttlService;
-    @Autowired
-    private ModelsCacheService modelCacheServiceInMemory;
 
     @Bean
     public PresidioExecutionService featureAggregationBucketExecutionService() {
-        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, ttlService, pageSize, maxGroupSize, modelCacheServiceInMemory);
+        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, ttlService, pageSize, maxGroupSize);
     }
 }

@@ -47,8 +47,6 @@ public class SmartApplicationConfiguration {
     private SmartDataStore smartDataStore;
     @Autowired
     private TtlService ttlService;
-    @Autowired
-    private ModelsCacheService modelCacheServiceInMemory;
 
 
     @Bean
@@ -58,6 +56,6 @@ public class SmartApplicationConfiguration {
                 aggregationRecordsThreshold,
                 aggregatedDataReader,
                 smartScoringService,
-                smartDataStore, ttlService, modelCacheServiceInMemory);
+                smartDataStore, ttlService);
     }
 }

@@ -45,4 +45,8 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
 
         return scoredFeatureAggregationRecords;
     }
+
+    public void resetModelCache(){
+        scoringService.resetModelCache();
+    }
 }

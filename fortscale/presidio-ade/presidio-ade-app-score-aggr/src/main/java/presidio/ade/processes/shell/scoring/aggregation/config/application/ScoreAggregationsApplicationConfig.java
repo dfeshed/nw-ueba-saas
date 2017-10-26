@@ -61,12 +61,10 @@ public class ScoreAggregationsApplicationConfig {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
     private TtlService ttlService;
-    @Autowired
-    private ModelsCacheService modelCacheServiceInMemory;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, ttlService, pageSize, maxGroupSize, modelCacheServiceInMemory);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, ttlService, pageSize, maxGroupSize);
     }
 }

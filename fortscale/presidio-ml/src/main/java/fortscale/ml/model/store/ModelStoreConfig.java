@@ -14,9 +14,11 @@ public class ModelStoreConfig {
 	private MongoTemplate mongoTemplate;
 	@Value("#{T(java.time.Duration).parse('${presidio.ttl.oldest.allowed.model:P100D}')}")
 	private Duration ttlOldestAllowedModel;
+	@Value("${presidio.model.pagination.size:10000}")
+	private int modelPaginationSize;
 
 	@Bean
 	public ModelStore modelStore() {
-		return new ModelStore(mongoTemplate, ttlOldestAllowedModel);
+		return new ModelStore(mongoTemplate, ttlOldestAllowedModel, modelPaginationSize);
 	}
 }

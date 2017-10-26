@@ -49,8 +49,11 @@ public class ModelCacheManagerInMemoryTest {
         Model model = modelCacheManagerInMemory.getModel(context, eventTime);
         Assert.assertEquals(null,model);
         Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(null);
+
+        Model returnedModel = () -> 0;
         Instant newEventEndTime = eventTime.plus(maxDiffBetweenCachedModelAndEvent).plusMillis(1);
-        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,newEventEndTime, newEventEndTime.minus(maxDiffBetweenCachedModelAndEvent))).thenReturn(null);
+        ModelDAO returnedModelDao = new ModelDAO("sessionId", contextId, returnedModel, eventTime, newEventEndTime);
+        Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,newEventEndTime, newEventEndTime.minus(maxDiffBetweenCachedModelAndEvent))).thenReturn(returnedModelDao );
         model = modelCacheManagerInMemory.getModel(context, newEventEndTime);
         Assert.assertEquals(null,model);
     }
