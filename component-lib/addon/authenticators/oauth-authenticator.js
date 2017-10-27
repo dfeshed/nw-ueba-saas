@@ -63,8 +63,9 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       this.getProperties('accessTokenKey', 'refreshTokenKey', 'session');
 
     const authentication = session.get('session.content').authenticated;
+    const csrfToken = localStorage.getItem(this.get('csrfLocalstorageKey'));
 
-    if (authentication) {
+    if (authentication && csrfToken) {
 
       localStorage.setItem(accessTokenKey, authentication.access_token);
 
