@@ -20,3 +20,7 @@ export const handleSetTo = (payload, stateVal) => {
   const hasSetTo = payload.setTo !== undefined && typeof payload.setTo === 'boolean';
   return hasSetTo ? payload.setTo : !stateVal;
 };
+
+export const handlePreference = (payload, isShown) => {
+  return payload && typeof isShown === 'boolean' ? isShown : true;
+};

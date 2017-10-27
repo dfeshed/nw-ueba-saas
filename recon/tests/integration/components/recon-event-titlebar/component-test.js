@@ -2,25 +2,23 @@ import wait from 'ember-test-helpers/wait';
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import sinon from 'sinon';
-import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
+import { clickTrigger } from '../../../helpers/ember-power-select';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import startApp from '../../../helpers/start-app';
 
-import * as ACTION_TYPES from 'recon/actions/types';
 const { $ } = Ember;
 
 import DataHelper from '../../../helpers/data-helper';
 
-let dispatchSpy;
+let redux;
 
 moduleForComponent('recon-event-titlebar', 'Integration | Component | recon event titlebar', {
   integration: true,
   beforeEach() {
     this.inject.service('redux');
-    const redux = this.get('redux');
-    dispatchSpy = sinon.spy(redux, 'dispatch');
-  },
-  afterEach() {
-    dispatchSpy.reset();
+    redux = this.get('redux');
+    const application = startApp();
+    initialize(application);
   }
 });
 
@@ -36,16 +34,20 @@ test('clicking close executes action', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isReconOpen, false);
   this.$('.rsa-icon-close-filled').click();
-  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.CLOSE_RECON);
+  assert.equal(redux.getState().recon.visuals.isReconOpen, false);
 });
 
 test('clicking shrink executes action', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isReconExpanded, true);
   this.$('.rsa-icon-shrink-diagonal-2-filled').click();
-  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isReconExpanded, false);
+  });
 });
 
 test('clicking shrink, then grow, executes multiple actions', function(assert) {
@@ -54,10 +56,13 @@ test('clicking shrink, then grow, executes multiple actions', function(assert) {
     .setViewToFile();
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$('.rsa-icon-shrink-diagonal-2-filled').click();
-  this.$('.rsa-icon-expand-diagonal-4-filled').click();
-
-  assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
-  assert.equal(dispatchSpy.args[5][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isReconExpanded, false);
+    this.$('.rsa-icon-expand-diagonal-4-filled').click();
+    return wait().then(() => {
+      assert.equal(redux.getState().recon.visuals.isReconExpanded, true);
+    });
+  });
 });
 
 test('calls action when reconstruction view is changed', function(assert) {
@@ -66,11 +71,9 @@ test('calls action when reconstruction view is changed', function(assert) {
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar }}`);
   clickTrigger();
-  assert.ok(dispatchSpy.callCount === 4);
-  selectChoose('.recon-event-titlebar', 'File Analysis');
-  // many dispatches called, fourth one is dispatch for recon view change
-  assert.ok(dispatchSpy.callCount === 5);
-  assert.ok(typeof dispatchSpy.args[4][0] === 'function', 'Dispatch called with function (thunk)');
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.currentReconView.code, 3);
+  });
 });
 
 test('clicking header toggle executes action', function(assert) {
@@ -78,8 +81,11 @@ test('clicking header toggle executes action', function(assert) {
     .initializeData(initializeData)
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
   this.$('.rsa-icon-layout-6-filled').click();
-  assert.equal(dispatchSpy.args[4][0].type, ACTION_TYPES.TOGGLE_HEADER);
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isHeaderOpen, false);
+  });
 });
 
 test('clicking meta toggle executes actions', function(assert) {
@@ -87,9 +93,11 @@ test('clicking meta toggle executes actions', function(assert) {
     .initializeData(initializeData)
     .setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isMetaShown, true);
   this.$('.rsa-icon-layout-2-filled').click();
-  assert.ok(dispatchSpy.callCount, 4);
-  assert.ok(typeof dispatchSpy.args[4][0] === 'function', 'Dispatch called with function (thunk)');
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isMetaShown, false);
+  });
 });
 
 const initializeData = { total: 555, index: 25, meta: [['medium', 1]] };

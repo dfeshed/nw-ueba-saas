@@ -7,6 +7,8 @@ const _typeCode = createSelector(
   [_currentReconView],
   (currentReconView) => currentReconView ? currentReconView.code : null
 );
+const isMetaShown = (state) => state.recon.visuals.isMetaShown;
+const isHeaderOpen = (state) => state.recon.visuals.isHeaderOpen;
 
 export const isRequestShown = (recon) => recon.visuals.isRequestShown;
 
@@ -15,6 +17,13 @@ export const isResponseShown = (recon) => recon.visuals.isResponseShown;
 export const allDataHidden = createSelector(
   [isRequestShown, isResponseShown],
   (isRequestShown = true, isResponseShown = true) => !isRequestShown && !isResponseShown
+);
+
+export const getReconPreferences = createSelector(
+  [isMetaShown, isHeaderOpen],
+  (isMetaShown, isHeaderOpen) => {
+    return { 'eventsPreferences': { isMetaShown, isHeaderOpen } };
+  }
 );
 
 export const hasReconView = createSelector(

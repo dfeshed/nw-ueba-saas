@@ -10,6 +10,7 @@
  */
 
 import Ember from 'ember';
+import { lookup } from 'ember-dependency-lookup';
 import { getStoredState } from 'redux-persist';
 import { later } from 'ember-runloop';
 
@@ -18,6 +19,7 @@ import { createToggleActionCreator } from './visual-creators';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
 import { killAllBatching } from './util/batch-data-handler';
+import { getReconPreferences } from 'recon/reducers/visuals/selectors';
 import {
   fetchAliases,
   fetchLanguage,
@@ -33,6 +35,8 @@ import {
 import { packetTotal } from 'recon/reducers/header/selectors';
 
 const { Logger } = Ember;
+const prefService = lookup('service:preferences');
+let isPreferencesInitializedOnce = false;
 
 /**
  * Will fetch and dispatch event meta
@@ -267,11 +271,19 @@ const setNewReconView = (newView) => {
  * @returns {function} redux-thunk
  * @public
  */
-const initializeRecon = (reconInputs) => {
 
+const initializeRecon = (reconInputs) => {
   return (dispatch, getState) => {
     const dataState = getState().recon.data;
-
+    if (!isPreferencesInitializedOnce) {
+      isPreferencesInitializedOnce = true;
+      prefService.getPreferences('investigate-events').then(({ data }) => {
+        dispatch({
+          type: ACTION_TYPES.INITIATE_PREFERENCES,
+          payload: data.eventsPreferences
+        });
+      });
+    }
     dispatch({
       type: ACTION_TYPES.OPEN_RECON
     });
@@ -400,6 +412,9 @@ const toggleMetaData = (setTo) => {
     }
 
     dispatch(returnVal);
+    prefService.setPreferences('investigate-events', getReconPreferences(getState())).then(() => {
+      Logger.info('Successfully persisted Meta Value');
+    });
   };
 };
 

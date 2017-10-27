@@ -3,7 +3,7 @@ export default {
   requestDestination: '/ws/investigate/preferences/get',
   count: 0,
   message(/* frame */) {
-    const data = { code: 0, eventsPreferences: { defaultAnalysisView: 'packet' } };
+    const data = { eventsPreferences: { code: 0, defaultAnalysisView: 'packet', isMetaShown: null, isHeaderOpen: null } };
     return {
       data,
       meta: {

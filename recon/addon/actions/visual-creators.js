@@ -11,6 +11,15 @@
  */
 
 import * as ACTION_TYPES from './types';
+import Ember from 'ember';
+import { lookup } from 'ember-dependency-lookup';
+import { getReconPreferences } from 'recon/reducers/visuals/selectors';
+
+const {
+  Logger
+} = Ember;
+
+const _needToPersist = (type) => [ACTION_TYPES.TOGGLE_HEADER].includes(type);
 
 const createToggleActionCreator = (type) => {
   return (setTo) => {
@@ -24,7 +33,15 @@ const createToggleActionCreator = (type) => {
       };
     }
 
-    return returnVal;
+    return (dispatch, getState) => {
+      dispatch(returnVal);
+      if (_needToPersist(type)) {
+        const prefService = lookup('service:preferences');
+        prefService.setPreferences('investigate-events', getReconPreferences(getState())).then(() => {
+          Logger.info('Successfully persisted Header Value');
+        });
+      }
+    };
   };
 };
 

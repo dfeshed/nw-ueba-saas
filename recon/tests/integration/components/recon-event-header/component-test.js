@@ -1,6 +1,8 @@
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import startApp from '../../../helpers/start-app';
 
 import DataHelper from '../../../helpers/data-helper';
 
@@ -9,6 +11,8 @@ moduleForComponent('recon-event-header', 'Integration | Component | recon event 
   beforeEach() {
     this.registry.injection('component:recon-event-actionbar/export-packet', 'i18n', 'service:i18n');
     this.inject.service('redux');
+    const application = startApp();
+    initialize(application);
   }
 });
 

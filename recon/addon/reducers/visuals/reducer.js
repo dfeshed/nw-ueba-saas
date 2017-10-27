@@ -3,7 +3,7 @@ import Immutable from 'seamless-immutable';
 
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
-import { handleSetTo } from 'recon/reducers/util';
+import { handleSetTo, handlePreference } from 'recon/reducers/util';
 
 const visualsInitialState = Immutable.from({
   defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis
@@ -35,6 +35,12 @@ const visuals = handleActions({
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state, { payload: { newView } }) => {
     return state.set('currentReconView', newView);
+  },
+
+  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload }) => {
+    const isMetaShown = handlePreference(payload, payload.isMetaShown);
+    const isHeaderOpen = handlePreference(payload, payload.isHeaderOpen);
+    return state.merge({ isMetaShown, isHeaderOpen });
   },
 
   [ACTION_TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => {
