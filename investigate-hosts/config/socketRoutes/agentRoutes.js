@@ -18,8 +18,8 @@ module.exports = function(environment) {
         requestDestination: '/ws/endpoint/agent/command/stopscan'
       },
       deleteHosts: {
-        subscriptionDestination: 'user/queue/endpoint/hosts/delete',
-        requestDestination: 'ws/endpoint/hosts/delete'
+        subscriptionDestination: '/user/queue/endpoint/machine/remove',
+        requestDestination: '/ws/endpoint/machine/remove'
       },
       notify: {
         subscriptionDestination: '/topic/agentstatus/notifications',

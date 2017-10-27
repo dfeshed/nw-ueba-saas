@@ -2,10 +2,12 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
+import { getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 const dispatchToActions = {
-  toggleDeleteHostsModal
+  toggleDeleteHostsModal,
+  getPageOfMachines
 };
 
 const stateToComputed = ({ endpoint: { machines } }) => ({
@@ -21,6 +23,8 @@ const DeleteHostsModal = Component.extend({
       Machines.deleteHosts(this.get('selectedHostList'))
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.success');
+          // Refresh the page if deletion is successful
+          this.send('getPageOfMachines');
         })
         .catch(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.error');

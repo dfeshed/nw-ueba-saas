@@ -140,11 +140,11 @@ const stopScanRequest = (data) => {
   });
 };
 
-const deleteHosts = (data) => {
+const deleteHosts = (agentIds) => {
   return promiseRequest({
     method: 'deleteHosts',
     modelName: 'agent',
-    query: { data }
+    query: { data: { machineAgentIds: agentIds } }
   });
 };
 
