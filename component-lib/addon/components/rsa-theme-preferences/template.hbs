@@ -1,0 +1,15 @@
+<h4 class='rsa-form-radio-group-label'>{{t "userPreferences.theme.title"}}</h4>
+<label class="rsa-form-radio-label {{if (eq theme 'DARK') 'checked'}}">
+  {{radio-button
+    value="DARK"
+    groupValue=(readonly theme)
+    changed="updateTheme"}}
+  {{t "userPreferences.theme.dark"}}
+</label>
+<label class="rsa-form-radio-label {{if (eq theme 'LIGHT') 'checked'}}">
+  {{radio-button
+    value="LIGHT"
+    groupValue=(readonly theme)
+    changed="updateTheme"}}
+  {{t "userPreferences.theme.light"}}
+</label>

@@ -92,6 +92,12 @@ export default {
       twelveHour: '12hr',
       twentyFourHour: '24hr'
     },
+    theme: {
+      title: 'Theme',
+      dark: 'Dark',
+      light: 'Light',
+      error: 'There was an error attempting to save your Theme selection. Please try again. If this issue persists, please contact your system admin.'
+    },
     defaultLandingPage: {
       label: 'Default Landing Page',
       monitor: 'Monitor',

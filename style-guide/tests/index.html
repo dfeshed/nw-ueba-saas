@@ -24,6 +24,19 @@
     <script src="/testem.js" integrity=""></script>
     <script src="{{rootURL}}assets/vendor.js"></script>
     <script src="{{rootURL}}assets/test-support.js"></script>
+    <script>
+      //without this rsa-application-user-preferences-panel will fail to render
+      define('sa/actions/creators/preferences', ['exports'], function (exports) {
+        Object.defineProperty(exports, "__esModule", {
+          value: true
+        });
+        exports.updateTheme = updateTheme;
+        function updateTheme(theme) {
+          return function(dispatch) {
+          };
+        }
+      });
+    </script>
     <script src="{{rootURL}}assets/style-guide.js"></script>
     <script src="{{rootURL}}assets/tests.js"></script>
 
