@@ -23,6 +23,11 @@ export const selectedService = createSelector(
   }
 );
 
+export const hasServices = createSelector(
+  [_services],
+  (services) => !!(services && services.length)
+);
+
 // If summaryData object exists in state, returns true
 export const hasSummaryData = createSelector(
   [_summaryData],

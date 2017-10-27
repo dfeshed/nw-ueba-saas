@@ -11,14 +11,14 @@ const nowInSeconds = parseInt(+(new Date()) / 1000, 10);
 const oneWeekAgo = nowInSeconds - 7 * 24 * 60 * 60;
 
 test('it renders', function(assert) {
-  this.render(hbs`{{time-range startTime=now}}`);
+  this.render(hbs`{{bread-crumb/time-range startTime=now}}`);
   assert.equal(this.$('.rsa-investigate-time-range').length, 1, 'Expected root DOM element.');
 });
 
 test('it renders as expected with only a startTime', function(assert) {
 
   this.set('now', nowInSeconds);
-  this.render(hbs`{{time-range startTime=now}}`);
+  this.render(hbs`{{bread-crumb/time-range startTime=now}}`);
 
   assert.equal(this.$('.start').length, 1, 'Expected start time DOM element.');
   assert.equal(this.$('.end').length, 0, 'Expected to omit end time DOM element.');
@@ -28,7 +28,7 @@ test('it renders as expected with only a startTime', function(assert) {
 test('it renders as expected with only an endTime', function(assert) {
 
   this.set('now', nowInSeconds);
-  this.render(hbs`{{time-range endTime=now}}`);
+  this.render(hbs`{{bread-crumb/time-range endTime=now}}`);
 
   assert.equal(this.$('.end').length, 1, 'Expected end time DOM element.');
   assert.equal(this.$('.start').length, 0, 'Expected to omit start time DOM element.');
@@ -38,7 +38,7 @@ test('it renders as expected with only an endTime', function(assert) {
 test('it renders as expected with startTime and endTime that are days apart match', function(assert) {
 
   this.setProperties({ nowInSeconds, oneWeekAgo });
-  this.render(hbs`{{time-range startTime=oneWeekAgo endTime=nowInSeconds}}`);
+  this.render(hbs`{{bread-crumb/time-range startTime=oneWeekAgo endTime=nowInSeconds}}`);
 
   assert.equal(this.$('.start').length, 1, 'Expected start time DOM element.');
   assert.equal(this.$('.end').length, 1, 'Expected end time DOM element.');
@@ -48,7 +48,7 @@ test('it renders as expected with startTime and endTime that are days apart matc
 test('it renders as expected with startTime and endTime that match', function(assert) {
 
   this.set('now', nowInSeconds);
-  this.render(hbs`{{time-range startTime=now endTime=now}}`);
+  this.render(hbs`{{bread-crumb/time-range startTime=now endTime=now}}`);
 
   assert.equal(this.$('.start').length, 1, 'Expected start time DOM element.');
   assert.equal(this.$('.end').length, 1, 'Expected end time DOM element.');

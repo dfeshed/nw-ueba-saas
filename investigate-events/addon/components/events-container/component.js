@@ -1,13 +1,14 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import computed, { notEmpty } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { initializeServices } from 'investigate-events/actions/data-creators';
+import { hasServices } from 'investigate-events/reducers/investigate/services/selectors';
 
 const stateToComputed = (state) => ({
-  services: state.investigate.services.data,
-  isLoadingServices: state.investigate.services.isLoading,
-  isErrorServices: state.investigate.services.isError
+  hasServices: hasServices(state),
+  isErrorServices: state.investigate.services.isError,
+  isLoadingServices: state.investigate.services.isLoading
 });
 
 const dispatchToActions = {
@@ -18,10 +19,6 @@ const EventsContainer = Component.extend({
   classNames: ['events-container'],
   classNameBindings: ['isLoadingServices:wait', 'isErrorServices:rejected'],
   i18n: service(),
-
-  // Returns true if `services` are NOT null or an empty array.
-  @notEmpty('services')
-  hasServices: false,
 
   // Return the desired message to display for the `Retry` button.
   @computed('hasServices', 'isErrorServices', 'i18n')

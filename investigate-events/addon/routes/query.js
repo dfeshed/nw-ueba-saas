@@ -7,6 +7,7 @@ import {
 import {
   setMetaPanelSize,
   setQueryParams,
+  setQueryString,
   setReconPanelSize,
   setSelectedEvent,
   setReconOpen,
@@ -67,15 +68,28 @@ export default Route.extend({
   model(params) {
     // set query params to state
     const { eventId, metaPanelSize, reconSize } = params;
+    const r = this.get('redux');
     const qp = parseEventQueryUri(params.filter);
-    qp.sessionId = parseInt(eventId, 10);
-    this.get('redux').dispatch(setQueryParams(qp));
-    this.get('redux').dispatch(setMetaPanelSize(metaPanelSize));
-    this.get('redux').dispatch(setReconPanelSize(reconSize));
-    if (eventId && eventId !== -1) {
-      this.get('redux').dispatch(setReconOpen());
+    const hasValidSessionId = (eventId && !Number.isNaN(eventId));
+
+    // Add sessionId(aka eventId) to query params if we have one. This is a
+    // short-cut so we don't have to dispatch a seperate event.
+    if (hasValidSessionId) {
+      qp.sessionId = parseInt(eventId, 10);
     }
-    this.get('redux').dispatch(initializeInvestigate());
+
+    // Dispatch all the thing!!!
+    r.dispatch(setQueryParams(qp));
+    r.dispatch(setQueryString(''));
+    r.dispatch(setMetaPanelSize(metaPanelSize));
+    r.dispatch(setReconPanelSize(reconSize));
+    if (hasValidSessionId) {
+      r.dispatch(setReconOpen());
+    } else {
+      r.dispatch(setReconClosed());
+      r.dispatch(setSelectedEvent(null));
+    }
+    r.dispatch(initializeInvestigate());
   },
 
   actions: {

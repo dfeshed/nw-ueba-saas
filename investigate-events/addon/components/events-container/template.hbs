@@ -1,13 +1,11 @@
 {{#if isLoadingServices}}
   {{rsa-loader size='large' label=(t 'investigate.services.loading')}}
 {{else if hasServices}}
-  {{query-bar}}
+  {{events-container/query-bar}}
 {{else}}
   {{#rsa-panel-message message=message}}
-    {{#rsa-form-button}}
-      <span {{action (action 'initializeServices')}}>
-        {{t 'investigate.tryAgain'}}
-      </span>
+    {{#rsa-form-button defaultAction=(action 'initializeServices')}}
+      <span>{{t 'investigate.tryAgain'}}</span>
     {{/rsa-form-button}}
   {{/rsa-panel-message}}
 {{/if}}

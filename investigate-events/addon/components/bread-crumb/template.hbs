@@ -43,7 +43,7 @@
       class="rsa-investigate-breadcrumb__crumb"
     }}
       {{rsa-icon style='lined' name='clock-2'}}
-      {{time-range startTime=startTime endTime=endTime}}
+      {{bread-crumb/time-range startTime=startTime endTime=endTime}}
     {{/rsa-form-button}}
   {{/rsa-content-tethered-panel-trigger}}
   {{#rsa-content-tethered-panel
@@ -109,7 +109,7 @@
   {{/each}}
 
   {{#if isAddingMeta}}
-    {{query-input
+    {{events-container/query-input
       class='rsa-investigate-breadcrumb__query-input'
       placeholder='Enter Value'
     }}

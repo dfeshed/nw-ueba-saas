@@ -16,7 +16,6 @@ const stateToComputed = (state) => {
   return {
     serviceObject: selectedService(state),
     servicesWithURI: servicesWithURI(state),
-    serviceData: state.investigate.services.data,
     queryNode: state.investigate.queryNode,
     startTime: state.investigate.queryNode.startTime,
     endTime: state.investigate.queryNode.endTime,
@@ -52,7 +51,7 @@ const BreadCrumbComponent = Component.extend({
    */
   @computed('i18n', 'aliases', 'dateFormat.selected.format',
             'timeFormat.selected.format', 'timezone.selected.zoneId')
-  _opts(i18n, aliases, dateFormat, timeFormat, timeZone) {
+  opts(i18n, aliases, dateFormat, timeFormat, timeZone) {
     return {
       aliases,
       dateTimeFormat: `${dateFormat} ${timeFormat}`,
@@ -101,7 +100,7 @@ const BreadCrumbComponent = Component.extend({
    * `deleteUri`: URI for the hyperlink to remove this filter condition.
    * @public
    */
-  @computed('queryNode', 'language', '_opts')
+  @computed('queryNode', 'language', 'opts')
   crumbs(queryNode, language, opts) {
     const { metaFilter } = queryNode;
     const allConditions = metaFilter.conditions;

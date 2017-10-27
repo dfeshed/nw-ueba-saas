@@ -15,7 +15,7 @@ const broker = getBrokerService();
 const timeRange = { id: 'LAST_24_HOURS', name: 'Last 24 Hours', value: 1, unit: 'days' };
 
 test('it renders', function(assert) {
-  this.render(hbs`{{query-bar}}`);
+  this.render(hbs`{{events-container/query-bar}}`);
   assert.equal(this.$('.rsa-investigate-query-bar').length, 1, 'Expected root DOM element.');
 });
 
@@ -24,7 +24,7 @@ test('it disables(CSS) the submit button if required inputs are not selected', f
   new DataHelper(this.get('redux'))
     .initializeData();
   this.set('selectedService', null);
-  this.render(hbs`{{query-bar selectedService=selectedService}}`);
+  this.render(hbs`{{events-container/query-bar selectedService=selectedService}}`);
   assert.ok(
     this.$('.rsa-investigate-query-bar__submit').hasClass('is-disabled'),
     'Expected is-disabled CSS class on the submit button.'
@@ -37,7 +37,7 @@ skip('it enables(CSS) the submit button if required inputs are selected', functi
     .initializeData();
   this.set('selectedService', broker);
   this.set('selectedTimeRange', timeRange);
-  this.render(hbs`{{query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange}}`);
+  this.render(hbs`{{events-container/query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange}}`);
   assert.notOk(
     this.$('.rsa-investigate-query-bar__submit').hasClass('is-disabled'),
     'Did not expect is-disabled CSS class on the submit button.'
