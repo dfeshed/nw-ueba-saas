@@ -1513,6 +1513,10 @@ export default {
   },
   investigateFiles: {
     title: 'ja_Files',
+    button: {
+      exportToCSV: 'ja_Export To CSV',
+      downloading: 'ja_Downloading'
+    },
     message: {
       noResultsMessage: 'ja_No matching files were found'
     },

@@ -3,9 +3,9 @@ import { createSelector } from 'reselect';
 import { FILTER_TYPES } from './filter-type';
 
 // Contains all the expression saved + newly added expression from the UI
-const expressionList = (state) => state.filter.expressionList || [];
-const lastFilterAdded = (state) => state.filter.lastFilterAdded;
-const schema = (state) => state.schema.schema || [];
+const expressionList = (state) => state.files.filter.expressionList || [];
+const lastFilterAdded = (state) => state.files.filter.lastFilterAdded;
+const schema = (state) => state.files.schema.schema || [];
 
 export const searchableColumns = createSelector(
   schema,

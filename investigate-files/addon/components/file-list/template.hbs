@@ -2,7 +2,7 @@
   lazy=true
   items=files
   columnsConfig=columnConfig}}
-  {{#rsa-data-table/header enableColumnFilter=true enableColumnSelector=true as |column|}}
+  {{#file-list/header enableColumnFilter=true enableColumnSelector=true as |column|}}
     {{#if column.headerComponentClass}}
       <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
         {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' items)}}
@@ -14,7 +14,7 @@
     {{#unless column.disableSort}}
       {{file-list/sort-button sortField=sortField column=column isSortDescending=isSortDescending sortBy=(action 'sortBy')}}
     {{/unless}}
-  {{/rsa-data-table/header}}
+  {{/file-list/header}}
   {{#if (eq areFilesLoading 'sorting')}}
     <centered>
       {{rsa-loader size='larger'}}

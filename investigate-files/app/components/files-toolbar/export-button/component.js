@@ -1,0 +1,1 @@
+export { default } from 'investigate-files/components/files-toolbar/export-button/component';

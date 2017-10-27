@@ -1513,6 +1513,10 @@ export default {
   },
   investigateFiles: {
     title: 'Files',
+    button: {
+      exportToCSV: 'Export To CSV',
+      downloading: 'Downloading'
+    },
     message: {
       noResultsMessage: 'No matching files were found'
     },

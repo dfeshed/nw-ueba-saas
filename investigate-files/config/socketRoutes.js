@@ -17,6 +17,10 @@ module.exports = function(environment) {
       search: {
         subscriptionDestination: '/user/queue/endpoint/data/files/search',
         requestDestination: '/ws/endpoint/data/files/search'
+      },
+      exportFile: {
+        subscriptionDestination: '/user/queue/endpoint/data/files/export',
+        requestDestination: '/ws/endpoint/data/files/export'
       }
     }
   };

@@ -160,12 +160,49 @@ const _getFirstPageOfFiles = () => {
 };
 
 /**
+ * Action creator for exporting files.
+ * @returns {function(*)}
+ * @public
+ */
+const exportFileAsCSV = () => {
+  return (dispatch, getState) => {
+    const { files } = getState();
+    const { sortField, isSortDescending } = files.fileList;
+    const { schema } = files.schema;
+    const { expressionList } = files.filter;
+    const columns = schema.filter((field) => field.defaultProjection)
+      .map((field) => field.name);
+    dispatch({
+      type: ACTION_TYPES.DOWNLOAD_FILE_AS_CSV,
+      promise: File.fileExport({ sortField, isSortDescending }, expressionList, columns),
+      meta: {
+        onSuccess: (response) => Logger.debug(ACTION_TYPES.DOWNLOAD_FILE_AS_CSV, response)
+      }
+    });
+  };
+};
+
+/**
  * Action creator for setting the currently active filter.
  * @param filter
  * @returns {function(*)}
  * @public
  */
 const setActiveFilter = (filter) => ({ type: ACTION_TYPES.SET_ACTIVE_FILTER, payload: filter });
+
+/**
+ * Action creator for updating the visible columns in schema
+ * @param column
+ * @returns {function(*)}
+ * @public
+ */
+const updateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+
+/**
+ * Action creator for for resetting the download link.
+ * @public
+ */
+const resetDownloadId = () => ({ type: ACTION_TYPES.RESET_DOWNLOAD_ID });
 
 export {
   addSystemFilter,
@@ -177,5 +214,8 @@ export {
   getPageOfFiles,
   sortBy,
   fetchSchemaInfo,
-  setActiveFilter
+  setActiveFilter,
+  exportFileAsCSV,
+  updateColumnVisibility,
+  resetDownloadId
 };

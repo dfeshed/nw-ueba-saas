@@ -26,4 +26,23 @@ const fetchFiles = (pageNumber, sort, expressionList) => {
   });
 };
 
-export default { fetchFiles };
+/**
+ * Exports filtered file entries to csv
+ * @public
+ */
+const fileExport = (sort, expressionList, fields) => {
+  let query = {};
+
+  const { sortField, isSortDescending: isDescending } = sort;
+  query = addSortBy(query, sortField, isDescending);
+  query = addFilter(query, expressionList);
+  query.fields = fields;
+
+  return promiseRequest({
+    method: 'exportFile',
+    modelName: 'files',
+    query: { data: query }
+  });
+};
+
+export default { fetchFiles, fileExport };

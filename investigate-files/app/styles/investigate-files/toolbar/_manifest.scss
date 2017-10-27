@@ -52,3 +52,17 @@
   }
 }
 
+.rsa-files-toolbar-1 {
+  .title-header{
+    display: inline-block;
+    width: 100%;
+  }
+  .file-export-button {
+    float: right;
+  }
+  .export-files-iframe {
+    height: 0;
+    display: none;
+  }
+}
+

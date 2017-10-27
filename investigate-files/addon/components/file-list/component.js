@@ -7,14 +7,14 @@ import {
   getPageOfFiles
 } from 'investigate-files/actions/data-creators';
 
-const stateToComputed = ({ files }) => ({
-  columnConfig: columns(files),
-  loadMoreStatus: files.fileList.loadMoreStatus,
-  areFilesLoading: files.fileList.areFilesLoading,
-  files: files.fileList.files, // All visible files
-  totalItems: files.fileList.totalItems,
-  sortField: files.fileList.sortField, // Currently applied sort on file list
-  isSortDescending: files.fileList.isSortDescending
+const stateToComputed = (state) => ({
+  columnConfig: columns(state),
+  loadMoreStatus: state.files.fileList.loadMoreStatus,
+  areFilesLoading: state.files.fileList.areFilesLoading,
+  files: state.files.fileList.files, // All visible files
+  totalItems: state.files.fileList.totalItems,
+  sortField: state.files.fileList.sortField, // Currently applied sort on file list
+  isSortDescending: state.files.fileList.isSortDescending
 });
 
 const dispatchToActions = {

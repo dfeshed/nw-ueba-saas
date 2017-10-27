@@ -5,7 +5,6 @@ import computed from 'ember-computed-decorators';
 import run from 'ember-runloop';
 import service from 'ember-service/inject';
 
-import layout from './template';
 import { listWithoutDefault, appliedFilters } from 'investigate-files/reducers/filter/selectors';
 import {
   removeFilter,
@@ -13,9 +12,9 @@ import {
   addFilter
 } from 'investigate-files/actions/data-creators';
 
-const stateToComputed = ({ files }) => ({
-  allFilters: listWithoutDefault(files), // Excluding the default filter from the list
-  appliedFilters: appliedFilters(files)
+const stateToComputed = (state) => ({
+  allFilters: listWithoutDefault(state), // Excluding the default filter from the list
+  appliedFilters: appliedFilters(state)
 });
 
 const dispatchToActions = {
@@ -25,8 +24,6 @@ const dispatchToActions = {
 };
 
 const ContentFilter = Component.extend({
-  layout,
-
   tagName: 'hbox',
 
   eventBus: service(),

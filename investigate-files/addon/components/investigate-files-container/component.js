@@ -10,13 +10,14 @@ import {
   resetFilters,
   getPageOfFiles,
   getFilter,
-  fetchSchemaInfo
+  fetchSchemaInfo,
+  resetDownloadId
 } from 'investigate-files/actions/data-creators';
 
-const stateToComputed = ({ files }) => ({
-  isSchemaLoaded: isSchemaLoaded(files),
-  areFilesLoading: files.fileList.areFilesLoading,
-  hasFiles: hasFiles(files)
+const stateToComputed = (state) => ({
+  isSchemaLoaded: isSchemaLoaded(state),
+  areFilesLoading: state.files.fileList.areFilesLoading,
+  hasFiles: hasFiles(state)
 });
 
 const dispatchToActions = {
@@ -24,7 +25,8 @@ const dispatchToActions = {
   resetFilters,
   getFilter,
   getPageOfFiles,
-  fetchSchemaInfo
+  fetchSchemaInfo,
+  resetDownloadId
 };
 
 /**
@@ -50,6 +52,10 @@ const Files = Component.extend({
       const dataTableTotalWidth = rsaDataTableBody[0].scrollWidth;
       $('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
     }
+  },
+
+  willDestroyElement() {
+    this.send('resetDownloadId');
   },
 
   init() {

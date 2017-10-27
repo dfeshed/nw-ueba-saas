@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import Immutable from 'seamless-immutable';
 
 /**
  * Files table column width
@@ -26,7 +27,7 @@ const SUPPORTED_SORT_TYPES = [
   'mac.resources.company'
 ];
 
-const schema = (state) => state.schema.schema || [];
+const schema = (state) => state.files.schema.schema || Immutable.from([]);
 
 export const columns = createSelector(
   schema,
@@ -48,7 +49,9 @@ export const columns = createSelector(
       };
 
     });
-    return updatedSchema;
+    // Making it as mutable as schema is passed down to data-table component
+    // Data-table component is expecting simple array/ember array
+    return updatedSchema.asMutable();
   }
 );
 

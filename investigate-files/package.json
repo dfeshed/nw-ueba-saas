@@ -28,7 +28,8 @@
     "ember-cli-htmlbars": "^2.0.1",
     "ember-moment": "7.2.0",
     "ember-redux": "3.0.0",
-    "flexi": "2.0.1"
+    "flexi": "2.0.1",
+    "ember-cli-seamless-immutable-shim": "1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
@@ -58,7 +59,8 @@
     "ember-symbol-observable": "1.0.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "loader.js": "^4.2.3",
-    "lodash-es": "4.17.4"
+    "lodash-es": "4.17.4",
+    "seamless-immutable": "7.1.2"
   },
   "engines": {
     "node": "7.5.0"
