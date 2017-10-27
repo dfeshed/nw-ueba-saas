@@ -22,6 +22,10 @@ export default handleActions({
     return _initialState.merge(payload.queryNode, { deep: true });
   },
 
+  [ACTION_TYPES.RESET_QUERYNODE]: (state) => {
+    return state.merge(_initialState, { deep: true });
+  },
+
   [ACTION_TYPES.SESSION_SELECTED]: (state, { payload }) => {
     return state.set('sessionId', payload);
   },

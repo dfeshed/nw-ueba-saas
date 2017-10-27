@@ -97,6 +97,22 @@ const _initializeServices = (dispatch, getState) => {
 };
 
 /**
+ * Prepare state for a fresh query. We're only checking if `serviceId` or
+ * `sessionId` are set. If they are, then state is probably "dirty", so we'll
+ * reset it to a default state.
+ * @return {function} A Redux thunk
+ * @public
+ */
+export const initializeQuery = () => {
+  return (dispatch, getState) => {
+    const { serviceId, sessionId } = getState().investigate.queryNode;
+    if (serviceId || sessionId) {
+      dispatch({ type: ACTION_TYPES.RESET_QUERYNODE });
+    }
+  };
+};
+
+/**
  * Redux thunk to get services. This is the same as `_initializeServices`, but
  * is not wrapped in a promise.
  * @param {function} dispatch

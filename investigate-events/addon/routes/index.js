@@ -1,7 +1,10 @@
 import Route from 'ember-route';
 import service from 'ember-service/inject';
 
-import { initializeServices } from 'investigate-events/actions/data-creators';
+import {
+  initializeQuery,
+  initializeServices
+} from 'investigate-events/actions/data-creators';
 
 export default Route.extend({
   accessControl: service(),
@@ -14,6 +17,8 @@ export default Route.extend({
     } else {
       // Get services
       this.get('redux').dispatch(initializeServices());
+      // Initialize the query state
+      this.get('redux').dispatch(initializeQuery());
     }
   }
 });
