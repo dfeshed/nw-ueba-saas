@@ -10,6 +10,7 @@ import triggerNativeEvent from '../../../../helpers/trigger-native-event';
 import RSVP from 'rsvp';
 import $ from 'jquery';
 import wait from 'ember-test-helpers/wait';
+import { getAssigneeOptions } from 'respond/selectors/users';
 
 let initialize;
 
@@ -121,11 +122,11 @@ test('All of the assignee options appear in the dropdown button, and clicking on
   assert.expect(3);
   return initialize.then(() => {
     const redux = this.get('redux');
-    const { respond: { users: { enabledUsers } } } = redux.getState();
-    this.set('users', enabledUsers);
+    const state = redux.getState();
+    this.set('users', getAssigneeOptions(state));
     this.set('itemsSelected', [{}]); // ensure that buttons are not disabled
-    this.on('updateItem', function() {
-      assert.ok(true);
+    this.on('updateItem', function(entityIds, field, value) {
+      assert.equal(value, null, 'The first value selected is (Unassigned) which must be null');
     });
     this.render(hbs`
       {{rsa-incidents/toolbar-controls
@@ -139,8 +140,8 @@ test('All of the assignee options appear in the dropdown button, and clicking on
         const optionText = $(item).text().trim();
         return optionText.length ? optionText : null;
       });
-      assert.equal($options.length, 6, 'There are 6 assignee options');
-      assert.equal(assigneeNames.length, 6, 'Each assignee option has a text value'); // ensure no empty options
+      assert.equal($options.length, 7, 'There are 7 assignee options: 6 users plus 1 (unassigned) value');
+      assert.equal(assigneeNames.length, 7, 'Each assignee option has a text value'); // ensure no empty options
       selectFirstOption();
     });
   });

@@ -1,121 +1,128 @@
+{{#if (eq infoStatus 'completed')}}
 {{! Created time}}
-<p class="created">
-  <label>{{t 'respond.incident.created'}}:</label>
-  <span>
-    {{rsa-content-datetime
-      timestamp=info.created
-      asTimeAgo=false
-      displayTime=true
-      displayDate=true
-      displayMilliseconds=false}}
-  </span>
-</p>
+  <p class="created">
+    <label>{{t 'respond.incident.created'}}:</label>
+    <span>
+      {{rsa-content-datetime
+        timestamp=info.created
+        asTimeAgo=false
+        displayTime=true
+        displayDate=true
+        displayMilliseconds=false}}
+    </span>
+  </p>
 
-{{! Created by (rule name or user name)}}
-<p class="by">
-  <label>{{if info.createdFromRule 'Rule' 'By'}}:</label>
-  <span>{{info.createdBy}}</span>
-</p>
+  {{! Created by (rule name or user name)}}
+  <p class="by">
+    <label>{{if info.createdFromRule 'Rule' 'By'}}:</label>
+    <span>{{info.createdBy}}</span>
+  </p>
 
-<p class="score">
-  <label>{{t 'respond.incident.riskScore'}}</label>
-  <span>{{info.riskScore}}</span>
-</p>
+  <p class="score">
+    <label>{{t 'respond.incident.riskScore'}}</label>
+    <span>{{info.riskScore}}</span>
+  </p>
 
-{{! Priority}}
-<p class="priority">
-  <label>{{t 'respond.incident.priority'}}:</label>
-  {{#if accessControl.respondCanManageIncidents}}
-    <div class="edit-button">
-      {{#power-select
-        options=priorityTypes
-        selected=info.priority
-        matchTriggerWidth=false
-        searchEnabled=false
-        disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-        triggerComponent=(component "respond-common/button-trigger"
-          isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-          label=(t (concat 'respond.priority.' info.priority)))
-        onchange=(action 'update' info.id 'priority') as |option|}}
-        {{t (concat 'respond.priority.' option)}}
-      {{/power-select}}
-    </div>
-  {{else}}
-    <span>{{t (concat 'respond.priority.' info.priority)}}</span>
-  {{/if}}
-</p>
+  {{! Priority}}
+  <p class="priority">
+    <label>{{t 'respond.incident.priority'}}:</label>
+    {{#if accessControl.respondCanManageIncidents}}
+      <div class="edit-button">
+        {{#power-select
+          options=priorityTypes
+          selected=info.priority
+          matchTriggerWidth=false
+          searchEnabled=false
+          disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+          triggerComponent=(component "respond-common/button-trigger"
+            isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+            label=(t (concat 'respond.priority.' info.priority)))
+          onchange=(action 'update' info.id 'priority') as |option|}}
+          {{t (concat 'respond.priority.' option)}}
+        {{/power-select}}
+      </div>
+    {{else}}
+      <span>{{t (concat 'respond.priority.' info.priority)}}</span>
+    {{/if}}
+  </p>
 
-{{! Status}}
-<p class="status">
-  <label>{{t 'respond.incident.status'}}:</label>
-  {{#if accessControl.respondCanManageIncidents}}
-    <div class="edit-button">
-      {{#power-select
-        options=statusTypes
-        selected=info.status
-        matchTriggerWidth=false
-        searchEnabled=false
-        triggerComponent=(component "respond-common/button-trigger"
-          label=(t (concat 'respond.status.' info.status)))
-        onchange=(action 'update' info.id 'status') as |option|}}
-        {{t (concat 'respond.status.' option)}}
-      {{/power-select}}
-    </div>
-  {{else}}
-    <span>{{t (concat 'respond.status.' info.status)}}</span>
-  {{/if}}
-</p>
+  {{! Status}}
+  <p class="status">
+    <label>{{t 'respond.incident.status'}}:</label>
+    {{#if accessControl.respondCanManageIncidents}}
+      <div class="edit-button">
+        {{#power-select
+          options=statusTypes
+          selected=info.status
+          matchTriggerWidth=false
+          searchEnabled=false
+          triggerComponent=(component "respond-common/button-trigger"
+            label=(t (concat 'respond.status.' info.status)))
+          onchange=(action 'update' info.id 'status') as |option|}}
+          {{t (concat 'respond.status.' option)}}
+        {{/power-select}}
+      </div>
+    {{else}}
+      <span>{{t (concat 'respond.status.' info.status)}}</span>
+    {{/if}}
+  </p>
 
-{{! Assignee}}
-<p class="assignee">
-  <label>{{t 'respond.incident.assignee'}}:</label>
-  {{#if accessControl.respondCanManageIncidents}}
-    <div class="edit-button">
-      {{#power-select
-        options=users
-        matchTriggerWidth=false
-        disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-        searchEnabled=false
-        triggerComponent=(component "respond-common/button-trigger"
-          isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
-          label=(if info.assignee (or info.assignee.name info.assignee.id) (t 'respond.assignee.none')))
-        onchange=(action 'update' info.id 'assignee') as |option|}}
-        {{or option.name option.id}}
-      {{/power-select}}
-    </div>
-  {{else}}
-    <span>{{if info.assignee info.assignee.name (t 'respond.assignee.none')}}</span>
-  {{/if}}
-</p>
+  {{! Assignee}}
+  <p class="assignee">
+    <label>{{t 'respond.incident.assignee'}}:</label>
+    {{#if accessControl.respondCanManageIncidents}}
+      <div class="edit-button">
+        {{#power-select
+          options=users
+          selected=selectedUserOption
+          matchTriggerWidth=false
+          disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+          searchEnabled=false
+          triggerComponent=(component "respond-common/button-trigger"
+            isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+            label=assigneeName)
+          onchange=(action 'handleUpdateAssignee' info.id 'assignee') as |option|}}
+          {{#if (eq option.id 'UNASSIGNED')}}
+            {{unassignedLabel}}
+          {{else}}
+            {{or option.name option.id}}
+          {{/if}}
+        {{/power-select}}
+      </div>
+    {{else}}
+      <span>{{if info.assignee info.assignee.name (t 'respond.assignee.none')}}</span>
+    {{/if}}
+  </p>
 
-{{! Sources ("Event Stream Analysis", "ECAT", etc)}}
-<p class="sources">
-  <label>{{t 'respond.incident.sources'}}:</label>
-  <span>
-    {{#each info.sources as |source|}}
-      <span class="source">{{t (concat 'respond.alert.source.' source)}}</span>
-    {{/each}}
-  </span>
-</p>
+  {{! Sources ("Event Stream Analysis", "ECAT", etc)}}
+  <p class="sources">
+    <label>{{t 'respond.incident.sources'}}:</label>
+    <span>
+      {{#each info.sources as |source|}}
+        <span class="source">{{t (concat 'respond.alert.source.' source)}}</span>
+      {{/each}}
+    </span>
+  </p>
 
-{{! Categories ("Malware", "C2", etc)}}
-<p class="categories">
-  <label>{{t 'respond.incident.categories'}}:</label>
-  <span>
-    {{#each info.categories as |category|}}
-      <span class="category">
-        <span class="parent">{{category.parent}}:</span>
-        <span class="name">{{category.name}}</span>
-      </span>
-    {{/each}}
-  </span>
-</p>
+  {{! Categories ("Malware", "C2", etc)}}
+  <p class="categories">
+    <label>{{t 'respond.incident.categories'}}:</label>
+    <span>
+      {{#each info.categories as |category|}}
+        <span class="category">
+          <span class="parent">{{category.parent}}:</span>
+          <span class="name">{{category.name}}</span>
+        </span>
+      {{/each}}
+    </span>
+  </p>
 
 
-{{! Alert count}}
-<p class="catalyst-count">
-  <label>{{t 'respond.incident.catalystCount'}}:</label>
-  <span>
-    {{info.alertCount}} {{t 'respond.incident.alertCount'}}, {{info.eventCount}} {{t 'respond.incident.eventCount'}}
-  </span>
-</p>
+  {{! Alert count}}
+  <p class="catalyst-count">
+    <label>{{t 'respond.incident.catalystCount'}}:</label>
+    <span>
+      {{info.alertCount}} {{t 'respond.incident.alertCount'}}, {{info.eventCount}} {{t 'respond.incident.eventCount'}}
+    </span>
+  </p>
+{{/if}}

@@ -85,12 +85,16 @@ export default Component.extend({
     },
 
     updateIncidentAssignee(entityIds, updatedValue) {
+      // If unassigning the incident, set the value to null
+      if (updatedValue.id === 'UNASSIGNED') {
+        updatedValue = null;
+      }
       const update = this._update(entityIds, 'assignee', updatedValue);
 
       if (this.get('isBulkSelection')) { // if a bulk update
         const { confirm, i18n, updateConfirmationDialogId } = this.getProperties('confirm', 'i18n', 'updateConfirmationDialogId');
         const fieldLabel = i18n.t('respond.incidents.list.assignee');
-        const valueLabel = updatedValue.name;
+        const valueLabel = updatedValue ? updatedValue.name || updatedValue.id : i18n.t('respond.assignee.none');
         confirm(updateConfirmationDialogId, { fieldLabel, valueLabel, count: entityIds.length }, update);
       } else {
         update();

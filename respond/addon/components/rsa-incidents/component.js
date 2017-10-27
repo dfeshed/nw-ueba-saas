@@ -1,15 +1,17 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import * as DictionaryActions from 'respond/actions/creators/dictionary-creators';
 import columns from './columns';
 import { hasSelectedClosedIncidents } from 'respond/selectors/incidents';
+import { getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
+import { getAssigneeOptions } from 'respond/selectors/users';
+
 
 const stateToComputed = (state) => {
-  const { respond: { dictionaries, users } } = state;
   return {
-    priorityTypes: dictionaries.priorityTypes,
-    statusTypes: dictionaries.statusTypes,
-    users: users.enabledUsers,
+    priorityTypes: getPriorityTypes(state),
+    statusTypes: getStatusTypes(state),
+    users: getAssigneeOptions(state),
     hasSelectedClosedIncidents: hasSelectedClosedIncidents(state)
   };
 };

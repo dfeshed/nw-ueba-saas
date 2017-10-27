@@ -47,7 +47,11 @@
         label=(t 'respond.incidents.actions.changeAssignee'))
       onchange=(action 'updateIncidentAssignee' itemsSelected) as |option|}}
 
-      {{or option.name option.id}}
+      {{#if (eq option.id 'UNASSIGNED')}}
+        {{t 'respond.assignee.none'}}
+      {{else}}
+        {{or option.name option.id}}
+      {{/if}}
 
     {{/power-select}}
   </div>

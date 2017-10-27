@@ -3,6 +3,7 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 const incidentsState = (state) => state.respond.incidents;
+const incidentState = (state) => state.respond.incident;
 
 const closedStatuses = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
 
@@ -20,4 +21,34 @@ export const hasSelectedClosedIncidents = createSelector(
     const { itemsSelected, items } = incidentsState;
     return items.some((item) => itemsSelected.includes(item.id) && closedStatuses.includes(item.status));
   }
+);
+
+export const getIncidentId = createSelector(
+  incidentState,
+  (incidentState) => incidentState.id
+);
+
+export const getIncidentInfo = createSelector(
+  incidentState,
+  (incidentState) => incidentState.info
+);
+
+export const getIncidentInfoStatus = createSelector(
+  incidentState,
+  (incidentState) => incidentState.infoStatus
+);
+
+export const getStorylineStatus = createSelector(
+  incidentState,
+  (incidentState) => incidentState.storylineStatus
+);
+
+export const getViewMode = createSelector(
+  incidentState,
+  (incidentState) => incidentState.viewMode
+);
+
+export const getInspectorWidth = createSelector(
+  incidentState,
+  (incidentState) => incidentState.inspectorWidth
 );
