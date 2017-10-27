@@ -72,6 +72,20 @@ const FilterQuery = EmberObject.extend({
   },
 
   /**
+   * Adds a filter object directly to the filters array. All convenience methods (addFilter, addRangeFilter, etc)
+   * use this to update the filters array, and it provides direct access to consumers for custom filters
+   * @param filter object
+   * @public
+   */
+  appendFilter(filter) {
+    if (isPresent(filter)) {
+      const filters = this.get('_filters');
+      this.set('_filters', [...filters, filter]);
+    }
+    return this;
+  },
+
+  /**
    * Provides support for adding a basic (single or multi-value) filter, but not a range or isNull/hasValue filter
    * @method addFilter
    * @public
@@ -88,13 +102,12 @@ const FilterQuery = EmberObject.extend({
     if (isEmpty(values)) {
       return this; // noop if there are no values to filter by
     }
-    const filters = this.get('_filters');
     const filter = this.getFilter(field);
 
     if (isPresent(filter)) {
       this._ammendFilter(filter, values);
     } else {
-      this.set('_filters', [...filters, { field, values }]);
+      this.appendFilter({ field, values });
     }
 
     return this;
@@ -139,8 +152,7 @@ const FilterQuery = EmberObject.extend({
     if (isEmpty(field)) {
       return this;
     }
-    const filters = this.get('_filters');
-    this.set('_filters', [...filters, { field, isNull: false }]);
+    this.appendFilter({ field, isNull: false });
     return this;
   },
 
@@ -154,8 +166,7 @@ const FilterQuery = EmberObject.extend({
     if (isEmpty(field)) {
       return this;
     }
-    const filters = this.get('_filters');
-    this.set('_filters', [...filters, { field, isNull: true }]);
+    this.appendFilter({ field, isNull: true });
     return this;
   },
 
@@ -174,15 +185,14 @@ const FilterQuery = EmberObject.extend({
     }
     this.removeFilter(field); // remove a pre-existing filter on that field (if it exists)
 
-    const filters = this.get('_filters');
-    this.set('_filters', [...filters, {
+    this.appendFilter({
       field,
       range: {
         from,
         to,
         type
       }
-    }]);
+    });
 
     return this;
   },

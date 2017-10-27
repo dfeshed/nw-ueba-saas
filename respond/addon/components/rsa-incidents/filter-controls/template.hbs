@@ -53,6 +53,12 @@
     onchange=(action "assigneeChanged") as |users|}}
     {{or users.name users.id}}
   {{/power-select-multiple}}
+  <label class="rsa-form-checkbox-label show-only-unassigned {{if (eq isUnassignedFilter true) 'checked'}}">
+    {{rsa-form-checkbox
+      checked=(eq isUnassignedFilter true)
+      change=(action 'toggleIsUnassignedFilter')}}
+    <span>{{t 'respond.incidents.filters.showOnlyUnassigned'}}</span>
+  </label>
 </section>
 <section class="filter-option category-filter">
   <h2>{{ t 'respond.incident.categories'}}</h2>

@@ -683,7 +683,8 @@ export default {
         customDateRange: 'Custom Date Range',
         customStartDate: 'Start Date',
         customEndDate: 'End Date',
-        customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date'
+        customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date',
+        showOnlyUnassigned: 'Show only unassigned incidents'
       },
       selectionCount: '{{selectionCount}} selected',
       label: 'Incidents',

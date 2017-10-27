@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { debounce } from 'ember-runloop';
@@ -16,6 +16,7 @@ const stateToComputed = (state) => {
     priorityFilters: itemsFilters.priority || [],
     statusFilters: itemsFilters.status || [],
     idFilter: itemsFilters.id,
+    isUnassignedFilter: itemsFilters.assignee && itemsFilters.assignee.isNull,
     assigneeFilters: itemsFilters['assignee.id'],
     priorityTypes,
     statusTypes,
@@ -86,6 +87,15 @@ const IncidentFilters = Component.extend({
       const priorityFilters = this.get('priorityFilters');
       this.get('updateFilter')({
         priority: priorityFilters.includes(priority) ? priorityFilters.without(priority) : [...priorityFilters, priority]
+      });
+    },
+
+    toggleIsUnassignedFilter() {
+      this.get('updateFilter')({
+        assignee: {
+          field: 'assignee',
+          isNull: !this.get('isUnassignedFilter')
+        }
       });
     },
 

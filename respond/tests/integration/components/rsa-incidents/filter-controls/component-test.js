@@ -154,3 +154,17 @@ test('If the incident id filter is provided a valid input, the updateFilter func
     });
   });
 });
+
+test('The Show-only-unassigned-incidents filter appears in the filter panel', function(assert) {
+  assert.expect(3);
+  return initialize.then(() => {
+    this.on('updateFilter', function(filter) {
+      assert.equal(filter.assignee.field, 'assignee', 'When toggled, the filter has an assignee property');
+      assert.ok(filter.assignee.isNull === true || filter.assignee.isNull === false, 'There is a boolean value for the filter\'s isNull prop');
+    });
+    this.render(hbs`{{rsa-incidents/filter-controls updateFilter=(action 'updateFilter')}}`);
+    const $input = this.$('.show-only-unassigned input[type=checkbox]');
+    assert.equal($input.length, 1, 'The show-only-unassigned checkbox is in the dom');
+    $input.click();
+  });
+});
