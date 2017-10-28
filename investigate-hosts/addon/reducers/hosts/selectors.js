@@ -15,7 +15,7 @@ export const areSomeScanning = createSelector(
     }
     if (selectedHostList.length) {
       return machines.some((item) => {
-        return selectedHostList.includes(item.id) && (item.agentStatus && item.agentStatus.scanStatus !== 'idle');
+        return selectedHostList.some((host) => host.id === item.id) && (item.agentStatus && item.agentStatus.scanStatus !== 'idle');
       });
     }
     return false;
@@ -47,7 +47,7 @@ export const processedHostList = createSelector(
         ...machine,
         canStartScan,
         hasScanStatus,
-        selected: selectedHostList.includes(machine.id)
+        selected: selectedHostList.some((host) => host.id === machine.id)
       };
     });
   }
@@ -84,5 +84,19 @@ export const hasMachineId = createSelector(
   _agentId,
   (agentId) => {
     return !!agentId;
-  }
+  },
+);
+
+export const tooManyHostsSelected = createSelector(
+  _selectedHostList,
+  (selectedHostList) => {
+    return selectedHostList.length > 100; // Maximum selected hosts allowed = 100
+  },
+);
+
+export const warningClass = createSelector(
+  tooManyHostsSelected,
+  (tooManyHostsSelected) => {
+    return tooManyHostsSelected ? 'danger' : 'standard';
+  },
 );

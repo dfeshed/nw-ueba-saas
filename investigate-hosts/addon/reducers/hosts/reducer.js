@@ -1,7 +1,6 @@
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
-import _ from 'lodash';
 import Immutable from 'seamless-immutable';
 
 const initialState = Immutable.from({
@@ -49,13 +48,13 @@ const _handleAppendMachines = (action) => {
  */
 const _toggleMachineSelection = (state, payload) => {
   const { selectedHostList } = state;
-  const { id } = payload;
+  const { id, version } = payload;
   let selected = [];
   // Previously selected host
-  if (selectedHostList.includes(id)) {
-    selected = selectedHostList.filter((item) => item !== id);
+  if (selectedHostList.some((host) => host.id === id)) {
+    selected = selectedHostList.filter((host) => host.id !== id);
   } else {
-    selected = [...selectedHostList, id];
+    selected = [...selectedHostList, { id, version }];
   }
   return state.set('selectedHostList', selected);
 };
@@ -127,7 +126,7 @@ const hosts = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.SET_SELECTED_HOST]: (state, { payload }) => state.set('selectedHostList', [payload.id]),
+  [ACTION_TYPES.SET_SELECTED_HOST]: (state, { payload: { id, version } }) => state.set('selectedHostList', [{ id, version }]),
 
   [ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED]: (state, { payload }) => state.set('stopAgentStream', payload),
 
@@ -141,7 +140,7 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.TOGGLE_ICON_VISIBILITY]: (state, { payload }) => _toggleIconVisibility(state, payload),
 
-  [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', _.map(state.hostList, 'id')),
+  [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({ id: host.id, version: host.machine.agentVersion }))),
 
   [ACTION_TYPES.DESELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', [])
 

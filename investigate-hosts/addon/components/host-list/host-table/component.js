@@ -29,13 +29,7 @@ const HostTable = Component.extend({
 
   tagName: 'box',
 
-  classNames: 'machine-zone',
-
-  actions: {
-    handleRowClick({ id }) {
-      this.send('toggleMachineSelected', id);
-    }
-  }
+  classNames: 'machine-zone'
 
 });
 export default connect(stateToComputed, dispatchToActions)(HostTable);

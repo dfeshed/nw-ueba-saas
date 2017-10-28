@@ -1,7 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import $ from 'jquery';
 import injectService from 'ember-service/inject';
 import moment from 'moment';
 import { isJsonExportCompleted, isSnapshotsAvailable } from 'investigate-hosts/reducers/details/overview/selectors';
@@ -39,6 +38,10 @@ const ActionBar = Component.extend({
 
   eventBus: injectService(),
 
+  i18n: injectService(),
+
+  flashMessage: injectService(),
+
   actions: {
     setSelect(option) {
       const oldTime = this.get('scanTime');
@@ -51,9 +54,15 @@ const ActionBar = Component.extend({
       }
     },
     openInAction() {
-      const url = `ecatui:///machines/${this.get('host').id}`;
-      $('#ecatUI').attr({ 'href': url, 'target': '_blank' });
-      window.location = $('#ecatUI').attr('href');
+      const host = this.get('host');
+      const { machine: { agentVersion } } = host;
+      const url = `ecatui:///machines/${host.id}`;
+      const i18n = this.get('i18n');
+      if (agentVersion.startsWith('4.4')) {
+        window.location = url;
+      } else {
+        this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
+      }
     },
     export() {
       const scanTime = this.get('scanTime');

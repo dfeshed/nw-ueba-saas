@@ -3,7 +3,10 @@
   {{host-list/content-filter}}
 </section>
 <box class='host-table'>
-  {{#rsa-data-table lazy=true items=hostList onRowClick=(action 'handleRowClick') columnsConfig=columns}}
+  {{#rsa-data-table
+    lazy=true
+    items=hostList
+    columnsConfig=columns}}
     {{host-list/host-table/host-table-header}}
     {{#if (eq hostFetchStatus 'wait')}}
       <centered>
@@ -14,8 +17,8 @@
         {{host-list/host-table/body-cell
           column=column
           item=item
-          onButtonClick=(action 'setSelectedHost' item.id)
-          checkBoxAction=(action 'toggleMachineSelected' item.id)
+          onButtonClick=(action 'setSelectedHost' item.id item.machine.agentVersion)
+          checkBoxAction=(action 'toggleMachineSelected' item.id item.machine.agentVersion)
           onMouseEnter=(action 'toggleIconVisibility' true item.id)
           onMouseLeave=(action 'toggleIconVisibility' false)}}
       {{/rsa-data-table/body}}

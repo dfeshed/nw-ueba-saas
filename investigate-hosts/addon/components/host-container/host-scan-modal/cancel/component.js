@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
-
+import _ from 'lodash';
 import { toggleCancelScanModal } from 'investigate-hosts/actions/ui-state-creators';
 
 const dispatchToActions = {
@@ -21,7 +21,8 @@ const ActionBar = Component.extend({
   actions: {
 
     handleCancelScan() {
-      Machines.stopScanRequest({ agentIds: this.get('selectedHostList'), scanType: 'CANCEL_SCAN' })
+      const agentIds = _.map(this.get('selectedHostList'), 'id');
+      Machines.stopScanRequest({ agentIds, scanType: 'CANCEL_SCAN' })
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.cancelScan.success');
         }).catch(({ meta: message }) => {

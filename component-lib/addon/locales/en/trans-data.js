@@ -2268,6 +2268,7 @@ export default {
       moreActions: {
         openIn: 'Open in NWE thick client',
         openInErrorMessage: 'Select at least one host',
+        notAnEcatAgent: 'Select only the 4.4 agent(s)',
         cancelScan: 'Stop Scan'
       }
     },

@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
 import { toggleInitiateScanModal } from 'investigate-hosts/actions/ui-state-creators';
+import _ from 'lodash';
 
 const dispatchToActions = {
   toggleInitiateScanModal
@@ -33,7 +34,8 @@ const InitiateModal = Component.extend({
 
     handleInitiateScan() {
       // Invoking the api to start the scans
-      Machines.startScanRequest({ agentIds: this.get('selectedHostList'), scanCommandType: this.get('scanType') })
+      const agentIds = _.map(this.get('selectedHostList'), 'id');
+      Machines.startScanRequest({ agentIds, scanCommandType: this.get('scanType') })
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.initiateScan.success');
         }).catch(({ meta: message }) => {

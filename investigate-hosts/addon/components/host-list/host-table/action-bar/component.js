@@ -1,15 +1,14 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
-import { noHostsSelected } from 'investigate-hosts/reducers/hosts/selectors';
-import computed from 'ember-computed-decorators';
+import { noHostsSelected, tooManyHostsSelected, warningClass } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleInitiateScanModal, toggleCancelScanModal, toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
-
-const MAX_HOST = 100;
 
 const stateToComputed = (state) => ({
   selectedHostList: state.endpoint.machines.selectedHostList,
-  isDisabled: noHostsSelected(state)
+  isDisabled: noHostsSelected(state),
+  tooManyHostsSelected: tooManyHostsSelected(state),
+  warningClass: warningClass(state)
 });
 
 const dispatchToActions = {
@@ -26,17 +25,9 @@ const ActionBar = Component.extend({
 
   flashMessage: injectService(),
 
+  i18n: injectService(),
+
   panelId: 'initScan',
-
-  @computed('selectedHostList')
-  tooManyHostsSelected(selectedHostList) {
-    return selectedHostList.length > MAX_HOST;
-  },
-
-  @computed('tooManyHostsSelected')
-  warningClass(tooManyHostsSelected) {
-    return tooManyHostsSelected ? 'danger' : 'standard';
-  },
 
   actions: {
 
@@ -61,11 +52,14 @@ const ActionBar = Component.extend({
      */
     openThickClient() {
       const selectedHostList = this.get('selectedHostList');
-
+      const i18n = this.get('i18n');
       let url = 'ecatui:///machines/';
 
       if (selectedHostList.length <= 0) {
-        this.get('flashMessage').showErrorMessage('investigateHosts.hosts.moreActions.openInErrorMessage');
+        this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.openInErrorMessage'));
+        return;
+      } else if (selectedHostList.some((host) => !host.version.startsWith('4.4'))) {
+        this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
         return;
       }
       url += selectedHostList.join(':');

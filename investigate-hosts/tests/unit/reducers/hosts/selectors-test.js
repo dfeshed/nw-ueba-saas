@@ -18,17 +18,26 @@ const STATE = Immutable.from({
           id: 1,
           agentStatus: {
             scanStatus: 'scaning'
+          },
+          machine: {
+            agentVersion: '4.3.0.0'
           }
         },
         {
           id: 2,
           agentStatus: {
             scanStatus: 'idle'
+          },
+          machine: {
+            agentVersion: '4.4.0.0'
           }
         }
       ],
       hostExportLinkId: 123,
-      selectedHostList: [1, 2]
+      selectedHostList: [{
+        id: 1,
+        version: '4.3.0.0'
+      }]
     }
   }
 });
@@ -44,7 +53,7 @@ test('hostExportLink', function(assert) {
 
 test('isAllHostSelected', function(assert) {
   const result = isAllHostSelected(STATE);
-  assert.equal(result, true);
+  assert.equal(result, false);
 });
 
 test('noHostsSelected', function(assert) {
@@ -58,5 +67,5 @@ test('processedHostList', function(assert) {
   assert.equal(result[0].canStartScan, false);
   assert.equal(result[1].canStartScan, true);
   assert.equal(result[0].selected, true);
-  assert.equal(result[1].selected, true);
+  assert.equal(result[1].selected, false);
 });
