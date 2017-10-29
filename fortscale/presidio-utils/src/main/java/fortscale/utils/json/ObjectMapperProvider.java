@@ -13,9 +13,12 @@ public class ObjectMapperProvider {
 
     private static ObjectMapperProvider instance = null;
 
-    private final ObjectMapper defaultObjectMapper;
+    private ObjectMapper noModulesObjectMapper;
+    private ObjectMapper defaultObjectMapper;
+
     private ObjectMapperProvider() {
         defaultObjectMapper = defaultJsonObjectMapper();
+        noModulesObjectMapper = noModulesObjectMapper();
     }
 
     public static ObjectMapperProvider getInstance() {
@@ -29,11 +32,19 @@ public class ObjectMapperProvider {
         return defaultObjectMapper;
     }
 
+    public ObjectMapper getNoModulesObjectMapper() {
+        return noModulesObjectMapper;
+    }
+
     public static ObjectMapper defaultJsonObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
                 .modules(new JavaTimeModule())
                 .build();
+    }
+
+    public static ObjectMapper noModulesObjectMapper() {
+        return new ObjectMapper();
     }
 
     public static ObjectMapper customJsonObjectMapper() {
