@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationServiceBase;
 import fortscale.ml.model.builder.IModelBuilderConf;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,7 @@ public class ModelConfService extends AslConfigurationServiceBase {
 	private Resource[] additionalConfigurationResources;
 	private List<ModelConf> modelConfs = new ArrayList<>();
 	private Map<String, ModelConf> nameToModelConfMap = new HashMap<>();
+	private ObjectMapper objectMapper;
 
 	public ModelConfService(
 			Resource[] baseConfigurationResources,
@@ -33,6 +35,7 @@ public class ModelConfService extends AslConfigurationServiceBase {
 		this.baseConfigurationResources = baseConfigurationResources;
 		this.overridingConfigurationResources = overridingConfigurationResources;
 		this.additionalConfigurationResources = additionalConfigurationResources;
+		this.objectMapper=ObjectMapperProvider.getInstance().getObjectMapper();
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public class ModelConfService extends AslConfigurationServiceBase {
 		ModelConf modelConf;
 
 		try {
-			modelConf = new ObjectMapper().readValue(jsonString, ModelConf.class);
+			modelConf = objectMapper.readValue(jsonString, ModelConf.class);
 			Assert.notNull(modelConf, "Model configuration cannot be null.");
 		} catch (Exception e) {
 			errorMessage = String.format("Failed to deserialize model configuration JSON string %s.", jsonString);
