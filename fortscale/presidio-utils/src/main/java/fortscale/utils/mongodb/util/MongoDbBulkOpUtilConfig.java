@@ -1,5 +1,6 @@
 package fortscale.utils.mongodb.util;
 
+import com.mongodb.async.client.MongoDatabase;
 import fortscale.utils.mongodb.index.DynamicIndexingApplicationListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,10 +19,12 @@ public class MongoDbBulkOpUtilConfig {
     private IsNewStrategyFactory isNewStrategyFactory;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    MongoDatabase mongoAsyncDatabase;
 
     @Bean
     public MongoDbBulkOpUtil mongoDbBulkOpUtil() {
-        return new MongoDbBulkOpUtil(cachedIsNewAwareAuditingHandler(), dynamicIndexingApplicationListener, mongoTemplate);
+        return new MongoDbBulkOpUtil(cachedIsNewAwareAuditingHandler(), dynamicIndexingApplicationListener, mongoTemplate, mongoAsyncDatabase);
     }
 
     public CachedIsNewAwareAuditingHandler cachedIsNewAwareAuditingHandler()
