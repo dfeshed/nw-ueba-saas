@@ -13,4 +13,4 @@ WHERE  operator != ''SubDagOperator''
        AND start_date > current_date - interval ''{{last_days}}'' day
        AND execution_date > current_date - interval ''{{last_execution_date}}'' day
 GROUP  BY task_id
-ORDER  BY avg_duration DESC ', false, true, true, 600, '{"last_days":"7","last_execution_date":"30"}', false, 6, '2017-10-25 14:26:48.997801');
+ORDER  BY avg_duration DESC ', false, true, true, 600, '{"last_days":"7","last_execution_date":"45"}', false, 6, '2017-10-25 14:26:48.997801');
