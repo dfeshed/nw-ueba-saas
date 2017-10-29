@@ -1,14 +1,13 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import fortscale.utils.time.TimeRange;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.time.TimeRange;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class FeatureBucketStrategyData {
@@ -23,12 +22,14 @@ public class FeatureBucketStrategyData {
 	private String strategyName;
 	private TimeRange timeRange;
 	private Map<String, String> contextMap = new HashMap<>();
+	private String strategyId;
 
 	@JsonCreator
 	public FeatureBucketStrategyData(@JsonProperty("strategyEventContextId") String strategyEventContextId, @JsonProperty("strategyName") String strategyName, @JsonProperty("timeRange") TimeRange timeRange) {
 		this.strategyEventContextId = strategyEventContextId;
 		this.strategyName = strategyName;
 		this.timeRange = timeRange;
+		this.strategyId = String.format("%s_%d", strategyEventContextId, timeRange.getStart().getEpochSecond());
 	}
 	
 	public FeatureBucketStrategyData(String strategyEventContextId, String strategyName, TimeRange timeRange, Map<String, String> contextMap) {
@@ -36,6 +37,7 @@ public class FeatureBucketStrategyData {
 		this.strategyName = strategyName;
 		this.timeRange = timeRange;
 		this.contextMap = contextMap;
+		this.strategyId = String.format("%s_%d", strategyEventContextId, timeRange.getStart().getEpochSecond());
 	}
 
 	public String getStrategyEventContextId() {
@@ -55,7 +57,8 @@ public class FeatureBucketStrategyData {
 	}
 
 	public String getStrategyId() {
-		return String.format("%s_%d", strategyEventContextId, timeRange.getStart().getEpochSecond());
+
+		return strategyId;
 	}
 
 	public Map<String, String> getContextMap() {
