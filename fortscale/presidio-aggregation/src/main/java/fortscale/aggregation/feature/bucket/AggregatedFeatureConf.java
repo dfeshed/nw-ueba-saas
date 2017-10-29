@@ -7,6 +7,7 @@ import fortscale.aggregation.filter.JsonFilter;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.util.Assert;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -78,8 +79,19 @@ public class AggregatedFeatureConf implements Serializable {
 		this.filter = filter;
 	}
 
-	public boolean passedFilter(JSONObject jsonObject) {
-		return filter == null || filter.passedFilter(jsonObject);
+	public boolean passedFilter(AdeRecordReader recordReader) {
+		if (filter == null)
+		{
+			return true;
+		}
+		else {
+			JSONObject adeRecordAsJsonObject = recordReader.getAdeRecordAsJsonObject();
+			return passedFilter(adeRecordAsJsonObject);
+		}
+	}
+
+	private boolean passedFilter(JSONObject jsonObject) {
+		return filter.passedFilter(jsonObject);
 	}
 
 	public boolean equals(Object obj) {

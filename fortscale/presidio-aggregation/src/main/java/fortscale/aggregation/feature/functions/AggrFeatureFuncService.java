@@ -7,6 +7,7 @@ import fortscale.common.feature.Feature;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,13 +21,15 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
 
     private Map<JSONObject, IAggrFeatureFunction> aggrFunctions = new HashMap<>();
     private Map<JSONObject, IAggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
-    private ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
+    private ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 
     /**
      * Updates the aggrFeatures by running the associated {@link IAggrFeatureFunction} that is configured for each
      * AggrFeature in the given  {@link AggregatedFeatureConf} and using the features as input to those functions.
      * Creates new map entry <String, Feature> for any AggrFeatureConf for which there is no entry in the aggrFeatures
      * map.
+     *
+     * @param adeRecordReader
      * @param aggrFeatureConfs
      * @param aggrFeatures
      * @param features
@@ -35,7 +38,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
      * of the {@link AggregatedFeatureConf} in aggrFeatureConfs.
      */
     @Override
-    public Map<String, Feature> updateAggrFeatures(JSONObject jSONObject,
+    public Map<String, Feature> updateAggrFeatures(AdeRecordReader adeRecordReader,
                                                    List<AggregatedFeatureConf> aggrFeatureConfs,
                                                    Map<String, Feature> aggrFeatures,
                                                    Map<String, Feature> features) {
@@ -47,7 +50,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
             logger.warn("updateAggrFeatures(): No AggregatedFeatureConf was provided");
         } else {
             for (AggregatedFeatureConf aggregatedFeatureConf: aggrFeatureConfs) {
-                if (!aggregatedFeatureConf.passedFilter(jSONObject)) {
+                if (!aggregatedFeatureConf.passedFilter(adeRecordReader)) {
                     continue;
                 }
                 String aggrFeatureName = aggregatedFeatureConf.getName();
