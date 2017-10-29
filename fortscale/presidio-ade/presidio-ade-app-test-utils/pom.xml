@@ -5,7 +5,7 @@
     <parent>
         <artifactId>presidio-ade</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-domain</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
         <dependency>
             <groupId>presidio-test-utils</groupId>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ml</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
     </dependencies>
 </project>

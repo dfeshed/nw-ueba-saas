@@ -5,7 +5,7 @@
     <parent>
         <artifactId>presidio-ade</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,14 +41,14 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-app-test-utils</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-sdk</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
     </dependencies>
 

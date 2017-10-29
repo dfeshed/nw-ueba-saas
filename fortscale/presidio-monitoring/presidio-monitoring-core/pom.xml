@@ -7,12 +7,12 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-monitoring</artifactId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
 
     <groupId>fortscale</groupId>
     <artifactId>presidio-monitoring-core</artifactId>
-    <version>1.0-6</version>
+    <version>1.0.0-PERFORMANCE</version>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-common</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
 
         <dependency>
