@@ -27,7 +27,7 @@ import java.util.List;
 public class FileEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIdGenerator;
-    private TimeGenerator timeGenerator;
+    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
@@ -76,11 +76,11 @@ public class FileEventsGenerator implements IEventGenerator {
        return fileEvent;
     }
 
-    public TimeGenerator getTimeGenerator() {
+    public ITimeGenerator getTimeGenerator() {
         return timeGenerator;
     }
 
-    public void setTimeGenerator(TimeGenerator timeGenerator) {
+    public void setTimeGenerator(ITimeGenerator timeGenerator) {
         this.timeGenerator = timeGenerator;
     }
 
