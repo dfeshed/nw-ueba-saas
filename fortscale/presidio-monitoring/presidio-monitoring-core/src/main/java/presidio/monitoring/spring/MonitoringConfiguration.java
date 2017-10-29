@@ -23,6 +23,7 @@ import presidio.monitoring.elastic.services.MetricExportService;
 import presidio.monitoring.elastic.services.MetricExportServiceImpl;
 import presidio.monitoring.export.MetricsExporter;
 import presidio.monitoring.export.MetricsExporterElasticImpl;
+import presidio.monitoring.factory.PresidioMetricFactory;
 
 @Configuration
 @EnableScheduling
@@ -56,7 +57,12 @@ public class MonitoringConfiguration {
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics);
+        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics, presidioMetricFactory());
+    }
+
+    @Bean
+    private PresidioMetricFactory presidioMetricFactory() {
+        return new PresidioMetricFactory();
     }
 
     @Autowired

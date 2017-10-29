@@ -2,9 +2,7 @@ package presidio.monitoring.aspect.services;
 
 import fortscale.utils.logging.Logger;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
-
-import java.util.Date;
-import java.util.Set;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 public class MetricCollectingServiceImpl implements MetricCollectingService {
 
@@ -17,15 +15,15 @@ public class MetricCollectingServiceImpl implements MetricCollectingService {
     }
 
     @Override
-    public void addMetric(String metricName, long metricValue, Set tags, String unit, Date logicTime) {
-        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", metricName, metricValue, tags, unit);
-        presidioCustomMetrics.addMetric(metricName, metricValue, tags, unit, logicTime);
+    public void addMetric(PresidioMetric presidioMetric) {
+        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", presidioMetric.getName(), presidioMetric.getValue(), presidioMetric.getTags(), presidioMetric.getUnit());
+        presidioCustomMetrics.addMetric(presidioMetric);
     }
 
     @Override
-    public void addMetricReportOnce(String metricName, long metricValue, Set tags, String unit, Date logicTime) {
-        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", metricName, metricValue, tags, unit);
-        presidioCustomMetrics.addMetricReportOnce(metricName, metricValue, tags, unit, logicTime);
+    public void addMetricReportOnce(PresidioMetric presidioMetric) {
+        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", presidioMetric.getName(), presidioMetric.getValue(), presidioMetric.getTags(), presidioMetric.getUnit());
+        presidioCustomMetrics.addMetricReportOnce(presidioMetric);
     }
 
 }

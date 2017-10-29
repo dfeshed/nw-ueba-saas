@@ -1,12 +1,11 @@
 package presidio.monitoring.sdk.api.services;
 
 
-import java.util.Date;
-import java.util.Set;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 public interface PresidioExternalMonitoringService {
 
-    void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Date logicTime);
+    void reportCustomMetric(PresidioMetric presidioMetric);
 
-    void reportCustomMetricReportOnce(String metricName, long value, Set<String> tags, String valueType, Date logicTime);
+    void reportCustomMetricReportOnce(PresidioMetric presidioMetric);
 }

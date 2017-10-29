@@ -9,7 +9,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.elastic.records.PresidioMetric;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class MetricsExporter implements ApplicationListener<ContextClosedEvent> {
 
@@ -29,7 +33,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         tags.add(this.applicationName);
     }
 
-    List<PresidioMetric> metricsForExport() {
+    public List<PresidioMetric> getMetricsForExport() {
         List<PresidioMetric> metricsForExport = new ArrayList<>();
         PresidioMetric value;
         Map<String, Object> map = metricsEndpoint.invoke();

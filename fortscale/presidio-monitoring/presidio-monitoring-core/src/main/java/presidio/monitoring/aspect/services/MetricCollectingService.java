@@ -1,11 +1,10 @@
 package presidio.monitoring.aspect.services;
 
-import java.util.Date;
-import java.util.Set;
+import presidio.monitoring.elastic.records.PresidioMetric;
 
 public interface MetricCollectingService {
 
-    void addMetric(String metricName, long metricValue, Set tags, String unit, Date logicTime);
+    void addMetric(PresidioMetric presidioMetric);
 
-    void addMetricReportOnce(String metricName, long metricValue, Set tags, String unit, Date logicTime);
+    void addMetricReportOnce(PresidioMetric presidioMetric);
 }

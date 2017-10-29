@@ -12,11 +12,11 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.sql.Date;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -42,6 +42,9 @@ public class InputCoreManager {
 
     @Autowired
     MetricCollectingService metricCollectingService;
+
+    @Autowired
+    PresidioMetricFactory presidioMetricFactory;
 
     @Value("${page.iterator.page.size}")
     private Integer pageSize;
@@ -80,9 +83,9 @@ public class InputCoreManager {
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
             } finally {
-                metricCollectingService.addMetricReportOnce(TOTAL_EVENTS_PROCESSEd_METRIC_NAME,
+                metricCollectingService.addMetricReportOnce(presidioMetricFactory.creatingPresidioMetric(TOTAL_EVENTS_PROCESSEd_METRIC_NAME,
                         transformedEvents != null ? transformedEvents.size() : 0,
-                        new HashSet(Arrays.asList(schema.toString())), TYPE_LONG, Date.from(startDate));
+                        new HashSet(Arrays.asList(schema.toString())), TYPE_LONG, startDate));
             }
         }
         if (CollectionUtils.isNotEmpty(nextEvents)) {
@@ -90,7 +93,7 @@ public class InputCoreManager {
             Set tags = new HashSet();
             tags.add(schema.toString());
             tags.add(startDate.toString());
-            metricCollectingService.addMetricReportOnce(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS, Date.from(startDate));
+            metricCollectingService.addMetricReportOnce(presidioMetricFactory.creatingPresidioMetric(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS, startDate));
         }
     }
 

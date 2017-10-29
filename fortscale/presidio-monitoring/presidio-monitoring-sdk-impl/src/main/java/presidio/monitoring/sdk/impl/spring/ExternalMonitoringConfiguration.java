@@ -27,6 +27,7 @@ import presidio.monitoring.elastic.services.MetricExportService;
 import presidio.monitoring.elastic.services.MetricExportServiceImpl;
 import presidio.monitoring.export.MetricsExporter;
 import presidio.monitoring.export.MetricsExporterElasticImpl;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
 
@@ -69,6 +70,11 @@ public class ExternalMonitoringConfiguration {
         return new PresidioElasticsearchTemplate(client());
     }
 
+    @Bean
+    private PresidioMetricFactory presidioMetricFactory() {
+        return new PresidioMetricFactory();
+    }
+
 
     @Bean
     public PresidioCustomMetrics presidioCustomMetrics() {
@@ -77,7 +83,7 @@ public class ExternalMonitoringConfiguration {
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics());
+        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics(), presidioMetricFactory());
     }
 
     @Bean
@@ -110,6 +116,6 @@ public class ExternalMonitoringConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioCustomMetrics()));
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioCustomMetrics()), presidioMetricFactory());
     }
 }
