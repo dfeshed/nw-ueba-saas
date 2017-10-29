@@ -27,11 +27,19 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
@@ -221,6 +229,77 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
     }
+
+    @Test
+    public void testFindWithMinScoreByQuery() {
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertList.add(
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 50.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertPersistencyService.save(alertList);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByMinScore(90)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(1L));
+    }
+
+    @Test
+    public void testFindWithMaxScoreByQuery() {
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertList.add(
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 50.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertPersistencyService.save(alertList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByMaxScore(60)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(1L));
+    }
+
+    @Test
+    public void testFindWithMaxScoreMinScoreByQuery() {
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertList.add(
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 50.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertPersistencyService.save(alertList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByMaxScore(90)
+                        .filterByMinScore(50)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(1L));
+    }
+
 
     @Test
     public void testFindByQueryWitheClassification1() {
@@ -414,7 +493,7 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
                 new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
@@ -437,7 +516,7 @@ public class AlertPersistencyServiceTest {
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
         List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
 
-        assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
+        assertEquals(buckets.size(), 11L);//11 buckets
         assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(classificationsAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(classificationsAgg.getBucketByKey("c").getDocCount(), 3L);

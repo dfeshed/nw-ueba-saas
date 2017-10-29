@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.*;
+import fortscale.utils.test.runner.SpringRunnerOnlyOnLinux;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
@@ -40,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Created by barak_schuster on 9/24/17.
  */
-@RunWith(SpringRunner.class)
+@RunWith(SpringRunnerOnlyOnLinux.class)
 @ContextConfiguration(classes = ConfigurationApiControllerModuleTest.springConfig.class)
 @Category(ModuleTestCategory.class)
 public class ConfigurationApiControllerModuleTest {

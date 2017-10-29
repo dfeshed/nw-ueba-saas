@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
@@ -40,7 +41,7 @@ public class SmartRecordConfService extends AslConfigurationService {
 		this.overridingConfigurationsPath = overridingConfigurationsPath;
 		this.additionalConfigurationsPath = additionalConfigurationsPath;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-		this.objectMapper = new ObjectMapper();
+		this.objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
 		this.nameToSmartRecordConfMap = new HashMap<>();
 	}
 

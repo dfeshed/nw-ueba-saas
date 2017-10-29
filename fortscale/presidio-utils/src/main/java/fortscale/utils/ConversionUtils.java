@@ -213,6 +213,8 @@ public final class ConversionUtils {
 		if (func != null) {
 			return func.apply(argString);
 		}
+		if (clazz.isEnum())
+			return Enum.valueOf(clazz, argString);
 		return argString;
 	}
 }

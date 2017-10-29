@@ -1,6 +1,7 @@
 package presidio.adapter.util;
 
 import fortscale.common.general.Schema;
+import fortscale.utils.test.runner.RunOnlyOnLinux;
 import org.junit.*;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;

@@ -2,6 +2,7 @@ package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 
@@ -34,7 +35,7 @@ public abstract class ScorerConfService extends AslConfigurationService {
 
     private void loadAdeEventTypeScorerConfs(JSONObject adeEventTypeScorerConfsJSON) {
         String errorMsg;
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
         String jsonString = adeEventTypeScorerConfsJSON.toJSONString();
 
         try {
