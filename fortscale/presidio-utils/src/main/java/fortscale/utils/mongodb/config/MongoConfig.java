@@ -2,6 +2,11 @@ package fortscale.utils.mongodb.config;
 
 import com.google.common.collect.Lists;
 import com.mongodb.*;
+import com.mongodb.async.client.MongoClientSettings;
+import com.mongodb.async.client.MongoClients;
+import com.mongodb.async.client.MongoDatabase;
+import com.mongodb.connection.ClusterSettings;
+import com.mongodb.connection.netty.NettyStreamFactoryFactory;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
 import fortscale.utils.mongodb.index.DynamicIndexingApplicationListenerConfig;
@@ -60,6 +65,37 @@ public class MongoConfig extends AbstractMongoConfiguration {
         return mongoDBName;
     }
 
+    @Bean
+    public com.mongodb.async.client.MongoClient asyncClient() throws Exception {
+
+        String connectionString = String.format("mongodb://%s:%s",mongoHostName, mongoHostPort);
+        ClusterSettings clusterSettings = ClusterSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString)).build();
+        List<MongoCredential> credentials = new ArrayList<>();
+        if (StringUtils.isNotBlank(mongoUserName) && StringUtils.isNotBlank(mongoPassword)) {
+            credentials.add(
+                    MongoCredential.createCredential(
+                            mongoUserName,
+                            mongoDBName,
+                            EncryptionUtils.decrypt(mongoPassword).toCharArray()
+                    )
+            );
+        }
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .credentialList(credentials)
+                .clusterSettings(clusterSettings)
+                .streamFactoryFactory(new NettyStreamFactoryFactory())
+                .writeConcern(WriteConcern.ACKNOWLEDGED)
+                .build();
+        com.mongodb.async.client.MongoClient mongoClient = MongoClients.create(settings);
+        return mongoClient;
+    }
+
+    @Bean
+    public MongoDatabase asyncClientDb() throws Exception {
+        return  asyncClient().getDatabase(getDatabaseName());
+    }
+    
     @Override
     @Bean
     public Mongo mongo() throws Exception {
