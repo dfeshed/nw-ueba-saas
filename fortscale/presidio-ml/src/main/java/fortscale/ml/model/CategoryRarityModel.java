@@ -114,4 +114,8 @@ public class CategoryRarityModel implements PartitionedDataModel {
 	public void setNumOfPartitions(long numOfPartitions) {
 		this.numOfPartitions = numOfPartitions;
 	}
+
+	public Map<String, Double> getFeatureOccurrences() {
+		return featureOccurrences;
+	}
 }

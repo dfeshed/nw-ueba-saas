@@ -1,9 +1,9 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.bucket.*;
-import fortscale.common.util.GenericHistogram;
+import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.retriever.factories.ContextSequentialReducedHistogramRetrieverFactory;
+import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -32,18 +32,18 @@ import static org.mockito.Mockito.when;
  * Created by barak_schuster on 10/16/17.
  */
 @RunWith(SpringRunner.class)
-public class ContextSequentialReducedHistogramRetrieverTest {
+public class CategoricalFeatureValueRetrieverTest {
 
     static final int AMOUNT_OF_DAYS_TO_RETRIEVE = 28;
-    private static final int EXPECTED_HISTOGRAM_VALUE = 28;
+    private static final int EXPECTED_HISTOGRAM_VALUE = 57;
 
     @Autowired
     private FeatureBucketReader featureBucketReader;
     @Autowired
     private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 
-    static ContextSequentialReducedHistogramRetrieverConf contextSequentialReducedHistogramRetrieverConf;
-    static ContextSequentialReducedHistogramRetriever retriever;
+    static CategoricalFeatureValueRetrieverConf categoricalFeatureValueRetrieverConf;
+    static CategoricalFeatureValueRetriever retriever;
 
     @Test
     public void retrieveEmptyData() throws Exception {
@@ -65,29 +65,19 @@ public class ContextSequentialReducedHistogramRetrieverTest {
         Assert.assertTrue(builderData.dataExists());
         Assert.assertNull(builderData.getNoDataReason());
 
-        GenericHistogram genericHistogram = (GenericHistogram) builderData.getData();
-        Assert.assertNotNull(genericHistogram);
-        Assert.assertTrue(genericHistogram.getN()>0);
-        genericHistogram.getHistogramMap().forEach((key, value) -> Assert.assertEquals(EXPECTED_HISTOGRAM_VALUE, value.intValue()));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowExceptionOnBadSequencingResolution()
-    {
-        ContextSequentialReducedHistogramRetrieverConf contextSequentialReducedHistogramRetrieverConfWithLowSequencing =
-                new ContextSequentialReducedHistogramRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
-                Collections.emptyList(),
-                FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 1, 86400);
-        dataRetrieverFactoryService.getProduct(contextSequentialReducedHistogramRetrieverConfWithLowSequencing);
+        CategoricalFeatureValue builderDataData = (CategoricalFeatureValue) builderData.getData();
+        Assert.assertNotNull(builderDataData);
+        Assert.assertEquals((3*24*AMOUNT_OF_DAYS_TO_RETRIEVE),builderDataData.getN());
+        Assert.assertEquals(FixedDurationStrategy.HOURLY,builderDataData.getStrategy());
     }
 
 
 
     @Configuration
-    public static class ContextSequentialHistogramRetrieverTestConfig {
+    public static class CategoricalFeatureValueRetrieverTestConfig {
 
         @Autowired
-        private ContextSequentialReducedHistogramRetrieverFactory contextHistogramRetrieverFactory;
+        private CategoricalFeatureValueRetrieverFactory contextHistogramRetrieverFactory;
 
         @MockBean
         @Qualifier("modelBucketConfigService")
@@ -99,15 +89,15 @@ public class ContextSequentialReducedHistogramRetrieverTest {
         public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService() {
             FactoryService<AbstractDataRetriever> dataRetrieverFactoryService = new FactoryService<>();
             contextHistogramRetrieverFactory.registerFactoryService(dataRetrieverFactoryService);
-            retriever = (ContextSequentialReducedHistogramRetriever) dataRetrieverFactoryService.getProduct(contextSequentialReducedHistogramRetrieverConf);
+            retriever = (CategoricalFeatureValueRetriever) dataRetrieverFactoryService.getProduct(categoricalFeatureValueRetrieverConf);
             return dataRetrieverFactoryService;
         }
 
         @Bean
-        public ContextSequentialReducedHistogramRetrieverFactory contextSequentialReducedHistogramRetrieverFactory() {
+        public CategoricalFeatureValueRetrieverFactory categoricalFeatureValueRetrieverFactory() {
             confsSetup();
 
-            return new ContextSequentialReducedHistogramRetrieverFactory();
+            return new CategoricalFeatureValueRetrieverFactory();
         }
 
         private void confsSetup() {
@@ -123,9 +113,9 @@ public class ContextSequentialReducedHistogramRetrieverTest {
             when(featureBucketConf.getAggrFeatureConfs()).thenReturn(aggregatedFeatureConfs);
 
             when(aggregatedFeatureConf.getName()).thenReturn(TEST_FEATURE_NAME);
-            contextSequentialReducedHistogramRetrieverConf = new ContextSequentialReducedHistogramRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
+            categoricalFeatureValueRetrieverConf = new CategoricalFeatureValueRetrieverConf(Duration.ofDays(AMOUNT_OF_DAYS_TO_RETRIEVE).getSeconds(),
                     Collections.emptyList(),
-                    FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME, 86400, 86400);
+                    FEATURE_BUCKET_CONF_NAME, TEST_FEATURE_NAME);
         }
 
     }

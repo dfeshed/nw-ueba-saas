@@ -1,10 +1,15 @@
 package fortscale.ml.model.builder;
 
+import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
+import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.DoubleStream;
@@ -13,7 +18,9 @@ public class CategoryRarityModelBuilderTest {
 	private static final int MAX_RARE_COUNT = 15;
 
 	private static CategoryRarityModelBuilderConf getConfig(int maxRareCount) {
-		return new CategoryRarityModelBuilderConf(maxRareCount);
+		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(maxRareCount);
+		categoryRarityModelBuilderConf.setPartitionsResolutionInSeconds(86400);
+		return categoryRarityModelBuilderConf;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -53,7 +60,7 @@ public class CategoryRarityModelBuilderTest {
 		Map<String, Long> featureValueToCountMap = new HashMap<>();
 		String featureValue1 = "featureValue1";
 		String featureValue2 = "featureValue2";
-		long featureCount = 1;
+		long featureCount = 3;
 		featureValueToCountMap.put(featureValue1, featureCount);
 		featureValueToCountMap.put(featureValue2, featureCount);
 
@@ -91,14 +98,61 @@ public class CategoryRarityModelBuilderTest {
 
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
 		Assert.assertEquals(CategoryRarityModelBuilderConf.DEFAULT_ENTRIES_TO_SAVE_IN_MODEL, model.getNumOfSavedFeatures());
+	}
 
-		for (int i = 0; i < CategoryRarityModelBuilderConf.DEFAULT_ENTRIES_TO_SAVE_IN_MODEL; i++) {
-			double actualFeatureCount = model.getFeatureCount(String.format("value%d", entriesInModelBuilderData));
-			Assert.assertEquals(entriesInModelBuilderData, actualFeatureCount, 0);
-			entriesInModelBuilderData--;
+	@Test
+	public void testCalcSequenceReduceData()
+	{
+		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
+		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config);
+		CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+		Instant startInstant = Instant.parse("2007-12-03T00:00:00.00Z");
+		int amountOfFeatures = 3;
+		int amountOfHours = 80;
+		for (int i = 0; i< amountOfHours; i++) {
+			startInstant = startInstant.plus(1,ChronoUnit.HOURS);
+			for (int j = 0; j< amountOfFeatures; j++) {
+				categoricalFeatureValue.getHistogram().put(new Pair<String, Instant>(String.format("feature%d",j), startInstant), 42D);
+			}
+		}
+		Map<Pair<String, Long>, Double> sequenceReduceData = categoryRarityModelBuilder.calcSequenceReduceData(categoricalFeatureValue);
+		double amountOfDays = Math.ceil((double) amountOfHours / 24);
+		Assert.assertEquals(amountOfDays,sequenceReduceData.keySet().stream().map(Pair::getValue).distinct().count(),0);
+		Assert.assertEquals(amountOfFeatures,sequenceReduceData.keySet().stream().map(Pair::getKey).distinct().count());
+		sequenceReduceData.values().forEach(value -> Assert.assertEquals(1D,value,0));
+		Map<String, Long> featureValueToCountMap = categoryRarityModelBuilder.castModelBuilderData(sequenceReduceData);
+		for (int j = 0; j< amountOfFeatures; j++) {
+			Assert.assertEquals(amountOfDays,featureValueToCountMap.get(String.format("feature%d",j)),0);
 		}
 	}
 
+	@Test
+	public void testCalcOccurrencesToNumOfFeatures()
+	{
+		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
+		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config);
+
+		Map<Pair<String, Long>, Double> sequenceReducedData = new HashMap<>();
+		sequenceReducedData.put(new Pair<String, Long>("feature1",1L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature1",2L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature2",1L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature3",1L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature3",2L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature4",1L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature4",3L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature4",4L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature5",3L),1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature5",5L),1D);
+		Map<Long, Double> occurrencesToNumOfFeatures = categoryRarityModelBuilder.calcOccurrencesToNumOfFeatures(sequenceReducedData);
+		Map<Long, Double> expectedMap = new HashMap<>();
+		expectedMap.put(1L,1D);
+		expectedMap.put(2L,3D);
+		expectedMap.put(3L,1D);
+
+		Assert.assertEquals(expectedMap,occurrencesToNumOfFeatures);
+
+
+	}
 	@Test
 	public void shouldBuildModelWithNonDefaultNumberOfSavedFeatures() {
 		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
@@ -114,17 +168,16 @@ public class CategoryRarityModelBuilderTest {
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
 		Assert.assertEquals(3, model.getNumOfSavedFeatures());
 
-		Assert.assertEquals(97, model.getFeatureCount("a"), 0);
-		Assert.assertEquals(78, model.getFeatureCount("d"), 0);
-		Assert.assertEquals(55, model.getFeatureCount("b"), 0);
+		model.getFeatureOccurrences().values().forEach(value ->Assert.assertEquals(1D,value,0));
 
-		Assert.assertNull(model.getFeatureCount("c"));
-		Assert.assertNull(model.getFeatureCount("e"));
 	}
 
-	private static GenericHistogram castModelBuilderData(Map<String, Long> map) {
+	private static CategoricalFeatureValue castModelBuilderData(Map<String, Long> map) {
+		CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
 		GenericHistogram histogram = new GenericHistogram();
 		map.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-		return histogram;
+		categoricalFeatureValue.add(histogram,Instant.parse("2007-12-03T00:00:00.00Z"));
+		return categoricalFeatureValue;
 	}
 }
