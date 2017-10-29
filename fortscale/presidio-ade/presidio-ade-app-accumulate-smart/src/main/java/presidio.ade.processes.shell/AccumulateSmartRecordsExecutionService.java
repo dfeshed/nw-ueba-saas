@@ -4,8 +4,6 @@ import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.TtlService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;
@@ -13,8 +11,6 @@ import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;
 import java.time.Instant;
 
 public class AccumulateSmartRecordsExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(AccumulateSmartRecordsExecutionService.class);
-
     private final SmartDataReader smartDataReader;
     private final SmartAccumulationsCache smartAccumulationsCache;
     private final SmartAccumulationDataStore smartAccumulationDataStore;
