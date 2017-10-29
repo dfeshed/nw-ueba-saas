@@ -6,10 +6,10 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-ade</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0-6</version>
     </parent>
     <artifactId>presidio-ade-sdk</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0-6</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -20,12 +20,12 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-domain</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0-6</version>
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-aggregation</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0-6</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-app-test-utils</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0-6</version>
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>

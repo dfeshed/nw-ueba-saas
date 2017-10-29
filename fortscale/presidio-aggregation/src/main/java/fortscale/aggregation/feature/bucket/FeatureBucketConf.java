@@ -110,7 +110,7 @@ public class FeatureBucketConf implements Serializable {
 	
 	@Override
 	public String toString(){
-		ObjectMapper mapper = ObjectMapperProvider.getInstance().getObjectMapper();
+		ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 
 		try {
 			return mapper.writeValueAsString(this);

@@ -14,10 +14,10 @@ public class ObjectMapperProvider {
     private static ObjectMapperProvider instance = null;
 
     private ObjectMapper noModulesObjectMapper;
-    private ObjectMapper objectMapper;
+    private ObjectMapper defaultObjectMapper;
 
     private ObjectMapperProvider() {
-        objectMapper = defaultJsonObjectMapper();
+        defaultObjectMapper = defaultJsonObjectMapper();
         noModulesObjectMapper = noModulesObjectMapper();
     }
 
@@ -28,8 +28,8 @@ public class ObjectMapperProvider {
         return instance;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public ObjectMapper getDefaultObjectMapper() {
+        return defaultObjectMapper;
     }
 
     public ObjectMapper getNoModulesObjectMapper() {

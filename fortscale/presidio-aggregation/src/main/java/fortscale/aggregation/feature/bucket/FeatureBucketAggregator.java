@@ -8,7 +8,6 @@ import fortscale.common.feature.Feature;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import net.minidev.json.JSONObject;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -31,7 +30,7 @@ public class FeatureBucketAggregator {
         this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
-        this.mapper = ObjectMapperProvider.getInstance().getObjectMapper();
+        this.mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
     }
 
     /**
@@ -95,21 +94,8 @@ public class FeatureBucketAggregator {
      */
     private void updateFeatureBucket(AdeRecordReader adeRecordReader, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception {
         Map<String, Feature> featuresMap = adeRecordReader.getAllFeatures(featureBucketConf.getAllFeatureNames());
-        JSONObject jSONObject = getJsonObject(adeRecordReader);
-        Map<String, Feature> aggrFeaturesMap = aggrFeatureFunctionsService.updateAggrFeatures(jSONObject, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
+        Map<String, Feature> aggrFeaturesMap = aggrFeatureFunctionsService.updateAggrFeatures(adeRecordReader, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
         featureBucket.setAggregatedFeatures(aggrFeaturesMap);
-    }
-
-    /**
-     * Create json object of ade record
-     *
-     * @param adeRecordReader ade record reader
-     * @return json object
-     */
-    private JSONObject getJsonObject(AdeRecordReader adeRecordReader) {
-        AdeRecord adeRecord = adeRecordReader.getAdeRecord();
-        Map<String, Object> adeRecordMap = mapper.convertValue(adeRecord, Map.class);
-        return new JSONObject(adeRecordMap);
     }
 
     /**
