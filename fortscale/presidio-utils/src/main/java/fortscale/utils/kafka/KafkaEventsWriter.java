@@ -12,10 +12,10 @@ import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Configurable(preConstruction=true)
 /**
  * Thread-safe implementation of kafka events writer
  */
+@Configurable(preConstruction = true)
 public class KafkaEventsWriter {
 	private static final Logger logger = Logger.getLogger(KafkaEventsWriter.class);
 
@@ -27,13 +27,12 @@ public class KafkaEventsWriter {
 	protected String producerType;
 	@Value("${kafka.serializer.class:kafka.serializer.StringEncoder}")
 	protected String serializer;
-	@Value("${kafka.partitioner.class:fortscale.utils.kafka.partitions.StringHashPartitioner}")
+	@Value("${kafka.partitioner.class:fortscale.utils.kafka.StringHashPartitioner}")
 	protected String partitionerClass;
 	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
 	protected String retryBackoff;
 
 	private volatile Producer<String, String> producer;
-
 	private String topic;
 
 	public KafkaEventsWriter(String topic) {
@@ -44,13 +43,13 @@ public class KafkaEventsWriter {
 	/**
 	 * Ensure a producer is initialized and return it to caller. We initialize the producer upon call instead of
 	 * in the class constructor since properties are not injected prior to constructor by spring using bean xml
-	 * definition (as opposed to aspecj creation using new).
+	 * definition (as opposed to aspectj creation using new).
 	 */
 	private Producer<String, String> getProducer() {
 		// we use double-checked locking to provide: 1.thread-safety 2. reduce performance overhead of the lock
-		if (producer==null) {
+		if (producer == null) {
 			synchronized (this) {
-				if (producer==null) {
+				if (producer == null) {
 					// build kafka producer
 					Properties props = new Properties();
 					props.put("metadata.broker.list", kafkaBrokerList);
@@ -59,25 +58,20 @@ public class KafkaEventsWriter {
 					props.put("request.required.acks", requiredAcks);
 					props.put("producer.type", producerType);
 					props.put("retry.backoff.ms", retryBackoff);
-
 					logger.debug("Creating KafkaEventsWriter for topic {} with properties {}", this.topic, props.toString());
-
 					ProducerConfig config = new ProducerConfig(props);
-
 					producer = new Producer<>(config);
 				}
 			}
 		}
-		return  producer;
+		return producer;
 	}
 
 	public void send(String key, String data) {
 		KeyedMessage<String, String> message = new KeyedMessage<>(topic, key, data);
-
 		// kafka producer is thread-safe
 		getProducer().send(message);
 	}
-
 
 	public void close() {
 		// using thread-safe manner, similarly to getProducer initialization method
