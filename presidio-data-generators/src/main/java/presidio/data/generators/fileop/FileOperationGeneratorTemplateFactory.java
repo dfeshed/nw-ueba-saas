@@ -2,6 +2,7 @@ package presidio.data.generators.fileop;
 
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
+import presidio.data.generators.common.FixedOperationTypeGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
@@ -252,8 +253,8 @@ public class FileOperationGeneratorTemplateFactory {
         return generator;
     }
 
-    private FixedFileOperationTypeGenerator getFixedFileOperationTypeGenerator(String operationType, List<String> categories){
-        return new FixedFileOperationTypeGenerator(new OperationType(operationType, getOperationTypeCategrories(operationType, categories)));
+    private FixedOperationTypeGenerator getFixedFileOperationTypeGenerator(String operationType, List<String> categories){
+        return new FixedOperationTypeGenerator(new OperationType(operationType, getOperationTypeCategrories(operationType, categories)));
     }
 
     private List<String> getOperationTypeCategrories(String operationType, List<String> categories){

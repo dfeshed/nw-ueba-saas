@@ -7,7 +7,7 @@ import presidio.data.generators.utils.StringUtils;
 public class ActiveDirectoryDescriptionGenerator implements IActiveDirectoryDescriptionGenerator{
 
     private String buildDescription(ActiveDirectoryEvent activeDirectoryEvent){
-        String operationType = StringUtils.getFriendlyName(activeDirectoryEvent.getOperation().getOperationType());
+        String operationType = StringUtils.getFriendlyName(activeDirectoryEvent.getOperation().getOperationType().getName());
         String activeDirectoryDescription = operationType + " for user " + activeDirectoryEvent.getUser().getUsername();
         return activeDirectoryDescription;
     }
