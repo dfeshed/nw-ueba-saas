@@ -304,6 +304,13 @@
                             <executable>${basedir}/compile-client${script.extension}</executable>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin}</version>
+                <executions>
                     <execution>
                         <id>deploy-client</id>
                         <phase>deploy</phase>
