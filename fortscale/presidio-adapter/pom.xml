@@ -10,7 +10,7 @@
     <parent>
         <artifactId>fortscale</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
     <artifactId>presidio-adapter</artifactId>
     <packaging>jar</packaging>
