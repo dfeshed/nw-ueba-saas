@@ -1,13 +1,12 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.Feature;
-import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -22,7 +21,6 @@ public class FeatureBucketAggregator {
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
-    private ObjectMapper mapper;
 
 
     public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
@@ -30,7 +28,6 @@ public class FeatureBucketAggregator {
         this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
-        this.mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
     }
 
     /**
@@ -112,8 +109,9 @@ public class FeatureBucketAggregator {
         ret.setBucketId(bucketId);
         ret.setStrategyId(strategyData.getStrategyId());
         ret.setContextFieldNames(featureBucketConf.getContextFieldNames());
-        ret.setStartTime(strategyData.getTimeRange().getStart());
-        ret.setEndTime(strategyData.getTimeRange().getEnd());
+        TimeRange timeRange = strategyData.getTimeRange();
+        ret.setStartTime(timeRange.getStart());
+        ret.setEndTime(timeRange.getEnd());
         ret.setCreatedAt(new Date());
 
         for (String contextFieldName : featureBucketConf.getContextFieldNames()) {
