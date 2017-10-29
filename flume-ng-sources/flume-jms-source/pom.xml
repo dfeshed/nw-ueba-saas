@@ -23,7 +23,7 @@ limitations under the License.
     <parent>
         <artifactId>flume-ng-sources</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
 
     <groupId>presidio.flume.core.flume-ng-sources</groupId>

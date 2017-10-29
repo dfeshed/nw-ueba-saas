@@ -24,7 +24,7 @@
     <parent>
         <artifactId>presidio-flume</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
 
     <artifactId>flume-ng-dist</artifactId>
@@ -177,17 +177,17 @@
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-common</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-sources</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-sinks</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
         </dependency>
     </dependencies>
 
