@@ -35,8 +35,8 @@ public class CategoryRarityModelScorerConfTest {
         String jMaxNumOfRareFeatures = maxNumOfRareFeatures==null ? null : String.format("\"max-num-of-rare-features\":%d", maxNumOfRareFeatures);
         String jMinumumNumberOfDistinctValuesToInfluence = minimumNumberOfDistinctValuesToInfluence==null ? null : String.format("\"minimum-number-of-distinct-values-to-influence\":%d", minimumNumberOfDistinctValuesToInfluence);
         String jEnoughtNumberOfDistinctValuesToInfluence = enoughNumberOfDistinctValuesToInfluence==null ? null : String.format("\"enough-number-of-distinct-values-to-influence\":%d", enoughNumberOfDistinctValuesToInfluence);
-        String jNumberOfSamplesToInfluenceEnough = numberOfSamplesToInfluenceEnough==null ? null : String.format(" \"number-of-samples-to-influence-enough\":%d", numberOfSamplesToInfluenceEnough);
-        String jMinNumberOfSamplesToInfluence = minNumberOfSamplesToInfluence == null ? null : String.format("\"min-number-of-samples-to-influence\":%d", minNumberOfSamplesToInfluence);
+        String jNumberOfSamplesToInfluenceEnough = numberOfSamplesToInfluenceEnough==null ? null : String.format(" \"number-of-partitions-to-influence-enough\":%d", numberOfSamplesToInfluenceEnough);
+        String jMinNumberOfSamplesToInfluence = minNumberOfSamplesToInfluence == null ? null : String.format("\"min-number-of-partitions-to-influence\":%d", minNumberOfSamplesToInfluence);
         String jUseCertaintyToCalculateScore = useCertaintyToCalculateScore==null ? null : String.format("\"use-certainty-to-calculate-score\":%s", useCertaintyToCalculateScore);
         Function<String, String> modelNameToJSON = additionalModelName -> String.format("{\"name\":\"%s\"}", additionalModelName);
         String jModelName = modelName==null ? null : String.format("\"model\":%s", modelNameToJSON.apply(modelName));
@@ -101,12 +101,12 @@ public class CategoryRarityModelScorerConfTest {
         }
 
         if(numberOfSamplesToInfluenceEnough==null) {
-            Assert.assertEquals(ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE, conf.getEnoughNumOfSamplesToInfluence());
+            Assert.assertEquals(ModelScorerConf.ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE, conf.getEnoughNumOfSamplesToInfluence());
         } else {
             Assert.assertEquals((long) numberOfSamplesToInfluenceEnough, conf.getEnoughNumOfSamplesToInfluence());
         }
         if(minNumberOfSamplesToInfluence==null) {
-            Assert.assertEquals(ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE, conf.getMinNumOfSamplesToInfluence());
+            Assert.assertEquals(ModelScorerConf.MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE, conf.getMinNumOfSamplesToInfluence());
         } else {
             Assert.assertEquals((long) minNumberOfSamplesToInfluence, conf.getMinNumOfSamplesToInfluence());
         }

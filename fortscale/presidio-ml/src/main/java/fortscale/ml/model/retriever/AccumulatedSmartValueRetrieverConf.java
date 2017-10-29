@@ -15,6 +15,7 @@ public class AccumulatedSmartValueRetrieverConf extends AbstractDataRetrieverCon
     public static final String ACCUMULATED_SMART_VALUE_RETRIEVER_FACTORY_NAME = "accumulated_smart_value_retriever";
     private final String smartRecordConfName;
     private final String weightsModelName;
+    private final long partitionsResolutionInSeconds;
 
     /**
      * C'tor
@@ -26,11 +27,14 @@ public class AccumulatedSmartValueRetrieverConf extends AbstractDataRetrieverCon
             @JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
             @JsonProperty("functions") List<JSONObject> functions,
             @JsonProperty("smartRecordConfName") String smartRecordConfName,
-            @JsonProperty("weightsModelName") String weightsModelName) {
+            @JsonProperty("weightsModelName") String weightsModelName,
+            @JsonProperty("partitionsResolutionInSeconds") long partitionsResolutionInSeconds) {
         super(timeRangeInSeconds, functions);
         Assert.hasText(smartRecordConfName,"smartRecordConfName must be non empty");
+        Assert.isTrue(partitionsResolutionInSeconds>0,"partitionsResolutionInSeconds must be >0");
         this.smartRecordConfName = smartRecordConfName;
         this.weightsModelName = weightsModelName;
+        this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
     }
 
     @Override
@@ -44,5 +48,9 @@ public class AccumulatedSmartValueRetrieverConf extends AbstractDataRetrieverCon
 
     public String getWeightsModelName() {
         return weightsModelName;
+    }
+
+    public long getPartitionsResolutionInSeconds() {
+        return partitionsResolutionInSeconds;
     }
 }

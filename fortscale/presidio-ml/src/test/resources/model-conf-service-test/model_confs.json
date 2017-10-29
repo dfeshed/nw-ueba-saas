@@ -11,7 +11,8 @@
         "timeRangeInSeconds": 1,
         "functions": [],
         "featureBucketConfName": "featureBucketConfName1",
-        "featureName": "featureName1"
+        "featureName": "featureName1",
+        "partitionsResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
@@ -28,7 +29,8 @@
         "timeRangeInSeconds": 1,
         "functions": [],
         "featureBucketConfName": "featureBucketConfName1",
-        "featureName": "featureName1"
+        "featureName": "featureName1",
+        "partitionsResolutionInSeconds": 86400
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
