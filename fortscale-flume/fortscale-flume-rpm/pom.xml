@@ -40,7 +40,7 @@
                             <sources>
                                 <source>
                                     <location>
-                                        ${project.basedir}/../../flume-ng-dist/target/apache-flume-1.7.0-bin/apache-flume-1.7.0-bin/
+                                        ${project.basedir}/../../flume-ng-dist/target/apache-flume-${project.version}-bin/apache-flume-${project.version}-bin/
                                     </location>
                                 </source>
                             </sources>
