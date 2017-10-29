@@ -23,8 +23,8 @@ import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
 import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.monitoring.elastic.repositories.MetricRepository;
-import presidio.monitoring.elastic.services.MetricExportService;
-import presidio.monitoring.elastic.services.MetricExportServiceImpl;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.export.MetricsExporter;
 import presidio.monitoring.export.MetricsExporterElasticImpl;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
@@ -81,8 +81,8 @@ public class ExternalMonitoringConfiguration {
     }
 
     @Bean
-    public MetricExportService metricExportService() {
-        return new MetricExportServiceImpl(metricRepository);
+    public PresidioMetricPersistencyService metricExportService() {
+        return new PresidioMetricPersistencyServiceImpl(metricRepository);
     }
 
     @Bean

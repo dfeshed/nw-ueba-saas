@@ -5,7 +5,7 @@ import presidio.monitoring.elastic.records.PresidioMetric;
 
 import java.util.List;
 
-public interface MetricExportService {
+public interface PresidioMetricPersistencyService {
 
     PresidioMetric save(PresidioMetric presidioMetric);
 

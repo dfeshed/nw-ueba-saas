@@ -48,6 +48,15 @@ public class PresidioMetric {
         this.unit = unit;
     }
 
+    public PresidioMetric(String name, long value, Date timestamp, Set<String> tags, String unit) {
+        this.id = System.nanoTime() + "";
+        this.name = name;
+        this.value = value;
+        this.timestamp = timestamp;
+        this.tags = tags;
+        this.unit = unit;
+    }
+
     public void setId(String id) {
         this.id = id;
     }

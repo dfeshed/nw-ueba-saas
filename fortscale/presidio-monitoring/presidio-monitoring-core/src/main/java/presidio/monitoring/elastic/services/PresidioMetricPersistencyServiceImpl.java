@@ -8,13 +8,13 @@ import presidio.monitoring.elastic.repositories.MetricRepository;
 import java.util.List;
 
 @Service
-public class MetricExportServiceImpl implements MetricExportService {
+public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersistencyService {
 
-    private final Logger logger = Logger.getLogger(MetricExportServiceImpl.class);
+    private final Logger logger = Logger.getLogger(PresidioMetricPersistencyServiceImpl.class);
 
     private MetricRepository metricRepository;
 
-    public MetricExportServiceImpl(MetricRepository metricRepository) {
+    public PresidioMetricPersistencyServiceImpl(MetricRepository metricRepository) {
         this.metricRepository = metricRepository;
     }
 
