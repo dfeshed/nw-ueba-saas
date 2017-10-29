@@ -5,14 +5,14 @@
 
     <groupId>fortscale</groupId>
     <artifactId>presidio-output-webapp</artifactId>
-    <version>1.0-6</version>
+    <version>1.0.0-PERFORMANCE</version>
     <packaging>war</packaging>
     <name>presidio-output-webapp</name>
     <description>Fortscale Output</description>
     <parent>
         <artifactId>presidio-output</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
     <properties>
         <start-class>presidio.webapp.FortscaleOutputWebApplication</start-class>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-output-domain</artifactId>
-            <version>1.0-6</version>
+            <version>1.0.0-PERFORMANCE</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>

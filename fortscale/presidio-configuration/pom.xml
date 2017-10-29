@@ -6,13 +6,13 @@
 
     <name>presidio-configuration</name>
     <artifactId>presidio-configuration</artifactId>
-    <version>1.0-6</version>
+    <version>1.0.0-PERFORMANCE</version>
     <packaging>pom</packaging>
 
     <parent>
         <artifactId>fortscale</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-PERFORMANCE</version>
     </parent>
 
     <modules>
