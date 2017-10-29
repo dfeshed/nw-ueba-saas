@@ -2,7 +2,7 @@ package presidio.ade.test.utils.generators.models;
 
 import fortscale.common.util.GenericHistogram;
 import presidio.data.domain.event.OperationType;
-import presidio.data.generators.fileop.CyclicFileOperationTypeGenerator;
+import presidio.data.generators.fileop.CyclicOperationTypeGenerator;
 
 /**
  * Created by barak_schuster on 9/10/17.
@@ -14,7 +14,7 @@ public class FixedGenericHistogramGenerator implements IGenericHistogramGenerato
 
     public FixedGenericHistogramGenerator() {
         this.genericHistogram = new GenericHistogram();
-        CyclicFileOperationTypeGenerator fileOperationTypeGenerator = new CyclicFileOperationTypeGenerator();
+        CyclicOperationTypeGenerator fileOperationTypeGenerator = new CyclicOperationTypeGenerator();
         for (OperationType  operationType :
                 fileOperationTypeGenerator.getValues()) {
                 this.genericHistogram.add(operationType.toString(),3D);
