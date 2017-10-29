@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.replacement.PatternReplacement;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 
@@ -22,7 +22,7 @@ public abstract class AbstractDataRetriever {
 		this.dataRetrieverConf = dataRetrieverConf;
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
 
-		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
 		functions = new ArrayList<>();
 
 		for (JSONObject functionConf : dataRetrieverConf.getFunctionConfs()) {
