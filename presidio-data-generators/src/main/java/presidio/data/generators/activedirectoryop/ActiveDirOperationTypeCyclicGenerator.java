@@ -31,14 +31,18 @@ public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator
             AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value,
             AD_OPERATION_TYPE.MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value
     };
-    private static final OperationType[] DEFAULT_AD_OPERATION_TYPES = getDefaultAdOperationTypes();
+    private static final OperationType[] DEFAULT_AD_OPERATION_TYPES = getDefaultAdOperationTypes(Collections.emptyList());
 
-    private static OperationType[] getDefaultAdOperationTypes(){
-        List<OperationType> ret = Arrays.stream(DEFAULT_AD_OPERATION_TYPE_NAMES).map(s -> new OperationType(s, Collections.emptyList())).collect(Collectors.toList());
+    private static OperationType[] getDefaultAdOperationTypes(List<String> categories){
+        List<OperationType> ret = Arrays.stream(DEFAULT_AD_OPERATION_TYPE_NAMES).map(s -> new OperationType(s, categories)).collect(Collectors.toList());
         return ret.toArray(new OperationType[ret.size()]);
     }
     public ActiveDirOperationTypeCyclicGenerator() {
         super(DEFAULT_AD_OPERATION_TYPES);
+    }
+
+    public ActiveDirOperationTypeCyclicGenerator(List<String> categories) {
+        super(getDefaultAdOperationTypes(categories));
     }
 
     public ActiveDirOperationTypeCyclicGenerator(OperationType[] customList) {
