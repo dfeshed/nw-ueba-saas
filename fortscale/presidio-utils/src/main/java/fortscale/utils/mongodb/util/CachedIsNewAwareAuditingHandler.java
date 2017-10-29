@@ -33,7 +33,7 @@ public class CachedIsNewAwareAuditingHandler extends IsNewAwareAuditingHandler {
         if(isAuditable == null)
         {
             isAuditable = isAuditable(object);
-            isAuditableCache.put(objectClass,isAuditable(object));
+            isAuditableCache.put(objectClass,isAuditable);
         }
 
         if (!isAuditable) {
