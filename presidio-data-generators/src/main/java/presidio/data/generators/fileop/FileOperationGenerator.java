@@ -2,9 +2,7 @@ package presidio.data.generators.fileop;
 
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileOperation;
-import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.IStringGenerator;
-import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.*;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
@@ -17,14 +15,14 @@ import java.util.Collections;
 public class FileOperationGenerator implements IFileOperationGenerator {
     private IFileEntityGenerator sourceFileEntityGenerator;
     private IFileEntityGenerator destFileEntityGenerator;
-    private IFileOperationTypeGenerator operationTypeGenerator;
+    private IOperationTypeGenerator operationTypeGenerator;
     private IStringGenerator operationResultGenerator;
     private IStringGenerator operationResultCodeGenerator;
 
     public FileOperationGenerator() throws GeneratorException {
         sourceFileEntityGenerator = new FileEntityGenerator();
         destFileEntityGenerator = new FileEntityGenerator();
-        operationTypeGenerator = new FixedFileOperationTypeGenerator(new OperationType("dummyOperationType", Collections.emptyList()));
+        operationTypeGenerator = new FixedOperationTypeGenerator(new OperationType("dummyOperationType", Collections.emptyList()));
         operationResultGenerator = new OperationResultPercentageGenerator();
         operationResultCodeGenerator = new RandomStringGenerator(6);
     }
@@ -50,11 +48,11 @@ public class FileOperationGenerator implements IFileOperationGenerator {
         this.destFileEntityGenerator = destFileEntityGenerator;
     }
 
-    public IFileOperationTypeGenerator getOperationTypeGenerator() {
+    public IOperationTypeGenerator getOperationTypeGenerator() {
         return operationTypeGenerator;
     }
 
-    public void setOperationTypeGenerator(IFileOperationTypeGenerator operationTypeGenerator) {
+    public void setOperationTypeGenerator(IOperationTypeGenerator operationTypeGenerator) {
         this.operationTypeGenerator = operationTypeGenerator;
     }
 

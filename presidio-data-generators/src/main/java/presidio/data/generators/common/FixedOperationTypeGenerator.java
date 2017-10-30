@@ -1,14 +1,14 @@
-package presidio.data.generators.fileop;
+package presidio.data.generators.common;
 
 import presidio.data.domain.event.OperationType;
 
 /**
  * Created by YaronDL on 8/7/2017.
  */
-public class FixedFileOperationTypeGenerator implements IFileOperationTypeGenerator{
+public class FixedOperationTypeGenerator implements IOperationTypeGenerator {
     private OperationType operationType;
 
-    public FixedFileOperationTypeGenerator(OperationType operationType){
+    public FixedOperationTypeGenerator(OperationType operationType){
         this.operationType = operationType;
     }
 

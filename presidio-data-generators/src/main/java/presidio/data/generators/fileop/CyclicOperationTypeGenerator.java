@@ -4,6 +4,7 @@ import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
 import presidio.data.generators.common.CyclicValuesGenerator;
+import presidio.data.generators.common.IOperationTypeGenerator;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +13,12 @@ import java.util.List;
 /**
  * Created by YaronDL on 8/7/2017.
  */
-public class CyclicFileOperationTypeGenerator extends CyclicValuesGenerator<OperationType> implements IFileOperationTypeGenerator{
+public class CyclicOperationTypeGenerator extends CyclicValuesGenerator<OperationType> implements IOperationTypeGenerator {
 
-    public CyclicFileOperationTypeGenerator(OperationType[] operationTypes){
+    public CyclicOperationTypeGenerator(OperationType[] operationTypes){
         super(operationTypes);
     }
-    public CyclicFileOperationTypeGenerator(){
+    public CyclicOperationTypeGenerator(){
         super();
         OperationType opTypes[] = new OperationType[FILE_OPERATION_TYPE.values().length];
         int i = 0;

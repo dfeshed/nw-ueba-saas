@@ -1,6 +1,8 @@
 package presidio.data.domain.event.activedirectory;
 
 
+import presidio.data.domain.event.OperationType;
+
 import java.util.List;
 
 /**
@@ -9,26 +11,24 @@ import java.util.List;
  * Consumed by ActiveDirectory converter to prepare data for component's SDK.
  */
 public class ActiveDirectoryOperation {
-    private String operationType;   // not using AD_OPERATION_TYPE enum, to be able create data for invalid values test
-    private List<String> operationTypeCategories;
+    private OperationType operationType;   // not using AD_OPERATION_TYPE enum, to be able create data for invalid values test
     private String objectName;
     private String operationResult;
     private String operationResultCode;
 
-    public ActiveDirectoryOperation(String operationType, List<String> operationTypeCategories,
+    public ActiveDirectoryOperation(OperationType operationType,
                                     String objectName, String operationResult, String operationResultCode) {
         this.operationType = operationType;
-        this.operationTypeCategories = operationTypeCategories;
         this.objectName = objectName;
         this.operationResult = operationResult;
         this.operationResultCode = operationResultCode;
     }
 
-    public String getOperationType() {
+    public OperationType getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(String operationType) {
+    public void setOperationType(OperationType operationType) {
         this.operationType = operationType;
     }
 
@@ -48,14 +48,6 @@ public class ActiveDirectoryOperation {
         this.operationResult = operationResult;
     }
 
-    public List<String> getOperationTypeCategories() {
-        return operationTypeCategories;
-    }
-
-    public void setOperationTypeCategories(List<String> operationTypeCategories) {
-        this.operationTypeCategories = operationTypeCategories;
-    }
-
     public String getOperationResultCode() {
         return operationResultCode;
     }
@@ -68,7 +60,6 @@ public class ActiveDirectoryOperation {
     public String toString() {
         return "ActiveDirectoryOperation{" +
                 "operationType='" + operationType + '\'' +
-                ", operationTypeCategories=" + operationTypeCategories +
                 ", objectName='" + objectName + '\'' +
                 ", operationResult='" + operationResult + '\'' +
                 ", operationResultCode='" + operationResultCode + '\'' +

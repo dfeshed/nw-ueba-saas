@@ -2,16 +2,8 @@ package presidio.data.generators.fileop;
 
 import org.junit.Assert;
 import org.junit.Test;
-import presidio.data.domain.event.OperationType;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE;
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
 import presidio.data.domain.event.file.FileOperation;
 import presidio.data.generators.common.GeneratorException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by cloudera on 6/1/17.
@@ -27,7 +19,7 @@ public class FileOperationGeneratorTest {
     @Test
     public void CyclicFileOperationGeneratorSanityTest() throws GeneratorException {
 
-        CyclicFileOperationTypeGenerator fileOpTypeGen = new CyclicFileOperationTypeGenerator();
+        CyclicOperationTypeGenerator fileOpTypeGen = new CyclicOperationTypeGenerator();
         FileOperationGenerator fileOpGen = new FileOperationGenerator();
         fileOpGen.setOperationTypeGenerator(fileOpTypeGen);
         FileOperation operation = fileOpGen.getNext();
@@ -36,7 +28,7 @@ public class FileOperationGeneratorTest {
 
     @Test
     public void CustomFileOperationTypeGenerator() throws GeneratorException {
-        CustomFileOperationTypeGenerator fileOpTypeGen = new CustomFileOperationTypeGenerator(new String [] {
+        CustomOperationTypeGenerator fileOpTypeGen = new CustomOperationTypeGenerator(new String [] {
                 "KUKU", "FILE_CREATED", "FILE_DELETED"
         });
         FileOperationGenerator fileOpGen = new FileOperationGenerator();
@@ -58,7 +50,7 @@ public class FileOperationGeneratorTest {
     @Test
     public void DefaultValuesCustomFileOperationTypeGenerator() throws GeneratorException {
         FileOperationGenerator fileOpGen = new FileOperationGenerator();
-        fileOpGen.setOperationTypeGenerator(new CustomFileOperationTypeGenerator());
+        fileOpGen.setOperationTypeGenerator(new CustomOperationTypeGenerator());
 
         FileOperation operation;
         for (int i = 0; i<100; i++) {

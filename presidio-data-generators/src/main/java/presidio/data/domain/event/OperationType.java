@@ -1,5 +1,6 @@
 package presidio.data.domain.event;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,6 +9,10 @@ import java.util.List;
 public class OperationType {
     private String name;
     private List<String> categories;
+
+    public OperationType(String name){
+        this(name, Collections.emptyList());
+    }
 
     public OperationType(String name, List<String> categories) {
         this.name = name;
