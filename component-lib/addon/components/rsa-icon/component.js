@@ -6,7 +6,7 @@ export default Component.extend({
 
   classNames: ['rsa-icon'],
 
-  attributeBindings: ['title'],
+  attributeBindings: ['title', 'testId:test-id'],
 
   classNameBindings: [
     'active',

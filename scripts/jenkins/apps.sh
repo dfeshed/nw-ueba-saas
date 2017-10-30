@@ -183,7 +183,7 @@ buildEmberApp investigate-events false true
 buildEmberApp investigate-hosts false true
 buildEmberApp investigate-files false true
 buildEmberApp respond false true
-buildEmberApp sa true
+buildEmberApp sa true true
 
 unsetWebProxy
 

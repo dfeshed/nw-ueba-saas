@@ -6,7 +6,7 @@
     {{rsa-panel-message message=(t 'recon.error.generic')}}
   {{else}}
     {{#if isHeaderOpen}}
-      <div class="header-data">
+      <div class="header-data" test-id="headerData">
         {{#if displayedHeaderItems}}
           <grid responsive>
             {{#each displayedHeaderItems as |item|}}

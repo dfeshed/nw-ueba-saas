@@ -1,0 +1,13 @@
+{{#rsa-investigate-header
+  activeTab='investigate-events'
+  class='recon-is-standalone'
+  as |section| }}
+
+  {{#if section.isMain}}
+    {{recon-container
+    endpointId=endpointId
+    eventId=eventId
+    }}
+  {{/if}}
+
+{{/rsa-investigate-header}}

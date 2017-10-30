@@ -1,4 +1,4 @@
-import { skip } from 'qunit';
+import { skip, test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
@@ -8,11 +8,11 @@ moduleForAcceptance('Acceptance | investigate', {
   }
 });
 
-// Investigate default page is event query
-skip('investigate.index redirects to investigate.investigate-events.index', function(assert) {
-  visit('/investigate/');
+test('investigate will open recon panel when eventId and endpointId queryParams present', function(assert) {
+  visit('/investigate/recon?eventId=5&endpointId=555d9a6fe4b0d37c827d402e');
   andThen(function() {
-    assert.equal(currentPath(), 'protected.investigate.investigate-events.index', 'correct path was redirected into.');
+    assert.equal(currentURL(), '/investigate/recon?eventId=5&endpointId=555d9a6fe4b0d37c827d402e');
+    assert.equal(find('[test-id=reconInvestigateWrapper]').length, 1);
   });
 });
 
