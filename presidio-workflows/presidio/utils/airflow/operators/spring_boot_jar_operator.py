@@ -181,9 +181,7 @@ class SpringBootJarOperator(BashOperator):
     def extra_jvm(self, bash_command):
         """
         
-        Xmx specifies the maximum memory allocation pool for a Java Virtual Machine (JVM),
-        Xms specifies the initial memory allocation pool.
-        
+        extra args (like GC) for Java Virtual Machine (JVM),        
         :param bash_command: list of bash comments
         :type bash_command: []
         :return: 
