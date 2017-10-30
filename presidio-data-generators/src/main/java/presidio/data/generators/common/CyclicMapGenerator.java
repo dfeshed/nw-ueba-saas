@@ -5,12 +5,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by barak_schuster on 9/4/17.
+ * A generator that returns a fixed map with each call to {@link IMapGenerator#getNext()}.
+ * The fixed maps are returned in proper sequence, according to the array / list given in the c'tor.
+ * This generator is cyclic, meaning that the array / list of maps is reiterated once the end is reached.
+ *
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
-public class CyclicMapGenerator<K,V> extends CyclicValuesGenerator<Map<K,V>> implements IMapGenerator {
-
-    public CyclicMapGenerator(List<Map<K,V>> fixedMap) {
-        super(fixedMap.toArray(new HashMap[fixedMap.size()]));
+public class CyclicMapGenerator<K, V> extends CyclicValuesGenerator<Map<K, V>> implements IMapGenerator<K, V> {
+    public CyclicMapGenerator(Map<K, V>[] fixedMaps) {
+        super(fixedMaps);
     }
 
+    public CyclicMapGenerator(List<Map<K, V>> fixedMaps) {
+        this(toArray(fixedMaps));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V>[] toArray(List<Map<K, V>> fixedMaps) {
+        return fixedMaps.toArray((Map<K, V>[])new HashMap[fixedMaps.size()]);
+    }
 }
