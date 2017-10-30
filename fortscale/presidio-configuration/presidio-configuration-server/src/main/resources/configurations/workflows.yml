@@ -17,7 +17,7 @@ dags:
   tasks_instances:
     hourly_DLPFILE_feature_aggregations:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-*.jar
         main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
         xmx: 500
         xms: 70
@@ -33,78 +33,78 @@ dags:
         jmx_enabled: False
     SmartEventsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-smart-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-smart-*.jar
         main_class: presidio.ade.smart.SmartApplication
         xmx: 500
         xms: 70
     FeatureAggregationsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-feature-aggr-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-feature-aggr-*.jar
         main_class: presidio.ade.processes.shell.FeatureAggregationsApplication
         xmx: 500
         xms: 70
     ScoreAggregationsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-*.jar
         main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
         xmx: 500
         xms: 70
     RawModelFeatureAggregationBucketsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-model-feature-buckets-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-model-feature-buckets-*.jar
         main_class: presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
         xmx: 500
         xms: 70
     RawModelOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
     AggrModelAccumulateAggregationsOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr-*.jar
         main_class: presidio.ade.processes.shell.AccumulateAggregationsApplication
         xmx: 500
         xms: 70
     AggrModelOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
     SmartModelAccumulateOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-smart-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-smart-*.jar
         main_class: presidio.ade.processes.shell.AccumulateSmartApplication
         xmx: 500
         xms: 70
     SmartModelOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 500
         xms: 70
     AdeManagerOperator:
       jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-1.0.0-SNAPSHOT.jar
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-*.jar
         main_class: presidio.ade.manager.AdeManagerApplication
         xmx: 500
         xms: 70
 components:
   adapter:
     jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-adapter-1.0.0-SNAPSHOT.jar
+      jar_path: ${general.deployment.bins.base_path}/presidio-adapter-*.jar
       main_class: presidio.adapter.FortscaleAdapterApplication
   input:
     jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-input-core-1.0.0-SNAPSHOT.jar
+      jar_path: ${general.deployment.bins.base_path}/presidio-input-core-*.jar
       main_class: presidio.input.core.FortscaleInputCoreApplication
       xmx: 500
       xms: 70
   output:
     jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-output-processor-1.0.0-SNAPSHOT.jar
+      jar_path: ${general.deployment.bins.base_path}/presidio-output-processor-*.jar
       main_class: presidio.output.processor.FortscaleOutputProcessorApplication
       xmx: 500
       xms: 70
