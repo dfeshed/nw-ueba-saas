@@ -1,11 +1,11 @@
-package presidio.monitoring.export;
+package presidio.monitoring.services.export;
 
 
 import fortscale.utils.logging.Logger;
-import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 
 
 public class MetricsExporterElasticImpl extends MetricsExporter {
@@ -14,15 +14,15 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
 
     private PresidioMetricPersistencyService presidioMetricPersistencyService;
 
-    public MetricsExporterElasticImpl(MetricsEndpoint metricsEndpoint, String applicationName, PresidioMetricPersistencyService presidioMetricPersistencyService, ThreadPoolTaskScheduler scheduler) {
-        super(metricsEndpoint, applicationName, scheduler);
+    public MetricsExporterElasticImpl(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricPersistencyService presidioMetricPersistencyService, ThreadPoolTaskScheduler scheduler) {
+        super(presidioMetricEndPoint, scheduler);
         this.presidioMetricPersistencyService = presidioMetricPersistencyService;
     }
 
     @Scheduled(fixedRateString = "${monitoring.fixed.rate}")
-    public void export() {
+    public void export(boolean isLastExport) {
         logger.debug("Exporting metrics to elastic");
-        presidioMetricPersistencyService.save(metricsForExport());
+        presidioMetricPersistencyService.save(getMetricsForExport(isLastExport));
         logger.debug("Ended Exporting metrics to elastic");
     }
 

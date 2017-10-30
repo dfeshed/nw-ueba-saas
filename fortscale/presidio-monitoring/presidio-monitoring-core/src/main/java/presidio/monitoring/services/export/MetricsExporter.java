@@ -1,57 +1,37 @@
-package presidio.monitoring.export;
+package presidio.monitoring.services.export;
 
 
 import fortscale.utils.logging.Logger;
-import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 import presidio.monitoring.records.PresidioMetric;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public abstract class MetricsExporter implements ApplicationListener<ContextClosedEvent> {
 
     private final Logger logger = Logger.getLogger(MetricsExporter.class);
 
-    private MetricsEndpoint metricsEndpoint;
-    private Set<String> tags;
+    private PresidioMetricEndPoint presidioMetricEndPoint;
     private ThreadPoolTaskScheduler scheduler;
     private String applicationName;
 
 
-    MetricsExporter(MetricsEndpoint metricsEndpoint, String applicationName, ThreadPoolTaskScheduler scheduler) {
-        this.metricsEndpoint = metricsEndpoint;
+    MetricsExporter(PresidioMetricEndPoint presidioMetricEndPoint, ThreadPoolTaskScheduler scheduler) {
+        this.presidioMetricEndPoint = presidioMetricEndPoint;
         this.scheduler = scheduler;
-        this.tags = new HashSet<>();
-        this.applicationName = applicationName;
-        tags.add(this.applicationName);
     }
 
-    public List<PresidioMetric> getMetricsForExport() {
-        List<PresidioMetric> metricsForExport = new ArrayList<>();
-        PresidioMetric value;
-        Map<String, Object> map = metricsEndpoint.invoke();
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            value = (PresidioMetric) entry.getValue();
-            value.setTags(tags);
-            metricsForExport.add(value);
-
-
-        }
-        return metricsForExport;
+    public List<PresidioMetric> getMetricsForExport(boolean isLastExport) {
+        return presidioMetricEndPoint.getAllMetrics(isLastExport);
     }
 
-    public abstract void export();
+    public abstract void export(boolean isLastExport);
 
     public void flush() {
-        ((CustomMetricEndpoint) metricsEndpoint).setFlush(true);
-        export();
+        export(true);
     }
 
     @Override
@@ -62,7 +42,4 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         scheduler.shutdown();
     }
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
 }

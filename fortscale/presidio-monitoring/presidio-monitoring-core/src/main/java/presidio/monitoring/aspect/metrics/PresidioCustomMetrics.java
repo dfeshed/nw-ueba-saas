@@ -3,7 +3,7 @@ package presidio.monitoring.aspect.metrics;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.stereotype.Component;
-import presidio.monitoring.elastic.records.PresidioMetric;
+import presidio.monitoring.records.PresidioMetric;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
