@@ -39,10 +39,12 @@ public class MonitoringAspects {
     public PresidioCustomMetrics presidioCustomMetrics;
 
 
-    public MonitoringAspects(MetricsEndpoint metricsEndpoint, PresidioCustomMetrics presidioCustomMetrics) {
-        logger.info("Aspect is activated");
-        this.presidioCustomMetrics = presidioCustomMetrics;
+    public MonitoringAspects() {
+    }
+
+    public void setMetrics(MetricsEndpoint metricsEndpoint, PresidioCustomMetrics presidioCustomMetrics) {
         this.metricsEndpoint = metricsEndpoint;
+        this.presidioCustomMetrics = presidioCustomMetrics;
         this.metricsEndpoint.registerPublicMetrics(this.presidioCustomMetrics);
     }
 
@@ -60,7 +62,7 @@ public class MonitoringAspects {
         String metric = joinPoint.getSignature().toShortString() + START;
         Set tags = new HashSet();
         presidioCustomMetrics.addMetric(metric, 1, tags, UNIT_TYPE_LONG);
-        logger.info("Metric {} increment with annotation Start. ", metric);
+        logger.debug("Metric {} increment with annotation Start. ", metric);
     }
 
     /**
