@@ -1,5 +1,6 @@
 package presidio.ade.smart.config;
 
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.ttl.TtlService;
