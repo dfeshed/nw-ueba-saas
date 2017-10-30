@@ -21,10 +21,13 @@ export default {
    */
   getAlerts(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
     const query = buildExplorerQuery(filters, sort, 'receivedTime');
+    const streamOptions = { cancelPreviouslyExecuting: true };
+
     return streamRequest({
       method: 'stream',
       modelName: 'alerts',
       query: query.toJSON(),
+      streamOptions,
       onInit,
       onResponse,
       onError,

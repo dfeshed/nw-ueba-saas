@@ -567,6 +567,7 @@ export default {
       incidents: 'Incidents',
       remediationTasks: 'Tasks',
       alerts: 'Alerts',
+      incidentRules: 'Incident Rules',
       actionMessages: {
         updateSuccess: 'Your change was successful',
         updateFailure: 'There was a problem updating the field for this record',

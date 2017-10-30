@@ -4,7 +4,7 @@ $incidentsToolbarHeight: 40px;
 
 .rsa-protected page.respond-engine {
   min-height: calc(100vh - #{$appNavigationHeaderHeight});
-  .rsa-respond-explorer {
+  .rsa-respond-explorer, .rsa-aggregation-rules {
     height: calc(100vh - #{$appNavigationHeaderHeight} - #{$respondNavigationHeight});
 
     .main-zone {

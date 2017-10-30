@@ -1,8 +1,24 @@
-import { route } from 'ember-redux';
-import { getRules } from 'respond/actions/creators/aggregation-rule-creators';
+import Route from '@ember/routing/route';
+import { inject } from '@ember/service';
 
-const model = (dispatch) => {
-  dispatch(getRules());
-};
+export default Route.extend({
+  accessControl: inject(),
+  contextualHelp: inject(),
+  i18n: inject(),
 
-export default route({ model })();
+  titleToken() {
+    return this.get('i18n').t('respond.entities.incidentRules');
+  },
+
+  beforeModel() {
+    if (!this.get('accessControl.hasRespondConfigureAccess')) {
+      this.transitionTo('index');
+    }
+  },
+
+  actions: {
+    transitionToRule(ruleId) {
+      this.transitionTo('aggregation-rule', ruleId);
+    }
+  }
+});

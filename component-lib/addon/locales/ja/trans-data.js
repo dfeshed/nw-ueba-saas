@@ -567,6 +567,7 @@ export default {
       incidents: 'ja_Incidents',
       remediationTasks: 'ja_Tasks',
       alerts: 'ja_Alerts',
+      incidentRules: 'ja_Incident Rules',
       actionMessages: {
         updateSuccess: 'ja_Your change was successful',
         updateFailure: 'ja_There was a problem updating the field for this record',

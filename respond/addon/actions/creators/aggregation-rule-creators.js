@@ -16,10 +16,11 @@ const { Logger } = Ember;
  * @param templateRuleId
  * @public
  */
-const cloneRule = (templateRuleId) => {
+const cloneRule = (templateRuleId, onSuccess) => {
   return {
     type: ACTION_TYPES.AGGREGATION_RULES_CLONE_SAGA,
-    templateRuleId
+    templateRuleId,
+    onSuccess
   };
 };
 

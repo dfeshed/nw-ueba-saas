@@ -4,7 +4,7 @@ import {
   getAggregationRulesStatus,
   getIsAggregationRulesTransactionUnderway,
   getSelectedAggregationRuleId } from 'respond/selectors/aggregation-rules';
-import { selectRule, reorderRules } from 'respond/actions/creators/aggregation-rule-creators';
+import { selectRule, reorderRules, getRules } from 'respond/actions/creators/aggregation-rule-creators';
 import { connect } from 'ember-redux';
 import columns from './columns';
 import _ from 'lodash';
@@ -27,6 +27,9 @@ const dispatchToActions = function(dispatch) {
         const reorderedIds = reorderedItems.map((item) => item.id);
         dispatch(reorderRules(reorderedIds));
       }
+    },
+    getRules() {
+      dispatch(getRules());
     }
   };
 };
@@ -55,6 +58,10 @@ const AggregationRules = Component.extend({
    * @public
    */
   useLazyRendering: true,
+
+  onInit: function() {
+    this.send('getRules');
+  }.on('init'),
 
   actions: {
     /**

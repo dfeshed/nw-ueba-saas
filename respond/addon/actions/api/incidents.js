@@ -25,11 +25,13 @@ IncidentsAPI.reopenClass({
    */
   getIncidents(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
     const query = buildExplorerQuery(filters, sort, 'created');
+    const streamOptions = { cancelPreviouslyExecuting: true };
 
     return streamRequest({
       method: 'stream',
       modelName: 'incidents',
       query: query.toJSON(),
+      streamOptions,
       onInit,
       onResponse,
       onError,
@@ -259,7 +261,8 @@ IncidentsAPI.reopenClass({
    * @returns {*}
    */
   search(searchText, sortField = 'created', sortDescending = true, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
-    // TODO: Allow query builder utility to support regex filters and "or" filter operator
+    const streamOptions = { cancelPreviouslyExecuting: true };
+
     return streamRequest({
       method: 'stream',
       modelName: 'incidents',
@@ -281,6 +284,7 @@ IncidentsAPI.reopenClass({
         },
         filterOperator: 'or'
       },
+      streamOptions,
       onInit,
       onResponse,
       onError,

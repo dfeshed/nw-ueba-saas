@@ -12,9 +12,13 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = function(dispatch) {
   return {
-    clone() {
+    clone: () => {
       const templateRuleId = this.get('selectedRuleId');
-      dispatch(cloneRule(templateRuleId));
+      const onSuccess = (clonedRuleId) => {
+        const transitionToRule = this.get('transitionToRule');
+        transitionToRule(clonedRuleId);
+      };
+      dispatch(cloneRule(templateRuleId, onSuccess));
     },
 
     delete: () => {

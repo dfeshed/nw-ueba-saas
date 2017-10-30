@@ -3,7 +3,6 @@ import * as errorHandlers from 'respond/actions/util/error-handlers';
 import { aggregationRules } from 'respond/actions/api';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { success, failure } from 'respond/sagas/flash-messages';
-import { lookup } from 'ember-dependency-lookup';
 import Ember from 'ember';
 
 const { Logger } = Ember;
@@ -52,12 +51,12 @@ function* reorderRulesAsync(action) {
 }
 
 function* cloneRuleAsync(action) {
-  const { templateRuleId } = action;
+  const { templateRuleId, onSuccess } = action;
   try {
     yield put({ type: ACTION_TYPES.AGGREGATION_RULES_CLONE_STARTED });
     const payload = yield call(aggregationRules.cloneAggregationRule, templateRuleId);
     yield put({ type: ACTION_TYPES.AGGREGATION_RULES_CLONE, payload });
-    lookup('router:main').transitionTo('respond.aggregation-rule', payload.data.id);
+    onSuccess(payload.data.id);
     Logger.debug(ACTION_TYPES.AGGREGATION_RULES_CLONE, payload);
   } catch (e) {
     yield put({ type: ACTION_TYPES.AGGREGATION_RULES_CLONE_FAILED });
