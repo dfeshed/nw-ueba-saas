@@ -9,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
+import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
@@ -28,12 +26,12 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
-import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
-import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.managers.FileTransformerManager;
-import presidio.input.core.services.transformation.managers.TransformationService;
-import presidio.input.core.services.transformation.managers.TransformationServiceImpl;
+import presidio.input.core.services.transformation.managers.*;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.monitoring.aspect.MonitroingAspectSetup;
+import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
+import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
+import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
 import presidio.monitoring.aspect.services.MetricCollectingService;
 import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -163,5 +161,23 @@ public class InputCoreConfigurationTest {
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
+    }
+
+    // todo: should it be in tests? efrat? miri?
+    @Bean
+    public MonitroingAspectSetup monitroingAspectSetup() {
+        return  new MonitroingAspectSetup(metricsEndpoint(), presidioCustomMetrics());
+    }
+    @Bean
+    public MetricsEndpoint metricsEndpoint() {
+        return new CustomMetricEndpoint(publicMetrics());
+    }
+    @Bean
+    public PresidioCustomMetrics presidioCustomMetrics() {
+        return new PresidioCustomMetrics();
+    }
+    @Bean
+    public PublicMetrics publicMetrics() {
+        return new PresidioDefaultMetrics();
     }
 }
