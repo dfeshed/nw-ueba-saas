@@ -53,10 +53,14 @@ public class CachedIsNewAwareAuditingHandler extends IsNewAwareAuditingHandler {
 
         if (strategy.isNew(object)) {
             Field field = classCreatedDateField.computeIfAbsent(objectClass, x -> computeClassField(objectClass,CreatedDate.class));
-            ReflectionUtils.setField(field,object, Instant.now());
+            if (field != null) {
+                ReflectionUtils.setField(field, object, Instant.now());
+            }
         } else {
             Field field = classLastModifiedDateField.computeIfAbsent(objectClass, x -> computeClassField(objectClass,LastModifiedDate.class));
-            ReflectionUtils.setField(field,object, Instant.now());
+            if (field != null) {
+                ReflectionUtils.setField(field, object, Instant.now());
+            }
         }
     }
 
