@@ -62,6 +62,8 @@ $ NOMOCK=1 ember serve --proxy=http://localhost:7004
 
 # Further Reading / Useful Links
 
+* [Sonar Dashboard](http://asoc-sonar.rsa.lab.emc.com/projects/)
+* [Style Guide](http://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/#/)
 * [ember.js](http://emberjs.com/)
 * [ember-cli](http://www.ember-cli.com/)
 * Development Browser Extensions
