@@ -1,6 +1,6 @@
 package fortscale.ml.model.store;
 
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
@@ -10,8 +10,7 @@ import fortscale.utils.ttl.TtlServiceAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
@@ -115,69 +114,71 @@ public class ModelStore implements TtlServiceAware {
         //remove models that older than ttlOldestAllowedModel
         removeOldestModels(collectionName, until);
 
-        if(isGlobalModel(collectionName)){
-            removeGlobalOldModels(collectionName, until);
-        }
-        else{
-            removeContextIdOldModels(collectionName, until);
-        }
+        removeContextIdOldModels(collectionName, until);
     }
 
-    /**
-     *
-     * @return if collection is global
-     */
-    public boolean isGlobalModel(String collectionName){
-        //todo: find better way
-        return  collectionName.contains("global");
-    }
-
-    /**
-     * Remove Global models, where END_TIME_FIELD less than or equal the until instant.
-     *
-     * @param collectionName collectionName
-     * @param until          until instant
-     */
-    private void removeGlobalOldModels(String collectionName, Instant until){
-        Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lte(Date.from(until));
-        Query query = new Query(dateCriteria);
-        mongoTemplate.remove(query, collectionName);
-    }
 
     /**
      * Remove models of contextIds, where contextId has at least one model that greater than until instant.
+     * <p>
+     * Try aggregate all the contextIds and remove there models,
+     * if aggregate method throw an exception that total size of the result set exceeds the BSON Document Size, get contexts and remove models with pagination.
      *
      * @param collectionName collectionName
      * @param until          until instant
      */
     private void removeContextIdOldModels(String collectionName, Instant until) {
-        Aggregation agg = newAggregation(
-                match(where(ModelDAO.END_TIME_FIELD).gt(Date.from(until))),
-                Aggregation.group(ModelDAO.CONTEXT_ID_FIELD),
-                Aggregation.project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD).andExclude("_id")
-        );
+        try {
+            Aggregation agg = newAggregation(
+                    match(where(ModelDAO.END_TIME_FIELD).gt(Date.from(until))),
+                    Aggregation.group(ModelDAO.CONTEXT_ID_FIELD),
+                    Aggregation.project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD).andExclude("_id")
+            );
+            AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+            removeContextIdsModels(collectionName, until, aggrResult);
 
-        AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
-        List<DBObject> results = aggrResult.getMappedResults();
+        } catch (MongoException ex) {
+            AggregationResults<DBObject> aggrResult;
 
-        List<String> contextIds = new ArrayList<>();
-        for (DBObject result : results) {
-            contextIds.add((String) result.get(ModelDAO.CONTEXT_ID_FIELD));
+            long limit = modelPaginationSize;
+            long skip = 0;
+            do {
+                Aggregation agg = newAggregation(
+                        match(where(ModelDAO.END_TIME_FIELD).gt(Date.from(until))),
+                        Aggregation.group(ModelDAO.CONTEXT_ID_FIELD),
+                        Aggregation.project(ModelDAO.CONTEXT_ID_FIELD).and("_id").as(ModelDAO.CONTEXT_ID_FIELD).andExclude("_id"),
+                        Aggregation.sort(Direction.ASC, ModelDAO.CONTEXT_ID_FIELD),
+                        Aggregation.skip(skip),
+                        Aggregation.limit(limit)
+                );
+                skip = skip + modelPaginationSize;
+                aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
+                removeContextIdsModels(collectionName, until, aggrResult);
+            } while (!aggrResult.getMappedResults().isEmpty());
+
         }
+    }
 
+    /**
+     * Remove models of context ids
+     *
+     * @param collectionName collectionName
+     * @param until          until instant
+     * @param aggrResult     context ids result
+     */
+    private void removeContextIdsModels(String collectionName, Instant until, AggregationResults<DBObject> aggrResult) {
+        List<DBObject> results = aggrResult.getMappedResults();
+        if (!aggrResult.getMappedResults().isEmpty()) {
 
-        //create pagination in order to limit query in operation.
-        int index = 0;
-        while (index < contextIds.size()) {
-            int untilIndex = Math.min(index + modelPaginationSize, index + contextIds.size());
-            List<String> contextsToRemove = contextIds.subList(index, untilIndex);
+            List<String> contextIds = new ArrayList<>();
+            for (DBObject result : results) {
+                contextIds.add((String) result.get(ModelDAO.CONTEXT_ID_FIELD));
+            }
 
-            Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextsToRemove);
+            Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds);
             Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lte(Date.from(until));
             Query query = new Query(contextCriteria).addCriteria(dateCriteria);
             mongoTemplate.remove(query, collectionName);
-
-            index = untilIndex;
         }
     }
 
