@@ -7,14 +7,12 @@ import fortscale.ml.scorer.SMARTValuesModelScorer;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
 public class SMARTValuesModelScorerConf extends AbstractScorerConf{
     public static final String SCORER_TYPE = "smart-values-model-scorer";
 
-    public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
-    public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
+    public static final int ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE = 1;
+    public static final int MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE = false;
 
     @JsonProperty("global-influence")
@@ -22,16 +20,16 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
     @JsonProperty("base-scorer")
     private IScorerConf baseScorerConf;
 
-    @JsonProperty("number-of-samples-to-influence-enough")
-    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    @JsonProperty("number-of-partitions-to-influence-enough")
+    private int enoughNumOfPartitionsToInfluence = ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
 
     private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
     @JsonProperty("model")
     private ModelInfo modelInfo;
     @JsonProperty("global-model")
     private ModelInfo globalModelInfo;
-    @JsonProperty("min-number-of-samples-to-influence")
-    private int minNumOfSamplesToInfluence = MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    @JsonProperty("min-number-of-partitions-to-influence")
+    private int minNumOfPartitionsToInfluence = MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
 
     @JsonCreator
     public SMARTValuesModelScorerConf(@JsonProperty("name") String name,
@@ -52,9 +50,9 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
         this.globalInfluence = globalInfluence;
     }
 
-    public void setEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
-        SMARTValuesModelScorer.assertEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
-        this.enoughNumOfSamplesToInfluence = enoughNumOfSamplesToInfluence;
+    public void setEnoughNumOfPartitionsToInfluence(int enoughNumOfPartitionsToInfluence) {
+        SMARTValuesModelScorer.assertEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
+        this.enoughNumOfPartitionsToInfluence = enoughNumOfPartitionsToInfluence;
     }
 
     @JsonProperty("use-certainty-to-calculate-score")
@@ -62,13 +60,13 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
         isUseCertaintyToCalculateScore = useCertaintyToCalculateScore;
     }
 
-    public void setMinNumOfSamplesToInfluence(int minNumOfSamplesToInfluence) {
-        SMARTValuesModelScorer.assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
-        this.minNumOfSamplesToInfluence = minNumOfSamplesToInfluence;
+    public void setMinNumOfPartitionsToInfluence(int minNumOfPartitionsToInfluence) {
+        SMARTValuesModelScorer.assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
+        this.minNumOfPartitionsToInfluence = minNumOfPartitionsToInfluence;
     }
 
-    public int getEnoughNumOfSamplesToInfluence() {
-        return enoughNumOfSamplesToInfluence;
+    public int getEnoughNumOfPartitionsToInfluence() {
+        return enoughNumOfPartitionsToInfluence;
     }
 
     @JsonProperty("use-certainty-to-calculate-score")
@@ -84,8 +82,8 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
         return globalModelInfo;
     }
 
-    public int getMinNumOfSamplesToInfluence() {
-        return minNumOfSamplesToInfluence;
+    public int getMinNumOfPartitionsToInfluence() {
+        return minNumOfPartitionsToInfluence;
     }
 
     public int getGlobalInfluence() {

@@ -126,7 +126,7 @@ public class SmartWeightsScorerAlgorithm {
      * Sum the contributions made by the given {@link List<Cluster>} into a single entity event value.
      */
     private double calculateSmartValue(List<Cluster> clusters) {
-        if(clusters.stream().filter(cluster -> !cluster.isEmpty() && cluster.getMaxScore() >= minimalClusterScore).count() == 0){
+        if(!clusters.stream().anyMatch(cluster -> !cluster.isEmpty() && cluster.getMaxScore() >= minimalClusterScore)){
             return 0;
         }
         return clusters.stream()

@@ -75,21 +75,29 @@ public class SmartService {
 		Set<AggregatedDataPaginationParam> params = smartRecordConfService.getPaginationParams(smartRecordConfName);
 
 		for (TimeRange partition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy)) {
+			try {
 
-			//Once modelCacheManager save model to cache it will never updating the cache again with newer model.
-			//Reset cache required in order to get newer models each partition and not use older models.
-			// If this line will be deleted the model cache will need to have some efficient refresh mechanism.
-			smartScoringService.resetModelCache();
+				//Once modelCacheManager save model to cache it will never updating the cache again with newer model.
+				//Reset cache required in order to get newer models each partition and not use older models.
+				// If this line will be deleted the model cache will need to have some efficient refresh mechanism.
+				smartScoringService.resetModelCache();
 
-			logger.info("Starting to process time range partition {}.", partition);
-			aggregatedDataReader.read(params, partition).forEach(iterator -> {
-				SmartRecordAggregator aggregator = new SmartRecordAggregator(
-						conf, strategy, partition, aggregationRecordsThreshold);
-				while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
-				Collection<SmartRecord> records = aggregator.getSmartRecords();
-				smartScoringService.score(records);
-				smartDataStore.storeSmartRecords(smartRecordConfName, records);
-			});
+				logger.info("Starting to process time range partition {}.", partition);
+				aggregatedDataReader.read(params, partition).forEach(iterator -> {
+					SmartRecordAggregator aggregator = new SmartRecordAggregator(
+							conf, strategy, partition, aggregationRecordsThreshold);
+					while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
+					Collection<SmartRecord> records = aggregator.getSmartRecords();
+					smartScoringService.score(records);
+					smartDataStore.storeSmartRecords(smartRecordConfName, records);
+				});
+			}
+			catch (Exception e)
+			{
+				logger.error("got exception while calculating time range={}",timeRange,e);
+				throw e;
+			}
+
 		}
 
 		ttlService.cleanupCollections(timeRange.getStart());

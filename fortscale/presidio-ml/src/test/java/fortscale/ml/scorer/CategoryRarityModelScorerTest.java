@@ -1,5 +1,6 @@
 package fortscale.ml.scorer;
 
+import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.feature.score.FeatureScore;
@@ -9,6 +10,7 @@ import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.record.TestAdeRecord;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,7 @@ import presidio.ade.domain.record.AdeRecordReader;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.mockito.Matchers.any;
@@ -45,8 +48,8 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals((long)params.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
         Assert.assertEquals(params.getMinimumNumberOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
         Assert.assertEquals((long)params.getEnoughNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
-        Assert.assertEquals((long)params.getNumberOfSamplesToInfluenceEnough(), scorer.getEnoughNumOfSamplesToInfluence());
-        Assert.assertEquals((long)params.getMinNumOfSamplesToInfluence(), scorer.getMinNumOfSamplesToInfluence());
+        Assert.assertEquals((long)params.getNumberOfPartitionsToInfluenceEnough(), scorer.getEnoughNumOfPartitionsToInfluence());
+        Assert.assertEquals((long)params.getMinNumOfPartitionsToInfluence(), scorer.getMinNumOfPartitionsToInfluence());
         Assert.assertEquals(params.getUseCertaintyToCalculateScore(), scorer.isUseCertaintyToCalculateScore());
 
     }
@@ -58,8 +61,8 @@ public class CategoryRarityModelScorerTest {
                 params.getContextFieldNames(),
                 Collections.emptyList(),
                 params.getFeatureName(),
-                params.getMinNumOfSamplesToInfluence(),
-                params.getNumberOfSamplesToInfluenceEnough(),
+                params.getMinNumOfPartitionsToInfluence(),
+                params.getNumberOfPartitionsToInfluenceEnough(),
                 params.getUseCertaintyToCalculateScore(),
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
@@ -264,9 +267,11 @@ public class CategoryRarityModelScorerTest {
         for (int i = 0; i < 100; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
-        GenericHistogram histogram = new GenericHistogram();
-        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
+        calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(categoricalFeatureValue);
         String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
         double score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-count-100", featureWithCount100));
@@ -286,12 +291,15 @@ public class CategoryRarityModelScorerTest {
         for (int i = 0; i < 100; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
-        GenericHistogram histogram = new GenericHistogram();
-        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
+        calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
+
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(categoricalFeatureValue);
         String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
+        model.setNumOfPartitions(10);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
         when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
@@ -306,6 +314,22 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
+    private void calcCategoricalFeatureValue(Map<String, Long> featureValueToCountMap, CategoricalFeatureValue categoricalFeatureValue) {
+        for (Map.Entry<String, Long> entry : featureValueToCountMap.entrySet()) {
+            Instant startTime = Instant.parse("2007-12-03T10:00:00.00Z");
+            Long numOfOccurences = entry.getValue();
+            while (numOfOccurences >0)
+            {
+                GenericHistogram histogram = new GenericHistogram();
+                histogram.add(entry.getKey(),entry.getValue().doubleValue());
+                categoricalFeatureValue.add(histogram,startTime);
+                startTime = startTime.plus(1, ChronoUnit.DAYS);
+                numOfOccurences--;
+            }
+
+        }
+    }
+
     @Test
     public void calculateScore_testing_featureScore_name_with_model_and_no_certainty_test() throws Exception{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5)
@@ -317,9 +341,10 @@ public class CategoryRarityModelScorerTest {
         for (int i = 0; i < 100; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
-        GenericHistogram histogram = new GenericHistogram();
-        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
+        calcCategoricalFeatureValue(featureValueToCountMap,categoricalFeatureValue);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(categoricalFeatureValue);
         String featureWithCount100 = "feature-count-100";
         String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
@@ -369,10 +394,10 @@ public class CategoryRarityModelScorerTest {
         for (int i = 0; i < 100; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
 
-        GenericHistogram histogram = new GenericHistogram();
-        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        calcCategoricalFeatureValue(featureValueToCountMap,categoricalFeatureValue);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(categoricalFeatureValue);
         String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
 
@@ -403,10 +428,17 @@ public class CategoryRarityModelScorerTest {
         for (int i = 0; i < numOfDistinctValues; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
+
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
+        calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(100);
+        config.setPartitionsResolutionInSeconds(86400);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(categoricalFeatureValue);
         model.setFeatureCount(feature, count);
+        model.setNumOfPartitions(count);
         return model;
     }
 
@@ -621,7 +653,7 @@ public class CategoryRarityModelScorerTest {
             return this;
         }
 
-        public Integer getNumberOfSamplesToInfluenceEnough() {
+        public Integer getNumberOfPartitionsToInfluenceEnough() {
             return numberOfSamplesToInfluenceEnough;
         }
 
@@ -630,7 +662,7 @@ public class CategoryRarityModelScorerTest {
             return this;
         }
 
-        public Integer getMinNumOfSamplesToInfluence() {
+        public Integer getMinNumOfPartitionsToInfluence() {
             return minNumOfSamplesToInfluence;
         }
 

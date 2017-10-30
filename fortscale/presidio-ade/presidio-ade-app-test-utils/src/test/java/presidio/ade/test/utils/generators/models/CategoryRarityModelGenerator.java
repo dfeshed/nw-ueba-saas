@@ -1,8 +1,15 @@
 package presidio.ade.test.utils.generators.models;
 
+import fortscale.common.feature.CategoricalFeatureValue;
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 /**
  * Created by barak_schuster on 9/10/17.
@@ -26,7 +33,28 @@ public class CategoryRarityModelGenerator implements IModelGenerator<CategoryRar
 
     @Override
     public CategoryRarityModel getNext() {
-        return (CategoryRarityModel)categoryRarityModelBuilder.build(genericHistogramGenerator.getNext());
+        GenericHistogram genericHistogram = genericHistogramGenerator.getNext();
+        CategoricalFeatureValue categoricalFeatureValue = genericHistogram2CategoricalFeatureValue(genericHistogram);
+
+        return (CategoryRarityModel)categoryRarityModelBuilder.build(categoricalFeatureValue);
+    }
+
+    private CategoricalFeatureValue genericHistogram2CategoricalFeatureValue(GenericHistogram genericHistogram) {
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+        for (Map.Entry<String, Double> entry : genericHistogram.getHistogramMap().entrySet()) {
+            Instant startTime = Instant.parse("2007-12-03T10:00:00.00Z");
+            Double numOfOccurences = entry.getValue();
+            while (numOfOccurences >0)
+            {
+                GenericHistogram histogram = new GenericHistogram();
+                histogram.add(entry.getKey(),entry.getValue());
+                categoricalFeatureValue.add(histogram,startTime);
+                startTime = startTime.plus(1, ChronoUnit.DAYS);
+                numOfOccurences--;
+            }
+
+        }
+        return categoricalFeatureValue;
     }
 
     private CategoryRarityModelBuilder getCategoryRarityModelBuilder() {

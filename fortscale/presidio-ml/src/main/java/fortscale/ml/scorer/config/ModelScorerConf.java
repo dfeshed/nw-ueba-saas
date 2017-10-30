@@ -12,20 +12,20 @@ import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public abstract class ModelScorerConf extends AbstractScorerConf {
-    public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
-    public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
+    public static final int ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE = 1;
+    public static final int MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE = false;
 
-    @JsonProperty("number-of-samples-to-influence-enough")
-    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    @JsonProperty("number-of-partitions-to-influence-enough")
+    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
 
     private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
     @JsonProperty("model")
     private ModelInfo modelInfo;
     @JsonProperty("additional-models")
     private List<ModelInfo> additionalModelInfos;
-    @JsonProperty("min-number-of-samples-to-influence")
-    private int minNumOfSamplesToInfluence = MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    @JsonProperty("min-number-of-partitions-to-influence")
+    private int minNumOfSamplesToInfluence = MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
 
     @JsonCreator
     public ModelScorerConf(@JsonProperty("name") String name,
@@ -45,7 +45,7 @@ public abstract class ModelScorerConf extends AbstractScorerConf {
     }
 
     public void setEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
-        AbstractModelScorer.assertEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+        AbstractModelScorer.assertEnoughNumOfPartitionsToInfluence(enoughNumOfSamplesToInfluence);
         this.enoughNumOfSamplesToInfluence = enoughNumOfSamplesToInfluence;
     }
 
@@ -55,7 +55,7 @@ public abstract class ModelScorerConf extends AbstractScorerConf {
     }
 
     public void setMinNumOfSamplesToInfluence(int minNumOfSamplesToInfluence) {
-        AbstractModelScorer.assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
+        AbstractModelScorer.assertMinNumOfPartitionsToInfluenceValue(minNumOfSamplesToInfluence);
         this.minNumOfSamplesToInfluence = minNumOfSamplesToInfluence;
     }
 

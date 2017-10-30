@@ -12,19 +12,19 @@ import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.util.Assert;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ContextHistogramRetriever extends AbstractDataRetriever {
+	private final long partitionsResolutionInSeconds;
 	protected BucketConfigurationService bucketConfigurationService;
 	protected FeatureBucketReader featureBucketReader;
 
 	protected FeatureBucketConf featureBucketConf;
 	protected String featureName;
-//	TODO private ContextHistogramRetrieverMetrics metrics;
+	//	TODO private ContextHistogramRetrieverMetrics metrics;
 
 	public ContextHistogramRetriever(
 			ContextHistogramRetrieverConf config,
@@ -37,6 +37,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		String featureBucketConfName = config.getFeatureBucketConfName();
 		featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
 		featureName = config.getFeatureName();
+		partitionsResolutionInSeconds = config.getPartitionsResolutionInSeconds();
 //		metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
 		validate(config);
 	}
@@ -81,19 +82,19 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 				new TimeRange(startTimeInSeconds, endTimeInSeconds));
 
 //		metrics.featureBuckets += featureBuckets.size();
-		long distinctDays = calcNumOfDistinctDaysOfFeatureBuckets(featureBuckets);
+		long numOfPartitionsOfFeatureBuckets = calcNumOfPartitionsOfFeatureBuckets(featureBuckets);
 
 		if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 		createReductionHistogram(endTime, featureValue, featureBuckets, reductionHistogram);
 
-		reductionHistogram.setDistinctDays(distinctDays);
+		reductionHistogram.setNumberOfPartitions(numOfPartitionsOfFeatureBuckets);
 
 		return getModelBuilderData(reductionHistogram);
 	}
 
-	long calcNumOfDistinctDaysOfFeatureBuckets(List<FeatureBucket> featureBuckets) {
-		return featureBuckets.stream().map(x->x.getStartTime().truncatedTo(ChronoUnit.DAYS)).distinct().count();
+	long calcNumOfPartitionsOfFeatureBuckets(List<FeatureBucket> featureBuckets) {
+		return featureBuckets.stream().map(x->((long)(x.getStartTime().getEpochSecond()/partitionsResolutionInSeconds))*partitionsResolutionInSeconds).distinct().count();
 	}
 
 	ModelBuilderData getModelBuilderData(GenericHistogram reductionHistogram) {

@@ -6,7 +6,6 @@
         <artifactId>fortscale</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>presidio-global-config</artifactId>
     <name>presidio-global-config</name>
 
@@ -60,14 +59,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
-
     </dependencies>
 
     <profiles>
@@ -143,6 +137,7 @@
             </properties>
         </profile>
     </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -153,7 +148,6 @@
                     <source>${java-lang-config.version}</source>
                     <target>${java-lang-config.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
-
                     <compilerArgument>-Xlint:all</compilerArgument>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>

@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class TimeModel implements Model {
+public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
 
 	private int timeResolution;
@@ -25,7 +25,7 @@ public class TimeModel implements Model {
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
 
-	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
+	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions) {
 		Assert.isTrue(timeResolution % bucketSize == 0);
 
 		this.timeResolution = timeResolution;
@@ -48,7 +48,7 @@ public class TimeModel implements Model {
 						)));
 
 		categoryRarityModel = new CategoryRarityModel();
-		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2);
+		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions);
 	}
 
 	private List<Double> createInitializedBuckets() {
@@ -122,5 +122,10 @@ public class TimeModel implements Model {
 
 	public CategoryRarityModel getCategoryRarityModel() {
 		return categoryRarityModel;
+	}
+
+	@Override
+	public long getNumOfPartitions() {
+		return categoryRarityModel.getNumOfPartitions();
 	}
 }

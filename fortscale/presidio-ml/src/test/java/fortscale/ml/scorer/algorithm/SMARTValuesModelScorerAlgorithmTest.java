@@ -21,7 +21,7 @@ public class SMARTValuesModelScorerAlgorithmTest {
         SMARTValuesModel model = new SMARTValuesModel();
         long numOfZeroValues = oldValues.stream().filter(value -> value == 0).count();
         double sumOfValues = oldValues.stream().mapToDouble(Double::valueOf).sum();
-        model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues);
+        model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues, 0);
         SMARTValuesModelScorerAlgorithm scorerAlgorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
 
         SMARTValuesPriorModel priorModel = new SMARTValuesPriorModel();

@@ -10,26 +10,18 @@
     <name>presidio-utils</name>
     <packaging>jar</packaging>
 
-
-
-
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.argparse4j</groupId>
-            <artifactId>argparse4j</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.shell</groupId>
             <artifactId>spring-shell</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-global-config</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.influxdb</groupId>
@@ -39,7 +31,6 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -52,83 +43,18 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-context</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-context-support</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-aop</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-test</artifactId>-->
-        <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-
-        <!--&lt;!&ndash; for mockit:mock - see https://bitbucket.org/kubek2k/springockito/wiki/Home &ndash;&gt;-->
-        <!--<dependency>-->
-        <!--<groupId>org.kubek2k</groupId>-->
-        <!--<artifactId>springockito</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.kubek2k</groupId>-->
-        <!--<artifactId>springockito-annotations</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>commons-jexl</groupId>
-            <artifactId>commons-jexl</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
-
-        <!-- kafka dependencies -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_${scala-kafka.version}</artifactId>
-        </dependency>
-        <!-- scala library required for kafka client -->
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-        </dependency>
-
-        <!--  javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>pl.pragmatists</groupId>
             <artifactId>JUnitParams</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.neuland-bfi</groupId>
-            <artifactId>jade4j</artifactId>
         </dependency>
         <dependency>
             <groupId>com.cloudbees</groupId>
@@ -143,30 +69,9 @@
             <artifactId>commons-net</artifactId>
             <version>3.3</version>
         </dependency>
-        <!--fongo is a fake mongo, in memory test util-->
         <dependency>
             <groupId>com.github.fakemongo</groupId>
             <artifactId>fongo</artifactId>
-        </dependency>
-        <!--h2 is a jdbc, in memory test util-->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -181,42 +86,109 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>transport</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.7</version>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>6.5.0</version>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.7</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>1.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-rest-core</artifactId>
+            <artifactId>spring-data-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-json-org</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-core</artifactId>
+            <version>3.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Tells maven to use the Java 8 JDK instead of its default -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -227,8 +199,6 @@
                     <target>${java-lang-config.version}</target>
                 </configuration>
             </plugin>
-
-            <!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
@@ -253,7 +223,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>com.github.koraktor</groupId>
                 <artifactId>mavanagaiata</artifactId>
@@ -322,8 +291,6 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings
-                    only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -349,7 +316,6 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -359,6 +325,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-
 </project>
