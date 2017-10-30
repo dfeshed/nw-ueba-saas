@@ -33,7 +33,7 @@ public class EmbeddedElasticsearchInitialiser {
                     .withStartTimeout(2, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
-                    .withCleanInstallationDirectoryOnStop(false)
+                    .withCleanInstallationDirectoryOnStop(true)
                     .build()
                     .start();
         } catch (Exception e) {
