@@ -15,6 +15,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.aspect.MonitoringAspects;
+import presidio.monitoring.aspect.MonitroingAspectSetup;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
@@ -28,7 +29,7 @@ import presidio.monitoring.export.MetricsExporterElasticImpl;
 
 @Configuration
 @EnableScheduling
-@EnableAspectJAutoProxy(proxyTargetClass = true)
+//@EnableAspectJAutoProxy(proxyTargetClass = true)
 @ConditionalOnProperty(prefix = "spring.aop",
         name = "proxy.target.class",
         havingValue = "true",
@@ -60,7 +61,12 @@ public class MonitoringConfiguration {
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics());
+        return new MonitoringAspects();
+    }
+
+    @Bean
+    public MonitroingAspectSetup monitroingAspectSetup() {
+        return  new MonitroingAspectSetup(metricsEndpoint(), presidioCustomMetrics());
     }
 
     @Autowired
