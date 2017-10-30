@@ -63,16 +63,13 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       this.getProperties('accessTokenKey', 'refreshTokenKey', 'session');
 
     const authentication = session.get('session.content').authenticated;
-    const csrfToken = localStorage.getItem(this.get('csrfLocalstorageKey'));
 
-    if (authentication && csrfToken) {
-
+    if (authentication) {
       localStorage.setItem(accessTokenKey, authentication.access_token);
 
       if (authentication.refresh_token) {
         localStorage.setItem(refreshTokenKey, authentication.refresh_token);
       }
-
     } else {
       session.invalidate();
     }
@@ -161,5 +158,31 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
         run(null, reject, xhr.responseJSON || xhr.responseText);
       });
     });
+  },
+
+  restore(data) {
+    return new RSVP.Promise((resolve, reject) => {
+      const now = (new Date()).getTime();
+      const refreshAccessTokens = this.get('refreshAccessTokens');
+      if (!isEmpty(data.expires_at) && data.expires_at < now) {
+        if (refreshAccessTokens) {
+          this._refreshAccessToken(data.expires_in, data.refresh_token).then(resolve, reject);
+        } else {
+          reject();
+        }
+      } else {
+        if (!this._validate(data)) {
+          reject();
+        } else {
+          this._scheduleAccessTokenRefresh(data.expires_in, data.expires_at, data.refresh_token);
+          resolve(data);
+        }
+      }
+    });
+  },
+
+  _validate(data) {
+    const csrfToken = localStorage.getItem(this.get('csrfLocalstorageKey'));
+    return !isEmpty(data.access_token) && (useMockServer || !isEmpty(csrfToken));
   }
 });
