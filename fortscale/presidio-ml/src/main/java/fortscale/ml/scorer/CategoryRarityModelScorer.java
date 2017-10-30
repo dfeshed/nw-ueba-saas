@@ -59,8 +59,8 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
                                      List<String> contextFieldNames,
                                      List<List<String>> additionalContextFieldNames,
                                      String featureName,
-                                     int minNumOfSamplesToInfluence,
-                                     int enoughNumOfSamplesToInfluence,
+                                     int minNumOfPartitionsToInfluence,
+                                     int enoughNumOfPartitionsToInfluence,
                                      boolean isUseCertaintyToCalculateScore,
                                      int minNumOfDistinctValuesToInfluence,
                                      int enoughNumOfDistinctValuesToInfluence,
@@ -69,7 +69,7 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
                                      EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
+                featureName, minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence,
                 isUseCertaintyToCalculateScore, eventModelsCacheService);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
@@ -143,8 +143,8 @@ public class CategoryRarityModelScorer extends AbstractModelTerminalScorer {
                 "modelName='" + getModelName() + '\'' +
                 ", contextFieldNames=" + getContextFieldNames() +
                 ", featureName='" + getFeatureName() + '\'' +
-                ", minNumOfSamplesToInfluence=" + getMinNumOfSamplesToInfluence() +
-                ", enoughNumOfSamplesToInfluence=" + getEnoughNumOfSamplesToInfluence() +
+                ", minNumOfSamplesToInfluence=" + getMinNumOfPartitionsToInfluence() +
+                ", enoughNumOfSamplesToInfluence=" + getEnoughNumOfPartitionsToInfluence() +
                 ", isUseCertaintyToCalculateScore=" + isUseCertaintyToCalculateScore() +
                 ", minNumOfDistinctValuesToInfluence=" + minNumOfDistinctValuesToInfluence +
                 ", enoughNumOfDistinctValuesToInfluence=" + enoughNumOfDistinctValuesToInfluence +

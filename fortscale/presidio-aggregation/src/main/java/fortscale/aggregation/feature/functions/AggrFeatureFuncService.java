@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.Feature;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 
@@ -19,6 +20,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
 
     private Map<JSONObject, IAggrFeatureFunction> aggrFunctions = new HashMap<>();
     private Map<JSONObject, IAggrFeatureEventFunction> aggrFeatureEventFunctions = new HashMap<>();
+    private ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
 
     /**
      * Updates the aggrFeatures by running the associated {@link IAggrFeatureFunction} that is configured for each
@@ -92,7 +94,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         IAggrFeatureEventFunction func = aggrFeatureEventFunctions.get(funcAsJsonObject);
         if (func == null) {
             try {
-                func = (new ObjectMapper()).readValue(funcAsJsonString, IAggrFeatureEventFunction.class);
+                func = (objectMapper).readValue(funcAsJsonString, IAggrFeatureEventFunction.class);
                 aggrFeatureEventFunctions.put(funcAsJsonObject, func);
             } catch (Exception e) {
                 logger.error(String.format("Failed to deserialize function JSON %s", funcAsJsonString), e);
@@ -117,7 +119,7 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
         IAggrFeatureFunction func = null;
 
         try {
-            func = (new ObjectMapper()).readValue(aggrFeatureFuncString, IAggrFeatureFunction.class);
+            func = objectMapper.readValue(aggrFeatureFuncString, IAggrFeatureFunction.class);
             aggrFunctions.put(aggrFeatureFuncJson, func);
         } catch (Exception e) {
             logger.error(String.format("Failed to deserialize function JSON %s", aggrFeatureFuncString), e);

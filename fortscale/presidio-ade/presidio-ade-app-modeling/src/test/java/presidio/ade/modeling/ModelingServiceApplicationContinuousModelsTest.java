@@ -15,7 +15,6 @@ import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
-import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,6 +111,17 @@ public class ModelingServiceApplicationContinuousModelsTest {
             }).findFirst();
             String modelConfName = modelConf.getName();
             Assert.assertTrue(String.format("model=%s is expected to have segment prior", modelConfName), modelWithSegmentPrior.isPresent());
+        });
+
+        List<ModelConf> continousMaxModelConfs = modelConfs.stream().filter(x->(x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf)).collect(Collectors.toList());
+        Assert.assertTrue("conf must have at least 1 continousMaxModelConfs model", continousMaxModelConfs.size() > 0);
+        continousMaxModelConfs.forEach(modelConf -> {
+            List<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
+            Assert.assertTrue(modelDaos.size() > 0);
+            modelDaos.forEach(modelDAO -> {
+                ContinuousMaxDataModel model = (ContinuousMaxDataModel) modelDAO.getModel();
+                Assert.assertTrue(model.getNumOfPartitions()>0);
+            });
         });
     }
 

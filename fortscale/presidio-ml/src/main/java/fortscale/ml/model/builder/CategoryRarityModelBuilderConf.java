@@ -11,10 +11,13 @@ import org.springframework.util.Assert;
 public class CategoryRarityModelBuilderConf implements IModelBuilderConf {
 	public static final String CATEGORY_RARITY_MODEL_BUILDER = "category_rarity_model_builder";
 	public static final int DEFAULT_ENTRIES_TO_SAVE_IN_MODEL = 100;
+	public static final int DEFAULT_PARTITIONS_RESOLUTION_IN_SECONDS = 86400;
 
 	private int numOfBuckets;
 	@JsonProperty("entriesToSaveInModel")
 	private int entriesToSaveInModel = DEFAULT_ENTRIES_TO_SAVE_IN_MODEL;
+	@JsonProperty("partitionsResolutionInSeconds")
+	private long partitionsResolutionInSeconds = DEFAULT_PARTITIONS_RESOLUTION_IN_SECONDS;
 
 	@JsonCreator
 	public CategoryRarityModelBuilderConf(@JsonProperty("numOfBuckets") int numOfBuckets) {
@@ -43,5 +46,14 @@ public class CategoryRarityModelBuilderConf implements IModelBuilderConf {
 	public void setEntriesToSaveInModel(int entriesToSaveInModel) {
 		Assert.isTrue(entriesToSaveInModel >= 0, "entriesToSaveInModel must be a non-negative integer.");
 		this.entriesToSaveInModel = entriesToSaveInModel;
+	}
+
+	public void setPartitionsResolutionInSeconds(long partitionsResolutionInSeconds) {
+		Assert.isTrue(partitionsResolutionInSeconds >= 0, "partitionsResolutionInSeconds must be a non-negative integer.");
+		this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
+	}
+
+	public long getPartitionsResolutionInSeconds() {
+		return partitionsResolutionInSeconds;
 	}
 }
