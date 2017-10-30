@@ -19,7 +19,7 @@ import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfigurationTest;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.util.Properties;

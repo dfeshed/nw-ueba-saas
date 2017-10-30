@@ -35,7 +35,7 @@ import presidio.input.core.services.transformation.managers.FileTransformerManag
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.input.core.services.transformation.managers.TransformationServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;

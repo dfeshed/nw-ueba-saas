@@ -2,9 +2,6 @@ package presidio.monitoring.spring;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,14 +12,13 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.aspect.MonitoringAspects;
-import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
-import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
-import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
-import presidio.monitoring.export.MetricsExporter;
-import presidio.monitoring.export.MetricsExporterElasticImpl;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.services.export.MetricsExporter;
+import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
 @Configuration
 @EnableScheduling
@@ -39,38 +35,35 @@ public class MonitoringConfiguration {
     public static final int AWAIT_TERMINATION_SECONDS = 120;
 
     @Bean
-    public PublicMetrics publicMetrics() {
-        return new PresidioDefaultMetrics();
+    public PresidioMetricFactory presidioCustomMetrics() {
+        return new PresidioMetricFactory();
     }
-
-    @Bean
-    public MetricsEndpoint metricsEndpoint() {
-        return new CustomMetricEndpoint(publicMetrics());
-    }
-
-    @Value("${spring.application.name}")
-    String processName;
 
     @Autowired
-    public PresidioCustomMetrics presidioCustomMetrics;
+    public PresidioMetricEndPoint presidioMetricEndPoint;
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics);
+        return new MonitoringAspects(presidioMetricEndPoint, presidioMetricFactory());
+    }
+
+    @Bean
+    private PresidioMetricFactory presidioMetricFactory() {
+        return new PresidioMetricFactory();
     }
 
     @Autowired
     private MetricRepository metricRepository;
 
     @Bean
-    public PresidioMetricPersistencyService metricExportService() {
+    public PresidioMetricPersistencyService presidioMetricPersistencyService() {
         return new PresidioMetricPersistencyServiceImpl(metricRepository);
     }
 
 
     @Bean
-    public MetricsExporter fileMetricsExporter() {
-        return new MetricsExporterElasticImpl(metricsEndpoint(), processName, metricExportService(), taskScheduler());
+    public MetricsExporter metricsExporter() {
+        return new MetricsExporterElasticImpl(presidioMetricEndPoint, presidioMetricPersistencyService(), taskScheduler());
     }
 
     @Bean

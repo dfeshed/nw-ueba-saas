@@ -7,7 +7,7 @@ import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.util.Assert;
-import presidio.monitoring.elastic.records.PresidioMetric;
+import presidio.monitoring.records.PresidioMetric;
 
 import java.util.ArrayList;
 import java.util.Collection;

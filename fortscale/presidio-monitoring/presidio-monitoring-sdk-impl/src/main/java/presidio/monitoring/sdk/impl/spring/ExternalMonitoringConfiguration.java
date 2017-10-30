@@ -17,18 +17,21 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
-import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
-import presidio.monitoring.export.MetricsExporter;
-import presidio.monitoring.export.MetricsExporterElasticImpl;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioSystemMetrics;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.export.MetricsExporter;
+import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
 import java.net.InetAddress;
 
@@ -69,16 +72,17 @@ public class ExternalMonitoringConfiguration {
         return new PresidioElasticsearchTemplate(client());
     }
 
+    @Bean
+    private PresidioMetricFactory presidioMetricFactory() {
+        return new PresidioMetricFactory();
+    }
+
 
     @Bean
     public PresidioCustomMetrics presidioCustomMetrics() {
         return new PresidioCustomMetrics();
     }
 
-    @Bean
-    public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(metricsEndpoint(), presidioCustomMetrics());
-    }
 
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
@@ -96,8 +100,8 @@ public class ExternalMonitoringConfiguration {
     }
 
     @Bean
-    public MetricsExporter fileMetricsExporter() {
-        return new MetricsExporterElasticImpl(metricsEndpoint(), null, metricExportService(), taskScheduler());
+    public MetricsExporter metricsExporter() {
+        return new MetricsExporterElasticImpl(presidioMetricEndPoint(), null, taskScheduler());
     }
 
     @Bean
@@ -110,6 +114,16 @@ public class ExternalMonitoringConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioCustomMetrics()));
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()), presidioMetricFactory());
+    }
+
+    @Bean
+    public MetricCollectingService metricCollectingService() {
+        return new MetricCollectingServiceImpl(presidioMetricEndPoint());
+    }
+
+    @Bean
+    public PresidioMetricEndPoint presidioMetricEndPoint() {
+        return new PresidioMetricEndPoint(new PresidioSystemMetrics());
     }
 }

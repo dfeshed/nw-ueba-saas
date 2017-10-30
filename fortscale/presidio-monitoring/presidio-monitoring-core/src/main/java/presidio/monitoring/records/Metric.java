@@ -1,46 +1,51 @@
-package presidio.monitoring.elastic.records;
+package presidio.monitoring.records;
 
 
-
-import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Metric {
 
     private String name;
-    private Number value;
-    private Instant time;
+    private long value;
+    private Date time;
+    private Date logicTime;
     private Set<String> tags;
     private String unit;
     private boolean reportOneTime;
 
-    public Metric(String name, Number value, Set<String> tags, String unit, boolean reportOneTime) {
+    public Metric(String name, long value, Date logicTime, Set<String> tags, String unit, boolean reportOneTime) {
         this.name = name;
         this.value = value;
+        this.time = new Date();
+        this.logicTime = logicTime;
         this.tags = tags;
         this.unit = unit;
         this.reportOneTime = reportOneTime;
-        this.time=Instant.now();
     }
 
-    public Metric(String name, Number value, String unit, boolean reportOneTime) {
-        this( name,  value,new HashSet<String>() ,  unit,  reportOneTime);
+    public Metric(String name, long value, Set<String> tags, String unit, boolean reportOneTime) {
+        this(name, value, null, tags, unit, reportOneTime);
     }
 
-    public Metric(String name, Number value, String unit) {
-        this(name,value,unit,false);
+    public Metric(String name, long value, String unit, boolean reportOneTime) {
+        this(name, value, new HashSet<>(), unit, reportOneTime);
+    }
+
+    public Metric(String name, long value, String unit) {
+        this(name, value, unit, false);
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setValue(Number value) {
+    public void setValue(long value) {
         this.value = value;
     }
 
-    public void setTime(Instant time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -61,11 +66,11 @@ public class Metric {
         return name;
     }
 
-    public Number getValue() {
+    public long getValue() {
         return value;
     }
 
-    public Instant getTime() {
+    public Date getTime() {
         return time;
     }
 
@@ -79,5 +84,13 @@ public class Metric {
 
     public boolean isReportOneTime() {
         return reportOneTime;
+    }
+
+    public Date getLogicTime() {
+        return logicTime;
+    }
+
+    public void setLogicTime(Date logicTime) {
+        this.logicTime = logicTime;
     }
 }

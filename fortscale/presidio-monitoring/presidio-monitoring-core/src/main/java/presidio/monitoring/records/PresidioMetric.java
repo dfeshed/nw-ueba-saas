@@ -1,4 +1,4 @@
-package presidio.monitoring.elastic.records;
+package presidio.monitoring.records;
 
 
 import org.springframework.data.annotation.Id;
@@ -8,9 +8,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
-import static presidio.monitoring.elastic.records.PresidioMetric.METRIC_INDEX_NAME;
-import static presidio.monitoring.elastic.records.PresidioMetric.TYPE;
+import static presidio.monitoring.records.PresidioMetric.METRIC_INDEX_NAME;
+import static presidio.monitoring.records.PresidioMetric.TYPE;
 
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
@@ -40,7 +41,7 @@ public class PresidioMetric {
     private String unit;
 
     public PresidioMetric(String name, long value, Set<String> tags, String unit) {
-        this.id = System.nanoTime() + "";
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.value = value;
         this.timestamp = new Date();
@@ -49,7 +50,7 @@ public class PresidioMetric {
     }
 
     public PresidioMetric(String name, long value, Date timestamp, Set<String> tags, String unit) {
-        this.id = System.nanoTime() + "";
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.value = value;
         this.timestamp = timestamp;

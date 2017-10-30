@@ -1,7 +1,7 @@
 package presidio.monitoring.elastic.services;
 
 
-import presidio.monitoring.elastic.records.PresidioMetric;
+import presidio.monitoring.records.PresidioMetric;
 
 import java.util.List;
 

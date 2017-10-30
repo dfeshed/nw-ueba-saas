@@ -2,8 +2,8 @@ package presidio.monitoring.elastic.services;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.stereotype.Service;
-import presidio.monitoring.elastic.records.PresidioMetric;
 import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.records.PresidioMetric;
 
 import java.util.List;
 
@@ -19,13 +19,13 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
     }
 
     public PresidioMetric save(PresidioMetric presidioMetric) {
-        logger.debug("Exporting metric to elastic {}",presidioMetric);
+        logger.debug("Exporting metric to elastic {}", presidioMetric);
         return metricRepository.save(presidioMetric);
     }
 
 
     public Iterable<PresidioMetric> save(List<PresidioMetric> presidioMetric) {
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("Exporting metrics to elastic, number of metrics {}", presidioMetric.size());
         }
         return metricRepository.save(presidioMetric);
