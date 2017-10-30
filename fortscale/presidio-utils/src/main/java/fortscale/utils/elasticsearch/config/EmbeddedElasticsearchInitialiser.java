@@ -1,5 +1,6 @@
 package fortscale.utils.elasticsearch.config;
 
+import fortscale.utils.logging.Logger;
 import org.junit.Assert;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -18,15 +19,21 @@ import java.util.concurrent.TimeUnit;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class EmbeddedElasticsearchInitialiser {
 
+    private final Logger logger = Logger.getLogger(EmbeddedElasticsearchInitialiser.class);
+
     public static String EL_TEST_VERSION = "5.0.0";
     public static String EL_TEST_PORT = "9350";
     public static String EL_TEST_CLUSTER = "fortscalse_test";
 
-    private EmbeddedElastic embeddedElastic;
+    private EmbeddedElastic embeddedElastic = null;
 
     @PostConstruct
     public void setupEmbeddedElasticsearch() {
-
+        if(embeddedElastic != null) {
+            System.out.println("embedded elasticsearch already started, skipping startup");
+            return;
+        }
+        System.out.println("starting embedded elasticsearch");
         try {
             embeddedElastic = EmbeddedElastic.builder()
                     .withElasticVersion(EL_TEST_VERSION)
@@ -37,19 +44,16 @@ public class EmbeddedElasticsearchInitialiser {
                     .build()
                     .start();
         } catch (Exception e) {
-            Assert.fail("Failed to start elasticsearch");
             stopEmbeddedElasticsearch();
+            embeddedElastic = null;
+            Assert.fail("Failed to start elasticsearch");
         }
-    }
-
-    public boolean isStarted() {
-        return embeddedElastic != null;
     }
 
     @PreDestroy
     public void stopEmbeddedElasticsearch() {
-        if(embeddedElastic != null) {
-            embeddedElastic.stop();
-        }
+        System.out.println("stopping embedded elasticsearch");
+        embeddedElastic.stop();
     }
+
 }

@@ -2,7 +2,8 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework" level="WARN"/>
-    <root level="INFO">
+    <logger name="pl.allegro.tech.embeddedelasticsearch" level="WARN"/>
+    <root level="WARN">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

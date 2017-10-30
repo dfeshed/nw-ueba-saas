@@ -1,6 +1,5 @@
 package presidio.output.proccesor;
 
-import fortscale.utils.elasticsearch.config.EmbeddedElasticTestConfig;
 import fortscale.utils.shell.BootShim;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {EmbeddedElasticTestConfig.class, OutputProcessorTestConfiguration.class, TestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
 public class FortscaleOutputProcessorApplicationTest {
 
     public static final String EXECUTION_COMMAND = "run  --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
