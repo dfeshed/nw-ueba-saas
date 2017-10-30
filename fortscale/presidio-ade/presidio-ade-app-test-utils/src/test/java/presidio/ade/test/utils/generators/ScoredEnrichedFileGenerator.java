@@ -7,11 +7,11 @@ import presidio.ade.test.utils.EventsGenerator;
 import presidio.ade.test.utils.converters.FileRaw2ScoredEnrichedConverter;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
+import presidio.data.generators.common.FixedOperationTypeGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
-import presidio.data.generators.fileop.FixedFileOperationTypeGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Duration;
@@ -51,7 +51,7 @@ public class ScoredEnrichedFileGenerator implements EventsGenerator<AdeScoredFil
         String permissionOperationName = "FILE_ACCESS_RIGHTS_CHANGED";
 
         OperationType permissionOperationType = new OperationType(permissionOperationName, filePermissionCategories);
-        FixedFileOperationTypeGenerator fileOpTypePremmisionCategoriesGenerator = new FixedFileOperationTypeGenerator(permissionOperationType);
+        FixedOperationTypeGenerator fileOpTypePremmisionCategoriesGenerator = new FixedOperationTypeGenerator(permissionOperationType);
 
         fileOperationGenerator.setOperationTypeGenerator(fileOpTypePremmisionCategoriesGenerator);
 
