@@ -31,7 +31,7 @@ dags:
         remote_debug_enabled: False
         remote_debug_suspend: False
         jmx_enabled: False
-        extra_jvm: -XX:+UseG1GC
+        extra_jvm:
     SmartEventsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-smart-1.0.0-SNAPSHOT.jar
