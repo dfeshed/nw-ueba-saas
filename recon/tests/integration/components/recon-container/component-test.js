@@ -2,13 +2,11 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../helpers/start-app';
 
 moduleForComponent('recon-container', 'Integration | Component | recon container', {
   integration: true,
   beforeEach() {
-    const application = startApp();
-    initialize(application);
+    initialize(this);
     this.registry.injection('component:recon-event-actionbar/export-packet', 'i18n', 'service:i18n');
     this.registry.injection('component:recon-event-detail/text-content', 'i18n', 'service:i18n');
     this.registry.injection('component:recon-event-detail/single-text', 'i18n', 'service:i18n');

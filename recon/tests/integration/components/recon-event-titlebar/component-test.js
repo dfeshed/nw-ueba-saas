@@ -4,7 +4,6 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from '../../../helpers/ember-power-select';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../helpers/start-app';
 
 const { $ } = Ember;
 
@@ -17,8 +16,7 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
   beforeEach() {
     this.inject.service('redux');
     redux = this.get('redux');
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 

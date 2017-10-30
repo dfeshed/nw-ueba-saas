@@ -19,7 +19,7 @@ moduleForComponent('/rsa-theme-preferences', 'Integration | Component | rsa-them
     this.inject.service('i18n');
     this.inject.service('flash-messages');
     getOwner(this).lookup('service:flash-messages').registerTypes(['error']);
-    initialize({ '__container__': this.container });
+    initialize(this);
   },
   afterEach() {
     revertPatch();

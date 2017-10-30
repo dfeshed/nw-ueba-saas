@@ -1,14 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../helpers/start-app';
 
 moduleForComponent('preferences-panel-trigger', 'Integration | Component | Preferences Panel Trigger', {
   integration: true,
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 

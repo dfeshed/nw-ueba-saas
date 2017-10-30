@@ -3,7 +3,6 @@ import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../../helpers/start-app';
 
 import VisualActions from 'recon/actions/visual-creators';
 import DataHelper from '../../../../helpers/data-helper';
@@ -12,8 +11,7 @@ moduleForComponent('recon-event-detail-packets', 'Integration | Component | reco
   integration: true,
   beforeEach() {
     this.inject.service('redux');
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 

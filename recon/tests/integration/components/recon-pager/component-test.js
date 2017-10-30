@@ -1,13 +1,11 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../helpers/start-app';
 
 moduleForComponent('recon-pager', 'Integration | Component | recon pager', {
   integration: true,
   beforeEach() {
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 

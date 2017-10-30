@@ -3,7 +3,6 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../../helpers/start-app';
 
 const { Object: EmberObject } = Ember;
 
@@ -12,8 +11,7 @@ moduleForComponent('recon-event-detail/single-text', 'Integration | Component | 
   beforeEach() {
     this.registry.injection('component:recon-event-detail/single-text', 'i18n', 'service:i18n');
     this.inject.service('redux');
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 

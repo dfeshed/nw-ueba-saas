@@ -3,14 +3,12 @@ import hbs from 'htmlbars-inline-precompile';
 import { LOAD_PREFERENCES } from 'preferences/actions/types';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../helpers/start-app';
 
 moduleForComponent('investigate-events-preferences', 'Integration | Component | investigate events preferences', {
   integration: true,
   beforeEach() {
     this.inject.service('redux');
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 

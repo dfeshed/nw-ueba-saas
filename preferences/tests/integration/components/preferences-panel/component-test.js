@@ -3,15 +3,13 @@ import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import * as ACTION_TYPES from 'preferences/actions/types';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import startApp from '../../../helpers/start-app';
 
 moduleForComponent('preferences-panel', 'Integration | Component | Preferences Panel', {
   integration: true,
   beforeEach() {
     this.inject.service('redux');
     this.registry.injection('component', 'i18n', 'service:i18n');
-    const application = startApp();
-    initialize(application);
+    initialize(this);
   }
 });
 
