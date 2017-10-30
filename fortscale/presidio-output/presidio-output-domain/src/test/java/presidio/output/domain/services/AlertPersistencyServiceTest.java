@@ -44,7 +44,6 @@ import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest()
 @ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class})
 public class AlertPersistencyServiceTest extends EmbeddedElasticsearchTest {
 

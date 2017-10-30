@@ -27,8 +27,4 @@ public class TestConfig {
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
-    @Bean
-    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
-        return new EmbeddedElasticsearchInitialiser();
-    }
 }

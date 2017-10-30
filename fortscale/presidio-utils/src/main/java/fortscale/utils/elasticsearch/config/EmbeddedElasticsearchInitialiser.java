@@ -1,6 +1,9 @@
 package fortscale.utils.elasticsearch.config;
 
 import org.junit.Assert;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
@@ -11,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by efratn on 17/10/2017.
  */
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class EmbeddedElasticsearchInitialiser {
 
     public static String EL_TEST_VERSION = "5.0.0";
