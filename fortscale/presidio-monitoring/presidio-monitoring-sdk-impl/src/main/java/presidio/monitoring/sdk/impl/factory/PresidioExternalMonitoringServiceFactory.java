@@ -4,9 +4,10 @@ package presidio.monitoring.sdk.impl.factory;
 import fortscale.utils.logging.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import presidio.monitoring.endPoint.PresidioSystemMetrics;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.spring.ExternalMonitoringConfiguration;
-import presidio.monitoring.services.export.MetricsExporter;
 
 import java.io.Closeable;
 
@@ -24,13 +25,15 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         }
-        final MetricsExporter metricsExporterBean = context.getBean(MetricsExporter.class);
+        final PresidioMetricFactory metricsExporterBean = context.getBean(PresidioMetricFactory.class);
+        final PresidioSystemMetrics presidioSystemMetrics = context.getBean(PresidioSystemMetrics.class);
         if (metricsExporterBean == null) {
             final String errorMessage = "Failed to create PresidioExternalMonitoringService. Couldn't get MetricsExporter";
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         }
-        //metricsExporterBean.setApplicationName(applicationName);
+        presidioSystemMetrics.addTag(applicationName);
+        metricsExporterBean.setApplicationName(applicationName);
         return presidioExternalMonitoringServiceBean;
     }
 

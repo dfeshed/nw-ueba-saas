@@ -3,44 +3,48 @@ package presidio.monitoring.endPoint;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.util.StringUtils;
-import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
 import presidio.monitoring.records.Metric;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
 public class PresidioSystemMetrics {
 
-    private static final Logger logger = Logger.getLogger(PresidioDefaultMetrics.class);
+    private static final Logger logger = Logger.getLogger(PresidioSystemMetrics.class);
 
     private MemoryUsage heapMemoryUsage;
     private MemoryUsage nonHeapMemoryUsage;
     private Runtime runtime;
     private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
     private ThreadMXBean threadMxBean;
+    private Set<String> tags;
 
-    public PresidioSystemMetrics() {
+    public PresidioSystemMetrics(String applicationName) {
+        tags = new HashSet<>();
+        tags.add(applicationName);
         runtime = Runtime.getRuntime();
         garbageCollectorMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
         threadMxBean = ManagementFactory.getThreadMXBean();
     }
 
     private Metric createMemoryMetric(String name, long value) {
-        return new Metric(name, value, "memory");
+        return new Metric(name, value, tags, "memory", false);
     }
 
     private Metric createSystemMetric(String name, long value) {
-        return new Metric(name, value, "system");
+        return new Metric(name, value, tags, "system", false);
     }
 
     private Metric createThreadsMetric(String name, long value) {
-        return new Metric(name, value, "threads");
+        return new Metric(name, value, tags, "threads", false);
     }
 
     public List<Metric> metrics() {
@@ -109,5 +113,9 @@ public class PresidioSystemMetrics {
             logger.info("Error when trying to collect defoult metrics.", ex);
             return 0;
         }
+    }
+
+    public void addTag(String tag) {
+        this.tags.add(tag);
     }
 }

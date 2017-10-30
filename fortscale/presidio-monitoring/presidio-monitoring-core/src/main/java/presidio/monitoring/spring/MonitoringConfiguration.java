@@ -34,23 +34,16 @@ public class MonitoringConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
 
-    @Bean
-    public PresidioMetricFactory presidioCustomMetrics() {
-        return new PresidioMetricFactory();
-    }
-
     @Autowired
     public PresidioMetricEndPoint presidioMetricEndPoint;
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(presidioMetricEndPoint, presidioMetricFactory());
+        return new MonitoringAspects(presidioMetricEndPoint, presidioMetricFactory);
     }
 
-    @Bean
-    private PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory();
-    }
+    @Autowired
+    public PresidioMetricFactory presidioMetricFactory;
 
     @Autowired
     private MetricRepository metricRepository;

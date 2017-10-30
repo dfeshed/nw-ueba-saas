@@ -7,8 +7,6 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
-import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -17,9 +15,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
-import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
-import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
@@ -74,29 +69,13 @@ public class ExternalMonitoringConfiguration {
 
     @Bean
     private PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory();
-    }
-
-
-    @Bean
-    public PresidioCustomMetrics presidioCustomMetrics() {
-        return new PresidioCustomMetrics();
+        return new PresidioMetricFactory("");
     }
 
 
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
         return new PresidioMetricPersistencyServiceImpl(metricRepository);
-    }
-
-    @Bean
-    public PublicMetrics publicMetrics() {
-        return new PresidioDefaultMetrics();
-    }
-
-    @Bean
-    public MetricsEndpoint metricsEndpoint() {
-        return new CustomMetricEndpoint(publicMetrics());
     }
 
     @Bean
@@ -123,7 +102,12 @@ public class ExternalMonitoringConfiguration {
     }
 
     @Bean
+    private PresidioSystemMetrics presidioSystemMetrics() {
+        return new PresidioSystemMetrics("");
+    }
+
+    @Bean
     public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(new PresidioSystemMetrics());
+        return new PresidioMetricEndPoint(presidioSystemMetrics());
     }
 }

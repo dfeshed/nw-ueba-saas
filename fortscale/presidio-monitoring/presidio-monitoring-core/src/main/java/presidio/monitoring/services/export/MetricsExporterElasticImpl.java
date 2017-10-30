@@ -20,9 +20,9 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
     }
 
     @Scheduled(fixedRateString = "${monitoring.fixed.rate}")
-    public void export(boolean isLastExport) {
+    public void export() {
         logger.debug("Exporting metrics to elastic");
-        presidioMetricPersistencyService.save(getMetricsForExport(isLastExport));
+        presidioMetricPersistencyService.save(getMetricsForExport(lastExport));
         logger.debug("Ended Exporting metrics to elastic");
     }
 
