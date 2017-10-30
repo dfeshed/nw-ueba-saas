@@ -5,8 +5,7 @@ import Immutable from 'seamless-immutable';
 
 
 const initialState = Immutable.from({
-  filter: {},
-  areFilterLoading: null,
+  filters: null,
   activeFilter: null,
   expressionList: null,
   lastFilterAdded: null
@@ -15,42 +14,21 @@ const initialState = Immutable.from({
 
 const _handleSystemFilter = (action) => {
   return (state) => {
-    const { payload: { data } } = action;
-    const { appliedHostFilter } = state;
     let defaultSearch;
-
-    // arranging filter options, system filter then custom
-    const systemFilters = [];
-    const customFilters = [];
-    const expressionList = [];
-    for (const d of data) {
-      if (d.filterType === 'MACHINE') {
-        if (d.systemFilter) {
-          systemFilters.pushObject(d);
-        } else {
-          customFilters.pushObject(d);
-        }
-      }
-    }
-
-    systemFilters.pushObjects(customFilters);
-
+    const { payload: { data = [] } } = action;
+    const { appliedHostFilter } = state;
+    const filters = data.filterBy('filterType', 'MACHINE');
     // if request came from manage saved queries, we need to load
     if (appliedHostFilter) {
-      defaultSearch = systemFilters.findBy('id', appliedHostFilter);
+      defaultSearch = filters.findBy('id', appliedHostFilter);
     } else {
-      for (const d of data) {
-        if (d.id === 'all') {
-          defaultSearch = d;
-          break;
-        }
-      }
+      defaultSearch = filters.findBy('id', 'all');
     }
     return state.merge({
-      filters: systemFilters,
+      filters,
       filterSelected: defaultSearch,
       customSearchVisible: !defaultSearch.systemFilter,
-      expressionList
+      expressionList: []
     });
   };
 };
@@ -79,7 +57,6 @@ const _handleCreateSearch = (action) => {
   };
 };
 
-
 const _addToExpressionList = (expressionList, expression) => {
   const tempExpressionList = expressionList.asMutable({ deep: false });
   const newArray = tempExpressionList.slice();
@@ -106,7 +83,6 @@ const filterReducer = handleActions({
 
   [ACTION_TYPES.RESET_HOST_FILTERS]: (state) => state.merge({
     activeFilter: null,
-    areFilterLoading: 'wait',
     isFilterReset: true,
     expressionList: []
   }),
@@ -117,20 +93,17 @@ const filterReducer = handleActions({
   }),
 
   [ACTION_TYPES.UPDATE_HOST_FILTER]: (state, { payload }) => state.merge({
-    areFilterLoading: 'sorting',
     isFilterReset: false,
     lastFilterAdded: null,
     expressionList: _updateExpressionList(state.expressionList, payload)
   }),
 
   [ACTION_TYPES.REMOVE_HOST_FILTER]: (state, { payload }) => state.merge({
-    areFilterLoading: 'sorting',
     lastFilterAdded: null,
     expressionList: state.expressionList.filter((item) => item.propertyName !== payload)
   }),
 
   [ACTION_TYPES.ADD_SYSTEM_FILTER]: (state, { payload }) => state.merge({
-    areFilterLoading: 'sorting',
     expressionList: [payload]
   }),
 
@@ -168,8 +141,16 @@ const filterReducer = handleActions({
         return s.merge({ fileFilters: filtersList });
       }
     });
+  },
+  [ACTION_TYPES.DELETE_SAVED_SEARCH]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const { payload } = action;
+        const filters = s.filters.filter((item) => item.id !== payload.data.id);
+        return s.set('filters', filters);
+      }
+    });
   }
-
 }, initialState);
 
 export default filterReducer;

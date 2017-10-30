@@ -1,1 +1,11 @@
-<span class="filter-list__item-label">{{filter.name}}</span>
+<span class="filter-list__item-label">
+  {{filter.name}}
+  {{#unless filter.systemFilter}}
+    {{#rsa-form-button
+      click=(disable-bubbling deleteFilter)
+      class='delete-filter'
+      isIconOnly=true}}
+      {{rsa-icon name='bin-1'}}
+    {{/rsa-form-button}}
+  {{/unless}}
+</span>

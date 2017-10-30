@@ -8,7 +8,7 @@
   height: 100%;
   width: 100%;
   .rsa-data-table {
-    height: 100vh;
+    height: 100%;
   }
   &__footer {
     max-height: 2rem;
@@ -23,7 +23,7 @@
 }
 
 .host-table__toolbar {
-  background-color: background-color(primary, darker, somewhat-opaque);
+  background-color: background-color(primary, darkest, somewhat-opaque);
   color: text-color(neutral);
   padding: rsa-whitespace() 0 0 rsa-whitespace();
   label {
@@ -73,4 +73,8 @@
 
 .cancel-scan, .initScan {
   float: right;
+}
+
+.filters {
+  background-color: background-color(primary, darkest, somewhat-opaque);
 }

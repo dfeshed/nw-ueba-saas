@@ -9,15 +9,23 @@ export default Component.extend({
 
   classNames: ['filter-list__item'],
 
-  classNameBindings: ['isActive'],
+  classNameBindings: ['isActive', 'isHovering'],
 
   filter: null,
 
   activeFilter: null,
 
+
   @computed('filter', 'activeFilter', 'reset')
   isActive: (filter, activeFilter, reset) => filter.id === activeFilter && !reset,
 
+  mouseEnter() {
+    this.set('isHovering', true);
+  },
+
+  mouseLeave() {
+    this.set('isHovering', false);
+  },
   click() {
     this.applyFilter(this.get('filter'));
   }

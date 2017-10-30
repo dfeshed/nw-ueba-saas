@@ -1,8 +1,12 @@
 @import "text-filter";
 @import "number-filter";
 @import "list-filter";
+@import "confirmation-dialog";
 
 $filterPanelMinWidth: 200px;
+.filter-search-icon {
+  padding: rsa-whitespace(less) rsa-whitespace(less);
+}
 
 .filter-ellipsis {
   max-width: 15rem;
@@ -10,6 +14,7 @@ $filterPanelMinWidth: 200px;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
+  height: 16px;
 }
 
 .rsa-content-tethered-panel {
@@ -23,7 +28,6 @@ $filterPanelMinWidth: 200px;
 }
 
 .content-filter {
-
   padding-left: rsa-whitespace(less);
   color: text-color(neutral);
   width: calc(100vw - 200px);
@@ -74,6 +78,17 @@ $filterPanelMinWidth: 200px;
     }
 
   }
+}
+
+.is-hovering .delete-filter {
+  display: inline-block;
+}
+
+.delete-filter {
+  position: absolute;
+  right: 0.5rem;
+  font-size: 0.5rem;
+  display: none;
 }
 
 #list-filter-content .rsa-form-checkbox-label::before {

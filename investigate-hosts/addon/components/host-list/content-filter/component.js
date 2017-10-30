@@ -34,6 +34,8 @@ const idRegex = /^[a-z0-9-_ ]+$/i;
 
 const ContentFilter = Component.extend({
 
+  tagName: 'hbox',
+
   eventBus: service(),
 
   flashMessage: service(),
@@ -128,14 +130,12 @@ const ContentFilter = Component.extend({
     saveFilter() {
       let isFieldsEmpty = true;
       const {
-        filterSelected,
         saveFilterName,
         expressionList,
-        hasError } = this.getProperties('filterSelected', 'saveFilterName', 'expressionList', 'isNameInvalid');
+        hasError } = this.getProperties('saveFilterName', 'expressionList', 'isNameInvalid');
       const filter = {
         name: saveFilterName,
-        id: filterSelected.id,
-        description: filterSelected.description
+        description: ''
       };
       for (const schema of expressionList) {
         const { propertyValues } = schema;

@@ -36,11 +36,12 @@
 
 .host-container {
   position: absolute;
-  top: 40px;
+  top: 41px;
   bottom: 0;
   left: 0;
   right: 0;
   color: text-color(neutral);
+  background-color: background-color(custom, respond);
   @include rsa-col(justify,fill);
   &-list {
     position: absolute;

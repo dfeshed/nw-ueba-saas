@@ -48,7 +48,13 @@ module.exports = function(env) {
         subscriptionDestination: '/user/queue/endpoint/data/filter/set',
         requestDestination: '/ws/endpoint/data/filter/set'
       }
-
+    },
+    search: {
+      socketUrl,
+      removeSearch: {
+        subscriptionDestination: '/user/queue/endpoint/data/filter/remove',
+        requestDestination: '/ws/endpoint/data/filter/remove'
+      }
     }
   };
 };

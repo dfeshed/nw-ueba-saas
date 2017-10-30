@@ -1,24 +1,106 @@
-import { moduleForComponent, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
+import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
+import * as FilterDataCreators from 'investigate-hosts/actions/data-creators/filter';
+import engineResolverFor from '../../../../../helpers/engine-resolver';
+import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
+import wait from 'ember-test-helpers/wait';
+import $ from 'jquery';
+import sinon from 'sinon';
 
-moduleForComponent('host-list/content-filter/system-filters', 'Integration | Component | host list/content filter/system filters', {
-  integration: true
+moduleForComponent('host-list/content-filter/system-filters', 'Integration | Component | System Filters', {
+  integration: true,
+  resolver: engineResolverFor('investigate-hosts'),
+  beforeEach() {
+    this.registry.injection('component', 'i18n', 'service:i18n');
+    const initState = Immutable.from({
+      endpoint: {
+        filter: {
+          filters: [
+            {
+              'createdBy': 'admin',
+              'createdOn': 1495517131585,
+              'lastModifiedBy': 'admin',
+              'lastModifiedOn': 1495517131585,
+              'id': '5923c7cbd8d4ae128db98c98',
+              'name': 'JAZZ_NWE_5_AGENTS',
+              'filterType': 'MACHINE',
+              'criteria': {
+                'criteriaList': [],
+                'expressionList': [
+                  {
+                    'propertyName': 'machine.agentVersion',
+                    'restrictionType': 'IN',
+                    'propertyValues': [
+                      {
+                        'value': '5.0.0.0'
+                      }
+                    ]
+                  }
+                ],
+                'predicateType': 'AND'
+              },
+              'systemFilter': false
+            },
+            {
+              'createdBy': 'admin',
+              'createdOn': 1495517131585,
+              'lastModifiedBy': 'admin',
+              'lastModifiedOn': 1495517131585,
+              'id': '5923c7cbd8d4ae128db98c99',
+              'name': 'JAZZ_NWE_5_AGENTS_10',
+              'filterType': 'MACHINE',
+              'criteria': {
+                'criteriaList': [],
+                'expressionList': [
+                  {
+                    'propertyName': 'machine.agentVersion',
+                    'restrictionType': 'IN',
+                    'propertyValues': [
+                      {
+                        'value': '5.0.0.0'
+                      }
+                    ]
+                  }
+                ],
+                'predicateType': 'AND'
+              },
+              'systemFilter': false
+            }
+          ]
+        }
+      }
+    });
+    applyPatch(initState);
+    this.inject.service('redux');
+  },
+  afterEach() {
+    revertPatch();
+  }
 });
 
-skip('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
+test('should list of all saved search', function(assert) {
   this.render(hbs`{{host-list/content-filter/system-filters}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.filter-list').length, 1);
+    assert.equal(this.$('.filter-list__item').length, 2, 'Expected to display 2 saved search');
+  });
+});
 
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#host-list/content-filter/system-filters}}
-      template block text
-    {{/host-list/content-filter/system-filters}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+test('should show confirmation on clicking the delete button', function(assert) {
+  const actionSpy = sinon.spy(FilterDataCreators, 'deleteSavedSearch');
+  this.render(hbs`{{host-list/content-filter/system-filters}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.filter-list').length, 1);
+    assert.equal(this.$('.filter-list__item').length, 2, 'Expected to display 2 saved search');
+    this.$('.delete-filter:eq(0)').trigger('click');
+    return wait().then(() => {
+      assert.equal($('#modalDestination .delete-search-confirmation-dialog').length, 1);
+      $('.is-danger button').trigger('click');
+    }).then(() => {
+      assert.ok(actionSpy.calledOnce, 'The delete filter action was called once');
+      actionSpy.reset();
+      actionSpy.restore();
+    });
+  });
 });

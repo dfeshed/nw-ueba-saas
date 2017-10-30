@@ -51,6 +51,7 @@
     "ember-cli-normalizr-shim": "^1.0.0",
     "ember-engines": "0.5.12",
     "ember-exam": "0.7.0",
+    "ember-sinon": "0.6.0",
     "ember-export-application-global": "^2.0.0",
     "ember-feature-flags": "3.0.0",
     "ember-load-initializers": "^1.0.0",

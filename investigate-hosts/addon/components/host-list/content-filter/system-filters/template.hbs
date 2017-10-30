@@ -3,5 +3,24 @@
     reset=isFilterReset
     filter=filter
     activeFilter=activeFilter
+    deleteFilter=(action 'showConfirmationModal' filter.id)
     applyFilter=(action 'applyFilter')}}
 {{/each}}
+
+{{#if showConfirmationDialog}}
+  {{#rsa-application-modal style='standard delete-search-confirmation-dialog' eventId='confirm-delete' label='Confirm Delete' }}
+    <div class='modal-content'>
+      <p>{{t 'investigateHosts.savedQueries.delete.confirmMessage'}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction='closeConfirmDeleteModal'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='danger' class="confirm-delete-button" click=(action 'deleteSearch')}}
+          {{t 'forms.ok'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

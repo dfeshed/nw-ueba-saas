@@ -168,6 +168,23 @@ const notifyAgentStatus = ({ onResponse = NOOP, onError = NOOP, onInit = NOOP, o
   });
 };
 
+/**
+ * Sending the request to delete the selected saved search.
+ *
+ * @method deleteSearch
+ * @public
+ * @param id
+ * @returns {Promise}
+ */
+const deleteSearch = (id) => {
+  return promiseRequest({
+    method: 'removeSearch',
+    modelName: 'search',
+    query: { data: { id } }
+  });
+};
+
+
 export default {
   getAllFilters,
   getPageOfMachines,
@@ -177,5 +194,6 @@ export default {
   startScanRequest,
   stopScanRequest,
   deleteHosts,
-  notifyAgentStatus
+  notifyAgentStatus,
+  deleteSearch
 };

@@ -114,12 +114,40 @@ const addSystemFilter = (expression) => {
   };
 };
 
+
+/**
+ * Action creator for deleting the saved search
+ * @param onSuccess
+ * @param onFailure
+ * @returns {function(*, *)}
+ * @public
+ */
+const deleteSavedSearch = (id, { onSuccess = NOOP, onFailure = NOOP }) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DELETE_SAVED_SEARCH,
+      promise: Machines.deleteSearch(id),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
+          onSuccess(response);
+        },
+        onFailure: (response) => {
+          _handleError(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
+          onFailure(response);
+        }
+      }
+    });
+  };
+};
+
 export {
-    setActiveFilter,
-    updateFilter,
-    addSystemFilter,
-    addFilter,
-    removeFilter,
-    resetFilters,
-    createCustomSearch
+  setActiveFilter,
+  updateFilter,
+  addSystemFilter,
+  addFilter,
+  removeFilter,
+  resetFilters,
+  createCustomSearch,
+  deleteSavedSearch
 };
