@@ -1,4 +1,4 @@
-#!/usr/local/bin python
+#!/usr/local/bin/python
 
 from presidio.charts import deploy_charts
 
