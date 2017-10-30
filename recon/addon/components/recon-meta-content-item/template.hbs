@@ -7,7 +7,9 @@
       displayMilliseconds=false
       timestamp=value}}
   {{else}}
-    {{value}}
+    {{#rsa-context-menu contextItems=(build-context-menu) contextSelection=contextSelection}}
+      {{value}}
+    {{/rsa-context-menu}}
   {{/if}}
 </hbox>
 <hbox xs="1" align="center">

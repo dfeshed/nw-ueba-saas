@@ -16,6 +16,7 @@
   &__item {
     cursor: default;
     padding: rsa-whitespace(less);
+    line-height: 1.5em;
     &:hover {
       background-color: background-color(secondary, darker);
     }
@@ -31,17 +32,16 @@
     }
   }
 
-  // This is to render the context-menu to  the left-side when the click position
+  // This is to render the context-menu to the left side
   &--left {
     right: 0;
 
     .context-menu--sub {
-      left: initial;
-      right: calc(100%);
+      left: auto;
+      right: 100%;
     }
 
     .context-menu__item {
-      padding: rsa-whitespace(less);
       &--parent {
         padding-left: rsa-whitespace(more);
         &:after {

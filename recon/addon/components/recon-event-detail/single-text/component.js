@@ -5,6 +5,7 @@ import { later, scheduleOnce, next } from 'ember-runloop';
 import SelectionTooltip from './selection-tooltip-mixin';
 import { retrieveTranslatedData } from './util';
 import layout from './template';
+import copyToClipboard from 'recon/utils/copy-to-clipboard';
 
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
@@ -232,20 +233,10 @@ export default Component.extend(SelectionTooltip, {
     copyText() {
       // When the user selects the "Copy Selected Text" option, we need to
       // reselect the original text because the mouseup handler removes the
-      // browser's selection. The best way to do this is to create a temporary
-      // textarea, set it's value to the selected text, and then "copy" it.
-      const text = this.get('originalString');
-      const fakeEl = document.createElement('textarea');
-      fakeEl.textContent = text;
-      fakeEl.style.position = 'fixed';  // Prevent scrolling to bottom of page in MS Edge.
-      document.body.appendChild(fakeEl);
-      fakeEl.select();
+      // browser's selection.
       try {
-        return document.execCommand('copy');  // Security exception may be thrown by some browsers.
-      } catch (ex) {
-        return false;
+        return copyToClipboard(this.get('originalString'));
       } finally {
-        document.body.removeChild(fakeEl);
         this.set('userInComponent', false);
         this.unTether();
       }

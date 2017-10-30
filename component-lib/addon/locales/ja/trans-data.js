@@ -270,6 +270,20 @@ export default {
       nweNetworkProcessFilename: 'ja_Network Process Filename',
       nweNetworkProcessPath: 'ja_Network Process Path',
       nweNetworkRemoteAddress: 'ja_Network Remote Address'
+    },
+    contextmenu: {
+      copy: 'ja_Copy',
+      externalLinks: 'ja_External',
+      external: {
+        google: 'ja_Google',
+        virustotal: 'ja_VirusTotal PDNS',
+        sansiphistory: 'ja_SANS IP History',
+        centralops: 'ja_CentralOps Whois for IPs and Hostnames',
+        robtexipsearch: 'ja_Robtex IP Search',
+        ipvoid: 'ja_IPVoid',
+        urlvoid: 'ja_URLVoid',
+        threatexpert: 'ja_ThreatExpert Search'
+      }
     }
   },
   memsize: {

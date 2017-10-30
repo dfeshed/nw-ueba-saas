@@ -200,7 +200,7 @@ function buildMetaKeyValuePairs(keys, item, opts) {
       if (value.key === 'event.cat.name' || value.key === 'ec.theme') {
         value.key = 'event.theme';
       }
-      htmlPairs.push(`<span class="key">${value.key} =</span><span class="value" title="${value.textAndAlias}">${value.alias}</span>`);
+      htmlPairs.push(`<span class="key">${value.key} =</span><span class="value" metaname="${value.key}" metavalue="${value.alias}" title="${value.textAndAlias}">${value.alias}</span>`);
     }
   });
   $pairs.html(htmlPairs.join(' | '));
