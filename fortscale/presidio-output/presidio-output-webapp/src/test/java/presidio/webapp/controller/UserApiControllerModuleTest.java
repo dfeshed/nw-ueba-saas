@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,11 @@ import presidio.webapp.model.User;
 import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -128,7 +136,7 @@ public class UserApiControllerModuleTest {
         expectedResponse.setPage(0);
 
         // get actual response
-        MvcResult mvcResult = usersApiMVC.perform(get(USERS_URI).param("indicatorsName","indicator2"))
+        MvcResult mvcResult = usersApiMVC.perform(get(USERS_URI).param("indicatorsName", "indicator2"))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
@@ -151,7 +159,7 @@ public class UserApiControllerModuleTest {
         expectedResponse.setPage(0);
 
         // get actual response
-        MvcResult mvcResult = usersApiMVC.perform(get(USERS_URI).param("minScore","55"))
+        MvcResult mvcResult = usersApiMVC.perform(get(USERS_URI).param("minScore", "55"))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();

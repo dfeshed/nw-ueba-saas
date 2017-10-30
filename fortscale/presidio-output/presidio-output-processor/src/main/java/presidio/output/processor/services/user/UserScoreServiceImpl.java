@@ -1,7 +1,7 @@
 package presidio.output.processor.services.user;
 
+import fortscale.utils.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,11 +20,12 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 /**
  * Created by shays on 27/08/2017.
  */
 public class UserScoreServiceImpl implements UserScoreService {
+    private static final Logger log = Logger.getLogger(UserScoreServiceImpl.class);
+
     private UserPersistencyService userPersistencyService;
 
     private int percentThresholdCritical;
@@ -37,9 +38,8 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private AlertPersistencyService alertPersistencyService;
 
-    private Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private int defaultAlertsBatchSize;
+
     public int defaultUsersBatchSize;
 
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
@@ -107,7 +107,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     public void updateSeverities() {
         final double[] scores = getScoresArray();
         final UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sortField(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
+        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
         Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
         while (page != null && page.hasContent()) {

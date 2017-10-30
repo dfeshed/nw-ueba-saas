@@ -11,7 +11,8 @@
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "startInstantHistogramUserIdActiveDirectoryDaily",
-        "featureName" : "startInstantHistogram"
+        "featureName" : "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
       },
       "builder" : {
         "type" : "time_model_builder",
@@ -27,17 +28,17 @@
         "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily"
       },
       "retriever" : {
-        "type" : "context_histogram_sequential_retriever",
+        "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
         "featureBucketConfName" : "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
-        "featureName" : "operationTypeHistogram",
-        "sequencingResolutionInSeconds": 86400
+        "featureName" : "operationTypeHistogram"
       },
       "builder" : {
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
-        "entriesToSaveInModel" : 100
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
       }
     }
   ]

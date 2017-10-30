@@ -1,12 +1,15 @@
 package presidio.ade.modeling;
 
+import fortscale.aggregation.configuration.AslConfigurationPaths;
+import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.DynamicModelConfServiceContainer;
-import fortscale.ml.model.GaussianPriorModel;
-import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.*;
+import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
+import fortscale.ml.model.selector.AggregatedEventContextSelectorConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -18,6 +21,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -56,6 +60,15 @@ public class ModelingServiceApplicationContinuousModelsTest {
     private AggregationEventsAccumulationDataStore accumulationDataStore;
     @Autowired
     private ModelStore modelStore;
+    @Autowired
+    private AslResourceFactory aslResourceFactory;
+    @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
+    private String featureAggrRecordsGroupName;
+    @Value("${presidio.ade.modeling.feature.aggregation.records.base.configuration.path}")
+    private String featureAggrRecordsBaseConfigurationPath;
+    @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
+    private String groupName;
+
     private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name feature-aggregation-record-models.file --session_id test-run --end_date %s";
 
     private Map<Integer, Double> aggregatedFeatureValuesMap;
@@ -99,6 +112,50 @@ public class ModelingServiceApplicationContinuousModelsTest {
             String modelConfName = modelConf.getName();
             Assert.assertTrue(String.format("model=%s is expected to have segment prior", modelConfName), modelWithSegmentPrior.isPresent());
         });
+
+        List<ModelConf> continousMaxModelConfs = modelConfs.stream().filter(x->(x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf)).collect(Collectors.toList());
+        Assert.assertTrue("conf must have at least 1 continousMaxModelConfs model", continousMaxModelConfs.size() > 0);
+        continousMaxModelConfs.forEach(modelConf -> {
+            List<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
+            Assert.assertTrue(modelDaos.size() > 0);
+            modelDaos.forEach(modelDAO -> {
+                ContinuousMaxDataModel model = (ContinuousMaxDataModel) modelDAO.getModel();
+                Assert.assertTrue(model.getNumOfPartitions()>0);
+            });
+        });
+    }
+
+
+    /**
+     * Test that resolution of continuous_max_histogram_model_builder corresponds to aggregatedFeature strategy of accumulatedRecords.
+     *
+     */
+    @Test
+    public void builderResolutionTest(){
+        Collection<AslConfigurationPaths> modelConfigurationPathsCollection = Arrays.asList(
+                new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath));
+
+        ModelConfServiceBuilder modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection,aslResourceFactory);
+
+
+        ModelConfService modelConfService = modelConfServiceBuilder.buildModelConfService(groupName);
+        DynamicModelConfServiceContainer.setModelConfService(modelConfService);
+        List<ModelConf> modelConfs = modelConfService.getModelConfs();
+
+        List<ModelConf> continuousMaxModelConfs = modelConfs.stream().filter(x -> x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf).collect(Collectors.toList());
+
+        continuousMaxModelConfs.forEach(modelConf -> {
+           String aggregatedFeatureName = ((AggregatedEventContextSelectorConf)modelConf.getContextSelectorConf()).getAggregatedFeatureEventConfName();
+
+            AggregatedFeatureEventConf aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
+                    .getAggregatedFeatureEventConf(aggregatedFeatureName);
+
+            String strategyName = aggregatedFeatureEventConf.getBucketConf().getStrategyName();
+            FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(strategyName);
+
+            Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() % fixedDurationStrategy.toDuration().getSeconds() == 0 );
+            Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() > 0);
+        });
     }
 
     private void generateAccumulatedDataForAllConfs() throws GeneratorException {
@@ -124,7 +181,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
             // Feature bucket conf service
             properties.put("presidio.ade.modeling.feature.bucket.confs.base.path", "classpath*:config/asl/feature-buckets/**/*.json");
             // Feature aggregation event conf service
-            properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/file.json");
+            properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/*");
             // Smart event conf service
             properties.put("presidio.ade.smart.record.base.configurations.path", "classpath*:config/asl/smart-records/*");
             // Model conf service

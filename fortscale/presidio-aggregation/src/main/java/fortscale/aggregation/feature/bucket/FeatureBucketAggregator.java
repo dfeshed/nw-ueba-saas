@@ -5,13 +5,13 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.Feature;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import net.minidev.json.JSONObject;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class FeatureBucketAggregator {
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
-
+    private ObjectMapper mapper;
 
 
     public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
@@ -31,6 +31,7 @@ public class FeatureBucketAggregator {
         this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
+        this.mapper = ObjectMapperProvider.getInstance().getObjectMapper();
     }
 
     /**
@@ -107,7 +108,6 @@ public class FeatureBucketAggregator {
      */
     private JSONObject getJsonObject(AdeRecordReader adeRecordReader) {
         AdeRecord adeRecord = adeRecordReader.getAdeRecord();
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> adeRecordMap = mapper.convertValue(adeRecord, Map.class);
         return new JSONObject(adeRecordMap);
     }

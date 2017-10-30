@@ -6,6 +6,7 @@ import fortscale.aggregation.exceptions.AggregatedFeatureEventConfNameMissingInB
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 
@@ -20,7 +21,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	private String aggregatedFeatureEventsAdditionalConfigurationPath;
 	private BucketConfigurationService bucketConfigurationService;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private ObjectMapper objectMapper;
 	private List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = new ArrayList<>();
 	private Map<String, List<AggregatedFeatureEventConf>> bucketConfName2FeatureEventConfMap = new HashMap<>();
 
@@ -30,6 +31,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			String aggregatedFeatureEventsAdditionalConfigurationPath,
 			BucketConfigurationService bucketConfigurationService) {
 
+		this.objectMapper= ObjectMapperProvider.getInstance().getObjectMapper();
 		this.aggregatedFeatureEventsBaseConfigurationPath = aggregatedFeatureEventsBaseConfigurationPath;
 		this.aggregatedFeatureEventsOverridingConfigurationPath = aggregatedFeatureEventsOverridingConfigurationPath;
 		this.aggregatedFeatureEventsAdditionalConfigurationPath = aggregatedFeatureEventsAdditionalConfigurationPath;

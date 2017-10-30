@@ -27,11 +27,19 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
@@ -105,16 +113,24 @@ public class AlertPersistencyServiceTest {
         Date createAtDate = alert.getCreatedDate();
 
         alertPersistencyService.save(alert);
+
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
+        Date updateAtDateFirstFind = testAlert.getUpdatedDate();
+        Date createAtDateFirstFind = testAlert.getCreatedDate();
         testAlert.setUserName("smartId1");
         alertPersistencyService.save(testAlert);
         testAlert = alertPersistencyService.findOne(alert.getId());
+        Date createAtDateSecondFind = testAlert.getCreatedDate();
+        Date updateAtDateSecondFind = testAlert.getUpdatedDate();
 
         assertNotNull(testAlert.getId());
-        assertEquals(testAlert.getCreatedDate(), createAtDate);
+        assertEquals(createAtDate, createAtDateFirstFind);
+        assertEquals(createAtDateSecondFind, createAtDateFirstFind);
+        assertNotEquals(createAtDateSecondFind, updateAtDateSecondFind);
+        assertNotEquals(updateAtDateFirstFind, updateAtDateSecondFind);
 
         assertEquals(testAlert.getId(), alert.getId());
-        assertEquals("smartId1", testAlert.getUserName());
+        assertEquals(testAlert.getUserName(), "smartId1");
         testAlert.setIndicatorsNum(100);
         alertPersistencyService.save(testAlert);
         Alert testAlert2 = alertPersistencyService.findOne(alert.getId());
@@ -147,20 +163,20 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId", "smartId", classifications1, "user1@fortscale.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId", "smartId", classifications1, "user2@fortscale.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
 
-        Page<Alert> byName1 = alertPersistencyService.findByUserName("user1", new PageRequest(0, 10));
-        assertThat(byName1.getTotalElements(), is(2L));
+        Page<Alert> byName1 = alertPersistencyService.findByUserName("user1@fortscale.com", new PageRequest(0, 10));
+        assertThat(byName1.getTotalElements(), is(1L));
         assertEquals("userId", byName1.getContent().get(0).getUserId());
         assertEquals("smartId", byName1.getContent().get(0).getSmartId());
 
         Page<Alert> byName2 = alertPersistencyService.findByUserName("user2", new PageRequest(0, 10));
-        assertThat(byName2.getTotalElements(), is(0L));
+        assertThat(byName2.getTotalElements(), is(1L));
     }
 
 
@@ -213,6 +229,77 @@ public class AlertPersistencyServiceTest {
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
         assertThat(testAlert.getTotalElements(), is(2L));
     }
+
+    @Test
+    public void testFindWithMinScoreByQuery() {
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertList.add(
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 50.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertPersistencyService.save(alertList);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByMinScore(90)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(1L));
+    }
+
+    @Test
+    public void testFindWithMaxScoreByQuery() {
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertList.add(
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 50.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertPersistencyService.save(alertList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByMaxScore(60)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(1L));
+    }
+
+    @Test
+    public void testFindWithMaxScoreMinScoreByQuery() {
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 1000 * 60);
+
+        List<Alert> alertList = new ArrayList<>();
+        alertList.add(
+                new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", new Date(startDate.getTime() - 1), new Date(endDate.getTime() + 5), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertList.add(
+                new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, new Date(endDate.getTime() + 5), 50.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+        alertPersistencyService.save(alertList);
+
+        List<String> aggregationFields = new ArrayList<>();
+        aggregationFields.add(Alert.SEVERITY);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByMaxScore(90)
+                        .filterByMinScore(50)
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        assertThat(testAlert.getTotalElements(), is(1L));
+    }
+
 
     @Test
     public void testFindByQueryWitheClassification1() {
@@ -406,7 +493,7 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId1", "smartId", Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
                 new Alert("userId2", "smartId", Arrays.asList("a"), "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
@@ -429,7 +516,7 @@ public class AlertPersistencyServiceTest {
         StringTerms classificationsAgg = (StringTerms) stringAggregationMap.get(Alert.CLASSIFICATIONS);
         List<Terms.Bucket> buckets = classificationsAgg.getBuckets();
 
-        assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
+        assertEquals(buckets.size(), 11L);//11 buckets
         assertEquals(classificationsAgg.getBucketByKey("a").getDocCount(), 3L);
         assertEquals(classificationsAgg.getBucketByKey("b").getDocCount(), 2L);
         assertEquals(classificationsAgg.getBucketByKey("c").getDocCount(), 3L);
@@ -630,7 +717,7 @@ public class AlertPersistencyServiceTest {
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
-                        .sortField(Alert.USER_NAME, true)
+                        .sortField(Alert.INDEXED_USER_NAME, true)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
@@ -638,6 +725,64 @@ public class AlertPersistencyServiceTest {
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(secondUserName, iterator.next().getUserName());
         Assert.assertEquals(thirdUserName, iterator.next().getUserName());
+        Assert.assertEquals(firstUserName, iterator.next().getUserName());
+    }
+
+    @Test
+    public void testFindByUserNameCaseInsensitive() {
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
+        String secondUserName = "W_normalized_username_ipusr2@somebigcompany.com";
+        String thirdUserName = "X_normalized_username_ipusr3@somebigcompany.com";
+        Alert alert1 = new Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert1.setIndicatorsNames(indicatorNames1);
+        Alert alert2 = new Alert("userId2", "smartId", null, secondUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert2.setIndicatorsNames(indicatorNames1);
+        Alert alert3 = new Alert("userId3", "smartId", null, thirdUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert3.setIndicatorsNames(indicatorNames1);
+        List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
+        alertPersistencyService.save(alertList);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByUserName(Arrays.asList(firstUserName.toLowerCase()))
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Assert.assertEquals(1, testAlert.getTotalElements());
+        Iterator<Alert> iterator = testAlert.iterator();
+        Assert.assertEquals(firstUserName, iterator.next().getUserName());
+    }
+
+    @Test
+    public void testFindByUserNameContains() {
+
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
+        String secondUserName = "W_normalized_username_ipusr2@somebigcompany.com";
+        String thirdUserName = "X_normalized_username_ipusr3@somebigcompany.com";
+        Alert alert1 = new Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert1.setIndicatorsNames(indicatorNames1);
+        Alert alert2 = new Alert("userId2", "smartId", null, secondUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert2.setIndicatorsNames(indicatorNames1);
+        Alert alert3 = new Alert("userId3", "smartId", null, thirdUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        alert3.setIndicatorsNames(indicatorNames1);
+        List<Alert> alertList = Arrays.asList(alert1, alert2, alert3);
+        alertPersistencyService.save(alertList);
+
+        AlertQuery alertQuery =
+                new AlertQuery.AlertQueryBuilder()
+                        .filterByUserName(Arrays.asList("Z_normalized_username_ipusr1"))
+                        .build();
+
+        Page<Alert> testAlert = alertPersistencyService.find(alertQuery);
+        Assert.assertEquals(1, testAlert.getTotalElements());
+        Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstUserName, iterator.next().getUserName());
     }
 }

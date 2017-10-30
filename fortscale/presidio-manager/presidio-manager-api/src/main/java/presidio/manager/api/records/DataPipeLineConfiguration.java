@@ -14,7 +14,7 @@ public class DataPipeLineConfiguration {
 
     private String[] schemas;
 
-    private boolean isStracturValid;
+    private boolean isStructureValid;
 
     private List<String> badParams;
 
@@ -34,7 +34,7 @@ public class DataPipeLineConfiguration {
             setKeyValue(key, node.get(key));
         }
         if (badParams.isEmpty())
-            isStracturValid = true;
+            isStructureValid = true;
     }
 
     public void setStartTime(String startTime) {
@@ -74,8 +74,8 @@ public class DataPipeLineConfiguration {
         return schemas;
     }
 
-    public boolean isStracturValid() {
-        return isStracturValid;
+    public boolean isStructureValid() {
+        return isStructureValid;
     }
 
     public List<String> getBadParams() {

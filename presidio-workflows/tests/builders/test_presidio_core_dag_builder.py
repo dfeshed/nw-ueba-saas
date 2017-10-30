@@ -40,4 +40,4 @@ def test_valid_build():
 
     dag = PresidioCoreDagBuilder(['dlpfile']).build(dag)
 
-    assert dag.task_count == 5
+    assert dag.task_count == 6
