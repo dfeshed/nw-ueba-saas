@@ -9,6 +9,7 @@ import presidio.data.generators.fileop.CyclicFileOperationTypeGenerator;
  */
 public class FixedGenericHistogramGenerator implements IGenericHistogramGenerator {
 
+    private long numOfPartitions;
     private GenericHistogram genericHistogram;
 
     public FixedGenericHistogramGenerator() {
@@ -18,10 +19,14 @@ public class FixedGenericHistogramGenerator implements IGenericHistogramGenerato
                 fileOperationTypeGenerator.getValues()) {
                 this.genericHistogram.add(operationType.toString(),3D);
         }
+        this.numOfPartitions = 30;
+        this.genericHistogram.setNumberOfPartitions(numOfPartitions);
     }
 
     public FixedGenericHistogramGenerator(GenericHistogram genericHistogram) {
         this.genericHistogram = genericHistogram;
+        this.numOfPartitions = 30;
+        this.genericHistogram.setNumberOfPartitions(numOfPartitions);
     }
 
     @Override

@@ -161,7 +161,7 @@ public class ModelingServiceApplicationTest {
 		return new ModelConf(
 				"continuousData.userId.test",
 				new FeatureBucketContextSelectorConf("continuousDataFeatureBucket"),
-				new ContextHistogramRetrieverConf(7776000, emptyList(), "continuousDataFeatureBucket", "continuousDataFeature"),
+				new ContextHistogramRetrieverConf(7776000, emptyList(), "continuousDataFeatureBucket", "continuousDataFeature", 86400),
 				new ContinuousHistogramModelBuilderConf());
 	}
 

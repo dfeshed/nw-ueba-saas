@@ -24,9 +24,15 @@ public class SMARTValuesPriorModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        Map<Double, Long> smartValueToCountMap = castModelBuilderData(modelBuilderData);
+		GenericHistogram genericHistogram = getGenericHistogram(modelBuilderData);
+
+		Map<Double, Long> smartValueToCountMap = castModelBuilderData(genericHistogram);
 		smartValueToCountMap.remove(0.0);
 		SMARTValuesPriorModel res = new SMARTValuesPriorModel();
+
+		long numOfPartitions = genericHistogram.getNumberOfPartitions();
+		res.setNumOfPartitions(numOfPartitions);
+
 		if (smartValueToCountMap.isEmpty()) {
 			return res.init(0);
 		}
@@ -48,11 +54,16 @@ public class SMARTValuesPriorModelBuilder implements IModelBuilder {
 		return res;
     }
 
-    protected Map<Double, Long> castModelBuilderData(Object modelBuilderData) {
-        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+    protected Map<Double, Long> castModelBuilderData(GenericHistogram genericHistogram) {
         Map<Double, Long> map = new HashMap<>();
-        ((GenericHistogram) modelBuilderData).getHistogramMap().entrySet()
+
+		genericHistogram.getHistogramMap().entrySet()
                 .forEach(entry -> map.put(ConversionUtils.convertToDouble(entry.getKey()), entry.getValue().longValue()));
         return map;
     }
+
+	private GenericHistogram getGenericHistogram(Object modelBuilderData) {
+		Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+		return (GenericHistogram) modelBuilderData;
+	}
 }

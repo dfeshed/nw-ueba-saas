@@ -14,8 +14,8 @@
             "model" : {
               "name" : "date_time_unix.normalized_username.dlpfile"
             },
-            "number-of-samples-to-influence-enough" : 30,
-            "min-number-of-samples-to-influence" : 1,
+            "number-of-partitions-to-influence-enough" : 30,
+            "min-number-of-partitions-to-influence" : 1,
             "max-rare-timestamp-count" : 5,
             "max-num-of-rare-timestamps" : 5,
             "use-certainty-to-calculate-score" : true
@@ -31,8 +31,8 @@
               "additional-models" : [ ],
               "max-rare-count" : 5,
               "max-num-of-rare-features" : 15,
-              "number-of-samples-to-influence-enough" : 30,
-              "min-number-of-samples-to-influence" : 1,
+              "number-of-partitions-to-influence-enough" : 30,
+              "min-number-of-partitions-to-influence" : 1,
               "minimum-number-of-distinct-values-to-influence" : 0,
               "enough-number-of-distinct-values-to-influence" : 0,
               "use-certainty-to-calculate-score" : true
@@ -49,8 +49,8 @@
                 "additional-models" : [ ],
                 "max-rare-count" : 5,
                 "max-num-of-rare-features" : 15,
-                "number-of-samples-to-influence-enough" : 30,
-                "min-number-of-samples-to-influence" : 1,
+                "number-of-partitions-to-influence-enough" : 30,
+                "min-number-of-partitions-to-influence" : 1,
                 "minimum-number-of-distinct-values-to-influence" : 0,
                 "enough-number-of-distinct-values-to-influence" : 0,
                 "use-certainty-to-calculate-score" : true

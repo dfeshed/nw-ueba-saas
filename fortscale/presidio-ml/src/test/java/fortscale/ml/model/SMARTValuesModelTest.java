@@ -13,7 +13,7 @@ public class SMARTValuesModelTest {
 		long numOfZeroValues = 10;
 		long numOfPositiveValues = 20;
 		double sumOfValues = 1.5;
-		model.init(numOfZeroValues, numOfPositiveValues, sumOfValues);
+		model.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 5);
 
 		Assert.assertEquals(numOfPositiveValues + numOfZeroValues, model.getNumOfSamples());
 		Assert.assertEquals(numOfPositiveValues, model.getNumOfPositiveValues());

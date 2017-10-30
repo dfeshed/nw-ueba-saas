@@ -13,6 +13,7 @@ import java.util.List;
 public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 	public static final String CONTEXT_HISTOGRAM_RETRIEVER = "context_histogram_retriever";
 
+	private final long partitionsResolutionInSeconds;
 	private String featureBucketConfName;
 	private String featureName;
 
@@ -21,15 +22,18 @@ public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 			@JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
 			@JsonProperty("functions") List<JSONObject> functions,
 			@JsonProperty("featureBucketConfName") String featureBucketConfName,
-			@JsonProperty("featureName") String featureName) {
+			@JsonProperty("featureName") String featureName,
+			@JsonProperty("partitionsResolutionInSeconds") long partitionsResolutionInSeconds) {
 
 		super(timeRangeInSeconds, functions);
 
 		Assert.hasText(featureBucketConfName);
 		Assert.hasText(featureName);
+		Assert.isTrue(partitionsResolutionInSeconds>0,"partitionsResolutionInSeconds must be >0");
 
 		this.featureBucketConfName = featureBucketConfName;
 		this.featureName = featureName;
+		this.partitionsResolutionInSeconds = partitionsResolutionInSeconds;
 	}
 
 	@Override
@@ -43,5 +47,9 @@ public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 
 	public String getFeatureName() {
 		return featureName;
+	}
+
+	public long getPartitionsResolutionInSeconds() {
+		return partitionsResolutionInSeconds;
 	}
 }

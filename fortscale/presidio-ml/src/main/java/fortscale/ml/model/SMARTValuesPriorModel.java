@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 )
 public class SMARTValuesPriorModel implements Model {
 	private double prior;
+	private long numOfPartitions;
 
 	public SMARTValuesPriorModel init(double prior) {
 		this.prior = prior;
@@ -25,5 +26,13 @@ public class SMARTValuesPriorModel implements Model {
 
 	public double getPrior() {
 		return prior;
+	}
+
+	public void setNumOfPartitions(long numOfPartitions) {
+		this.numOfPartitions = numOfPartitions;
+	}
+
+	public long getNumOfPartitions() {
+		return numOfPartitions;
 	}
 }

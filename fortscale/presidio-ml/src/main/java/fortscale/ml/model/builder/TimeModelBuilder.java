@@ -23,9 +23,10 @@ public class TimeModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         TimeModel timeModel = new TimeModel();
+        GenericHistogram genericHistogram = castModelBuilderData(modelBuilderData);
         timeModel.init(
                 timeResolution, bucketSize, maxRareTimestampCount,
-                castModelBuilderData(modelBuilderData).getHistogramMap());
+                genericHistogram.getHistogramMap(), genericHistogram.getNumberOfPartitions());
         return timeModel;
     }
 

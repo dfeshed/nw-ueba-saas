@@ -521,7 +521,8 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
             if (modelConf.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf) {
                 for (String contextId : contextIds) {
                     ContinuousDataModel continuousDataModel = new ContinuousDataModel().setParameters(N, round(mean), round(sd), round(maxValue));
-                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, continuousDataModel, endDate.minus(Duration.ofDays(90)), endDate);
+                    ContinuousMaxDataModel model = new ContinuousMaxDataModel(continuousDataModel,continuousDataModel,N);
+                    ModelDAO modelDao = new ModelDAO("test-session-id", contextId, model, endDate.minus(Duration.ofDays(90)), endDate);
                     mongoTemplate.insert(modelDao, "model_" + modelConf.getName());
                     models.add(continuousDataModel);
 
