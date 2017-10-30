@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.aspect.MonitoringAspects;
+import presidio.monitoring.aspect.MonitroingAspectSetup;
 import presidio.monitoring.aspect.metrics.CustomMetricEndpoint;
 import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
 import presidio.monitoring.aspect.metrics.PresidioDefaultMetrics;
@@ -62,10 +63,10 @@ public class MonitoringConfiguration {
         return new MonitoringAspects();
     }
 
-//    @Bean
-//    public MonitroingAspectSetup monitroingAspectSetup() {
-//        return  new MonitroingAspectSetup(metricsEndpoint(), presidioCustomMetrics());
-//    }
+    @Bean
+    public MonitroingAspectSetup monitroingAspectSetup() {
+        return  new MonitroingAspectSetup(metricsEndpoint(), presidioCustomMetrics());
+    }
 
     @Autowired
     private MetricRepository metricRepository;
