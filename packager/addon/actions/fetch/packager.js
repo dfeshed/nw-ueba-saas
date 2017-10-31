@@ -18,7 +18,18 @@ const setPackagerConfig = (model) => {
   });
 };
 
+const createPackagerLogConfig = (model) => {
+  return promiseRequest({
+    method: 'create',
+    modelName: 'packager',
+    query: {
+      data: model
+    }
+  });
+};
+
 export {
   getPackagerConfig,
-  setPackagerConfig
+  setPackagerConfig,
+  createPackagerLogConfig
 };

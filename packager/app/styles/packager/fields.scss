@@ -11,8 +11,7 @@
       }
     }
     .buttons {
-      float: right;
-      div:first-child {
+      div {
         padding-right: rsa-whitespace();
       }
     }
@@ -20,6 +19,14 @@
   .server-input-group {
     div:first-child {
       padding-right: rsa-whitespace();
+    }
+  }
+
+  .windows-log-collection {
+    .rsa-content-accordion {
+      h3 {
+        color: text-color(secondary);
+      }
     }
   }
 }

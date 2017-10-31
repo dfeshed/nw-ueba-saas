@@ -1520,6 +1520,7 @@ export default {
     certificateValidation: 'ja_Certificate Validation',
     none: 'ja_None',
     fullChain: 'ja_Full Chain',
+    generateLogConfig: 'ja_Generate Log Configuration Only',
     thumbprint: 'ja_Thumbprint',
     reset: 'ja_Reset',
     generateAgent: 'ja_Generate Agent',
@@ -1531,7 +1532,16 @@ export default {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.'
     },
     autoUninstall: 'ja_Auto Uninstall',
-    forceOverwrite: 'ja_Force Overwrite'
+    forceOverwrite: 'ja_Force Overwrite',
+    windowsLogCollectionCongfig: 'ja_Windows Log Collection Configuration',
+    enableWindowsLogCollection: 'ja_Enable Windows Log Collection',
+    configurationName: '*ja_configuration Name',
+    primaryLogDecoder: '*ja_primary log decoder',
+    secondaryLogDecoder: 'ja_secondary log decoder',
+    channels: 'ja_Channels',
+    eventId: 'ja_event id to include/exclude (?)',
+    protocol: 'ja_Protocol',
+    heartbeatLogs: 'ja_Send Heartbeat logs'
   },
   investigateFiles: {
     title: 'ja_Files',

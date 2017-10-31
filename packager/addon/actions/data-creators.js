@@ -15,7 +15,8 @@ import Ember from 'ember';
 import * as ACTION_TYPES from './types';
 import {
   getPackagerConfig,
-  setPackagerConfig
+  setPackagerConfig,
+  createPackagerLogConfig
 } from './fetch';
 
 const { Logger } = Ember;
@@ -78,6 +79,31 @@ const _handleFilesError = (response) => {
 };
 
 /**
+ * Action creator setting the windows log collection config information and getting the download link.
+ * @method createLogConfig
+ * @public
+ * @returns {Object}
+ */
+const createLogConfig = (configData) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.CREATE_LOG,
+      promise: createPackagerLogConfig(configData),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.GET_INFO, response);
+          if ('OK' === response.data.statusCode || 'Success' === response.data) {
+            const url = response.data.link || downloadURL;
+            dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
+          }
+        },
+        onFailure: (response) => dispatch(_handleFilesError(response))
+      }
+    });
+  };
+};
+
+/**
  * Action for resetting form back to previous saved state
  * @public
  */
@@ -86,5 +112,6 @@ const resetForm = () => ({ type: ACTION_TYPES.RESET_FORM });
 export {
   setConfig,
   getConfig,
+  createLogConfig,
   resetForm
 };

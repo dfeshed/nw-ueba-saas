@@ -8,5 +8,14 @@ export default {
   'serviceName': 'NWE Agent',
   'displayName': 'NWE Agent',
   'description': 'NetWitness Agent Service',
-  'certificateValidation': 'thumbprint'
+  'certificateValidation': 'thumbprint',
+  'windowsLogCollection': {
+    'configName': 'windows.cfg',
+    'enableLc': false,
+    'primaryLd': '34.44.67.45',
+    'secondaryLd': '34.44.67.45',
+    'channels': 'security',
+    'eventId:': '123,123,-32432',
+    'heartbeatLogs': false
+  }
 };

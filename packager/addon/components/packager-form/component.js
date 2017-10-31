@@ -7,6 +7,7 @@ import { connect } from 'ember-redux';
 
 import {
   setConfig,
+  createLogConfig,
   resetForm
 } from '../../actions/data-creators';
 
@@ -21,6 +22,7 @@ const stateToComputed = ({ packager }) => ({
 
 const dispatchToActions = {
   setConfig,
+  createLogConfig,
   resetForm
 };
 
@@ -51,6 +53,14 @@ const formComponent = Component.extend({
         this.set('configData.autoUninstall', moment(autoUninstall[0]).toISOString());
       }
       this.send('setConfig', this.get('configData'));
+    },
+
+    toggleProperty(property) {
+      this.toggleProperty(property);
+    },
+
+    generateLogConfig() {
+      this.send('createLogConfig', this.get('configData.windowsLogCollection'));
     }
   }
 });

@@ -1523,6 +1523,7 @@ export default {
     thumbprint: 'Thumbprint',
     reset: 'Reset',
     generateAgent: 'Generate Agent',
+    generateLogConfig: 'Generate Log Configuration Only',
     description: 'Description',
     title: 'Packager',
     becon: 'Becon',
@@ -1531,7 +1532,16 @@ export default {
       generic: 'An unexpected error has occurred attempting to retrieve this data.'
     },
     autoUninstall: 'Auto Uninstall',
-    forceOverwrite: 'Force Overwrite'
+    forceOverwrite: 'Force Overwrite',
+    windowsLogCollectionCongfig: 'Windows Log Collection Configuration',
+    enableWindowsLogCollection: 'Enable Windows Log Collection',
+    configurationName: '*configuration Name',
+    primaryLogDecoder: '*primary log decoder',
+    secondaryLogDecoder: 'secondary log decoder',
+    channels: 'Channels',
+    eventId: 'event id to include/exclude (?)',
+    protocol: 'Protocol',
+    heartbeatLogs: 'Send Heartbeat logs'
   },
   investigateFiles: {
     title: 'Files',
