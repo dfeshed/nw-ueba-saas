@@ -1,6 +1,5 @@
 package presidio.ade.smart.config;
 
-import fortscale.ml.model.cache.EventModelsCacheServiceConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
@@ -22,8 +21,7 @@ import java.util.List;
 @Import({
 //        application-specific confs
         SmartApplicationDataRetrieverFactoryServiceConfig.class,
-        SmartApplicationSmartScorersModelConfServiceConfig.class,
-        EventModelsCacheServiceConfig.class
+        SmartApplicationSmartScorersModelConfServiceConfig.class
 })
 public class SmartApplicationSmartScorersFactoryConfig {
     @Autowired

@@ -1,7 +1,10 @@
-package fortscale.ml.model.cache;
+package presidio.ade.smart.config;
 
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelConfServiceConfig;
+import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.model.cache.ModelCacheServiceInMemory;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
@@ -37,5 +40,10 @@ public class ModelCacheServiceInMemoryConfig {
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
         return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize);
+    }
+
+    @Bean
+    public EventModelsCacheService eventModelsCacheService() {
+        return new EventModelsCacheService();
     }
 }
