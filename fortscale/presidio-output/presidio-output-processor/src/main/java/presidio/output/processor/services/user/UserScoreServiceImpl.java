@@ -137,7 +137,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1)
                 .pageSize(defaultUsersBatchSize)
-                .pageNumber(1);
+                .pageNumber(0);
         Page<User> usersPage = userPersistencyService.find(userQueryBuilder.build());
 
         log.debug("found " + usersPage.getTotalElements() + " users which score that should be reset");

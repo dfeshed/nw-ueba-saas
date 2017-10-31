@@ -159,8 +159,13 @@ public class UserServiceImpl implements UserService {
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(new ArrayList<>(usersIDForBatch))
                 .pageNumber(0)
                 .pageSize(usersIDForBatch.size());
+
         UserQuery userQuery = userQueryBuilder.build();
         Page<User> users = userPersistencyService.find(userQuery);
+
+        if (users.getTotalElements()!=usersIDForBatch.size()){
+            log.error("Need to update {} users, but only {} users exists on elastic search",usersIDForBatch.size(),users.getTotalElements());
+        }
         users.forEach(user -> {
             double newUserScore = aggregatedUserScore.get(user.getUserId()).getUserScore();
             if (user.getScore() != newUserScore) {
