@@ -5,7 +5,7 @@
 
     <artifactId>presidio-configuration-server</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-6</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>presidio-configuration-server</name>
     <description>Presidio Configuration Server</description>
@@ -13,7 +13,7 @@
     <parent>
         <artifactId>presidio-configuration</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-6</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
