@@ -13,6 +13,9 @@ import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Manage embedded elasticsearch for test purpose.
+ * EmbeddedElasticsearchInitialiser bean must be initialized by spring before the elasticsearch client is created
+ *
  * Created by efratn on 17/10/2017.
  */
 @Component
