@@ -6,7 +6,7 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.data.ade.AdeFileOperationGeneratorTemplateFactory;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
@@ -29,7 +29,7 @@ public class EnrichedSuccessfulFileOpenedGenerator extends EnrichedFileGenerator
     public List<EnrichedFileRecord> generateAndPersist(int interval) throws GeneratorException {
         String testUser = "testUser";
         FileEventsGenerator generator = new FileEventsGenerator();
-        generator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
+        generator.setTimeGenerator(new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
         generator.setUserGenerator(new SingleUserGenerator(testUser));
         addSuccessfulFileOpenedOperationGenerator(generator);
 

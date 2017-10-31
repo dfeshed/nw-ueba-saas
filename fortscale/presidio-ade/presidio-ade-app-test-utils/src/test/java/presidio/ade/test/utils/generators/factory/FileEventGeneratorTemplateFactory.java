@@ -4,8 +4,8 @@ import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.test.utils.generators.MultiFileEventGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.ITimeGeneratorFactory;
-import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
@@ -47,7 +47,7 @@ public class FileEventGeneratorTemplateFactory {
         return new MultiFileEventGenerator(fileEventsGenerators);
     }
 
-    public FileEventsGenerator createFileEventsGenerator(TimeGenerator timeGenerator, IUserGenerator userGenerator, IFileOperationGenerator fileOperationGenerator) throws GeneratorException {
+    public FileEventsGenerator createFileEventsGenerator(ITimeGenerator timeGenerator, IUserGenerator userGenerator, IFileOperationGenerator fileOperationGenerator) throws GeneratorException {
         FileEventsGenerator generator = new FileEventsGenerator();
         generator.setTimeGenerator(timeGenerator);
         generator.setUserGenerator(userGenerator);
