@@ -37,7 +37,9 @@ moduleForComponent('host-list/content-filter/system-filters/list-item', 'Integra
 });
 
 test('it renders the filter name', function(assert) {
-
+  this.set('applyFilter', function(id) {
+    assert.equal(id, 11);
+  });
   this.set('filter', filter);
   this.render(hbs`{{host-list/content-filter/system-filters/list-item filter=filter}}`);
   assert.equal(this.$('.filter-list__item-label').text().trim(), 'JAZZ_NWE_5_AGENTS');
@@ -46,7 +48,10 @@ test('it renders the filter name', function(assert) {
 
 test('it shows the delete button on mouse hover', function(assert) {
   this.set('filter', filter);
-  this.render(hbs`{{host-list/content-filter/system-filters/list-item filter=filter}}`);
+  this.set('applyFilter', function(id) {
+    assert.equal(id, 11);
+  });
+  this.render(hbs`{{host-list/content-filter/system-filters/list-item applyFilter=(action applyFilter 11) filter=filter}}`);
   assert.equal(this.$('.filter-list__item-label').text().trim(), 'JAZZ_NWE_5_AGENTS');
   assert.equal(this.$('.delete-filter:visible').length, 0);
   this.$('.filter-list__item').trigger('mouseover');
@@ -60,7 +65,10 @@ test('should send delete action with selected id', function(assert) {
   this.set('deleteFilter', function(id) {
     assert.equal(id, 1);
   });
-  this.render(hbs`{{host-list/content-filter/system-filters/list-item filter=filter deleteFilter=(action deleteFilter 1)}}`);
+  this.set('applyFilter', function(id) {
+    assert.equal(id, 11);
+  });
+  this.render(hbs`{{host-list/content-filter/system-filters/list-item applyFilter=(action applyFilter 11) filter=filter deleteFilter=(action deleteFilter 1)}}`);
   assert.equal(this.$('.delete-filter:visible').length, 0);
   this.$('.filter-list__item').trigger('mouseover');
   this.$('.delete-filter').trigger('click');

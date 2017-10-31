@@ -15,6 +15,9 @@ export default Component.extend({
 
   activeFilter: null,
 
+  applyFilter: '',
+
+  deleteFilter: '',
 
   @computed('filter', 'activeFilter', 'reset')
   isActive: (filter, activeFilter, reset) => filter.id === activeFilter && !reset,
@@ -25,8 +28,5 @@ export default Component.extend({
 
   mouseLeave() {
     this.set('isHovering', false);
-  },
-  click() {
-    this.applyFilter(this.get('filter'));
   }
 });

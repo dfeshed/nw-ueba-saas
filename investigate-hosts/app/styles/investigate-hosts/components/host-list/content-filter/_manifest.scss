@@ -1,7 +1,6 @@
 @import "text-filter";
 @import "number-filter";
 @import "list-filter";
-@import "confirmation-dialog";
 
 $filterPanelMinWidth: 200px;
 .filter-search-icon {
@@ -82,13 +81,19 @@ $filterPanelMinWidth: 200px;
 
 .is-hovering .delete-filter {
   display: inline-block;
+  .rsa-icon-bin-1-filled {
+    font-size: 100%;
+    top: -2px;
+  }
 }
 
 .delete-filter {
   position: absolute;
   right: 0.5rem;
-  font-size: 0.5rem;
   display: none;
+  .rsa-icon-bin-1-filled {
+    font-size: 1.25rem;
+  }
 }
 
 #list-filter-content .rsa-form-checkbox-label::before {

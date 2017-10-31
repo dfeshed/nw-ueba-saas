@@ -1650,6 +1650,7 @@ export default {
     title: 'Investigate',
     loading: 'Loading',
     loadMore: 'Load More',
+    deleteTitle: 'Confirm Delete',
     common: {
       save: 'Save',
       enable: 'Enable',

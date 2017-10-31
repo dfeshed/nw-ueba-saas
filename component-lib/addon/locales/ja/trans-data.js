@@ -1651,6 +1651,7 @@ export default {
     title: 'ja_Investigate',
     loading: 'ja_Loading',
     loadMore: 'ja_Load More',
+    deleteTitle: 'ja_Confirm Delete',
     common: {
       save: 'ja_Save',
       enable: 'ja_Enable',

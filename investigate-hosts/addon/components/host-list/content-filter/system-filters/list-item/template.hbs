@@ -1,11 +1,14 @@
-<span class="filter-list__item-label">
+<span class="filter-list__item-label" {{action applyFilter filter on='click'}}>
   {{filter.name}}
-  {{#unless filter.systemFilter}}
-    {{#rsa-form-button
-      click=(disable-bubbling deleteFilter)
-      class='delete-filter'
-      isIconOnly=true}}
-      {{rsa-icon name='bin-1'}}
-    {{/rsa-form-button}}
-  {{/unless}}
 </span>
+{{#unless filter.systemFilter}}
+  {{#rsa-button-with-confirmation
+    style='danger'
+    class='delete-filter'
+    title=(t 'investigateHosts.deleteTitle')
+    isIconOnly=true
+    confirmationMessage=(t 'investigateHosts.savedQueries.delete.confirmMessage')
+    onConfirm=deleteFilter}}
+    {{rsa-icon name='bin-1' title='delete filter' }}
+  {{/rsa-button-with-confirmation}}
+{{/unless}}

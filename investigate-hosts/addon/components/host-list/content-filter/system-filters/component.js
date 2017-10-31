@@ -2,7 +2,6 @@ import Component from 'ember-component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
-import { next } from 'ember-runloop';
 
 import {
   addSystemFilter,
@@ -64,22 +63,8 @@ const FilterList = Component.extend({
       this.send('addSystemFilter', expressionList[0]);
     },
 
-    showConfirmationModal(id) {
-      this.set('selectedFilterId', id);
-      this.set('showConfirmationDialog', true);
-      next(() => {
-        this.get('eventBus').trigger('rsa-application-modal-open-confirm-delete');
-      });
-    },
-
-    closeConfirmDeleteModal() {
-      this.set('selectedFilterId', null);
-      this.set('showConfirmationDialog', false);
-      this._closeModal();
-    },
-
-    deleteSearch() {
-      this.send('deleteSelected', this.get('selectedFilterId'));
+    deleteSearch(id) {
+      this.send('deleteSelected', id);
       this._closeModal();
     }
 
