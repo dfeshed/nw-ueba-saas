@@ -14,7 +14,7 @@ import Ember from 'ember';
 import * as ACTION_TYPES from '../types';
 import { getPageOfMachines } from './host';
 import { Machines } from '../api';
-import { _handleError } from '../creator-utils';
+import { handleError } from '../creator-utils';
 
 const { Logger } = Ember;
 
@@ -78,7 +78,7 @@ const createCustomSearch = (filter, schemas, filterType, { onSuccess = NOOP, onF
           onSuccess(response);
         },
         onFailure: (response) => {
-          _handleError(ACTION_TYPES.UPDATE_FILTER_LIST, response);
+          handleError(ACTION_TYPES.UPDATE_FILTER_LIST, response);
           onFailure(response);
         }
       }
@@ -114,7 +114,6 @@ const addSystemFilter = (expression) => {
   };
 };
 
-
 /**
  * Action creator for deleting the saved search
  * @param onSuccess
@@ -133,7 +132,7 @@ const deleteSavedSearch = (id, { onSuccess = NOOP, onFailure = NOOP }) => {
           onSuccess(response);
         },
         onFailure: (response) => {
-          _handleError(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
+          handleError(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
           onFailure(response);
         }
       }

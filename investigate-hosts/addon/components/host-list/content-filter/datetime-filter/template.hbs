@@ -1,0 +1,90 @@
+{{host-list/content-filter/filter-trigger
+  panelId=config.panelId
+  propertyName=config.propertyName
+  showRemoveButton=config.showRemoveButton
+  filterLabel=filterLabel}}
+{{#rsa-content-tethered-panel
+  anchorWidth=anchorWidth
+  isPopover=true
+  displayCloseButton=false
+  position='bottom-right'
+  panelId=config.panelId}}
+  <section class="datetime-filter__content">
+    {{#unless isCustomChecked}}
+      <div class="body">
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t config.label}}
+          </div>
+          {{#power-select
+              options=listOptions
+              selected=selected
+              searchPlaceholder=(t 'investigateHosts.hosts.filters.searchPlaceHolder')
+              onchange=(action 'onSelection') as |option|}}
+            {{option.name}}
+          {{/power-select}}
+        </label>
+      </div>
+    {{else}}
+    <label class="rsa-from-label power-select">
+      <div class="label-text">
+        {{t config.label}}
+      </div>
+    </label>
+    <hbox class='body'>
+      <div class="col-xs-2 select-option">
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t 'investigateHosts.hosts.filters.operator'}}
+          </div>
+          {{#power-select
+            searchEnabled=false
+            options=restrictionList
+            dropdownClass='filter-operator-dropdown'
+            selected=restrictionType
+            triggerClass="filter-operator-select"
+            onchange=(action (mut restrictionType)) as |option|}}
+            {{t option.label}}
+          {{/power-select}}
+        </label>
+      </div>
+      {{#if (eq restrictionType.type 'BETWEEN')}}
+        <div class='body__input col-xs-6'>
+          {{rsa-form-datetime
+            selected=dateStartValue
+            placeholder=(t 'investigateHosts.hosts.filters.customStartDate')
+            onChange=(action (mut dateStartValue))
+            }}
+        </div>
+        <div class='body__input col-xs-6'>
+          {{rsa-form-datetime
+          selected=dateEndValue
+          placeholder=(t 'investigateHosts.hosts.filters.customEndDate')
+          onChange=(action (mut dateEndValue))
+          }}
+        </div>
+      {{else}}
+        <div class='body__input col-xs-6'>
+          {{rsa-form-datetime
+            placeholder=(t 'investigateHosts.hosts.filters.customDateRange')
+            selected=dateValue
+            onChange=(action (mut dateValue))
+            }}
+        </div>
+      {{/if}}
+    </hbox>
+    {{/unless}}
+    <section class="footer">
+      <label class="rsa-form-checkbox-label {{if isCustomChecked 'checked'}}">
+        {{rsa-form-checkbox
+            checked=isCustomChecked
+            change=(action 'toggleIsChecked')}}
+        {{t 'investigateHosts.hosts.filters.customDate'}}
+      </label>
+      {{#rsa-form-button style='primary' defaultAction=(action 'onFilterUpdate')}}
+        {{t 'investigateHosts.hosts.button.update'}}
+      {{/rsa-form-button}}
+    </section>
+  </section>
+{{/rsa-content-tethered-panel}}
+

@@ -24,7 +24,7 @@ const FILTER_TYPES = [
   {
     'propertyName': 'machine.machineOsType',
     'label': 'investigateHosts.hosts.column.machine.machineOsType',
-    'filterControl': 'host-list/content-filter/text-filter',
+    'filterControl': 'host-list/content-filter/list-filter',
     'selected': false,
     'panelId': 'machineOsType',
     'isDefault': false
@@ -49,7 +49,9 @@ const FILTER_TYPES = [
   {
     'propertyName': 'machine.scanStartTime',
     'label': 'investigateHosts.hosts.column.machine.scanStartTime',
-    'filterControl': 'host-list/content-filter/text-filter',
+    'options': [ { label: 'Last 1 Hour', id: 'LAST_ONE_HOUR' }, { label: 'Last 24 Hours', id: 'LAST_TWENTY_FOUR_HOURS' }, { label: 'Last 5 Days', id: 'LAST_FIVE_DAYS' }],
+    'filterControl': 'host-list/content-filter/datetime-filter',
+    'showDateRange': true,
     'selected': false,
     'panelId': 'scanStartTime',
     'isDefault': false
@@ -185,7 +187,9 @@ const FILTER_TYPES = [
   {
     'propertyName': 'agentStatus.lastSeenTime',
     'label': 'investigateHosts.hosts.column.agentStatus.lastSeenTime',
-    'filterControl': 'host-list/content-filter/text-filter',
+    'options': [{ label: 'Last 1 Hour', id: 'LAST_ONE_HOUR' }, { label: 'Last 24 Hours', id: 'LAST_TWENTY_FOUR_HOURS' }, { label: 'Last 5 Days', id: 'LAST_FIVE_DAYS' }],
+    'filterControl': 'host-list/content-filter/datetime-filter',
+    'showDateRange': false,
     'selected': false,
     'panelId': 'lastSeenTime',
     'isDefault': false

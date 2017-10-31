@@ -18,8 +18,8 @@ export function getField(params) {
       val = value;
     } else if (dataType === 'DATE') {
       const date = moment(value);
-      const dateForm = date.utc().format('YYYY-MM-DD');
-      const timeForm = date.utc().format('HH:mm:ss');
+      const dateForm = date.format('YYYY-MM-DD');
+      const timeForm = date.format('HH:mm:ss');
       val = `${ dateForm } ${ timeForm }`;
       val = val.includes('Invalid') ? '' : val;
     } else if (displayFormat === 'HEX') {

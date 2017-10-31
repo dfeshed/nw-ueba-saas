@@ -1,0 +1,53 @@
+.datetime-filter {
+
+    .remove-filter-icon .rsa-icon-remove-circle-2 {
+        width: 2rem;
+        position: relative;
+        top: 1px;
+        font-size: .9rem;
+        vertical-align: top;
+        margin: 0 calc(0.25rem * -1) 0 0.25rem !important;
+      }
+      &__content {
+        padding: rsa-whitespace();
+        max-width: 34rem!important;        
+        .body {
+          float: left;
+          text-align: left;
+          max-width: 112rem;
+          min-width: 31rem;
+          padding-bottom: 1rem;
+          &__input {
+            margin-left: 24px;
+            padding-top: 1.3rem;
+            float: left;
+            min-width: 154px;
+            max-width: 108px;
+  
+            .datetime-picker-icon {
+              margin-top: -10px;
+              margin-right: -5px;
+            }
+          }
+          .filter-operator-select {
+            width: 73px;
+          }
+          .filter-operator-dropdown {
+            width: 100px;
+          }
+        }
+      }
+      .footer {
+        padding-top: rsa-whitespace();
+        margin-top: 36px;
+        min-width: none;
+        max-width: none;
+        .rsa-form-button-wrapper {
+          width: 32rem;
+          padding: 1rem;
+          .rsa-form-button {
+            float: right;
+          }
+        }
+      }
+}

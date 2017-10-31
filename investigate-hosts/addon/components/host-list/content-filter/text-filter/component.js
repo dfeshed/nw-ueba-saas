@@ -16,7 +16,7 @@ const RESTRICTION_TYPES = [
     label: 'investigateHosts.hosts.restrictionTypeOptions.EQUALS'
   },
   {
-    type: 'IN',
+    type: 'LIKE',
     label: 'investigateHosts.hosts.restrictionTypeOptions.CONTAINS'
   }
 ];
@@ -54,7 +54,7 @@ const TextFilter = Component.extend(FilterMixin, {
    */
   @computed('config.expression')
   restrictionType(expression) {
-    return expression && expression.propertyValues ? expression.restrictionType : 'IN';
+    return expression && expression.propertyValues ? expression.restrictionType : 'LIKE';
   },
 
   /**

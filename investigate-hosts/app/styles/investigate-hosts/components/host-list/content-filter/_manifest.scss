@@ -1,6 +1,7 @@
 @import "text-filter";
 @import "number-filter";
 @import "list-filter";
+@import "datetime-filter";
 
 $filterPanelMinWidth: 200px;
 .filter-search-icon {

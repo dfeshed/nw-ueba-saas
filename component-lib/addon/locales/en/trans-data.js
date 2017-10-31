@@ -1923,6 +1923,9 @@ export default {
         customDateRange: 'Custom Date Range',
         customStartDate: 'Start Date',
         customEndDate: 'End Date',
+        customDate: 'Custom Date',
+        operator: 'Operator',
+        searchPlaceHolder: 'Type to filter options',
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         }
@@ -1935,7 +1938,9 @@ export default {
         GTE: '>=',
         LTE: '<=',
         NOT_EQ: '!=',
-        BETWEEN: 'between',
+        LESS_THAN: 'Less than',
+        GREATER_THAN: 'Greater than',
+        BETWEEN: 'Between',
         LAST_5_MINUTES: 'Last 5 Minutes',
         LAST_10_MINUTES: 'Last 10 Minutes',
         LAST_15_MINUTES: 'Last 15 Minutes',

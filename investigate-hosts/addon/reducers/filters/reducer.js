@@ -137,8 +137,8 @@ const filterReducer = handleActions({
     return handle(state, action, {
       success: (s) => {
         const { payload: { data } } = action;
-        const filtersList = [...state.fileFilters, data ];
-        return s.merge({ fileFilters: filtersList });
+        const filtersList = [...state.filters, data ];
+        return s.merge({ filters: filtersList });
       }
     });
   },

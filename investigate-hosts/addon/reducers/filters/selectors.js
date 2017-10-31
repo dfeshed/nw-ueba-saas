@@ -35,7 +35,11 @@ export const filters = createSelector(
       const { propertyName, isDefault } = item;
       const column = searchableColumns.findBy('name', propertyName); // check if column is searchable
       if (column) { // Add the config only if it's searchable
-        const { values, dataType } = column;
+        const { values = [], dataType } = column;
+        let { options = [] } = item;
+        if (values) {
+          options = [...options, ...values];
+        }
 
         const expression = expressionList.findBy('propertyName', propertyName);
         const selected = !!expression;
@@ -44,7 +48,7 @@ export const filters = createSelector(
 
         return {
           ...item,
-          options: values,
+          options,
           dataType,
           expression,
           selected,
