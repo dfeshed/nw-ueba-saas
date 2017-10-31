@@ -11,8 +11,11 @@ ember.d.ts
 # Build tools
 build/
 .gradle/
-.sonar/
 target/
+
+# Sonar
+.sonar/
+.scannerwork/
 
 # compiled output
 dist/
