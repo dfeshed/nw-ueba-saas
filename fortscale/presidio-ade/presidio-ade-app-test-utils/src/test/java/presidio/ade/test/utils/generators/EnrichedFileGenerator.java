@@ -9,11 +9,11 @@ import presidio.ade.test.utils.EventsGenerator;
 import presidio.ade.test.utils.converters.FileRaw2EnrichedConverter;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
+import presidio.data.generators.common.FixedOperationTypeGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
-import presidio.data.generators.fileop.FixedFileOperationTypeGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
@@ -59,7 +59,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
         String permissionOperationName = "FILE_ACCESS_RIGHTS_CHANGED";
 
         OperationType permissionOperationType = new OperationType(permissionOperationName, filePermissionCategories);
-        FixedFileOperationTypeGenerator fileOpTypePremmisionCategoriesGenerator = new FixedFileOperationTypeGenerator(permissionOperationType);
+        FixedOperationTypeGenerator fileOpTypePremmisionCategoriesGenerator = new FixedOperationTypeGenerator(permissionOperationType);
 
         fileOperationGenerator.setOperationTypeGenerator(fileOpTypePremmisionCategoriesGenerator);
 
@@ -73,7 +73,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
         fileActionCategories.add("FILE_ACTION");
         String actionOperationName = "FOLDER_OPENED";
         OperationType fileActionOperationType = new OperationType(actionOperationName, fileActionCategories);
-        FixedFileOperationTypeGenerator fileOpTypeActionCategoriesGenerator = new FixedFileOperationTypeGenerator(fileActionOperationType);
+        FixedOperationTypeGenerator fileOpTypeActionCategoriesGenerator = new FixedOperationTypeGenerator(fileActionOperationType);
         fileOperationActionGenerator.setOperationTypeGenerator(fileOpTypeActionCategoriesGenerator);
         fileActionEventGenerator.setFileOperationGenerator(fileOperationActionGenerator);
         event.addAll(fileActionEventGenerator.generate());

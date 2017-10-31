@@ -164,11 +164,6 @@ public class UserQuery {
             return this;
         }
 
-        public UserQueryBuilder sortField(Sort sort) {
-            this.sort = sort;
-            return this;
-        }
-
         public UserQueryBuilder minScore(int minScore) {
             this.minScore = minScore;
             return this;

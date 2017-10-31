@@ -15,19 +15,25 @@ public class SMARTValuesModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        Map<Double, Long> smartValueToCountMap = castModelBuilderData(modelBuilderData);
+        GenericHistogram genericHistogram = getGenericHistogram(modelBuilderData);
+        Map<Double, Long> smartValueToCountMap = castModelBuilderData(genericHistogram);
         SMARTValuesModel smartValuesModel = new SMARTValuesModel();
         long numOfPositiveValues = smartValueToCountMap.entrySet().stream().filter(entry -> entry.getKey() != 0).mapToLong(Map.Entry::getValue).sum();
         double sumOfValues = smartValueToCountMap.entrySet().stream().filter(entry -> entry.getKey() != 0).mapToDouble(entry -> entry.getKey() * entry.getValue()).sum();
-        smartValuesModel.init(smartValueToCountMap.getOrDefault(0D, 0L), numOfPositiveValues, sumOfValues);
+        smartValuesModel.init(smartValueToCountMap.getOrDefault(0D, 0L), numOfPositiveValues, sumOfValues,genericHistogram.getNumberOfPartitions());
         return smartValuesModel;
     }
 
-    protected Map<Double, Long> castModelBuilderData(Object modelBuilderData) {
-        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+    protected Map<Double, Long> castModelBuilderData(GenericHistogram genericHistogram) {
         Map<Double, Long> map = new HashMap<>();
-        ((GenericHistogram) modelBuilderData).getHistogramMap().entrySet()
+
+        genericHistogram.getHistogramMap().entrySet()
                 .forEach(entry -> map.put(ConversionUtils.convertToDouble(entry.getKey()), entry.getValue().longValue()));
         return map;
+    }
+
+    private GenericHistogram getGenericHistogram(Object modelBuilderData) {
+        Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+        return (GenericHistogram) modelBuilderData;
     }
 }

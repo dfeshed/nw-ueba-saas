@@ -1,11 +1,10 @@
 package presidio.output.processor.services;
 
 import fortscale.common.general.CommonStrings;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
@@ -18,21 +17,15 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by shays on 17/05/2017.
  * Main output functionality is implemented here
  */
-
 public class OutputExecutionServiceImpl implements OutputExecutionService {
+    private static final Logger logger = Logger.getLogger(OutputExecutionServiceImpl.class);
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserScoreService userScoreService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;

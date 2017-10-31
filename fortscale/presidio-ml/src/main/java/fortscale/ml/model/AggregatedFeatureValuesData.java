@@ -1,5 +1,7 @@
 package fortscale.ml.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.TreeMap;
@@ -23,5 +25,13 @@ public class AggregatedFeatureValuesData {
 
     public TreeMap<Instant, Double> getInstantToAggregatedFeatureValues() {
         return instantToAggregatedFeatureValues;
+    }
+
+    /**
+     * @return ToString you know...
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -6,10 +6,10 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-ade</artifactId>
-        <version>1.0-6</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>presidio-ade-sdk</artifactId>
-    <version>1.0-6</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -20,17 +20,12 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-domain</artifactId>
-            <version>1.0-6</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-aggregation</artifactId>
-            <version>1.0-6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.co.jemos.podam</groupId>
@@ -39,15 +34,29 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-app-test-utils</artifactId>
-            <version>1.0-6</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>
         <dependency>
-            <groupId>presidio-test-utils</groupId>
-            <artifactId>presidio-data-generators</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -74,7 +83,6 @@
                             <resources>
                                 <resource>
                                     <directory>${project.parent.basedir}/src/main/resources</directory>
-                                    <!--<targetPath>resources</targetPath>-->
                                 </resource>
                             </resources>
                         </configuration>

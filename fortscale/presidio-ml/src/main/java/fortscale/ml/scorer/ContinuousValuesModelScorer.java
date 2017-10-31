@@ -23,14 +23,14 @@ public class ContinuousValuesModelScorer extends AbstractModelTerminalScorer {
 	public ContinuousValuesModelScorer(
 			String scorerName, String modelName, List<String> additionalModelNames,
 			List<String> contextFieldNames, List<List<String>> additionalContextFieldNames, String featureName,
-			int minNumOfSamplesToInfluence, int enoughNumOfSamplesToInfluence,
+			int minNumOfPartitionsToInfluence, int enoughNumOfPartitionsToInfluence,
 			boolean isUseCertaintyToCalculateScore,
 			QuadPolyCalibrationConf quadPolyCalibrationConf,
 			EventModelsCacheService eventModelsCacheService) {
 
 		super(scorerName, modelName, additionalModelNames,
 				contextFieldNames, additionalContextFieldNames, featureName,
-				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
+				minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence,
 				isUseCertaintyToCalculateScore, eventModelsCacheService);
 
 		Assert.notNull(quadPolyCalibrationConf, "Quad poly calibration conf cannot be null.");

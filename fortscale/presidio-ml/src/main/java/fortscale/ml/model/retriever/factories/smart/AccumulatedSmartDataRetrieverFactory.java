@@ -4,6 +4,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AccumulatedSmartDataRetriever;
 import fortscale.ml.model.retriever.AccumulatedSmartDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
+import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
@@ -21,6 +22,8 @@ public class AccumulatedSmartDataRetrieverFactory extends AbstractServiceAutowir
     private FactoryService<IContextSelector> contextSelectorFactoryService;
     @Autowired
     private SmartAccumulationDataReader accumulationDataReader;
+    @Autowired
+    private SmartRecordConfService smartRecordConfService;
 
     @Override
     public String getFactoryName() {
@@ -30,6 +33,6 @@ public class AccumulatedSmartDataRetrieverFactory extends AbstractServiceAutowir
     @Override
     public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
         AccumulatedSmartDataRetrieverConf config = (AccumulatedSmartDataRetrieverConf) factoryConfig;
-        return new AccumulatedSmartDataRetriever(config, contextSelectorFactoryService,accumulationDataReader);
+        return new AccumulatedSmartDataRetriever(config, contextSelectorFactoryService,accumulationDataReader,smartRecordConfService);
     }
 }

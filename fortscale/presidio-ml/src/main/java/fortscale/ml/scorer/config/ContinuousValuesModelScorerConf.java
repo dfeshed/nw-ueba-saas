@@ -18,9 +18,9 @@ public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	/*
 	 * Inherited non mandatory fields:
 	 * ===============================
-	 * number-of-samples-to-influence-enough
+	 * number-of-partitions-to-influence-enough
 	 * use-certainty-to-calculate-score
-	 * min-number-of-samples-to-influence
+	 * min-number-of-partitions-to-influence
 	 */
 
 	@JsonCreator

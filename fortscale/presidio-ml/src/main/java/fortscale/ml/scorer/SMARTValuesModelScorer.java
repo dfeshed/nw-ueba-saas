@@ -1,8 +1,9 @@
 package fortscale.ml.scorer;
 
-import fortscale.domain.feature.score.FeatureScore;
 import fortscale.domain.feature.score.CertaintyFeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.PartitionedDataModel;
 import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -22,16 +23,16 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     protected Scorer baseScorer;
     private String modelName;
     private String globalModelName;
-    private int minNumOfSamplesToInfluence = ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
-    private int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+    private int minNumOfPartitionsToInfluence = ModelScorerConf.MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
+    private int enoughNumOfPartitionsToInfluence = ModelScorerConf.ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
     private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
     protected final EventModelsCacheService eventModelsCacheService;
 
     public SMARTValuesModelScorer(String scorerName,
                                   String modelName,
                                   String globalModelName,
-                                  int minNumOfSamplesToInfluence,
-                                  int enoughNumOfSamplesToInfluence,
+                                  int minNumOfPartitionsToInfluence,
+                                  int enoughNumOfPartitionsToInfluence,
                                   boolean isUseCertaintyToCalculateScore,
                                   IScorerConf baseScorerConf,
                                   int globalInfluence,
@@ -46,12 +47,12 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         Assert.notNull(factoryService, "factory service should not be null");
         baseScorer = factoryService.getProduct(baseScorerConf);
 
-        assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
-        assertEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+        assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
+        assertEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
 
 
-        setMinNumOfSamplesToInfluence(minNumOfSamplesToInfluence);
-        setEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+        setMinNumOfPartitionsToInfluence(minNumOfPartitionsToInfluence);
+        setEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
         setUseCertaintyToCalculateScore(isUseCertaintyToCalculateScore);
         this.eventModelsCacheService = eventModelsCacheService;
 
@@ -129,39 +130,44 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     }
 
     protected double calculateCertainty(Model model){
-        if (enoughNumOfSamplesToInfluence <= 1 || model == null) {
+        if (enoughNumOfPartitionsToInfluence <= 1 || model == null) {
             return 1;
         }
 
-        long numOfSamples = model.getNumOfSamples();
+        if(!(model instanceof PartitionedDataModel ))
+        {
+            throw new RuntimeException(String.format("can calculate certainty only for models of type %s, got=%s instead ",PartitionedDataModel.class,model.getClass().toString()));
+        }
+
+        long numOfPartitions = (( PartitionedDataModel )model).getNumOfPartitions();
         double certainty = 0;
-        if (numOfSamples >= enoughNumOfSamplesToInfluence) {
+        if (numOfPartitions >= enoughNumOfPartitionsToInfluence) {
             certainty = 1;
-        } else if (numOfSamples >= minNumOfSamplesToInfluence) {
-            certainty = ((double) (numOfSamples - minNumOfSamplesToInfluence + 1)) / (enoughNumOfSamplesToInfluence - minNumOfSamplesToInfluence + 1);
+        } else if (numOfPartitions >= minNumOfPartitionsToInfluence) {
+            certainty = ((double) (numOfPartitions - minNumOfPartitionsToInfluence + 1)) / (enoughNumOfPartitionsToInfluence - minNumOfPartitionsToInfluence + 1);
         }
         return certainty;
     }
 
 
-    static public void assertMinNumOfSamplesToInfluenceValue(int minNumOfSamplesToInfluence) {
-        Assert.isTrue(minNumOfSamplesToInfluence >= 1, String.format(
-                "minNumOfSamplesToInfluence (%d) must be >= 1", minNumOfSamplesToInfluence));
+    static public void assertMinNumOfPartitionsToInfluenceValue(int minNumOfPartitionsToInfluence) {
+        Assert.isTrue(minNumOfPartitionsToInfluence >= 1, String.format(
+                "minNumOfPartitionsToInfluence (%d) must be >= 1", minNumOfPartitionsToInfluence));
     }
 
-    static public void assertEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
-        Assert.isTrue(enoughNumOfSamplesToInfluence >= 1, String.format(
-                "enoughNumOfSamplesToInfluence (%d) must be >=1", enoughNumOfSamplesToInfluence));
+    static public void assertEnoughNumOfPartitionsToInfluence(int enoughNumOfPartitionsToInfluence) {
+        Assert.isTrue(enoughNumOfPartitionsToInfluence >= 1, String.format(
+                "enoughNumOfPartitionsToInfluence (%d) must be >=1", enoughNumOfPartitionsToInfluence));
     }
 
-    public SMARTValuesModelScorer setMinNumOfSamplesToInfluence(int minNumOfSamplesToInfluence) {
-        assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
-        this.minNumOfSamplesToInfluence = minNumOfSamplesToInfluence;
+    public SMARTValuesModelScorer setMinNumOfPartitionsToInfluence(int minNumOfPartitionsToInfluence) {
+        assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
+        this.minNumOfPartitionsToInfluence = minNumOfPartitionsToInfluence;
         return this;
     }
 
-    public SMARTValuesModelScorer setEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
-        this.enoughNumOfSamplesToInfluence = Math.max(enoughNumOfSamplesToInfluence, minNumOfSamplesToInfluence);
+    public SMARTValuesModelScorer setEnoughNumOfPartitionsToInfluence(int enoughNumOfPartitionsToInfluence) {
+        this.enoughNumOfPartitionsToInfluence = Math.max(enoughNumOfPartitionsToInfluence, minNumOfPartitionsToInfluence);
         return this;
     }
 

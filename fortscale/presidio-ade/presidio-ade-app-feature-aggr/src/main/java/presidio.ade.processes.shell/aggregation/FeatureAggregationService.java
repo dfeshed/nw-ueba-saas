@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -54,6 +55,12 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
 
     @Override
     protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
+
+        //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
+        //Reset cache required in order to get newer models each partition and not use older models.
+        // If this line will be deleted the model cache will need to have some efficient refresh mechanism.
+        featureAggregationScoringService.resetModelCache();
+
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
