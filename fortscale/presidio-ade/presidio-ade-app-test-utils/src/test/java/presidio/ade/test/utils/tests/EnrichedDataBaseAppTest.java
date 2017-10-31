@@ -1,8 +1,6 @@
 package presidio.ade.test.utils.tests;
 
-import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
-import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -10,28 +8,16 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import presidio.ade.test.utils.converters.FileRaw2EnrichedConverter;
 import presidio.ade.test.utils.generators.MultiFileEventGenerator;
 import presidio.ade.test.utils.generators.factory.FileEventGeneratorTemplateFactory;
-import presidio.data.domain.event.OperationType;
-import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.ITimeGeneratorFactory;
 import presidio.data.generators.common.time.SingleTimeGeneratorFactory;
-import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.event.file.FileEventsGenerator;
-import presidio.data.generators.fileop.FileOperationGenerator;
-import presidio.data.generators.fileop.FixedFileOperationTypeGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
-import presidio.data.generators.user.IUserGenerator;
-import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Instant;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

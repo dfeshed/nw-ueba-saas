@@ -4,10 +4,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.command.PresidioCommands;
-import fortscale.ml.model.ContinuousDataModel;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.ModelConf;
-import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.*;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.builder.factories.GaussianPriorModelBuilderFactory;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
@@ -514,7 +511,6 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
             contextIds.add("userId#user" + i);
         }
 
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
         List<ModelConf> modelConfs = modelConfService.getModelConfs();
         List<Model> models = new ArrayList<>();
         for (ModelConf modelConf : modelConfs) {
