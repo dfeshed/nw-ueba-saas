@@ -32,7 +32,8 @@ import presidio.ade.test.utils.generators.AdeAggregationRecordHourlyGenerator;
 import presidio.ade.test.utils.generators.ScoredFeatureAggregationRecordHourlyGenerator;
 import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.generators.common.*;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -552,7 +553,7 @@ public class SmartApplicationTest extends BaseAppTest {
      */
     private TimeRange generateAggregatedFeatureEventConf(int daysBackFrom, int daysBackTo, int startHourOfDay, int endHourOfDay, List<String> contextIds) throws GeneratorException {
         IStringListGenerator contextIdGenerator = new FixedListGenerator(contextIds);
-        TimeGenerator startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, daysBackFrom, daysBackTo);
+        ITimeGenerator startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, daysBackFrom, daysBackTo);
 
         //Generate scored F:
         ScoredFeatureAggregationRecordHourlyGenerator scoredAggregationGenerator =
@@ -560,7 +561,7 @@ public class SmartApplicationTest extends BaseAppTest {
         List<AdeAggregationRecord> adeScoredAggregationRecords = scoredAggregationGenerator.generate();
 
         //Generate P:
-        startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, daysBackFrom, daysBackTo);
+        startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, daysBackFrom, daysBackTo);
         AdeAggregationRecordHourlyGenerator adeAggregationGenerator =
                 new AdeAggregationRecordHourlyGenerator(aggregatedFeatureToValueGenerator, startInstantGenerator, contextIdGenerator);
         List<AdeAggregationRecord> adeAggregationRecords = adeAggregationGenerator.generate();

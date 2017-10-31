@@ -11,7 +11,7 @@ import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.FixedOperationTypeGenerator;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.user.IUserGenerator;
@@ -50,7 +50,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
     public List<EnrichedFileRecord> generateAndPersist(int interval) throws GeneratorException {
 
         FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
-        filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
+        filePermissionEventGenerator.setTimeGenerator(new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
 
         filePermissionEventGenerator.setUserGenerator(userGenerator);
         FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
@@ -67,7 +67,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
         List<FileEvent> event = filePermissionEventGenerator.generate();
         FileEventsGenerator fileActionEventGenerator = new FileEventsGenerator();
         FileOperationGenerator fileOperationActionGenerator = new FileOperationGenerator();
-        fileActionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
+        fileActionEventGenerator.setTimeGenerator(new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), interval, DAYS_BACK_FROM, DAYS_BACK_TO));
         fileActionEventGenerator.setUserGenerator(userGenerator);
         ArrayList<String> fileActionCategories = new ArrayList<>();
         fileActionCategories.add("FILE_ACTION");
