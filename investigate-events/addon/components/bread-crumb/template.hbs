@@ -24,7 +24,13 @@
       <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
         {{#each servicesWithURI as |service|}}
           <li>
-            {{#link-to 'query' service.queryURI class='goto'}}
+            {{!--
+                Why the undefined eventId? Ember is trying to be helpful by
+                caching our query params. In this case however, it's not useful
+                because could point to an event that a service does not know
+                about. So we force it to undefined.
+            --}}
+            {{#link-to 'query' service.queryURI (query-params eventId="undefined")}}
               {{service.displayName}}
             {{/link-to}}
           </li>

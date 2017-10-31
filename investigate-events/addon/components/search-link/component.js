@@ -37,7 +37,6 @@ const SearchLinkComponent = Component.extend({
 
   @computed('queryParams', 'metaName', 'metaValue', 'queryString', 'hasMetaFilters')
   uri(queryParams, metaName, metaValue, queryString, hasMetaFilters) {
-
     // build URI, eventQueryUri handles case where there are
     // no meta[Name/Value] provided, so just go with it
     let returnUri = eventQueryUri([
