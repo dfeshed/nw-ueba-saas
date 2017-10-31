@@ -33,10 +33,12 @@ public class EmbeddedElasticsearchInitialiser {
     @PostConstruct
     public void setupEmbeddedElasticsearch() {
         if(embeddedElastic != null) {
-            System.out.println("embedded elasticsearch already started, skipping startup");
+//            System.out.println("embedded elasticsearch already started, skipping startup");
+            logger.debug("embedded elasticsearch already started, skipping startup");
             return;
         }
-        System.out.println("starting embedded elasticsearch");
+//        System.out.println("starting embedded elasticsearch");
+        logger.debug("starting embedded elasticsearch");
         try {
             embeddedElastic = EmbeddedElastic.builder()
                     .withElasticVersion(EL_TEST_VERSION)
@@ -55,8 +57,10 @@ public class EmbeddedElasticsearchInitialiser {
 
     @PreDestroy
     public void stopEmbeddedElasticsearch() {
-        System.out.println("stopping embedded elasticsearch");
+//        System.out.println("stopping embedded elasticsearch");
+        logger.debug("stopping embedded elasticsearch");
         embeddedElastic.stop();
+
     }
 
 }

@@ -61,8 +61,7 @@ public class UserPersistencyServiceTest extends EmbeddedElasticsearchTest {
     }
 
     private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
-        ArrayList<String> indicators = new ArrayList<String>();
-        indicators.add("indicator");
+        List<String> indicators = Arrays.asList(new String("indicator"));
         return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
