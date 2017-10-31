@@ -13,9 +13,9 @@ import java.util.List;
 import static org.apache.flume.CommonStrings.IS_BATCH;
 import static org.apache.flume.CommonStrings.MAX_BACK_OFF_SLEEP;
 
-public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable {
+public abstract class AbstractBatchablePresidioSink<T> extends AbstractSink implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSink.class);
+    private static Logger logger = LoggerFactory.getLogger(AbstractBatchablePresidioSink.class);
 
 //    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
