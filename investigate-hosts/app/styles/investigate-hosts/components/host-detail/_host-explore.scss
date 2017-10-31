@@ -98,6 +98,8 @@ $result-text-color: text-color(primary, light);
     &__label {
       margin: rsa-whitespace(least);
       cursor: pointer;
+      width: 95%;
+      overflow-x: hidden;
     }
   }
 }

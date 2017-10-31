@@ -14,6 +14,9 @@
 @import 'actionbar';
 @import 'header';
 
+.host-container-detail {
+  width: 100%;
+}
 .host-detail-wrapper {
   background-color: $host-detail-background;
 }
