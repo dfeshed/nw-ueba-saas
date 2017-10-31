@@ -16,7 +16,6 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
 
     private PresidioMetricEndPoint presidioMetricEndPoint;
     private ThreadPoolTaskScheduler scheduler;
-    private String applicationName;
     protected boolean lastExport;
 
 
@@ -27,12 +26,14 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     }
 
     public List<PresidioMetric> getMetricsForExport(boolean isLastExport) {
+        logger.info("Getting metrics from end point.");
         return presidioMetricEndPoint.getAllMetrics(isLastExport);
     }
 
     public abstract void export();
 
     public void flush() {
+        logger.info("Closing application and exporting metrics last time.");
         lastExport = true;
         export();
     }

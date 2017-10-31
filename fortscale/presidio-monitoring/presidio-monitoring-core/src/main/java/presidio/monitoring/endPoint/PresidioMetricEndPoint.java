@@ -10,31 +10,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by maors on 10/29/2017.
- */
 public class PresidioMetricEndPoint {
 
-    private Map<String, Metric> metrics;
+    private Map<String, Metric> applicationMetrics;
     private PresidioSystemMetrics presidioSystemMetrics;
 
     public PresidioMetricEndPoint(PresidioSystemMetrics presidioSystemMetrics) {
         this.presidioSystemMetrics = presidioSystemMetrics;
-        this.metrics = new HashMap<>();
+        this.applicationMetrics = new HashMap<>();
     }
 
     public void addMetric(Metric metric) {
-        if (ObjectUtils.isEmpty(metrics.get(metric.getName()))) {
-            metrics.put(metric.getName(), metric);
+        if (ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
+            applicationMetrics.put(metric.getName(), metric);
         } else {
-            long value = metrics.get(metric.getName()).getValue();
-            metrics.get(metric.getName()).setValue(metric.getValue() + value);
+            long value = applicationMetrics.get(metric.getName()).getValue();
+            applicationMetrics.get(metric.getName()).setValue(metric.getValue() + value);
         }
     }
 
     public List<PresidioMetric> getAllMetrics(boolean lastExport) {
         List<PresidioMetric> allMetrics = new LinkedList<>();
-        metrics.forEach((s, metric) -> {
+        applicationMetrics.forEach((s, metric) -> {
             if (metric.isReportOneTime()) {
                 if (lastExport)
                     allMetrics.add(buildPresidioMetric(metric));

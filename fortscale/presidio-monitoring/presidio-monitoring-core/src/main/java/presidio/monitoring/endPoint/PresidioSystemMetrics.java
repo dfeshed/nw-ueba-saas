@@ -20,6 +20,10 @@ public class PresidioSystemMetrics {
 
     private static final Logger logger = Logger.getLogger(PresidioSystemMetrics.class);
 
+    private final String MEMORY = "memory";
+    private final String SYSTEM = "system";
+    private final String THREADS = "threads";
+
     private MemoryUsage heapMemoryUsage;
     private MemoryUsage nonHeapMemoryUsage;
     private Runtime runtime;
@@ -36,39 +40,39 @@ public class PresidioSystemMetrics {
     }
 
     private Metric createMemoryMetric(String name, long value) {
-        return new Metric(name, value, tags, "memory", false);
+        return new Metric(name, value, tags, MEMORY, false);
     }
 
     private Metric createSystemMetric(String name, long value) {
-        return new Metric(name, value, tags, "system", false);
+        return new Metric(name, value, tags, SYSTEM, false);
     }
 
     private Metric createThreadsMetric(String name, long value) {
-        return new Metric(name, value, tags, "threads", false);
+        return new Metric(name, value, tags, THREADS, false);
     }
 
     public List<Metric> metrics() {
         heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
-        List<Metric> result2 = new LinkedList<>();
-        addMemoryMetrics(result2);
-        addManagementMetrics(result2);
-        addThreadMetrics(result2);
-        return result2;
+        List<Metric> metricsForExport = new LinkedList<>();
+        addMemoryMetrics(metricsForExport);
+        addManagementMetrics(metricsForExport);
+        addThreadMetrics(metricsForExport);
+        return metricsForExport;
     }
 
 
-    private void addMemoryMetrics(List<Metric> result2) {
-        result2.add(createMemoryMetric(MEM, runtime.totalMemory() + getTotalNonHeapMemoryIfPossible()));
-        result2.add(createMemoryMetric(MEM_FREE, runtime.freeMemory()));
-        result2.add(createMemoryMetric(HEAP_COMMITTED, heapMemoryUsage.getCommitted()));
-        result2.add(createMemoryMetric(HEAP_INIT, heapMemoryUsage.getInit()));
-        result2.add(createMemoryMetric(HEAP_USED, heapMemoryUsage.getUsed()));
-        result2.add(createMemoryMetric(HEAP, heapMemoryUsage.getMax()));
-        result2.add(createMemoryMetric(NONHEAP_COMMITTED, nonHeapMemoryUsage.getCommitted()));
-        result2.add(createMemoryMetric(NONHEAP_INIT, nonHeapMemoryUsage.getInit()));
-        result2.add(createMemoryMetric(NONHEAP_USED, nonHeapMemoryUsage.getUsed()));
-        result2.add(createMemoryMetric(NONHEAP, nonHeapMemoryUsage.getMax()));
+    private void addMemoryMetrics(List<Metric> metricsForExport) {
+        metricsForExport.add(createMemoryMetric(MEM, runtime.totalMemory() + getTotalNonHeapMemoryIfPossible()));
+        metricsForExport.add(createMemoryMetric(MEM_FREE, runtime.freeMemory()));
+        metricsForExport.add(createMemoryMetric(HEAP_COMMITTED, heapMemoryUsage.getCommitted()));
+        metricsForExport.add(createMemoryMetric(HEAP_INIT, heapMemoryUsage.getInit()));
+        metricsForExport.add(createMemoryMetric(HEAP_USED, heapMemoryUsage.getUsed()));
+        metricsForExport.add(createMemoryMetric(HEAP, heapMemoryUsage.getMax()));
+        metricsForExport.add(createMemoryMetric(NONHEAP_COMMITTED, nonHeapMemoryUsage.getCommitted()));
+        metricsForExport.add(createMemoryMetric(NONHEAP_INIT, nonHeapMemoryUsage.getInit()));
+        metricsForExport.add(createMemoryMetric(NONHEAP_USED, nonHeapMemoryUsage.getUsed()));
+        metricsForExport.add(createMemoryMetric(NONHEAP, nonHeapMemoryUsage.getMax()));
     }
 
     private void addManagementMetrics(List<Metric> result2) {
@@ -87,11 +91,11 @@ public class PresidioSystemMetrics {
     }
 
 
-    private void addThreadMetrics(List<Metric> result2) {
-        result2.add(createThreadsMetric(THREADS_PEAK, (long) threadMxBean.getPeakThreadCount()));
-        result2.add(createThreadsMetric(THREADS_DAEMON, (long) threadMxBean.getDaemonThreadCount()));
-        result2.add(createThreadsMetric(THREADS_TOTAL_STARTED, threadMxBean.getTotalStartedThreadCount()));
-        result2.add(createThreadsMetric(THREADS, (long) threadMxBean.getThreadCount()));
+    private void addThreadMetrics(List<Metric> metricsForExport) {
+        metricsForExport.add(createThreadsMetric(THREADS_PEAK, (long) threadMxBean.getPeakThreadCount()));
+        metricsForExport.add(createThreadsMetric(THREADS_DAEMON, (long) threadMxBean.getDaemonThreadCount()));
+        metricsForExport.add(createThreadsMetric(THREADS_TOTAL_STARTED, threadMxBean.getTotalStartedThreadCount()));
+        metricsForExport.add(createThreadsMetric(THREADS, (long) threadMxBean.getThreadCount()));
     }
 
 
