@@ -3,10 +3,19 @@
     {{rsa-icon size="small" name="arrow-right-12"}}
   {{else}}
     {{rsa-icon size="small" name="arrow-down-12"}}
-  {{/if}}      
+  {{/if}}
   {{label}}
 </h3>
 
-<div class="content">
-  {{yield}}  
-</div>
+{{#if animate}}
+  {{#liquid-unless isCollapsed use='crossFade'}}
+    {{yield}}
+  {{/liquid-unless}}
+{{else}}
+  <div class="content">
+    {{yield}}
+  </div>
+{{/if}}
+
+
+

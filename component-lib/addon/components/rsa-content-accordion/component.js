@@ -12,6 +12,8 @@ export default Component.extend({
 
   isCollapsed: false,
 
+  animate: false,
+
   actions: {
     /**
     * Toggle visibility of content block
