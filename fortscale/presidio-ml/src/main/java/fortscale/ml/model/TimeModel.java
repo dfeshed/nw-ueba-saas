@@ -36,19 +36,20 @@ public class TimeModel implements PartitionedDataModel {
 		List<Double> bucketHits = calcBucketHits(timeToCounter);
 		smoothedBuckets = calcSmoothedBuckets(bucketHits);
 
-		Map<Long, Double> roundedSmoothedCountersThatWereHitToNumOfBuckets = IntStream.range(0, bucketHits.size())
+		Map<Long, Integer> roundedSmoothedCountersThatWereHitToNumOfBuckets = IntStream.range(0, bucketHits.size())
 				.filter(bucketInd -> bucketHits.get(bucketInd) > 0)
 				.boxed()
 				.collect(Collectors.groupingBy(
 						this::getRoundedCounter,
 						Collectors.reducing(
-								0D,
-								smoothedCounter -> 1D,
+								0,
+								smoothedCounter -> 1,
 								(smoothedCounter1, smoothedCounter2) -> smoothedCounter1 + smoothedCounter2
 						)));
 
 		categoryRarityModel = new CategoryRarityModel();
-		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions);
+		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
+		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions, numDistinctFeatures);
 	}
 
 	private List<Double> createInitializedBuckets() {
