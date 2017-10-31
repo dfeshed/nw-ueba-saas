@@ -1,0 +1,29 @@
+{{#rsa-form-button
+  defaultAction=(action 'deleteAction')
+  style=style
+  isActive=isActive
+  isDisabled=isDisabled
+  isIconOnly=isIconOnly}}
+  {{yield}}
+{{/rsa-form-button}}
+{{#if _showConfirmationModal}}
+  {{#rsa-application-modal
+    style='standard confirmation-modal'
+    eventId='confirm-modal'
+    label=title
+    onClose=(action 'onModalClose')}}
+    <div class='modal-content'>
+      <p>{{confirmationMessage}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction='closeConfirmModal'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='danger' click=(action 'confirmAction')}}
+          {{t 'forms.ok'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

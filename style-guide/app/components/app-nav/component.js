@@ -68,6 +68,7 @@ export default Component.extend({
       category: 'demos.form',
       pages: [
         { name: 'Buttons', link: 'buttons' },
+        { name: 'Button With Confirmation', link: 'button-with-confirmation' },
         { name: 'Checkboxes', link: 'checkboxes' },
         { name: 'Date/Time', link: 'datetime' },
         { name: 'Errors', link: 'errors' },

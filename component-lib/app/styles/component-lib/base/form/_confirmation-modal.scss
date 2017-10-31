@@ -1,0 +1,47 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 43px;
+
+.rsa-application-modal.confirmation-modal footer {
+  display: none;
+}
+
+.rsa-application-modal-content.confirmation-modal {
+  width: 25%;
+  height: 25%;
+  max-height: 200px;
+  min-height: 100px;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
+    min-height: 100px;
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+
+    p {
+      @include rsa-font(paragraph);
+      padding: rsa-whitespace();
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, nearly-transparent);
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}
+

@@ -66,6 +66,7 @@ Router.map(function() {
 
     this.route('form', function() {
       this.route('buttons');
+      this.route('button-with-confirmation');
       this.route('selects');
       this.route('radios');
       this.route('checkboxes');

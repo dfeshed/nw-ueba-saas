@@ -379,5 +379,65 @@
       {{code-snippet name="button29.hbs"}}
     {{/spec-member}}
   {{/spec-category}}
+  {{#spec-category title="Button with Confirmation"}}
+    {{#spec-member title="Default"}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          confirmationMessage='Click OK to delete selected row.'}}
+          Delete
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button30
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style='danger'
+          confirmationMessage='Click OK to delete selected row.'}}
+          Delete
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button30.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Danger"}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style='danger'
+          confirmationMessage='Click OK to delete selected row.'}}
+          Delete
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button31
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style='danger'
+          confirmationMessage='Click OK to delete selected row.'}}
+          Delete
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button31.hbs"}}
+    {{/spec-member}}
+    {{#spec-member title="Icon Only"}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style='danger'
+          isIconOnly=true
+          confirmationMessage='Click OK to delete selected row.'}}
+          {{rsa-icon name='bin-1'}}
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      {{!-- BEGIN-SNIPPET button32
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style='danger'
+          isIconOnly=true
+          confirmationMessage='Click OK to delete selected row.'}}
+          {{rsa-icon name='bin-1'}}
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+      END-SNIPPET --}}
+      {{code-snippet name="button32.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
 </fill>
 </hbox>
