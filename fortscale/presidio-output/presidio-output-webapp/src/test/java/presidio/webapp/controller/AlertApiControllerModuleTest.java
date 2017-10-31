@@ -1,6 +1,8 @@
 package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.*;
@@ -28,7 +30,6 @@ import java.util.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore //TODO- remove this when we will have solution for elastic tests
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
@@ -78,7 +79,7 @@ public class AlertApiControllerModuleTest {
     }
 
     @After
-    public void tearDown() {
+    public void cleanTestData() {
         //delete the created users
         alertRepository.delete(alert1);
         alertRepository.delete(alert2);

@@ -2,14 +2,13 @@ package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -43,37 +43,32 @@ import static org.junit.Assert.assertNull;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest()
-@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
-public class AlertPersistencyServiceTest {
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class})
+public class AlertPersistencyServiceTest extends EmbeddedElasticsearchTest {
 
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
-    List<String> classifications1;
-    List<String> classifications2;
-    List<String> classifications3;
-    List<String> classifications4;
-    List<String> classifications5;
 
-    Sort sort;
+    @Autowired
+    public Client client;
 
-    @Before
-    public void before() {
-        esTemplate.deleteIndex(Alert.class);
-        esTemplate.createIndex(Alert.class);
-        esTemplate.putMapping(Alert.class);
-        esTemplate.refresh(Alert.class);
-        classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
-        classifications2 = new ArrayList<>(Arrays.asList("b"));
-        classifications3 = new ArrayList<>(Arrays.asList("a"));
-        classifications4 = new ArrayList<>(Arrays.asList("d"));
-        classifications5 = null;
-        sort = new Sort(new Sort.Order(Sort.Direction.ASC, Alert.SCORE));
+    List<String> classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
+    List<String> classifications2 = new ArrayList<>(Arrays.asList("b"));
+    List<String> classifications3 = new ArrayList<>(Arrays.asList("a"));
+    List<String> classifications4 = new ArrayList<>(Arrays.asList("d"));
+
+    Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, Alert.SCORE));
+
+    @After
+    public void cleanTestdata() {
+
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
+                .get();
     }
 
     @Test
@@ -414,7 +409,7 @@ public class AlertPersistencyServiceTest {
                 new AlertQuery.AlertQueryBuilder()
                         .sortField(sort)
                         .aggregateByFields(aggregationFields)
-                        .filterByClassification(classifications5)
+                        .filterByClassification(null)
                         .build();
 
         Page<Alert> testAlert = alertPersistencyService.find(alertQuery);

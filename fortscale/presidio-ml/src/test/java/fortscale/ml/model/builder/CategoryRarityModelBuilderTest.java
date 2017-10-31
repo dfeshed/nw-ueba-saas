@@ -66,10 +66,10 @@ public class CategoryRarityModelBuilderTest {
 
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
 
-		Assert.assertEquals(2, model.getNumOfSamples());
+		Assert.assertEquals(1, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
-		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(2, buckets[0], 0.001);
+		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(1, buckets[0], 0.001);
 	}
 
 	@Test
@@ -143,11 +143,18 @@ public class CategoryRarityModelBuilderTest {
 		sequenceReducedData.put(new Pair<String, Long>("feature4",4L),1D);
 		sequenceReducedData.put(new Pair<String, Long>("feature5",3L),1D);
 		sequenceReducedData.put(new Pair<String, Long>("feature5",5L),1D);
-		Map<Long, Double> occurrencesToNumOfFeatures = categoryRarityModelBuilder.calcOccurrencesToNumOfFeatures(sequenceReducedData);
-		Map<Long, Double> expectedMap = new HashMap<>();
-		expectedMap.put(1L,1D);
-		expectedMap.put(2L,3D);
-		expectedMap.put(3L,1D);
+		sequenceReducedData.put(new Pair<String, Long>("feature6",1L),1D);
+		for(int featureIndex = 1; featureIndex <=10; featureIndex++){
+			for (long partitionIndex = 1; partitionIndex <=5; partitionIndex++){
+				sequenceReducedData.put(new Pair<String, Long>("feature7_"+featureIndex,partitionIndex),1D);
+			}
+		}
+		Map<Long, Integer> occurrencesToNumOfFeatures = categoryRarityModelBuilder.calcOccurrencesToNumOfDistinctPartitions(sequenceReducedData);
+		Map<Long, Integer> expectedMap = new HashMap<>();
+		expectedMap.put(1L,1);// number of distinct partitions with 1 occurrence.
+		expectedMap.put(2L,3);// number of distinct feature values with 2 occurrences.
+		expectedMap.put(3L,1);// number of distinct feature values with 3 occurrences.
+		expectedMap.put(5L,5);// number of distinct partitions with 5 occurrences.
 
 		Assert.assertEquals(expectedMap,occurrencesToNumOfFeatures);
 

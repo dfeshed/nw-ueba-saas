@@ -2,13 +2,10 @@ package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +33,6 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore //TODO- remove this when we will have solution for elastic tests
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
@@ -59,9 +55,6 @@ public class UserApiControllerModuleTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PresidioElasticsearchTemplate esTemplate;
-
     private ObjectMapper objectMapper;
 
     private presidio.output.domain.records.users.User user1;
@@ -81,11 +74,6 @@ public class UserApiControllerModuleTest {
 
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
 
-        esTemplate.deleteIndex(presidio.output.domain.records.users.User.class);
-        esTemplate.createIndex(presidio.output.domain.records.users.User.class);
-        esTemplate.putMapping(presidio.output.domain.records.users.User.class);
-        esTemplate.refresh(presidio.output.domain.records.users.User.class);
-
         //save users in elastic
         user1 = generateUser(Arrays.asList("a"), "user1", "userId1", "user1", 50d, Arrays.asList("indicator1"));
         user2 = generateUser(Arrays.asList("b"), "user2", "userId2", "user2", 60d, Arrays.asList("indicator1", "indicator2"));
@@ -94,7 +82,7 @@ public class UserApiControllerModuleTest {
     }
 
     @After
-    public void tearDown() {
+    public void cleanTestData() {
         //delete the created users
         userRepository.delete(user1);
         userRepository.delete(user2);
