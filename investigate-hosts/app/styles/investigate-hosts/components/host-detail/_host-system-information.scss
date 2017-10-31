@@ -3,14 +3,6 @@ $tree-row-color: rgba(37, 41, 43, 1);
 $note-color: #bdbdbd;
 
 .system-information {
-  .liquid-container,
-  .liquid-child {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-  }
   .system-information__content {
     padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(least);
   }

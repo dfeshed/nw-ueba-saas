@@ -1,11 +1,11 @@
-{{#rsa-content-accordion class='host-content__title'
+{{#rsa-content-accordion animate=true class='host-content__title'
                          label=(t 'investigateHosts.hosts.summary.body.ipAddresses'
                          count=machine.ipAddresses.length)}}
   {{#each machine.ipAddresses as |ip|}}
     {{host-detail/overview/summary/ip-addresses ipAddress=ip}}
   {{/each}}
 {{/rsa-content-accordion}}
-{{#rsa-content-accordion class='host-content__title'
+{{#rsa-content-accordion animate=true class='host-content__title'
                          label=(t 'investigateHosts.hosts.summary.body.loggedUsers'
                          count=machine.loggedInUsers.length)}}
   {{#each machine.loggedInUsers as |user|}}
@@ -13,7 +13,7 @@
   {{/each}}
 {{/rsa-content-accordion}}
 {{#if (not-eq machine.machineOsType 'linux')}}
-  {{#rsa-content-accordion class='host-content__title'
+  {{#rsa-content-accordion animate=true class='host-content__title'
                            label=(t 'investigateHosts.hosts.summary.body.securityConfig')}}
     <box xs='12' class="rsa-p-md host-content__config">
       {{!--displaying the machine property so passing the data down --}}

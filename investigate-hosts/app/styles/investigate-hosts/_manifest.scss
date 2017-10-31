@@ -1,6 +1,29 @@
 @import './_styles';
 @import 'components/manifest';
 
+
+.liquid-container,
+.liquid-child {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+}
+
+.host-content {
+  .liquid-container,
+  .liquid-child {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: inherit;
+  }
+}
+
 @mixin detail-sizing($width) {
   .host-container {
     &-list {
@@ -44,11 +67,6 @@
   background-color: background-color(custom, respond);
   @include rsa-col(justify,fill);
   &-list {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
     transition-property: background-color right;
     transition-duration: 0.3s;
     overflow: hidden;
@@ -59,19 +77,6 @@
       text-decoration: underline;
     }
   }
-  &-detail {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 0;
-    transition: width .3s;
-    overflow: hidden;
-  }
-  &.detail-is-open {
-    @include detail-sizing(100%)
-  }
-
   .rsa-data-table-body-row {
     &.is-selected {
       .rsa-data-table-body-cell {

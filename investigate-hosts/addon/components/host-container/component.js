@@ -20,7 +20,7 @@ const Container = Component.extend({
 
   classNames: 'host-engine host-container',
 
-  classNameBindings: ['hasMachineId:detail-is-open'],
+  classNameBindings: ['hasMachineId'],
 
   click(event) {
     // this trigger is required to open start/stop scan modal window

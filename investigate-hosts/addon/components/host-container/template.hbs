@@ -1,9 +1,16 @@
+{{#liquid-if hasMachineId use=(if hasMachineId "toLeft" "toRight")}}
+  <vbox class="host-container-detail host-detail">
+
+    {{host-detail}}
+  </vbox>
+{{else}}
+
 <hbox class="host-container-list">
   {{host-list}}
 </hbox>
-<vbox class="host-container-detail host-detail">
-  {{host-detail}}
-</vbox>
+
+
+{{/liquid-if}}
 
 {{#if showInitiateScanModal}}
   {{host-container/host-scan-modal/initiate selectedHostList=selectedHostList showScanningMessage=areSomeScanning}}

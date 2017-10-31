@@ -51,7 +51,7 @@ const TriggerButton = Button.extend({
   },
 
   click() {
-    if (this.get('allowToggleActive') && !this.get('isDisabled')) {
+    if (!this.get('isDisabled')) {
       this.send('setActiveFilter', this.get('panelId'));
     }
   },

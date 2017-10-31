@@ -9,17 +9,11 @@
 @import "host-list/content-filter/manifest";
 
 .host-detail {
-  .liquid-container,
-  .liquid-child {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-  }
   &__no-snapshots {
     @include rsa-font(bold);
     color: text-color(primary, light);
   }
+}
+.rsa-content-accordion {
+  position: inherit;
 }
