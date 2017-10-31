@@ -18,7 +18,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest()
 @ContextConfiguration(classes = {AlertClassificationPriorityConfig.class, TestConfig.class})
 public class AlertsNamingServiceTest {
 

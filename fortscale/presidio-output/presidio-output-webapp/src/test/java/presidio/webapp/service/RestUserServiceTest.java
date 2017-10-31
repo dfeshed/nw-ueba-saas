@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest()
 @ContextConfiguration(classes = OutputWebappConfigurationTest.class)
 public class RestUserServiceTest {
 

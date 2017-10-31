@@ -1,4 +1,4 @@
-package presidio.output.proccesor.spring;
+package presidio.output.domain.spring;
 
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -14,17 +14,14 @@ public class TestConfig {
     @Bean
     public static TestPropertiesPlaceholderConfigurer testPropertiesPlaceholderConfigurer() {
         Properties properties = new Properties();
-        properties.put("severity.critical", 95);
-        properties.put("severity.high", 90);
-        properties.put("severity.mid", 80);
-        properties.put("severity.low", 70);
-        properties.put("smart.threshold.score", 0);
-        properties.put("smart.page.size", 50);
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-        properties.put("number.of.classifications", 19);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
+    @Bean
+    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
+        return new EmbeddedElasticsearchInitialiser();
+    }
 }
