@@ -197,6 +197,22 @@ const FILTER_TYPES = [
     'selected': false,
     'panelId': 'scanStatus',
     'isDefault': false
+  },
+  {
+    'propertyName': 'machine.networkInterfaces.ipv4',
+    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.ipv4',
+    'filterControl': 'host-list/content-filter/text-filter',
+    'selected': false,
+    'panelId': 'ipv4Status',
+    'isDefault': false
+  },
+  {
+    'propertyName': 'machineIdentity.agent.serviceStatus',
+    'label': 'investigateHosts.hosts.column.machine.networkInterfaces.ipv6',
+    'filterControl': 'host-list/content-filter/text-filter',
+    'selected': false,
+    'panelId': 'ipv6Status',
+    'isDefault': false
   }
 
 ];

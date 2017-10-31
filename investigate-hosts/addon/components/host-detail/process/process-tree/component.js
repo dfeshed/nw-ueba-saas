@@ -1,5 +1,6 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
+import observer from 'ember-metal/observer';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import { processTree } from 'investigate-hosts/reducers/details/process/selectors';
@@ -47,6 +48,19 @@ const TreeComponent = Component.extend({
   visibleItems() {
     return this.get('treeAsList').filterBy('visible', true);
   },
+
+  /**
+   * Observer to dispatch getProcessdetails action when navigate to Process tab using explore
+   * This is used to make a web socket call to get the first process details after filtering the process in the selector
+   * @public
+   */
+
+  loadExploredProcessDetails: observer('treeAsList', function() {
+    const treeList = this.get('treeAsList') || [];
+    if (treeList.length) {
+      this.send('getProcessDetails', treeList[0].pid);
+    }
+  }),
 
   actions: {
     handleToggleExpand(index, level, item) {

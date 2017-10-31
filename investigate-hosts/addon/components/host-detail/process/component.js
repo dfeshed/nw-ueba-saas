@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import SUMMARY_ITEMS from './summary-item-config';
-import { getProcessData } from 'investigate-hosts/reducers/details/process/selectors';
+import { getProcessData, isNavigatedFromExplore } from 'investigate-hosts/reducers/details/process/selectors';
 import CONFIG from './process-property-config';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView } from 'investigate-hosts/actions/data-creators/process';
@@ -9,7 +9,8 @@ import { toggleProcessView } from 'investigate-hosts/actions/data-creators/proce
 const stateToComputed = (state) => ({
   isTreeView: state.endpoint.visuals.isTreeView,
   animation: state.endpoint.detailsInput.animation,
-  process: getProcessData(state)
+  process: getProcessData(state),
+  isNavigatedFromExplore: isNavigatedFromExplore(state)
 });
 
 const dispatchToActions = {

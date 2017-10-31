@@ -1,9 +1,11 @@
 <vbox xs="3" class="process-list-box">
   <div class="process-list-header">
     <span class="title">{{t 'investigateHosts.process.title'}}</span>
-    <span class="toggle-icon" {{action 'toggleProcessView'}}>
-      {{rsa-icon active=isTreeView class="tree-icon" name='hierarchy-1' is-filled=true}}
-    </span>
+    {{#unless isNavigatedFromExplore}}
+      <span class="toggle-icon" {{action 'toggleProcessView'}}>
+        {{rsa-icon active=isTreeView class="tree-icon" name='hierarchy-1' is-filled=true}}
+      </span>
+    {{/unless}}
   </div>
   {{#if isTreeView}}
     {{host-detail/process/process-tree}}

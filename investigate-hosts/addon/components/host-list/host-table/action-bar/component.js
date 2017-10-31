@@ -1,6 +1,7 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
+import _ from 'lodash';
 import { noHostsSelected, tooManyHostsSelected, warningClass } from 'investigate-hosts/reducers/hosts/selectors';
 import { toggleInitiateScanModal, toggleCancelScanModal, toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
@@ -51,7 +52,8 @@ const ActionBar = Component.extend({
      * @public
      */
     openThickClient() {
-      const selectedHostList = this.get('selectedHostList');
+      const selectedHostList = this.get('selectedHostList'); // [{id, version}]
+      const selectedHostIds = _.map(selectedHostList, 'id');
       const i18n = this.get('i18n');
       let url = 'ecatui:///machines/';
 
@@ -62,7 +64,7 @@ const ActionBar = Component.extend({
         this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
         return;
       }
-      url += selectedHostList.join(':');
+      url += selectedHostIds.join(':');
       window.location = url;
     }
   }

@@ -106,3 +106,8 @@ export const processList = createSelector(
   [_getProcessList],
   (processList) => processList && processList.list.length ? processList.list : []
 );
+
+export const isNavigatedFromExplore = createSelector(
+  [_selectedTab],
+  (selectedTab) => selectedTab && selectedTab.tabName === 'PROCESS'
+);

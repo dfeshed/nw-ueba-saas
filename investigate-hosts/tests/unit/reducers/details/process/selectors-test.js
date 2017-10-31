@@ -6,7 +6,8 @@ module('Unit | Selectors | process');
 
 import {
   getProcessData,
-  processTree
+  processTree,
+  isNavigatedFromExplore
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -33,4 +34,21 @@ test('processTree', function(assert) {
     }
   }));
   assert.equal(result.length, 3);
+});
+
+test('isNavigatedFromExplore', function(assert) {
+  const result = isNavigatedFromExplore(Immutable.from({
+    endpoint: {
+      process: {
+        processList: processListData,
+        processTree: processTreeData
+      },
+      explore: {
+        selectedTab: {
+          tabName: 'PROCESS'
+        }
+      }
+    }
+  }));
+  assert.equal(result, true);
 });

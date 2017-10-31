@@ -68,7 +68,7 @@ const _getList = (shouldGetFirstRecord) => {
   };
 };
 
-const _getTree = (shouldGetFirstRecord) => {
+const _getTree = () => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
     dispatch({
@@ -76,9 +76,7 @@ const _getTree = (shouldGetFirstRecord) => {
       promise: Process.getProcessTree({ agentId, scanTime }),
       meta: {
         onSuccess: (response) => {
-          if (shouldGetFirstRecord && response.data.length) {
-            dispatch(getProcessDetails(response.data[0].pid));
-          }
+          Logger.debug(ACTION_TYPES.GET_PROCESS_TREE, response);
         },
         onFailure: (response) => _handleProcessError(ACTION_TYPES.GET_PROCESS_TREE, response)
       }
