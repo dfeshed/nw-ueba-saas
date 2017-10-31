@@ -1,8 +1,6 @@
 package presidio.monitoring.sdk.api.services;
 
 
-import presidio.monitoring.records.Metric;
-
 import java.time.Instant;
 import java.util.Set;
 

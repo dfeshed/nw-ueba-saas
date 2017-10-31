@@ -2,7 +2,6 @@ package presidio.monitoring.sdk.impl.services;
 
 
 import presidio.monitoring.factory.PresidioMetricFactory;
-import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.services.MetricCollectingService;
 
@@ -15,7 +14,6 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     private PresidioMetricFactory presidioMetricFactory;
 
 
-
     public PresidioExternalMonitoringServiceImpl() {
     }
 
@@ -26,11 +24,11 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
 
     @Override
     public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
-        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName,value,tags,valueType,logicTime));
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, value, tags, valueType, logicTime));
     }
 
     @Override
     public void reportCustomMetricReportOnce(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
-        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName,value,tags,valueType,logicTime,true));
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, value, tags, valueType, logicTime, true));
     }
 }
