@@ -13,7 +13,6 @@ public class UserQuery {
     private final List<UserSeverity> filterBySeverities;
     private final List<String> filterByUserTags;
     private final List<String> filterByUsersIds;
-    private final List<String> filterByIds;
     private int minScore=-1;
     private int maxScore=-1;
     private boolean isPrefix;
@@ -36,7 +35,6 @@ public class UserQuery {
         this.filterByIndicators = builder.filterByIndicators;
         this.filterBySeverities = builder.filterBySeverities;
         this.filterByUsersIds = builder.filterByUsersIds;
-        this.filterByIds = builder.filterByIds;
         this.filterByUserTags = builder.filterByUserTags;
         this.filterByUserName = builder.filterByUserName;
         this.filterByFreeText = builder.filterByFreeText;
@@ -55,20 +53,8 @@ public class UserQuery {
         this.aggregateByFields = builder.aggregateByFields;
     }
 
-    /**
-     * Filter by the field userId which indicates the customer's user id
-     * @return
-     */
     public List<String> getFilterByUsersIds() {
         return filterByUsersIds;
-    }
-
-    /**
-     * Filter by the elasticserach internal ids for the users index
-     * @return
-     */
-    public List<String> getFilterByIds() {
-        return filterByIds;
     }
 
     public List<String> getFilterByAlertClassifications() {
@@ -115,8 +101,6 @@ public class UserQuery {
         return maxScore;
     }
 
-
-
     public List<String> getFilterByUserTags() {
         return filterByUserTags;
     }
@@ -132,7 +116,6 @@ public class UserQuery {
         private List<String> filterByIndicators;
         private List<UserSeverity> filterBySeverities;
         private List<String> filterByUsersIds;
-        private List<String> filterByIds;
         private List<String> filterByUserTags;
 
         private int minScore = -1;
@@ -151,29 +134,10 @@ public class UserQuery {
         private int pageNumber = -1;
         private int pageSize = -1;
 
-        /**
-         * Filter by the real customer userId.
-         * The filed userId on the User.
-         * @param filterByUsersIds
-         * @return
-         */
         public UserQueryBuilder filterByUsersIds(List<String> filterByUsersIds) {
             this.filterByUsersIds = filterByUsersIds;
             return this;
         }
-
-        /**
-         * Filter by list of elasticseatch internal user id (filed: id)
-         * The filed userId on the User.
-         * @param filterByIds
-         * @return
-         */
-        public UserQueryBuilder filterByIds(List<String> filterByIds) {
-            this.filterByIds = filterByIds;
-            return this;
-        }
-
-
 
         public UserQueryBuilder filterByAlertClassifications(List<String> filterByAlertClassifications) {
             this.filterByAlertClassifications = filterByAlertClassifications;
@@ -271,8 +235,6 @@ public class UserQuery {
         if (filterByUserTags != null ? !filterByUserTags.equals(userQuery.filterByUserTags) : userQuery.filterByUserTags != null)
             return false;
         if (filterByUsersIds != null ? !filterByUsersIds.equals(userQuery.filterByUsersIds) : userQuery.filterByUsersIds != null)
-            return false;
-        if (filterByIds != null ? !filterByUsersIds.equals(userQuery.filterByIds) : userQuery.filterByIds != null)
             return false;
         if (filterByUserName != null ? !filterByUserName.equals(userQuery.filterByUserName) : userQuery.filterByUserName != null)
             return false;
