@@ -10,12 +10,12 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
@@ -27,7 +27,7 @@ import java.util.List;
 public class ActiveDirectoryEventsGenerator implements IEventGenerator {
 
     private IStringGenerator eventIdGenerator;
-    private TimeGenerator timeGenerator;
+    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IActiveDirectoryOperationGenerator activeDirOperationGenerator;
@@ -42,7 +42,7 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
     private CyclicValuesGenerator<String> timeZoneOffsetGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
-        timeGenerator = new TimeGenerator();
+        timeGenerator = new MinutesIncrementTimeGenerator();
         userGenerator = new RandomAdminUserPercentageGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Active Directory"});                                // "DefaultDS"
@@ -85,11 +85,11 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         return evList;
     }
 
-    public TimeGenerator getTimeGenerator() {
+    public ITimeGenerator getTimeGenerator() {
         return timeGenerator;
     }
 
-    public void setTimeGenerator(TimeGenerator timeGenerator) {
+    public void setTimeGenerator(ITimeGenerator timeGenerator) {
         this.timeGenerator = timeGenerator;
     }
 

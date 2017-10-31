@@ -3,7 +3,8 @@ package presidio.data.generators.event.dlpfile;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.dlpfile.DLPFileEvent;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class DLPFileEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
-    private TimeGenerator timeGenerator;
+    private ITimeGenerator timeGenerator;
 
     private IUserGenerator userGenerator;
     private IMachineGenerator sourceMachineGenerator;
@@ -40,7 +41,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
     private SimpleMalwareScanResultGenerator malwareScanResultGenerator;
 
     public DLPFileEventsGenerator() throws GeneratorException {
-        timeGenerator = new TimeGenerator();
+        timeGenerator = new MinutesIncrementTimeGenerator();
 
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
@@ -99,7 +100,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
         return evList;
     }
 
-    public void setTimeGenerator(TimeGenerator timeGenerator) {
+    public void setTimeGenerator(ITimeGenerator timeGenerator) {
         this.timeGenerator = timeGenerator;
     }
 
@@ -115,7 +116,7 @@ public class DLPFileEventsGenerator implements IEventGenerator {
         this.sourceMachineGenerator = sourceMachineGenerator;
     }
 
-    public TimeGenerator getTimeGenerator() {
+    public ITimeGenerator getTimeGenerator() {
         return timeGenerator;
     }
 

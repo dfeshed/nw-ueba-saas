@@ -9,7 +9,7 @@ import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.fileentity.FileSystemEntityGenerator;
@@ -35,7 +35,7 @@ public class FileEventsGenerator implements IEventGenerator {
     private IFileDescriptionGenerator fileDescriptionGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
-        timeGenerator = new TimeGenerator();
+        timeGenerator = new MinutesIncrementTimeGenerator();
         userGenerator = new RandomUserGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"File System"});
         fileOperationGenerator = new FileOperationGenerator();

@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * Created by YaronDL on 8/8/2017.
  */
-public class TimeGeneratorTest {
+public class MinutesIncrementTimeGeneratorTest {
     @Test
     public void DebugTest() throws GeneratorException {
         int startHour = 8;      int startMin = 0;
@@ -23,7 +23,7 @@ public class TimeGeneratorTest {
         LocalTime startTime = LocalTime.of(startHour,startMin);
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
-        TimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertTrue(TG.hasNext());
     }
 
@@ -37,7 +37,7 @@ public class TimeGeneratorTest {
         LocalTime startTime = LocalTime.of(startHour,startMin);
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
-        TimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertTrue(TG.hasNext());
     }
 
@@ -54,7 +54,7 @@ public class TimeGeneratorTest {
         String expected = LocalDate.now(Clock.systemUTC()).minus(daysBackFrom, ChronoUnit.DAYS).toString() + "T"
                 + LocalTime.of(startHour, startMin).toString() + ":00Z";
 
-        TimeGenerator TG = new TimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertEquals(TG.getNext().toString(), expected);
     }
 
@@ -67,7 +67,7 @@ public class TimeGeneratorTest {
 
         LocalTime startTime = LocalTime.of(startHour,startMin);
         LocalTime endTime = LocalTime.of(endHour,endMin);
-        TimeGenerator TG = new TimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
 
         for (int i = 0; i<TG.getSize(); i++) TG.getNext();
         TG.getNext();

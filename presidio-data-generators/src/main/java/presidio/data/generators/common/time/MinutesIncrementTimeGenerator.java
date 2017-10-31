@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeGenerator implements ITimeGenerator {
+public class MinutesIncrementTimeGenerator implements ITimeGenerator {
 
     private LocalTime startLocalTime;
     private LocalTime endLocalTime;
@@ -20,11 +20,11 @@ public class TimeGenerator implements ITimeGenerator {
 
     TimeGeneratorIterator iterator;
 
-    public TimeGenerator() throws GeneratorException {
+    public MinutesIncrementTimeGenerator() throws GeneratorException {
         this(LocalTime.of(8,0), LocalTime.of(16,0), 10, 30, 1);
     }
 
-    public TimeGenerator(LocalTime startLocalTime, LocalTime endLocalTime, int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
+    public MinutesIncrementTimeGenerator(LocalTime startLocalTime, LocalTime endLocalTime, int interval, int daysBackFrom, int daysBackTo) throws GeneratorException {
         if (interval <= 0) throw new GeneratorException("Interval must be greater than 0");
         this.startLocalTime = startLocalTime;
         this.endLocalTime = endLocalTime;

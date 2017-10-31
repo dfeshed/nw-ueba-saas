@@ -2,7 +2,7 @@ package presidio.data.generators.event.dlpfile;
 
 import org.junit.Test;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class EventGenerator4DLPFileOperationTest {
     @Test
     public void GenerateEventsListFloatingTimesTest() throws GeneratorException, IOException {
         DLPFileEventsGenerator EVGEN = new DLPFileEventsGenerator();
-        TimeGenerator TG = new TimeGenerator(LocalTime.of(1,0), LocalTime.of(2,0),7,2,0);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(LocalTime.of(1,0), LocalTime.of(2,0),7,2,0);
         EVGEN.setTimeGenerator(TG);
         EVGEN.generate();
     }
