@@ -23,8 +23,6 @@ if (config.environment !== 'test') {
       'text.decode',
       'visuals.defaultReconView',
       'visuals.currentReconView',
-      'visuals.isHeaderOpen',
-      'visuals.isMetaShown',
       'visuals.isReconExpanded',
       'visuals.isRequestShown',
       'visuals.isResponseShown'
