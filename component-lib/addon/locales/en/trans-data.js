@@ -1547,7 +1547,10 @@ export default {
     title: 'Files',
     button: {
       exportToCSV: 'Export To CSV',
-      downloading: 'Downloading'
+      downloading: 'Downloading',
+      save: 'Save',
+      reset: 'Reset',
+      cancel: 'Cancel'
     },
     message: {
       noResultsMessage: 'No matching files were found'
@@ -1567,6 +1570,20 @@ export default {
         between: 'Between',
         equals: 'Equals',
         contains: 'Contains'
+      },
+      customFilters: {
+        save: {
+          description: 'Provide a name to the search to be saved. This name will appear in the search box list.',
+          name: 'Name *',
+          errorHeader: 'Unable to save search',
+          header: 'Save search',
+          errorMessage: 'The search cannot be saved. ',
+          emptyMessage: 'Name field is empty.',
+          nameExistsMessage: 'A saved search with the same name.',
+          success: 'Search query saved successfully.',
+          filterFieldEmptyMessage: 'Filter fields are empty',
+          invalidInput: 'Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
+        }
       }
     },
     fields: {
@@ -1629,6 +1646,7 @@ export default {
       entropy: 'Entropy',
       fileName: 'FileName',
       firstFileName: 'FileName',
+      firstSeenTime: 'First Seen Time',
       timeCreated: 'Created',
       format: 'Format',
       sectionNames: 'Section Names',

@@ -45,4 +45,42 @@ const fileExport = (sort, expressionList, fields) => {
   });
 };
 
-export default { fetchFiles, fileExport };
+/**
+ * Websocket call for custom search
+ * @public
+ */
+
+const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
+  const { id } = filter;
+  const data = {
+    id,
+    name: filter.name.trim(),
+    description: filter.description,
+    filterType: filterTypeParameter
+  };
+  if (filter) {
+    data.criteria = { expressionList, 'predicateType': 'AND' };
+  }
+
+  return promiseRequest({
+    method: 'saveFilter',
+    modelName: 'files',
+    query: { data }
+  });
+};
+
+const getSavedFilters = () => {
+  return promiseRequest({
+    method: 'getFilter',
+    modelName: 'files',
+    query: {}
+  });
+};
+
+
+export default {
+  fetchFiles,
+  fileExport,
+  createCustomSearch,
+  getSavedFilters
+};

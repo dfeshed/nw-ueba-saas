@@ -12,7 +12,7 @@ const fileListState = Immutable.from({
   totalItems: 0,
   hasNext: false,
   sortField: 'firstSeenTime',
-  isSortDescending: false,
+  isSortDescending: true,
   downloadStatus: 'completed',
   downloadId: null
 });
@@ -33,19 +33,6 @@ const _handleAppendFiles = (action) => {
 };
 
 const fileListReducer = handleActions({
-  [ACTION_TYPES.FETCH_INIT_FILES]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => s.merge({ files: [], areFilesLoading: 'wait' }),
-      failure: (s) => s.set('areFilesLoading', 'error'),
-      success: (s) => s.merge({
-        files: action.payload.data.items,
-        totalItems: action.payload.data.totalItems,
-        pageNumber: action.payload.data.pageNumber,
-        areFilesLoading: 'completed'
-      })
-    });
-  },
-
   [ACTION_TYPES.FETCH_NEXT_FILES]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('loadMoreStatus', 'streaming'),

@@ -1,22 +1,21 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-
-import layout from './template';
 import {
-  addSystemFilter
+  addSystemFilter,
+  setSystemFilterFlag
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = ({ files }) => ({
-  isFilterReset: files.filter.isFilterReset
+  isFilterReset: files.filter.isFilterReset,
+  isSystemFilter: files.filter.isSystemFilter
 });
 
 const dispatchToActions = {
-  addSystemFilter
+  addSystemFilter,
+  setSystemFilterFlag
 };
 
 const FilterList = Component.extend({
-  layout,
-
   tagName: 'ul',
 
   classNames: ['filter-list'],
@@ -47,7 +46,8 @@ const FilterList = Component.extend({
   actions: {
     applyFilter({ filterId, expression }) {
       this.set('activeFilter', filterId);
-      this.send('addSystemFilter', expression);
+      this.send('addSystemFilter', [expression]);
+      this.send('setSystemFilterFlag', true);
     }
   }
 });

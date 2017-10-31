@@ -20,9 +20,41 @@
   </ul>
 {{/rsa-content-tethered-panel}}
 {{#rsa-form-button defaultAction=(action 'resetFilters')}}
-  Reset
+  {{t 'investigateFiles.button.reset'}}
+{{/rsa-form-button}}
+{{#rsa-form-button defaultAction=(action 'showSaveFiltersModal')}}
+  {{t 'investigateFiles.button.save'}}
 {{/rsa-form-button}}
 
 
-
-
+{{#rsa-application-modal style=decorator.style eventId='save-search' label=(t decorator.label)}}
+  <div class='modal-content rsa-save-search rsa-p-md'>
+    <label class="rsa-form-label">
+      {{t 'investigateFiles.filter.customFilters.save.description'}}
+    </label>
+    <div class='rsa-margin name'>
+      {{rsa-form-input
+        label=(t 'investigateFiles.filter.customFilters.save.name')
+        isError=decorator.isError
+        value=saveFilterName }}
+    </div>
+    {{#if isNameEmpty}}
+      <label class="rsa-form-label rsa-m-t-xs rsa-m-b-xs">
+        {{t 'investigateFiles.filter.customFilters.save.emptyMessage'}}
+      </label>
+    {{/if}}
+    {{#if isNameInvalid}}
+      <label class="rsa-form-label rsa-m-t-xs rsa-m-b-xs">
+        {{t 'investigateFiles.filter.customFilters.save.invalidInput'}}
+      </label>
+    {{/if}}
+    <div class="rsa-btn-group align-right rsa-m-md">
+      {{#rsa-form-button style='primary' class= "rsa-m-r-md" isDisabled=decorator.isError click=(action 'saveFilter')}}
+        {{t 'investigateFiles.button.save'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button click=(action 'closeSaveFilterModal')}}
+        {{t 'investigateFiles.button.cancel'}}
+      {{/rsa-form-button}}
+    </div>
+  </div>
+{{/rsa-application-modal}}

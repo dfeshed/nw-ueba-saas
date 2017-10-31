@@ -32,7 +32,7 @@ test('should return the initial state', function(assert) {
     totalItems: 0,
     hasNext: false,
     sortField: 'firstSeenTime',
-    isSortDescending: false,
+    isSortDescending: true,
     downloadStatus: 'completed',
     downloadId: null
   });
@@ -94,27 +94,6 @@ test('The DOWNLOAD_FILE_AS_CSV action will set the download id to state', functi
   const newEndState = reducer(previous, successAction);
   assert.equal(newEndState.downloadStatus, 'completed');
   assert.equal(newEndState.downloadId, 111);
-});
-
-test('The FETCH_INIT_FILES will set files api response to state', function(assert) {
-  const previous = Immutable.from({
-    files: [{ firstFileName: 'test.dll' }],
-    areFilesLoading: 'completed'
-  });
-  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_INIT_FILES });
-  const endState = reducer(previous, startAction);
-
-  assert.equal(endState.areFilesLoading, 'wait');
-  assert.equal(endState.files.length, 0);
-
-  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.FETCH_INIT_FILES,
-    payload: { data: { items: FILE_LIST } }
-  });
-  const newEndState = reducer(previous, successAction);
-
-  assert.equal(newEndState.areFilesLoading, 'completed');
-  assert.equal(newEndState.files.length, 3);
 });
 
 test('The FETCH_NEXT_FILES will append the paged response to state', function(assert) {

@@ -22,7 +22,11 @@ page.investigate-files-engine {
   }
 
   .favourite-filters {
-    padding: rsa-whitespace();
+    padding: 0 0 rsa-whitespace() 0;
+  }
+
+  .filter_title {
+    padding: 0 0 rsa-whitespace() 0;
   }
 
   .filter-list {

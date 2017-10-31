@@ -4,31 +4,64 @@ import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import run from 'ember-runloop';
 import service from 'ember-service/inject';
-
 import { listWithoutDefault, appliedFilters } from 'investigate-files/reducers/filter/selectors';
 import {
   removeFilter,
   resetFilters,
-  addFilter
+  addFilter,
+  createCustomSearch
 } from 'investigate-files/actions/data-creators';
+
 
 const stateToComputed = (state) => ({
   allFilters: listWithoutDefault(state), // Excluding the default filter from the list
-  appliedFilters: appliedFilters(state)
+  appliedFilters: appliedFilters(state),
+  filterSelected: state.files.filter.filter,
+  expressionList: state.files.filter.expressionList
 });
 
 const dispatchToActions = {
   removeFilter,
   resetFilters,
-  addFilter
+  addFilter,
+  createCustomSearch
 };
+
+const idRegex = /^[a-z0-9-_ ]+$/i;
 
 const ContentFilter = Component.extend({
   tagName: 'hbox',
 
   eventBus: service(),
 
+  flashMessage: service(),
+
   classNames: 'content-filter filter-content-holder',
+
+  saveFilterName: null,
+
+  @computed('saveFilterName')
+  isNameInvalid(name) {
+    if (name) {
+      return !idRegex.test(name);
+    }
+  },
+
+  @computed('saveFilterName')
+  isNameEmpty(saveFilterName) {
+    if (saveFilterName === '') {
+      return true;
+    }
+  },
+
+  @computed('isNameInvalid', 'isNameEmpty')
+  decorator(isNameInvalid, isNameEmpty) {
+    const label = isNameInvalid || isNameEmpty ? 'investigateFiles.filter.customFilters.save.errorHeader' :
+      'investigateFiles.filter.customFilters.save.header';
+    const style = isNameInvalid || isNameEmpty ? 'error' : 'standard';
+    const isError = isNameInvalid || isNameEmpty;
+    return { label, style, isError };
+  },
 
   /**
    * Search the filter control based on user entered text
@@ -39,7 +72,7 @@ const ContentFilter = Component.extend({
     const list = [ ...allFilters ]; // Don't want to modify the orignal filter list
     if (searchTerm && searchTerm.length > 3) {
       return list.filter((item) => {
-        const name = this.get('i18n').t(item.get('label')) || '';
+        const name = this.get('i18n').t(item.get('decorator.label')) || '';
         return capitalize(name.toString()).includes(capitalize(searchTerm));
       });
     } else {
@@ -64,6 +97,48 @@ const ContentFilter = Component.extend({
         run.next(() => {
           this.send('removeFilter', propertyName);
         });
+      }
+    },
+    showSaveFiltersModal() {
+      this.get('eventBus').trigger('rsa-application-modal-open-save-search');
+    },
+
+    closeSaveFilterModal() {
+      this.get('eventBus').trigger('rsa-application-modal-close-save-search');
+    },
+
+    saveFilter() {
+      let areFieldsEmpty = true;
+      const {
+        filterSelected,
+        saveFilterName,
+        expressionList,
+        hasError } = this.getProperties('filterSelected', 'saveFilterName', 'expressionList', 'isNameInvalid');
+      const filter = {
+        name: saveFilterName,
+        id: filterSelected.id,
+        description: filterSelected.description
+      };
+      for (const schema of expressionList) {
+        const { propertyValues } = schema;
+        if (propertyValues) {
+          areFieldsEmpty = false;
+          break;
+        }
+      }
+      if (areFieldsEmpty) {
+        this.get('flashMessage').showFlashMessage('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage');
+        return;
+      }
+      if (!hasError) {
+        this.get('eventBus').trigger('rsa-application-modal-close-save-search');
+        const callBackOptions = {
+          onSuccess: () => {
+            this.get('flashMessage').showFlashMessage('investigateFiles.filter.customFilters.save.success');
+          },
+          onFailure: ({ meta: message }) => this.showErrorMessage(message.message)
+        };
+        this.send('createCustomSearch', filter, expressionList, 'FILE', callBackOptions);
       }
     }
   }

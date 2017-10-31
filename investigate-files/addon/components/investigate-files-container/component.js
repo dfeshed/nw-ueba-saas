@@ -17,7 +17,8 @@ import {
 const stateToComputed = (state) => ({
   isSchemaLoaded: isSchemaLoaded(state),
   areFilesLoading: state.files.fileList.areFilesLoading,
-  hasFiles: hasFiles(state)
+  hasFiles: hasFiles(state),
+  filesFilters: state.files.filter.fileFilters
 });
 
 const dispatchToActions = {
@@ -40,8 +41,11 @@ const Files = Component.extend({
 
   eventBus: service(),
 
-  click(event) {
-    this.get('eventBus').trigger('rsa-application-click', event.target);
+  actions: {
+    applyCustomFilter(filter) {
+      const { criteria: { expressionList } } = filter;
+      this.send('addSystemFilter', expressionList);
+    }
   },
 
   // Work around to set row styles when scroll width is increased
@@ -62,7 +66,6 @@ const Files = Component.extend({
     this._super(...arguments);
     if (!this.get('hasFiles')) {
       this.send('fetchSchemaInfo');
-      this.send('getPageOfFiles');
       this.send('getFilter');
     }
   }

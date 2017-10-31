@@ -40,6 +40,8 @@
               {{else}}
                 unsigned
               {{/if}}
+            {{else if (eq column.field 'firstSeenTime')}}
+              {{rsa-content-datetime timestamp=(get item column.field)}}
             {{else}}
               {{get item column.field}}
             {{/if}}

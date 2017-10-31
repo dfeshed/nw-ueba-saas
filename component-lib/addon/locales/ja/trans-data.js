@@ -1547,7 +1547,10 @@ export default {
     title: 'ja_Files',
     button: {
       exportToCSV: 'ja_Export To CSV',
-      downloading: 'ja_Downloading'
+      downloading: 'ja_Downloading',
+      save: 'ja_Save',
+      reset: 'ja_Reset',
+      cancel: 'ja_Cancel'
     },
     message: {
       noResultsMessage: 'ja_No matching files were found'
@@ -1567,6 +1570,20 @@ export default {
         between: 'ja_Between',
         equals: 'ja_Equals',
         contains: 'ja_Contains'
+      },
+      customFilters: {
+        save: {
+          description: 'ja_Provide a name to the search to be saved. This name will appear in the search box list.',
+          name: 'ja_Name *',
+          errorHeader: 'ja_Unable to save search',
+          header: 'ja_Save search',
+          errorMessage: 'ja_The search cannot be saved. ',
+          emptyMessage: 'ja_Name field is empty.',
+          nameExistsMessage: 'ja_A saved search with the same name.',
+          success: 'ja_Search query saved successfully.',
+          filterFieldEmptyMessage: 'ja_Filter fields are empty',
+          invalidInput: 'ja_Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
+        }
       }
     },
     fields: {
@@ -1629,6 +1646,7 @@ export default {
       entropy: 'ja_Entropy',
       fileName: 'ja_FileName',
       firstFileName: 'ja_FileName',
+      firstSeenTime: 'ja_First Seen Time',
       timeCreated: 'ja_Created',
       format: 'ja_Format',
       sectionNames: 'ja_Section Names',

@@ -17,6 +17,8 @@ import {
   File
 } from './fetch';
 
+// NOOP function to replace Ember.K
+const NOOP = () => {};
 const { Logger } = Ember;
 
 /**
@@ -75,7 +77,20 @@ const updateFilter = (expression) => {
  * @returns {function(*)}
  * @public
  */
-const getFilter = () => ({ type: ACTION_TYPES.GET_FILTER, payload: {} }); // Sending null as save filter functionality not implemented;
+const getFilter = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.GET_FILTER,
+      promise: File.getSavedFilters(),
+      meta: {
+        onSuccess: (response) => {
+          dispatch(getPageOfFiles());
+          Logger.debug(ACTION_TYPES.GET_FILTER, response);
+        }
+      }
+    });
+  };
+};
 
 /**
  * Action creator for adding the expression to the expression list.
@@ -140,9 +155,9 @@ const getPageOfFiles = () => {
  * @returns {function(*)}
  * @public
  */
-const addSystemFilter = (expression) => {
+const addSystemFilter = (expressions) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.ADD_SYSTEM_FILTER, payload: expression });
+    dispatch({ type: ACTION_TYPES.SET_EXPRESSION_LIST, payload: expressions });
     dispatch(_getFirstPageOfFiles());
   };
 };
@@ -204,6 +219,43 @@ const updateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDATE_COLUMN_V
  */
 const resetDownloadId = () => ({ type: ACTION_TYPES.RESET_DOWNLOAD_ID });
 
+/**
+ * Action for creating custom search
+ * @method createCustomSearch
+ * @public
+ */
+const createCustomSearch = (filter, schemas, filterType, { onSuccess = NOOP, onFailure = NOOP }) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_FILTER_LIST,
+      promise: File.createCustomSearch(filter, schemas, filterType),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.UPDATE_FILTER_LIST, response);
+          onSuccess(response);
+        },
+        onFailure: (response) => {
+          _handleError(ACTION_TYPES.UPDATE_FILTER_LIST, response);
+          onFailure(response);
+        }
+      }
+    });
+  };
+};
+
+const _handleError = (response, type) => {
+  Logger.error(type, response);
+};
+
+const setFilesFilter = (filterId) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.SET_APPLIED_FILES_FILTER, payload: filterId });
+    dispatch(getFilter());
+  };
+};
+
+const setSystemFilterFlag = (systemFilterFlag) => ({ type: ACTION_TYPES.SET_SYSTEM_FILTER_FLAG, payload: systemFilterFlag });
+
 export {
   addSystemFilter,
   removeFilter,
@@ -217,5 +269,8 @@ export {
   setActiveFilter,
   exportFileAsCSV,
   updateColumnVisibility,
-  resetDownloadId
+  resetDownloadId,
+  createCustomSearch,
+  setFilesFilter,
+  setSystemFilterFlag
 };

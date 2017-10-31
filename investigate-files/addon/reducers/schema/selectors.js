@@ -7,6 +7,7 @@ import Immutable from 'seamless-immutable';
  */
 const COLUMN_WIDTH = {
   'firstFileName': 200,
+  'firstSeenTime': 140,
   'size': 75,
   'format': 60,
   'signature.features': 130,
@@ -19,6 +20,7 @@ const COLUMN_WIDTH = {
 
 const SUPPORTED_SORT_TYPES = [
   'firstFileName',
+  'firstSeenTime',
   'size',
   'format',
   'signature.features',

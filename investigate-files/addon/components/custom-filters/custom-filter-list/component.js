@@ -1,7 +1,10 @@
 import Component from 'ember-component';
+import layout from './template';
 import computed from 'ember-computed-decorators';
 
 export default Component.extend({
+  layout,
+
   tagName: 'li',
 
   classNames: ['filter-list__item'],
@@ -12,13 +15,10 @@ export default Component.extend({
 
   activeFilter: null,
 
-  isSystemFilter: false,
-
   @computed('filter', 'activeFilter', 'reset', 'isSystemFilter')
-  isActive: (filter, activeFilter, reset, isSystemFilter) =>
-    (filter.filterId === activeFilter && !reset && isSystemFilter),
+  isActive: (filter, activeFilter, reset, isSystemFilter) => filter.id === activeFilter && !reset && !isSystemFilter,
 
   click() {
-    this.applyFilter(this.get('filter'));
+    this.applyCustomFilter(this.get('filter'));
   }
 });

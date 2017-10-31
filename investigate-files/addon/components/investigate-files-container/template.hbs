@@ -2,8 +2,11 @@
   <h2>{{t 'investigateFiles.filter.filters'}}</h2>
   <hr>
   <section class="favourite-filters">
-    {{t 'investigateFiles.filter.favouriteFilters'}}
+    <div class="filter_title">
+      {{t 'investigateFiles.filter.favouriteFilters'}}
+    </div>
     {{system-filters}}
+    {{custom-filters}}
   </section>
   <div class="add-filter">
     {{#rsa-form-button isFullWidth=true defaultAction=(action 'resetFilters')}}
