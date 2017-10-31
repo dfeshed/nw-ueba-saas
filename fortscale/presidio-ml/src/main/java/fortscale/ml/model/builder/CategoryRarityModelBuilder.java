@@ -8,7 +8,10 @@ import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CategoryRarityModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
@@ -31,7 +34,8 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         Map<String, Long> featureValueToCountMap = castModelBuilderData(sequenceReduction);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
         long numOfPartitions = sequenceReduction.keySet().stream().map(Pair::getValue).distinct().count();
-        categoryRarityModel.init(calcOccurrencesToNumOfFeatures(sequenceReduction), numOfBuckets, numOfPartitions);
+        long numDistinctFeatures = featureValueToCountMap.size();
+        categoryRarityModel.init(calcOccurrencesToNumOfDistinctPartitions(sequenceReduction), numOfBuckets, numOfPartitions, numDistinctFeatures);
         saveTopEntriesInModel(featureValueToCountMap, categoryRarityModel);
         return categoryRarityModel;
     }
@@ -57,30 +61,43 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         return result;
     }
 
-    Map<Long, Double> calcOccurrencesToNumOfFeatures(Map<Pair<String, Long>, Double> sequenceReducedData) {
+    Map<Long, Integer> calcOccurrencesToNumOfDistinctPartitions(Map<Pair<String, Long>, Double> sequenceReducedData) {
 
-        Map<String, Long> nameToNumOfOccurrences = new HashMap<>();
+        Map<String, Set<Long>> nameToPartitionsSet = new HashMap<>();
         for (Pair<String, Long> entry : sequenceReducedData.keySet()) {
             String name = entry.getKey();
-            Long namOfOccurrences = nameToNumOfOccurrences.get(name);
-            if (namOfOccurrences == null) {
-                namOfOccurrences = 0L;
+            Set<Long> partitionsSet = nameToPartitionsSet.get(name);
+            if (partitionsSet == null) {
+                partitionsSet = new HashSet<>();
             }
-            namOfOccurrences++;
-            nameToNumOfOccurrences.put(name, namOfOccurrences);
+            partitionsSet.add(entry.getValue());
+            nameToPartitionsSet.put(name, partitionsSet);
         }
 
-        Map<Long, Double> occurrencesToNumOfFeatures = new HashMap<>();
-        for (Long numOfOccurrences : nameToNumOfOccurrences.values()) {
-            Double numOfFeatures = occurrencesToNumOfFeatures.get(numOfOccurrences);
-            if (numOfFeatures == null) {
-                numOfFeatures = 0D;
+        Map<Long, Set<Long>> occurrencesToPartitionSet = new HashMap<>();
+        Map<Long, Set<String>> occurrencesToNameSet = new HashMap<>();
+        for (Map.Entry<String, Set<Long>> nameToPartitionsEntry : nameToPartitionsSet.entrySet()) {
+            long numOfOccurrences = nameToPartitionsEntry.getValue().size();
+            // filling occurrencesToPartitionSet
+            Set<Long> occurrencesPartitionsSet = occurrencesToPartitionSet.get(numOfOccurrences);
+            if (occurrencesPartitionsSet == null) {
+                occurrencesPartitionsSet = new HashSet<>();
+                occurrencesToPartitionSet.put(numOfOccurrences,occurrencesPartitionsSet);
             }
-            numOfFeatures++;
-            occurrencesToNumOfFeatures.put(numOfOccurrences,numOfFeatures);
+            occurrencesPartitionsSet.addAll(nameToPartitionsEntry.getValue());
 
+
+            //filling occurrencesToNameSet
+            Set<String> occurrencesNameSet = occurrencesToNameSet.get(numOfOccurrences);
+            if (occurrencesNameSet == null) {
+                occurrencesNameSet = new HashSet<>();
+                occurrencesToNameSet.put(numOfOccurrences,occurrencesNameSet);
+            }
+            occurrencesNameSet.add(nameToPartitionsEntry.getKey());
         }
-        return occurrencesToNumOfFeatures;
+
+        Map<Long, Integer> ret = occurrencesToPartitionSet.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> Math.min(e.getValue().size(), occurrencesToNameSet.get(e.getKey()).size())));
+        return ret;
     }
 
     Map<String, Long> castModelBuilderData(Map<Pair<String, Long>, Double> modelBuilderData) {
