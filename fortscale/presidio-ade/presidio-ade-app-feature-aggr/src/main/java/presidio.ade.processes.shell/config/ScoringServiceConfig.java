@@ -1,5 +1,6 @@
 package presidio.ade.processes.shell.config;
 
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.config.ScorerConfService;
@@ -30,6 +31,8 @@ public class ScoringServiceConfig {
     private String scorerConfigurationsOverridingPath=null;
     @Value("${fortscale.scorer.configurations.location.additional.path:#{null}}")
     private String scorerConfigurationsAdditionalPath=null;
+    @Autowired
+    private ModelsCacheService modelCacheService;
 
     @Bean
     public ScorerConfService scorerConfService() {
@@ -38,6 +41,6 @@ public class ScoringServiceConfig {
 
     @Bean
     public ScoringService scoringService() {
-        return new ScoringService(scorerConfService(), scorerFactoryService);
+        return new ScoringService(scorerConfService(), scorerFactoryService, modelCacheService);
     }
 }

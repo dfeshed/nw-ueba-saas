@@ -38,9 +38,9 @@ public class ContinuousValuesModelScorerConfTest {
 		jsonObject.put("name", name);
 		jsonObject.put("model", modelInfoJsonObject);
 		if (minNumOfSamplesToInfluence != null)
-			jsonObject.put("min-number-of-samples-to-influence", minNumOfSamplesToInfluence);
+			jsonObject.put("min-number-of-partitions-to-influence", minNumOfSamplesToInfluence);
 		if (enoughNumOfSamplesToInfluence != null)
-			jsonObject.put("number-of-samples-to-influence-enough", enoughNumOfSamplesToInfluence);
+			jsonObject.put("number-of-partitions-to-influence-enough", enoughNumOfSamplesToInfluence);
 		if (isUseCertaintyToCalculateScore != null)
 			jsonObject.put("use-certainty-to-calculate-score", isUseCertaintyToCalculateScore);
 		jsonObject.put("quad-poly-calibration-conf", quadPolyCalibrationConf);
@@ -84,10 +84,10 @@ public class ContinuousValuesModelScorerConfTest {
 		Assert.assertEquals(DEFAULT_SCORER_NAME, conf.getName());
 		Assert.assertEquals(DEFAULT_MODEL_NAME, conf.getModelInfo().getModelName());
 		Assert.assertEquals(
-				ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE,
+				ModelScorerConf.MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE,
 				conf.getMinNumOfSamplesToInfluence());
 		Assert.assertEquals(
-				ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE,
+				ModelScorerConf.ENOUGH_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE,
 				conf.getEnoughNumOfSamplesToInfluence());
 		Assert.assertEquals(
 				ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE,

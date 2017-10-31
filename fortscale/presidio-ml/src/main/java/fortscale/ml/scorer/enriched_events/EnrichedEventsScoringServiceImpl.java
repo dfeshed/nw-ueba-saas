@@ -56,4 +56,8 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
         }
         return scoredRecords;
     }
+
+    public void resetModelCache(){
+        scoringService.resetModelCache();
+    }
 }

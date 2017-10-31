@@ -4,6 +4,7 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -54,7 +55,10 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
                                     ScoreAggregationsBucketService scoreAggregationsBucketService,
-                                    AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, int pageSize, int maxGroupSize) {
+                                    AggregationRecordsCreator aggregationRecordsCreator,
+                                    AggregatedDataStore aggregatedDataStore,
+                                    AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+                                    int pageSize, int maxGroupSize) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -69,6 +73,12 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     @Override
     public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
+
+        //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
+        //Reset cache required in order to get newer models each partition and not use older models.
+        // If this line will be deleted the model cache will need to have some efficient refresh mechanism.
+        enrichedEventsScoringService.resetModelCache();
+
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);

@@ -1,24 +1,15 @@
 package fortscale.ml.scorer.factory.smart;
 
-import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.EventModelsCacheService;
-import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.SMARTValuesModelScorer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.ml.scorer.config.SMARTValuesModelScorerConf;
-import fortscale.ml.scorer.factory.AbstractModelScorerFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @Component
@@ -47,8 +38,8 @@ public class SMARTValuesModelScorerFactory extends AbstractServiceAutowiringFact
                 scorerConf.getName(),
                 scorerConf.getModelInfo().getModelName(),
                 scorerConf.getGlobalModelInfo().getModelName(),
-                scorerConf.getMinNumOfSamplesToInfluence(),
-                scorerConf.getEnoughNumOfSamplesToInfluence(),
+                scorerConf.getMinNumOfPartitionsToInfluence(),
+                scorerConf.getEnoughNumOfPartitionsToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
                 scorerConf.getBaseScorerConf(),
                 scorerConf.getGlobalInfluence(),

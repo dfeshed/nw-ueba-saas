@@ -19,12 +19,12 @@ public abstract class AbstractModelTerminalScorer extends AbstractModelScorer {
                                        List<String> contextFieldNames,
                                        List<List<String>> additionalContextFieldNames,
                                        String featureName,
-                                       int minNumOfSamplesToInfluence,
-                                       int enoughNumOfSamplesToInfluence,
+                                       int minNumOfPartitionsToInfluence,
+                                       int enoughNumOfPartitionsToInfluence,
                                        boolean isUseCertaintyToCalculateScore,
                                        EventModelsCacheService eventModelsCacheService) {
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
+                minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
         Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
         this.featureName = featureName;
     }

@@ -6,26 +6,28 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 @JsonAutoDetect(
         fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class ContinuousMaxDataModel implements IContinuousDataModel {
+public class ContinuousMaxDataModel implements IContinuousDataModel,PartitionedDataModel {
+    private final long numOfPartitions;
     private ContinuousDataModel continuousDataModel;
     private ContinuousDataModel continuousMaxDataModel;
 
     /**
-     *
-     * @param continuousDataModel  model with all the data
+     *  @param continuousDataModel  model with all the data
      * @param continuousMaxDataModel model with max values
+     * @param numOfPartitions number of time partitions the max data model relied upon
      */
-    public ContinuousMaxDataModel(ContinuousDataModel continuousDataModel, ContinuousDataModel continuousMaxDataModel) {
+    public ContinuousMaxDataModel(ContinuousDataModel continuousDataModel, ContinuousDataModel continuousMaxDataModel, long numOfPartitions) {
         this.continuousDataModel = continuousDataModel;
         this.continuousMaxDataModel = continuousMaxDataModel;
+        this.numOfPartitions = numOfPartitions;
     }
 
 
     @Override
     public String toString() {
-        return String.format("<ContinuousMaxDataModel: N=%d, mean=%f, sd=%f, maxValue=%f> " +
+        return String.format("numOfPartitions=%d, <ContinuousMaxDataModel: N=%d, mean=%f, sd=%f, maxValue=%f > " +
                         "<ContinuousDataModel: N=%d, mean=%f, sd=%f, maxValue=%f>",
-                continuousMaxDataModel.getN(), continuousMaxDataModel.getMean(), continuousMaxDataModel.getSd(), continuousMaxDataModel.getMaxValue(),
+                numOfPartitions,continuousMaxDataModel.getN(), continuousMaxDataModel.getMean(), continuousMaxDataModel.getSd(), continuousMaxDataModel.getMaxValue(),
                 continuousDataModel.getN(), continuousDataModel.getMean(), continuousDataModel.getSd(), continuousDataModel.getMaxValue()
         );
     }
@@ -53,5 +55,10 @@ public class ContinuousMaxDataModel implements IContinuousDataModel {
     @Override
     public double getMaxValue() {
         return continuousMaxDataModel.getMaxValue();
+    }
+
+    @Override
+    public long getNumOfPartitions() {
+        return numOfPartitions;
     }
 }

@@ -177,7 +177,7 @@ public class RestUserServiceImpl implements RestUserService {
             userQuery.getSortFieldNames().forEach(s -> {
                 orders.add(new Sort.Order(userQuery.getSortDirection(), s.toString()));
             });
-            builder.sortField(new Sort(orders));
+            builder.sort(new Sort(orders));
         }
         if (CollectionUtils.isNotEmpty(userQuery.getAggregateBy())) {
             List<String> aggregateByFields = new ArrayList<>();

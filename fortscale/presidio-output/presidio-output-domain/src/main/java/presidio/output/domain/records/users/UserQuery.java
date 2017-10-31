@@ -115,8 +115,6 @@ public class UserQuery {
         return maxScore;
     }
 
-
-
     public List<String> getFilterByUserTags() {
         return filterByUserTags;
     }
@@ -196,11 +194,6 @@ public class UserQuery {
         }
 
         public UserQueryBuilder sort(Sort sort) {
-            this.sort = sort;
-            return this;
-        }
-
-        public UserQueryBuilder sortField(Sort sort) {
             this.sort = sort;
             return this;
         }

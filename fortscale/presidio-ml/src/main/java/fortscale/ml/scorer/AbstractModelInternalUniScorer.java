@@ -1,8 +1,8 @@
 package fortscale.ml.scorer;
 
 
-import fortscale.domain.feature.score.FeatureScore;
 import fortscale.domain.feature.score.CertaintyFeatureScore;
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -23,13 +23,13 @@ public abstract class AbstractModelInternalUniScorer extends AbstractModelScorer
                                           List<String> contextFieldNames,
                                           List<List<String>> additionalContextFieldNames,
                                           IScorerConf baseScorerConf,
-                                          int minNumOfSamplesToInfluence,
-                                          int enoughNumOfSamplesToInfluence,
+                                          int minNumOfPartitionsToInfluence,
+                                          int enoughNumOfPartitionsToInfluence,
                                           boolean isUseCertaintyToCalculateScore,
                                           FactoryService<Scorer> factoryService,
                                           EventModelsCacheService eventModelsCacheService) {
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
-                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
+                minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
         Assert.notNull(baseScorerConf, "base scorer should not be null");
         Assert.notNull(factoryService, "factory service should not be null");
         baseScorer = factoryService.getProduct(baseScorerConf);
@@ -40,13 +40,13 @@ public abstract class AbstractModelInternalUniScorer extends AbstractModelScorer
                                           String modelName,
                                           List<String> contextFieldNames,
                                           IScorerConf baseScorerConf,
-                                          int minNumOfSamplesToInfluence,
-                                          int enoughNumOfSamplesToInfluence,
+                                          int minNumOfPartitionsToInfluence,
+                                          int enoughNumOfPartitionsInfluence,
                                           boolean isUseCertaintyToCalculateScore,
                                           FactoryService<Scorer> factoryService,
                                           EventModelsCacheService eventModelsCacheService) {
-        this(scorerName, modelName, null, contextFieldNames, null, baseScorerConf, minNumOfSamplesToInfluence,
-                enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, factoryService, eventModelsCacheService);
+        this(scorerName, modelName, null, contextFieldNames, null, baseScorerConf, minNumOfPartitionsToInfluence,
+                enoughNumOfPartitionsInfluence, isUseCertaintyToCalculateScore, factoryService, eventModelsCacheService);
     }
 
     public AbstractModelInternalUniScorer(String scorerName,

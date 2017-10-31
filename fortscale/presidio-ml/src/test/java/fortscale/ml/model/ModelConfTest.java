@@ -46,6 +46,7 @@ public class ModelConfTest {
         json.put("functions", new JSONArray());
         json.put("featureBucketConfName", "featureBucketConfName1");
         json.put("featureName", "featureName1");
+        json.put("partitionsResolutionInSeconds", 86400);
         return json;
     }
 

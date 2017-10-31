@@ -21,10 +21,8 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static fortscale.ml.model.ModelBuilderData.NoDataReason.NO_DATA_IN_DATABASE;
 import static fortscale.ml.model.retriever.smart_data.SmartAccumulationFlattener.flattenSmartRecordToSmartAggrData;
@@ -38,6 +36,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     private final String smartRecordConfName;
     private final SmartAccumulationDataReader accumulationDataReader;
     private final FactoryService<IContextSelector> contextSelectorFactoryService;
+    private final long partitionsResolutionInSeconds;
     private ModelConf weightsModelConf;
     private final String weightsModelName;
     private ModelConfService modelConfService;
@@ -54,6 +53,11 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         this.accumulationDataReader = accumulationDataReader;
         this.contextSelectorFactoryService = contextSelectorFactoryService;
         this.smartRecordConf = smartRecordConfService.getSmartRecordConf(this.smartRecordConfName);
+        this.partitionsResolutionInSeconds = dataRetrieverConf.getPartitionsResolutionInSeconds();
+        long smartRecordConfDurationStrategyInSeconds = smartRecordConf.getFixedDurationStrategy().toDuration().getSeconds();
+        String message = String.format("partitionsResolutionInSeconds=%d must be multiplication of smartRecordConfDurationStrategyInSeconds=%d. fix retrieverConf=%s or smartConf=%s",
+                partitionsResolutionInSeconds, smartRecordConfDurationStrategyInSeconds, dataRetrieverConf.getFactoryName(), smartRecordConf.getName());
+        Assert.isTrue(partitionsResolutionInSeconds % smartRecordConfDurationStrategyInSeconds == 0, message);
         this.weightsModelName = dataRetrieverConf.getWeightsModelName();
         Assert.hasText(weightsModelName ,String.format("weightsModelName must be defined for retriever name=%s",this.smartRecordConfName));
 
@@ -75,12 +79,12 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         if (contextId == null) {
             return retrieveGlobalModelBuilderData(timeRange);
         }
-        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerStream = readSmartAggregatedRecordDataContainers(
+        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = readSmartAggregatedRecordDataContainers(
                 contextId, startTime, endTimeInstant);
         GenericHistogram reductionHistogram = new GenericHistogram();
         final boolean[] noDataInDatabase = {true};
 
-        smartAggregatedRecordDataContainerStream.forEach(recordsDataContainer -> {
+        smartAggregatedRecordDataContainerList.forEach(recordsDataContainer -> {
             noDataInDatabase[0] = false;
             double smartValue = calculateSmartValue(endTimeInstant, recordsDataContainer);
             // TODO: Retriever functions should be iterated and executed here.
@@ -94,8 +98,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
                 return new ModelBuilderData(ModelBuilderData.NoDataReason.ALL_DATA_FILTERED);
             }
         } else {
-            long distinctDays = getDistinctDaysInstant(smartAggregatedRecordDataContainerStream).size();
-            reductionHistogram.setDistinctDays(distinctDays);
+            long numOfPartitions = calcNumOfPartitions(smartAggregatedRecordDataContainerList).size();
+            reductionHistogram.setNumberOfPartitions(numOfPartitions);
             return new ModelBuilderData(reductionHistogram);
         }
     }
@@ -111,11 +115,6 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
         ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime);
         return (SmartWeightsModel) latestBeforeEventTimeAfterOldestAllowedModelDao.getModel();
-    }
-
-    private Stream<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordData(String contextId, Instant startTime, Instant endTime) {
-        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = readSmartAggregatedRecordDataContainers(contextId, startTime, endTime);
-        return smartAggregatedRecordDataContainerList.stream();
     }
 
     private List<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordDataContainers(String contextId, Instant startTime, Instant endTime) {
@@ -134,11 +133,11 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         if (contextIds.isEmpty()) {
             return new ModelBuilderData(NO_DATA_IN_DATABASE);
         }
-        Set<Instant> distinctDays = new HashSet<>();
+        Set<Long> distinctParitionIds = new HashSet<>();
         for (String contextId : contextIds) {
             List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers =
                     readSmartAggregatedRecordDataContainers(contextId, timeRange.getStart(), timeRange.getEnd());
-            distinctDays.addAll(getDistinctDaysInstant(smartAggregatedRecordDataContainers));
+            distinctParitionIds.addAll(calcNumOfPartitions(smartAggregatedRecordDataContainers));
             smartAggregatedRecordDataContainers.stream()
                     .mapToDouble(smartData -> calculateSmartValue(timeRange.getEnd(), smartData))
                     .max()
@@ -151,7 +150,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         if (reductionHistogram.getN() == 0) {
             return new ModelBuilderData(ModelBuilderData.NoDataReason.ALL_DATA_FILTERED);
         } else {
-            reductionHistogram.setDistinctDays(distinctDays.size());
+            reductionHistogram.setNumberOfPartitions(distinctParitionIds.size());
             return new ModelBuilderData(reductionHistogram);
         }
     }
@@ -178,7 +177,10 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         return AccumulatedSmartRecord.getAggregatedFeatureContextId(context);
     }
 
-    private Set<Instant> getDistinctDaysInstant(List<SmartAggregatedRecordDataContainer> data) {
-        return data.stream().map(x->x.getStartTime().truncatedTo(ChronoUnit.DAYS)).distinct().collect(Collectors.toSet());
+    Set<Long> calcNumOfPartitions(List<SmartAggregatedRecordDataContainer> data) {
+        return data.stream().map(x -> {
+            long partitionId = ((long) x.getStartTime().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
+            return partitionId;
+        }).distinct().collect(Collectors.toSet());
     }
 }
