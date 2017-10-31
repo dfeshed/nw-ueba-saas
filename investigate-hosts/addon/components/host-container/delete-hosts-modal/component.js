@@ -4,6 +4,7 @@ import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
 import { getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
+import _ from 'lodash';
 
 const dispatchToActions = {
   toggleDeleteHostsModal,
@@ -20,7 +21,7 @@ const DeleteHostsModal = Component.extend({
 
   actions: {
     handleDeleteHosts() {
-      Machines.deleteHosts(this.get('selectedHostList'))
+      Machines.deleteHosts(_.map(this.get('selectedHostList'), 'id'))
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.success');
           // Refresh the page if deletion is successful
