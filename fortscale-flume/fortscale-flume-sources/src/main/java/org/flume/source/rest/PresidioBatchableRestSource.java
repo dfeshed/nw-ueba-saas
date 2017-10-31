@@ -21,9 +21,9 @@ import static org.apache.flume.CommonStrings.DEFAULT_DATE_FORMAT;
 import static org.apache.flume.CommonStrings.END_DATE;
 import static org.apache.flume.CommonStrings.START_DATE;
 
-public class BatchablePresidioRestSource extends AbstractPresidioBatchableEventDrivenSource implements Configurable {
+public class PresidioBatchableRestSource extends AbstractPresidioBatchableEventDrivenSource implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(BatchablePresidioRestSource.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioBatchableRestSource.class);
 
     public static final String REST_API_IMPL_CLASS = "restApiImplClassName";
 
@@ -54,7 +54,7 @@ public class BatchablePresidioRestSource extends AbstractPresidioBatchableEventD
 
             setName("presidio-rest-source:" + this.toString());
         } catch (Exception e) {
-            logger.error("Error configuring " + BatchablePresidioRestSource.class.getName(), e);
+            logger.error("Error configuring " + PresidioBatchableRestSource.class.getName(), e);
         }
     }
 
@@ -71,7 +71,7 @@ public class BatchablePresidioRestSource extends AbstractPresidioBatchableEventD
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException(BatchablePresidioRestSource.class.getName() + " is a singleton and can not be cloned");
+        throw new CloneNotSupportedException(PresidioBatchableRestSource.class.getName() + " is a singleton and can not be cloned");
     }
 
     @Override

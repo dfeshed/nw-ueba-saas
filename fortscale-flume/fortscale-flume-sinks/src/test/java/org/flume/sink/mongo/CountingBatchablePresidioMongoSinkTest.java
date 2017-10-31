@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CountingPresidioMongoSinkTest {
+public class CountingBatchablePresidioMongoSinkTest {
 
     private CountingBatchablePresidioMongoSink testSubject;
 

@@ -25,7 +25,7 @@ import static org.apache.flume.CommonStrings.START_DATE;
 
 /**
  * This class adds support for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour)
- * a batchable sink must be used also when using a batchable source.
+ * a batchable sink must also be used when using a batchable source.
  */
 public abstract class AbstractPresidioBatchableEventDrivenSource extends AbstractEventDrivenSource {
 

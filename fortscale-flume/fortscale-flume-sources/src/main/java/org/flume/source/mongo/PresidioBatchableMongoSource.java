@@ -26,9 +26,9 @@ import java.util.List;
 
 import static org.apache.flume.CommonStrings.*;
 
-public class MongoSourcePresidioBatchable extends AbstractPresidioBatchableEventDrivenSource implements Configurable {
+public class PresidioBatchableMongoSource extends AbstractPresidioBatchableEventDrivenSource implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(MongoSourcePresidioBatchable.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioBatchableMongoSource.class);
 
     protected static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, START_DATE, END_DATE};
     protected String collectionName;
