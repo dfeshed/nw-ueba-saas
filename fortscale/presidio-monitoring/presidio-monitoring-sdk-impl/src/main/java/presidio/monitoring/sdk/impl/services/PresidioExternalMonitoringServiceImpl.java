@@ -6,14 +6,14 @@ import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.services.MetricCollectingService;
 
+import java.time.Instant;
+import java.util.Set;
+
 public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMonitoringService {
 
     private MetricCollectingService metricCollectingService;
     private PresidioMetricFactory presidioMetricFactory;
 
-    private final String FILTERED_EVENT_METRIC = "number.of.filtered.event";
-    private final String NUMBER_OF_PROCESSED_EVENTS_METRIC = "number.of.processed.events";
-    private final String TYPE_LONG = "long";
 
 
     public PresidioExternalMonitoringServiceImpl() {
@@ -24,14 +24,13 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
         this.metricCollectingService = metricCollectingService;
     }
 
-    public Metric creatingPresidioMetric(String metricName, Number metricValue, String unit) {
-        return presidioMetricFactory.creatingPresidioMetric(metricName, metricValue, unit);
+    @Override
+    public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName,value,tags,valueType,logicTime));
     }
 
     @Override
-    public void reportCustomMetric(Metric metric) {
-        metricCollectingService.addMetric(metric);
+    public void reportCustomMetricReportOnce(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName,value,tags,valueType,logicTime,true));
     }
-
-
 }
