@@ -69,11 +69,20 @@ public class UserElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Use
             boolQueryBuilder.must(indicatorsQuery);
         }
 
-        // filter by userIds
+        // filter by userIds - customer's user id
         if (CollectionUtils.isNotEmpty(userQuery.getFilterByUsersIds())) {
             BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
             for (String id : userQuery.getFilterByUsersIds()) {
                 userIdQuery.should(matchQuery(User.USER_ID_FIELD_NAME, id).operator(Operator.OR));
+            }
+            boolQueryBuilder.must(userIdQuery);
+        }
+
+        // filter by userIds - customer's user id
+        if (CollectionUtils.isNotEmpty(userQuery.getFilterByIds())) {
+            BoolQueryBuilder userIdQuery = new BoolQueryBuilder();
+            for (String id : userQuery.getFilterByIds()) {
+                userIdQuery.should(matchQuery(User.ID_FIELD_NAME, id).operator(Operator.OR));
             }
             boolQueryBuilder.must(userIdQuery);
         }

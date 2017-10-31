@@ -144,7 +144,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         List<User> clearedUsersList = new ArrayList<>();
         while (usersPage != null && usersPage.hasContent()) {
             usersPage.getContent().forEach(user -> {
-                if (!excludedUsersIds.contains(user.getUserId())) {
+                if (!excludedUsersIds.contains(user.getId())) {
                     user.setScore(0D);
                     user.setSeverity(null);
                     clearedUsersList.add(user);
