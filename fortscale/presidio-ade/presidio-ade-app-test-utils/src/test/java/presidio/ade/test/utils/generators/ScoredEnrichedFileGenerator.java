@@ -9,7 +9,7 @@ import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileEvent;
 import presidio.data.generators.common.FixedOperationTypeGenerator;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
@@ -43,7 +43,7 @@ public class ScoredEnrichedFileGenerator implements EventsGenerator<AdeScoredFil
     @Override
     public List<AdeScoredFileRecord> generateAndPersistSanityData(int interval) throws GeneratorException {
         FileEventsGenerator filePermissionEventGenerator = new FileEventsGenerator();
-        filePermissionEventGenerator.setTimeGenerator(new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), 30, DAYS_BACK_FROM, DAYS_BACK_TO));
+        filePermissionEventGenerator.setTimeGenerator(new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(23, 59), 30, DAYS_BACK_FROM, DAYS_BACK_TO));
         filePermissionEventGenerator.setUserGenerator(new SingleUserGenerator(GENERATED_USER));
         FileOperationGenerator fileOperationGenerator = new FileOperationGenerator();
         ArrayList<String> filePermissionCategories = new ArrayList<>();
