@@ -1,48 +1,60 @@
 {
-  "indicator":{
-    "properties":{
-      "name":{
-        "store":true,
-        "type":"string"
+  "indicator": {
+    "properties": {
+      "id": {
+        "type": "string",
+        "index": "not_analyzed"
       },
-      "anomalyValue":{
-        "store":true,
-        "type":"string"
+      "createdDate": {
+        "store": true,
+        "type": "date"
       },
-      "alertId":{
-        "store":true,
-        "type":"string"
+      "updatedDate": {
+        "store": true,
+        "type": "date"
       },
-      "historicalData":{
+      "updatedBy": {
+        "store": true,
+        "type": "string"
+      },
+      "name": {
+        "store": true,
+        "type": "string"
+      },
+      "anomalyValue": {
+        "store": true,
+        "type": "string"
+      },
+      "alertId": {
+        "store": true,
+        "type": "string"
+      },
+      "historicalData": {
         "enabled": false
       },
-      "startDate":{
-        "store":true,
-        "type":"date"
+      "startDate": {
+        "store": true,
+        "type": "date"
       },
-      "endDate":{
-        "store":true,
-        "type":"date"
+      "endDate": {
+        "store": true,
+        "type": "date"
       },
-      "schema":{
-        "store":true,
-        "type":"string"
+      "schema": {
+        "store": true,
+        "type": "string"
       },
-      "score":{
-        "store":true,
-        "type":"double"
+      "score": {
+        "store": true,
+        "type": "double"
       },
-      "type":{
-        "store":true,
-        "type":"string"
+      "type": {
+        "store": true,
+        "type": "string"
       },
-      "eventsNum":{
-        "store":true,
-        "type":"integer"
-      },
-      "id":{
-        "type":"string",
-        "index":"not_analyzed"
+      "eventsNum": {
+        "store": true,
+        "type": "integer"
       }
     }
   }
