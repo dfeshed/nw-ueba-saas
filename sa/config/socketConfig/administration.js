@@ -6,9 +6,6 @@ module.exports = function(environment) {
 
   var socketUrl = determineSocketUrl(environment, '/administration/socket');
 
-  // remove this line when mock server in place
-  socketUrl = '/api/administration/socket';
-
   return {
     preferences: {
       socketUrl,

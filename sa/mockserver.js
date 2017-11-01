@@ -8,6 +8,9 @@ var investigateFilesMocks = require('../investigate-files').mockDestinations;
 var investigateHostsMocks = require('../investigate-hosts').mockDestinations;
 var preferencesMocks = require('../preferences').mockDestinations;
 
+var path = require('path');
+var administrationMocks = path.join(__dirname, 'tests', 'data', 'subscriptions');
+
 require('mock-server').startServer({
   subscriptionLocations: [
     reconMocks,
@@ -16,6 +19,7 @@ require('mock-server').startServer({
     investigateEventsMocks,
     investigateFilesMocks,
     investigateHostsMocks,
-    preferencesMocks
+    preferencesMocks,
+    administrationMocks
   ]
 });
