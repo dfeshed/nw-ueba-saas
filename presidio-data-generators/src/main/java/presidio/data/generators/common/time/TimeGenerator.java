@@ -37,7 +37,7 @@ public class TimeGenerator implements ITimeGenerator {
 
         ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
         Instant startDayInstant = utc.toInstant().minus(daysBackFrom, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-        this.startInstant = startDayInstant.plus(startLocalTime.getHour() * 60 + startLocalTime.getMinute(), ChronoUnit.MINUTES);
+        this.startInstant = startDayInstant.plus(startLocalTime.toNanoOfDay(), ChronoUnit.NANOS);
         this.endInstant = calcEndInstantInDay(utc.toInstant().minus(daysBackTo+1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS));
         
         this.iterator = new TimeGeneratorIterator();
