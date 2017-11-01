@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * Created by YaronDL on 8/8/2017.
  */
-public class MinutesIncrementTimeGeneratorTest {
+public class TimeGeneratorTest {
     @Test
     public void DebugTest() throws GeneratorException {
         int startHour = 8;      int startMin = 0;
@@ -25,6 +25,21 @@ public class MinutesIncrementTimeGeneratorTest {
 
         MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertTrue(TG.hasNext());
+    }
+
+    @Test
+    public void MillisIncrementDebugTest() throws GeneratorException {
+        int startHour = 8;      int startMin = 0;
+        int endHour = 9;        int endMin = 0;
+        int daysBackFrom = 5;   int daysBackTo = 0;
+        int interval = 436;
+
+        LocalTime startTime = LocalTime.of(startHour,startMin, 20, 115);
+        LocalTime endTime = LocalTime.of(endHour,endMin, 20, 500);
+
+        ITimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
+        while (TG.hasNext()) System.out.println(TG.getNext().toString());
+        Assert.assertTrue(true);
     }
 
     @Test
