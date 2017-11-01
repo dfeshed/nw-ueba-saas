@@ -1,5 +1,5 @@
 import reselect from 'reselect';
-import { RECON_PANEL_SIZES } from 'investigate-events/panelSizes';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 const { createSelector } = reselect;
 

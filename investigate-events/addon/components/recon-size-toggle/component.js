@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { RECON_PANEL_SIZES } from 'investigate-events/panelSizes';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { isReconFullSize } from 'investigate-events/reducers/investigate/data-selectors';
 import { setReconPanelSize } from 'investigate-events/actions/interaction-creators';
 

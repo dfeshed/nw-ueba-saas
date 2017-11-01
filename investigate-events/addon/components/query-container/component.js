@@ -13,7 +13,7 @@ import EventColumnGroups from 'investigate-events/helpers/event-column-config';
 import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
-} from 'investigate-events/panelSizes';
+} from 'investigate-events/constants/panelSizes';
 
 const stateToComputed = (state) => ({
   defaultMetaGroup: defaultMetaGroup(state),

@@ -63,7 +63,7 @@ skip('alias meta keys displayed', function(assert) {
     .initializeData()
     .setLanguage(language)
     .setAliases(aliases)
-    .setQueryParams(query);
+    .setQueryParamsForTests(query);
 
   this.render(hbs`{{bread-crumb}}`);
 
@@ -79,7 +79,7 @@ test('raw data in query string', function(assert) {
     .initializeData()
     .setLanguage(language)
     .setAliases(aliases)
-    .setQueryParams(query2);
+    .setQueryParamsForTests(query2);
 
   this.render(hbs`{{bread-crumb}}`);
 
@@ -95,7 +95,7 @@ test('can set multiple query values', function(assert) {
     .initializeData()
     .setLanguage(language)
     .setAliases(aliases)
-    .setQueryParams(query3);
+    .setQueryParamsForTests(query3);
 
   this.render(hbs`{{bread-crumb}}`);
 

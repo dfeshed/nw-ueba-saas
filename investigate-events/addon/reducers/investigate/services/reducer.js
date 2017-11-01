@@ -13,7 +13,7 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
+  [ACTION_TYPES.INITIALIZE_TESTS]: (state, { payload }) => {
     return _initialState.merge(payload.services);
   },
 

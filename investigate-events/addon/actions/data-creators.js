@@ -6,10 +6,9 @@ import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
 import { eventsGetFirst } from './events-creators';
+import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 
-const {
-  log
-} = console;
+const { log } = console;
 
 const _showFutureFeatures = config.featureFlags.future;
 
@@ -164,9 +163,20 @@ export const getServiceSummary = () => {
  * @param {*} queryParams
  * @public
  */
-export const initializeInvestigate = () => {
+export const initializeInvestigate = (params) => {
   return (dispatch, getState) => {
+    const parsedQueryParams = {
+      sessionId: params.eventId,
+      metaPanelSize: params.metaPanelSize,
+      reconSize: params.reconSize,
+      ...parseEventQueryUri(params.filter)
+    };
     // Initialize all the things
+    dispatch({
+      type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+      payload: parsedQueryParams
+    });
+    // Get data
     _initializeServices(dispatch, getState);
     _initializeDictionaries(dispatch, getState)
     .then(() => {

@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 
 import { connect } from 'ember-redux';
-import { RECON_PANEL_SIZES } from 'investigate-events/panelSizes';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 const stateToComputed = ({ investigate }) => ({
   aliases: investigate.dictionaries.aliases,

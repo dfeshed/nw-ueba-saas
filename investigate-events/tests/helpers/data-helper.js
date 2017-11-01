@@ -39,7 +39,7 @@ export default class DataHelper {
   }
 
   initializeData(inputs = DEFAULT_DATA) {
-    this.dispatch(ACTION_TYPES.INITIALIZE, inputs);
+    this.dispatch(ACTION_TYPES.INITIALIZE_TESTS, inputs);
     return this;
   }
 
@@ -53,8 +53,8 @@ export default class DataHelper {
     return this;
   }
 
-  setQueryParams(params) {
-    this.dispatch(ACTION_TYPES.SET_QUERY_PARAMS, params);
+  setQueryParamsForTests(params) {
+    this.dispatch(ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS, params);
     return this;
   }
 

@@ -21,8 +21,8 @@ export const setReconPanelSize = (size) => {
   }
 };
 
-export const setQueryParams = (params) => ({
-  type: ACTION_TYPES.SET_QUERY_PARAMS,
+export const setQueryParamsForTests = (params) => ({
+  type: ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS,
   payload: params
 });
 

@@ -18,8 +18,24 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
+  [ACTION_TYPES.INITIALIZE_TESTS]: (state, { payload }) => {
     return _initialState.merge(payload.queryNode, { deep: true });
+  },
+
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
+    let sessionId;
+    if (payload.sessionId && !Number.isNaN(payload.sessionId)) {
+      sessionId = parseInt(payload.sessionId, 10);
+    }
+    return state.merge({
+      endTime: payload.endTime,
+      eventMetas: undefined,
+      metaFilter: payload.metaFilter,
+      queryString: '',
+      serviceId: payload.serviceId,
+      sessionId,
+      startTime: payload.startTime
+    }, { deep: true });
   },
 
   [ACTION_TYPES.RESET_QUERYNODE]: (state) => {
@@ -34,7 +50,7 @@ export default handleActions({
     return state.set('serviceId', payload);
   },
 
-  [ACTION_TYPES.SET_QUERY_PARAMS]: (state, { payload }) => {
+  [ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS]: (state, { payload }) => {
     return state.merge(payload);
   },
 

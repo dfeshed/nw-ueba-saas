@@ -5,7 +5,7 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
-} from 'investigate-events/panelSizes';
+} from 'investigate-events/constants/panelSizes';
 
 const valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
 const unknownMetaSize = (val) => valueNotInArray(Object.values(META_PANEL_SIZES), val);
@@ -18,6 +18,18 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
+    let isReconOpen = false;
+    if (payload.sessionId && !Number.isNaN(payload.sessionId)) {
+      isReconOpen = true;
+    }
+    return state.merge({
+      isReconOpen,
+      metaPanelSize: payload.metaPanelSize || META_PANEL_SIZES.DEFAULT,
+      reconSize: payload.reconSize || RECON_PANEL_SIZES.MAX
+    });
+  },
+
   /**
    * Updates the state with a given value for the meta panel size.
    * Typically invoked by route when its URL query params have changed.
