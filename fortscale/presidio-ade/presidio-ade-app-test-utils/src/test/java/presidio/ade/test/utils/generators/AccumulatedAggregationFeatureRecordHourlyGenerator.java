@@ -8,7 +8,7 @@ import presidio.data.generators.common.CyclicMapGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
 
 import java.time.Instant;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEventGenerator<AccumulatedAggregationFeatureRecord> {
     private IStringGenerator contextIdGenerator;
-    private TimeGenerator startInstantGenerator;
+    private MinutesIncrementTimeGenerator startInstantGenerator;
     private IStringGenerator featureNameGenerator;
     private CyclicMapGenerator<Integer, Double> aggregatedFeatureValuesGenerator;
 
@@ -32,7 +32,7 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEven
                                                               Map<Integer, Double> aggregatedFeatureValuesMap,
                                                               int startHourOfDay, int endHourOfDay) throws GeneratorException {
         this.featureNameGenerator = new CustomStringGenerator(featureName);
-        this.startInstantGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, 30, 1);
+        this.startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 60, 30, 1);
         this.contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
 
         this.aggregatedFeatureValuesGenerator = new CyclicMapGenerator<>(Lists.newArrayList(aggregatedFeatureValuesMap));

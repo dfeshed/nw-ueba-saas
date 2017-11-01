@@ -6,9 +6,8 @@ import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IMapGenerator;
-import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.IStringListGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -25,7 +24,7 @@ public class ScoredFeatureAggregationRecordHourlyGenerator extends AdeAggregatio
     public ScoredFeatureAggregationRecordHourlyGenerator(
             IMapGenerator scoreToAggregatedFeatureGenerator,
             IStringListGenerator contextIdGenerator,
-            TimeGenerator startInstantGenerator) throws GeneratorException {
+            ITimeGenerator startInstantGenerator) throws GeneratorException {
         super(scoreToAggregatedFeatureGenerator, startInstantGenerator, contextIdGenerator);
         this.featureScores = Collections.emptyList();
         this.featureValue = 0.0;
