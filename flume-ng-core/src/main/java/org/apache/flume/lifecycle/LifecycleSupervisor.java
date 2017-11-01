@@ -102,7 +102,7 @@ public class LifecycleSupervisor implements LifecycleAware {
 
         logger.info("Stopping lifecycle supervisor for the following components: {}", supervisedProcesses.keySet());
         for (final Entry<LifecycleAware, Supervisoree> entry : supervisedProcesses.entrySet()) {
-            if (SinkRunner.class.isAssignableFrom(entry.getKey().getClass()) && entry.getKey().getLifecycleState().equals(LifecycleState.START)) {
+            if (!SinkRunner.class.isAssignableFrom(entry.getKey().getClass()) && entry.getKey().getLifecycleState().equals(LifecycleState.START)) {
                 entry.getValue().status.desiredState = LifecycleState.STOP;
                 entry.getKey().stop();
             }
