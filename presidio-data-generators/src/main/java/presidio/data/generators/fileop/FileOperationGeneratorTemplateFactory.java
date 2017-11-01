@@ -7,6 +7,7 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
+import presidio.data.generators.fileentity.EmptyFileEntityGenerator;
 import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 import presidio.data.generators.fileentity.NullFileEntityGenerator;
@@ -145,8 +146,8 @@ public class FileOperationGeneratorTemplateFactory {
         FileOperationGenerator generator = new FileOperationGenerator();
         generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FOLDER_OPENED.value, categories));
 
-        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
-        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+        IFileEntityGenerator emptyFileEntityGenerator = new EmptyFileEntityGenerator();
+        generator.setDestFileEntityGenerator(emptyFileEntityGenerator);
 
         return generator;
     }
