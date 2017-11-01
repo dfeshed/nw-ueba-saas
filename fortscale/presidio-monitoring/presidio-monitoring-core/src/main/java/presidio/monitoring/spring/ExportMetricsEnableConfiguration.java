@@ -22,7 +22,7 @@ import presidio.monitoring.services.export.MetricsExporterElasticImpl;
         havingValue = "true",
         matchIfMissing = false)
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
-public class MonitoringConfiguration {
+public class ExportMetricsEnableConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
 

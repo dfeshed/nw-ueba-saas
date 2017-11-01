@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class MetricGeneratorService {
 
-    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, Set values, String unit, Set tags, boolean reportOnce) {
+    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, List values, String unit, Set tags, boolean reportOnce) {
         List<MetricDocument> metrics = new LinkedList<>();
         long timeBetweenMetrics = (toDate.getEpochSecond() - fromDate.getEpochSecond()) / numberOfMetrics;
         for (int i = 0; i < numberOfMetrics; i++) {
@@ -30,7 +30,7 @@ public class MetricGeneratorService {
         return metrics;
     }
 
-    private long getValue(Set values) {
-        return (long) values.toArray()[new Random().nextInt(values.size())];
+    private long getValue(List values) {
+        return Long.valueOf((Integer) values.get(new Random().nextInt(values.size()))).longValue();
     }
 }

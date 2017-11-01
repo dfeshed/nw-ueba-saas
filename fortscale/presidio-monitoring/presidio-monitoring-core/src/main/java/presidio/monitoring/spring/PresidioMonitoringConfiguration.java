@@ -18,7 +18,7 @@ import presidio.monitoring.services.MetricCollectingServiceImpl;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
-@Import({fortscale.utils.elasticsearch.config.ElasticsearchConfig.class, MonitoringConfiguration.class})
+@Import({fortscale.utils.elasticsearch.config.ElasticsearchConfig.class, ExportMetricsEnableConfiguration.class})
 public class PresidioMonitoringConfiguration {
 
     @Value("${spring.application.name}")
