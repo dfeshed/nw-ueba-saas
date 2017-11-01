@@ -39,6 +39,7 @@ import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.ade.AdeFileOperationGeneratorTemplateFactory;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 
@@ -421,7 +422,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     public TimeRange generateData(FileOperationGenerator fileOperationTpeGenerator, int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo, String contextIdPattern) throws GeneratorException {
 
         StringRegexCyclicValuesGenerator contextIdGenerator = new StringRegexCyclicValuesGenerator(contextIdPattern);
-        TimeGenerator timeGenerator = new TimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 10, daysBackFrom, daysBackTo);
+        TimeGenerator timeGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, 0), LocalTime.of(endHourOfDay, 0), 10, daysBackFrom, daysBackTo);
 
         EnrichedRandomDeterministicFileGenerator enrichedRandomDeterministicFileGenerator =
                 new EnrichedRandomDeterministicFileGenerator(timeGenerator, contextIdGenerator, fileOperationTpeGenerator);
