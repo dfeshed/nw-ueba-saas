@@ -9,6 +9,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 import java.net.InetAddress;
@@ -24,6 +25,14 @@ public class ElasticsearchConfig {
 
     @Value("${elasticsearch.clustername}")
     private String EsClusterName;
+
+    //Embedded elasticsearch is used for tests only
+    //This bean must be initialized before elasticsearch client bean
+    @Profile("useEmbeddedElastic")
+    @Bean
+    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
+        return new EmbeddedElasticsearchInitialiser();
+    }
 
     @Bean
     public Client client() throws Exception {

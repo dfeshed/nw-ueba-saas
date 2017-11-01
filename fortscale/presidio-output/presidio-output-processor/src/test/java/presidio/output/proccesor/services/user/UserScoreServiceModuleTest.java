@@ -8,6 +8,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
@@ -19,7 +20,6 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticTestConfig;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.user.UserScoreService;
@@ -37,7 +37,8 @@ import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, EmbeddedElasticTestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
+@ActiveProfiles("useEmbeddedElastic")
 public class UserScoreServiceModuleTest {
 
     @Autowired

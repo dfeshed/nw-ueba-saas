@@ -18,8 +18,6 @@ import java.util.concurrent.TimeUnit;
  *
  * Created by efratn on 17/10/2017.
  */
-@Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class EmbeddedElasticsearchInitialiser {
 
     private final Logger logger = Logger.getLogger(EmbeddedElasticsearchInitialiser.class);
@@ -33,11 +31,9 @@ public class EmbeddedElasticsearchInitialiser {
     @PostConstruct
     public void setupEmbeddedElasticsearch() {
         if(embeddedElastic != null) {
-//            System.out.println("embedded elasticsearch already started, skipping startup");
             logger.debug("embedded elasticsearch already started, skipping startup");
             return;
         }
-//        System.out.println("starting embedded elasticsearch");
         logger.debug("starting embedded elasticsearch");
         try {
             embeddedElastic = EmbeddedElastic.builder()
@@ -57,7 +53,6 @@ public class EmbeddedElasticsearchInitialiser {
 
     @PreDestroy
     public void stopEmbeddedElasticsearch() {
-//        System.out.println("stopping embedded elasticsearch");
         logger.debug("stopping embedded elasticsearch");
         embeddedElastic.stop();
 

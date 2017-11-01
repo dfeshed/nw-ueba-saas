@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -29,7 +30,6 @@ import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticTestConfig;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -44,7 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class, EmbeddedElasticTestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
+@ActiveProfiles("useEmbeddedElastic")
 public class OutputExecutionServiceModuleTest {
     public static final String USER_ID_TEST_USER = "userId#testUser";
 

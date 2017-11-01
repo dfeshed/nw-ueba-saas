@@ -19,9 +19,4 @@ public class TestConfig {
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
-
-    @Bean
-    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
-        return new EmbeddedElasticsearchInitialiser();
-    }
 }
