@@ -14,7 +14,7 @@ minor=$(echo $ver| awk -F . '{print $2}')
 sp=$(echo $ver| awk -F . '{print $3}')
 hf=$(echo $ver| awk -F . '{print $4}')
 
-yumdir=/mnt/libhq-SA/YUM/RSA/${major}.${minor}/${major}.${minor}.${sp}/${major}.${minor}.${sp}.${hf}
+yumdir=/mnt/libhq-SA/YUM/centos7/RSA/${major}.${minor}/${major}.${minor}.${sp}/${major}.${minor}.${sp}.${hf}
 
 rm -rf $yumdir/rsa-nw-ui*
 info "Removed existing yum sa-ui-client RPM(s)"
