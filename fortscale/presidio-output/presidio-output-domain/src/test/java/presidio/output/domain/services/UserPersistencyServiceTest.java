@@ -1,6 +1,5 @@
 package presidio.output.domain.services;
 
-import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
@@ -20,6 +20,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.spring.TestConfig;
 
 import java.util.*;
 
@@ -28,14 +29,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class})
-public class UserPersistencyServiceTest extends EmbeddedElasticsearchTest {
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
+@ActiveProfiles("useEmbeddedElastic")
+public class UserPersistencyServiceTest{
 
     @Autowired
     private UserPersistencyService userPersistencyService;
-
-    @Autowired
-    private PresidioElasticsearchTemplate esTemplate;
 
     List<String> classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
     List<String> classifications2 = new ArrayList<>(Arrays.asList("b"));
