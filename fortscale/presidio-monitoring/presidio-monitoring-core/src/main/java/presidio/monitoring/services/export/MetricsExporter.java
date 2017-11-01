@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
-import presidio.monitoring.records.PresidioMetric;
+import presidio.monitoring.records.MetricDocument;
 
 import java.util.List;
 
@@ -25,15 +25,15 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         this.lastExport = false;
     }
 
-    public List<PresidioMetric> getMetricsForExport(boolean isLastExport) {
-        logger.info("Getting metrics from end point.");
+    public List<MetricDocument> getMetricsForExport(boolean isLastExport) {
+        logger.debug("Getting metrics from end point.");
         return presidioMetricEndPoint.getAllMetrics(isLastExport);
     }
 
     public abstract void export();
 
     public void flush() {
-        logger.info("Closing application and exporting metrics last time.");
+        logger.debug("Closing application and exporting metrics last time.");
         lastExport = true;
         export();
     }

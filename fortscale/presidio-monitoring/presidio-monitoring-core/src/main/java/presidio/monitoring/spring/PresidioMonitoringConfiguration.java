@@ -11,7 +11,7 @@ import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
-import presidio.monitoring.endPoint.PresidioSystemMetrics;
+import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
@@ -31,7 +31,7 @@ public class PresidioMonitoringConfiguration {
 
     @Bean
     public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(new PresidioSystemMetrics(applicationName));
+        return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory(applicationName));
     }
 
     @Bean

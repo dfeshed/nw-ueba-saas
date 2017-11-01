@@ -2,8 +2,8 @@ package presidio.monitoring.endPoint;
 
 import org.springframework.util.ObjectUtils;
 import presidio.monitoring.records.Metric;
-import presidio.monitoring.records.PresidioMetric;
-import presidio.monitoring.records.PresidioMetricWithLogicTime;
+import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.records.MetricWithLogicTimeDocument;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,10 +13,10 @@ import java.util.Map;
 public class PresidioMetricEndPoint {
 
     private Map<String, Metric> applicationMetrics;
-    private PresidioSystemMetrics presidioSystemMetrics;
+    private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
 
-    public PresidioMetricEndPoint(PresidioSystemMetrics presidioSystemMetrics) {
-        this.presidioSystemMetrics = presidioSystemMetrics;
+    public PresidioMetricEndPoint(PresidioSystemMetricsFactory presidioSystemMetricsFactory) {
+        this.presidioSystemMetricsFactory = presidioSystemMetricsFactory;
         this.applicationMetrics = new HashMap<>();
     }
 
@@ -29,8 +29,8 @@ public class PresidioMetricEndPoint {
         }
     }
 
-    public List<PresidioMetric> getAllMetrics(boolean lastExport) {
-        List<PresidioMetric> allMetrics = new LinkedList<>();
+    public List<MetricDocument> getAllMetrics(boolean lastExport) {
+        List<MetricDocument> allMetrics = new LinkedList<>();
         applicationMetrics.forEach((s, metric) -> {
             if (metric.isReportOneTime()) {
                 if (lastExport)
@@ -39,21 +39,21 @@ public class PresidioMetricEndPoint {
                 allMetrics.add(buildPresidioMetric(metric));
             }
         });
-        allMetrics.addAll(buildPresidioMetricsFromSystemMetrics(presidioSystemMetrics.metrics()));
+        allMetrics.addAll(buildPresidioMetricsFromSystemMetrics(presidioSystemMetricsFactory.metrics()));
         return allMetrics;
     }
 
-    private PresidioMetric buildPresidioMetric(Metric metric) {
+    private MetricDocument buildPresidioMetric(Metric metric) {
         if (ObjectUtils.isEmpty(metric.getLogicTime())) {
-            return new PresidioMetric(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getUnit());
+            return new MetricDocument(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getUnit());
         } else {
-            return new PresidioMetricWithLogicTime(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getUnit(), metric.getLogicTime());
+            return new MetricWithLogicTimeDocument(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getUnit(), metric.getLogicTime());
 
         }
     }
 
-    private List<PresidioMetric> buildPresidioMetricsFromSystemMetrics(List<Metric> systemMetrics) {
-        List<PresidioMetric> allSystemMetrics = new LinkedList<>();
+    private List<MetricDocument> buildPresidioMetricsFromSystemMetrics(List<Metric> systemMetrics) {
+        List<MetricDocument> allSystemMetrics = new LinkedList<>();
         systemMetrics.forEach(metric -> {
             allSystemMetrics.add(buildPresidioMetric(metric));
         });

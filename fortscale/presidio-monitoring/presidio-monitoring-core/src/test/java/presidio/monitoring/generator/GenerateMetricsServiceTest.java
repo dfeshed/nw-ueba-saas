@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.records.PresidioMetric;
+import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
 
 import java.time.Instant;
@@ -35,7 +35,7 @@ public class GenerateMetricsServiceTest {
         values.add(100);
         values.add(50);
         values.add(10);
-        List<PresidioMetric> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, "test", null, false);
-        Iterable<PresidioMetric> itr = presidioMetricPersistencyService.save(metricList);
+        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, "test", null, false);
+        Iterable<MetricDocument> itr = presidioMetricPersistencyService.save(metricList);
     }
 }

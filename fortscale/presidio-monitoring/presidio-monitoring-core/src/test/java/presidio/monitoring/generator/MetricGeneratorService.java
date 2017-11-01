@@ -1,8 +1,8 @@
 package presidio.monitoring.generator;
 
 
-import presidio.monitoring.records.PresidioMetric;
-import presidio.monitoring.records.PresidioMetricWithLogicTime;
+import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.records.MetricWithLogicTimeDocument;
 
 import java.time.Instant;
 import java.util.Date;
@@ -13,16 +13,16 @@ import java.util.Set;
 
 public class MetricGeneratorService {
 
-    public List<PresidioMetric> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, Set values, String unit, Set tags, boolean reportOnce) {
-        List<PresidioMetric> metrics = new LinkedList<>();
+    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, Set values, String unit, Set tags, boolean reportOnce) {
+        List<MetricDocument> metrics = new LinkedList<>();
         long timeBetweenMetrics = (toDate.getEpochSecond() - fromDate.getEpochSecond()) / numberOfMetrics;
         for (int i = 0; i < numberOfMetrics; i++) {
-            PresidioMetric metric;
+            MetricDocument metric;
             Date time = Date.from(fromDate.plusMillis(timeBetweenMetrics * i));
             if (reportOnce) {
-                metric = new PresidioMetricWithLogicTime(metricName, getValue(values), tags, unit, time);
+                metric = new MetricWithLogicTimeDocument(metricName, getValue(values), tags, unit, time);
             } else {
-                metric = new PresidioMetric(metricName, getValue(values), tags, unit);
+                metric = new MetricDocument(metricName, getValue(values), tags, unit);
             }
             metric.setTimestamp(time);
             metrics.add(metric);

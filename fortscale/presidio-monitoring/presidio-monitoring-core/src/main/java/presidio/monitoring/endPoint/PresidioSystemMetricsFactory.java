@@ -16,9 +16,9 @@ import java.util.Set;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
-public class PresidioSystemMetrics {
+public class PresidioSystemMetricsFactory {
 
-    private static final Logger logger = Logger.getLogger(PresidioSystemMetrics.class);
+    private static final Logger logger = Logger.getLogger(PresidioSystemMetricsFactory.class);
 
     private final String MEMORY = "memory";
     private final String SYSTEM = "system";
@@ -31,7 +31,7 @@ public class PresidioSystemMetrics {
     private ThreadMXBean threadMxBean;
     private Set<String> tags;
 
-    public PresidioSystemMetrics(String applicationName) {
+    public PresidioSystemMetricsFactory(String applicationName) {
         tags = new HashSet<>();
         tags.add(applicationName);
         runtime = Runtime.getRuntime();

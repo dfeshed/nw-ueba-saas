@@ -19,11 +19,10 @@ import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
-import presidio.monitoring.endPoint.PresidioSystemMetrics;
+import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
-import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
@@ -40,12 +39,12 @@ public class ExternalMonitoringConfiguration {
 
 
     @Value("${elasticsearch.host}")
-    private String EsHost; //todo get from config server
+    private String EsHost;
 
-    @Value("${elasticsearch.port}") //todo get from config server
+    @Value("${elasticsearch.port}")
     private int EsPort;
 
-    @Value("${elasticsearch.clustername}") //todo get from config server
+    @Value("${elasticsearch.clustername}")
     private String EsClusterName;
 
     @Autowired
@@ -97,13 +96,8 @@ public class ExternalMonitoringConfiguration {
     }
 
     @Bean
-    public MetricCollectingService metricCollectingService() {
-        return new MetricCollectingServiceImpl(presidioMetricEndPoint());
-    }
-
-    @Bean
-    private PresidioSystemMetrics presidioSystemMetrics() {
-        return new PresidioSystemMetrics("");
+    private PresidioSystemMetricsFactory presidioSystemMetrics() {
+        return new PresidioSystemMetricsFactory("");
     }
 
     @Bean

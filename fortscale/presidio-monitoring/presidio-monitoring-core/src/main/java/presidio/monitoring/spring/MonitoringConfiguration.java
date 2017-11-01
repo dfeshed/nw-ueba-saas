@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
