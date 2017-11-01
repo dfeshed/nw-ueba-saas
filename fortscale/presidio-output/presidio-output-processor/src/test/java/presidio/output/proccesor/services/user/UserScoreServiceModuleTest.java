@@ -1,17 +1,17 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -20,6 +20,8 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
+import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
@@ -34,10 +36,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest()
-@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
+@ActiveProfiles("useEmbeddedElastic")
 public class UserScoreServiceModuleTest {
 
     @Autowired
@@ -52,42 +53,24 @@ public class UserScoreServiceModuleTest {
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
+    @Autowired
+    public Client client;
 
+    @Autowired
     private UserScoreService userScoreService;
 
-
-    @Before
-    public void before() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
-
-        userScoreService = new UserScoreServiceImpl(
-                userPersistencyService,
-                alertPersistencyService,
-                10,
-                30,
-                75,
-                50,
-                25,
-                20,
-                15,
-                10,
-                5
-
-        );
-    }
+    @Autowired
+    protected EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
 
     @After
-    public void after() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
-
+    public void cleanTestData() {
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE)
+                .get();
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
+                .get();
     }
-
 
     @Test
     public void testSingleUserScoreCalculation() {
@@ -115,6 +98,7 @@ public class UserScoreServiceModuleTest {
 
     }
 
+    @Ignore
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -153,6 +137,7 @@ public class UserScoreServiceModuleTest {
 
     }
 
+    @Ignore
     @Test
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -191,6 +176,7 @@ public class UserScoreServiceModuleTest {
     }
 
     @Test
+    @Ignore
     public void testBulkUserScore() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
             AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
@@ -231,7 +217,7 @@ public class UserScoreServiceModuleTest {
     @Test
     public void testBulkUserScoreLargeScale() throws InterruptedException {
         final int DAYS_COUNT = 110;
-        final int USERS_COUNT = 4000;
+        final int USERS_COUNT = 1500;
         userScoreService = new UserScoreServiceImpl(
                 userPersistencyService,
                 alertPersistencyService,
@@ -252,10 +238,10 @@ public class UserScoreServiceModuleTest {
         List<LocalDateTime> dates = getListOfLastXdays(DAYS_COUNT);
 
         //For each user generate user and list of alerts - 2 alerts per days
+        List<Alert> alertsAllUsers = new ArrayList<>();
         for (int i = 0; i < USERS_COUNT; i++) {
-            User user1 = new User("userId" + i, "username" + 1, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+            User user1 = new User("userId" + i, "username" + i, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
             user1.setSeverity(null);
-            List<Alert> alerts = new ArrayList<>();
             //For each day generate to alerts
             for (LocalDateTime day : dates) {
                 Date alert1StartTime = new Date(Date.from(day.plusHours(3).atZone(ZoneId.systemDefault()).toInstant()).getTime());
@@ -264,16 +250,16 @@ public class UserScoreServiceModuleTest {
                 Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant());
                 Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant());
                 //Alerts per user per day
-                alerts.add(new Alert("userId" + i, "smartId", null, "userName" + 1, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 0D));
-                alerts.add(new Alert("userId" + i, "smartId", null, "userName" + 1, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
+                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 0D));
+                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
             }
 
 
             userList.add(user1);
-
-            //Save all the user's alerts
-            alertPersistencyService.save(alerts);
         }
+        //Save all the user's alerts
+        alertPersistencyService.save(alertsAllUsers);
+
         //Save all the users
         userPersistencyService.save(userList);
 

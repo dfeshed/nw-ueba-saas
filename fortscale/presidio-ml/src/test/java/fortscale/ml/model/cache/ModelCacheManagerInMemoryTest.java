@@ -35,7 +35,7 @@ public class ModelCacheManagerInMemoryTest {
     int cacheSize = 100;
 
     @Test
-    public void shouldReloadModelToCacheOnceExpired()
+    public void shouldNotReloadModelToCacheOnceExpired()
     {
         ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize);
         Instant eventTime = Instant.now();
@@ -49,13 +49,13 @@ public class ModelCacheManagerInMemoryTest {
         Model model = modelCacheManagerInMemory.getModel(context, eventTime);
         Assert.assertEquals(null,model);
         Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,eventTime, oldestAllowedModelTime)).thenReturn(null);
+
         Model returnedModel = () -> 0;
         Instant newEventEndTime = eventTime.plus(maxDiffBetweenCachedModelAndEvent).plusMillis(1);
-        ModelDAO returnedModelDao =
-                new ModelDAO("sessionId", contextId, returnedModel, eventTime, newEventEndTime);
+        ModelDAO returnedModelDao = new ModelDAO("sessionId", contextId, returnedModel, eventTime, newEventEndTime);
         Mockito.when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf,contextId,newEventEndTime, newEventEndTime.minus(maxDiffBetweenCachedModelAndEvent))).thenReturn(returnedModelDao );
         model = modelCacheManagerInMemory.getModel(context, newEventEndTime);
-        Assert.assertNotNull(model);
+        Assert.assertEquals(null,model);
     }
 
     @Test

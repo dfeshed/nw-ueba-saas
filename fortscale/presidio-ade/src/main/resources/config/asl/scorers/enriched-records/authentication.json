@@ -15,7 +15,7 @@
               "model": {
                 "name": "startInstant.userId.authentication"
               },
-              "number-of-partitions-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "min-number-of-partitions-to-influence": 1,
               "max-rare-timestamp-count": 5,
               "max-num-of-rare-timestamps": 5,

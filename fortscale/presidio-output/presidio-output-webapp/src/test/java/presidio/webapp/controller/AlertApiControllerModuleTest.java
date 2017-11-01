@@ -8,12 +8,12 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.client.RestTemplate;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.webapp.controllers.alerts.AlertsApi;
@@ -28,10 +28,10 @@ import java.util.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore //TODO- remove this when we will have solution for elastic tests
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
+@ActiveProfiles("useEmbeddedElastic")
 public class AlertApiControllerModuleTest {
 
     private static final String ALERTS_URI = "/alerts";
@@ -41,9 +41,6 @@ public class AlertApiControllerModuleTest {
 
     @Autowired
     private AlertsApi alertsApi;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
@@ -78,7 +75,7 @@ public class AlertApiControllerModuleTest {
     }
 
     @After
-    public void tearDown() {
+    public void cleanTestData() {
         //delete the created users
         alertRepository.delete(alert1);
         alertRepository.delete(alert2);

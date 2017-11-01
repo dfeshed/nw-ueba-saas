@@ -6,7 +6,8 @@ import org.apache.commons.collections.map.SingletonMap;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.data.generators.common.*;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
 
 import java.time.Instant;
@@ -20,12 +21,12 @@ import java.util.Map;
  */
 public class AdeAggregationRecordHourlyGenerator implements IEventGenerator<AdeAggregationRecord> {
     private IStringListGenerator contextIdGenerator;
-    private TimeGenerator startInstantGenerator;
+    private ITimeGenerator startInstantGenerator;
     private IMapGenerator valueToAggregatedFeatureGenerator;
     private final static String CONTEXT = "userId";
 
     public AdeAggregationRecordHourlyGenerator(IMapGenerator valueToAggregatedFeatureGenerator,
-                                               TimeGenerator startInstantGenerator,
+                                               ITimeGenerator startInstantGenerator,
                                                IStringListGenerator contextIdGenerator) throws GeneratorException {
 
 

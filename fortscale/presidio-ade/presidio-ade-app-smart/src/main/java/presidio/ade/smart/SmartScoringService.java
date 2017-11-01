@@ -71,4 +71,11 @@ public class SmartScoringService {
 					"feature scores = {}.", smartRecord, levelOneFeatureScores);
 		}
 	}
+
+	/**
+	 * Reset model cache
+	 */
+	public void resetModelCache(){
+		scoringService.resetModelCache();
+	}
 }
