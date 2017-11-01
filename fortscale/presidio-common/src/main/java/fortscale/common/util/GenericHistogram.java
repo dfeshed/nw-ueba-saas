@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.common.feature.FeatureValue;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class GenericHistogram implements Serializable, FeatureValue {
@@ -68,7 +65,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
         return histogram.keySet();
     }
 
-    public Double getMaxCount() { return histogram.get(maxObject);}
+    public Double getMaxCount() { return maxObject != null ? histogram.get(maxObject): null;}
     public Object getMaxCountObject() { return maxObject;}
     public Double getMaxCountFromTotalCount() { return getMaxCount()/ totalCount;}
 
@@ -96,6 +93,24 @@ public class GenericHistogram implements Serializable, FeatureValue {
 
         this.totalCount +=count;
 
+    }
+
+    public void remove(String val){
+        if(val == null){
+            return;
+        }
+
+        Double count = histogram.remove(val);
+        if(count != null){
+            if(maxObject.equals(val)){
+                if(histogram.size() > 0) {
+                    maxObject = histogram.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+                } else{
+                    maxObject = null;
+                }
+            }
+            this.totalCount -= count;
+        }
     }
 
     public GenericHistogram add(GenericHistogram histogram) {
