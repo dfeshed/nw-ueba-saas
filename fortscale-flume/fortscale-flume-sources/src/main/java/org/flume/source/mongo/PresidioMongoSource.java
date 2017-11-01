@@ -21,6 +21,8 @@ import org.apache.flume.persistency.mongo.MongoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -41,6 +43,9 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 
     private static ObjectMapper mapper;
+
+    private static PresidioExternalMonitoringService presidioExternalMonitoringService;
+    private PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory;
 
     static {
         mapper = new ObjectMapper();
@@ -109,7 +114,14 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
 
     @Override
     public void start() {
-//        sourceCounter.start();
+        presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
+        try {
+            presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService();
+        } catch (Exception e) {
+            final String errorMessage = "Failed to start " + this.getClass().getSimpleName();
+            logger.error(errorMessage, e);
+        }
+
         super.start();
     }
 
@@ -158,7 +170,6 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
 
     @Override
     public void stop() {
-//        sourceCounter.stop();
         super.stop();
     }
 
@@ -175,7 +186,7 @@ public class PresidioMongoSource extends AbstractBatchableEventDrivenSource impl
     }
 
     private void processEvent(AbstractDocument event) throws JsonProcessingException {
-//        sourceCounter.incrementEventAcceptedCount();
+        presidioExternalMonitoringService.
         final String eventAsString;
         eventAsString = mapper.writeValueAsString(event);
         final Event flumeEvent = EventBuilder.withBody(eventAsString, Charset.defaultCharset());
