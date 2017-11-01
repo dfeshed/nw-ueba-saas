@@ -21,7 +21,7 @@ function cleanAndMakeDirs {
 function writeRPMSpecFile {
   info "Writing spec file to $RPM_SPEC_FILE"
   scriptDir="$(dirname "$0")"
-  sed $scriptDir/rpm.spec.template -e "s@STABILITY@$STABILITY_ID@g" -e "s@NETWITNESS_VERSION@$NETWITNESS_VERSION@g" -e "s@GIT_COMMIT@${GIT_COMMIT:0:10}@g" -e "s@DATE@$1@g" -e "s@TMP_RPM_BUILD_ROOT@$TMP_RPM_BUILD_ROOT@g" -e "s@RPM_BUILD_ROOT@$RPM_BUILD_ROOT@g" -e "s@VERSION@$2@g" > $RPM_SPEC_FILE
+  sed $scriptDir/rpm.spec.template -e "s@STABILITY@$STABILITY_ID@g" -e "s@NETWITNESS_VERSION@$NETWITNESS_VERSION@g" -e "s@GIT_COMMIT@${GIT_COMMIT:0:10}@g" -e "s@DATE@$1@g" -e "s@TMP_RPM_BUILD_ROOT@$TMP_RPM_BUILD_ROOT@g" -e "s@RPM_BUILD_ROOT@$RPM_BUILD_ROOT@g" > $RPM_SPEC_FILE
 }
 
 function makeRPMDirs() {
@@ -35,7 +35,7 @@ function buildRPM() {
     info "Begin RPM Processing"
 
     # create .spec file for RPM
-    writeRPMSpecFile $1 $2
+    writeRPMSpecFile $1
 
     # Run the RPM
     cd $SA_RPM_ROOT/BUILD
@@ -59,7 +59,7 @@ makeRPMDirs
 cp -rf $SA_ROOT/dist ${TMP_RPM_BUILD_ROOT}${APP_INSTALL_FOLDER}/html
 gzipAssets
 
-buildRPM $timestamp "el7"
+buildRPM $timestamp
 
 mv $SA_RPM_ROOT/*.rpm $SA_RPM_ROOT/RPMS/noarch
 
