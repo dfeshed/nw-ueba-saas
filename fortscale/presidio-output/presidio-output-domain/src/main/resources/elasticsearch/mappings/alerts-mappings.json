@@ -1,6 +1,22 @@
 {
   "alert": {
     "properties": {
+      "id": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
+      "createdDate": {
+        "store": true,
+        "type": "date"
+      },
+      "updatedDate": {
+        "store": true,
+        "type": "date"
+      },
+      "updatedBy": {
+        "store": true,
+        "type": "string"
+      },
       "classifications": {
         "store": true,
         "type": "string",
