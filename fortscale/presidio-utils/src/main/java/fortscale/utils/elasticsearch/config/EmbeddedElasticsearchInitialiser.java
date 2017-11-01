@@ -49,7 +49,7 @@ public class EmbeddedElasticsearchInitialiser {
                     .build()
                     .start();
         } catch (Exception e) {
-            stopEmbeddedElasticsearch();
+//            stopEmbeddedElasticsearch();
             embeddedElastic = null;
             Assert.fail("Failed to start elasticsearch");
         }
