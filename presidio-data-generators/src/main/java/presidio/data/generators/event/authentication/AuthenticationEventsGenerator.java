@@ -9,15 +9,14 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.IStringListGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.domain.User;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.IEventGenerator;
-import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.FixedMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
-import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
@@ -28,7 +27,7 @@ import java.util.List;
 public class AuthenticationEventsGenerator implements IEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIDGenerator;
-    private TimeGenerator timeGenerator;
+    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
 
@@ -48,7 +47,7 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         User user = userGenerator.getNext();
 
         eventIDGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
-        timeGenerator = new TimeGenerator();
+        timeGenerator = new MinutesIncrementTimeGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Logon Activity"});
 
         operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
@@ -93,11 +92,11 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         return evList;
     }
 
-    public TimeGenerator getTimeGenerator() {
+    public ITimeGenerator getTimeGenerator() {
         return timeGenerator;
     }
 
-    public void setTimeGenerator(TimeGenerator timeGenerator) {
+    public void setTimeGenerator(ITimeGenerator timeGenerator) {
         this.timeGenerator = timeGenerator;
     }
 

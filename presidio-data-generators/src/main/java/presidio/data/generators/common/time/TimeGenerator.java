@@ -2,7 +2,10 @@ package presidio.data.generators.common.time;
 
 import presidio.data.generators.common.GeneratorException;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +101,7 @@ public class TimeGenerator implements ITimeGenerator {
     }
     
     private Instant calcEndInstantInDay(Instant startDay){
-        return startDay.plus(endLocalTime.getHour() * 60 + endLocalTime.getMinute(), ChronoUnit.MINUTES);
+        return startDay.plus(endLocalTime.toNanoOfDay(), ChronoUnit.NANOS);
     }
     
     public class TimeGeneratorIterator{
@@ -127,7 +130,7 @@ public class TimeGenerator implements ITimeGenerator {
                 return;
             }
             
-            nextInstant = nextInstant.plus(interval, ChronoUnit.MINUTES);
+            nextInstant = nextInstant.plus(interval, ChronoUnit.MILLIS);
 
             // if current time is after endTimeInDay, need to move time interval to next day
             if (nextInstant.getEpochSecond() >= endInstantInCurDay.getEpochSecond()) {

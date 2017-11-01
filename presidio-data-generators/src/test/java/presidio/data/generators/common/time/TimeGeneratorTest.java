@@ -23,8 +23,23 @@ public class TimeGeneratorTest {
         LocalTime startTime = LocalTime.of(startHour,startMin);
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
-        TimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertTrue(TG.hasNext());
+    }
+
+    @Test
+    public void MillisIncrementDebugTest() throws GeneratorException {
+        int startHour = 8;      int startMin = 0;
+        int endHour = 9;        int endMin = 0;
+        int daysBackFrom = 5;   int daysBackTo = 0;
+        int interval = 436;
+
+        LocalTime startTime = LocalTime.of(startHour,startMin, 20, 115);
+        LocalTime endTime = LocalTime.of(endHour,endMin, 20, 500);
+
+        ITimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
+        while (TG.hasNext()) System.out.println(TG.getNext().toString());
+        Assert.assertTrue(true);
     }
 
     @Test
@@ -37,7 +52,7 @@ public class TimeGeneratorTest {
         LocalTime startTime = LocalTime.of(startHour,startMin);
         LocalTime endTime = LocalTime.of(endHour,endMin);
 
-        TimeGenerator TG = new TimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime,endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertTrue(TG.hasNext());
     }
 
@@ -54,7 +69,7 @@ public class TimeGeneratorTest {
         String expected = LocalDate.now(Clock.systemUTC()).minus(daysBackFrom, ChronoUnit.DAYS).toString() + "T"
                 + LocalTime.of(startHour, startMin).toString() + ":00Z";
 
-        TimeGenerator TG = new TimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
         Assert.assertEquals(TG.getNext().toString(), expected);
     }
 
@@ -67,7 +82,7 @@ public class TimeGeneratorTest {
 
         LocalTime startTime = LocalTime.of(startHour,startMin);
         LocalTime endTime = LocalTime.of(endHour,endMin);
-        TimeGenerator TG = new TimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
+        MinutesIncrementTimeGenerator TG = new MinutesIncrementTimeGenerator(startTime, endTime,interval, daysBackFrom, daysBackTo);
 
         for (int i = 0; i<TG.getSize(); i++) TG.getNext();
         TG.getNext();
