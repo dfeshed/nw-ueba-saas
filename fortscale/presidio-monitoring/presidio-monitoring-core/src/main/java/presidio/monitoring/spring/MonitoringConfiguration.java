@@ -21,8 +21,8 @@ import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 @Configuration
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@ConditionalOnProperty(prefix = "spring.aop",
-        name = "proxy.target.class",
+@ConditionalOnProperty(prefix = "enable.metrics",
+        name = "export",
         havingValue = "true",
         matchIfMissing = false)
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
