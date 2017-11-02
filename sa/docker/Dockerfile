@@ -6,6 +6,7 @@ RUN yum -y --disablerepo=* --enablerepo=nginx install nginx-1.12.1-1.el7.ngx.x86
 ARG RPM_FILE
 RUN rpm -ivh /tmp/$RPM_FILE
 
+COPY cert/* /etc/nginx/
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/saui.conf /etc/nginx/conf.d/saui.conf
 
