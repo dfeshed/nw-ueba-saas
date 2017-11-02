@@ -2,15 +2,6 @@
 @import 'components/manifest';
 
 
-.liquid-container,
-.liquid-child {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  display: flex;
-}
 
 .host-content {
   .liquid-container,
@@ -66,6 +57,17 @@
   color: text-color(neutral);
   background-color: background-color(custom, respond);
   @include rsa-col(justify,fill);
+
+  .liquid-container,
+  .liquid-child {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+  }
+
   &-list {
     transition-property: background-color right;
     transition-duration: 0.3s;
