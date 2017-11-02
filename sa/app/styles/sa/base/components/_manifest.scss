@@ -1,2 +1,8 @@
 // Is this used?
 @import 'list-button';
+
+.recon-standalone-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
