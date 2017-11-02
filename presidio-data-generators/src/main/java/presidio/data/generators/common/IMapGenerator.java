@@ -3,8 +3,13 @@ package presidio.data.generators.common;
 import java.util.Map;
 
 /**
- * Created by barak_schuster on 9/4/17.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
-public interface IMapGenerator<K,V> {
-    Map<K,V> getNext();
+public interface IMapGenerator<K, V> {
+    boolean hasNext();
+
+    Map<K, V> getNext();
+
+    void reset();
 }

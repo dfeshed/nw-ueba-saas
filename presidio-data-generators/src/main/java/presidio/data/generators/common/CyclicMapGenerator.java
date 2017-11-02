@@ -21,6 +21,11 @@ public class CyclicMapGenerator<K, V> extends CyclicValuesGenerator<Map<K, V>> i
         this(toArray(fixedMaps));
     }
 
+    @Override
+    public boolean hasNext() {
+        return true;
+    }
+
     @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V>[] toArray(List<Map<K, V>> fixedMaps) {
         return fixedMaps.toArray((Map<K, V>[])new HashMap[fixedMaps.size()]);
