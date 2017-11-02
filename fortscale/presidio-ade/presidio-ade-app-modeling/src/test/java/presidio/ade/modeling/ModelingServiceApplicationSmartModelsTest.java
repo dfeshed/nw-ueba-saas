@@ -37,6 +37,7 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStoreCon
 import presidio.ade.modeling.config.ModelingServiceConfiguration;
 import presidio.ade.test.utils.generators.AccumulatedSmartsDailyGenerator;
 import presidio.data.generators.common.*;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 
 import java.time.Instant;
@@ -204,7 +205,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     public void GenerateAccumulatedSmarts(LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap, int numOfSmarts, String generatorContextIdPattern, int daysBackTo) throws GeneratorException {
         IStringGenerator contextIdGenerator = new StringRegexCyclicValuesGenerator(generatorContextIdPattern);
-        TimeGenerator startInstantGenerator = new TimeGenerator(LocalTime.of(0, 0), LocalTime.of(0, 0), 1440, daysBackTo, 1);
+        TimeGenerator startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(0, 0), 1440, daysBackTo, 1);
         AccumulatedSmartsDailyGenerator accumulatedSmartsGenerator = new AccumulatedSmartsDailyGenerator(contextIdGenerator, startInstantGenerator, featuresGroupToScoreAndProbabilityMap, numOfSmarts);
         List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulatedSmartsGenerator.generate();
         smartAccumulationDataStore.store(accumulatedSmartRecords, "userId_hourly");
