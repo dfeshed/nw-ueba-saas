@@ -215,46 +215,47 @@ test('storyPointsWithEvents returns sum of storyline and events including isOpen
   };
 
   const result = storyPointsWithEvents(Immutable.from(state));
-  assert.deepEqual(result, [
+  // Ensure that the returned data structures are not immutable, as this will currently break downstream components.
+  assert.equal(Immutable.isImmutable(result), false, 'The result of the selector is not immutable');
+  assert.equal(Immutable.isImmutable(result[1].events), false, 'The nested events array is not immutable');
+  // Because we have called asMutable() on the storyline and storyline events in the selector, the
+  // resulting array from storyPointsWithEvents() cannot be compared using assert.deepEqual, since
+  // prototype functions/properties were made own properties via the asMutable() func call. Instead
+  // doing a targeted deep equal on specific properties of the array objects.
+  assert.deepEqual(result[0].events, [
     {
-      events: [
-        {
-          description: 'IPIOC',
-          from: 'INENDEBS1L2C',
-          id: '586ecf95ecd25950034e1310',
-          indicatorId: 'alert1'
-        }
-      ],
-      indicator: {
-        alert: {
-          numEvents: 10
-        },
-        id: 'alert1',
-        items: [
-          {
-            id: 'abc123'
-          }
-        ]
-      },
-      isOpen: false
-    },
-    {
-      events: [],
-      indicator: {
-        alert: {
-          numEvents: 20
-        },
-        id: 'alert2'
-      }
-    },
-    {
-      events: [],
-      indicator: {
-        alert: {
-          numEvents: 30
-        },
-        id: 'alert3'
-      }
+      description: 'IPIOC',
+      from: 'INENDEBS1L2C',
+      id: '586ecf95ecd25950034e1310',
+      indicatorId: 'alert1'
     }
   ]);
+  assert.deepEqual(result[0].indicator, {
+    alert: {
+      numEvents: 10
+    },
+    id: 'alert1',
+    items: [
+      {
+        id: 'abc123'
+      }
+    ]
+  });
+  assert.equal(result[0].isOpen, false);
+  assert.deepEqual(result[1].events, []);
+  assert.deepEqual(result[1].indicator, {
+    alert: {
+      numEvents: 20
+    },
+    id: 'alert2'
+  });
+  assert.ok(result[1].isOpen);
+  assert.deepEqual(result[2].events, []);
+  assert.deepEqual(result[2].indicator, {
+    alert: {
+      numEvents: 30
+    },
+    id: 'alert3'
+  });
+  assert.ok(result[2].isOpen);
 });

@@ -1,3 +1,4 @@
+import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
@@ -5,26 +6,57 @@ import arrayFilterByList from 'respond/utils/array/filter-by-list';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
 const { createSelector } = reselect;
 
+const incidentState = (state) => state.respond.incident;
+
 /**
  * Retrieves the respond.incident.info object from state, or an empty object.
  * @type {Object}
  * @private
  */
-const incidentInfo = ({ respond: { incident: { info } } }) => info || {};
+export const incidentInfo = createSelector(
+  incidentState,
+  (incidentState) => incidentState.info || {}
+);
+
+export const getStoryline = createSelector(
+  incidentState,
+  (incidentState) => incidentState.storyline
+);
+
+export const getStorylineEvents = createSelector(
+  incidentState,
+  (incidentState) => incidentState.storylineEvents
+);
 
 /**
  * Retrieves the storyline array (if any) from state, or an empty array.
  * @returns {Object[]}
  * @private
  */
-const incidentIndicators = ({ respond: { incident: { storyline } } }) => storyline || [];
+export const incidentIndicators = createSelector(
+  getStoryline,
+  (storyline) => {
+    storyline = storyline || [];
+    // Stop-gap: the original alerts table cannot be used currently with immutable data structures; until that
+    // is resolved, we need to make the data mutable again.
+    return Immutable.asMutable(storyline, { deep: true });
+  }
+);
 
 /**
  * Retrieves the storylineEvents array (if any) from state, or an empty array.
  * @type {{ indicatorId: String, events: Object[] }[]}
  * @private
  */
-const storylineEvents = ({ respond: { incident: { storylineEvents } } }) => storylineEvents || [];
+export const storylineEvents = createSelector(
+  getStorylineEvents,
+  (storylineEvents) => {
+    storylineEvents = storylineEvents || [];
+    // Stop-gap: the original alerts table cannot be used currently with immutable data structures; until that
+    // is resolved, we need to make the data mutable again.
+    return Immutable.asMutable(storylineEvents, { deep: true });
+  }
+);
 
 /**
  * Counts all the indicators in the storyline.
@@ -43,9 +75,7 @@ export const storyPointCount = createSelector(
  */
 export const storyPoints = createSelector(
   incidentIndicators,
-  (incidentIndicators) => {
-    return incidentIndicators.map((indicator) => StoryPoint.create({ indicator }));
-  }
+  (incidentIndicators) => incidentIndicators.map((indicator) => StoryPoint.create({ indicator }))
 );
 
 /**
@@ -159,7 +189,11 @@ export const storyEventCountExpected = createSelector(
  * Returns the `respond.incident.selection` state.
  * @private
  */
-const incidentSelection = ({ respond: { incident: { selection } } }) => selection;
+export const incidentSelection = createSelector(
+  incidentState,
+  (incidentState) => incidentState.selection
+);
+
 
 /**
  * If the current selections are storyPoints, returns selected storypoint ids; otherwise empty array.

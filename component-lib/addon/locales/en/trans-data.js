@@ -801,6 +801,7 @@ export default {
       indicators: 'Indicators',
       indicatorsCutoff: 'Showing {{limit}} of {{expected}} indicators',
       events: 'Events',
+      loadingEvents: 'Loading events...',
       view: {
         graph: 'View: Graph',
         datasheet: 'View: Datasheet'

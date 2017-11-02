@@ -801,6 +801,7 @@ export default {
       indicators: 'ja_Indicators',
       indicatorsCutoff: 'ja_Showing {{limit}} of {{expected}} indicators',
       events: 'ja_Events',
+      loadingEvents: 'ja_Loading events...',
       view: {
         graph: 'ja_View: Graph',
         datasheet: 'ja_View: Datasheet'
