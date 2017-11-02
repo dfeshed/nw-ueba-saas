@@ -17,25 +17,14 @@ import {
   File
 } from './fetch';
 
-// NOOP function to replace Ember.K
-const NOOP = () => {};
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
 const { Logger } = Ember;
 
-/**
- * Action creator for fetching an files schema.
- * @method fetchSchemaInfo
- * @public
- * @returns {Object}
- */
-const fetchSchemaInfo = () => {
-  return {
-    type: ACTION_TYPES.SCHEMA_RETRIEVE,
-    promise: Schema.fetchSchema(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.SCHEMA_RETRIEVE, response)
-    }
-  };
+const _handleError = (response, type) => {
+  Logger.error(type, response);
 };
+
 
 /**
  * Action creator that dispatches a set of actions for fetching files (with or without filters) and sorted by one field.
@@ -56,6 +45,48 @@ const _fetchFiles = () => {
     });
   };
 };
+
+/**
+ * Action Creator to retrieve the paged files. Increments the current page number and updates the state.
+ * @return {function} redux-thunk
+ * @public
+ */
+const getPageOfFiles = () => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
+    dispatch(_fetchFiles());
+  };
+};
+
+/**
+ * Action Creator for fetching the first page of data. Before sending the request resets the state
+ * @returns {function(*)}
+ * @private
+ */
+const _getFirstPageOfFiles = () => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.RESET_FILES });
+    dispatch(getPageOfFiles());
+  };
+};
+
+
+/**
+ * Action creator for fetching an files schema.
+ * @method fetchSchemaInfo
+ * @public
+ * @returns {Object}
+ */
+const fetchSchemaInfo = () => {
+  return {
+    type: ACTION_TYPES.SCHEMA_RETRIEVE,
+    promise: Schema.fetchSchema(),
+    meta: {
+      onSuccess: (response) => Logger.debug(ACTION_TYPES.SCHEMA_RETRIEVE, response)
+    }
+  };
+};
+
 
 /**
  * An action creator for dispatches a set of actions for updating file filter criteria and re-running fetch of the
@@ -138,18 +169,6 @@ const sortBy = (sortField, isSortDescending) => {
 };
 
 /**
- * Action Creator to retrieve the paged files. Increments the current page number and updates the state.
- * @return {function} redux-thunk
- * @public
- */
-const getPageOfFiles = () => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.INCREMENT_PAGE_NUMBER });
-    dispatch(_fetchFiles());
-  };
-};
-
-/**
  * Action creator for adding the system filters (mac, linux and windows)
  * @param expression
  * @returns {function(*)}
@@ -163,20 +182,7 @@ const addSystemFilter = (expressions) => {
 };
 
 /**
- * Action Creator for fetching the first page of data. Before sending the request resets the state
- * @returns {function(*)}
- * @private
- */
-const _getFirstPageOfFiles = () => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.RESET_FILES });
-    dispatch(getPageOfFiles());
-  };
-};
-
-/**
  * Action creator for exporting files.
- * @returns {function(*)}
  * @public
  */
 const exportFileAsCSV = () => {
@@ -224,7 +230,7 @@ const resetDownloadId = () => ({ type: ACTION_TYPES.RESET_DOWNLOAD_ID });
  * @method createCustomSearch
  * @public
  */
-const createCustomSearch = (filter, schemas, filterType, { onSuccess = NOOP, onFailure = NOOP }) => {
+const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDefault) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.UPDATE_FILTER_LIST,
@@ -232,19 +238,15 @@ const createCustomSearch = (filter, schemas, filterType, { onSuccess = NOOP, onF
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.UPDATE_FILTER_LIST, response);
-          onSuccess(response);
+          callbacks.onSuccess(response);
         },
         onFailure: (response) => {
           _handleError(ACTION_TYPES.UPDATE_FILTER_LIST, response);
-          onFailure(response);
+          callbacks.onFailure(response);
         }
       }
     });
   };
-};
-
-const _handleError = (response, type) => {
-  Logger.error(type, response);
 };
 
 const setFilesFilter = (filterId) => {

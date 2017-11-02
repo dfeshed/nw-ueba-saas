@@ -35,11 +35,11 @@ export function getField(params) {
     for (let j = 0; j <= i; j++) {
       const val = obj[keys[j]];
       const val1 = (val !== undefined && val.length !== 0) ? val : '';
-      obj = (i == j) ? parseValue(val1) : val1;
+      obj = (i === j) ? parseValue(val1) : val1;
     }
     if (obj instanceof Array) {
       const list = [];
-      obj = (obj !== undefined && obj !== null) ? obj : '';
+      obj = obj ? obj : '';
       obj.forEach((arr) => {
         const val1 = (keys[i + 1] !== undefined) ? arr[keys[i + 1]] : arr[keys[i]];
         const val = (arr instanceof Object) ? val1 : arr;

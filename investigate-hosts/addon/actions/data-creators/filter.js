@@ -26,8 +26,7 @@ const { Logger } = Ember;
  */
 const addFilter = (expression) => ({ type: ACTION_TYPES.ADD_HOST_FILTER, payload: expression });
 
-// NOOP function to replace Ember.K
-const NOOP = () => {};
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 /**
  * An action creator for removing the expression from the list of expression and also dispatch the action to re-fresh the host machine list
@@ -67,7 +66,7 @@ const setActiveFilter = (filter) => ({ type: ACTION_TYPES.SET_ACTIVE_FILTER, pay
  * @method createCustomSearch
  * @public
  */
-const createCustomSearch = (filter, schemas, filterType, { onSuccess = NOOP, onFailure = NOOP }) => {
+const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDefault) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.UPDATE_FILTER_LIST,
@@ -75,11 +74,11 @@ const createCustomSearch = (filter, schemas, filterType, { onSuccess = NOOP, onF
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.UPDATE_FILTER_LIST, response);
-          onSuccess(response);
+          callbacks.onSuccess(response);
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.UPDATE_FILTER_LIST, response);
-          onFailure(response);
+          callbacks.onFailure(response);
         }
       }
     });
@@ -116,12 +115,10 @@ const addSystemFilter = (expression) => {
 
 /**
  * Action creator for deleting the saved search
- * @param onSuccess
- * @param onFailure
  * @returns {function(*, *)}
  * @public
  */
-const deleteSavedSearch = (id, { onSuccess = NOOP, onFailure = NOOP }) => {
+const deleteSavedSearch = (id, callbacks = callbacksDefault) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.DELETE_SAVED_SEARCH,
@@ -129,11 +126,11 @@ const deleteSavedSearch = (id, { onSuccess = NOOP, onFailure = NOOP }) => {
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
-          onSuccess(response);
+          callbacks.onSuccess(response);
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
-          onFailure(response);
+          callbacks.onFailure(response);
         }
       }
     });

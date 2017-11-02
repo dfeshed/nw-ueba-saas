@@ -4,8 +4,55 @@ import { handleError } from '../creator-utils';
 import Ember from 'ember';
 const { Logger } = Ember;
 
-// NOOP function to replace Ember.K
-const NOOP = () => {};
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
+/**
+ * Action creator for notifying all agent status
+ * @method notifyAgentStatus
+ * @private
+ * @returns {Object}
+ */
+const _notifyAgentStatus = () => {
+  return (dispatch, getState) => {
+    const { hostList, stopAgentStream } = getState().endpoint.machines;
+    if (stopAgentStream) {
+      stopAgentStream();
+    }
+    if (hostList.length <= 0) {
+      return;
+    }
+    Machines.notifyAgentStatus({
+      onInit: (stopStreamFn) => dispatch({ type: ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED, payload: stopStreamFn }),
+      onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_AGENT_STATUS, payload })
+    });
+  };
+};
+
+/**
+ * Action creator for fetching all Machines
+ * @method getPageOfMachines
+ * @public
+ * @returns {Object}
+ */
+const getPageOfMachines = () => {
+  return (dispatch, getState) => {
+    const { hostColumnSort } = getState().endpoint.machines;
+    const { systemFilter, expressionList } = getState().endpoint.filter;
+    dispatch({
+      type: ACTION_TYPES.FETCH_ALL_MACHINES,
+      promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.FETCH_ALL_MACHINES, response);
+          dispatch(_notifyAgentStatus());
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
+        }
+      }
+    });
+  };
+};
 
 /**
  * Action creator for fetching all filters
@@ -56,32 +103,6 @@ const getAllSchemas = () => {
 };
 
 /**
- * Action creator for fetching all Machines
- * @method getPageOfMachines
- * @public
- * @returns {Object}
- */
-const getPageOfMachines = () => {
-  return (dispatch, getState) => {
-    const { hostColumnSort } = getState().endpoint.machines;
-    const { systemFilter, expressionList } = getState().endpoint.filter;
-    dispatch({
-      type: ACTION_TYPES.FETCH_ALL_MACHINES,
-      promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
-      meta: {
-        onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.FETCH_ALL_MACHINES, response);
-          dispatch(_notifyAgentStatus());
-        },
-        onFailure: (response) => {
-          handleError(ACTION_TYPES.FETCH_ALL_MACHINES, response);
-        }
-      }
-    });
-  };
-};
-
-/**
  * Action creator for fetching page wise Machines
  * @method getNextMachines
  * @public
@@ -113,7 +134,7 @@ const getNextMachines = () => {
  * @public
  * @returns {Object}
  */
-const createCustomSearch = (filter, { onSuccess = NOOP, onFailure = NOOP }) => {
+const createCustomSearch = (filter, callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const { filterSelected, visibleSchemas } = getState().endpoint.filter;
     dispatch({
@@ -122,11 +143,11 @@ const createCustomSearch = (filter, { onSuccess = NOOP, onFailure = NOOP }) => {
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.CREATE_CUSTOM_SEARCH, response);
-          onSuccess(response);
+          callbacks.onSuccess(response);
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.CREATE_CUSTOM_SEARCH, response);
-          onFailure(response);
+          callbacks.onFailure(response);
         }
       }
     });
@@ -155,29 +176,6 @@ const exportAsFile = () => {
           handleError(ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID, response);
         }
       }
-    });
-  };
-};
-
-
-/**
- * Action creator for notifying all agent status
- * @method notifyAgentStatus
- * @private
- * @returns {Object}
- */
-const _notifyAgentStatus = () => {
-  return (dispatch, getState) => {
-    const { hostList, stopAgentStream } = getState().endpoint.machines;
-    if (stopAgentStream) {
-      stopAgentStream();
-    }
-    if (hostList.length <= 0) {
-      return;
-    }
-    Machines.notifyAgentStatus({
-      onInit: (stopStreamFn) => dispatch({ type: ACTION_TYPES.FETCH_AGENT_STATUS_STREAM_INITIALIZED, payload: stopStreamFn }),
-      onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_AGENT_STATUS, payload })
     });
   };
 };
