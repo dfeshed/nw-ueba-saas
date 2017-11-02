@@ -35,6 +35,7 @@ import presidio.input.core.services.transformation.managers.FileTransformerManag
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.input.core.services.transformation.managers.TransformationServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
@@ -55,6 +56,9 @@ public class InputCoreConfigurationTest {
 
     @MockBean
     public MetricCollectingService metricCollectingService;
+
+    @MockBean
+    public PresidioMetricFactory presidioMetricFactory;
 
     @Value("${operation.type.category.mapping.file.path}")
     private String operationTypeCategoryMappingFilePath;
