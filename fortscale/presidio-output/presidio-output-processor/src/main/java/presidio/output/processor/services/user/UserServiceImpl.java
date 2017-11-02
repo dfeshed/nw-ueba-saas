@@ -4,6 +4,7 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -156,13 +157,15 @@ public class UserServiceImpl implements UserService {
     public List<User> updateUserAlertDataForBatch(Map<String, UsersAlertData> aggregatedUserScore, Set<String> usersIDForBatch) {
         log.info("Updating user batch (without persistence)- batch contain: " + usersIDForBatch.size() + " users");
         List<User> changedUsers = new ArrayList<>();
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().filterByUsersIds(new ArrayList<>(usersIDForBatch))
-                .pageNumber(0)
-                .pageSize(usersIDForBatch.size());
-        UserQuery userQuery = userQueryBuilder.build();
-        Page<User> users = userPersistencyService.find(userQuery);
+
+        PageRequest pageRequest = new PageRequest(0,usersIDForBatch.size());
+        Page<User> users = userPersistencyService.findByIds(usersIDForBatch,pageRequest);
+
+        if (users.getTotalElements()!=usersIDForBatch.size()){
+            log.error("Need to update {} users, but only {} users exists on elastic search",usersIDForBatch.size(),users.getTotalElements());
+        }
         users.forEach(user -> {
-            double newUserScore = aggregatedUserScore.get(user.getUserId()).getUserScore();
+            double newUserScore = aggregatedUserScore.get(user.getId()).getUserScore();
             if (user.getScore() != newUserScore) {
                 user.setScore(newUserScore);
                 user.incrementAlertsCountByOne();

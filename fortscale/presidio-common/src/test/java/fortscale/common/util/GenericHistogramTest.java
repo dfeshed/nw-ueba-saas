@@ -163,4 +163,74 @@ public class GenericHistogramTest {
 
         Assert.assertTrue(histogram4.equals(histogram3));
     }
+
+    @Test
+    public void testRemoveKeyFromOneKeyHistogram(){
+        String valToRemove = "a";
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add(valToRemove, 10.0);
+
+        Assert.assertEquals((Double) 10.0, histogram.getMaxCount());
+        Assert.assertEquals(valToRemove, histogram.getMaxCountObject());
+        Assert.assertEquals(10.0, histogram.getTotalCount(), 0.0);
+
+        histogram.remove(valToRemove);
+        Assert.assertNull(histogram.getMaxCount());
+        Assert.assertNull(histogram.getMaxCountObject());
+        Assert.assertEquals(0.0, histogram.getTotalCount(), 0.0);
+    }
+
+    @Test
+    public void testRemoveKeyWhichIsMaxObject(){
+        String valToRemove = "c";
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add("a", 20.0);
+        histogram.add("b", 10.0);
+        histogram.add(valToRemove, 30.0);
+
+        Assert.assertEquals((Double) 30.0, histogram.getMaxCount());
+        Assert.assertEquals(valToRemove, histogram.getMaxCountObject());
+        Assert.assertEquals(60.0, histogram.getTotalCount(), 0.0);
+
+        histogram.remove(valToRemove);
+        Assert.assertEquals((Double) 20.0, histogram.getMaxCount());
+        Assert.assertEquals("a", histogram.getMaxCountObject());
+        Assert.assertEquals(30, histogram.getTotalCount(), 0.0);
+    }
+
+    @Test
+    public void testRemoveKeyWhichIsNotMaxObject(){
+        String valToRemove = "c";
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add("a", 20.0);
+        histogram.add("b", 10.0);
+        histogram.add(valToRemove, 15.0);
+
+        Assert.assertEquals((Double) 20.0, histogram.getMaxCount());
+        Assert.assertEquals("a", histogram.getMaxCountObject());
+        Assert.assertEquals(45.0, histogram.getTotalCount(), 0.0);
+
+        histogram.remove(valToRemove);
+        Assert.assertEquals((Double) 20.0, histogram.getMaxCount());
+        Assert.assertEquals("a", histogram.getMaxCountObject());
+        Assert.assertEquals(30, histogram.getTotalCount(), 0.0);
+    }
+
+    @Test
+    public void testRemoveKeyWhichDoesNotExist(){
+        String valToRemove = "d";
+        GenericHistogram histogram = new GenericHistogram();
+        histogram.add("a", 20.0);
+        histogram.add("b", 10.0);
+        histogram.add("c", 15.0);
+
+        Assert.assertEquals((Double) 20.0, histogram.getMaxCount());
+        Assert.assertEquals("a", histogram.getMaxCountObject());
+        Assert.assertEquals(45.0, histogram.getTotalCount(), 0.0);
+
+        histogram.remove(valToRemove);
+        Assert.assertEquals((Double) 20.0, histogram.getMaxCount());
+        Assert.assertEquals("a", histogram.getMaxCountObject());
+        Assert.assertEquals(45.0, histogram.getTotalCount(), 0.0);
+    }
 }
