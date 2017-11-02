@@ -17,7 +17,7 @@ public class TestConfig {
         properties.put("elasticsearch.clustername", "fortscale");
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", 9300);
-        properties.put("spring.aop.proxy.target.class", false);
+        properties.put("enable.metrics.export", false);
 
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
