@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
 @ActiveProfiles("useEmbeddedElastic")
