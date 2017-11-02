@@ -33,6 +33,7 @@ nukeNode investigate-files
 nukeNode respond
 nukeNode context
 nukeNode preferences
+nukeNode test-helpers
 nukeNode sa
 
 red "                               ________________

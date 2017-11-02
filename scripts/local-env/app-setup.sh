@@ -55,6 +55,7 @@ prepareApp investigate-files
 prepareApp respond
 prepareApp context
 prepareApp preferences
+prepareApp test-helpers
 prepareApp sa
 
 cd $CWD

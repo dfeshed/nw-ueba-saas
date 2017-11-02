@@ -178,6 +178,7 @@ buildEmberApp packager false true
 buildEmberApp recon false true
 buildEmberApp context false true
 buildEmberApp preferences false true
+buildEmberApp test-helpers false false
 buildEmberApp style-guide true
 buildEmberApp investigate-events false true
 buildEmberApp investigate-hosts false true

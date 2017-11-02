@@ -11,7 +11,8 @@ const ALL_SUBMODULES = [
   'streaming-data',
   'style-guide',
   'context',
-  'preferences'
+  'preferences',
+  'test-helpers'
 ];
 
 // A configuration that lists each submodule with
@@ -71,7 +72,8 @@ const saModuleDependants = {
   preferences: [
     'sa',
     'investigate-events'
-  ]
+  ],
+  'test-helpers': []
 };
 
 module.exports = {
