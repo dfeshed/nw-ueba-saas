@@ -3457,9 +3457,9 @@ ember-d3@0.3.3:
     ember-cli-babel "^5.1.6"
     recast "^0.11.13"
 
-ember-dependency-lookup@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/ember-dependency-lookup/-/ember-dependency-lookup-1.1.0.tgz#e1ed63f4bba97c7e919efc265a42819ff0efaadb"
+ember-dependency-lookup@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/ember-dependency-lookup/-/ember-dependency-lookup-2.0.0.tgz#530a167127612fa35ea7af074517d742e18b6353"
   dependencies:
     ember-cli-babel "^6.8.2"
 

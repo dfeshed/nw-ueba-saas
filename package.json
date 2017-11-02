@@ -98,7 +98,7 @@
     "redux-pack": "0.1.5",
     "redux-persist": "4.8.3",
     "redux-persist-transform-filter": "0.0.15",
-    "ember-dependency-lookup": "1.1.0",
+    "ember-dependency-lookup": "2.0.0",
     "ember-redux-saga-shim": "1.1.0",
     "redux-saga": "0.15.3",
     "redux-thunk": "2.2.0",

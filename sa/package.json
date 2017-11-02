@@ -55,7 +55,7 @@
     "ember-load-initializers": "^1.0.0",
     "ember-moment": "7.2.0",
     "ember-redux": "3.0.0",
-    "ember-dependency-lookup": "1.1.0",
+    "ember-dependency-lookup": "2.0.0",
     "ember-redux-saga-shim": "1.1.0",
     "redux-saga": "0.15.3",
     "ember-resolver": "^4.0.0",

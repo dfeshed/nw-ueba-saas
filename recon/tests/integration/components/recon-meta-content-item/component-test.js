@@ -1,8 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('recon-meta-content-item', 'Integration | Component | recon meta content item', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    initialize(this);
+  }
 });
 
 test('meta item name and value rendered', function(assert) {
