@@ -67,7 +67,8 @@ class OutputDagBuilder(PresidioDagBuilder):
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  output_dag,
                                                  self._min_gap_from_dag_start_date_to_start_running,
-                                                 kwargs['execution_date']),
+                                                 kwargs['execution_date'],
+                                                 output_dag.schedule_interval),
             provide_context=True
         )
 
@@ -98,7 +99,8 @@ class OutputDagBuilder(PresidioDagBuilder):
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  output_dag,
                                                  self._min_gap_from_dag_start_date_to_start_modeling,
-                                                 kwargs['execution_date']),
+                                                 kwargs['execution_date'],
+                                                 output_dag.schedule_interval),
             provide_context=True
         )
 
