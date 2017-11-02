@@ -27,7 +27,10 @@ export default {
     save: 'ja_Save'
   },
   tables: {
-    noResults: 'ja_No Results'
+    noResults: 'ja_No Results',
+    columnChooser: {
+      filterPlaceHolder: 'ja_Type to filter the list'
+    }
   },
   login: {
     username: 'ja_Username',
@@ -2127,7 +2130,8 @@ export default {
             systemX86: 'ja_Folder - System (x86)',
             windows: 'ja_Folder - Windows'
           }
-        }
+        },
+        markedForDeletion: 'ja_Marked For Deletion'
       },
       properties: {
         title: 'ja_Host Properties',
@@ -2376,6 +2380,73 @@ export default {
           cancel: 'ja_Cancel',
           save: 'ja_Save'
         }
+      },
+      fields: {
+        id: 'ja_ID',
+        firstSeenTime: 'ja_First Seen Time',
+        companyName: 'ja_Company Name',
+        checksumMd5: 'ja_MD5',
+        checksumSha1: 'ja_SHA1',
+        checksumSha256: 'ja_SHA256',
+        machineOsType: 'ja_Operating System',
+        elf: {
+          classType: 'ja_ELF.Class Type',
+          data: 'ja_ELF.Data',
+          entryPoint: 'ja_ELF.Entry Point',
+          features: 'ja_ELF.Features',
+          type: 'ja_ELF.Type',
+          sectionNames: 'ja_ELF.Section Names',
+          importedLibraries: 'ja_ELF.Imported Libraries'
+        },
+        pe: {
+          timeStamp: 'ja_PE.Timestamp',
+          imageSize: 'ja_PE.Image Size',
+          numberOfExportedFunctions: 'ja_PE.Exported Functions',
+          numberOfNamesExported: 'ja_PE.Exported Names',
+          numberOfExecuteWriteSections: 'ja_PE.Execute Write Sections',
+          features: 'ja_PE.Features',
+          sectionNames: 'ja_PE.Section Names',
+          importedLibraries: 'ja_PE.Imported Librabries',
+          resources: {
+            originalFileName: 'ja_PE.Resources.File Name',
+            company: 'ja_PE.Resources.Company',
+            description: 'ja_PE.Resources.Description',
+            version: 'ja_PE.Resources.Version'
+          }
+        },
+        macho: {
+          uuid: 'ja_MachO.Uuid',
+          identifier: 'ja_MachO.Identifier',
+          minOsxVersion: 'ja_MachO.Osx Version',
+          features: 'ja_MachO.Features',
+          flags: 'ja_MachO.Flags',
+          numberOfLoadCommands: 'ja_MachO.Loaded Commands',
+          version: 'ja_MachO.Version',
+          sectionNames: 'ja_MachO.Section Names',
+          importedLibraries: 'ja_MachO.Imported Libraries'
+        },
+        signature: {
+          timeStamp: 'ja_Signature.Timestamp',
+          thumbprint: 'ja_Signature.Thumbprint',
+          features: 'ja_Signature',
+          signer: 'ja_Signer'
+        },
+        owner: {
+          userName: 'ja_Owner',
+          groupName: 'ja_Owner Group'
+        },
+        rpm: {
+          packageName: 'ja_Package'
+        },
+        path: 'ja_Path',
+        entropy: 'ja_Entropy',
+        fileName: 'ja_FileName',
+        firstFileName: 'ja_FileName',
+        timeCreated: 'ja_Created',
+        format: 'ja_Format',
+        sectionNames: 'ja_Section Names',
+        importedLibraries: 'ja_Imported Libraries',
+        size: 'ja_Size'
       }
     }
   }

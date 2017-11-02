@@ -27,7 +27,10 @@ export default {
     save: 'Save'
   },
   tables: {
-    noResults: 'No Results'
+    noResults: 'No Results',
+    columnChooser: {
+      filterPlaceHolder: 'Type to filter the list'
+    }
   },
   login: {
     username: 'Username',
@@ -2126,7 +2129,8 @@ export default {
             systemX86: 'Folder - System (x86)',
             windows: 'Folder - Windows'
           }
-        }
+        },
+        markedForDeletion: 'Marked For Deletion'
       },
 
       properties: {
@@ -2376,6 +2380,73 @@ export default {
           cancel: 'Cancel',
           save: 'Save'
         }
+      },
+      fields: {
+        id: 'ID',
+        firstSeenTime: 'First Seen Time',
+        companyName: 'Company Name',
+        checksumMd5: 'MD5',
+        checksumSha1: 'SHA1',
+        checksumSha256: 'SHA256',
+        machineOsType: 'Operating System',
+        elf: {
+          classType: 'ELF.Class Type',
+          data: 'ELF.Data',
+          entryPoint: 'ELF.Entry Point',
+          features: 'ELF.Features',
+          type: 'ELF.Type',
+          sectionNames: 'ELF.Section Names',
+          importedLibraries: 'ELF.Imported Libraries'
+        },
+        pe: {
+          timeStamp: 'PE.Timestamp',
+          imageSize: 'PE.Image Size',
+          numberOfExportedFunctions: 'PE.Exported Functions',
+          numberOfNamesExported: 'PE.Exported Names',
+          numberOfExecuteWriteSections: 'PE.Execute Write Sections',
+          features: 'PE.Features',
+          sectionNames: 'PE.Section Names',
+          importedLibraries: 'PE.Imported Libraries',
+          resources: {
+            originalFileName: 'PE.Resources.File Name',
+            company: 'PE.Resources.Company',
+            description: 'PE.Resources.Description',
+            version: 'PE.Resources.Version'
+          }
+        },
+        macho: {
+          uuid: 'MachO.Uuid',
+          identifier: 'MachO.Identifier',
+          minOsxVersion: 'MachO.Osx Version',
+          features: 'MachO.Features',
+          flags: 'MachO.Flags',
+          numberOfLoadCommands: 'MachO.Loaded Commands',
+          version: 'MachO.Version',
+          sectionNames: 'MachO.Section Names',
+          importedLibraries: 'MachO.Imported Libraries'
+        },
+        signature: {
+          timeStamp: 'Signature.Timestamp',
+          thumbprint: 'Signature.Thumbprint',
+          features: 'Signature',
+          signer: 'Signer'
+        },
+        owner: {
+          userName: 'Owner',
+          groupName: 'Owner Group'
+        },
+        rpm: {
+          packageName: 'Package'
+        },
+        path: 'Path',
+        entropy: 'Entropy',
+        fileName: 'FileName',
+        firstFileName: 'FileName',
+        timeCreated: 'Created',
+        format: 'Format',
+        sectionNames: 'Section Names',
+        importedLibraries: 'Imported Libraries',
+        size: 'Size'
       }
     }
   }
