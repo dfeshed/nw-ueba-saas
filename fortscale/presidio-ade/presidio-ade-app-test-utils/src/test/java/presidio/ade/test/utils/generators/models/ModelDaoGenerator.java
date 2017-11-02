@@ -4,7 +4,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.store.ModelDAO;
 import presidio.data.generators.common.*;
 import presidio.data.generators.common.time.ITimeGenerator;
-import presidio.data.generators.common.time.TimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
 
 import java.time.Duration;
@@ -29,7 +29,7 @@ public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
     public ModelDaoGenerator(IModelGenerator modelGenerator) throws GeneratorException {
         this.contextIdGenerator = new StringRegexCyclicValuesGenerator("userId\\#\\#\\#testUser[1-2]{0,1}");
         this.sessionIdGenerator= new CustomStringGenerator(DEFAULT_MODEL_SESSION);
-        this.endTimeGenerator = new TimeGenerator(LocalTime.of(0,0),LocalTime.of(23,59),1440,30,1);
+        this.endTimeGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(0,0),LocalTime.of(23,59),1440,30,1);
         this.modelsNumberOfDaysBack = 30;
         this.modelGenerator = modelGenerator;
     }

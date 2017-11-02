@@ -70,7 +70,7 @@ public class PresidioShellableApplication implements Closeable {
             context.registerShutdownHook();
             exitShellRequest = run();
             exitCode.set(exitShellRequest.getExitCode());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             String errorMessage = String.format("Failed to run application with specified args: [%s]", Arrays.toString(args));
             logger.error(errorMessage, e);
             if (exitShellRequest == null) {

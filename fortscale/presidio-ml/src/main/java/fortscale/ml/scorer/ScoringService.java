@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.AdeEventTypeScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
@@ -21,13 +22,16 @@ public class ScoringService {
 	private ScorerConfService scorerConfService;
 	private FactoryService<Scorer> scorerFactoryService;
 	private Map<String, List<Scorer>> adeEventTypeToScorersMap;
+	private ModelsCacheService modelCacheService;
 
 	public ScoringService(
 			ScorerConfService scorerConfService,
-			FactoryService<Scorer> scorerFactoryService) {
+			FactoryService<Scorer> scorerFactoryService,
+			ModelsCacheService modelCacheService) {
 
 		this.scorerConfService = scorerConfService;
 		this.scorerFactoryService = scorerFactoryService;
+		this.modelCacheService = modelCacheService;
 		this.adeEventTypeToScorersMap = new HashMap<>();
 		loadScorers();
 	}
@@ -62,5 +66,12 @@ public class ScoringService {
 		List<Scorer> scorers = new ArrayList<>(scorerConfs.size());
 		scorerConfs.forEach(scorerConf -> scorers.add(scorerFactoryService.getProduct(scorerConf)));
 		return scorers;
+	}
+
+	/**
+	 * Reset model cache
+	 */
+	public void resetModelCache(){
+		modelCacheService.resetCache();
 	}
 }

@@ -77,13 +77,6 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
 
     @Override
     public void resetCache() {
-        modelCacheManagers.values().forEach(modelCacheManager ->  {
-            if (modelCacheManager != null) {
-                modelCacheManager.resetCache();
-            }
-        });
-
-
-
+        modelCacheManagers = new HashMap<>();
     }
 }
