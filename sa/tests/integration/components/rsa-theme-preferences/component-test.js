@@ -10,7 +10,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 const labelSelector = '.rsa-form-radio-label';
 
-moduleForComponent('/rsa-theme-preferences', 'Integration | Component | rsa-theme-preferences', {
+moduleForComponent('rsa-theme-preferences', 'Integration | Component | rsa-theme-preferences', {
   integration: true,
   beforeEach() {
     const initState = { preferences: { theme: 'LIGHT' } };
@@ -18,7 +18,6 @@ moduleForComponent('/rsa-theme-preferences', 'Integration | Component | rsa-them
     this.inject.service('redux');
     this.inject.service('i18n');
     this.inject.service('flash-messages');
-    getOwner(this).lookup('service:flash-messages').registerTypes(['error']);
     initialize(this);
   },
   afterEach() {
