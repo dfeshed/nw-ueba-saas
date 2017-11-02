@@ -10,13 +10,13 @@ import fortscale.ml.model.builder.smart_weights.WeightsModelBuilderConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.smart.record.conf.ClusterConf;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import javafx.util.Pair;
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -129,7 +129,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     @Test
     public void weightModelWithDescendingScoreAndSameProbabilityTest() throws GeneratorException {
-        int groupSize = 8;
+        int groupSize = 6;
         int numOfSmarts = 50;
         double score = 100.0;
         int scoreInterval = 10;
@@ -148,7 +148,7 @@ public class ModelingServiceApplicationSmartModelsTest {
 
     /**
      * Features divided to groups with same score.
-     * Each feature has same probability to belong to smart.
+     * Each feature has descending probability to belong to smart between groups.
      * <p>
      * Expected result:
      * Descending avg weight between groups.
@@ -157,7 +157,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     @Test
     public void weightModelWithSameScoreAndDescendingProbabilityTest() throws GeneratorException {
-        int groupSize = 8;
+        int groupSize = 6;
         int numOfSmarts = 200;
         double score = 60.0;
         int scoreInterval = 0;
@@ -181,7 +181,8 @@ public class ModelingServiceApplicationSmartModelsTest {
     public void AssertDescendingScoreBetweenGroups(LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap) {
         List<ModelDAO> weightModel = mongoTemplate.findAll(ModelDAO.class, "model_smart.global.weights.userId.hourly");
 
-        Double prevAvgWeight = 0.0;
+        Double oneBeforeCurrentAvgWeight = 0.0;
+        Double twoBeforeCurrentAvgWeight = 0.0;
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
         for (List<AggregatedFeatureEventConf> aggregatedFeatureEventConf : featuresGroupToScoreAndProbabilityMap.keySet()) {
@@ -191,8 +192,10 @@ public class ModelingServiceApplicationSmartModelsTest {
             List<ClusterConf> filteredClusterConf = clusterConfs.stream().filter(clusterConf -> features.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
             Double avgFeaturesWeight = filteredClusterConf.stream().mapToDouble(conf -> conf.getWeight()).average().getAsDouble();
 
-            Assert.assertTrue(prevAvgWeight < avgFeaturesWeight);
-            prevAvgWeight = avgFeaturesWeight;
+            Assert.assertTrue(oneBeforeCurrentAvgWeight < avgFeaturesWeight + 0.03);
+            Assert.assertTrue(twoBeforeCurrentAvgWeight < avgFeaturesWeight);
+            twoBeforeCurrentAvgWeight = oneBeforeCurrentAvgWeight;
+            oneBeforeCurrentAvgWeight = avgFeaturesWeight;
         }
     }
 
