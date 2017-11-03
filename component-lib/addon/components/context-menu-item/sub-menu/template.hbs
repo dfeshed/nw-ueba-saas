@@ -1,0 +1,6 @@
+{{#each item.subActions as |subItem|}}
+  {{context-menu-item item=subItem
+                      amount=amount
+                      itemIsDisabled=itemIsDisabled
+                      clickAction=clickAction}}
+{{/each}}

@@ -1,0 +1,8 @@
+<span class="context-menu__item__label">
+  {{item.label}}
+</span>
+{{#if item.subActions}}
+  {{#unless isDisabled}}
+    {{context-menu-item/sub-menu item=item amount=amount itemIsDisabled=itemIsDisabled clickAction=clickAction parentId=elementId}}
+  {{/unless}}
+{{/if}}
