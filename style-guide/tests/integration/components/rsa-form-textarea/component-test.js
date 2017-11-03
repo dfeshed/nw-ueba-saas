@@ -75,3 +75,21 @@ test('it is disabled when isReadOnly', function(assert) {
   const disabledCount = this.$().find('textarea[disabled]').length === 1;
   assert.equal(disabledCount, 1);
 });
+
+test('it calls closure action focusIn', function(assert) {
+  assert.expect(1);
+  this.on('focus', () => {
+    assert.ok(true);
+  });
+  this.render(hbs `{{rsa-form-textarea focusIn=(action 'focus')}}`);
+  this.$('textarea').focus();
+});
+
+test('it calls closure action focusOut', function(assert) {
+  assert.expect(1);
+  this.on('blur', () => {
+    assert.ok(true);
+  });
+  this.render(hbs `{{rsa-form-textarea focusOut=(action 'blur')}}`);
+  this.$('textarea').blur();
+});

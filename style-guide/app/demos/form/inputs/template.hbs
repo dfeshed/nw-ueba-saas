@@ -49,6 +49,18 @@
       {{code-snippet name="input5.hbs"}}
 
     {{/spec-member}}
+
+    {{#spec-member title="Focus/Blur Events"}}
+      <p>You can declare closure actions for "focus-in" and "focus-out"/blur events on the input using the focusIn and focusOut attributes</p>
+      <p>The standard input events (which also include, e.g., "key-press") will bubble from the embedded input and can be handled via the camel-cased version (e.g., keyPress) </p>
+      <p>{{lastEvent}}</p>
+      {{rsa-form-input label='Input Label' placeholder='Input Placeholder' focusIn=(action 'handleFocus') focusOut=(action 'handleBlur')}}
+      {{!-- BEGIN-SNIPPET input11
+      {{rsa-form-input label='Input Label' placeholder='Input Placeholder' focusIn=(action 'handleFocus') focusOut=(action 'handleBlur')}}
+      END-SNIPPET --}}
+      {{code-snippet name="input11.hbs"}}
+
+    {{/spec-member}}
   {{/spec-category}}
 
   {{#spec-category title="Inline Style"}}
