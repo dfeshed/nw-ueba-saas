@@ -1,12 +1,17 @@
-<grid responsive>
-  <box class="col-xs-3">
-    <aside>
-      {{preferences-panel-trigger launchFor="investigate-events"}}
-    </aside>
-  </box>
-  <box class="col-xs-9">
-    <page>
-      {{preferences-panel}}
-    </page>
-  </box>
-</grid>
+{{#rsa-application-content}}
+  <grid responsive>
+    <box class="col-xs-3">
+      <aside>
+        {{preferences-panel-trigger launchFor="investigate-events"}}
+        <div class='testDiv'>
+          Panel Content
+        </div>
+      </aside>
+    </box>
+    <box class="col-xs-9">
+      <page>
+        {{preferences-panel}}
+      </page>
+    </box>
+  </grid>
+{{/rsa-application-content}}

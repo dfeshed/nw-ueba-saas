@@ -19,7 +19,8 @@ const App = Application.extend({
           'timeFormat',
           'timezone',
           'i18n',
-          'flashMessages'
+          'flashMessages',
+          'eventBus'
         ],
         externalRoutes: {
           protected: 'protected',

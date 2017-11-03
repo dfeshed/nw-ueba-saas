@@ -1,1 +1,6 @@
-export { default } from 'context/reducers/index';
+import { combineReducers } from 'redux';
+import context from 'context/reducers';
+
+export default combineReducers({
+  context
+});

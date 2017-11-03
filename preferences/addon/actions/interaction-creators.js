@@ -8,6 +8,11 @@ export const togglePreferencesPanel = (launchFor) => ({
   payload: launchFor
 });
 
+export const updatePanelState = (state) => ({
+  type: ACTION_TYPES.UPDATE_PANEL_STATE,
+  payload: state
+});
+
 export const closePreferencesPanel = () => ({
   type: ACTION_TYPES.CLOSE_PREFERENCES_PANEL
 });
