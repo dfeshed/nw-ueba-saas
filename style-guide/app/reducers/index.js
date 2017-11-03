@@ -1,9 +1,13 @@
 import { combineReducers } from 'redux';
 
-const preferences = function preferences() {
-  return { theme: 'DARK' };
+const global = function global() {
+  return {
+    preferences: {
+      theme: 'DARK'
+    }
+  };
 };
 
 export default combineReducers({
-  preferences
+  global
 });

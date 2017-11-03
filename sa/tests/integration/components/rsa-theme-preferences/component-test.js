@@ -13,7 +13,7 @@ const labelSelector = '.rsa-form-radio-label';
 moduleForComponent('rsa-theme-preferences', 'Integration | Component | rsa-theme-preferences', {
   integration: true,
   beforeEach() {
-    const initState = { preferences: { theme: 'LIGHT' } };
+    const initState = { global: { preferences: { theme: 'LIGHT' } } };
     applyPatch(Immutable.from(initState));
     this.inject.service('redux');
     this.inject.service('i18n');

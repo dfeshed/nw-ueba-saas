@@ -41,8 +41,8 @@ export default Controller.extend({
 
     this.themeName = () => {
       const state = redux.getState();
-      const { preferences } = state;
-      return preferences && preferences.theme && preferences.theme.toLowerCase();
+      const { global } = state;
+      return global && global.preferences && global.preferences.theme && global.preferences.theme.toLowerCase();
     };
 
     let activeTheme;

@@ -4,7 +4,7 @@ import Component from '@ember/component';
 import { updateTheme } from 'sa/actions/creators/preferences';
 
 const stateToComputed = (state) => ({
-  theme: state.preferences.theme
+  theme: state.global.preferences.theme
 });
 
 const dispatchToActions = {

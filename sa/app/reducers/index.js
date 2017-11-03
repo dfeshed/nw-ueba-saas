@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import preferences from './preferences';
+import global from './global';
 import context from 'context/reducers';
 import recon from 'recon/reducers';
 
 export default combineReducers({
-  preferences,
   context,
+  ...global,
   ...recon
 });
