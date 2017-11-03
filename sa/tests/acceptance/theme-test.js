@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { test } from 'qunit';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
+import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
 moduleForAcceptance('Acceptance | theme test', {
   beforeEach() {
@@ -14,6 +15,7 @@ moduleForAcceptance('Acceptance | theme test', {
   afterEach() {
     localStorage.removeItem('reduxPersist:global');
     $('body').removeClass('light-theme').addClass('dark-theme');
+    teardownSockets.apply(this);
   }
 });
 
