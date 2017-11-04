@@ -19,13 +19,16 @@ public class AlertEnumsSeverityService {
 
 
     public AlertEnums.AlertSeverity severity(double score) {
-        if (lowScore <= score && score < midScore)
-            return AlertEnums.AlertSeverity.LOW;
-        if (midScore <= score && score < highScore)
-            return AlertEnums.AlertSeverity.MEDIUM;
-        if (highScore <= score && score < criticalScore)
+        if (criticalScore <= score) {
+            return AlertEnums.AlertSeverity.CRITICAL;
+        }
+        if (highScore <= score && score < criticalScore) {
             return AlertEnums.AlertSeverity.HIGH;
-        return AlertEnums.AlertSeverity.CRITICAL;
+        }
+        if (midScore <= score && score < highScore) {
+            return AlertEnums.AlertSeverity.MEDIUM;
+        }
+        return AlertEnums.AlertSeverity.LOW;
     }
 
 }
