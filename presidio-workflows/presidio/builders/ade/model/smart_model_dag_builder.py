@@ -93,7 +93,8 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                                                      smart_model_dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_accumulating,
-                                                                                                                                   kwargs['execution_date']),
+                                                                                                                                   kwargs['execution_date'],
+                                                                                                                                   smart_model_dag.schedule_interval),
             provide_context=True
         )
         task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, smart_accumulate_short_circuit_operator)
@@ -112,7 +113,8 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                                                      smart_model_dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_modeling,
-                                                                                                                                   kwargs['execution_date']),
+                                                                                                                                   kwargs['execution_date'],
+                                                                                                                                   smart_model_dag.schedule_interval),
             provide_context=True
         )
         task_sensor_service.add_task_sequential_sensor(smart_model_operator)

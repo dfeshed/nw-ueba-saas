@@ -68,7 +68,8 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                                                                      anomaly_detection_engine_scoring_dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(anomaly_detection_engine_scoring_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_scoring,
-                                                                                                                                   kwargs['execution_date']),
+                                                                                                                                   kwargs['execution_date'],
+                                                                                                                                   anomaly_detection_engine_scoring_dag.schedule_interval),
             provide_context=True
         )
 
