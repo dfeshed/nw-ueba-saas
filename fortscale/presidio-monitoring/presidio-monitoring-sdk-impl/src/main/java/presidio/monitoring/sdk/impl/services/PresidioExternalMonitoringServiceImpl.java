@@ -1,36 +1,34 @@
 package presidio.monitoring.sdk.impl.services;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.services.MetricCollectingService;
 
+import java.time.Instant;
 import java.util.Set;
 
 public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMonitoringService {
 
-    @Autowired
     private MetricCollectingService metricCollectingService;
+    private PresidioMetricFactory presidioMetricFactory;
 
-    private final String FILTERED_EVENT_METRIC = "number.of.filtered.event";
-    private final String NUMBER_OF_PROCESSED_EVENTS_METRIC = "number.of.processed.events";
-    private final String TYPE_LONG = "long";
 
     public PresidioExternalMonitoringServiceImpl() {
     }
 
-    @Override
-    public void reportNumberOfFilteredEventMetric(long value, Set<String> tags) {
-        metricCollectingService.addMetric(FILTERED_EVENT_METRIC, value, tags, TYPE_LONG);
+    public PresidioExternalMonitoringServiceImpl(MetricCollectingService metricCollectingService, PresidioMetricFactory presidioMetricFactory) {
+        this.presidioMetricFactory = presidioMetricFactory;
+        this.metricCollectingService = metricCollectingService;
     }
 
     @Override
-    public void reportNumberOfProcessedEventsMetric(long value, Set<String> tags) {
-        metricCollectingService.addMetric(NUMBER_OF_PROCESSED_EVENTS_METRIC, value, tags, TYPE_LONG);
+    public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, value, tags, valueType, logicTime));
     }
 
     @Override
-    public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType) {
-        metricCollectingService.addMetric(metricName, value, tags, valueType);
+    public void reportCustomMetricReportOnce(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, value, tags, valueType, logicTime, true));
     }
 }
