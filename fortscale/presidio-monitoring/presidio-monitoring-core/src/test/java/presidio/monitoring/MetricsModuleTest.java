@@ -1,6 +1,7 @@
 package presidio.monitoring;
 
 
+import org.apache.commons.collections.IteratorUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,5 +37,7 @@ public class MetricsModuleTest {
         values.add(50);
         values.add(10);
         List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, "test", null, false);
+        presidioMetricPersistencyService.save(metricList);
+        List<MetricDocument> metricDocumentList = IteratorUtils.toList(presidioMetricPersistencyService.save(metricList).iterator());
     }
 }
