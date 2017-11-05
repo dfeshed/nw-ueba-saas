@@ -17,7 +17,6 @@ public class TestConfig {
         properties.put("severity.critical", 95);
         properties.put("severity.high", 90);
         properties.put("severity.mid", 80);
-        properties.put("severity.low", 70);
         properties.put("smart.threshold.score", 0);
         properties.put("smart.page.size", 50);
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
