@@ -6,7 +6,7 @@ import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.persistency.mongo.MongoUtils;
-import org.flume.source.AbstractPresidioEventDrivenSource;
+import org.flume.source.AbstractPresidioSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
@@ -26,7 +26,7 @@ import java.util.List;
 
 import static org.apache.flume.CommonStrings.*;
 
-public class PresidioMongoSource extends AbstractPresidioEventDrivenSource implements Configurable {
+public class PresidioMongoSource extends AbstractPresidioSource implements Configurable {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 

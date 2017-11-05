@@ -28,14 +28,14 @@ import static org.apache.flume.CommonStrings.START_DATE;
  * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A batchable sink must also be used when using a batchable source.
  * 2) for using a metric service (that needs an application name).
  */
-public abstract class AbstractPresidioEventDrivenSource extends AbstractEventDrivenSource {
+public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractPresidioEventDrivenSource.class);
+    private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSource.class);
 
 
     /* This field indicates whether the agent is supposed to shut-down after the source is done (or in other words - is this a batch run?) */
     protected boolean isBatch;
-    protected String monitoringApplicationName;
+    protected String applicationName;
     protected int batchSize;
     protected SourceFetcher sourceFetcher;
     protected Instant startDate;
@@ -47,7 +47,6 @@ public abstract class AbstractPresidioEventDrivenSource extends AbstractEventDri
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
-
 
     @Override
     public void start() {
@@ -62,12 +61,12 @@ public abstract class AbstractPresidioEventDrivenSource extends AbstractEventDri
     @Override
     protected void doConfigure(Context context) throws FlumeException {
         isBatch = context.getBoolean(CommonStrings.IS_BATCH, false);
-        monitoringApplicationName = context.getString(CommonStrings.MONITORING_APPLICATION_NAME, this.getName());
+        applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getName());
         doPresidioConfigure(context);
     }
 
     /**
-     * Method for configuring AbstractPresidioEventDrivenSource (couldn't call it doDoConfigure right?)
+     * Method for configuring AbstractPresidioSource (couldn't call it doDoConfigure right?)
      *
      * @param context the context
      * @throws FlumeException

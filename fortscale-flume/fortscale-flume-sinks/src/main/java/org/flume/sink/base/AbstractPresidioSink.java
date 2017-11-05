@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static org.apache.flume.CommonStrings.APPLICATION_NAME;
 import static org.apache.flume.CommonStrings.IS_BATCH;
 import static org.apache.flume.CommonStrings.MAX_BACK_OFF_SLEEP;
-import static org.apache.flume.CommonStrings.MONITORING_APPLICATION_NAME;
 
 public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable {
 
@@ -21,7 +21,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 //    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
     protected boolean isBatch;
-    protected String monitoringApplicationName;
+    protected String applicationName;
     protected boolean isDone;
 
 
@@ -47,7 +47,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     @Override
     public void configure(Context context) {
         isBatch = context.getBoolean(IS_BATCH, false);
-        monitoringApplicationName = context.getString(MONITORING_APPLICATION_NAME, this.getName());
+        applicationName = context.getString(APPLICATION_NAME, this.getName());
         int maxBackOffSleep = context.getInteger(MAX_BACK_OFF_SLEEP, 5000);
         if (maxBackOffSleep > 0) {
             SinkRunner.maxBackoffSleep = maxBackOffSleep;
