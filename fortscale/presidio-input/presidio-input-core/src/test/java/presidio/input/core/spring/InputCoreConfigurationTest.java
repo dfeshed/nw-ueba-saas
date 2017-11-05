@@ -11,11 +11,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
@@ -29,14 +25,15 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
-import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
-import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.managers.FileTransformerManager;
-import presidio.input.core.services.transformation.managers.TransformationService;
-import presidio.input.core.services.transformation.managers.TransformationServiceImpl;
+import presidio.input.core.services.transformation.managers.*;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
+import presidio.monitoring.aspect.MonitoringAspects;
+import presidio.monitoring.aspect.MonitroingAspectSetup;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -166,4 +163,30 @@ public class InputCoreConfigurationTest {
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
     }
+
+    @Bean
+    public MetricCollectingService metricCollectingService() {
+        return new MetricCollectingServiceImpl(presidioMetricEndPoint());
+    }
+
+    @Bean
+    public PresidioMetricEndPoint presidioMetricEndPoint() {
+        return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory("input-core"));
+    }
+
+    @Bean
+    public PresidioMetricFactory presidioMetricFactory() {
+        return new PresidioMetricFactory("input-core");
+    }
+
+    @Bean
+    public MonitoringAspects monitoringAspects() {
+        return new MonitoringAspects();
+    }
+
+    @Bean
+    public MonitroingAspectSetup monitroingAspectSetup() {
+        return  new MonitroingAspectSetup(presidioMetricEndPoint(), presidioMetricFactory());
+    }
+
 }
