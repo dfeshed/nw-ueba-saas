@@ -18,7 +18,8 @@ import java.util.List;
  * Generates {@link ModelDAO} for each of the generated context by {@link this#contextIdGenerator} for each time (by default once a day)
  * Created by barak_schuster on 9/10/17.
  */
-public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
+//public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
+public class ModelDaoGenerator{
     private static final String DEFAULT_MODEL_SESSION = "testSession";
     private CyclicValuesGenerator<String> contextIdGenerator;
     private IStringGenerator sessionIdGenerator;
@@ -34,7 +35,6 @@ public class ModelDaoGenerator implements IEventGenerator<ModelDAO> {
         this.modelGenerator = modelGenerator;
     }
 
-    @Override
     public List<ModelDAO> generate() throws GeneratorException {
         ArrayList<ModelDAO> evList = new ArrayList<>();
 

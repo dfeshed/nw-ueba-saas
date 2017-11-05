@@ -21,8 +21,9 @@ import java.util.Map;
  * generates hourly accumulated events
  * Created by barak_schuster on 9/4/17.
  */
-public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEventGenerator<AccumulatedAggregationFeatureRecord> {
-    private IStringGenerator contextIdGenerator;
+//public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEventGenerator<AccumulatedAggregationFeatureRecord> {
+public class AccumulatedAggregationFeatureRecordHourlyGenerator{
+        private IStringGenerator contextIdGenerator;
     private MinutesIncrementTimeGenerator startInstantGenerator;
     private IStringGenerator featureNameGenerator;
     private CyclicMapGenerator<Integer, Double> aggregatedFeatureValuesGenerator;
@@ -39,8 +40,6 @@ public class AccumulatedAggregationFeatureRecordHourlyGenerator implements IEven
 
     }
 
-
-    @Override
     public List<AccumulatedAggregationFeatureRecord> generate() throws GeneratorException {
 
         List<AccumulatedAggregationFeatureRecord> evList = new ArrayList<>();
