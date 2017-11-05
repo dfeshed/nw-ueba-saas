@@ -9,12 +9,10 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -213,7 +211,7 @@ public class AlertServiceTest {
         Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0,new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
                 +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
@@ -238,6 +236,7 @@ public class AlertServiceTest {
 
     @Test
     public void severityTest() {
+        assertEquals(alertEnumsSeverityService.severity(40), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(70), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(81), AlertEnums.AlertSeverity.MEDIUM);
         assertEquals(alertEnumsSeverityService.severity(91), AlertEnums.AlertSeverity.HIGH);
