@@ -20,5 +20,5 @@ public class CommonStrings {
     public static final String DATE_FORMAT = "dateFormat";
     public static final String DATE_TIME_FIELD = "dateTimeField";
     public static String DEFAULT_DATE_TIME_FIELD_NAME = "dateTime";
-    public static String MONITORING_APPLICATION_NAME = "monitoringApplicationName";
+    public static String APPLICATION_NAME = "applicationName";
 }

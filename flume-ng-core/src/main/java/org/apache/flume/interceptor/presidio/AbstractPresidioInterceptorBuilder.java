@@ -8,12 +8,16 @@ import org.apache.flume.interceptor.Interceptor;
 
 public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.Builder {
 
-    protected String monitoringApplicationName;
+    protected String applicationName;
 
     @Override
     public void configure(Context context) {
-        monitoringApplicationName = context.getString(CommonStrings.MONITORING_APPLICATION_NAME, this.getClass().getSimpleName());
+        applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getClass().getSimpleName());
         doConfigure(context);
+    }
+
+    public String getApplicationName() {
+        return applicationName;
     }
 
     protected abstract void doConfigure(Context context);

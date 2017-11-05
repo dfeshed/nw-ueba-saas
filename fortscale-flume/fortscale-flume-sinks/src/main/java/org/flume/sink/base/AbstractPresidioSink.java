@@ -30,6 +30,10 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         return "presidio-sink";
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
+
     @Override
     public void start() {
 //        if (sinkCounter.getStartTime() == 0L) { //if wasn't started yet

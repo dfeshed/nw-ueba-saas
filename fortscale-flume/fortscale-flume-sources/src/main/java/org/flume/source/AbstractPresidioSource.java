@@ -48,6 +48,11 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+
     @Override
     public void start() {
         super.start();
