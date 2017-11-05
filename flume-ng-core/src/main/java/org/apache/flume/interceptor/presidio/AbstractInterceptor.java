@@ -35,13 +35,11 @@ public abstract class AbstractInterceptor implements Interceptor {
         }
         try {
             return doIntercept(event);
-        }
-        catch (ConfigurationException e){
+        } catch (ConfigurationException e) {
             logger.error("Bad configuration in {}. Dropping event. Exception: ",
                     this.getClass().getName(), e);
             return null;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("{} interception has failed. Dropping event. Exception: ",
                     this.getClass().getName(), e);
             return null;
@@ -59,6 +57,7 @@ public abstract class AbstractInterceptor implements Interceptor {
     public void close() {
 
     }
+
 
     private boolean isGotControlDoneMessage(Event flumeEvent) {
         return BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));

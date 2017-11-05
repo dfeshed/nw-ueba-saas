@@ -79,7 +79,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
 
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             deleteNullFields = context.getBoolean(DELETE_NULL_FIELDS, DEFAULT_DELETE_NULL_FIELDS_VALUE);
 
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);

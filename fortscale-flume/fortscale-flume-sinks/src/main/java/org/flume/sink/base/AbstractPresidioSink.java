@@ -12,14 +12,16 @@ import java.util.List;
 
 import static org.apache.flume.CommonStrings.IS_BATCH;
 import static org.apache.flume.CommonStrings.MAX_BACK_OFF_SLEEP;
+import static org.apache.flume.CommonStrings.MONITORING_APPLICATION_NAME;
 
-public abstract class AbstractBatchablePresidioSink<T> extends AbstractSink implements Configurable {
+public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractBatchablePresidioSink.class);
+    private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSink.class);
 
 //    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
     protected boolean isBatch;
+    protected String monitoringApplicationName;
     protected boolean isDone;
 
 
@@ -45,12 +47,13 @@ public abstract class AbstractBatchablePresidioSink<T> extends AbstractSink impl
     @Override
     public void configure(Context context) {
         isBatch = context.getBoolean(IS_BATCH, false);
+        monitoringApplicationName = context.getString(MONITORING_APPLICATION_NAME, this.getName());
         int maxBackOffSleep = context.getInteger(MAX_BACK_OFF_SLEEP, 5000);
         if (maxBackOffSleep > 0) {
             SinkRunner.maxBackoffSleep = maxBackOffSleep;
         }
+        doPresidioConfigure(context);
     }
-
 
     @Override
     public Status process() throws EventDeliveryException {
@@ -88,6 +91,9 @@ public abstract class AbstractBatchablePresidioSink<T> extends AbstractSink impl
         }
         return result;
     }
+
+
+    protected abstract void doPresidioConfigure(Context context);
 
     protected abstract int saveEvents(List<T> eventsToSave) throws Exception;
 

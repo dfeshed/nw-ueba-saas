@@ -134,7 +134,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
         private boolean removeEscapeChars;
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             String replacementsAsString = context.getString(REPLACEMENTS_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(replacementsAsString), REPLACEMENTS_CONF_NAME + " can not be empty.");
 

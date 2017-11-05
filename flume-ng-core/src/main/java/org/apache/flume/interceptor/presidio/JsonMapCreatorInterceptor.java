@@ -104,7 +104,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         private Map<String, String> defaultValueConfigurations;
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
 
             deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, false);

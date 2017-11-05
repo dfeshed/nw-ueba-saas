@@ -128,7 +128,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         private Boolean removeToAppendField;
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             baseField = context.getString(BASE_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(baseField), BASE_FIELD_CONF_NAME + " can not be empty.");
 

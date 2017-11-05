@@ -90,7 +90,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
 
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
 
             final String[] originFields = getStringArrayFromConfiguration(context, ORIGIN_FIELDS_CONF_NAME, delimiter);
