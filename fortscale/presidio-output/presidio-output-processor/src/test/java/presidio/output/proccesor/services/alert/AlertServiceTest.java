@@ -236,6 +236,7 @@ public class AlertServiceTest {
 
     @Test
     public void severityTest() {
+        assertEquals(alertEnumsSeverityService.severity(0), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(40), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(70), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(81), AlertEnums.AlertSeverity.MEDIUM);
