@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.monitoring.aspect.MonitoringAspects;
+import presidio.monitoring.aspect.MonitroingAspectSetup;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.factory.PresidioMetricFactory;
@@ -35,7 +36,12 @@ public class PresidioMonitoringConfiguration {
 
     @Bean
     public MonitoringAspects monitoringAspects() {
-        return new MonitoringAspects(presidioMetricEndPoint(), presidioMetricFactory());
+        return new MonitoringAspects();
+    }
+
+    @Bean
+    public MonitroingAspectSetup monitroingAspectSetup() {
+        return  new MonitroingAspectSetup(presidioMetricEndPoint(), presidioMetricFactory());
     }
 
 }
