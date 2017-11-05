@@ -12,6 +12,7 @@ import java.util.List;
 
 
 public class SourceMongoRepositoryImpl implements SourceMongoRepository {
+
     private final MongoTemplate mongoTemplate;
 
     public SourceMongoRepositoryImpl(MongoTemplate mongoTemplate) {
@@ -20,8 +21,8 @@ public class SourceMongoRepositoryImpl implements SourceMongoRepository {
 
     @Override
     public List<AbstractDocument> findByDateTimeBetween(String collectionName, Instant startDate,
-                                                                 Instant endDate, int pageNum, int pageSize,
-                                                                 String dateTimeField) {
+                                                        Instant endDate, int pageNum, int pageSize,
+                                                        String dateTimeField) {
         final Query timeQuery = new Query(
                 Criteria.where(dateTimeField).gte(startDate).lt(endDate))
                 .with(new PageRequest(pageNum, pageSize));
