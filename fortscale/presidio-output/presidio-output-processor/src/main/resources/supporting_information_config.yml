@@ -494,7 +494,7 @@ indicators:
     featureName: srcMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_host
 
-- id: sumOfHighestDstMachineNameRegexClusterScoresUserIdAuthenticationHourly
+- id: sumOfHighestDstMachineNameRegexClusterScoresUserIdInteractiveRemoteAuthenticationHourly
   type: SCORE_AGGREGATION
   name: abnormal_remote_destination_machine
   adeEventType: scored_enriched.authentication.dstMachine.userIdInteractiveRemote.authentication.score
