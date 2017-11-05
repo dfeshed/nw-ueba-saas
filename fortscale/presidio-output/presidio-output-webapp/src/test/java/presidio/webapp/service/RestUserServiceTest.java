@@ -130,7 +130,7 @@ public class RestUserServiceTest {
         Page<Alert> firstPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert1)));
         Page<Alert> secondPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert4, alert2)));
         Page<Alert> thirdPage = new PageImpl<>(new ArrayList<>(Arrays.asList(alert3)));
-        when(alertPersistencyService.findById(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
+        when(alertPersistencyService.findByUserId(notNull(String.class), notNull(PageRequest.class))).thenReturn(firstPage, secondPage, thirdPage);
         List<presidio.webapp.model.User> resultUser = restUserService.getUsers(userQuery).getUsers();
         resultUser.forEach(user -> {
             if (user.getId().equals(user1.getId()) || user.getId().equals(user3.getId()))

@@ -252,7 +252,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         userIds.forEach(id -> {
-            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = elasticAlertService.findById(id, pageRequest);
+            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = elasticAlertService.findByUserId(id, pageRequest);
             alertsByUserIds.put(id, convertToRestAlerts(alertsByUserId));
         });
 
