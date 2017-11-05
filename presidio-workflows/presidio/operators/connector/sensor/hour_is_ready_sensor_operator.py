@@ -15,8 +15,8 @@ class HourIsReadySensorOperator(BaseSensorOperator):
 
     :param schema_name: The schema that we trying to check if is ready
     :type schema_name: string
-    :param hour_end_time: the hour (end time) that we trying to check if is ready
-    :type hour_end_time: string
+    :param hour_start_time: the hour (start time) that we trying to check if is ready
+    :type hour_start_time: string
     """
     ui_color = '#e0d576'  # yellow
     ui_fgcolor = '#000000'  # black
@@ -33,11 +33,10 @@ class HourIsReadySensorOperator(BaseSensorOperator):
         logging.debug("context is " + str(context))
         try:
             """
-            @return: bool - whether the events for an hour (whose end time was given as hour_end_time) are ready for
-            adapter processing
+            @return: bool - whether the events for an hour (whose start time is represented as 'ts' in the context) are 
+            ready for adapter processing
             """
-            self._hour_start_time = str(context['next_execution_date']).replace(" ",
-                                                                                "T") + "Z"  # adjust no-timezone->UTC
+            self._hour_start_time = str(context['ts']).replace(" ", "T") + "Z"  # adjust no-timezone->UTC
             logging.info(
                 'Poking for the following: '
                 'schema_name = {self._schema_name}, '
@@ -79,7 +78,7 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 sink_count))
             logging.info("latest_ready_hour = " + latest_ready_hour)
 
-            # Convert the date times to epoch representation -  2017-06-27T19\:00\:00Z -> 1498579200.0
+            # Convert the date times to epoch representation. example: 2017-06-27T19\:00\:00Z -> 1498579200.0
             hour_start_time_epoch_seconds = time.mktime(
                 datetime.datetime.strptime(self._hour_start_time.replace("\\", ""),
                                            "%Y-%m-%dT%H:%M:%SZ").timetuple())
