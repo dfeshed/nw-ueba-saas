@@ -1,5 +1,7 @@
 package presidio.ade.smart.config;
 
+import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
@@ -26,7 +28,9 @@ import presidio.ade.smart.SmartScoringService;
 		AdeRecordReaderFactoriesConfig.class,
 		TransformationConfig.class,
 		RecordReaderFactoryServiceConfig.class,
-		SmartApplicationSmartScorersFactoryConfig.class
+		SmartApplicationSmartScorersFactoryConfig.class,
+		ModelCacheServiceInMemoryConfig.class,
+		ScoringServiceConfig.class
 })
 public class SmartApplicationSmartScoringServiceConfig {
 	@Value("${presidio.ade.scorer.base.configurations.path}")
@@ -39,10 +43,6 @@ public class SmartApplicationSmartScoringServiceConfig {
 	@Autowired
 	private RecordReaderFactoryService recordReaderFactoryService;
 	@Autowired
-	private ScorerConfService scorerConfService;
-	@Autowired
-	private FactoryService<Scorer> scorerFactoryService;
-	@Autowired
 	private ScoringService scoringService;
 
 	@Bean
@@ -53,10 +53,6 @@ public class SmartApplicationSmartScoringServiceConfig {
 				scorerAdditionalConfigurationsPath);
 	}
 
-	@Bean
-	public ScoringService scoringService() {
-		return new ScoringService(scorerConfService, scorerFactoryService);
-	}
 
 	@Bean
 	public SmartScoringService smartScoringService() {

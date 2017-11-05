@@ -1,7 +1,7 @@
 package presidio.output.processor.services.user;
 
+import fortscale.utils.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,20 +17,14 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
 
 /**
  * Created by shays on 27/08/2017.
  */
 public class UserScoreServiceImpl implements UserScoreService {
+    private static final Logger log = Logger.getLogger(UserScoreServiceImpl.class);
 
     private UserPersistencyService userPersistencyService;
 
@@ -44,9 +38,8 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private AlertPersistencyService alertPersistencyService;
 
-    private Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
-
     private int defaultAlertsBatchSize;
+
     public int defaultUsersBatchSize;
 
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
@@ -114,7 +107,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     public void updateSeverities() {
         final double[] scores = getScoresArray();
         final UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sortField(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
+        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
         Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
         while (page != null && page.hasContent()) {
@@ -137,14 +130,14 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1)
                 .pageSize(defaultUsersBatchSize)
-                .pageNumber(1);
+                .pageNumber(0);
         Page<User> usersPage = userPersistencyService.find(userQueryBuilder.build());
 
         log.debug("found " + usersPage.getTotalElements() + " users which score that should be reset");
         List<User> clearedUsersList = new ArrayList<>();
         while (usersPage != null && usersPage.hasContent()) {
             usersPage.getContent().forEach(user -> {
-                if (!excludedUsersIds.contains(user.getUserId())) {
+                if (!excludedUsersIds.contains(user.getId())) {
                     user.setScore(0D);
                     user.setSeverity(null);
                     clearedUsersList.add(user);

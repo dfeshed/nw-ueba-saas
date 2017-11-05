@@ -5,13 +5,13 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.apache.commons.collections.map.SingletonMap;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.IMapGenerator;
-import presidio.data.generators.common.IStringListGenerator;
+import presidio.data.generators.common.*;
 import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
 
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

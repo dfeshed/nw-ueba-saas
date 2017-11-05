@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class TimeModel implements Model {
+public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
 
 	private int timeResolution;
@@ -25,7 +25,7 @@ public class TimeModel implements Model {
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
 
-	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
+	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions) {
 		Assert.isTrue(timeResolution % bucketSize == 0);
 
 		this.timeResolution = timeResolution;
@@ -36,19 +36,20 @@ public class TimeModel implements Model {
 		List<Double> bucketHits = calcBucketHits(timeToCounter);
 		smoothedBuckets = calcSmoothedBuckets(bucketHits);
 
-		Map<Long, Double> roundedSmoothedCountersThatWereHitToNumOfBuckets = IntStream.range(0, bucketHits.size())
+		Map<Long, Integer> roundedSmoothedCountersThatWereHitToNumOfBuckets = IntStream.range(0, bucketHits.size())
 				.filter(bucketInd -> bucketHits.get(bucketInd) > 0)
 				.boxed()
 				.collect(Collectors.groupingBy(
 						this::getRoundedCounter,
 						Collectors.reducing(
-								0D,
-								smoothedCounter -> 1D,
+								0,
+								smoothedCounter -> 1,
 								(smoothedCounter1, smoothedCounter2) -> smoothedCounter1 + smoothedCounter2
 						)));
 
 		categoryRarityModel = new CategoryRarityModel();
-		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2);
+		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
+		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions, numDistinctFeatures);
 	}
 
 	private List<Double> createInitializedBuckets() {
@@ -122,5 +123,10 @@ public class TimeModel implements Model {
 
 	public CategoryRarityModel getCategoryRarityModel() {
 		return categoryRarityModel;
+	}
+
+	@Override
+	public long getNumOfPartitions() {
+		return categoryRarityModel.getNumOfPartitions();
 	}
 }

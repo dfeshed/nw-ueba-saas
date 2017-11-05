@@ -4,17 +4,15 @@ import com.google.common.collect.ImmutableList;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
 
 import java.io.IOException;
 import java.time.Instant;
 
-
 public class FlumeAdapterExecutionService implements PresidioExecutionService {
-    private static Logger logger = LoggerFactory.getLogger(FlumeAdapterExecutionService.class);
+    private static Logger logger = Logger.getLogger(FlumeAdapterExecutionService.class);
 
     private final ProcessExecutor processExecutor;
     private final FlumeConfigurationUtil flumeConfigurationUtil;

@@ -6,7 +6,9 @@ import fortscale.ml.model.AggregatedFeatureValuesData;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.ContinuousMaxDataModel;
 import fortscale.ml.model.Model;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeService;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 
 import java.time.Duration;
@@ -15,11 +17,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static fortscale.utils.ConversionUtils.convertToDouble;
+import static fortscale.utils.logging.Logger.getLogger;
+
 
 /**
  * Created by YaronDL on 9/24/2017.
  */
 public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModelBuilder {
+
+    private static final Logger logger = getLogger(ContinuousMaxHistogramModelBuilder.class);
 
     private int numOfMaxValuesSamples;
     private int minNumOfMaxValuesSamples;
@@ -47,17 +53,20 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         ContinuousDataModel continuousDataModel = buildContinuousDataModel(histogram);
 
         //create ContinuousDataModel with max values
-        List<Double> maxValues = getMaxValues(instantToFeatureValue, instantStep);
+        MaxValuesResult maxValuesResult = getMaxValues(instantToFeatureValue, instantStep);
+        logger.debug("maxValuesResult={} for aggregatedFeatureValuesData={}",maxValuesResult,aggregatedFeatureValuesData);
+        List<Double> maxValues = maxValuesResult.getMaxValues();
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
-
-        return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues);
+        long resolution = maxValuesResult.getResolution();
+        long numOfPartitions = instantToFeatureValue.keySet().stream().map(x -> (x.getEpochSecond() / resolution) * resolution).distinct().count();
+        return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues,numOfPartitions);
     }
 
     /**
      * @param instantToFeatureValue start instant to featureValue treeMap
-     * @return list of max feature values
+     * @return list of max feature values and final resolution
      */
-    private List<Double> getMaxValues(TreeMap<Instant, Double> instantToFeatureValue, Duration instantStep) {
+    private MaxValuesResult getMaxValues(TreeMap<Instant, Double> instantToFeatureValue, Duration instantStep) {
         Instant instantCursor = TimeService.floorTime(instantToFeatureValue.firstKey(), partitionsResolutionInSeconds);
         Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), partitionsResolutionInSeconds).plus(Duration.ofSeconds(partitionsResolutionInSeconds));
 
@@ -70,14 +79,17 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         }
 
         int resolution = (int) (partitionsResolutionInSeconds / instantStep.getSeconds());
+        long resolutionInSeconds = partitionsResolutionInSeconds;
         List<Double> maxValues = new ArrayList<>();
+
         //Get max values
         while (maxValues.size() < minNumOfMaxValuesSamples && resolution > 0) {
             maxValues = getMaxValuesByResolution(instantToFeatureValue, resolution);
+            resolutionInSeconds = resolution * instantStep.getSeconds();
             resolution--;
         }
 
-        return maxValues;
+        return new MaxValuesResult(resolutionInSeconds,maxValues);
     }
 
     /***
@@ -138,5 +150,38 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         return ret;
     }
 
+    private class MaxValuesResult
+    {
+        private long resolution;
+        private List<Double> maxValues;
 
+        public MaxValuesResult(long resolution, List<Double> maxValues) {
+            this.resolution = resolution;
+            this.maxValues = maxValues;
+        }
+
+        public long getResolution() {
+            return resolution;
+        }
+
+        public void setResolution(int resolution) {
+            this.resolution = resolution;
+        }
+
+        public List<Double> getMaxValues() {
+            return maxValues;
+        }
+
+        public void setMaxValues(List<Double> maxValues) {
+            this.maxValues = maxValues;
+        }
+
+        /**
+         * @return ToString you know...
+         */
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        }
+    }
 }

@@ -12,7 +12,7 @@
           "global-model": {
             "name": "smart.global.prior.userId.hourly"
           },
-          "number-of-samples-to-influence-enough": 30,
+          "number-of-partitions-to-influence-enough": 10,
           "use-certainty-to-calculate-score": true,
           "base-scorer": {
             "type": "smart-weights-model-scorer",

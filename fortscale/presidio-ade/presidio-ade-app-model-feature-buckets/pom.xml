@@ -5,55 +5,76 @@
     <parent>
         <artifactId>presidio-ade</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0.0-PERFORMANCE</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>presidio-ade-app-model-feature-buckets</artifactId>
     <packaging>jar</packaging>
     <properties>
-        <start-class>presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication</start-class>
+        <start-class>
+            presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
+        </start-class>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>fortscale</groupId>
-            <artifactId>presidio-ml</artifactId>
-            <version>1.0.0-PERFORMANCE</version>
-        </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
             <artifactId>presidio-ade-domain</artifactId>
-            <version>1.0.0-PERFORMANCE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-task-starter</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-ade-app-test-utils</artifactId>
-            <version>1.0.0-PERFORMANCE</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>test-jar</type>
         </dependency>
         <dependency>
-            <groupId>presidio-test-utils</groupId>
-            <artifactId>presidio-data-generators</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-aggregation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.shell</groupId>
+            <artifactId>spring-shell</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -70,7 +91,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -141,5 +161,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -41,6 +41,7 @@ import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
@@ -68,14 +69,15 @@ import static org.mockito.Matchers.eq;
 /**
  * Created by efratn on 24/07/2017.
  */
-@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest()
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
 
     @MockBean
     private AlertPersistencyService alertPersistencyService;
+
+    @MockBean
+    private UserPersistencyService userPersistencyService;
 
     @MockBean
     private SmartDataReader smartDataReader;
@@ -89,11 +91,7 @@ public class AlertServiceTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    private Instant startTime = Instant.parse("2017-06-06T10:00:00Z");
-    private Instant endTime = Instant.parse("2017-06-06T11:00:00Z");
-    private TimeRange timeRange = new TimeRange(startTime, endTime);
     private static String contextId = "testUser";
-    private static String configurationName = "testConfName";
     private static String featureName = "featureName";
 
     public void setup(int smartListSize, int numOfSmartsBelowScoreThreshold, int scoreThreshold) {
@@ -240,9 +238,9 @@ public class AlertServiceTest {
 
     @Test
     public void severityTest() {
-        assertEquals(alertEnumsSeverityService.severity(51), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertEnumsSeverityService.severity(71), AlertEnums.AlertSeverity.MEDIUM);
-        assertEquals(alertEnumsSeverityService.severity(86), AlertEnums.AlertSeverity.HIGH);
+        assertEquals(alertEnumsSeverityService.severity(70), AlertEnums.AlertSeverity.LOW);
+        assertEquals(alertEnumsSeverityService.severity(81), AlertEnums.AlertSeverity.MEDIUM);
+        assertEquals(alertEnumsSeverityService.severity(91), AlertEnums.AlertSeverity.HIGH);
         assertEquals(alertEnumsSeverityService.severity(97), AlertEnums.AlertSeverity.CRITICAL);
     }
 

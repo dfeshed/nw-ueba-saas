@@ -1,16 +1,16 @@
 package presidio.output.processor.services;
 
 import fortscale.common.general.CommonStrings;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
@@ -18,21 +18,15 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by shays on 17/05/2017.
  * Main output functionality is implemented here
  */
-
 public class OutputExecutionServiceImpl implements OutputExecutionService {
+    private static final Logger logger = Logger.getLogger(OutputExecutionServiceImpl.class);
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
     private final UserScoreService userScoreService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
@@ -51,6 +45,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     @Autowired
     MetricCollectingService metricCollectingService;
+
+    @Autowired
+    PresidioMetricFactory presidioMetricFactory;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
@@ -114,7 +111,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetric(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
+                    metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG, startDate));
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
@@ -130,9 +127,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        metricCollectingService.addMetric(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG);
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG, startDate));
         if (CollectionUtils.isNotEmpty(smarts)) {
-            metricCollectingService.addMetric(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG);
+            metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG, startDate));
         }
     }
 

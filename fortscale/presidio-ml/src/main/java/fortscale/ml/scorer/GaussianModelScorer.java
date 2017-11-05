@@ -20,14 +20,14 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
                                List<String> contextFieldNames,
                                List<List<String>> additionalContextFieldNames,
                                String featureName,
-                               int minNumOfSamplesToInfluence,
-                               int enoughNumOfSamplesToInfluence,
+                               int minNumOfPartitionsToInfluence,
+                               int enoughNumOfPartitionsToInfluence,
                                boolean isUseCertaintyToCalculateScore,
                                int globalInfluence,
                                EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
-                minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
+                minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
 
         if (additionalModelNames.size() != 1) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");

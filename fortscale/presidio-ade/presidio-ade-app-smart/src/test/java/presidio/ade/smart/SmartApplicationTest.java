@@ -614,7 +614,7 @@ public class SmartApplicationTest extends BaseAppTest {
         double avgSmartValue = avgFeatureValueForLowAnomaliesUser * minWeight;
         double sumOfValues = avgSmartValue * numOfPositiveValues;
         SMARTValuesModel smartValuesModel = new SMARTValuesModel();
-        smartValuesModel.init(numOfZeroValues, numOfPositiveValues, sumOfValues);
+        smartValuesModel.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 30);
         ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartValuesModel, end.minus(Duration.ofDays(90)), end);
         mongoTemplate.insert(modelDao, "model_smart.userId.hourly");
     }

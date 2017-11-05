@@ -2,14 +2,9 @@ package presidio.adapter.util;
 
 import fortscale.utils.logging.Logger;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.StringJoiner;
-
 
 /**
  * This class is a util class the allows its user to execute an external process,
@@ -19,8 +14,7 @@ import java.util.StringJoiner;
  * * not static so it could be mocked
  */
 public class ProcessExecutor {
-
-    private static final Logger logger = Logger.getLogger(fortscale.services.impl.ProcessExecutor.class);
+    private static final Logger logger = Logger.getLogger(ProcessExecutor.class);
 
     /**
      * @param jobName          the name of the new job
@@ -33,8 +27,6 @@ public class ProcessExecutor {
         logger.debug("Starting process with arguments {}", arguments);
         return doExecuteProcess(jobName, processBuilder);
     }
-
-
 
     private ProcessBuilder createProcessBuilder(List<String> arguments, String workingDirectory) {
         final ProcessBuilder processBuilder = new ProcessBuilder(arguments);

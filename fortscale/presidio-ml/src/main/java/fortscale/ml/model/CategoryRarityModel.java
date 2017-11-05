@@ -14,11 +14,13 @@ import java.util.Map;
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class CategoryRarityModel implements Model {
+public class CategoryRarityModel implements PartitionedDataModel {
 	private double[] buckets;
 	private long numOfSamples;
 	private long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
+	// number of partitions we found data on. can be used for certainty calculation.
+	private long numOfPartitions;
 
 	// The entriesToSaveInModel value from the model conf from which this model was built.
 	// We store this information in the model to help us reduce the number of calls to
@@ -28,22 +30,21 @@ public class CategoryRarityModel implements Model {
 	// building this model.
 	private int numberOfEntriesToSaveInModel;
 
-	public void init(Map<Long, Double> occurrencesToNumOfFeatures, int numOfBuckets) {
-		buckets = new double[numOfBuckets];
-		numOfSamples = 0;
-		numDistinctFeatures = 0;
+	public void init(Map<Long, Integer> occurrencesToNumOfPartitions, int numOfBuckets, long numOfPartitions, long numDistinctFeatures) {
+		this.numDistinctFeatures = numDistinctFeatures;
 		featureOccurrences = new HashMap<>();
+		this.numOfPartitions = numOfPartitions;
+		buckets = new double[numOfBuckets];
 
-		for (Map.Entry<Long, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
+		this.numOfSamples = 0;
+		for (Map.Entry<Long, Integer> entry : occurrencesToNumOfPartitions.entrySet()) {
 			long occurrences = entry.getKey();
-			double numOfFeatures = entry.getValue();
+			int occurencesNumOfPartitions = entry.getValue();
 
 			if (occurrences <= buckets.length) {
-				buckets[(int)(occurrences - 1)] = numOfFeatures;
+				buckets[(int)(occurrences - 1)] = occurencesNumOfPartitions;
 			}
-
-			numOfSamples += numOfFeatures * occurrences;
-			numDistinctFeatures += numOfFeatures;
+			this.numOfSamples += occurencesNumOfPartitions * occurrences;
 		}
 	}
 
@@ -66,6 +67,7 @@ public class CategoryRarityModel implements Model {
 	public long getNumOfSamples() {
 		return numOfSamples;
 	}
+
 
 	public long getNumOfDistinctFeatures() {
 		return numDistinctFeatures;
@@ -100,5 +102,18 @@ public class CategoryRarityModel implements Model {
 
 	public boolean isModelLoadedWithNumberOfEntries() {
 		return getNumOfSavedFeatures() >= numberOfEntriesToSaveInModel;
+	}
+
+	@Override
+	public long getNumOfPartitions() {
+		return numOfPartitions;
+	}
+
+	public void setNumOfPartitions(long numOfPartitions) {
+		this.numOfPartitions = numOfPartitions;
+	}
+
+	public Map<String, Double> getFeatureOccurrences() {
+		return featureOccurrences;
 	}
 }

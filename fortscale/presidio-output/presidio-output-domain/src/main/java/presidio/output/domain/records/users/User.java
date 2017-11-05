@@ -30,6 +30,7 @@ public class User extends AbstractElasticDocument {
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
+    public static final String ID_FIELD_NAME = "id";
 
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;

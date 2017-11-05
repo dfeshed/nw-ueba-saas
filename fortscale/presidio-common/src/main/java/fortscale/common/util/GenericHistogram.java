@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.common.feature.FeatureValue;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.ANY, getterVisibility= JsonAutoDetect.Visibility.NONE, setterVisibility= JsonAutoDetect.Visibility.NONE)
 public class GenericHistogram implements Serializable, FeatureValue {
@@ -17,7 +14,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
     private Map<String, Double> histogram = new HashMap<>();
     private double totalCount = 0;
     private Object maxObject = null;
-    private long distinctDays = 0;
+    private long numberOfPartitions = 0;
 
     public GenericHistogram() {}
 
@@ -25,8 +22,16 @@ public class GenericHistogram implements Serializable, FeatureValue {
         histogram.forEach(this::add);
     }
 
-    public void setDistinctDays(long distinctDays) {
-        this.distinctDays = distinctDays;
+    public void setNumberOfPartitions(long numberOfPartitions) {
+        this.numberOfPartitions = numberOfPartitions;
+    }
+
+    /**
+     *
+     * @return number of time partitions which the generic histogram data is scattered in
+     */
+    public long getNumberOfPartitions() {
+        return numberOfPartitions;
     }
 
     public double getAvg() {
@@ -60,7 +65,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
         return histogram.keySet();
     }
 
-    public Double getMaxCount() { return histogram.get(maxObject);}
+    public Double getMaxCount() { return maxObject != null ? histogram.get(maxObject): null;}
     public Object getMaxCountObject() { return maxObject;}
     public Double getMaxCountFromTotalCount() { return getMaxCount()/ totalCount;}
 
@@ -88,6 +93,24 @@ public class GenericHistogram implements Serializable, FeatureValue {
 
         this.totalCount +=count;
 
+    }
+
+    public void remove(String val){
+        if(val == null){
+            return;
+        }
+
+        Double count = histogram.remove(val);
+        if(count != null){
+            if(maxObject.equals(val)){
+                if(histogram.size() > 0) {
+                    maxObject = histogram.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+                } else{
+                    maxObject = null;
+                }
+            }
+            this.totalCount -= count;
+        }
     }
 
     public GenericHistogram add(GenericHistogram histogram) {
@@ -146,7 +169,7 @@ public class GenericHistogram implements Serializable, FeatureValue {
 
         if (Math.abs(histogram1.totalCount - totalCount) > 0.0000000001) return false;
         if (!histogram.equals(histogram1.histogram)) return false;
-        if(distinctDays!=histogram1.distinctDays) return false;
+        if(numberOfPartitions !=histogram1.numberOfPartitions) return false;
         return maxObject.equals(histogram1.maxObject);
 
     }

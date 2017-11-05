@@ -27,7 +27,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -70,7 +70,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -112,7 +112,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -154,7 +154,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -196,7 +196,7 @@
               }
             ],
             "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
+            "number-of-partitions-to-influence-enough": 10,
             "use-certainty-to-calculate-score": false
             }
           },
@@ -238,7 +238,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -280,7 +280,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -322,7 +322,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -364,7 +364,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -406,7 +406,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },
@@ -448,7 +448,7 @@
                 }
               ],
               "global-influence": 20,
-              "number-of-samples-to-influence-enough": 30,
+              "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
           },

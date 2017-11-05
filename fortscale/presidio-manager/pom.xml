@@ -8,7 +8,7 @@
     <parent>
         <artifactId>fortscale</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0.0-PERFORMANCE</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>presidio-manager</artifactId>

@@ -23,7 +23,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		);
 
 		TimeModel timeModel = new TimeModel();
-		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter);
+		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1);
 		return timeModel;
 	}
 

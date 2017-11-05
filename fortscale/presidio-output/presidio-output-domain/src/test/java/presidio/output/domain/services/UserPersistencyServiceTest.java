@@ -1,26 +1,26 @@
 package presidio.output.domain.services;
 
-import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.assertj.core.util.Lists;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.Ignore;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
+import presidio.output.domain.spring.TestConfig;
 
 import java.util.*;
 
@@ -28,51 +28,40 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest()
-@ContextConfiguration(classes = presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class)
-public class UserPersistencyServiceTest {
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
+@ActiveProfiles("useEmbeddedElastic")
+public class UserPersistencyServiceTest{
 
     @Autowired
     private UserPersistencyService userPersistencyService;
 
+    List<String> classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
+    List<String> classifications2 = new ArrayList<>(Arrays.asList("b"));
+    List<String> classifications3 = new ArrayList<>(Arrays.asList("a"));
+    List<String> classifications4 = new ArrayList<>(Arrays.asList("d"));
+    User user1 = generateUser(classifications1, "user1", "userId1", "user1", 50d);
+    User user2 = generateUser(classifications2, "user2", "userId2", "user2", 60d);
+    User user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
+    User user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
+    User user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
+    User user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
+    User user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
+    User user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
+
     @Autowired
-    private PresidioElasticsearchTemplate esTemplate;
+    public Client client;
 
-    List<String> classifications1;
-    List<String> classifications2;
-    List<String> classifications3;
-    List<String> classifications4;
-    List<String> classifications5;
-    User user1;
-    User user2;
-    User user3;
-    User user4;
-    User user5;
-    User user6;
-    User user7;
-    User user8;
+    @After
+    public void cleanTestData() {
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE)
+                .get();
+    }
 
-    @Before
-    public void before() {
-        esTemplate.deleteIndex(User.class);
-        esTemplate.createIndex(User.class);
-        esTemplate.putMapping(User.class);
-        esTemplate.refresh(User.class);
-        classifications1 = new ArrayList<>(Arrays.asList("a", "b", "c"));
-        classifications2 = new ArrayList<>(Arrays.asList("b"));
-        classifications3 = new ArrayList<>(Arrays.asList("a"));
-        classifications4 = new ArrayList<>(Arrays.asList("d"));
-        classifications5 = null;
-        user1 = generateUser(classifications1, "user1", "userId1", "user1", 50d);
-        user2 = generateUser(classifications2, "user2", "userId2", "user2", 60d);
-        user3 = generateUser(classifications3, "user3", "userId3", "user3", 70d);
-        user4 = generateUser(classifications4, "user4", "userId4", "user4", 80d);
-        user5 = generateUser(classifications3, "user5", "userId5", "user4", 70d);
-        user6 = generateUser(classifications3, "fretext", "userId6", "free", 70d);
-        user7 = generateUser(classifications3, "free", "userId7", "text", 70d);
-        user8 = generateUser(classifications3, "text", "userId8", "freetex", 70d);
+    private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
+        List<String> indicators = Arrays.asList(new String("indicator"));
+        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
     @Test
@@ -99,12 +88,6 @@ public class UserPersistencyServiceTest {
 
         assertThat(Lists.newArrayList(createdUsers).size(), is(2));
 
-    }
-
-    private User generateUser(List<String> classifications, String userName, String userId, String displayName, double score) {
-        ArrayList<String> indicators = new ArrayList<String>();
-        indicators.add("indicator");
-        return new User(userId, userName, displayName, score, classifications, indicators, null, UserSeverity.CRITICAL, 0);
     }
 
 
@@ -148,8 +131,7 @@ public class UserPersistencyServiceTest {
 
         assertNotNull(foundUser.getId());
         assertEquals(foundUser.getId(), user.getId());
-        assertEquals(created, null);
-        assertNotEquals(createdBy, null);
+        assertNotEquals(null, createdBy);
         assertEquals(createdBy, updatedByAgain);
         assertNotEquals(createdBy, updatedByAgain2);
     }
@@ -277,13 +259,13 @@ public class UserPersistencyServiceTest {
         List<String> classificationFilter = new ArrayList<String>();
         classificationFilter.add("a");
 
-        List<String> sortFields = new ArrayList<>();
-        sortFields.add(User.SCORE_FIELD_NAME);
-        sortFields.add(User.USER_ID_FIELD_NAME);
+        List<String> sort = new ArrayList<>();
+        sort.add(User.SCORE_FIELD_NAME);
+        sort.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByAlertClassifications(classificationFilter)
-                        .sortField(new Sort(new Sort.Order(User.SCORE_FIELD_NAME)))
+                        .sort(new Sort(new Sort.Order(User.SCORE_FIELD_NAME)))
                         .build();
 
         Page<User> foundUsers = userPersistencyService.find(userQuery);
@@ -425,9 +407,9 @@ public class UserPersistencyServiceTest {
         userList.add(user2);
         userPersistencyService.save(userList);
 
-        List<String> sortFields = new ArrayList<>();
-        sortFields.add(User.SCORE_FIELD_NAME);
-        sortFields.add(User.USER_ID_FIELD_NAME);
+        List<String> sort = new ArrayList<>();
+        sort.add(User.SCORE_FIELD_NAME);
+        sort.add(User.USER_ID_FIELD_NAME);
         UserQuery userQuery =
                 new UserQuery.UserQueryBuilder()
                         .filterByUserTags(tags)
@@ -642,6 +624,47 @@ public class UserPersistencyServiceTest {
         Assert.assertEquals("B_userName", iterator.next().getUserName());
         Assert.assertEquals("C_userName", iterator.next().getUserName());
         Assert.assertEquals("W_userName", iterator.next().getUserName());
+    }
+
+    @Test
+    public void testSortByAlertsNumber() {
+
+        List<String> tags = Arrays.asList("admin");
+        List<String> indicators = Arrays.asList("a");
+        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 1);
+        User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 2);
+        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 3);
+
+
+        List<User> userList = Arrays.asList(user1, user2, user3);
+        userPersistencyService.save(userList);
+
+
+        UserQuery userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .sort(new Sort(Sort.Direction.DESC, User.ALERTS_COUNT_FIELD_NAME))
+                        .build();
+
+        Page<User> result = userPersistencyService.find(userQuery);
+        assertEquals(3L, result.getContent().size());
+        Iterator<User> iterator = result.iterator();
+        Assert.assertEquals("B_userName", iterator.next().getUserName());
+        Assert.assertEquals("C_userName", iterator.next().getUserName());
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
+
+        userQuery =
+                new UserQuery.UserQueryBuilder()
+                        .sort(new Sort(Sort.Direction.ASC, User.ALERTS_COUNT_FIELD_NAME))
+                        .build();
+
+        result = userPersistencyService.find(userQuery);
+        assertEquals(3L, result.getContent().size());
+        iterator = result.iterator();
+        Assert.assertEquals("W_userName", iterator.next().getUserName());
+        Assert.assertEquals("C_userName", iterator.next().getUserName());
+        Assert.assertEquals("B_userName", iterator.next().getUserName());
+
+
     }
 
     @Test

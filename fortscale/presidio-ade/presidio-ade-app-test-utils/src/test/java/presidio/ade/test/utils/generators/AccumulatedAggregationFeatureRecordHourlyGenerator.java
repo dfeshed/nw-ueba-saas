@@ -3,7 +3,11 @@ package presidio.ade.test.utils.generators;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.testng.collections.Lists;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
-import presidio.data.generators.common.*;
+import presidio.data.generators.common.CustomStringGenerator;
+import presidio.data.generators.common.CyclicMapGenerator;
+import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.IEventGenerator;
 

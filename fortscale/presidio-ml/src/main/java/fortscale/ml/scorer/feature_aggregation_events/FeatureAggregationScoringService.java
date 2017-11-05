@@ -9,4 +9,9 @@ import java.util.List;
 public interface FeatureAggregationScoringService {
 
     List<ScoredFeatureAggregationRecord> scoreEvents(List<AdeAggregationRecord> featureAdeAggrRecords);
+
+    /**
+     * Reset model cache
+     */
+    void resetModelCache();
 }
