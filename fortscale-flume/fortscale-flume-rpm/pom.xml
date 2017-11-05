@@ -7,7 +7,7 @@
     <parent>
         <groupId>presidio.flume.core</groupId>
         <artifactId>fortscale-flume</artifactId>
-        <version>1.0.0-PERFORMANCE</version>
+        <version>1.7.0</version>
     </parent>
 
     <artifactId>flume-presidio</artifactId>

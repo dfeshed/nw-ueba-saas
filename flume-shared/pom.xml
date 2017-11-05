@@ -23,7 +23,7 @@ limitations under the License.
     <parent>
         <artifactId>presidio-flume</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>1.0.0-PERFORMANCE</version>
+        <version>1.7.0</version>
     </parent>
 
     <groupId>presidio.flume.core</groupId>
