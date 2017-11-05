@@ -17,9 +17,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CountingPresidioMongoSinkTest {
+public class CountingBatchablePresidioMongoSinkTest {
 
-    private CountingPresidioMongoSink testSubject;
+    private CountingBatchablePresidioMongoSink testSubject;
 
     @Before
     public void setUp() throws Exception {
@@ -33,7 +33,7 @@ public class CountingPresidioMongoSinkTest {
                 return events.size();
             }
         });
-        testSubject = new CountingPresidioMongoSink<AbstractEventTestClass>(mockedRepo, mockedCountersUtil) {
+        testSubject = new CountingBatchablePresidioMongoSink<AbstractEventTestClass>(mockedRepo, mockedCountersUtil) {
             @Override
             protected Schema getEventSchema(AbstractEventTestClass event) {
                 return event.eventSchema;
