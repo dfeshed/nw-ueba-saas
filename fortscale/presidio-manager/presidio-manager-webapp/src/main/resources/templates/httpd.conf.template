@@ -421,43 +421,7 @@ SSLSessionCacheTimeout  300
 
     RewriteEngine on
 
-    RewriteRule /kibana/bundles/(.*)$ http://localhost:5601/bundles/$1 [NE,R,P]
-    RewriteRule /kibana/ui/(.*)$ http://localhost:5601/ui/$1 [NE,R,P]
-    RewriteRule /kibana/plugins/(.*)$ http://localhost:5601/plugins/$1 [NE,R,P]
-    RewriteRule /kibana/es_admin/(.*)$ http://localhost:5601/es_admin/$1 [NE,R,P]
-    RewriteRule /kibana/elasticsearch/(.*)$ http://localhost:5601/elasticsearch/$1 [NE,R,P]
-    RewriteRule /kibana/status/(.*)$ http://localhost:5601/status/$1 [NE,R,P]
-    RewriteRule /kibana/api/console/(.*)$ http://localhost:5601/api/console/$1 [NE,R,P]
-    RewriteRule /kibana/api/status/(.*)$ http://localhost:5601/api/status/$1 [NE,R,P]
-    RewriteRule /kibana/api/timelion/(.*)$ http://localhost:5601/api/timelion/$1 [NE,R,P]
-    RewriteRule /kibana/app/sense/(.*)$ http://localhost:5601/app/sense/$1 [NE,R,P]
-
-    RewriteRule /kibana/(.*)$ http://localhost:5601/app/kibana#/$1 [NE,R,P]
-  </Location>
-
-  <Location /app>
-    SSLRequireSSL
-    AuthType Kerberos
-    AuthName "Windows Login"
-    
-    KrbMethodK5Passwd off
-    KrbAuthRealms ${realmName}
-    KrbServiceName ${krbServiceName}
-    Krb5Keytab /etc/krb5.keytab
-    
-    krblocalUserMapping on
-    
-    AuthBasicProvider ldap
-    AuthLDAPURL ${ldapUrl}
-    AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword ${password}
-    AuthLDAPMaxSubGroupDepth 2
-    Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
-
-    RewriteEngine on
-
-    RewriteRule /app/(.*)$ http://localhost:5601/app/$1 [NE,R,P]
-
+    RewriteRule /kibana/(.*)$ http://localhost:5601/$1 [NE,R,P]
   </Location>
 
   <Location /connector/webhook/register>
