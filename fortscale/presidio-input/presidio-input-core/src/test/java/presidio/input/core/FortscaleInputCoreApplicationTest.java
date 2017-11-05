@@ -19,7 +19,7 @@ import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfigurationTest;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.util.Properties;
@@ -61,6 +61,7 @@ public class FortscaleInputCoreApplicationTest {
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();
             properties.put("page.iterator.page.size", "1000");
+            properties.put("enable.metrics.export", "false");
             properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

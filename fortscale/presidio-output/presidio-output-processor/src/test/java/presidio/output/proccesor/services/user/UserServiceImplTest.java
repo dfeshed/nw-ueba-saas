@@ -74,20 +74,22 @@ public class UserServiceImplTest {
         Page<User> usersPage = new PageImpl<>(usersWithOldScore, pageable1, 3);
 
         Set<String> usersIDForBatch = new HashSet<>();
-        usersIDForBatch.add("user1");
-        usersIDForBatch.add("user2");
-        usersIDForBatch.add("user3");
+        usersIDForBatch.add(usersWithOldScore.get(0).getId());
+        usersIDForBatch.add(usersWithOldScore.get(1).getId());
+        usersIDForBatch.add(usersWithOldScore.get(2).getId());
 
         Map<String, UsersAlertData> newUsersScore = new HashMap<>();
-        newUsersScore.put("user1", new UsersAlertData(80D, 1));
-        newUsersScore.put("user2", new UsersAlertData(50D, 1));
-        newUsersScore.put("user3", new UsersAlertData(30D, 1));
+        newUsersScore.put(usersWithOldScore.get(0).getId(), new UsersAlertData(80D, 1));
+        newUsersScore.put(usersWithOldScore.get(1).getId(), new UsersAlertData(50D, 1));
+        newUsersScore.put(usersWithOldScore.get(2).getId(), new UsersAlertData(30D, 1));
 
-        Mockito.when(this.mockUserPresistency.find(Mockito.any(UserQuery.class))).thenAnswer(new Answer<Page>() {
+        Mockito.when(this.mockUserPresistency.findByIds(Mockito.any(Set.class),Mockito.any(PageRequest.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
-                UserQuery query = (UserQuery) invocation.getArguments()[0];
-                if (query.getPageNumber() == 0) {
+                Set<String> userIds = (Set<String>) invocation.getArguments()[0];
+                PageRequest pageContext = (PageRequest) invocation.getArguments()[1];
+
+                if (pageContext.getPageNumber() == 0) {
                     return usersPage;
                 } else {
                     return null;

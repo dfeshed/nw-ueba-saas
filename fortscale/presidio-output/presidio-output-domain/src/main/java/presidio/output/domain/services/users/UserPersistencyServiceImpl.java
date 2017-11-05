@@ -7,6 +7,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.repositories.UserRepository;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
 
     public Page<User> findByUserName(String userName, PageRequest pageRequest) {
         return userRepository.findByUserName(userName, pageRequest);
+    }
+
+    public Page<User> findByIds(Collection<String> ids, PageRequest pageRequest) {
+        return userRepository.findByIdIn(ids, pageRequest);
     }
 
     public Page<User> findByUserId(String userId, PageRequest pageRequest) {

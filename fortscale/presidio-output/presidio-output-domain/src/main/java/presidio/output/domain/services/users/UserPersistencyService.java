@@ -2,9 +2,11 @@ package presidio.output.domain.services.users;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,4 +26,6 @@ public interface UserPersistencyService {
     Page<User> findByUserId(String userId, PageRequest pageRequest);
 
     Page<User> find(UserQuery userQuery);
+
+    Page<User> findByIds(Collection<String> ids, PageRequest pageRequest);
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,8 +35,8 @@ import presidio.input.core.services.transformation.managers.FileTransformerManag
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.input.core.services.transformation.managers.TransformationServiceImpl;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
-import presidio.monitoring.aspect.services.MetricCollectingService;
-import presidio.monitoring.aspect.services.MetricCollectingServiceImpl;
+import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -53,10 +54,11 @@ public class InputCoreConfigurationTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Bean
-    public MetricCollectingService metricCollectingService() {
-        return new MetricCollectingServiceImpl();
-    }
+    @MockBean
+    public MetricCollectingService metricCollectingService;
+
+    @MockBean
+    public PresidioMetricFactory presidioMetricFactory;
 
     @Value("${operation.type.category.mapping.file.path}")
     private String operationTypeCategoryMappingFilePath;

@@ -1,4 +1,4 @@
-package presidio.monitoring.elastic.records;
+package presidio.monitoring.records;
 
 
 import org.springframework.data.annotation.Id;
@@ -8,13 +8,14 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
-import static presidio.monitoring.elastic.records.PresidioMetric.METRIC_INDEX_NAME;
-import static presidio.monitoring.elastic.records.PresidioMetric.TYPE;
+import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;
+import static presidio.monitoring.records.MetricDocument.TYPE;
 
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
-public class PresidioMetric{
+public class MetricDocument {
 
 
     public static final String METRIC_INDEX_NAME = "presidio-monitoring";
@@ -39,11 +40,20 @@ public class PresidioMetric{
     @Field(type = FieldType.String, store = true)
     private String unit;
 
-    public PresidioMetric(String name, long value, Set<String>  tags, String unit) {
-        this.id=System.nanoTime()+"";
+    public MetricDocument(String name, long value, Set<String> tags, String unit) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.value = value;
         this.timestamp = new Date();
+        this.tags = tags;
+        this.unit = unit;
+    }
+
+    public MetricDocument(String name, long value, Date timestamp, Set<String> tags, String unit) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.value = value;
+        this.timestamp = timestamp;
         this.tags = tags;
         this.unit = unit;
     }
@@ -52,7 +62,7 @@ public class PresidioMetric{
         this.id = id;
     }
 
-    public PresidioMetric() {
+    public MetricDocument() {
     }
 
     public void setName(String name) {
@@ -91,7 +101,7 @@ public class PresidioMetric{
         return timestamp;
     }
 
-    public Set<String>  getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
@@ -111,8 +121,8 @@ public class PresidioMetric{
                 '}';
     }
 
-    public boolean equals(PresidioMetric presidioMetric){
-        return this.value == presidioMetric.getValue();
+    public boolean equals(MetricDocument metricDocument) {
+        return this.value == metricDocument.getValue();
     }
 
 }

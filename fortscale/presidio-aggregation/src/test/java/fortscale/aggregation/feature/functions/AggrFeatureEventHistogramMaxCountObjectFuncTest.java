@@ -30,11 +30,16 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 	}
 
 	private AggrFeatureValue createExpected(String maxHistogramKey, GenericHistogram ...genericHistograms){
+		return createExpected(maxHistogramKey, true, genericHistograms);
+	}
+
+	private AggrFeatureValue createExpected(String maxHistogramKey, boolean removeNa, GenericHistogram ...genericHistograms){
 		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey,0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();
 		for(GenericHistogram hist: genericHistograms){
 			sumGenericHistogram.add(hist);
 		}
+		sumGenericHistogram.remove(AggGenericNAFeatureValues.NOT_AVAILABLE);
 		ret.setTotal((long)sumGenericHistogram.getTotalCount());
 		return ret;
 	}
@@ -72,6 +77,50 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		listOfFeatureMaps.add(bucket2FeatureMap);
 
 		AggrFeatureEventHistogramMaxCountObjectFunc function = new AggrFeatureEventHistogramMaxCountObjectFunc();
+
+		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
+		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);
+		Assert.assertNotNull(actual1);
+		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
+		Assert.assertEquals(createExpected(maxHistogramKey, histogram1, histogram2), actual1.getValue());
+	}
+
+	@Test
+	public void testCalculateAggrFeatureWithNaValues() {
+		String maxHistogramKey = "hasBiggestvalue";
+
+		GenericHistogram histogram1 = new GenericHistogram();
+		histogram1.add("first", 1.0);
+		histogram1.add("second", 2.0);
+		histogram1.add("third", 3.0);
+		histogram1.add(AggGenericNAFeatureValues.NOT_AVAILABLE, 3.0);
+
+		GenericHistogram notListedHistogram = new GenericHistogram();
+		notListedHistogram.add("first", 1.0);
+		notListedHistogram.add("fifths", 5.0);
+		notListedHistogram.add("tenth", 10.0);
+
+		Map<String, Feature> bucket1FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram1),
+				new ImmutablePair<String, Object>("feature2", notListedHistogram)
+		);
+
+		GenericHistogram histogram2 = new GenericHistogram();
+		histogram2.add("eleventh", 11.0);
+		histogram2.add("thirteenth", 13.0);
+		histogram2.add(maxHistogramKey, 17.0);
+		histogram2.add(AggGenericNAFeatureValues.NOT_AVAILABLE, 30.0);
+		Map<String, Feature> bucket2FeatureMap = AggrFeatureTestUtils.createFeatureMap(
+				new ImmutablePair<String, Object>("feature1", histogram2),
+				new ImmutablePair<String, Object>("feature2", 42)
+		);
+
+		List<Map<String, Feature>> listOfFeatureMaps = new ArrayList<>();
+		listOfFeatureMaps.add(bucket1FeatureMap);
+		listOfFeatureMaps.add(bucket2FeatureMap);
+
+		AggrFeatureEventHistogramMaxCountObjectFunc function = new AggrFeatureEventHistogramMaxCountObjectFunc();
+		function.setRemoveNA(true);
 
 		String aggregatedFeatureEventName = "aggregatedFeatureEventTestName";
 		Feature actual1 = function.calculateAggrFeature(createAggregatedFeatureEventConf(aggregatedFeatureEventName, 1), listOfFeatureMaps);

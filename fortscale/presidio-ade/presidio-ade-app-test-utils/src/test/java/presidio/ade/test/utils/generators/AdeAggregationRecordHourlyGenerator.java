@@ -19,7 +19,8 @@ import java.util.Map;
 /**
  * generates hourly Aggregation Records
  */
-public class AdeAggregationRecordHourlyGenerator implements IEventGenerator<AdeAggregationRecord> {
+//public class AdeAggregationRecordHourlyGenerator implements IEventGenerator<AdeAggregationRecord> {
+public class AdeAggregationRecordHourlyGenerator{
     private IStringListGenerator contextIdGenerator;
     private ITimeGenerator startInstantGenerator;
     private IMapGenerator valueToAggregatedFeatureGenerator;
@@ -37,7 +38,6 @@ public class AdeAggregationRecordHourlyGenerator implements IEventGenerator<AdeA
     }
 
 
-    @Override
     public List<AdeAggregationRecord> generate() throws GeneratorException {
         List<AdeAggregationRecord> evList = new ArrayList<>();
 

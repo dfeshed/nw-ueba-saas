@@ -62,7 +62,7 @@ public class UserServiceConfig {
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), defaultAlertsBatchFile, alertEffectiveDurationInDays);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays,defaultAlertsBatchFile );
     }
 
     @Bean
