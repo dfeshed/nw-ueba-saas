@@ -5,11 +5,7 @@ import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 import presidio.monitoring.factory.PresidioMetricFactory;
@@ -36,9 +32,10 @@ public class MonitoringAspects {
     private PresidioMetricEndPoint presidioMetricEndPoint;
     private PresidioMetricFactory presidioMetricFactory;
 
+    public MonitoringAspects() {
+    }
 
-    public MonitoringAspects(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricFactory presidioMetricFactory) {
-        logger.info("Aspect is activated");
+    public void setMetrics(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricFactory presidioMetricFactory) {
         this.presidioMetricEndPoint = presidioMetricEndPoint;
         this.presidioMetricFactory = presidioMetricFactory;
     }

@@ -1,8 +1,10 @@
 package presidio.output.domain.records.events;
 
 import fortscale.domain.core.EventResult;
+import fortscale.utils.mongodb.index.DynamicIndexing;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -18,6 +20,9 @@ import java.util.Map;
  * Created by Efrat Noam on 02/08/2017.
  */
 @Document
+@DynamicIndexing(compoundIndexes = {
+        @CompoundIndex(name = "userTime", def = "{'userId': 1, 'eventDate': 1}"),
+})
 public class EnrichedEvent {
 
     public static final String EVENT_ID_FIELD = "eventId";
@@ -36,7 +41,6 @@ public class EnrichedEvent {
     public static final String IS_USER_ADMIN = "isUserAdmin";
 
     @Id
-    @Indexed
     @Field
     private String id;
 
@@ -44,6 +48,7 @@ public class EnrichedEvent {
     private Instant createdDate;
 
     @Field(START_INSTANT_FIELD)
+    @Indexed
     private Instant eventDate;
 
     @Field(EVENT_ID_FIELD)

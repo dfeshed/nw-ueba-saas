@@ -1,14 +1,12 @@
 package fortscale.aggregation.feature.bucket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.common.feature.Feature;
-import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import net.minidev.json.JSONObject;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
@@ -23,7 +21,6 @@ public class FeatureBucketAggregator {
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
-    private ObjectMapper mapper;
 
 
     public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
@@ -31,7 +28,6 @@ public class FeatureBucketAggregator {
         this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
-        this.mapper = ObjectMapperProvider.getInstance().getObjectMapper();
     }
 
     /**
@@ -95,21 +91,8 @@ public class FeatureBucketAggregator {
      */
     private void updateFeatureBucket(AdeRecordReader adeRecordReader, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception {
         Map<String, Feature> featuresMap = adeRecordReader.getAllFeatures(featureBucketConf.getAllFeatureNames());
-        JSONObject jSONObject = getJsonObject(adeRecordReader);
-        Map<String, Feature> aggrFeaturesMap = aggrFeatureFunctionsService.updateAggrFeatures(jSONObject, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
+        Map<String, Feature> aggrFeaturesMap = aggrFeatureFunctionsService.updateAggrFeatures(adeRecordReader, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
         featureBucket.setAggregatedFeatures(aggrFeaturesMap);
-    }
-
-    /**
-     * Create json object of ade record
-     *
-     * @param adeRecordReader ade record reader
-     * @return json object
-     */
-    private JSONObject getJsonObject(AdeRecordReader adeRecordReader) {
-        AdeRecord adeRecord = adeRecordReader.getAdeRecord();
-        Map<String, Object> adeRecordMap = mapper.convertValue(adeRecord, Map.class);
-        return new JSONObject(adeRecordMap);
     }
 
     /**
@@ -126,8 +109,9 @@ public class FeatureBucketAggregator {
         ret.setBucketId(bucketId);
         ret.setStrategyId(strategyData.getStrategyId());
         ret.setContextFieldNames(featureBucketConf.getContextFieldNames());
-        ret.setStartTime(strategyData.getTimeRange().getStart());
-        ret.setEndTime(strategyData.getTimeRange().getEnd());
+        TimeRange timeRange = strategyData.getTimeRange();
+        ret.setStartTime(timeRange.getStart());
+        ret.setEndTime(timeRange.getEnd());
         ret.setCreatedAt(new Date());
 
         for (String contextFieldName : featureBucketConf.getContextFieldNames()) {
