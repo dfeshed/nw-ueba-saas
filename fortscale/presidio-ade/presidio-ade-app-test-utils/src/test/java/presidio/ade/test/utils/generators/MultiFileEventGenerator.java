@@ -10,8 +10,8 @@ import presidio.data.generators.event.file.FileEventsGenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiFileEventGenerator implements IEventGenerator<EnrichedFileRecord> {
-
+//public class MultiFileEventGenerator implements IEventGenerator<EnrichedFileRecord> {
+public class MultiFileEventGenerator{
 
     protected final FileRaw2EnrichedConverter converter;
     private List<FileEventsGenerator> fileEventsGenerators;
@@ -28,7 +28,6 @@ public class MultiFileEventGenerator implements IEventGenerator<EnrichedFileReco
      *
      * @throws GeneratorException
      */
-    @Override
     public List<EnrichedFileRecord> generate() throws GeneratorException {
         List<EnrichedFileRecord> enrichedRecords = new ArrayList<>();
         for (FileEventsGenerator fileEventsGenerator: fileEventsGenerators) {
