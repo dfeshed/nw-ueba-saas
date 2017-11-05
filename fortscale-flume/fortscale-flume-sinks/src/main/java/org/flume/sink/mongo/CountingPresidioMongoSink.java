@@ -16,27 +16,27 @@ import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public abstract class CountingBatchablePresidioMongoSink<T extends AbstractDocument> extends BatchablePresidioMongoSink<T> {
+public abstract class CountingPresidioMongoSink<T extends AbstractDocument> extends PresidioMongoSink<T> {
 
-    private static final Logger logger = Logger.getLogger(CountingBatchablePresidioMongoSink.class);
+    private static final Logger logger = Logger.getLogger(CountingPresidioMongoSink.class);
 
     protected CountersUtil countersUtil = new CountersUtil(12L * 30 * 24 * 60 * 60 * 1000); //1 year = default
 
 
-    public CountingBatchablePresidioMongoSink() {
+    public CountingPresidioMongoSink() {
         super();
     }
 
-    public CountingBatchablePresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
+    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
         super(sinkMongoRepository);
     }
 
-    public CountingBatchablePresidioMongoSink(CountersUtil countersUtil) {
+    public CountingPresidioMongoSink(CountersUtil countersUtil) {
         this();
         this.countersUtil = countersUtil;
     }
 
-    public CountingBatchablePresidioMongoSink(SinkMongoRepository sinkMongoRepository, CountersUtil countersUtil) {
+    public CountingPresidioMongoSink(SinkMongoRepository sinkMongoRepository, CountersUtil countersUtil) {
         super(sinkMongoRepository);
         this.countersUtil = countersUtil;
     }

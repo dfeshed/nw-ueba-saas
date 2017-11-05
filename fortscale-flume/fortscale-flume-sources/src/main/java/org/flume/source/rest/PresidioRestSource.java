@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
-import org.flume.source.AbstractPresidioBatchableEventDrivenSource;
+import org.flume.source.AbstractPresidioSource;
 import org.flume.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +21,9 @@ import static org.apache.flume.CommonStrings.DEFAULT_DATE_FORMAT;
 import static org.apache.flume.CommonStrings.END_DATE;
 import static org.apache.flume.CommonStrings.START_DATE;
 
-public class PresidioBatchableRestSource extends AbstractPresidioBatchableEventDrivenSource implements Configurable {
+public class PresidioRestSource extends AbstractPresidioSource implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(PresidioBatchableRestSource.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioRestSource.class);
 
     public static final String REST_API_IMPL_CLASS = "restApiImplClassName";
 
@@ -34,7 +34,7 @@ public class PresidioBatchableRestSource extends AbstractPresidioBatchableEventD
 
 
     @Override
-    protected void doBatchConfigure(Context context) throws FlumeException {
+    protected void doPresidioConfigure(Context context) throws FlumeException {
         try {
             for (String mandatoryParam : mandatoryParams) {
                 if (!context.containsKey(mandatoryParam)) {
@@ -54,7 +54,7 @@ public class PresidioBatchableRestSource extends AbstractPresidioBatchableEventD
 
             setName("presidio-rest-source:" + this.toString());
         } catch (Exception e) {
-            logger.error("Error configuring " + PresidioBatchableRestSource.class.getName(), e);
+            logger.error("Error configuring " + PresidioRestSource.class.getName(), e);
         }
     }
 
@@ -71,7 +71,7 @@ public class PresidioBatchableRestSource extends AbstractPresidioBatchableEventD
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException(PresidioBatchableRestSource.class.getName() + " is a singleton and can not be cloned");
+        throw new CloneNotSupportedException(PresidioRestSource.class.getName() + " is a singleton and can not be cloned");
     }
 
     @Override

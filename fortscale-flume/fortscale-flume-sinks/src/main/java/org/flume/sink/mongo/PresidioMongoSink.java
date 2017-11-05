@@ -12,7 +12,7 @@ import org.apache.flume.persistency.mongo.MongoUtils;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepositoryImpl;
-import org.flume.sink.base.AbstractBatchablePresidioSink;
+import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,9 +38,9 @@ import static org.apache.flume.CommonStrings.PASSWORD;
 import static org.apache.flume.CommonStrings.PORT;
 import static org.apache.flume.CommonStrings.USERNAME;
 
-public class BatchablePresidioMongoSink<T extends AbstractDocument> extends AbstractBatchablePresidioSink<T> {
+public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> {
 
-    private static Logger logger = LoggerFactory.getLogger(BatchablePresidioMongoSink.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
 
     private static ObjectMapper mapper;
     private static final String RECORD_TYPE = "recordType";
@@ -66,11 +66,11 @@ public class BatchablePresidioMongoSink<T extends AbstractDocument> extends Abst
     private Class<T> recordType;
     private String indexFieldName;
 
-    public BatchablePresidioMongoSink() {
+    public PresidioMongoSink() {
         this(null);
     }
 
-    public BatchablePresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
+    public PresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
         this.sinkMongoRepository = sinkMongoRepository;
     }
 
@@ -80,7 +80,7 @@ public class BatchablePresidioMongoSink<T extends AbstractDocument> extends Abst
     }
 
     @Override
-    public void configure(Context context) {
+    public void doPresidioConfigure(Context context) {
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {
@@ -150,7 +150,7 @@ public class BatchablePresidioMongoSink<T extends AbstractDocument> extends Abst
                 if (!e.getClass().isAssignableFrom(MongoException.class)) {
                     PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
                 }
-                final String errorMessage = String.format("BatchablePresidioMongoSink failed to sink event. Can't get event since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
+                final String errorMessage = String.format("PresidioMongoSink failed to sink event. Can't get event since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);
                 throw e;
             }

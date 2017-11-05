@@ -24,16 +24,18 @@ import static org.apache.flume.CommonStrings.START_DATE;
 
 
 /**
- * This class adds support for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour)
- * a batchable sink must also be used when using a batchable source.
+ * This class adds support for 2 things:
+ * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A batchable sink must also be used when using a batchable source.
+ * 2) for using a metric service (that needs an application name).
  */
-public abstract class AbstractPresidioBatchableEventDrivenSource extends AbstractEventDrivenSource {
+public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractPresidioBatchableEventDrivenSource.class);
+    private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSource.class);
 
 
     /* This field indicates whether the agent is supposed to shut-down after the source is done (or in other words - is this a batch run?) */
     protected boolean isBatch;
+    protected String applicationName;
     protected int batchSize;
     protected SourceFetcher sourceFetcher;
     protected Instant startDate;
@@ -44,6 +46,10 @@ public abstract class AbstractPresidioBatchableEventDrivenSource extends Abstrac
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
+
+    public String getApplicationName() {
+        return applicationName;
     }
 
 
@@ -60,16 +66,17 @@ public abstract class AbstractPresidioBatchableEventDrivenSource extends Abstrac
     @Override
     protected void doConfigure(Context context) throws FlumeException {
         isBatch = context.getBoolean(CommonStrings.IS_BATCH, false);
-        doBatchConfigure(context);
+        applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getName());
+        doPresidioConfigure(context);
     }
 
     /**
-     * Method for configuring AbstractBatchableEventDrivenSources (couldn't call it doDoConfigure right?)
+     * Method for configuring AbstractPresidioSource (couldn't call it doDoConfigure right?)
      *
      * @param context the context
      * @throws FlumeException
      */
-    protected abstract void doBatchConfigure(Context context) throws FlumeException;
+    protected abstract void doPresidioConfigure(Context context) throws FlumeException;
 
     protected void sendDoneControlMessage() {
         final Event isDoneControlMessage = EventBuilder.withBody(new byte[0]);

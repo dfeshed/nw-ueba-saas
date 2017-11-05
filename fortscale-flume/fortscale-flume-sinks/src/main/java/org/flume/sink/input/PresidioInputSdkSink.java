@@ -12,7 +12,7 @@ import org.apache.flume.FlumeException;
 import org.apache.flume.Sink;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
-import org.flume.sink.base.AbstractBatchablePresidioSink;
+import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
@@ -25,9 +25,9 @@ import java.util.Map;
 
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 
-public class BatchablePresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractBatchablePresidioSink<T> implements Configurable, Sink {
+public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
-    private static Logger logger = LoggerFactory.getLogger(BatchablePresidioInputSdkSink.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioInputSdkSink.class);
 
     private static ObjectMapper mapper;
 
@@ -61,8 +61,7 @@ public class BatchablePresidioInputSdkSink<T extends AbstractAuditableDocument> 
 
     @Override
     @SuppressWarnings("unchecked")
-    public void configure(Context context) {
-        super.configure(context);
+    protected void doPresidioConfigure(Context context) {
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {

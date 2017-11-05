@@ -2,25 +2,30 @@ package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang.StringUtils;
+import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
 import org.apache.flume.interceptor.Interceptor;
 
 public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.Builder {
 
+    protected String applicationName;
+
+    @Override
+    public void configure(Context context) {
+        applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getClass().getSimpleName());
+        doConfigure(context);
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    protected abstract void doConfigure(Context context);
 
     protected String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
         String arrayAsString = context.getString(key, "");
         Preconditions.checkArgument(StringUtils.isNotEmpty(arrayAsString),
                 key + " can not be empty.");
-
-        return arrayAsString.split(delimiter);
-    }
-
-    protected String[] getStringArrayFromConfiguration(Context context, String key, String delimiter, String defaultValue) {
-        String arrayAsString = context.getString(key, "");
-        if (arrayAsString.equals("")) {
-            arrayAsString = defaultValue;
-        }
 
         return arrayAsString.split(delimiter);
     }

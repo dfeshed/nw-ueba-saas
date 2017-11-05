@@ -6,7 +6,7 @@ import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.persistency.mongo.MongoUtils;
-import org.flume.source.AbstractPresidioBatchableEventDrivenSource;
+import org.flume.source.AbstractPresidioSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
@@ -26,9 +26,9 @@ import java.util.List;
 
 import static org.apache.flume.CommonStrings.*;
 
-public class PresidioBatchableMongoSource extends AbstractPresidioBatchableEventDrivenSource implements Configurable {
+public class PresidioMongoSource extends AbstractPresidioSource implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(PresidioBatchableMongoSource.class);
+    private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 
     protected static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, START_DATE, END_DATE};
     protected String collectionName;
@@ -40,7 +40,7 @@ public class PresidioBatchableMongoSource extends AbstractPresidioBatchableEvent
 
 
     @Override
-    protected void doBatchConfigure(Context context) throws FlumeException {
+    protected void doPresidioConfigure(Context context) throws FlumeException {
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {

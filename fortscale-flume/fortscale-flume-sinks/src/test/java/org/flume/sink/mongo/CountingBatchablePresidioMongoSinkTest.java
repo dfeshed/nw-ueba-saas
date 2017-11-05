@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CountingBatchablePresidioMongoSinkTest {
 
-    private CountingBatchablePresidioMongoSink testSubject;
+    private CountingPresidioMongoSink testSubject;
 
     @Before
     public void setUp() throws Exception {
@@ -33,7 +33,7 @@ public class CountingBatchablePresidioMongoSinkTest {
                 return events.size();
             }
         });
-        testSubject = new CountingBatchablePresidioMongoSink<AbstractEventTestClass>(mockedRepo, mockedCountersUtil) {
+        testSubject = new CountingPresidioMongoSink<AbstractEventTestClass>(mockedRepo, mockedCountersUtil) {
             @Override
             protected Schema getEventSchema(AbstractEventTestClass event) {
                 return event.eventSchema;
