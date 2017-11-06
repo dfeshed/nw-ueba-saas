@@ -105,3 +105,13 @@ test('it calls closure action focusOut', function(assert) {
   this.render(hbs `{{rsa-form-input focusOut=(action 'blur')}}`);
   this.$('input').blur();
 });
+
+test('it does not show the error message if there is no error', function(assert) {
+  this.render(hbs `{{rsa-form-input isError=false errorMessage='There was an error'}}`);
+  assert.equal(this.$('.input-error').length, 0, 'The error message is not present');
+});
+
+test('it does show the error message if isError is true', function(assert) {
+  this.render(hbs `{{rsa-form-input isError=true errorMessage='There was an error'}}`);
+  assert.equal(this.$('.input-error').length, 1, 'The error message is present');
+});
