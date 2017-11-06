@@ -48,9 +48,8 @@ public class ExternalMonitoringConfiguration {
     private String EsClusterName;
 
     @Autowired
-    private MetricRepository metricRepository;
+    public MetricRepository metricRepository;
 
-    @Bean
     public Client client() throws Exception {
         Settings esSettings = Settings.builder().put("cluster.name", EsClusterName).build();
         return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
@@ -66,22 +65,17 @@ public class ExternalMonitoringConfiguration {
         return new PresidioElasticsearchTemplate(client());
     }
 
-    @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory("");
-    }
 
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
         return new PresidioMetricPersistencyServiceImpl(metricRepository);
     }
 
-    @Bean
     public MetricsExporter metricsExporter() {
-        return new MetricsExporterElasticImpl(presidioMetricEndPoint(), null, taskScheduler());
+        return new MetricsExporterElasticImpl(presidioMetricEndPoint(), metricExportService(), taskScheduler());
     }
 
-    @Bean
+
     public ThreadPoolTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler ts = new ThreadPoolTaskScheduler();
         ts.setWaitForTasksToCompleteOnShutdown(true);
@@ -94,13 +88,20 @@ public class ExternalMonitoringConfiguration {
         return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()), presidioMetricFactory());
     }
 
+
+    @Bean
+    public PresidioMetricEndPoint presidioMetricEndPoint() {
+        return new PresidioMetricEndPoint(presidioSystemMetrics());
+    }
+
+
     @Bean
     private PresidioSystemMetricsFactory presidioSystemMetrics() {
         return new PresidioSystemMetricsFactory("");
     }
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(presidioSystemMetrics());
+    public PresidioMetricFactory presidioMetricFactory() {
+        return new PresidioMetricFactory("");
     }
 }
