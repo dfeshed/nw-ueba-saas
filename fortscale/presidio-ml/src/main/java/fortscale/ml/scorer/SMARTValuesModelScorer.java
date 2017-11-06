@@ -82,15 +82,27 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     public FeatureScore calculateScore(AdeRecordReader adeRecordReader){
         List<ModelDAO> mainModelDAOs = getMainModel(adeRecordReader);
         List<ModelDAO> globalModelDAOs = getGlobalModel(adeRecordReader);
-        Model mainModel = null;
+        SMARTValuesModel mainModel = null;
         Model globalModel = null;
         Instant weightModelEndTime = null;
-        for(ModelDAO globalModelDAO: globalModelDAOs){
-            for (ModelDAO mainModelDAO: mainModelDAOs){
-                if(globalModelDAO.getEndTime().equals(mainModelDAO.getEndTime())){
-                    mainModel = mainModelDAO.getModel();
-                    globalModel = globalModelDAO.getModel();
-                    weightModelEndTime = mainModelDAO.getEndTime();
+
+        for (ModelDAO globalModelDAO : globalModelDAOs) {
+            SMARTValuesPriorModel smartValuesPriorModel = (SMARTValuesPriorModel) globalModelDAO.getModel();
+            if (smartValuesPriorModel == null) {
+                continue;
+            }
+            Instant smartValuePriorWightsModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
+            for (ModelDAO mainModelDAO : mainModelDAOs) {
+                SMARTValuesModel mainModelDAOModel = (SMARTValuesModel) mainModelDAO.getModel();
+                if (mainModelDAOModel == null) {
+                    continue;
+                }
+                Instant smartValueWeightsModelEndTime = mainModelDAOModel.getWeightsModelEndTime();
+
+                if (smartValuePriorWightsModelEndTime.equals(smartValueWeightsModelEndTime)) {
+                    mainModel = mainModelDAOModel;
+                    globalModel = smartValuesPriorModel;
+                    weightModelEndTime = smartValueWeightsModelEndTime;
                     break;
                 }
             }
