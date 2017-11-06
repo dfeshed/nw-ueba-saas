@@ -5,6 +5,7 @@ import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -33,13 +34,12 @@ import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
@@ -70,12 +70,6 @@ import static org.mockito.Matchers.eq;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
-
-    @MockBean
-    private AlertPersistencyService alertPersistencyService;
-
-    @MockBean
-    private UserPersistencyService userPersistencyService;
 
     @MockBean
     private SmartDataReader smartDataReader;
@@ -232,6 +226,46 @@ public class AlertServiceTest {
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().size());
         assertEquals(1, alert.getIndicators().get(0).getEventsNum());
+    }
+
+    @Test
+    public void testExceedEventsLimit() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        Instant eventTime = Instant.now();
+        Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
+        Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
+
+        // indicator
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+                +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
+
+        // raw event
+        generateEvents(102, eventTime); //generating 2 events more than the limit (=100)
+
+        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+
+        //generate alerts:
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        //check that only indicators events is not exceeding the limit
+        Indicator indicator = alert.getIndicators().get(0);
+        assertEquals(100, indicator.getEvents().size());
+        assertEquals(100, indicator.getEventsNum());
+    }
+
+    private void generateEvents(int eventsNum, Instant eventTime) {
+        Instant now = Instant.now();
+        String schema = Schema.FILE.toString();
+        HashMap<String, String> additionalnfo = new HashMap<>();
+        List<String> file_permission_change = Arrays.asList("FILE_PERMISSION_CHANGE");
+
+        for(int i = 1; i <= eventsNum; i ++) {
+            EnrichedEvent fileEvent = new FileEnrichedEvent(now, eventTime, "eventId1"+i, schema, "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", file_permission_change,
+                    EventResult.FAILURE, "FAILURE", additionalnfo, "absoluteSrcFilePath", "absoluteDstFilePath",
+                    "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+            mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
+        }
     }
 
     @Test

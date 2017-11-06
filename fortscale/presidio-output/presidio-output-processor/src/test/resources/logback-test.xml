@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
     <include resource="presidio/logging/logback/base-test.xml" />
     <logger name="org.springframework" level="WARN"/>
     <logger name="pl.allegro.tech.embeddedelasticsearch" level="DEBUG"/>
     <root level="INFO">
-        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="STDOUT" />
     </root>
 </configuration>

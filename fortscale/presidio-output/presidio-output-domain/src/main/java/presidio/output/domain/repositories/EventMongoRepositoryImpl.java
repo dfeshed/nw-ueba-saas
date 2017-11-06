@@ -20,8 +20,8 @@ import java.util.Map;
  */
 public class EventMongoRepositoryImpl implements EventRepository {
 
-    @Value("${output.events.limit: #{100}}")
-    private int limitEvents;
+    @Value("${output.events.limit}")
+    private Integer limitEvents;
 
     @Autowired
     private MongoTemplate mongoTemplate;
