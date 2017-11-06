@@ -97,7 +97,6 @@ public class SinkRunner implements LifecycleAware {
 
     @Override
     public void stop() {
-
         if (runnerThread != null) {
             runner.shouldStop.set(true);
             runnerThread.interrupt();
@@ -196,7 +195,6 @@ public class SinkRunner implements LifecycleAware {
                     System.exit(0);
                 }
             }.start();
-
         }
 
         public void setSinkRunner(SinkRunner sinkRunner) {
