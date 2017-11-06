@@ -128,7 +128,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         private Boolean removeTimezoneOffsetField;
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             originField = context.getString(ORIGIN_FIELD_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(originField), ORIGIN_FIELD_CONF_NAME + " can not be empty.");
 

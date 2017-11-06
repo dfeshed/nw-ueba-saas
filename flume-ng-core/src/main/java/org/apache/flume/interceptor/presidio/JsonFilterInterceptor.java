@@ -62,7 +62,7 @@ public class JsonFilterInterceptor extends AbstractInterceptor {
         private List<String> fieldsToFilter;
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             String fieldsToFilterArrayAsString = context.getString(FIELDS_TO_FILTER_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToFilterArrayAsString), FIELDS_TO_FILTER_CONF_NAME + " can not be empty.");
 

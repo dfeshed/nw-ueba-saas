@@ -80,7 +80,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     }
 
     @Override
-    public void configure(Context context) {
+    public void doPresidioConfigure(Context context) {
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {

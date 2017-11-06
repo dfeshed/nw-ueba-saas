@@ -61,8 +61,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     @SuppressWarnings("unchecked")
-    public void configure(Context context) {
-        super.configure(context);
+    protected void doPresidioConfigure(Context context) {
         logger.debug("context is: {}", context);
         try {
             for (String mandatoryParam : mandatoryParams) {

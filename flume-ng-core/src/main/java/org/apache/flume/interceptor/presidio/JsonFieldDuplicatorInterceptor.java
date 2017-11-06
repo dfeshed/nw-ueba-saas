@@ -19,7 +19,7 @@ import java.util.List;
  * This interceptor is used to duplicate certain values  in the received JSON.
  * Returns the same JSON without new keys.
  */
-public class JsonFieldDuplicatorInterceptor extends AbstractInterceptor{
+public class JsonFieldDuplicatorInterceptor extends AbstractInterceptor {
     private static final Logger logger = LoggerFactory
             .getLogger(JsonFieldDuplicatorInterceptor.class);
 
@@ -79,7 +79,7 @@ public class JsonFieldDuplicatorInterceptor extends AbstractInterceptor{
 
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             deleteNullFields = context.getBoolean(DELETE_NULL_FIELDS, DEFAULT_DELETE_NULL_FIELDS_VALUE);
 
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);

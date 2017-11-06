@@ -95,7 +95,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
         private Boolean deleteFields;
 
         @Override
-        public void configure(Context context) {
+        public void doConfigure(Context context) {
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
             deleteFields = context.getBoolean(DELETE_FIELDS_CONF_NAME, false);
 
@@ -148,6 +148,6 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
                     REGEX_CONF_NAME, regexList);
             return new JsonRegexPredicatorInterceptor(valueFields, predicatorFields, regexList, deleteFields);
         }
-        
+
     }
 }
