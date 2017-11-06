@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.time.Instant;
+
 @RunWith(JUnit4.class)
 public class SMARTValuesModelTest {
 	@Test
@@ -13,7 +15,7 @@ public class SMARTValuesModelTest {
 		long numOfZeroValues = 10;
 		long numOfPositiveValues = 20;
 		double sumOfValues = 1.5;
-		model.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 5);
+		model.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 5, Instant.now());
 
 		Assert.assertEquals(numOfPositiveValues + numOfZeroValues, model.getNumOfSamples());
 		Assert.assertEquals(numOfPositiveValues, model.getNumOfPositiveValues());
