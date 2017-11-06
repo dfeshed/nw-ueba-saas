@@ -4,12 +4,14 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,6 +58,13 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
         ModelCacheManager modelCacheManager = createModelCacheManagerIfNotExist(modelConfName);
 
         return modelCacheManager.getLatestModelBeforeEventTime(contextId, eventTime);
+    }
+
+    @Override
+    public List<ModelDAO> getModelDAOsSortedByEndTimeDesc(String modelConfName, String contextId, Instant eventTime) {
+        ModelCacheManager modelCacheManager = createModelCacheManagerIfNotExist(modelConfName);
+
+        return modelCacheManager.getModelDAOsSortedByEndTimeDesc(contextId, eventTime);
     }
 
     private ModelCacheManager createModelCacheManagerIfNotExist(String modelConfName){

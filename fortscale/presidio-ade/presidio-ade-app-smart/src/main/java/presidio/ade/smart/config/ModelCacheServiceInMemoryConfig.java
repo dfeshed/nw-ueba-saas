@@ -36,7 +36,7 @@ public class ModelCacheServiceInMemoryConfig {
     public Duration maxDiffBetweenCachedModelAndEvent;
     @Value("${fortscale.model.cache.size}")
     public int cacheSize;
-    @Value("${fortscale.model.cache.num.of.models.per.context:2}")
+    @Value("${fortscale.model.cache.num.of.models.per.context:30}")
     public int numOfModelsPerContextId;
 
     @Bean
