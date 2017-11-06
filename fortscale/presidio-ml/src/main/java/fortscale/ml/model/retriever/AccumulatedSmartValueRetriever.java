@@ -74,10 +74,11 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
         TimeRange timeRange = new TimeRange(startTime,endTimeInstant);
+        SmartWeightsModel smartWeightsModel = getModel(endTimeInstant);
 
         // If the retrieve is called for building a global model
         if (contextId == null) {
-            return retrieveGlobalModelBuilderData(timeRange);
+            return retrieveGlobalModelBuilderData(timeRange,smartWeightsModel);
         }
         List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = readSmartAggregatedRecordDataContainers(
                 contextId, startTime, endTimeInstant);
@@ -86,7 +87,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
 
         smartAggregatedRecordDataContainerList.forEach(recordsDataContainer -> {
             noDataInDatabase[0] = false;
-            double smartValue = calculateSmartValue(endTimeInstant, recordsDataContainer);
+            double smartValue = calculateSmartValue(recordsDataContainer,smartWeightsModel);
             // TODO: Retriever functions should be iterated and executed here.
             reductionHistogram.add(smartValue, 1d);
         });
@@ -104,8 +105,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         }
     }
 
-    private double calculateSmartValue(Instant endTimeInstant, SmartAggregatedRecordDataContainer recordsDataContainer) {
-        SmartWeightsModel smartWeightsModel = getModel(endTimeInstant);
+    private double calculateSmartValue(SmartAggregatedRecordDataContainer recordsDataContainer, SmartWeightsModel smartWeightsModel) {
         List<ClusterConf> clusterConfs = smartWeightsModel.getClusterConfs();
         List<SmartAggregatedRecordData> aggregatedRecordsData = recordsDataContainer.getSmartAggregatedRecordsData();
         return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData,clusterConfs);
@@ -123,7 +123,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     }
 
 
-    private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange) {
+    private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange, SmartWeightsModel smartWeightsModel) {
         AccumulatedSmartContextSelectorConf conf = new AccumulatedSmartContextSelectorConf(smartRecordConfName);
         IContextSelector contextSelector = contextSelectorFactoryService.getProduct(conf);
         Set<String> contextIds = contextSelector.getContexts(timeRange);
@@ -139,7 +139,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
                     readSmartAggregatedRecordDataContainers(contextId, timeRange.getStart(), timeRange.getEnd());
             distinctParitionIds.addAll(calcNumOfPartitions(smartAggregatedRecordDataContainers));
             smartAggregatedRecordDataContainers.stream()
-                    .mapToDouble(smartData -> calculateSmartValue(timeRange.getEnd(), smartData))
+                    .mapToDouble(smartData -> calculateSmartValue(smartData, smartWeightsModel))
                     .max()
                     .ifPresent(maxSmartValue -> {
                         // TODO: Retriever functions should be iterated and executed here.
