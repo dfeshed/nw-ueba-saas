@@ -96,7 +96,7 @@ public class ExternalMonitoringConfiguration {
 
 
     @Bean
-    private PresidioSystemMetricsFactory presidioSystemMetrics() {
+    public PresidioSystemMetricsFactory presidioSystemMetrics() {
         return new PresidioSystemMetricsFactory("");
     }
 
