@@ -15,10 +15,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.AlertQuery;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.EventQuery;
-import presidio.webapp.model.EventsWrapper;
+import presidio.webapp.model.*;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
 import scala.util.parsing.combinator.testing.Str;
 
@@ -103,14 +100,18 @@ public class RestAlertServiceTest {
     @Test
     public void getEvent() {
         List<IndicatorEvent> resultList = new ArrayList<>();
-        resultList.add(createEvent());
+        IndicatorEvent indicatorEvent = createEvent();
+        resultList.add(indicatorEvent);
         Page<IndicatorEvent> page = new PageImpl<>(resultList);
         when(alertPersistencyService.findIndicatorEventsByIndicatorId(anyObject(), anyObject())).thenReturn(page);
 
         EventQuery eventQuery = new EventQuery();
         EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId("indicatorId",eventQuery);
         Assert.assertEquals(1, eventsWrapper.getEvents().size());
-        Assert.assertEquals(1,eventsWrapper.getEvents().get(0).getScores().size());
+        Event event = eventsWrapper.getEvents().get(0);
+        Assert.assertEquals(indicatorEvent.getEventTime().toInstant().getEpochSecond(), event.getTime().longValue());
+        Assert.assertEquals(1,event.getScores().size());
+        Assert.assertEquals(indicatorEvent.getFeatures().size(),event.keySet().size());
 
     }
 
