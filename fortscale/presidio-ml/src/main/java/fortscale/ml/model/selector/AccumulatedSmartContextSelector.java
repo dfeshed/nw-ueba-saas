@@ -4,12 +4,14 @@ import fortscale.utils.time.TimeRange;
 import org.springframework.util.Assert;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 /**
  * Created by barak_schuster on 24/08/2017.
  */
 public class AccumulatedSmartContextSelector implements IContextSelector {
+    public static final int DAYS_BACK = 30;
     private final AccumulatedSmartContextSelectorConf accumulatedSmartContextSelectorConf;
     private final String smartRecordConfName;
 
@@ -24,6 +26,8 @@ public class AccumulatedSmartContextSelector implements IContextSelector {
 
     @Override
     public Set<String> getContexts(TimeRange timeRange) {
-        return smartAccumulationDataReader.findDistinctContextsByTimeRange(smartRecordConfName, timeRange);
+        // todo: make it configurable
+        TimeRange lastMonthTimeRange = new TimeRange(timeRange.getStart().minus(DAYS_BACK, ChronoUnit.DAYS), timeRange.getEnd());
+        return smartAccumulationDataReader.findDistinctContextsByTimeRange(smartRecordConfName, lastMonthTimeRange);
     }
 }
