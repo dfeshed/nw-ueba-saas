@@ -7,6 +7,7 @@ import Route from 'ember-route';
 import RSVP from 'rsvp';
 import service from 'ember-service/inject';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
 
 const {
@@ -23,6 +24,7 @@ const contextAddToListModalId = 'addToList';
  */
 export default Route.extend(AuthenticatedRouteMixin, {
 
+  redux: service(),
   accessControl: service(),
   dateFormat: service(),
   landingPage: service(),
@@ -106,6 +108,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         query: {}
       }).then((response) => {
         const {
+          themeType,
           userLocale,
           dateFormat,
           timeFormat,
@@ -124,6 +127,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
           'timeFormat.selected': timeFormat,
           'timezone.selected': timeZone
         });
+
+        const redux = this.get('redux');
+        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: themeType });
 
         if (defaultComponentUrl) {
           this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);

@@ -16,7 +16,8 @@ import computed, { readOnly, alias, notEmpty, equal } from 'ember-computed-decor
 import config from 'ember-get-config';
 
 const {
-  Logger
+  Logger,
+  testing
 } = Ember;
 
 /**
@@ -29,6 +30,12 @@ const _STATUS = {
   WAIT: 'wait',
   ERROR: 'error',
   SUCCESS: 'success'
+};
+
+const setPostAuthRedirect = () => {
+  if (!testing && !isEmpty(window.location.search)) {
+    localStorage.setItem('rsa-post-auth-redirect', window.location.search.substring(6));
+  }
 };
 
 export default Component.extend({
@@ -136,10 +143,7 @@ export default Component.extend({
         // Auth succeeded
         () => {
           this.updateLoginProperties(_STATUS.SUCCESS);
-
-          if (!isEmpty(window.location.search)) {
-            localStorage.setItem('rsa-post-auth-redirect', window.location.search.substring(6));
-          }
+          setPostAuthRedirect();
         },
 
         // Auth failed

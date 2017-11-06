@@ -9,6 +9,7 @@ export default Component.extend({
 
   classNames: ['rsa-form-input'],
 
+  attributeBindings: ['testId:test-id'],
   classNameBindings: [
     'isDisabled',
     'isError',

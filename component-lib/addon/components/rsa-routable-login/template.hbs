@@ -104,6 +104,7 @@
         {{rsa-form-input
           class="js-test-login-username-input"
           label=(t 'login.username')
+          testId="loginUsername"
           isError=hasError
           value=username}}
 
@@ -111,6 +112,7 @@
           class="js-test-login-password-input"
           type="password"
           label=(t 'login.password')
+          testId="loginPassword"
           isError=hasError
           value=password}}
 
@@ -121,6 +123,7 @@
         {{/if}}
 
         {{#rsa-form-button
+          testId="loginButton"
           type="submit"
           class="js-test-login-submit-button"
           isDisabled=isLoginDisabled

@@ -12,7 +12,7 @@ export default Component.extend({
 
   classNames: ['rsa-form-button-wrapper'],
 
-  attributeBindings: ['title'],
+  attributeBindings: ['title', 'testId:test-id'],
 
   classNameBindings: [
     'isActive',
