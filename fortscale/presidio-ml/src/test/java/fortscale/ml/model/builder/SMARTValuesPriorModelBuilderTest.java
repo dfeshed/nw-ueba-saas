@@ -2,9 +2,11 @@ package fortscale.ml.model.builder;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.SMARTValuesPriorModel;
+import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 public class SMARTValuesPriorModelBuilderTest {
@@ -76,8 +78,9 @@ public class SMARTValuesPriorModelBuilderTest {
 
 	private SMARTValuesPriorModel buildModel(double quantile, double[] SMARTValues) {
 		GenericHistogram SMARTValuesHist = createSMARTValuesHist(SMARTValues);
+		SmartValueData smartValueData = new SmartValueData(SMARTValuesHist, Instant.now());
 		SMARTValuesPriorModelBuilderConf conf = new SMARTValuesPriorModelBuilderConf(quantile);
-		return (SMARTValuesPriorModel) new SMARTValuesPriorModelBuilder(conf).build(SMARTValuesHist);
+		return (SMARTValuesPriorModel) new SMARTValuesPriorModelBuilder(conf).build(smartValueData);
 	}
 
 	private GenericHistogram createSMARTValuesHist(double... values) {
