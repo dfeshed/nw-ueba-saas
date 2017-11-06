@@ -394,6 +394,9 @@ public class RestAlertServiceImpl implements RestAlertService {
         restEvent.setSchema(indicatorEvent.getSchema().name());
         restEvent.setTime(BigDecimal.valueOf(TimeUnit.SECONDS.convert(indicatorEvent.getEventTime().getTime(), TimeUnit.MILLISECONDS)));
         restEvent.putAll(indicatorEvent.getFeatures());
+        if (indicatorEvent.getScores() != null) {
+            restEvent.setScores(indicatorEvent.getScores());
+        }
         return restEvent;
     }
 
