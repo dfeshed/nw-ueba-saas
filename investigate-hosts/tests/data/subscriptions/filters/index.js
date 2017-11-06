@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/endpoint/data/filter/getall',
-  requestDestination: '/ws/endpoint/data/filter/getall',
+  subscriptionDestination: '/user/queue/endpoint/filter/get-all',
+  requestDestination: '/ws/endpoint/filter/get-all',
   message(/* frame */) {
     return {
       data,

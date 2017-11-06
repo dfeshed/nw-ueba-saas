@@ -9,28 +9,28 @@ module.exports = function(env) {
     endpoint: {
       socketUrl,
       getAllSnapShots: {
-        subscriptionDestination: '/user/queue/endpoint/data/machine/snapshots',
-        requestDestination: '/ws/endpoint/data/machine/snapshots'
+        subscriptionDestination: '/user/queue/endpoint/machine/snapshots',
+        requestDestination: '/ws/endpoint/machine/snapshots'
       },
       getHostDetails: {
-        subscriptionDestination: '/user/queue/endpoint/data/machine/detail',
-        requestDestination: '/ws/endpoint/data/machine/detail'
+        subscriptionDestination: '/user/queue/endpoint/machine/detail',
+        requestDestination: '/ws/endpoint/machine/detail'
       },
       getFileContextList: {
-        subscriptionDestination: '/user/queue/endpoint/data/filecontext/list',
-        requestDestination: '/ws/endpoint/data/filecontext/list'
+        subscriptionDestination: '/user/queue/endpoint/filecontext/list',
+        requestDestination: '/ws/endpoint/filecontext/list'
       },
       exportFileContext: {
-        subscriptionDestination: '/user/queue/endpoint/data/scandata/export',
-        requestDestination: '/ws/endpoint/data/scandata/export'
+        subscriptionDestination: '/user/queue/endpoint/machine/proporty/export',
+        requestDestination: '/ws/endpoint/machine/proporty/export'
       },
       getHostFilesPages: {
-        subscriptionDestination: '/user/queue/endpoint/data/filecontext/listpage',
-        requestDestination: '/ws/endpoint/data/filecontext/listpage'
+        subscriptionDestination: '/user/queue/endpoint/filecontext/list-page',
+        requestDestination: '/ws/endpoint/filecontext/list-page'
       },
       fileContextSearch: {
-        subscriptionDestination: '/user/queue/endpoint/data/filecontext/search',
-        requestDestination: '/ws/endpoint/data/filecontext/search/stream'
+        subscriptionDestination: '/user/queue/endpoint/filecontext/search',
+        requestDestination: '/ws/endpoint/filecontext/search/stream'
       }
     }
   };

@@ -9,44 +9,44 @@ module.exports = function(env) {
     endpoint: {
       socketUrl,
       export: {
-        subscriptionDestination: '/user/queue/endpoint/data/machine/export',
-        requestDestination: '/ws/endpoint/data/machine/export'
+        subscriptionDestination: '/user/queue/endpoint/machine/export',
+        requestDestination: '/ws/endpoint/machine/export'
       },
       machines: {
-        subscriptionDestination: '/user/queue/endpoint/data/machine/search',
-        requestDestination: '/ws/endpoint/data/machine/search'
+        subscriptionDestination: '/user/queue/endpoint/machine/search',
+        requestDestination: '/ws/endpoint/machine/search'
       },
       'machine-schema': {
-        subscriptionDestination: '/user/queue/endpoint/data/machine/schema',
-        requestDestination: '/ws/endpoint/data/machine/schema'
+        subscriptionDestination: '/user/queue/endpoint/machine/schema',
+        requestDestination: '/ws/endpoint/machine/schema'
       },
       getAllFilters: {
-        subscriptionDestination: '/user/queue/endpoint/data/filter/getall',
-        requestDestination: '/ws/endpoint/data/filter/getall'
+        subscriptionDestination: '/user/queue/endpoint/filter/get-all',
+        requestDestination: '/ws/endpoint/filter/get-all'
       },
       agentCount: {
-        subscriptionDestination: '/user/queue/endpoint/data/machine/aggregate/count/group',
-        requestDestination: '/ws/endpoint/data/machine/aggregate/count/group'
+        subscriptionDestination: '/user/queue/endpoint/machine/aggregate/group-count',
+        requestDestination: '/ws/endpoint/machine/aggregate/group-count'
       },
       getProcessList: {
-        subscriptionDestination: '/user/queue/endpoint/data/process/list',
-        requestDestination: '/ws/endpoint/data/process/list'
+        subscriptionDestination: '/user/queue/endpoint/process/list',
+        requestDestination: '/ws/endpoint/process/list'
       },
       getProcessTree: {
-        subscriptionDestination: '/user/queue/endpoint/data/process/tree',
-        requestDestination: '/ws/endpoint/data/process/tree'
+        subscriptionDestination: '/user/queue/endpoint/process/tree',
+        requestDestination: '/ws/endpoint/process/tree'
       },
       getProcess: {
-        subscriptionDestination: '/user/queue/endpoint/data/process/get',
-        requestDestination: '/ws/endpoint/data/process/get'
+        subscriptionDestination: '/user/queue/endpoint/process/get',
+        requestDestination: '/ws/endpoint/process/get'
       },
       getHostFileContext: {
-        subscriptionDestination: '/user/queue/endpoint/data/process/getAll',
-        requestDestination: '/ws/endpoint/data/process/getAll'
+        subscriptionDestination: '/user/queue/endpoint/process/get-all',
+        requestDestination: '/ws/endpoint/process/get-all'
       },
       saveFilter: {
-        subscriptionDestination: '/user/queue/endpoint/data/filter/set',
-        requestDestination: '/ws/endpoint/data/filter/set'
+        subscriptionDestination: '/user/queue/endpoint/filter/set',
+        requestDestination: '/ws/endpoint/filter/set'
       }
     },
     search: {

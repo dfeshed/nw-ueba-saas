@@ -9,12 +9,12 @@ module.exports = function(environment) {
     packager: {
       socketUrl,
       get: {
-        subscriptionDestination: '/user/queue/endpoint/management/packageconfig/get',
-        requestDestination: '/ws/endpoint/management/packageconfig/get'
+        subscriptionDestination: '/user/queue/endpoint/packager/get',
+        requestDestination: '/ws/endpoint/packager/get'
       },
       set: {
-        subscriptionDestination: '/user/queue/endpoint/management/packageconfig/save',
-        requestDestination: '/ws/endpoint/management/packageconfig/save'
+        subscriptionDestination: '/user/queue/endpoint/packager/set',
+        requestDestination: '/ws/endpoint/packager/set'
       },
       create: {
         subscriptionDestination: '/user/queue/endpoint/management/packageconfig/create',

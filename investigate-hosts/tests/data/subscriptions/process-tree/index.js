@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/endpoint/data/process/tree',
-  requestDestination: '/ws/endpoint/data/process/tree',
+  subscriptionDestination: '/user/queue/endpoint/process/tree',
+  requestDestination: '/ws/endpoint/process/tree',
   message(/* frame */) {
     return {
       data,

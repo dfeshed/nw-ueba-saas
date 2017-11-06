@@ -11,12 +11,12 @@ module.exports = function(environment) {
     'files': {
       socketUrl,
       'schema': {
-        subscriptionDestination: '/user/queue/endpoint/data/files/schema',
-        requestDestination: '/ws/endpoint/data/files/schema'
+        subscriptionDestination: '/user/queue/endpoint/file/schema',
+        requestDestination: '/ws/endpoint/file/schema'
       },
       search: {
-        subscriptionDestination: '/user/queue/endpoint/data/files/search',
-        requestDestination: '/ws/endpoint/data/files/search'
+        subscriptionDestination: '/user/queue/endpoint/file/search',
+        requestDestination: '/ws/endpoint/file/search'
       },
       exportFile: {
         subscriptionDestination: '/user/queue/endpoint/data/files/export',

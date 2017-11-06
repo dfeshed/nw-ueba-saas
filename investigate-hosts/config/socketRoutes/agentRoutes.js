@@ -10,12 +10,12 @@ module.exports = function(environment) {
     agent: {
       socketUrl,
       commandScan: {
-        subscriptionDestination: '/user/queue/endpoint/agent/command/scan',
-        requestDestination: '/ws/endpoint/agent/command/scan'
+        subscriptionDestination: '/user/queue/endpoint/command/start-scan',
+        requestDestination: '/ws/endpoint/command/start-scan'
       },
       stopScan: {
-        subscriptionDestination: '/user/queue/endpoint/agent/command/stopscan',
-        requestDestination: '/ws/endpoint/agent/command/stopscan'
+        subscriptionDestination: '/user/queue/endpoint/command/stop-scan',
+        requestDestination: '/ws/endpoint/command/stop-scan'
       },
       deleteHosts: {
         subscriptionDestination: '/user/queue/endpoint/machine/remove',

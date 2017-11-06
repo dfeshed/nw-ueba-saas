@@ -1,8 +1,8 @@
 import data from '../machines/data';
 
 export default {
-  subscriptionDestination: '/user/queue/endpoint/data/machine/stream',
-  requestDestination: '/ws/endpoint/data/machine/stream',
+  subscriptionDestination: '/user/queue/endpoint/machine/stream',
+  requestDestination: '/ws/endpoint/machine/stream',
   message(/* frame */) {
     return {
       data,

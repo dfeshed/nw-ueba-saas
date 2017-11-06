@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/endpoint/agent/command/scan',
-  requestDestination: '/ws/endpoint/agent/command/scan',
+  subscriptionDestination: '/user/queue/endpoint/command/start-scan',
+  requestDestination: '/ws/endpoint/command/start-scan',
   message(/* frame */) {
     return {
       data,
