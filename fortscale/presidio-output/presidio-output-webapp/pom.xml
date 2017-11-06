@@ -161,7 +161,7 @@
         </dependency>
     </dependencies>
 
-  <!--  <profiles>
+    <profiles>
         <profile>
             <id>Windows</id>
             <activation>
@@ -190,7 +190,7 @@
                 <tomcat.web.scope>compile</tomcat.web.scope>
             </properties>
         </profile>
-    </profiles> -->
+    </profiles>
 
     <build>
         <finalName>presidio-output-webapp</finalName>
@@ -224,7 +224,7 @@
                     </execution>
                 </executions>
             </plugin>
-           <!-- <plugin>
+            <plugin>
                 <groupId>com.github.kongchen</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
                 <version>3.1.4</version>
@@ -318,7 +318,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 </project>
