@@ -36,6 +36,7 @@ public class AlertApiControllerModuleTest {
 
     private static final String ALERTS_URI = "/alerts";
     private static final String ALERT_BY_ID_URI = "/alerts/{alertId}";
+    private static final String EVENTS_BY_INDICATOR_ID_URI = "/alerts/{alertId}/indicators/{indicatorId}/events";
 
     private MockMvc alertsApiMVC;
 
@@ -142,5 +143,16 @@ public class AlertApiControllerModuleTest {
         restAlert.setIndicatorsName(alert.getIndicatorsNames() == null ? new ArrayList<>() : alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         return restAlert;
+    }
+
+    @Test
+    public void testGetIndicatorEventsByAlert() throws Exception{
+        // get actual response
+        String indicatorId = null;
+        MvcResult mvcResult = alertsApiMVC.perform(get(EVENTS_BY_INDICATOR_ID_URI, alert1.getId(), indicatorId))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        Alert actualResponse = objectMapper.readValue(actualResponseStr, Alert.class);
     }
 }

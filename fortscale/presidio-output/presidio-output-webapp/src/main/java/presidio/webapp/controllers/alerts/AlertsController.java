@@ -2,7 +2,6 @@ package presidio.webapp.controllers.alerts;
 
 import fortscale.utils.logging.Logger;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.AlertQuery;
 import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Event;
 import presidio.webapp.model.EventQuery;
 import presidio.webapp.model.EventsWrapper;
 import presidio.webapp.model.Indicator;
@@ -19,7 +17,6 @@ import presidio.webapp.model.IndicatorQuery;
 import presidio.webapp.model.IndicatorsWrapper;
 import presidio.webapp.service.RestAlertService;
 
-import java.util.List;
 
 @Controller
 public class AlertsController implements AlertsApi {

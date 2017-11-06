@@ -14,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,6 +35,7 @@ import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
@@ -71,11 +74,8 @@ import static org.mockito.Matchers.eq;
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
 
-    @MockBean
-    private AlertPersistencyService alertPersistencyService;
-
-    @MockBean
-    private UserPersistencyService userPersistencyService;
+//    @MockBean
+//    private UserPersistencyService userPersistencyService;
 
     @MockBean
     private SmartDataReader smartDataReader;
@@ -232,6 +232,49 @@ public class AlertServiceTest {
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().size());
         assertEquals(1, alert.getIndicators().get(0).getEventsNum());
+    }
+
+    @Test
+    public void testEventsLimit() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        Instant eventTime = Instant.now();
+        Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
+        Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
+
+        // indicator
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+                +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
+
+        // raw event
+        generateEvents(102, eventTime);
+
+        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+
+        //generate alerts:
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        //check that only indicators events is not exceeding the limit
+        Indicator indicator = alert.getIndicators().get(0);
+        assertEquals(1000, indicator.getEvents().size());
+        assertEquals(1002, indicator.getEventsNum());
+    }
+
+    private void generateEvents(int eventsNum, Instant eventTime) {
+        List<EnrichedEvent> events = new ArrayList<>();
+        Instant now = Instant.now();
+        String schema = Schema.FILE.toString();
+        HashMap<String, String> additionalnfo = new HashMap<>();
+        List<String> file_permission_change = Arrays.asList("FILE_PERMISSION_CHANGE");
+
+        for(int i = 1; i <= eventsNum; eventsNum++) {
+            EnrichedEvent fileEvent = new FileEnrichedEvent(now, eventTime, "eventId1"+i, schema, "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", file_permission_change,
+                    EventResult.FAILURE, "FAILURE", additionalnfo, "absoluteSrcFilePath", "absoluteDstFilePath",
+                    "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+//            mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
+            events.add(fileEvent);
+        }
+        mongoTemplate.save(events, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
     }
 
     @Test
