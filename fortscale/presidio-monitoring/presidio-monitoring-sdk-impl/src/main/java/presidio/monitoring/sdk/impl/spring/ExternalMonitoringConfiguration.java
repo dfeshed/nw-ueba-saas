@@ -67,10 +67,9 @@ public class ExternalMonitoringConfiguration {
     }
 
     @Bean
-    private PresidioMetricFactory presidioMetricFactory() {
+    public PresidioMetricFactory presidioMetricFactory() {
         return new PresidioMetricFactory("");
     }
-
 
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
