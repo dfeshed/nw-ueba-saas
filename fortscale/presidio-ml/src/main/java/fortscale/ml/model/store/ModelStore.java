@@ -168,17 +168,22 @@ public class ModelStore implements TtlServiceAware {
      */
     private void removeContextIdsModels(String collectionName, Instant until, AggregationResults<DBObject> aggrResult) {
         List<DBObject> results = aggrResult.getMappedResults();
-        if (!aggrResult.getMappedResults().isEmpty()) {
 
-            List<String> contextIds = new ArrayList<>();
-            for (DBObject result : results) {
-                contextIds.add((String) result.get(ModelDAO.CONTEXT_ID_FIELD));
+        if (!results.isEmpty()) {
+            List<String> contextIds = results.stream()
+                    .map(result -> (String)result.get(ModelDAO.CONTEXT_ID_FIELD))
+                    // Old global models should only be removed in the first cleanup step, regardless of
+                    // the context ID. Therefore null context IDs should not be added to the list, otherwise
+                    // more recent global models will also be removed in this cleanup step unintentionally.
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            if (!contextIds.isEmpty()) {
+                Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds);
+                Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lte(Date.from(until));
+                Query query = new Query(contextCriteria).addCriteria(dateCriteria);
+                mongoTemplate.remove(query, collectionName);
             }
-
-            Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds);
-            Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lte(Date.from(until));
-            Query query = new Query(contextCriteria).addCriteria(dateCriteria);
-            mongoTemplate.remove(query, collectionName);
         }
     }
 
