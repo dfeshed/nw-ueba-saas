@@ -116,8 +116,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
 
     private ModelDAO getModelDAO(Instant endTimeInstant) {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
-        ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime);
-        return latestBeforeEventTimeAfterOldestAllowedModelDao;
+        ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
+        return  latestBeforeEventTimeAfterOldestAllowedModelDao;
     }
 
     private List<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordDataContainers(String contextId, Instant startTime, Instant endTime) {

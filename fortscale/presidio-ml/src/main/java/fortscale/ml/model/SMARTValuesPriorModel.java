@@ -42,4 +42,8 @@ public class SMARTValuesPriorModel implements Model {
 	public long getNumOfPartitions() {
 		return numOfPartitions;
 	}
+
+	public Instant getWeightsModelEndTime() {
+		return weightsModelEndTime;
+	}
 }
