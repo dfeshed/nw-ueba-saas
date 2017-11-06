@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SMARTValuesModelScorer extends AbstractScorer {
     private SMARTValuesModelScorerAlgorithm algorithm;
-    protected Scorer baseScorer;
+    protected SmartWeightsModelScorer smartWeightsModelScorer;
     private String modelName;
     private String globalModelName;
     private int minNumOfPartitionsToInfluence = ModelScorerConf.MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
@@ -45,7 +45,9 @@ public class SMARTValuesModelScorer extends AbstractScorer {
 
         Assert.notNull(baseScorerConf, "base scorer should not be null");
         Assert.notNull(factoryService, "factory service should not be null");
-        baseScorer = factoryService.getProduct(baseScorerConf);
+        Scorer tmp = factoryService.getProduct(baseScorerConf);
+        Assert.isTrue(tmp instanceof SmartWeightsModelScorer, "SMARTValuesModelScorer expecting to get configuration of SmartWeightsModelScorer");
+        smartWeightsModelScorer = (SmartWeightsModelScorer) tmp;
 
         assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
         assertEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
@@ -71,7 +73,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     }
 
     protected Model getModel(AdeRecordReader adeRecordReader, String modelName, String contextId) {
-        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextId);
+        return eventModelsCacheService.getLatestModelBeforeEventTime(adeRecordReader, modelName, contextId);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     final protected FeatureScore calculateScore(Model model,
                                                 Model globalModel,
                                                 AdeRecordReader adeRecordReader){
-        FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
+        FeatureScore baseScore = smartWeightsModelScorer.calculateScore(adeRecordReader);
         List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
         if (model == null || globalModel == null) {
             return new CertaintyFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);

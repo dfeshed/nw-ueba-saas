@@ -34,7 +34,7 @@ public class SmartWeightsModelScorer extends AbstractScorer{
         Assert.isInstanceOf(SmartRecord.class, adeRecordReader.getAdeRecord());
         SmartRecord smartRecord = (SmartRecord) adeRecordReader.getAdeRecord();
 
-        Model model = eventModelsCacheService.getModel(adeRecordReader,modelName,Collections.emptyList());
+        Model model = eventModelsCacheService.getLatestModelBeforeEventTime(adeRecordReader,modelName,Collections.emptyList());
         if(model == null){
             //todo: add metrics.
             return new FeatureScore(getName(), 0.0);
@@ -42,6 +42,8 @@ public class SmartWeightsModelScorer extends AbstractScorer{
         Assert.isInstanceOf(SmartWeightsModel.class,model, "smart weights model scorer expect to get SmartWeightModel Class.");
         return new FeatureScore(getName(),calculateScore(smartRecord, (SmartWeightsModel) model));
     }
+
+
 
     private double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
         return smartWeightsScorerAlgorithm.calculateScore(smartRecord,smartWeightsModel);

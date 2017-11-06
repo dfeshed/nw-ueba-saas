@@ -45,7 +45,7 @@ public class SMARTValuesModelScorerTest {
     private EventModelsCacheService eventModelsCacheService;
 
     private SMARTValuesModelScorer createScorer(String globalModelName, int globalInfluence, double baseScore) throws Exception {
-        Scorer baseScorer = Mockito.mock(Scorer.class);
+        Scorer baseScorer = Mockito.mock(SmartWeightsModelScorer.class);
         Mockito.when(baseScorer.calculateScore(Mockito.any(AdeRecordReader.class)))
                 .thenReturn(new FeatureScore("featureName", baseScore));
         IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);

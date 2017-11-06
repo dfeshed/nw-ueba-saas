@@ -7,8 +7,8 @@ import java.util.Map;
 
 public interface ModelsCacheService {
 
-	Model getModel(String modelConfName, Map<String, String> context, Instant eventTime);
-	Model getModel(String modelConfName, String contextId, Instant eventTime);
+	Model getLatestModelBeforeEventTime(String modelConfName, Map<String, String> context, Instant eventTime);
+	Model getLatestModelBeforeEventTime(String modelConfName, String contextId, Instant eventTime);
 	/**
 	 * refresh model (lazy cache) by deleting the model from the relevant cache manager
 	 *

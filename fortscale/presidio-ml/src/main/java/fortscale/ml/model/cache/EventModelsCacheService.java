@@ -13,18 +13,18 @@ public class EventModelsCacheService {
 	@Autowired
 	private ModelsCacheService modelsCacheService;
 
-	public Model getModel(AdeRecordReader adeRecordReader, String modelName, String contextId) {
-		return modelsCacheService.getModel(modelName, contextId, adeRecordReader.getDate_time());
+	public Model getLatestModelBeforeEventTime(AdeRecordReader adeRecordReader, String modelName, String contextId) {
+		return modelsCacheService.getLatestModelBeforeEventTime(modelName, contextId, adeRecordReader.getDate_time());
 	}
 
-	public Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
+	public Model getLatestModelBeforeEventTime(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
 		Map<String, String> contextFieldNamesToValuesMap = resolveContext(adeRecordReader, contextFieldNames);
 
 		if (isNullOrMissingValues(contextFieldNamesToValuesMap, contextFieldNames)) {
 			return null;
 		}
 
-		return modelsCacheService.getModel(modelName, contextFieldNamesToValuesMap, adeRecordReader.getDate_time());
+		return modelsCacheService.getLatestModelBeforeEventTime(modelName, contextFieldNamesToValuesMap, adeRecordReader.getDate_time());
 	}
 
 	private Map<String, String> resolveContext(AdeRecordReader adeRecordReader, List<String> contextFieldNames) {

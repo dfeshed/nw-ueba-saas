@@ -70,7 +70,7 @@
 //		Double oldScore = oldFeatureScore.getScore();
 //
 //		// Get global prevalence model
-//		PrevalanceModel globalModel = modelService.getModel(
+//		PrevalanceModel globalModel = modelService.getLatestModelBeforeEventTime(
 //				GlobalModelStreamTaskService.GLOBAL_CONTEXT_CONSTANT,
 //				GlobalModelStreamTaskService.GLOBAL_MODEL_NAME);
 //
