@@ -76,7 +76,7 @@ public class AlertsController implements AlertsApi {
                                                                    EventQuery eventQuery) {
         try {
             EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId(indicatorId, eventQuery);
-            HttpStatus httpStatus = eventsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+            HttpStatus httpStatus = eventsWrapper.getTotal() >= 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
             return new ResponseEntity(eventsWrapper, httpStatus);
         } catch (Exception ex) {
             logger.error("Trying the to get events with this eventQuery:{} , But got internal error {}", eventQuery.toString(), ex);

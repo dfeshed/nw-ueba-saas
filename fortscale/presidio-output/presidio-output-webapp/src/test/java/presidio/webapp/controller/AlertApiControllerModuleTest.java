@@ -1,6 +1,7 @@
 package presidio.webapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.*;
@@ -15,11 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.repositories.AlertRepository;
+import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQueryEnums;
-import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.*;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
@@ -48,6 +50,9 @@ public class AlertApiControllerModuleTest {
 
     @Autowired
     private AlertRepository alertRepository;
+
+    @Autowired
+    private AlertPersistencyServiceImpl alertPersistencyService;
 
     private ObjectMapper objectMapper;
 
@@ -107,7 +112,7 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void getUserById() throws Exception {
+    public void getAlertById() throws Exception {
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -146,13 +151,44 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void testGetIndicatorEventsByAlert() throws Exception{
-        // get actual response
-        String indicatorId = null;
-        MvcResult mvcResult = alertsApiMVC.perform(get(EVENTS_BY_INDICATOR_ID_URI, alert1.getId(), indicatorId))
+    public void testGetIndicatorEvents() throws Exception{
+        alertRepository.delete(alert1);
+
+        generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date());
+
+        //generate indicators
+        Indicator indicator = new Indicator(alert1.getId());
+
+        //generate events
+        List<IndicatorEvent> indicatorEvents = generateEvents(102, indicator.getId());
+        indicator.setEvents(indicatorEvents);
+        alert1.setIndicators(Arrays.asList(indicator));
+
+        alertPersistencyService.save(Arrays.asList(alert1));
+
+        // get actual response not paged
+        MvcResult mvcResult = alertsApiMVC.perform(get(EVENTS_BY_INDICATOR_ID_URI, alert1.getId(), indicator.getId()))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
-        Alert actualResponse = objectMapper.readValue(actualResponseStr, Alert.class);
+        EventsWrapper actualResponse = objectMapper.readValue(actualResponseStr, EventsWrapper.class);
+
+        Assert.assertEquals(102, actualResponse.getTotal().intValue());
+        Assert.assertEquals(10, actualResponse.getEvents().size()); //default result size is 10
+    }
+
+
+    private List<IndicatorEvent> generateEvents(int eventsNum, String indicatorId) {
+        List<IndicatorEvent> events = new ArrayList<>();
+        for(int i = 1; i <= eventsNum; i ++) {
+            IndicatorEvent event = new IndicatorEvent();
+            event.setSchema(Schema.ACTIVE_DIRECTORY);
+            event.setEventTime(new Date());
+            event.setIndicatorId(indicatorId);
+            event.setFeatures(new HashMap<>());
+            events.add(event);
+        }
+        return events;
+
     }
 }
