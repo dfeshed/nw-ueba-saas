@@ -92,10 +92,11 @@ public class AggrFeatureFuncService implements IAggrFeatureFunctionsService, IAg
     }
 
     private IAggrFeatureEventFunction getAggrFeatureEventFunction(AggregatedFeatureEventConf aggrFeatureEventConf) {
+
         JSONObject funcAsJsonObject = aggrFeatureEventConf.getAggregatedFeatureEventFunction();
-        String funcAsJsonString = funcAsJsonObject.toJSONString();
         IAggrFeatureEventFunction func = aggrFeatureEventFunctions.get(funcAsJsonObject);
         if (func == null) {
+            String funcAsJsonString = funcAsJsonObject.toJSONString();
             try {
                 func = (objectMapper).readValue(funcAsJsonString, IAggrFeatureEventFunction.class);
                 aggrFeatureEventFunctions.put(funcAsJsonObject, func);
