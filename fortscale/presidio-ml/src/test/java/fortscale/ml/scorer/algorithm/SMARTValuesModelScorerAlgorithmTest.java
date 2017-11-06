@@ -6,6 +6,7 @@ import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class SMARTValuesModelScorerAlgorithmTest {
         SMARTValuesModel model = new SMARTValuesModel();
         long numOfZeroValues = oldValues.stream().filter(value -> value == 0).count();
         double sumOfValues = oldValues.stream().mapToDouble(Double::valueOf).sum();
-        model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues, 0);
+        model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues, 0, Instant.now());
         SMARTValuesModelScorerAlgorithm scorerAlgorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
 
         SMARTValuesPriorModel priorModel = new SMARTValuesPriorModel();
