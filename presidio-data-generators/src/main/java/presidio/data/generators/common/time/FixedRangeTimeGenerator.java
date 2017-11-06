@@ -16,8 +16,8 @@ public class FixedRangeTimeGenerator implements ITimeGenerator {
     private final Instant startInstant;
     private final Instant endInstant;
     private final Duration interval;
+    private final Instant lastInstant;
     private Instant nextInstant;
-    private Instant lastInstant;
 
     /**
      * C'tor.
@@ -27,12 +27,23 @@ public class FixedRangeTimeGenerator implements ITimeGenerator {
      * @param interval     the duration of each interval in the time range
      */
     public FixedRangeTimeGenerator(Instant startInstant, Instant endInstant, Duration interval) {
+        if (!startInstant.isBefore(endInstant)) {
+            throw new IllegalArgumentException(String.format("startInstant must be before endInstant. " +
+                    "startInstant = %s, endInstant = %s.", startInstant.toString(), endInstant.toString()));
+        }
+
+        if (interval.compareTo(Duration.ZERO) <= 0) {
+            throw new IllegalArgumentException(String.format("interval " +
+                    "must be positive. interval = %s.", interval.toString()));
+        }
+
         this.startInstant = startInstant;
         this.endInstant = endInstant;
         this.interval = interval;
+
+        long numberOfIntervals = Duration.between(startInstant, endInstant).toNanos() / interval.toNanos();
+        this.lastInstant = startInstant.plus(interval.multipliedBy(numberOfIntervals));
         this.nextInstant = startInstant;
-        // The last instant is calculated lazily
-        this.lastInstant = null;
     }
 
     @Override
@@ -53,28 +64,12 @@ public class FixedRangeTimeGenerator implements ITimeGenerator {
 
     @Override
     public Instant getFirst() throws GeneratorException {
-        if (startInstant.isBefore(endInstant)) {
-            return startInstant;
-        } else {
-            throw new NoSuchElementException("The time range is empty - There is no first instant.");
-        }
+        return startInstant;
     }
 
     @Override
     public Instant getLast() throws GeneratorException {
-        if (startInstant.isBefore(endInstant)) {
-            if (lastInstant == null) {
-                lastInstant = startInstant;
-
-                while (lastInstant.plus(interval).isBefore(endInstant)) {
-                    lastInstant = lastInstant.plus(interval);
-                }
-            }
-
-            return lastInstant;
-        } else {
-            throw new NoSuchElementException("The time range is empty - There is no last instant.");
-        }
+        return lastInstant;
     }
 
     @Override
