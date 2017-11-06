@@ -73,7 +73,7 @@
       ]
     },
     {
-      "name": "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+      "name": "dstMachineNameRegexClusterHistogramUserIdInteractiveRemoteAuthenticationDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -92,12 +92,15 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('INTERACTIVE_REMOTE' in @['operationTypeCategories'])]"
           }
         }
       ]
     },
     {
-      "name": "userIdHistogramDstMachineIdAuthenticationDaily",
+      "name": "userIdHistogramDstMachineIdInteractiveRemoteAuthenticationDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "dstMachineId"
@@ -116,6 +119,9 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('INTERACTIVE_REMOTE' in @['operationTypeCategories'])]"
           }
         }
       ]
