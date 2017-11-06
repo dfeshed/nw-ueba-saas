@@ -211,7 +211,9 @@
                         echo "creating configuration group for common reads and writes"
                         mkdir -p ${common-conf-path}
                         groupadd ${presidio-conf-group}
-
+                        
+                        chown -R -v tomcat:tomcat /home/presidio/presidio-core/configurations/airflow/*
+                        
                         chmod 777 /home/presidio/presidio-core/configurations/airflow/
                         chmod 777 /home/presidio/presidio-core/configurations/
                         chmod 777 /home/presidio/presidio-core/
