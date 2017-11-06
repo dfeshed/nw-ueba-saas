@@ -11,7 +11,6 @@ import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "presidio.output.domain.repositories")
-@Import(fortscale.utils.elasticsearch.config.ElasticsearchConfig.class)
 public class PresidioOutputPersistencyServiceConfig {
 
     @Bean

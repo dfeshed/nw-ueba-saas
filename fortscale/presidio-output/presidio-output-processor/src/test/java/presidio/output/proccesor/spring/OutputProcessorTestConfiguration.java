@@ -1,5 +1,6 @@
 package presidio.output.proccesor.spring;
 
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ import presidio.output.processor.spring.UserServiceConfig;
         OutputShellCommands.class,
         BootShimConfig.class,
         UserServiceConfig.class,
-        EventPersistencyServiceConfig.class})
+        EventPersistencyServiceConfig.class,
+        ElasticsearchTestConfig.class})
 public class OutputProcessorTestConfiguration {
 
     @Bean

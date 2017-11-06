@@ -15,27 +15,16 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import java.net.InetAddress;
 
 @Configuration
-public class ElasticsearchConfig {
+public class EmbeddedElasticsearchConfig {
 
-    @Value("${elasticsearch.host}")
-    private String EsHost;
 
-    @Value("${elasticsearch.port}")
-    private int EsPort;
-
-    @Value("${elasticsearch.clustername}")
-    private String EsClusterName;
-
+    //Embedded elasticsearch is used for tests only
+    //This bean must be initialized before elasticsearch client bean
     @Bean
-    public Client client() throws Exception {
-        Settings esSettings = Settings.builder().put("cluster.name", EsClusterName).build();
-        return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
+    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser() {
+        return new EmbeddedElasticsearchInitialiser();
     }
-    
-    @Bean
-    public ElasticsearchOperations elasticsearchTemplate() throws Exception {
-        return new PresidioElasticsearchTemplate(client());
-    }
+
 
 
 }

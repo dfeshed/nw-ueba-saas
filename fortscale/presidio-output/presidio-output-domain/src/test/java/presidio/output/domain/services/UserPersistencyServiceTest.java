@@ -1,5 +1,6 @@
 package presidio.output.domain.services;
 
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
@@ -29,7 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
 @ActiveProfiles("useEmbeddedElastic")
 public class UserPersistencyServiceTest{
 

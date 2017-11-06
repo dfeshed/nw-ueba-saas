@@ -4,6 +4,7 @@ package presidio.output.proccesor.services.alert;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
@@ -68,7 +69,7 @@ import static org.mockito.Matchers.eq;
  * Created by efratn on 24/07/2017.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
 public class AlertServiceTest {
 
     @MockBean
