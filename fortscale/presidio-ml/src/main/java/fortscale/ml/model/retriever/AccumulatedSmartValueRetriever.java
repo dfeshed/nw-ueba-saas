@@ -5,6 +5,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.*;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordData;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
+import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelDAO;
@@ -74,11 +75,13 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
         TimeRange timeRange = new TimeRange(startTime,endTimeInstant);
-        SmartWeightsModel smartWeightsModel = getModel(endTimeInstant);
+        ModelDAO weightsModelDAO = getModelDAO(endTimeInstant);
+        Instant weightsModelEndTime = weightsModelDAO.getEndTime();
+        SmartWeightsModel smartWeightsModel = (SmartWeightsModel) weightsModelDAO.getModel();
 
         // If the retrieve is called for building a global model
         if (contextId == null) {
-            return retrieveGlobalModelBuilderData(timeRange,smartWeightsModel);
+            return retrieveGlobalModelBuilderData(timeRange,smartWeightsModel,weightsModelEndTime);
         }
         List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = readSmartAggregatedRecordDataContainers(
                 contextId, startTime, endTimeInstant);
@@ -91,7 +94,6 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
             // TODO: Retriever functions should be iterated and executed here.
             reductionHistogram.add(smartValue, 1d);
         });
-
         if (reductionHistogram.getN() == 0) {
             if (noDataInDatabase[0]) {
                 return new ModelBuilderData(NO_DATA_IN_DATABASE);
@@ -101,7 +103,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         } else {
             long numOfPartitions = calcNumOfPartitions(smartAggregatedRecordDataContainerList).size();
             reductionHistogram.setNumberOfPartitions(numOfPartitions);
-            return new ModelBuilderData(reductionHistogram);
+            SmartValueData smartValueData = new SmartValueData(reductionHistogram,weightsModelEndTime);
+            return new ModelBuilderData(smartValueData);
         }
     }
 
@@ -111,10 +114,10 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData,clusterConfs);
     }
 
-    private SmartWeightsModel getModel(Instant endTimeInstant) {
+    private ModelDAO getModelDAO(Instant endTimeInstant) {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
         ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime);
-        return (SmartWeightsModel) latestBeforeEventTimeAfterOldestAllowedModelDao.getModel();
+        return latestBeforeEventTimeAfterOldestAllowedModelDao;
     }
 
     private List<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordDataContainers(String contextId, Instant startTime, Instant endTime) {
@@ -123,7 +126,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     }
 
 
-    private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange, SmartWeightsModel smartWeightsModel) {
+    private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange, SmartWeightsModel smartWeightsModel, Instant weightsModelEndTime) {
         AccumulatedSmartContextSelectorConf conf = new AccumulatedSmartContextSelectorConf(smartRecordConfName);
         IContextSelector contextSelector = contextSelectorFactoryService.getProduct(conf);
         Set<String> contextIds = contextSelector.getContexts(timeRange);
@@ -151,7 +154,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
             return new ModelBuilderData(ModelBuilderData.NoDataReason.ALL_DATA_FILTERED);
         } else {
             reductionHistogram.setNumberOfPartitions(distinctParitionIds.size());
-            return new ModelBuilderData(reductionHistogram);
+            SmartValueData smartValueData = new SmartValueData(reductionHistogram,weightsModelEndTime);
+            return new ModelBuilderData(smartValueData);
         }
     }
 
