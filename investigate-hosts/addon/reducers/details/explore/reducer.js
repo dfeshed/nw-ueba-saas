@@ -17,7 +17,7 @@ const _handleFileSearchPage = (state, { payload: { data, meta = {}, request } })
   const newComponentName = 'host-detail/header/titlebar/explore/search-label';
   const searchKeyword = request.filter[0].value; // get the search keyword
   if (data.scanStartTime) {
-    let newFileSearchResults = [];
+    let newFileSearchResults = [...fileSearchResults];
     const streamData = {
       machineAgentId: data.machineAgentId,
       scanStartTime: data.scanStartTime,
@@ -28,7 +28,7 @@ const _handleFileSearchPage = (state, { payload: { data, meta = {}, request } })
     newFileSearchResults.reverse();
     return state.merge({
       searchStatus: meta.complete ? 'complete' : 'wait',
-      fileSearchResults: [ ...fileSearchResults, ...newFileSearchResults],
+      fileSearchResults: [...newFileSearchResults],
       searchValue: searchKeyword,
       componentName: newComponentName,
       showSearchResults: true
