@@ -21,11 +21,10 @@ moduleForAcceptance('Acceptance | theme test', {
 
 test('theme will rehydrate from local storage on boot', function(assert) {
   assert.expect(4);
+  assert.ok($('body').hasClass('dark-theme'));
+  assert.notOk($('body').hasClass('light-theme'));
+
   visit('/');
-  andThen(() => {
-    assert.ok($('body').hasClass('dark-theme'));
-    assert.notOk($('body').hasClass('light-theme'));
-  });
   waitFor(() => $('body').hasClass('light-theme')).then(() => {
     assert.ok($('body').hasClass('light-theme'));
     assert.notOk($('body').hasClass('dark-theme'));

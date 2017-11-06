@@ -2,11 +2,18 @@ export default {
   subscriptionDestination: '/user/queue/administration/global/get/user/preferences',
   requestDestination: '/ws/administration/global/get/user/preferences',
   message() {
-    const data = { eventsPreferences: { code: 0, defaultAnalysisView: 'packet', isMetaShown: null, isHeaderOpen: null } };
     return {
-      data,
-      meta: {
-        complete: true
+      code: 0,
+      data: {
+        'contextMenuEnabled': true,
+        'defaultComponentUrl': '/respond',
+        'userLocale': 'en_US',
+        'dateFormat': 'MM/dd/yyyy',
+        'timeFormat': 'HR12',
+        'timeZone': 'UTC',
+        'spacingType': 'LOOSE',
+        'themeType': 'DARK',
+        'notificationEnabled': true
       }
     };
   }

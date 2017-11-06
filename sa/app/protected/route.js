@@ -70,77 +70,75 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   model() {
-    if (config.adminServerAvailable) {
-      const permissionsPromise = new RSVP.Promise((resolve, reject) => {
-        this.request.promiseRequest({
-          method: 'getPermissions',
-          modelName: 'permissions',
-          query: {}
-        }).then((response) => {
-          this.set('accessControl.roles', response.data);
-          resolve();
-        }).catch((error) => {
-          console.error('Error loading permissions', error);
-          reject(error);
+    const permissionsPromise = new RSVP.Promise((resolve, reject) => {
+      this.request.promiseRequest({
+        method: 'getPermissions',
+        modelName: 'permissions',
+        query: {}
+      }).then((response) => {
+        this.set('accessControl.roles', response.data);
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading permissions', error);
+        reject(error);
+      });
+    });
+
+    const timezonesPromise = new RSVP.Promise((resolve, reject) => {
+      this.request.promiseRequest({
+        method: 'getTimezones',
+        modelName: 'timezones',
+        query: {}
+      }).then((response) => {
+        this.set('timezone.options', response.data);
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading timezones', error);
+        reject(error);
+      });
+    });
+
+    const preferencesPromise = new RSVP.Promise((resolve, reject) => {
+      // Fetch user preferences
+      this.request.promiseRequest({
+        method: 'getPreference',
+        modelName: 'preferences',
+        query: {}
+      }).then((response) => {
+        const {
+          userLocale,
+          dateFormat,
+          timeFormat,
+          timeZone,
+          defaultComponentUrl
+        } = response.data;
+
+        if (userLocale && config.i18n.includedLocales.length > 1) {
+          const locale = userLocale.replace(/_/, '-').toLowerCase();
+          localStorage.setItem('rsa-i18n-default-locale', locale);
+          this.set('i18n.locale', locale);
+        }
+
+        this.setProperties({
+          'dateFormat.selected': dateFormat,
+          'timeFormat.selected': timeFormat,
+          'timezone.selected': timeZone
         });
+
+        if (defaultComponentUrl) {
+          this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
+        }
+
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading preferences', error);
+        reject(error);
       });
+    });
 
-      const timezonesPromise = new RSVP.Promise((resolve, reject) => {
-        this.request.promiseRequest({
-          method: 'getTimezones',
-          modelName: 'timezones',
-          query: {}
-        }).then((response) => {
-          this.set('timezone.options', response.data);
-          resolve();
-        }).catch((error) => {
-          console.error('Error loading timezones', error);
-          reject(error);
-        });
-      });
-
-      const preferencesPromise = new RSVP.Promise((resolve, reject) => {
-        // Fetch user preferences
-        this.request.promiseRequest({
-          method: 'getPreference',
-          modelName: 'preferences',
-          query: {}
-        }).then((response) => {
-          const {
-            userLocale,
-            dateFormat,
-            timeFormat,
-            timeZone,
-            defaultComponentUrl
-          } = response.data;
-
-          if (userLocale && config.i18n.includedLocales.length > 1) {
-            const locale = userLocale.replace(/_/, '-').toLowerCase();
-            localStorage.setItem('rsa-i18n-default-locale', locale);
-            this.set('i18n.locale', locale);
-          }
-
-          this.setProperties({
-            'dateFormat.selected': dateFormat,
-            'timeFormat.selected': timeFormat,
-            'timezone.selected': timeZone
-          });
-
-          if (defaultComponentUrl) {
-            this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
-          }
-
-          resolve();
-        }).catch((error) => {
-          console.error('Error loading preferences', error);
-          reject(error);
-        });
-      });
-
-      return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
-        console.error('There was an issue loading your profile. Please try again.');
-      });
-    }
+    return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
+      console.error('There was an issue loading your profile. Please try again.');
+    });
   },
 
   actions: {
