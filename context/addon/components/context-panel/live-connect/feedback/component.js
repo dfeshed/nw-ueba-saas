@@ -4,14 +4,14 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import riskLevels from './risk-levels';
 import confidenceLevels from './confidence-levels';
+import { debug, warn } from '@ember/debug';
 
 const {
   inject: {
     service
   },
   Component,
-  isEmpty,
-  Logger
+  isEmpty
 } = Ember;
 
 const stateToComputed = ({ context }) => ({
@@ -127,12 +127,12 @@ const FeedbackComponent = Component.extend({
       query: params,
       streamOptions: { requireRequestId: false }
     }).then(() => {
-      Logger.debug('Submitted feedback to LC successfully');
+      debug('Submitted feedback to LC successfully');
       const message = this.get('i18n').t('context.lc.feedbackSubmitted');
       this.get('flashMessages').success(message);
     }).catch((reason) => {
       const errorMsg = reason.meta ? reason.meta.message : '';
-      Logger.error(`Could not submit feedback: ${errorMsg}`);
+      warn(`Could not submit feedback: ${errorMsg}`);
       const message = this.get('i18n').t('context.lc.feedbackSubmissionFailed');
       this.get('flashMessages').error(message);
     }).finally(() => {
@@ -146,10 +146,10 @@ const FeedbackComponent = Component.extend({
       modelName: 'skill-level',
       query: {}
     }).then(({ data }) => {
-      Logger.debug(`Fetched skill level ${data.skillLevel}`);
+      debug(`Fetched skill level ${data.skillLevel}`);
       this.set('selectedSkillLevel', data.skillLevel || 1);
     }).catch((reason) => {
-      Logger.error(reason);
+      warn(reason);
       this.set('selectedSkillLevel', 1); // default level
     });
   }

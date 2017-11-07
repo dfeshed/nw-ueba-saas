@@ -1,14 +1,15 @@
+import { debug } from '@ember/debug';
+
 import Ember from 'ember';
 
 const {
-  Route,
-  Logger
+  Route
 } = Ember;
 
 export default Route.extend({
   actions: {
     onSliderChange(value) {
-      Logger.debug('Slider is moved to ', value);
+      debug(`Slider is moved to ${value}`);
     }
   },
 

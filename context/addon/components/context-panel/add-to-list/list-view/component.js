@@ -1,12 +1,12 @@
 import Ember from 'ember';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { debug, warn } from '@ember/debug';
 
 const {
   set,
   isEmpty,
   Component,
-  Logger,
   inject: {
     service
   }
@@ -89,10 +89,10 @@ export default Component.extend({
       }).then(({ data }) => {
         this.resetProperties();
         this.get('eventBus').trigger('rsa-application-modal-close-addToList');
-        Logger.debug(`Successfully saved: ${ data }`);
+        debug(`Successfully saved: ${ data }`);
       }).catch(({ meta }) => {
         const error = meta ? meta.message : 'admin.error';
-        Logger.error(`Meta value is not saved ${ error }`);
+        warn(`Meta value is not saved ${ error }`);
         this.setProperties({
           isDisabled: false,
           isError: true,

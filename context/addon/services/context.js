@@ -3,7 +3,7 @@ import computed from 'ember-computed-decorators';
 import SummariesCache from 'context/utils/summaries-cache';
 import service from 'ember-service/inject';
 import { bind } from 'ember-runloop';
-import { warn } from 'ember-debug';
+import { warn } from '@ember/debug';
 import rsvp from 'rsvp';
 
 

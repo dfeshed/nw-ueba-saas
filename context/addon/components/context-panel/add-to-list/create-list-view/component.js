@@ -1,12 +1,8 @@
-import Ember from 'ember';
 import layout from './template';
 import service from 'ember-service/inject';
 import Component from 'ember-component';
-
-const {
-  isEmpty,
-  Logger
-} = Ember;
+import { debug, warn } from '@ember/debug';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   layout,
@@ -35,13 +31,13 @@ export default Component.extend({
         ]
       }
     }).then(({ data }) => {
-      Logger.debug(`Successfully created list: ${ data }`);
+      debug(`Successfully created list: ${ data }`);
       list.id = data.id;
       this.get('model.list').push(list);
       this.resetProperties();
     }).catch(({ meta }) => {
       const error = meta ? meta.message : 'admin.error';
-      Logger.error(`List is not created: ${ error }`);
+      warn(`List is not created: ${ error }`);
       this.setProperties({
         isDisabled: false,
         isError: true,
