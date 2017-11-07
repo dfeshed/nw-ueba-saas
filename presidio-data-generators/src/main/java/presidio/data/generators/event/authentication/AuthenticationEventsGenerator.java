@@ -1,6 +1,8 @@
 package presidio.data.generators.event.authentication;
 
 import presidio.data.domain.MachineEntity;
+import presidio.data.domain.User;
+import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.authenticationop.AuthenticationOpTypeCategoriesGenerator;
 import presidio.data.generators.authenticationop.AuthenticationTypeCyclicGenerator;
@@ -11,20 +13,16 @@ import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
-import presidio.data.domain.User;
-import presidio.data.domain.event.authentication.AuthenticationEvent;
+import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.machine.FixedMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-public class AuthenticationEventsGenerator implements IEventGenerator {
+public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIDGenerator;
     private ITimeGenerator timeGenerator;
@@ -62,17 +60,15 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
     }
 
-
-    public List<AuthenticationEvent> generate () throws GeneratorException {
-        List<AuthenticationEvent> evList = new ArrayList<>() ;
-
-        // fill list of events
-        while (getTimeGenerator().hasNext()) {
+    @Override
+    protected AuthenticationEvent generateNext() throws GeneratorException {
+        AuthenticationEvent ev = null;
+        if (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
 
             User user = getUserGenerator().getNext();
             MachineEntity srcMachine = getSrcMachineGenerator().getNext();
-            AuthenticationEvent ev = new AuthenticationEvent(
+            ev = new AuthenticationEvent(
                     getEventIDGenerator().getNext(),
                     eventTime,
                     getDataSourceGenerator().getNext(),
@@ -87,9 +83,8 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
                     getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername())
             );
             authenticationDescriptionGenerator.updateFileDescription(ev);
-            evList.add(ev);
         }
-        return evList;
+        return ev;
     }
 
     public ITimeGenerator getTimeGenerator() {

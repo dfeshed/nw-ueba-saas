@@ -1,28 +1,26 @@
 package presidio.data.generators.event.dlpfile;
 
+import presidio.data.domain.MachineEntity;
+import presidio.data.domain.User;
+import presidio.data.domain.event.dlpfile.DLPFileEvent;
+import presidio.data.domain.event.dlpfile.DLPFileOperation;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.precentage.BooleanPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
-import presidio.data.domain.MachineEntity;
-import presidio.data.domain.User;
-import presidio.data.domain.event.dlpfile.DLPFileEvent;
-import presidio.data.domain.event.dlpfile.DLPFileOperation;
-import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.dlpfileop.DLPFileOperationGenerator;
 import presidio.data.generators.dlpfileop.IDLPFileOperationGenerator;
+import presidio.data.generators.event.AbstractEventGenerator;
+import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.QuestADMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-public class DLPFileEventsGenerator implements IEventGenerator {
+public class DLPFileEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private ITimeGenerator timeGenerator;
 
@@ -61,43 +59,42 @@ public class DLPFileEventsGenerator implements IEventGenerator {
     }
 
 
-    public List<DLPFileEvent> generate () throws GeneratorException {
-        List<DLPFileEvent> evList = new ArrayList<>() ;
+    public DLPFileEvent generateNext () throws GeneratorException {
+        DLPFileEvent event = null;
 
         // fill list of events
-        while (getTimeGenerator().hasNext()) {
+        if (getTimeGenerator().hasNext()) {
             Instant currentTime = getTimeGenerator().getNext();
             User user = getUserGenerator().getNext();
 
-            DLPFileEvent ev = new DLPFileEvent(currentTime, user.getUsername());
+            event = new DLPFileEvent(currentTime, user.getUsername());
 
-            ev.setNormalizedUsername(user.getUserId());
-            ev.setEventId((String)getEventIDGen().getNext());
-            ev.setFirstName(user.getFirstName());
-            ev.setLastName(user.getLastName());
+            event.setNormalizedUsername(user.getUserId());
+            event.setEventId(getEventIDGen().getNext());
+            event.setFirstName(user.getFirstName());
+            event.setLastName(user.getLastName());
 
             MachineEntity sm = getSourceMachineGenerator().getNext();
             //ev.setSrcMachine(sm.getName());
             //ev.setNormalized_src_machine(sm.getNormalized_name());
             //ev.setSourceIp(sm.getIp_address());
-            ev.setExecutingApplication((String)getExecutingApplicationGenerator().getNext());
+            event.setExecutingApplication((String)getExecutingApplicationGenerator().getNext());
 
             DLPFileOperation f = getFileOperationGenerator().getNext();
-            ev.setEventType(f.getEvent_type());
-            ev.setSourcePath(f.getSource_path());
-            ev.setDestinationPath(f.getDestination_path());
-            ev.setSourceFileName(f.getSource_file_name());
-            ev.setDestinationFileName(f.getDestination_file_name());
-            ev.setFileSize(f.getFile_size());
+            event.setEventType(f.getEvent_type());
+            event.setSourcePath(f.getSource_path());
+            event.setDestinationPath(f.getDestination_path());
+            event.setSourceFileName(f.getSource_file_name());
+            event.setDestinationFileName(f.getDestination_file_name());
+            event.setFileSize(f.getFile_size());
 
-            ev.setSourceDriveType((String)getSourceDriveTypeGenerator().getNext());
-            ev.setDestinationDriveType((String)getDestinationDriveTypeGenerator().getNext());
-            ev.setWasClassified(getWasClassifiedGenerator().getNext());
-            ev.setWasBlocked(getWasBlockedGenerator().getNext());
-            ev.setMalwareScanResult((String)getMalwareScanResultGenerator().getNext());
-            evList.add(ev);
+            event.setSourceDriveType((String)getSourceDriveTypeGenerator().getNext());
+            event.setDestinationDriveType((String)getDestinationDriveTypeGenerator().getNext());
+            event.setWasClassified(getWasClassifiedGenerator().getNext());
+            event.setWasBlocked(getWasBlockedGenerator().getNext());
+            event.setMalwareScanResult((String)getMalwareScanResultGenerator().getNext());
         }
-        return evList;
+        return event;
     }
 
     public void setTimeGenerator(ITimeGenerator timeGenerator) {
