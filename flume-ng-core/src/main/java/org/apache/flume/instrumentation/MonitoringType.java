@@ -23,17 +23,16 @@ package org.apache.flume.instrumentation;
  * Enum for Monitoring types.
  */
 public enum MonitoringType {
-  OTHER(null),
-  GANGLIA(org.apache.flume.instrumentation.GangliaServer.class),
-  HTTP(org.apache.flume.instrumentation.http.HTTPMetricsServer.class);
+    OTHER(null),
+    HTTP(org.apache.flume.instrumentation.http.HTTPMetricsServer.class);
 
-  private Class<? extends MonitorService> monitoringClass;
+    private Class<? extends MonitorService> monitoringClass;
 
-  private MonitoringType(Class<? extends MonitorService> klass) {
-    this.monitoringClass = klass;
-  }
+    private MonitoringType(Class<? extends MonitorService> klass) {
+        this.monitoringClass = klass;
+    }
 
-  public Class<? extends MonitorService> getMonitorClass() {
-    return this.monitoringClass;
-  }
+    public Class<? extends MonitorService> getMonitorClass() {
+        return this.monitoringClass;
+    }
 }

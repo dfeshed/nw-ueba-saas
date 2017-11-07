@@ -45,7 +45,7 @@ import java.util.List;
 
 public class TestNetcatSource {
     private static final Logger logger =
-            LoggerFactory.getLogger(TestAvroSource.class);
+            LoggerFactory.getLogger(TestNetcatSource.class);
 
     /**
      * Five first sentences of the Fables "The Crow and the Fox"
