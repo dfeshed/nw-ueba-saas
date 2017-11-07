@@ -69,7 +69,7 @@ import static org.mockito.Matchers.eq;
  * Created by efratn on 24/07/2017.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
 public class AlertServiceTest {
 
     @MockBean
