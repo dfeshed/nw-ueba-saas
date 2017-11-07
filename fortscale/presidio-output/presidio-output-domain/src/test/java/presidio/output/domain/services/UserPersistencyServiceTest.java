@@ -31,7 +31,6 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
-@ActiveProfiles("useEmbeddedElastic")
 public class UserPersistencyServiceTest{
 
     @Autowired

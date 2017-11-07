@@ -46,7 +46,6 @@ import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
-@ActiveProfiles("useEmbeddedElastic")
 public class AlertPersistencyServiceTest {
 
     @Autowired

@@ -3,20 +3,15 @@ package presidio.output.proccesor.services;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
-import org.assertj.core.util.Lists;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -44,8 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
-@ActiveProfiles("useEmbeddedElastic")
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
 public class OutputExecutionServiceModuleTest {
     public static final String USER_ID_TEST_USER = "userId#testUser";
 
@@ -63,9 +57,6 @@ public class OutputExecutionServiceModuleTest {
 
     @Autowired
     AlertPersistencyService alertPersistencyService;
-
-    @Autowired
-    protected EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
 
     @Before
     public void setup() {
@@ -114,7 +105,7 @@ public class OutputExecutionServiceModuleTest {
         try {
             outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
 
-//            Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
+//            Assert .assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
 //            Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
 //            Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
 //            Assert.assertEquals(1, users.getNumberOfElements());
