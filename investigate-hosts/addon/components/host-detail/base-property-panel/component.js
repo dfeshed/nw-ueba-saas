@@ -136,7 +136,7 @@ const HostPropertyPanel = Component.extend({
     const props = properties.map((prop) => {
       // Filter the fields based on searchText
       const fields = prop.fields.filter((field) => {
-        const flag = showNonEmptyProperty ? !isEmpty(field.value) : true;
+        const flag = showNonEmptyProperty ? (!isEmpty(field.value) || field.field === 'signature.features') : true;
         const displayName = field.displayName.string || '';
         const value = field.value || '';
         const valueFlag = value.toString().toLowerCase().includes(searchText.toLowerCase());
