@@ -14,11 +14,6 @@ public abstract class AbstractEventGenerator<T> implements IEventGenerator<T>{
         this.timeGenerator = new MinutesIncrementTimeGenerator();
     }
 
-    public AbstractEventGenerator(ITimeGenerator timeGenerator){
-        this.timeGenerator = timeGenerator;
-    }
-
-
     protected abstract T generateNext() throws GeneratorException;
 
     @Override
