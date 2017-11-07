@@ -60,6 +60,28 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
     }
 
+    public AuthenticationEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+
+        this.timeGenerator = timeGenerator;
+
+        userGenerator = new RandomUserGenerator();
+        User user = userGenerator.getNext();
+
+        eventIDGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
+        dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Logon Activity"});
+
+        operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
+        operationTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator();
+
+        srcMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_SRC");
+
+        dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");; // need domain machine percentage generator
+
+        resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
+        resultCodeGenerator = new RandomStringGenerator();                          // TBD
+        authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
+    }
+
     @Override
     protected AuthenticationEvent generateNext() throws GeneratorException {
         AuthenticationEvent ev = null;

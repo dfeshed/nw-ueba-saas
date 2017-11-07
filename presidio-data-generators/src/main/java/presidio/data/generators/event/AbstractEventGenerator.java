@@ -14,6 +14,10 @@ public abstract class AbstractEventGenerator<T> implements IEventGenerator<T>{
         this.timeGenerator = new MinutesIncrementTimeGenerator();
     }
 
+    public AbstractEventGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        this.timeGenerator = timeGenerator;
+    }
+
     protected abstract T generateNext() throws GeneratorException;
 
     @Override
@@ -34,16 +38,6 @@ public abstract class AbstractEventGenerator<T> implements IEventGenerator<T>{
             events.add(generateNext());
         }
         return events;
-    }
-
-    @Override
-    public void setTimeGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
-        this.timeGenerator = timeGenerator;
-    }
-
-    @Override
-    public ITimeGenerator getTimeGenerator() throws GeneratorException {
-        return timeGenerator;
     }
 }
 
