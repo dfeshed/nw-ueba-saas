@@ -38,4 +38,8 @@ public class RegexStringListGenerator implements IStringListGenerator {
                 .map(StringRegexCyclicValuesGenerator::getNext)
                 .collect(Collectors.toList());
     }
+
+    public int getSizeOfGeneratedLists() {
+        return stringRegexCyclicValuesGenerators.size();
+    }
 }
