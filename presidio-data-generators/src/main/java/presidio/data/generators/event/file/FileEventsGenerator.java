@@ -25,7 +25,6 @@ import java.time.Instant;
 public class FileEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIdGenerator;
-    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
@@ -33,7 +32,15 @@ public class FileEventsGenerator extends AbstractEventGenerator {
     private IFileDescriptionGenerator fileDescriptionGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
-        timeGenerator = new MinutesIncrementTimeGenerator();
+        setFieldDefaultGenerators();
+    }
+
+    public FileEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        super(timeGenerator);
+        setFieldDefaultGenerators();
+    }
+
+    private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomUserGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"File System"});
         fileOperationGenerator = new FileOperationGenerator();
@@ -42,7 +49,7 @@ public class FileEventsGenerator extends AbstractEventGenerator {
     }
 
     @Override
-    protected FileEvent generateNext() throws GeneratorException {
+    public FileEvent generateNext() throws GeneratorException {
         User user = getUserGenerator().getNext();
         String username = user.getUsername();
         Instant time = getTimeGenerator().getNext();

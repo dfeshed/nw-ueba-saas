@@ -18,13 +18,25 @@ public abstract class AbstractEventGenerator<T> implements IEventGenerator<T>{
         this.timeGenerator = timeGenerator;
     }
 
-    protected abstract T generateNext() throws GeneratorException;
+    public void setTimeGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        this.timeGenerator = timeGenerator;
+    }
+
+    public ITimeGenerator getTimeGenerator() throws GeneratorException {
+        return this.timeGenerator;
+    }
+
+    public abstract T generateNext() throws GeneratorException;
+
+    public boolean hasNext() {
+        return this.timeGenerator.hasNext();
+    }
 
     @Override
     public List<T> generate() throws GeneratorException {
         List<T> events = new ArrayList<T>();
         // fill list of events
-        while (getTimeGenerator().hasNext()) {
+        while (hasNext()) {
             events.add(generateNext());
         }
         return events;

@@ -56,8 +56,7 @@ public class AbstractEventsGeneratorUsageTest {
         List<AuthenticationEvent> events = null;
         ITimeGenerator timeGen = new TimeGenerator(LocalTime.of(0,0,0,0), LocalTime.of(1,0,0,0), 100, 2, 1);
 
-        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
-        generator.setTimeGenerator(timeGen);
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator(timeGen);
 
         events = generator.generate();
         Assert.assertEquals(10 * 60 * 60, events.size()); // all events for default time generator
@@ -97,7 +96,9 @@ public class AbstractEventsGeneratorUsageTest {
         Assert.assertTrue(events.size() < 100000); // default time generator generates less than 100K events
 
         events = generator.generate(1); // no more events
+
         Assert.assertEquals(0, events.size());
+
     }
 
 
@@ -135,4 +136,11 @@ public class AbstractEventsGeneratorUsageTest {
         Assert.assertEquals(0, events.size());
     }
 
+    @Test
+    public void AuthenticationByOneEventsGenerator() throws GeneratorException {
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
+
+        AuthenticationEvent event = generator.generateNext();
+        Assert.assertEquals(generator.getTimeGenerator().getFirst(), event.getDateTime()); // all events for default time generator
+    }
 }

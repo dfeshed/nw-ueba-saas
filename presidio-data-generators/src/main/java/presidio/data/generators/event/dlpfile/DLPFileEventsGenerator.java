@@ -22,8 +22,6 @@ import java.time.Instant;
 
 public class DLPFileEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
-    private ITimeGenerator timeGenerator;
-
     private IUserGenerator userGenerator;
     private IMachineGenerator sourceMachineGenerator;
     private IDLPFileOperationGenerator fileOperationGenerator; // Handles: source_path, destination_path, source_file_name, destination_file_name, file_size
@@ -39,8 +37,6 @@ public class DLPFileEventsGenerator extends AbstractEventGenerator {
     private SimpleMalwareScanResultGenerator malwareScanResultGenerator;
 
     public DLPFileEventsGenerator() throws GeneratorException {
-        timeGenerator = new MinutesIncrementTimeGenerator();
-
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
 

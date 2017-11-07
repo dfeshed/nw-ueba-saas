@@ -25,7 +25,6 @@ import java.time.Instant;
 public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
 
     private IStringGenerator eventIdGenerator;
-    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IActiveDirectoryOperationGenerator activeDirOperationGenerator;
@@ -40,7 +39,15 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
     private CyclicValuesGenerator<String> timeZoneOffsetGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
-        timeGenerator = new MinutesIncrementTimeGenerator();
+        setFieldDefaultGenerators();
+    }
+
+    public ActiveDirectoryEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        super(timeGenerator);
+        setFieldDefaultGenerators();
+    }
+
+    private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomAdminUserPercentageGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Active Directory"});                                // "DefaultDS"
@@ -56,7 +63,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
     }
 
     @Override
-    protected ActiveDirectoryEvent generateNext() throws GeneratorException {
+    public ActiveDirectoryEvent generateNext() throws GeneratorException {
         ActiveDirectoryEvent ev = null;
         if (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
