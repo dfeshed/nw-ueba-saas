@@ -7,7 +7,7 @@ WHERE  operator != ''SubDagOperator''
        AND state = ''success''
        AND task_id NOT LIKE ''%sensor%''
        AND task_id NOT LIKE ''%circuit%''
-       AND dag_id LIKE ''%full_flow%''
+       AND dag_id LIKE ''full_flow%''
        AND execution_date  >= (SELECT Max(execution_date) - interval ''{{logical_hours_back}}'' hour AS
                                     from_date
                              FROM   task_instance
@@ -15,4 +15,4 @@ WHERE  operator != ''SubDagOperator''
                                     AND state = ''success''
                                     AND task_id NOT LIKE ''%sensor%''
                                     AND task_id NOT LIKE ''%circuit%''
-                                    AND dag_id LIKE ''%full_flow%'') ', false, true, true, 600, '{"logical_hours_back":"720"}', true, 41, '2017-10-31 14:28:20.897218');
+                                    AND dag_id LIKE ''full_flow%'') ', false, true, true, 600, '{"logical_hours_back":"720"}', true, 41, '2017-10-31 14:28:20.897218');
