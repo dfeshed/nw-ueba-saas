@@ -19,7 +19,7 @@ export default Component.extend(RowMixin, {
   timezone: service(),
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
-  @computed('table.aliases.data', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n', 'timezone.selected.zoneId')
+  @computed('table.aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n', 'timezone.selected.zoneId')
   _opts(aliases, dateFormat, timeFormat, i18n, timeZone) {
     return {
       aliases,

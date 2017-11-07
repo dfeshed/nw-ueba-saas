@@ -27,10 +27,8 @@ const columns = [
   EmberObject.create({ field: 'has.alias', width: 150 })
 ];
 const aliases = {
-  data: {
-    'has.alias': {
-      'raw-value': 'raw-value-alias'
-    }
+  'has.alias': {
+    'raw-value': 'raw-value-alias'
   }
 };
 const table = EmberObject.create({
@@ -131,7 +129,7 @@ test('it renders a row of cells correctly', function(assert) {
   // Check that alias value is being rendered when provided.
   assert.equal(
     $root.find('.rsa-data-table-body-cell[data-field="has.alias"]').text().trim(),
-    String(aliases.data['has.alias'][item['has.alias']]).trim(),
+    String(aliases['has.alias'][item['has.alias']]).trim(),
     'Expected value\'s alias in cell DOM'
   );
 
