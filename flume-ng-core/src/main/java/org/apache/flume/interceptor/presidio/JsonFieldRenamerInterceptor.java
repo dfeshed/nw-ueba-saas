@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
+public class JsonFieldRenamerInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonFieldRenamerInterceptor.class);
@@ -111,7 +110,7 @@ public class JsonFieldRenamerInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             logger.info("Creating JsonFieldRenamerInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
             return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields);

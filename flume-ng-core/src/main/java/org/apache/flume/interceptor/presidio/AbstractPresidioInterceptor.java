@@ -11,10 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public abstract class AbstractInterceptor implements Interceptor {
+public abstract class AbstractPresidioInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory
-            .getLogger(AbstractInterceptor.class);
+            .getLogger(AbstractPresidioInterceptor.class);
+
+    protected String applicationName;
 
     @Override
     public List<Event> intercept(List<Event> events) {
@@ -58,6 +60,9 @@ public abstract class AbstractInterceptor implements Interceptor {
 
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
 
     private boolean isGotControlDoneMessage(Event flumeEvent) {
         return BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));

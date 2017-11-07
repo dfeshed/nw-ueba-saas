@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ import java.util.List;
  * This interceptor is used to modify the case of given fields in the received JSON.
  * Returns the same JSON with the updated case
  */
-public class JsonCaseInterceptor extends AbstractInterceptor {
+public class JsonCaseInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonCaseInterceptor.class);
@@ -122,7 +121,7 @@ public class JsonCaseInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             logger.info("Creating JsonCaseInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, OPERATIONS_CONF_NAME, operations);
             return new JsonCaseInterceptor(originFields, operations);

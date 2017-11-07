@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ import java.util.regex.Pattern;
  * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
  * removeEscapeChars = true (default = false) will remove escape characters that java properties added before ':' and '=' chars. use if the regex-es you use contain  ':' or '='
  */
-public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
+public class JsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
@@ -185,7 +184,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             final JsonFieldValueReplacerInterceptor jsonFieldValueReplacerInterceptor = new JsonFieldValueReplacerInterceptor(replacements, removeEscapeChars);
             logger.info("Creating JsonFieldValueReplacerInterceptor: {}", jsonFieldValueReplacerInterceptor);
             return jsonFieldValueReplacerInterceptor;

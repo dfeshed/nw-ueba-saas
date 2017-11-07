@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JsonSearchAndReplaceInterceptor extends AbstractInterceptor {
+public class JsonSearchAndReplaceInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonSearchAndReplaceInterceptor.class);
@@ -132,7 +131,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             final JsonSearchAndReplaceInterceptor jsonSearchAndReplaceInterceptor = new JsonSearchAndReplaceInterceptor(fields, searchPatterns, replaceStrings);
             logger.info("Creating JsonSearchAndReplaceInterceptor: {}", jsonSearchAndReplaceInterceptor);
             return jsonSearchAndReplaceInterceptor;

@@ -20,6 +20,15 @@ public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.
         return applicationName;
     }
 
+    @Override
+    public Interceptor build() {
+        final AbstractPresidioInterceptor interceptor = doBuild();
+        interceptor.applicationName = applicationName;
+        return interceptor;
+    }
+
+    protected abstract AbstractPresidioInterceptor doBuild();
+
     protected abstract void doConfigure(Context context);
 
     protected String[] getStringArrayFromConfiguration(Context context, String key, String delimiter) {
