@@ -87,14 +87,6 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         return ev;
     }
 
-    public ITimeGenerator getTimeGenerator() {
-        return timeGenerator;
-    }
-
-    public void setTimeGenerator(ITimeGenerator timeGenerator) {
-        this.timeGenerator = timeGenerator;
-    }
-
     public IStringGenerator getEventIdGenerator() {
         return eventIdGenerator;
     }

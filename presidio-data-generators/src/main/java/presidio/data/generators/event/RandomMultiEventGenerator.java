@@ -60,7 +60,7 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
         return ret;
     }
 
-    public class EventGeneratorProbability{
+    public static class EventGeneratorProbability{
         private IEventGenerator<Event> eventGenerator;
         private double probablility;
 

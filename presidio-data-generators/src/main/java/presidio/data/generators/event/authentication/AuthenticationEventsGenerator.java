@@ -61,7 +61,6 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         srcMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_SRC");
 
         dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");
-        ; // need domain machine percentage generator
 
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
@@ -93,14 +92,6 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
             authenticationDescriptionGenerator.updateFileDescription(ev);
         }
         return ev;
-    }
-
-    public ITimeGenerator getTimeGenerator() {
-        return timeGenerator;
-    }
-
-    public void setTimeGenerator(ITimeGenerator timeGenerator) {
-        this.timeGenerator = timeGenerator;
     }
 
     public IStringGenerator getDataSourceGenerator() {

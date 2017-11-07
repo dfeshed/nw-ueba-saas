@@ -149,4 +149,39 @@ public class ActiveDirectoryEventsGeneratorTest {
         Assert.assertTrue(events.get(1).getOperation().getOperationType().getName().contains("custom_type_y"));
     }
 
+    @Test
+    public void ActiveDirectoryAllEventsGenerator() throws GeneratorException {
+        List<ActiveDirectoryEvent> events = null;
+        ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
+
+        events = generator.generate();
+        Assert.assertEquals(1392, events.size()); // all events for default time generator
+
+        events = generator.generate(); // no more events
+        Assert.assertEquals(0, events.size());
+    }
+
+    @Test
+    public void ActiveDirectoryBulkEventsGenerator() throws GeneratorException {
+        final int BULK_SIZE = 10;
+        List<ActiveDirectoryEvent> events = null;
+        ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
+
+        events = generator.generate(BULK_SIZE);
+        Assert.assertEquals(BULK_SIZE, events.size());
+
+        events = generator.generate(0);
+        Assert.assertEquals(0, events.size());
+
+        events = generator.generate(1);
+        Assert.assertEquals(1, events.size());
+
+        events = generator.generate(100000);
+        Assert.assertTrue(events.size() < 100000); // default time generator generates less than 100K events
+
+        events = generator.generate(1); // no more events
+
+        Assert.assertEquals(0, events.size());
+
+    }
 }
