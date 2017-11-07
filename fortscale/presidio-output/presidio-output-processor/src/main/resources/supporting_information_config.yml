@@ -501,9 +501,12 @@ indicators:
   schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: dstMachineNameRegexCluster
+    anomalyFilters:
+      fieldName: operationTypeCategories
+      fieldValue: INTERACTIVE_REMOTE
   historicalData:
     type: count_aggregations
-    featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily
+    featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdInteractiveRemoteAuthenticationDaily
     featureName: dstMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_remote_host
 
