@@ -10,6 +10,4 @@ public interface IEventGenerator<T> {
     List<T> generate(int size) throws GeneratorException;
     T generateNext() throws GeneratorException;
     boolean hasNext();
-    void setTimeGenerator(ITimeGenerator timeGenerator) throws GeneratorException;
-    ITimeGenerator getTimeGenerator() throws GeneratorException;
 }

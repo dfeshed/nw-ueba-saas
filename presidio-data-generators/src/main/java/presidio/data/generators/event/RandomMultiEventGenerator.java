@@ -61,15 +61,15 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
     }
 
     public static class EventGeneratorProbability{
-        private IEventGenerator<Event> eventGenerator;
+        private AbstractEventGenerator<Event> eventGenerator;
         private double probablility;
 
-        public EventGeneratorProbability(IEventGenerator<Event> eventGenerator, double probablility){
+        public EventGeneratorProbability(AbstractEventGenerator<Event> eventGenerator, double probablility){
             this.eventGenerator = eventGenerator;
             this.probablility = probablility;
         }
 
-        public IEventGenerator<Event> getEventGenerator() {
+        public AbstractEventGenerator<Event> getEventGenerator() {
             return eventGenerator;
         }
 
