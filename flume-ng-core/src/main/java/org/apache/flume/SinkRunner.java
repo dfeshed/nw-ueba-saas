@@ -19,7 +19,6 @@
 
 package org.apache.flume;
 
-import org.apache.commons.cli.Option;
 import org.apache.flume.lifecycle.LifecycleAware;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.lifecycle.LifecycleSupervisor;
@@ -51,7 +50,6 @@ public class SinkRunner implements LifecycleAware {
     public static long maxBackoffSleep = 5000;
     public static long consecutiveBackoffCounter = 0;
 
-    private CounterGroup counterGroup;
     private PollingRunner runner;
     private Thread runnerThread;
     private LifecycleState lifecycleState;
@@ -59,7 +57,6 @@ public class SinkRunner implements LifecycleAware {
     public static LifecycleSupervisor lifecycleSupervisor;
 
     public SinkRunner() {
-        counterGroup = new CounterGroup();
         lifecycleState = LifecycleState.IDLE;
     }
 
@@ -86,7 +83,6 @@ public class SinkRunner implements LifecycleAware {
         runner.setSinkRunner(this);
 
         runner.policy = policy;
-        runner.counterGroup = counterGroup;
         runner.shouldStop = new AtomicBoolean();
 
         runnerThread = new Thread(runner);
@@ -120,8 +116,7 @@ public class SinkRunner implements LifecycleAware {
 
     @Override
     public String toString() {
-        return "SinkRunner: { policy:" + getPolicy() + " counterGroup:"
-                + counterGroup + " }";
+        return "SinkRunner: { policy:" + getPolicy() + "}";
     }
 
     @Override
@@ -138,7 +133,6 @@ public class SinkRunner implements LifecycleAware {
 
         private SinkProcessor policy;
         private AtomicBoolean shouldStop;
-        private CounterGroup counterGroup;
         private SinkRunner sinkRunner;
 
 
@@ -153,19 +147,11 @@ public class SinkRunner implements LifecycleAware {
                         backoff();
                     } else if (status.equals(Sink.Status.DONE)) {
                         shutdownFlume();
-                    } else {
-                        counterGroup.set("runner.backoffs.consecutive", 0L);
                     }
                 } catch (InterruptedException e) {
                     logger.debug("Interrupted while processing an event. Exiting.");
-                    counterGroup.incrementAndGet("runner.interruptions");
                 } catch (Exception e) {
                     logger.error("Unable to deliver event. Exception follows.", e);
-                    if (e instanceof EventDeliveryException) {
-                        counterGroup.incrementAndGet("runner.deliveryErrors");
-                    } else {
-                        counterGroup.incrementAndGet("runner.errors");
-                    }
                     try {
                         Thread.sleep(maxBackoffSleep);
                     } catch (InterruptedException ex) {
@@ -173,7 +159,7 @@ public class SinkRunner implements LifecycleAware {
                     }
                 }
             }
-            logger.debug("Polling runner exiting. Metrics:{}", counterGroup);
+            logger.debug("Polling runner exiting.");
         }
 
         private void backoff() throws InterruptedException {
@@ -185,7 +171,7 @@ public class SinkRunner implements LifecycleAware {
         }
 
         private void shutdownFlume() {
-            final Option agentName = LifecycleSupervisor.options.getOption("name");
+            final String agentName = LifecycleSupervisor.options.getOption("name").getValue();
             logger.info("Flume agent {} is shutting down...", agentName);
             sinkRunner.lifecycleState = LifecycleState.STOP;
             shouldStop.set(true);
