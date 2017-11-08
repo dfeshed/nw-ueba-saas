@@ -4,20 +4,28 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  eventMetas: undefined,
-  serviceId: undefined,
-  sessionId: undefined,
-  startTime: 0,
   endTime: 0,
-  selectedTimeRangeId: undefined,
+  eventMetas: undefined,
   metaFilter: {
     uri: undefined,
     conditions: []
   },
-  queryString: ''
+  previouslySelectedTimeRanges: {},
+  queryString: '',
+  serviceId: undefined,
+  sessionId: undefined,
+  startTime: 0
 });
 
 export default handleActions({
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
+    let reducerState = {};
+    if (payload && payload.investigate && payload.investigate.queryNode) {
+      reducerState = payload.investigate.queryNode;
+    }
+    return state.merge(reducerState);
+  },
+
   [ACTION_TYPES.INITIALIZE_TESTS]: (state, { payload }) => {
     return _initialState.merge(payload.queryNode, { deep: true });
   },
@@ -59,10 +67,13 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_QUERY_TIME_RANGE]: (state, { payload }) => {
+    const { previouslySelectedTimeRanges, serviceId } = state;
+    const newRange = {};
+    newRange[serviceId] = payload.selectedTimeRangeId;
     return state.merge({
       endTime: payload.endTime,
       startTime: payload.startTime,
-      selectedTimeRangeId: payload.selectedTimeRangeId
+      previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange)
     });
   },
 

@@ -1,3 +1,5 @@
+export const REHYDRATE = 'persist/REHYDRATE';
+
 export const INITIALIZE_INVESTIGATE = 'INVESTIGATE_EVENTS::INITIALIZE_INVESTIGATE';
 
 // Services action types
