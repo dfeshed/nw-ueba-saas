@@ -677,7 +677,13 @@
             </plugins>
 
         </pluginManagement>
-
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencyManagement>
