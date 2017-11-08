@@ -5,9 +5,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoException;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
+import org.apache.flume.SinkRunner;
 import org.apache.flume.persistency.mongo.MongoUtils;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepository;
@@ -45,7 +47,9 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private static ObjectMapper mapper;
     private static final String RECORD_TYPE = "recordType";
     private static final String INDEX_FIELD_NAME = "indexFieldName";
-
+    private static final String MIN_BACKOFF_SLEEP = "minBackoffSleep";
+    private static final String MAX_BACKOFF_SLEEP = "maxBackoffSleep";
+    private static final String BACKOFF_SLEEP_INCREMENT = "backoffSleepIncrement";
 
     static {
         mapper = new ObjectMapper();
@@ -65,6 +69,10 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private int batchSize;
     private Class<T> recordType;
     private String indexFieldName;
+    private long minBackoffSleep;
+    private long maxBackoffSleep;
+    private long backoffSleepIncrement;
+
 
     public PresidioMongoSink() {
         this(null);
@@ -89,11 +97,6 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 }
             }
 
-            final String recordTypeAsString = context.getString(RECORD_TYPE);
-            if (Class.forName(recordTypeAsString) == null) {
-                throw new Exception(String.format("%s:[%s] is not a valid type for %s.", RECORD_TYPE, recordTypeAsString, getName()));
-            }
-
             hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
                 if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
@@ -101,25 +104,26 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 }
             }
 
-            /* configure mongo */
-            recordType = getRecordType(recordTypeAsString);
+            final String recordTypeAsString = context.getString(RECORD_TYPE);
+            if (Class.forName(recordTypeAsString) == null) {
+                throw new Exception(String.format("%s:[%s] is not a valid type for %s.", RECORD_TYPE, recordTypeAsString, getName()));
+            } else {
+                recordType = getRecordType(recordTypeAsString);
+            }
+
             batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
             collectionName = context.getString(COLLECTION_NAME);
-            dbName = context.getString(DB_NAME);
-            host = context.getString(HOST);
-            port = Integer.parseInt(context.getString(PORT, "27017"));
-            username = context.getString(USERNAME, "");
-            indexFieldName = context.getString(INDEX_FIELD_NAME, "");
-            final String password = context.getString(PASSWORD, "");
-            if (sinkMongoRepository == null) {
-                sinkMongoRepository = createRepository(dbName, host, port, username, password);
-            }
+
+            initRepository(context);
+
+            initBackoff(context);
         } catch (Exception e) {
             final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
             throw new FlumeException(errorMessage, e);
         }
     }
+
 
     @Override
     protected List<T> getEvents() throws Exception {
@@ -196,9 +200,38 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         return (Class<T>) Class.forName(recordTypeAsString);
     }
 
+    /**
+     * this method overrides the backoff properties for ALL sinks
+     *
+     * @param context
+     */
+    private void initBackoff(Context context) {
+        minBackoffSleep = context.getLong(BATCH_SIZE, SinkRunner.DEFAULT_MIN_BACKOFF_SLEEP);
+        maxBackoffSleep = context.getLong(BATCH_SIZE, SinkRunner.DEFAULT_MAX_BACKOFF_SLEEP);
+        backoffSleepIncrement = context.getLong(BATCH_SIZE, SinkRunner.DEFAULT_BACKOFF_SLEEP_INCREMENT);
+
+
+        logger.info("Setting backoff properties for sink {}. minBackoffSleep:{}, maxBackoffSleep: {}, backoffSleepIncrement: {}", getName(), minBackoffSleep, maxBackoffSleep, backoffSleepIncrement);
+        SinkRunner.setMinBackoffSleep(minBackoffSleep);
+        SinkRunner.setMaxBackoffSleep(maxBackoffSleep);
+        SinkRunner.setBackoffSleepIncrement(backoffSleepIncrement);
+    }
+
+    private void initRepository(Context context) throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
+        dbName = context.getString(DB_NAME);
+        host = context.getString(HOST);
+        port = Integer.parseInt(context.getString(PORT, "27017"));
+        username = context.getString(USERNAME, "");
+        indexFieldName = context.getString(INDEX_FIELD_NAME, "");
+        final String password = context.getString(PASSWORD, "");
+        if (sinkMongoRepository == null) {
+            sinkMongoRepository = createRepository(dbName, host, port, username, password);
+        }
+    }
+
     @Override
     public String toString() {
-        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+        return new ToStringBuilder(this)
                 .append("sinkMongoRepository", sinkMongoRepository)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
@@ -209,7 +242,11 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 .append("batchSize", batchSize)
                 .append("recordType", recordType)
                 .append("indexFieldName", indexFieldName)
+                .append("minBackoffSleep", minBackoffSleep)
+                .append("maxBackoffSleep", maxBackoffSleep)
+                .append("backoffSleepIncrement", backoffSleepIncrement)
                 .append("isBatch", isBatch)
+                .append("applicationName", applicationName)
                 .append("isDone", isDone)
                 .toString();
     }

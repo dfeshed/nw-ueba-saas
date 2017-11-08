@@ -45,10 +45,15 @@ public class SinkRunner implements LifecycleAware {
 
     private static final Logger logger = LoggerFactory
             .getLogger(SinkRunner.class);
-    private static final long backoffSleepIncrement = 500;
-    public static long minBackoffSleep = 500;
-    public static long maxBackoffSleep = 5000;
-    public static long consecutiveBackoffCounter = 0;
+
+    public static final long DEFAULT_BACKOFF_SLEEP_INCREMENT = 500L;
+    public static final long DEFAULT_MIN_BACKOFF_SLEEP = 500L;
+    public static final long DEFAULT_MAX_BACKOFF_SLEEP = 5000L;
+
+    public static long backoffSleepIncrement = DEFAULT_BACKOFF_SLEEP_INCREMENT;
+    public static long minBackoffSleep = DEFAULT_MIN_BACKOFF_SLEEP;
+    public static long maxBackoffSleep = DEFAULT_MAX_BACKOFF_SLEEP;
+    private static long consecutiveBackoffCounter = 0;
 
     private PollingRunner runner;
     private Thread runnerThread;
@@ -71,6 +76,18 @@ public class SinkRunner implements LifecycleAware {
 
     public void setSink(SinkProcessor policy) {
         this.policy = policy;
+    }
+
+    public static void setBackoffSleepIncrement(long backoffSleepIncrement) {
+        SinkRunner.backoffSleepIncrement = backoffSleepIncrement;
+    }
+
+    public static void setMinBackoffSleep(long minBackoffSleep) {
+        SinkRunner.minBackoffSleep = minBackoffSleep;
+    }
+
+    public static void setMaxBackoffSleep(long maxBackoffSleep) {
+        SinkRunner.maxBackoffSleep = maxBackoffSleep;
     }
 
     @Override
