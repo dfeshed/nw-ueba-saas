@@ -1549,6 +1549,7 @@ export default {
   },
   investigateFiles: {
     title: 'Files',
+    deleteTitle: 'Confirm Delete',
     button: {
       exportToCSV: 'Export To CSV',
       downloading: 'Downloading',
@@ -1587,6 +1588,9 @@ export default {
           success: 'Search query saved successfully.',
           filterFieldEmptyMessage: 'Filter fields are empty',
           invalidInput: 'Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
+        },
+        delete: {
+          confirmMessage: 'Are you sure you want to delete the selected query?'
         }
       }
     },

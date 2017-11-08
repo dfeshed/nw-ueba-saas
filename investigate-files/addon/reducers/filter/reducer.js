@@ -103,7 +103,17 @@ const filterReducer = handleActions({
 
   [ACTION_TYPES.SET_APPLIED_FILES_FILTER]: (state, { payload }) => state.set('selectedFilterId', payload),
 
-  [ACTION_TYPES.SET_SYSTEM_FILTER_FLAG]: (state, { payload }) => state.set('isSystemFilter', payload)
+  [ACTION_TYPES.SET_SYSTEM_FILTER_FLAG]: (state, { payload }) => state.set('isSystemFilter', payload),
+
+  [ACTION_TYPES.DELETE_FILTER]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const { payload } = action;
+        const filters = s.fileFilters.filter((item) => item.id !== payload.data.id);
+        return s.set('fileFilters', filters);
+      }
+    });
+  }
 }, fileListState);
 
 export default filterReducer;

@@ -77,10 +77,19 @@ const getSavedFilters = () => {
   });
 };
 
+const deleteFilter = (id) => {
+  return promiseRequest({
+    method: 'deleteFilter',
+    modelName: 'files',
+    query: { data: { id } }
+  });
+};
+
 
 export default {
   fetchFiles,
   fileExport,
   createCustomSearch,
-  getSavedFilters
+  getSavedFilters,
+  deleteFilter
 };

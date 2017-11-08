@@ -136,7 +136,7 @@ const ContentFilter = Component.extend({
           onSuccess: () => {
             this.get('flashMessage').showFlashMessage('investigateFiles.filter.customFilters.save.success');
           },
-          onFailure: ({ meta: message }) => this.showErrorMessage(message.message)
+          onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
         };
         this.send('createCustomSearch', filter, expressionList, 'FILE', callBackOptions);
       }

@@ -59,3 +59,20 @@
 #list-filter-content .rsa-form-checkbox-label::before {
   top: 8px;
 }
+
+.is-hovering .delete-filter {
+  display: inline-block;
+  .rsa-icon-bin-1-filled {
+    font-size: 100%;
+    top: -2px;
+  }
+}
+
+.delete-filter {
+  position: absolute;
+  right: 0.5rem;
+  display: none;
+  .rsa-icon-bin-1-filled {
+    font-size: 1.25rem;
+  }
+}

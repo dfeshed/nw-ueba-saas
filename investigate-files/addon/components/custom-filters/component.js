@@ -3,7 +3,8 @@ import { connect } from 'ember-redux';
 
 import {
   addSystemFilter,
-  setSystemFilterFlag
+  setSystemFilterFlag,
+  deleteFilter
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = ({ files }) => ({
@@ -13,7 +14,8 @@ const stateToComputed = ({ files }) => ({
 });
 const dispatchToActions = {
   addSystemFilter,
-  setSystemFilterFlag
+  setSystemFilterFlag,
+  deleteFilter
 };
 
 const CustomFilterList = Component.extend({

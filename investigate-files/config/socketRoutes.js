@@ -29,6 +29,10 @@ module.exports = function(environment) {
       getFilter: {
         subscriptionDestination: '/user/queue/endpoint/data/filter/getall',
         requestDestination: '/ws/endpoint/data/filter/getall'
+      },
+      deleteFilter: {
+        subscriptionDestination: '/user/queue/endpoint/data/filter/remove',
+        requestDestination: '/ws/endpoint/data/filter/remove'
       }
     }
   };

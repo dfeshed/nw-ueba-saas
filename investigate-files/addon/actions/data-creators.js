@@ -123,6 +123,19 @@ const getFilter = () => {
   };
 };
 
+const deleteFilter = (id) => ({
+  type: ACTION_TYPES.DELETE_FILTER,
+  promise: File.deleteFilter(id),
+  meta: {
+    onSuccess: (response) => {
+      Logger.debug(ACTION_TYPES.DELETE_FILTER, response);
+    },
+    onFailure: (response) => {
+      _handleError(ACTION_TYPES.DELETE_FILTER, response);
+    }
+  }
+});
+
 /**
  * Action creator for adding the expression to the expression list.
  * @param expression
@@ -263,6 +276,7 @@ export {
   removeFilter,
   addFilter,
   getFilter,
+  deleteFilter,
   updateFilter,
   resetFilters,
   getPageOfFiles,
