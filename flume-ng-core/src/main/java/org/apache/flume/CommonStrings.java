@@ -10,7 +10,6 @@ public class CommonStrings {
     public static final String HAS_AUTHENTICATION = "hasAuthentication";
     public static final String BATCH_SIZE = "batchSize";
     public static final String IS_BATCH = "isBatch";
-    public static final String MAX_BACK_OFF_SLEEP = "maxBackOffSleep";
     public static final String COLLECTION_NAME = "collectionName";
     public static final String DB_NAME = "dbName";
     public static final String HOST = "host";

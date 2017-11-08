@@ -12,7 +12,6 @@ import java.util.List;
 
 import static org.apache.flume.CommonStrings.APPLICATION_NAME;
 import static org.apache.flume.CommonStrings.IS_BATCH;
-import static org.apache.flume.CommonStrings.MAX_BACK_OFF_SLEEP;
 
 public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable {
 
@@ -20,9 +19,16 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
 //    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
+    private static final String MIN_BACKOFF_SLEEP = "minBackoffSleep";
+    private static final String MAX_BACKOFF_SLEEP = "maxBackoffSleep";
+    private static final String BACKOFF_SLEEP_INCREMENT = "backoffSleepIncrement";
+
     protected boolean isBatch;
     protected String applicationName;
     protected boolean isDone;
+    protected long minBackoffSleep;
+    protected long maxBackoffSleep;
+    protected long backoffSleepIncrement;
 
 
     @Override
@@ -52,10 +58,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     public void configure(Context context) {
         isBatch = context.getBoolean(IS_BATCH, false);
         applicationName = context.getString(APPLICATION_NAME, this.getName());
-        int maxBackOffSleep = context.getInteger(MAX_BACK_OFF_SLEEP, 5000);
-        if (maxBackOffSleep > 0) {
-            SinkRunner.maxBackoffSleep = maxBackOffSleep;
-        }
+        initBackoff(context);
         doPresidioConfigure(context);
     }
 
@@ -110,5 +113,22 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         }
 
         return isControlDoneMessage;
+    }
+
+    /**
+     * this method overrides the backoff properties for ALL sinks
+     *
+     * @param context
+     */
+    private void initBackoff(Context context) {
+        minBackoffSleep = context.getLong(MIN_BACKOFF_SLEEP, SinkRunner.DEFAULT_MIN_BACKOFF_SLEEP);
+        maxBackoffSleep = context.getLong(MAX_BACKOFF_SLEEP, SinkRunner.DEFAULT_MAX_BACKOFF_SLEEP);
+        backoffSleepIncrement = context.getLong(BACKOFF_SLEEP_INCREMENT, SinkRunner.DEFAULT_BACKOFF_SLEEP_INCREMENT);
+
+
+        logger.info("Setting backoff properties. minBackoffSleep:{}, maxBackoffSleep: {}, backoffSleepIncrement: {}", minBackoffSleep, maxBackoffSleep, backoffSleepIncrement);
+        SinkRunner.setMinBackoffSleep(minBackoffSleep);
+        SinkRunner.setMaxBackoffSleep(maxBackoffSleep);
+        SinkRunner.setBackoffSleepIncrement(backoffSleepIncrement);
     }
 }

@@ -9,7 +9,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
-import org.apache.flume.SinkRunner;
 import org.apache.flume.persistency.mongo.MongoUtils;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepository;
@@ -47,9 +46,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private static ObjectMapper mapper;
     private static final String RECORD_TYPE = "recordType";
     private static final String INDEX_FIELD_NAME = "indexFieldName";
-    private static final String MIN_BACKOFF_SLEEP = "minBackoffSleep";
-    private static final String MAX_BACKOFF_SLEEP = "maxBackoffSleep";
-    private static final String BACKOFF_SLEEP_INCREMENT = "backoffSleepIncrement";
+
 
     static {
         mapper = new ObjectMapper();
@@ -69,9 +66,6 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private int batchSize;
     private Class<T> recordType;
     private String indexFieldName;
-    private long minBackoffSleep;
-    private long maxBackoffSleep;
-    private long backoffSleepIncrement;
 
 
     public PresidioMongoSink() {
@@ -115,8 +109,6 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             collectionName = context.getString(COLLECTION_NAME);
 
             initRepository(context);
-
-            initBackoff(context);
         } catch (Exception e) {
             final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
@@ -200,22 +192,6 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         return (Class<T>) Class.forName(recordTypeAsString);
     }
 
-    /**
-     * this method overrides the backoff properties for ALL sinks
-     *
-     * @param context
-     */
-    private void initBackoff(Context context) {
-        minBackoffSleep = context.getLong(BATCH_SIZE, SinkRunner.DEFAULT_MIN_BACKOFF_SLEEP);
-        maxBackoffSleep = context.getLong(BATCH_SIZE, SinkRunner.DEFAULT_MAX_BACKOFF_SLEEP);
-        backoffSleepIncrement = context.getLong(BATCH_SIZE, SinkRunner.DEFAULT_BACKOFF_SLEEP_INCREMENT);
-
-
-        logger.info("Setting backoff properties for sink {}. minBackoffSleep:{}, maxBackoffSleep: {}, backoffSleepIncrement: {}", getName(), minBackoffSleep, maxBackoffSleep, backoffSleepIncrement);
-        SinkRunner.setMinBackoffSleep(minBackoffSleep);
-        SinkRunner.setMaxBackoffSleep(maxBackoffSleep);
-        SinkRunner.setBackoffSleepIncrement(backoffSleepIncrement);
-    }
 
     private void initRepository(Context context) throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
         dbName = context.getString(DB_NAME);
