@@ -2,8 +2,10 @@ import RsaContextMenu from 'component-lib/components/rsa-context-menu/component'
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 
-const stateToComputed = ({ investigate: { queryNode: { serviceId } } }) => ({
-  endpointId: serviceId
+const stateToComputed = ({ investigate: { queryNode: { serviceId, startTime, endTime } } }) => ({
+  endpointId: serviceId,
+  startTime,
+  endTime
 });
 
 /*

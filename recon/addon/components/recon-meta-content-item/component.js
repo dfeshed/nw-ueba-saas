@@ -4,8 +4,10 @@ import computed, { alias, bool } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { highlightMeta } from 'recon/actions/interaction-creators';
 
-const stateToComputed = ({ recon: { data: { endpointId } } }) => ({
-  endpointId
+const stateToComputed = ({ recon: { data: { endpointId, startTime, endTime } } }) => ({
+  endpointId,
+  startTime,
+  endTime
 });
 
 const dispatchToActions = {
@@ -132,8 +134,8 @@ const MetaContentItem = Component.extend({
     this.set('isHovering', false);
   },
 
-  @computed('name', 'value', 'endpointId')
-  contextSelection: (metaName, metaValue, endpointId) => ({ metaName, metaValue, endpointId }),
+  @computed('name', 'value', 'endpointId', 'startTime', 'endTime')
+  contextSelection: (metaName, metaValue, endpointId, startTime, endTime) => ({ metaName, metaValue, endpointId, startTime, endTime }),
 
   actions: {
     /**

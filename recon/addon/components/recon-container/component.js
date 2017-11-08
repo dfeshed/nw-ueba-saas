@@ -104,7 +104,7 @@ const ReconContainer = Component.extend({
       total,
       size
     } = this.getProperties('oldEventId', 'index', 'total', 'size');
-    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction');
+    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'linkToFileAction', 'startTime', 'endTime');
 
     // Checking whether or not Recon is open in standalone mode by checking
     // if closeAction is present or not. If a parent/containing addon/engine

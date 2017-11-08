@@ -277,6 +277,10 @@ export default {
     contextmenu: {
       copy: 'Copy',
       externalLinks: 'External Lookup',
+      livelookup: 'Live Lookup',
+      endpointIoc: 'Endpoint IOC Lookup',
+      applyDrill: 'Apply Drill in New Tab',
+      applyNEDrill: 'Apply !EQUALS Drill in New Tab',
       external: {
         google: 'Google',
         virustotal: 'VirusTotal PDNS',

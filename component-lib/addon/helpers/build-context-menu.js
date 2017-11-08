@@ -1,9 +1,22 @@
 import { helper } from 'ember-helper';
 import copyToClipboard from 'recon/utils/copy-to-clipboard';
 import { lookup } from 'ember-dependency-lookup';
+import moment from 'moment';
 
 const _openUrl = function(url) {
-  window.open(url, '_blank').focus();
+  window.open(url);
+};
+
+const _encloseInQuotes = function(value) {
+  // enclose in quotes only if the value has space char in it
+  return value.indexOf(' ') > 0 ? `'${value}'` : value;
+};
+
+const _buildInvestigateUrl = function({ endpointId, metaName, metaValue, startTime, endTime }, queryOperator) {
+  const query = encodeURIComponent(metaName.concat(' ', queryOperator, ' ', _encloseInQuotes(metaValue)));
+  const formattedStartDate = moment(startTime > 0 ? startTime * 1000 : startTime).tz('utc').format();
+  const formattedEndDate = moment(endTime > 0 ? endTime * 1000 : endTime).tz('utc').format();
+  return `/investigation/endpointid/${endpointId}/navigate/query/${query}/date/${formattedStartDate}/${formattedEndDate}`;
 };
 
 export function buildContextMenu() {
@@ -13,6 +26,30 @@ export function buildContextMenu() {
       label: i18n.t('recon.contextmenu.copy'),
       action(selection) {
         copyToClipboard(selection[0].metaValue);
+      }
+    },
+    {
+      label: i18n.t('recon.contextmenu.livelookup'),
+      action(selection) {
+        _openUrl(`/live/search?metaValue=${selection[0].metaValue}`);
+      }
+    },
+    {
+      label: i18n.t('recon.contextmenu.endpointIoc'),
+      action(selection) {
+        _openUrl(`ecatui://${selection[0].metaValue}`);
+      }
+    },
+    {
+      label: i18n.t('recon.contextmenu.applyDrill'),
+      action(selection) {
+        _openUrl(_buildInvestigateUrl(selection[0], '='));
+      }
+    },
+    {
+      label: i18n.t('recon.contextmenu.applyNEDrill'),
+      action(selection) {
+        _openUrl(_buildInvestigateUrl(selection[0], '!='));
       }
     },
     {
