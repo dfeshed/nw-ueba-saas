@@ -3,7 +3,26 @@ export default {
   requestDestination: '/ws/investigate/preferences/get',
   count: 0,
   message(/* frame */) {
-    const data = { eventsPreferences: { code: 0, defaultAnalysisView: 'packet', isMetaShown: null, isHeaderOpen: null } };
+    const data = {
+      userPreferences: {
+        defaultLogFormat: 'XML',
+        defaultLandingPage: '',
+        defaultPacketFormat: 'PAYLOAD1'
+      },
+      userServicePreferences: {
+        serviceId: 'TestServiceId',
+        collectionName: 'Test',
+        eventsPreferences: {
+          currentReconView: 'PACKET',
+          isHeaderOpen: true,
+          isMetaShown: true,
+          isReconExpanded: true,
+          isReconOpen: true,
+          isRequestShown: true,
+          isResponseShown: true
+        }
+      }
+    };
     return {
       data,
       meta: {

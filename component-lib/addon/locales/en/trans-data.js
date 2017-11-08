@@ -1500,12 +1500,23 @@ export default {
     }
   },
   preferences: {
-    'investigate-events-preferences': {
+    'investigate-events': {
       panelTitle: 'Event Preferences',
       triggerTip: 'Open/Hide Event Preferences',
-      defaultEventView: {
-        title: 'Default Event Ananlysis View'
-      }
+      defaultEventView: 'Default Event Analysis View',
+      defaultLogFormat: 'Default Log Format',
+      defaultPacketFormat: 'Default Packet Format',
+      LOG: 'Download Log',
+      CSV: 'Download CSV',
+      XML: 'Download XML',
+      JSON: 'Download JSON',
+      PCAP: 'Download PCAP',
+      PAYLOAD: 'Download All Payloads',
+      PAYLOAD1: 'Download Request Payload',
+      PAYLOAD2: 'Download Response Payload',
+      FILE: 'File Analysis',
+      TEXT: 'Text Analysis',
+      PACKET: 'Packet Analysis'
     }
   },
   packager: {

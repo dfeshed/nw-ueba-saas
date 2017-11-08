@@ -277,10 +277,10 @@ const initializeRecon = (reconInputs) => {
     const dataState = getState().recon.data;
     if (!isPreferencesInitializedOnce) {
       isPreferencesInitializedOnce = true;
-      prefService.getPreferences('investigate-events').then(({ data }) => {
+      prefService.getPreferences('investigate-events').then((data) => {
         dispatch({
           type: ACTION_TYPES.INITIATE_PREFERENCES,
-          payload: data.eventsPreferences
+          payload: data
         });
       });
     }

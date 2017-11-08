@@ -1,1 +1,0 @@
-export { default } from 'preferences/components/investigate-events-preferences/component';

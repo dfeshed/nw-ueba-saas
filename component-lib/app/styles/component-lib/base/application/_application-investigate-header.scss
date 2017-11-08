@@ -43,6 +43,7 @@ $investigateNavHeight: 40px;
     position: absolute;
     top: 12px;
     right: 4px;
+    display: inherit;
     .divider {
       display: inline;
       border-left: 1px solid border-color(primary);

@@ -1,5 +1,9 @@
 .rsa-preferences-body-content {
   margin: rsa-whitespace();
+
+  .rsa-preferences-field-content {
+    margin-bottom: rsa-whitespace();
+  }
 }
 .rsa-loader-position {
   margin-top: 50%;

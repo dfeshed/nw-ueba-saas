@@ -6,5 +6,5 @@ import preferences from 'preferences/reducers';
 export default combineReducers({
   investigate,
   ...recon,
-  ...preferences
+  preferences
 });

@@ -3,8 +3,8 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import { togglePreferencesPanel } from 'preferences/actions/interaction-creators';
 
-const stateToComputed = ({ preferences }) => ({
-  isExpanded: preferences.expanded
+const stateToComputed = ({ preferences: { isExpanded } }) => ({
+  isExpanded
 });
 
 const dispatchToActions = {

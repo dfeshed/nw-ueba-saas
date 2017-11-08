@@ -1,12 +1,12 @@
 {{#if launchFor}}
   {{#rsa-content-section-header label='Section Heading'}}
     {{title}}
-    {{t (concat "preferences." launchFor "-preferences.panelTitle")}}
+    {{t (concat "preferences." launchFor ".panelTitle")}}
     <div class="controls">
       {{#rsa-form-button isIconOnly=true defaultAction=(action 'closePreferencesPanel')}}
         {{rsa-icon name="close" size="small"}}
       {{/rsa-form-button}}
     </div>
   {{/rsa-content-section-header}}
-  {{component preferencesFor}}
+  {{preferences-details}}
 {{/if}}

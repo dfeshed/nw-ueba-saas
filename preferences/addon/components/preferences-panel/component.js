@@ -2,21 +2,20 @@ import Component from 'ember-component';
 import layout from './template';
 import { later, schedule, next } from 'ember-runloop';
 import { connect } from 'ember-redux';
-import { closePreferencesPanel, resetPreferencesPanel, loadPreferences, updatePanelState } from 'preferences/actions/interaction-creators';
-import computed from 'ember-computed-decorators';
+import { closePreferencesPanel, resetPreferencesPanel, loadPreferences, updatePanelClicked } from 'preferences/actions/interaction-creators';
 import service from 'ember-service/inject';
 
-const stateToComputed = ({ preferences: { launchFor, expanded, clicked } }) => ({
-  isExpanded: expanded,
+const stateToComputed = ({ preferences: { launchFor, isExpanded, isClicked } }) => ({
+  isExpanded,
   launchFor,
-  clicked
+  isClicked
 });
 
 const dispatchToActions = {
   closePreferencesPanel,
   resetPreferencesPanel,
   loadPreferences,
-  updatePanelState
+  updatePanelClicked
 };
 
 const PreferencesPanel = Component.extend({
@@ -26,34 +25,28 @@ const PreferencesPanel = Component.extend({
   classNames: ['rsa-preferences-panel'],
   classNameBindings: ['isExpanded'],
 
-  preferences: service(),
   eventBus: service(),
-  panelClicked: false,
 
   init() {
     this._super(arguments);
     this.addObserver('isExpanded', this, this.loadOrResetPreferences);
   },
   click() {
-    this.send('updatePanelState', true);
+    this.send('updatePanelClicked', true);
   },
 
   _closePreferencesPanel() {
     next(() => {
-      if (!this.get('clicked')) {
+      if (!this.get('isClicked')) {
         this.send('closePreferencesPanel');
       }
-      this.send('updatePanelState', false);
+      this.send('updatePanelClicked', false);
     });
   },
   didInsertElement() {
     schedule('afterRender', () => {
-      this.get('eventBus').on('rsa-application-click', () => {
-        this._closePreferencesPanel();
-      });
-      this.get('eventBus').on('rsa-application-header-click', () => {
-        this._closePreferencesPanel();
-      });
+      this.get('eventBus').on('rsa-application-click', this, this._closePreferencesPanel);
+      this.get('eventBus').on('rsa-application-header-click', this, this._closePreferencesPanel);
     });
   },
   /**
@@ -61,32 +54,19 @@ const PreferencesPanel = Component.extend({
    * @public
    */
   willDestroyElement() {
-    this.get('eventBus').off('rsa-application-click');
-    this.get('eventBus').off('rsa-application-header-click');
+    this.get('eventBus').off('rsa-application-click', this, this._didApplicationClick);
+    this.get('eventBus').off('rsa-application-header-click', this, this._didApplicationClick);
   },
 
   loadOrResetPreferences() {
     // wait for the panel to slide open/close completely before sending action
     later(() => {
       if (this.get('isExpanded')) {
-        this.send('loadPreferences', this.get('preferences'));
+        this.send('loadPreferences');
       } else {
         this.send('resetPreferencesPanel');
       }
     }, 650);
-  },
-
-  @computed('launchFor')
-  preferencesFor(preferenceFor) {
-    if (preferenceFor) {
-      return `${preferenceFor}-preferences`;
-    }
-  },
-
-  actions: {
-    closePreferencesPanel() {
-      this.send('closePreferencesPanel', false);
-    }
   }
 });
 

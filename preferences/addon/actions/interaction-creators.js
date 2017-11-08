@@ -1,15 +1,14 @@
 import * as ACTION_TYPES from './types';
-import { lookup } from 'ember-dependency-lookup';
+import { fetchPreferences, savePreferences } from 'preferences/actions/fetchPreferences';
+import defaultConfig from 'preferences/config/index';
 
-const prefService = lookup('service:preferences');
-
-export const togglePreferencesPanel = (launchFor) => ({
+export const togglePreferencesPanel = (launchFor, additionalFilters) => ({
   type: ACTION_TYPES.TOGGLE_PREFERENCES_PANEL,
-  payload: launchFor
+  payload: { launchFor, additionalFilters }
 });
 
-export const updatePanelState = (state) => ({
-  type: ACTION_TYPES.UPDATE_PANEL_STATE,
+export const updatePanelClicked = (state) => ({
+  type: ACTION_TYPES.UPDATE_PANEL_CLICKED,
   payload: state
 });
 
@@ -23,31 +22,25 @@ export const resetPreferencesPanel = () => ({
 
 export const loadPreferences = () => {
   return (dispatch, getState) => {
-    const state = getState();
-    prefService.getPreferences(state.preferences.launchFor).then(({ data }) => {
-      dispatch({
-        type: ACTION_TYPES.LOAD_PREFERENCES,
-        payload: data
-      });
-    }).catch(() => {
-      dispatch({
-        type: ACTION_TYPES.LOAD_PREFERENCES_ERROR,
-        payload: null
-      });
+    const { launchFor, additionalFilters } = getState().preferences;
+    dispatch({
+      type: ACTION_TYPES.LOAD_PREFERENCES,
+      promise: fetchPreferences(launchFor, additionalFilters)
     });
   };
 };
 
-export const savePreferences = (preferencesToSave) => {
+export const saveNewPreferences = (preferencesField, preferenceValue) => {
   return (dispatch, getState) => {
-    const { launchFor } = getState().preferences;
+    const { launchFor, preferences, additionalFilters } = getState().preferences;
+    let preferencesToSave = preferences.setIn(preferencesField.split('.'), preferenceValue);
+    const addtionalFilterKey = defaultConfig[launchFor].additionalFilterKey;
+    if (addtionalFilterKey) {
+      preferencesToSave = preferencesToSave.setIn(addtionalFilterKey.split('.'), additionalFilters);
+    }
     dispatch({
-      type: ACTION_TYPES.SAVE_PREFERENCES_INIT
-    });
-    prefService.setPreferences(launchFor, preferencesToSave).then(() => {
-      dispatch({
-        type: ACTION_TYPES.SAVE_PREFERENCES
-      });
+      type: ACTION_TYPES.SAVE_PREFERENCES,
+      promise: savePreferences(launchFor, preferencesToSave)
     });
   };
 };

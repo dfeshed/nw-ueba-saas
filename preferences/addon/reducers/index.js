@@ -1,3 +1,1 @@
-import preferences from './preferences-panel/reducer';
-
-export default { preferences };
+export { default } from './preferences-panel/reducer';

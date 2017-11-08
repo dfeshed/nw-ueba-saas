@@ -1500,12 +1500,23 @@ export default {
     }
   },
   preferences: {
-    'investigate-events-preferences': {
+    'investigate-events': {
       panelTitle: 'ja_Event Preferences',
       triggerTip: 'ja_Open/Hide Event Preferences',
-      defaultEventView: {
-        title: 'ja_Default Event Ananlysis View'
-      }
+      defaultEventView: 'ja_Default Event Analysis View',
+      defaultLogFormat: 'ja_Default Log Format',
+      defaultPacketFormat: 'ja_Default Packet Format',
+      LOG: 'ja_Download Log',
+      CSV: 'ja_Download CSV',
+      XML: 'ja_Download XML',
+      JSON: 'ja_Download JSON',
+      PCAP: 'ja_Download PCAP',
+      PAYLOAD: 'ja_Download All Payloads',
+      PAYLOAD1: 'ja_Download Request Payload',
+      PAYLOAD2: 'ja_Download Response Payload',
+      FILE: 'ja_File Analysis',
+      TEXT: 'ja_Text Analysis',
+      PACKET: 'ja_Packet Analysis'
     }
   },
   packager: {

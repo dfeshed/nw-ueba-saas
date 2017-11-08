@@ -1,0 +1,22 @@
+{{#if preferencesConfig}}
+  {{#each preferencesConfig as |item index|}}
+    <div class="rsa-preferences-field-content">
+      <label class="rsa-form-label power-select">
+        {{t item.name}}
+      </label>
+      {{#if (eq item.type 'dropdown')}}
+        {{#power-select
+          options=item.options
+          selected=(get preferences item.field)
+          searchEnabled=false
+          onchange=(action 'saveNewPreferences' item.field) as |option|}}
+          {{t (concat 'preferences.' launchFor '.' option)}}
+        {{/power-select}}
+      {{/if}}
+    </div>
+  {{/each}}
+{{else}}
+  <centered>
+    {{rsa-loader size='largest'}}
+  </centered>
+{{/if}}
