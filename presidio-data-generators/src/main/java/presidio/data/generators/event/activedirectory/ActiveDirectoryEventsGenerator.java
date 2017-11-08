@@ -12,8 +12,8 @@ import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
+import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
@@ -21,13 +21,10 @@ import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ActiveDirectoryEventsGenerator implements IEventGenerator {
+public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
 
     private IStringGenerator eventIdGenerator;
-    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IActiveDirectoryOperationGenerator activeDirOperationGenerator;
@@ -42,7 +39,15 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
     private CyclicValuesGenerator<String> timeZoneOffsetGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
-        timeGenerator = new MinutesIncrementTimeGenerator();
+        setFieldDefaultGenerators();
+    }
+
+    public ActiveDirectoryEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        super(timeGenerator);
+        setFieldDefaultGenerators();
+    }
+
+    private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomAdminUserPercentageGenerator();
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Active Directory"});                                // "DefaultDS"
@@ -57,17 +62,15 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
         timeZoneOffsetGenerator = new CyclicValuesGenerator<>(new String[] {"0", "1", "2"});
     }
 
-
-    public List<ActiveDirectoryEvent> generate () throws GeneratorException {
-        List<ActiveDirectoryEvent> evList = new ArrayList<>() ;
-
-        // fill list of events
-        while (getTimeGenerator().hasNext()) {
+    @Override
+    public ActiveDirectoryEvent generateNext() throws GeneratorException {
+        ActiveDirectoryEvent ev = null;
+        if (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
             String objectName = getObjectNameGenerator().getNext();
             MachineEntity srcMachine = getSrcMachineGenerator().getNext();
             String machineDomainDN = srcMachine.getMachineDomainDN();
-            ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
+            ev = new ActiveDirectoryEvent(eventTime,
                     getEventIdGenerator().getNext(),
                     getUserGenerator().getNext(),
                     getDataSourceGenerator().getNext(),
@@ -80,17 +83,8 @@ public class ActiveDirectoryEventsGenerator implements IEventGenerator {
                     getTimeZoneOffsetGenerator().getNext()
                     );
             activeDirectoryDescriptionGenerator.updateDescription(ev);
-            evList.add(ev);
         }
-        return evList;
-    }
-
-    public ITimeGenerator getTimeGenerator() {
-        return timeGenerator;
-    }
-
-    public void setTimeGenerator(ITimeGenerator timeGenerator) {
-        this.timeGenerator = timeGenerator;
+        return ev;
     }
 
     public IStringGenerator getEventIdGenerator() {

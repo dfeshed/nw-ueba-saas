@@ -6,7 +6,10 @@ import org.junit.Test;
 import presidio.data.domain.event.authentication.AUTHENTICATION_OPERATION_TYPE;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.TimeGenerator;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public class AuthenticationEventsGeneratorTest {
@@ -77,5 +80,61 @@ public class AuthenticationEventsGeneratorTest {
     @Test
     public void NormalizedUserNameTest () {
         Assert.assertEquals(10, events.get(0).getUser().getUserId().length());
+    }
+
+    @Test
+    public void AuthenticationBulkEventsGenerator() throws GeneratorException {
+        final int BULK_SIZE = 10;
+        List<AuthenticationEvent> events;
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
+
+        events = generator.generate(BULK_SIZE);
+        Assert.assertEquals(BULK_SIZE, events.size());
+
+        events = generator.generate(0);
+        Assert.assertEquals(0, events.size());
+
+        events = generator.generate(1);
+        Assert.assertEquals(1, events.size());
+
+        events = generator.generate(100000);
+        Assert.assertTrue(events.size() < 100000); // default time generator generates less than 100K events
+
+        events = generator.generate(1); // no more events
+        Assert.assertEquals(0, events.size());
+    }
+
+    @Test
+    public void AuthenticationAllEventsGenerator() throws GeneratorException {
+        List<AuthenticationEvent> events;
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
+
+        events = generator.generate();
+        Assert.assertEquals(1392, events.size()); // all events for default time generator
+
+        events = generator.generate(); // no more events
+        Assert.assertEquals(0, events.size());
+    }
+
+    @Test
+    public void AuthenticationCustomTimeEventsGenerator() throws GeneratorException {
+        List<AuthenticationEvent> events;
+        ITimeGenerator timeGen = new TimeGenerator(LocalTime.of(0,0,0,0), LocalTime.of(1,0,0,0), 100, 2, 1);
+
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator(timeGen);
+
+        events = generator.generate();
+        Assert.assertEquals(10 * 60 * 60, events.size()); // all events for default time generator
+
+        events = generator.generate(); // no more events
+        Assert.assertEquals(0, events.size());
+    }
+
+    @Test
+    public void AuthenticationByOneEventsGenerator() throws GeneratorException {
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
+
+        AuthenticationEvent event = generator.generateNext();
+        Assert.assertEquals(generator.getTimeGenerator().getFirst(), event.getDateTime()); // all events for default time generator
     }
 }

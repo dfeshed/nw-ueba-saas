@@ -10,8 +10,8 @@ import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
+import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.fileentity.FileSystemEntityGenerator;
 import presidio.data.generators.fileop.FileOperationGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
@@ -21,13 +21,10 @@ import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-public class FileEventsGenerator implements IEventGenerator {
+public class FileEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIdGenerator;
-    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
     private IFileOperationGenerator fileOperationGenerator; // Handles: source file & folder, destination file & folder, file_size, operation type, operation result
@@ -35,7 +32,15 @@ public class FileEventsGenerator implements IEventGenerator {
     private IFileDescriptionGenerator fileDescriptionGenerator;
 
     public FileEventsGenerator() throws GeneratorException {
-        timeGenerator = new MinutesIncrementTimeGenerator();
+        setFieldDefaultGenerators();
+    }
+
+    public FileEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        super(timeGenerator);
+        setFieldDefaultGenerators();
+    }
+
+    private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomUserGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"File System"});
         fileOperationGenerator = new FileOperationGenerator();
@@ -43,19 +48,8 @@ public class FileEventsGenerator implements IEventGenerator {
         fileDescriptionGenerator = new FileDescriptionGenerator();
     }
 
-    public List<FileEvent> generate () throws GeneratorException {
-        List<FileEvent> evList = new ArrayList<>() ;
-
-        // fill list of events
-        while (getTimeGenerator().hasNext()) {
-            FileEvent fileEvent = generateEvent();
-            evList.add(fileEvent);
-        }
-
-        return evList;
-    }
-
-    private FileEvent generateEvent() throws GeneratorException {
+    @Override
+    public FileEvent generateNext() throws GeneratorException {
         User user = getUserGenerator().getNext();
         String username = user.getUsername();
         Instant time = getTimeGenerator().getNext();
@@ -64,6 +58,7 @@ public class FileEventsGenerator implements IEventGenerator {
         FileSystemEntity fileSystem = new FileSystemEntityGenerator(username).getNext();
         String dataSource = getDataSourceGenerator().getNext();
         MachineEntity machine = getMachineEntityGenerator().getNext();
+
         FileEvent fileEvent = new FileEvent(
                 user,
                 time,
@@ -74,14 +69,6 @@ public class FileEventsGenerator implements IEventGenerator {
                 machine);
         fileDescriptionGenerator.updateFileDescription(fileEvent);
        return fileEvent;
-    }
-
-    public ITimeGenerator getTimeGenerator() {
-        return timeGenerator;
-    }
-
-    public void setTimeGenerator(ITimeGenerator timeGenerator) {
-        this.timeGenerator = timeGenerator;
     }
 
     public IStringGenerator getEventIdGenerator() {

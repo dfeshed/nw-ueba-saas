@@ -1,6 +1,8 @@
 package presidio.data.generators.event.authentication;
 
 import presidio.data.domain.MachineEntity;
+import presidio.data.domain.User;
+import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.authenticationop.AuthenticationOpTypeCategoriesGenerator;
 import presidio.data.generators.authenticationop.AuthenticationTypeCyclicGenerator;
@@ -11,23 +13,18 @@ import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
-import presidio.data.domain.User;
-import presidio.data.domain.event.authentication.AuthenticationEvent;
+import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
-import presidio.data.generators.event.IEventGenerator;
 import presidio.data.generators.machine.FixedMachineGenerator;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomUserGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-public class AuthenticationEventsGenerator implements IEventGenerator {
+public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     // DEFINE ALL ATTRIBUTE GENERATORS
     private IStringGenerator eventIDGenerator;
-    private ITimeGenerator timeGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
 
@@ -43,11 +40,19 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
     private IAuthenticationDescriptionGenerator authenticationDescriptionGenerator;
 
     public AuthenticationEventsGenerator() throws GeneratorException {
+        setFieldDefaultGenerators();
+    }
+
+    public AuthenticationEventsGenerator(ITimeGenerator timeGenerator) throws GeneratorException {
+        super(timeGenerator);
+        setFieldDefaultGenerators();
+    }
+
+    private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
 
         eventIDGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
-        timeGenerator = new MinutesIncrementTimeGenerator();
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Logon Activity"});
 
         operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
@@ -55,24 +60,22 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
 
         srcMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_SRC");
 
-        dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");; // need domain machine percentage generator
+        dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");
 
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
     }
 
-
-    public List<AuthenticationEvent> generate () throws GeneratorException {
-        List<AuthenticationEvent> evList = new ArrayList<>() ;
-
-        // fill list of events
-        while (getTimeGenerator().hasNext()) {
+    @Override
+    public AuthenticationEvent generateNext() throws GeneratorException {
+        AuthenticationEvent ev = null;
+        if (getTimeGenerator().hasNext()) {
             Instant eventTime = getTimeGenerator().getNext();
 
             User user = getUserGenerator().getNext();
             MachineEntity srcMachine = getSrcMachineGenerator().getNext();
-            AuthenticationEvent ev = new AuthenticationEvent(
+            ev = new AuthenticationEvent(
                     getEventIDGenerator().getNext(),
                     eventTime,
                     getDataSourceGenerator().getNext(),
@@ -87,17 +90,8 @@ public class AuthenticationEventsGenerator implements IEventGenerator {
                     getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername())
             );
             authenticationDescriptionGenerator.updateFileDescription(ev);
-            evList.add(ev);
         }
-        return evList;
-    }
-
-    public ITimeGenerator getTimeGenerator() {
-        return timeGenerator;
-    }
-
-    public void setTimeGenerator(ITimeGenerator timeGenerator) {
-        this.timeGenerator = timeGenerator;
+        return ev;
     }
 
     public IStringGenerator getDataSourceGenerator() {
