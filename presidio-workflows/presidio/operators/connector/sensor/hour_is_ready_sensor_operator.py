@@ -47,52 +47,34 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 raise EnvironmentError("PRESIDIO_HOME is not configured for user {0}".format(user))
             source_properties_file = os.path.join(presidio_home, "flume", "counters", "source", self._schema_name)
             logging.debug("source file = " + source_properties_file)
-            sink_properties_file = os.path.join(presidio_home, "flume", "counters", "sink", self._schema_name)
-            logging.debug("sink file = " + sink_properties_file)
+     
 
             if not os.path.isfile(source_properties_file):
                 logging.info("No count file for source in path {0}".format(source_properties_file))
                 return False
 
-            if not os.path.isfile(sink_properties_file):
-                logging.info("No count file for sink in path {0}".format(sink_properties_file))
-                return False
+)
 
-            source_count = self.get_counter_property(self._hour_start_time, source_properties_file)
-            if source_count is None:
-                source_count = 0
-            sink_count = self.get_counter_property(self._hour_start_time, sink_properties_file)
-            if sink_count is None:
-                sink_count = 0
+
             latest_ready_hour = self.get_counter_property(LATEST_READY_HOUR_MARKER, source_properties_file)
             if latest_ready_hour is None:
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
-            logging.info("Source count for schema {0} and time {1} is : {2}".format(
-                self._schema_name,
-                self._hour_start_time,
-                source_count))
-            logging.info("Sink count for schema {0} and time {1} is : {2}".format(
-                self._schema_name,
-                self._hour_start_time,
-                sink_count))
+           
+            
             logging.info("latest_ready_hour = " + latest_ready_hour)
 
             # Convert the date times to epoch representation. example: 2017-06-27T19\:00\:00Z -> 1498579200.0
             hour_start_time_epoch_seconds = time.mktime(
-                datetime.datetime.strptime(self._hour_start_time.replace("\\", ""),
+            datetime.strptime(self._hour_start_time.replace("\\", ""),
                                            "%Y-%m-%dT%H:%M:%SZ").timetuple())
             latest_ready_hour_epoch_seconds = time.mktime(
                 datetime.datetime.strptime(latest_ready_hour.replace("\\", ""),
                                            "%Y-%m-%dT%H:%M:%SZ").timetuple())
-            source_is_ready = hour_start_time_epoch_seconds <= latest_ready_hour_epoch_seconds
+            hour_is_ready = hour_start_time_epoch_seconds <= latest_ready_hour_epoch_seconds
 
-            if sink_count > source_count:
-                logging.warn("Sink count is larger than the source count. This is an invalid state! "
-                             "source count: {0}, "
-                             "sink count: {1}".format(source_count, sink_count))
 
-            hour_is_ready = source_is_ready and source_count <= sink_count
+
             if hour_is_ready:
                 logging.info("Hour {0} is ready!".format(self._hour_start_time))
             else:
