@@ -220,7 +220,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private void initRepository(Context context) throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
         dbName = context.getString(DB_NAME);
         host = context.getString(HOST);
-        port = Integer.parseInt(context.getString(PORT, "27017"));
+        port = context.getInteger(PORT, 27017);
         username = context.getString(USERNAME, "");
         indexFieldName = context.getString(INDEX_FIELD_NAME, "");
         final String password = context.getString(PASSWORD, "");
