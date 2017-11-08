@@ -2,6 +2,7 @@ package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
@@ -24,6 +25,9 @@ import java.util.stream.Collectors;
 public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
+
+    @Value("${output.events.limit}")
+    private Integer eventsLimit;
 
     private final AlertEnumsSeverityService alertEnumsSeverityService;
     private final AlertPersistencyService alertPersistencyService;
@@ -60,7 +64,7 @@ public class AlertServiceImpl implements AlertService {
         List<Indicator> supportingInfo = new ArrayList<>();
         for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(adeAggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(adeAggregationRecord, alert));
+            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(adeAggregationRecord, alert, eventsLimit));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {
