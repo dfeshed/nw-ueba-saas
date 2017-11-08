@@ -57,8 +57,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         logger.debug("maxValuesResult={} for aggregatedFeatureValuesData={}",maxValuesResult,aggregatedFeatureValuesData);
         List<Double> maxValues = maxValuesResult.getMaxValues();
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
-        long resolution = maxValuesResult.getResolution();
-        long numOfPartitions = instantToFeatureValue.keySet().stream().map(x -> (x.getEpochSecond() / resolution) * resolution).distinct().count();
+        long numOfPartitions = instantToFeatureValue.keySet().stream().map(x -> (x.getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).distinct().count();
         return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues,numOfPartitions);
     }
 
