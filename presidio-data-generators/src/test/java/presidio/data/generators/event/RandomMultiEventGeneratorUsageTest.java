@@ -40,9 +40,6 @@ public class RandomMultiEventGeneratorUsageTest {
 
         events.addAll(generator.generate());
 
-        for (Event event : events){
-           // if ((Authentication)event.)
-        }
-        Assert.assertEquals(events.size(), 240);
+        
     }
 }
