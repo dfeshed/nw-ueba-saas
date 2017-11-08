@@ -13,9 +13,12 @@ public class ObjectMapperProvider {
 
     private static ObjectMapperProvider instance = null;
 
-    private ObjectMapper objectMapper;
+    private ObjectMapper noModulesObjectMapper;
+    private ObjectMapper defaultObjectMapper;
+
     private ObjectMapperProvider() {
-        objectMapper = defaultJsonObjectMapper();
+        defaultObjectMapper = defaultJsonObjectMapper();
+        noModulesObjectMapper = noModulesObjectMapper();
     }
 
     public static ObjectMapperProvider getInstance() {
@@ -25,8 +28,12 @@ public class ObjectMapperProvider {
         return instance;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public ObjectMapper getDefaultObjectMapper() {
+        return defaultObjectMapper;
+    }
+
+    public ObjectMapper getNoModulesObjectMapper() {
+        return noModulesObjectMapper;
     }
 
     public static ObjectMapper defaultJsonObjectMapper() {
@@ -34,6 +41,10 @@ public class ObjectMapperProvider {
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) //ISODate
                 .modules(new JavaTimeModule())
                 .build();
+    }
+
+    public static ObjectMapper noModulesObjectMapper() {
+        return new ObjectMapper();
     }
 
     public static ObjectMapper customJsonObjectMapper() {

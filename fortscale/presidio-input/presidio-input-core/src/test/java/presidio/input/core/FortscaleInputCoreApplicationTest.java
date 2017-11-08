@@ -19,7 +19,13 @@ import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfigurationTest;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.aspect.MonitoringAspects;
+import presidio.monitoring.aspect.MonitroingAspectSetup;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
+import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.util.Properties;
@@ -50,7 +56,8 @@ public class FortscaleInputCoreApplicationTest {
     }
 
     @Configuration
-    @Import({InputCoreConfigurationTest.class,
+    @Import({
+            InputCoreConfigurationTest.class,
             MongodbTestConfig.class,
             BootShimConfig.class,
             PresidioCommands.class,
@@ -58,9 +65,35 @@ public class FortscaleInputCoreApplicationTest {
     @EnableSpringConfigured
     public static class springConfig {
         @Bean
+        public MetricCollectingService metricCollectingService() {
+            return new MetricCollectingServiceImpl(presidioMetricEndPoint());
+        }
+
+        @Bean
+        public PresidioMetricEndPoint presidioMetricEndPoint() {
+            return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory("input-core"));
+        }
+
+        @Bean
+        public PresidioMetricFactory presidioMetricFactory() {
+            return new PresidioMetricFactory("input-core");
+        }
+
+        @Bean
+        public MonitoringAspects monitoringAspects() {
+            return new MonitoringAspects();
+        }
+
+        @Bean
+        public MonitroingAspectSetup monitroingAspectSetup() {
+            return  new MonitroingAspectSetup(presidioMetricEndPoint(), presidioMetricFactory());
+        }
+        @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();
             properties.put("page.iterator.page.size", "1000");
+            properties.put("enable.metrics.export", "false");
+            properties.put("output.events.limit", "1000");
             properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

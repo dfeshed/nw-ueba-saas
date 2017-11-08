@@ -35,7 +35,7 @@ public class ModelConfService extends AslConfigurationServiceBase {
 		this.baseConfigurationResources = baseConfigurationResources;
 		this.overridingConfigurationResources = overridingConfigurationResources;
 		this.additionalConfigurationResources = additionalConfigurationResources;
-		this.objectMapper=ObjectMapperProvider.getInstance().getObjectMapper();
+		this.objectMapper=ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 	}
 
 	@Override

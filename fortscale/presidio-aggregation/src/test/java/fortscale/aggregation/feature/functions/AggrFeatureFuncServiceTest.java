@@ -12,6 +12,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.AdeRecordReader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -229,9 +231,10 @@ public class AggrFeatureFuncServiceTest {
         );
 
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
+        TestAdeRecord record = new TestAdeRecord();
+        record.test = testFieldValue-1;
+        AdeRecordReader recordReader = new AdeRecordReader(record);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(recordReader, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -334,9 +337,10 @@ public class AggrFeatureFuncServiceTest {
         );
 
         //AggrFeatureFuncService funcService = new AggrFeatureFuncService();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(testFieldName, testFieldValue-1);
-        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(jsonObject, aggrFeatureConfs, aggrFeatures, featureMap);
+        TestAdeRecord record = new TestAdeRecord();
+        record.test = testFieldValue-1;
+        AdeRecordReader recordReader = new AdeRecordReader(record);
+        Map<String, Feature> updatedAggrFeatures = funcService.updateAggrFeatures(recordReader, aggrFeatureConfs, aggrFeatures, featureMap);
 
         Assert.assertEquals(2, updatedAggrFeatures.size());
 
@@ -1124,5 +1128,22 @@ public class AggrFeatureFuncServiceTest {
 
         Assert.assertNull(funcService.calculateAggrFeature(conf, null));
         Assert.assertEquals(0, funcService.getNumberOfAggrFeatureEventFunctions());
+    }
+
+    class TestAdeRecord extends AdeRecord
+    {
+
+
+        public double test;
+
+        @Override
+        public String getAdeEventType() {
+            return null;
+        }
+
+        @Override
+        public List<String> getDataSources() {
+            return null;
+        }
     }
 }

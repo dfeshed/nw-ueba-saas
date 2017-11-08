@@ -53,4 +53,6 @@ public interface EnrichedDataReader {
      * Validate that the query fields indexed in the store.
      */
     void ensureContextAndDateTimeIndex(String dataSource, String contextType);
+
+    long countRecords(EnrichedRecordsMetadata recordsMetadata, String contextType, String contextId);
 }

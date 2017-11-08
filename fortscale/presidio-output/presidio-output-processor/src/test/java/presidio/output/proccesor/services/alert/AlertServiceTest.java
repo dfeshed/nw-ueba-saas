@@ -5,16 +5,15 @@ import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,13 +34,13 @@ import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.Bucket;
+import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertEnumsSeverityService;
@@ -51,13 +50,7 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -72,12 +65,6 @@ import static org.mockito.Matchers.eq;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
 public class AlertServiceTest {
-
-    @MockBean
-    private AlertPersistencyService alertPersistencyService;
-
-    @MockBean
-    private UserPersistencyService userPersistencyService;
 
     @MockBean
     private SmartDataReader smartDataReader;
@@ -208,20 +195,19 @@ public class AlertServiceTest {
     public void testAlertWithFailureStatusEvent() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
-        Instant eventTime = Instant.now();
-        Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
-        Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
+        Instant startDate = Instant.parse("2017-10-20T15:00:00.000Z");
+        Instant endDate = Instant.parse("2017-10-20T16:00:00.000Z");
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0,new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
                 +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
-        EnrichedEvent fileEvent1 = new FileEnrichedEvent(Instant.now(), eventTime, "eventId1", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),
+        EnrichedEvent fileEvent1 = new FileEnrichedEvent(Instant.now(), startDate.plus(5, ChronoUnit.MINUTES), "eventId1", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),
                 EventResult.FAILURE, "FAILURE", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
 
-        EnrichedEvent fileEvent2 = new FileEnrichedEvent(Instant.now(), eventTime, "eventId2", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),
+        EnrichedEvent fileEvent2 = new FileEnrichedEvent(Instant.now(), startDate.plus(10, ChronoUnit.MINUTES), "eventId2", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"),
                 EventResult.SUCCESS, "SUCCESS", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         mongoTemplate.save(fileEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
@@ -237,7 +223,82 @@ public class AlertServiceTest {
     }
 
     @Test
+    public void testAlertWithLargeNumberOfEvents() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        Instant startDate = Instant.parse("2017-10-23T15:00:00.000Z");
+        Instant endDate = Instant.parse("2017-10-23T16:00:00.000Z");
+
+        // indicator
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+                +2000d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
+
+        // raw event
+        generateEvents(2000, adeAggregationRecord.getStartInstant());
+
+        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+        assertNotNull(alert);
+        assertEquals(1, alert.getIndicators().size());
+        assertEquals(2000d,((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).getValue());
+        assertEquals(true,((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).isAnomaly());
+    }
+
+    @Test
+    public void testExceedEventsLimit() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        Instant startDate = Instant.parse("2017-10-24T15:00:00.000Z");
+        Instant endDate = Instant.parse("2017-10-24T16:00:00.000Z");
+
+        // indicator
+        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+                +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
+
+        // raw event
+        generateEvents(102, adeAggregationRecord.getStartInstant()); //generating 2 events more than the limit (=100)
+
+        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+
+        //generate alerts:
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        //check that only indicators events is not exceeding the limit
+        Indicator indicator = alert.getIndicators().get(0);
+        assertEquals(100, indicator.getEvents().size());
+        assertEquals(100, indicator.getEventsNum());
+    }
+
+    private void generateEvents(int eventsNum, Instant startEventTime) {
+        Instant now = Instant.now();
+        String schema = Schema.FILE.toString();
+        HashMap<String, String> additionalnfo = new HashMap<>();
+        List<String> file_permission_change = Arrays.asList("FILE_PERMISSION_CHANGE");
+
+        for(int i = 1; i <= eventsNum; i ++) {
+
+            // generate output events
+            EnrichedEvent fileEvent = new FileEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50),ChronoUnit.MINUTES), "eventId1"+i, schema, "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", file_permission_change,
+                    EventResult.FAILURE, "FAILURE", additionalnfo, "absoluteSrcFilePath", "absoluteDstFilePath",
+                    "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+            mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
+
+            // generate ade events
+            EnrichedFileRecord enrichedFileRecord = new EnrichedFileRecord(fileEvent.getEventDate());
+            enrichedFileRecord.setUserId("userId");
+            enrichedFileRecord.setEventId(fileEvent.getEventId());
+            enrichedFileRecord.setOperationType(fileEvent.getOperationType());
+            enrichedFileRecord.setOperationTypeCategories(fileEvent.getOperationTypeCategories());
+            enrichedFileRecord.setResult(fileEvent.getResult());
+            mongoTemplate.save(enrichedFileRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.FILE.getName().toLowerCase()));
+        }
+    }
+
+    @Test
     public void severityTest() {
+        assertEquals(alertEnumsSeverityService.severity(0), AlertEnums.AlertSeverity.LOW);
+        assertEquals(alertEnumsSeverityService.severity(40), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(70), AlertEnums.AlertSeverity.LOW);
         assertEquals(alertEnumsSeverityService.severity(81), AlertEnums.AlertSeverity.MEDIUM);
         assertEquals(alertEnumsSeverityService.severity(91), AlertEnums.AlertSeverity.HIGH);

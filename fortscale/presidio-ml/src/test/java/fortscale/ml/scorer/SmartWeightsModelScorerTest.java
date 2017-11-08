@@ -171,7 +171,7 @@ public class SmartWeightsModelScorerTest {
     }
 
     private void prepareModel(Model model) {
-        Mockito.when(modelsCacheService.getModel(Mockito.anyString(), Mockito.eq(Collections.emptyMap()), Mockito.any(Instant.class))).thenReturn(model);
+        Mockito.when(modelsCacheService.getLatestModelBeforeEventTime(Mockito.anyString(), Mockito.eq(Collections.emptyMap()), Mockito.any(Instant.class))).thenReturn(model);
     }
 
     private FeatureScore calculateScore(AdeRecord adeRecord) {

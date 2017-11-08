@@ -13,7 +13,7 @@ start)
         exit 0
    fi
    echo "starting configuration server..."
-   nohup java -jar $git_server_path/presidio-configuration-server-*.jar>$log_dir/configserver.log &
+   nohup java -Xmx100m -jar $git_server_path/presidio-configuration-server-*.jar>$log_dir/configserver.log &
    echo "configuration server started"
    echo $!>$process_id_folder/config_server.pid
    ;;

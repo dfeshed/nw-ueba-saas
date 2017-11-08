@@ -46,7 +46,7 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
 
     @Override
     public ModelBuilderData retrieve(String contextId, Date endTime) {
-        Assert.isNull(contextId,"context must be not null");
+        Assert.isNull(contextId,"context must be null");
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
         TimeRange timeRange = new TimeRange(startTime, endTimeInstant);

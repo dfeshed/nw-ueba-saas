@@ -302,13 +302,13 @@ public class CategoryRarityModelScorerTest {
         model.setNumOfPartitions(10);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
         adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
@@ -350,13 +350,13 @@ public class CategoryRarityModelScorerTest {
         model.setFeatureCount(featureWithCount100, count);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithCount100).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
 
         adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
         Assert.assertEquals(params.getName(), featureScore.getName());
@@ -368,7 +368,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("feature-count-100").getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(null);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(null);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(params.getName(), featureScore.getName());
     }
@@ -379,7 +379,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine("feature-zero-count").getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(null);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(null);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
@@ -402,7 +402,7 @@ public class CategoryRarityModelScorerTest {
         model.setFeatureCount(featureWithCount100, count);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(null).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
@@ -418,7 +418,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(100, count, featureWithCount100);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername(null).setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore featureScore = scorer.calculateScore(adeRecordReader);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
@@ -461,7 +461,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -482,7 +482,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -503,7 +503,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -524,7 +524,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -547,7 +547,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -570,7 +570,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
         AdeRecordReader adeRecordReader = new TestAdeRecord().setUsername("someone").setSourceMachine(featureWithZeroCount).getAdeRecordReader();
-        when(modelsCacheService.getModel(any(), any(Map.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(any(), any(Map.class), any(Instant.class))).thenReturn(model);
         FeatureScore score = scorer.calculateScore(adeRecordReader);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);

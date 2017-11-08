@@ -41,7 +41,7 @@ public class SmartRecordConfService extends AslConfigurationService {
 		this.overridingConfigurationsPath = overridingConfigurationsPath;
 		this.additionalConfigurationsPath = additionalConfigurationsPath;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-		this.objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
+		this.objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 		this.nameToSmartRecordConfMap = new HashMap<>();
 	}
 

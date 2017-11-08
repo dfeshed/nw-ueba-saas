@@ -79,23 +79,19 @@ public class ModelStore implements TtlServiceAware {
                 .collect(Collectors.toList());
     }
 
-    public ModelDAO getLatestBeforeEventTimeAfterOldestAllowedModelDao(
-            ModelConf modelConf, String contextId, Instant eventTime, Instant oldestAllowedModelTime) {
+    public List<ModelDAO> getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(
+            ModelConf modelConf, String contextId, Instant eventTime, Instant oldestAllowedModelTime, int limit) {
 
         String collectionName = getCollectionName(modelConf);
         Query query = new Query()
                 .addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId))
                 .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(eventTime).gte(oldestAllowedModelTime))
                 .with(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD))
-                .limit(1);
+                .limit(limit);
         logger.debug("Fetching latest model DAO for contextId = {} eventTime = {} collection = {}.", contextId, eventTime, collectionName);
         List<ModelDAO> queryResult = mongoTemplate.find(query, ModelDAO.class, collectionName);
 
-        if (CollectionUtils.isEmpty(queryResult)) {
-            return null;
-        } else {
-            return queryResult.stream().findFirst().get();
-        }
+        return queryResult;
     }
 
     public static String getCollectionName(ModelConf modelConf) {
@@ -168,17 +164,22 @@ public class ModelStore implements TtlServiceAware {
      */
     private void removeContextIdsModels(String collectionName, Instant until, AggregationResults<DBObject> aggrResult) {
         List<DBObject> results = aggrResult.getMappedResults();
-        if (!aggrResult.getMappedResults().isEmpty()) {
 
-            List<String> contextIds = new ArrayList<>();
-            for (DBObject result : results) {
-                contextIds.add((String) result.get(ModelDAO.CONTEXT_ID_FIELD));
+        if (!results.isEmpty()) {
+            List<String> contextIds = results.stream()
+                    .map(result -> (String)result.get(ModelDAO.CONTEXT_ID_FIELD))
+                    // Old global models should only be removed in the first cleanup step, regardless of
+                    // the context ID. Therefore null context IDs should not be added to the list, otherwise
+                    // more recent global models will also be removed in this cleanup step unintentionally.
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            if (!contextIds.isEmpty()) {
+                Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds);
+                Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lte(Date.from(until));
+                Query query = new Query(contextCriteria).addCriteria(dateCriteria);
+                mongoTemplate.remove(query, collectionName);
             }
-
-            Criteria contextCriteria = where(ModelDAO.CONTEXT_ID_FIELD).in(contextIds);
-            Criteria dateCriteria = where(ModelDAO.END_TIME_FIELD).lte(Date.from(until));
-            Query query = new Query(contextCriteria).addCriteria(dateCriteria);
-            mongoTemplate.remove(query, collectionName);
         }
     }
 

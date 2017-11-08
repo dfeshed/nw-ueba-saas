@@ -38,7 +38,7 @@ public abstract class AbstractModelTerminalScorer extends AbstractModelScorer {
      * is passed so that DiscreteTriggeredModelCacheManagerSamza will get updated with the feature.
      */
     protected Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
-        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextFieldNames);
+        return eventModelsCacheService.getLatestModelBeforeEventTime(adeRecordReader, modelName, contextFieldNames);
     }
 
     private Feature getFeature(AdeRecordReader adeRecordReader) {

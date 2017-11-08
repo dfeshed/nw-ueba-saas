@@ -58,5 +58,5 @@ class PresidioDagBuilder(object):
         )
 
     @staticmethod
-    def validate_the_gap_between_dag_start_date_and_current_execution_date(dag, gap, execution_date):
-        return (dag.start_date + gap) <= execution_date
+    def validate_the_gap_between_dag_start_date_and_current_execution_date(dag, gap, execution_date, schedule_interval):
+        return (dag.start_date + gap) <= execution_date + schedule_interval

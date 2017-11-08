@@ -41,6 +41,6 @@ public class ModelCacheServiceInMemoryConfig {
 
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
-        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize);
+        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, 1);
     }
 }

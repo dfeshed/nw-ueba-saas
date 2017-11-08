@@ -14,7 +14,7 @@ public class OutputToCollectionNameTranslator implements ToCollectionNameTransla
 
     @Override
     public String toCollectionName(Schema schema) {
-        return String.format(COMPONENT_NAME + "%s" + COLLECTION_DESCRIPTION, schema.toString().toLowerCase());
+        return String.format("%s%s%s" , COMPONENT_NAME ,schema.toString().toLowerCase(),COLLECTION_DESCRIPTION);
     }
 
 }

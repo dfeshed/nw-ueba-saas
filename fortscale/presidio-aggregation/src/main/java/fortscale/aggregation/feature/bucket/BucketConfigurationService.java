@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.configuration.AslConfigurationService;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class BucketConfigurationService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(BucketConfigurationService.class);
 	private static final String JSON_CONF_BUCKET_CONFS_NODE_NAME = "BucketConfs";
+	private ObjectMapper objectMapper;
 
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
@@ -35,6 +37,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 		this.bucketConfJsonFilePath = bucketConfJsonFilePath;
 		this.bucketConfJsonOverridingFilesPath = bucketConfJsonOverridingFilesPath;
 		this.bucketConfJsonAdditionalFilesPath = bucketConfJsonAdditionalFilesPath;
+		this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
 	}
 
 	@Override
@@ -63,7 +66,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 		FeatureBucketConf bucketConf;
 
 		try {
-			bucketConf = (new ObjectMapper()).readValue(bucketConfJson, FeatureBucketConf.class);
+			bucketConf = objectMapper.readValue(bucketConfJson, FeatureBucketConf.class);
 		} catch (Exception e) {
 			String errorMsg = String.format("Failed to deserialize json %s", bucketConfJson);
 			logger.error(errorMsg, e);

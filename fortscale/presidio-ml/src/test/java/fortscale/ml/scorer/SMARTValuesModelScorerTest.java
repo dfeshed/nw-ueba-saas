@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 
+import java.time.Instant;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SMARTValuesModelScorerTest {
     @Configuration
@@ -44,9 +46,9 @@ public class SMARTValuesModelScorerTest {
     @Autowired
     private EventModelsCacheService eventModelsCacheService;
 
-    private SMARTValuesModelScorer createScorer(String globalModelName, int globalInfluence, double baseScore) throws Exception {
-        Scorer baseScorer = Mockito.mock(Scorer.class);
-        Mockito.when(baseScorer.calculateScore(Mockito.any(AdeRecordReader.class)))
+    private SMARTValuesModelScorer createScorer(String globalModelName, int globalInfluence, double baseScore, Instant modelEndTime) throws Exception {
+        SmartWeightsModelScorer baseScorer = Mockito.mock(SmartWeightsModelScorer.class);
+        Mockito.when(baseScorer.calculateScore(Mockito.any(AdeRecordReader.class),Mockito.eq(modelEndTime)))
                 .thenReturn(new FeatureScore("featureName", baseScore));
         IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);
         Mockito.when(baseScorerConf.getFactoryName()).thenReturn("factoryName");
@@ -65,31 +67,35 @@ public class SMARTValuesModelScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailToCreateIfNotGivenAdditionalModelName() throws Exception {
-        createScorer(null, 0, 50D);
+        createScorer(null, 0, 50D, Instant.now());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailToScoreIfGivenWrongModelType() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
-        scorer.calculateScore(new CategoryRarityModel(), new SMARTValuesModel(), Mockito.mock(AdeRecordReader.class));
+        Instant modelEndTime = Instant.now();
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
+        scorer.calculateScore(new CategoryRarityModel(), new SMARTValuesModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 
     @Test
     public void shouldGiveZeroScoreIfNotGivenAdditionalModel() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
-        FeatureScore featureScore = scorer.calculateScore(new SMARTValuesModel(), null, Mockito.mock(AdeRecordReader.class));
+        Instant modelEndTime = Instant.now();
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
+        FeatureScore featureScore = scorer.calculateScore(new SMARTValuesModel(), null, Mockito.mock(AdeRecordReader.class), modelEndTime);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailToScoreIfGivenWrongAdditionalModel() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
-        scorer.calculateScore(new SMARTValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class));
+        Instant modelEndTime = Instant.now();
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
+        scorer.calculateScore(new SMARTValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 
     @Test
     public void shouldGiveScoreWhenEverythingIsOk() throws Exception {
-        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D);
-        scorer.calculateScore(new SMARTValuesModel(), new SMARTValuesPriorModel(), Mockito.mock(AdeRecordReader.class));
+        Instant modelEndTime = Instant.now();
+        SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
+        scorer.calculateScore(new SMARTValuesModel(), new SMARTValuesPriorModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 }

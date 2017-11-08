@@ -4,12 +4,15 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
+import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 
 public class SmartWeightsModelScorer extends AbstractScorer{
     private String modelName;
@@ -34,7 +37,7 @@ public class SmartWeightsModelScorer extends AbstractScorer{
         Assert.isInstanceOf(SmartRecord.class, adeRecordReader.getAdeRecord());
         SmartRecord smartRecord = (SmartRecord) adeRecordReader.getAdeRecord();
 
-        Model model = eventModelsCacheService.getModel(adeRecordReader,modelName,Collections.emptyList());
+        Model model = eventModelsCacheService.getLatestModelBeforeEventTime(adeRecordReader,modelName,Collections.emptyList());
         if(model == null){
             //todo: add metrics.
             return new FeatureScore(getName(), 0.0);
@@ -42,6 +45,27 @@ public class SmartWeightsModelScorer extends AbstractScorer{
         Assert.isInstanceOf(SmartWeightsModel.class,model, "smart weights model scorer expect to get SmartWeightModel Class.");
         return new FeatureScore(getName(),calculateScore(smartRecord, (SmartWeightsModel) model));
     }
+
+    public FeatureScore calculateScore(AdeRecordReader adeRecordReader, Instant modelEndTime) {
+        Assert.isInstanceOf(SmartRecord.class, adeRecordReader.getAdeRecord());
+        SmartRecord smartRecord = (SmartRecord) adeRecordReader.getAdeRecord();
+
+        List<ModelDAO> modelDAOs = eventModelsCacheService.getModelDAOsSortedByEndTimeDesc(adeRecordReader,modelName,null);
+        Model model = null;
+        for(ModelDAO modelDAO: modelDAOs){
+            if(modelDAO.getEndTime().equals(modelEndTime)){
+                model = modelDAO.getModel();
+            }
+        }
+        if(model == null){
+            //todo: add metrics.
+            return new FeatureScore(getName(), 0.0);
+        }
+        Assert.isInstanceOf(SmartWeightsModel.class,model, "smart weights model scorer expect to get SmartWeightModel Class.");
+        return new FeatureScore(getName(),calculateScore(smartRecord, (SmartWeightsModel) model));
+    }
+
+
 
     private double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
         return smartWeightsScorerAlgorithm.calculateScore(smartRecord,smartWeightsModel);
