@@ -69,28 +69,25 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
 
     @Override
     public AuthenticationEvent generateNext() throws GeneratorException {
-        AuthenticationEvent ev = null;
-        if (getTimeGenerator().hasNext()) {
-            Instant eventTime = getTimeGenerator().getNext();
+        Instant eventTime = getTimeGenerator().getNext();
 
-            User user = getUserGenerator().getNext();
-            MachineEntity srcMachine = getSrcMachineGenerator().getNext();
-            ev = new AuthenticationEvent(
-                    getEventIDGenerator().getNext(),
-                    eventTime,
-                    getDataSourceGenerator().getNext(),
-                    getUserGenerator().getNext(),
-                    getOperationTypeGenerator().getNext(),
-                    getOperationTypeCategoriesGenerator().getNext(),
-                    srcMachine,
-                    getDstMachineGenerator().getNext(),
-                    getResultGenerator().getNext(),
-                    getResultCodeGenerator().getNext(),
-                    getObjectDN(user.getUsername(), srcMachine.getMachineDomainDN()),
-                    getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername())
-            );
-            authenticationDescriptionGenerator.updateFileDescription(ev);
-        }
+        User user = getUserGenerator().getNext();
+        MachineEntity srcMachine = getSrcMachineGenerator().getNext();
+        AuthenticationEvent ev = new AuthenticationEvent(
+                getEventIDGenerator().getNext(),
+                eventTime,
+                getDataSourceGenerator().getNext(),
+                getUserGenerator().getNext(),
+                getOperationTypeGenerator().getNext(),
+                getOperationTypeCategoriesGenerator().getNext(),
+                srcMachine,
+                getDstMachineGenerator().getNext(),
+                getResultGenerator().getNext(),
+                getResultCodeGenerator().getNext(),
+                getObjectDN(user.getUsername(), srcMachine.getMachineDomainDN()),
+                getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername())
+        );
+        authenticationDescriptionGenerator.updateFileDescription(ev);
         return ev;
     }
 

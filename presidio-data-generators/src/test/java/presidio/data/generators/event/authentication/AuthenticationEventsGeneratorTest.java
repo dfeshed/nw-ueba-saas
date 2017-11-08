@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import presidio.data.domain.event.authentication.AUTHENTICATION_OPERATION_TYPE;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
+import presidio.data.generators.authenticationop.AuthenticationOpTypeCategoriesGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
@@ -136,5 +137,15 @@ public class AuthenticationEventsGeneratorTest {
 
         AuthenticationEvent event = generator.generateNext();
         Assert.assertEquals(generator.getTimeGenerator().getFirst(), event.getDateTime()); // all events for default time generator
+    }
+
+    @Test
+    public void AuthenticationCategoryTypeEventsGenerator() throws GeneratorException {
+        AuthenticationEventsGenerator generator = new AuthenticationEventsGenerator();
+        AuthenticationOpTypeCategoriesGenerator opTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator(new String[] {"INTERACTIVE_REMOTE"});
+        generator.setOperationTypeCategoriesGenerator(opTypeCategoriesGenerator);
+
+        AuthenticationEvent event = generator.generateNext();
+        Assert.assertTrue(event.getOperationTypeCategories().contains("INTERACTIVE_REMOTE"));
     }
 }

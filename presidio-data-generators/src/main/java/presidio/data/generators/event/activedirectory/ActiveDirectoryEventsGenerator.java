@@ -64,26 +64,23 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
 
     @Override
     public ActiveDirectoryEvent generateNext() throws GeneratorException {
-        ActiveDirectoryEvent ev = null;
-        if (getTimeGenerator().hasNext()) {
-            Instant eventTime = getTimeGenerator().getNext();
-            String objectName = getObjectNameGenerator().getNext();
-            MachineEntity srcMachine = getSrcMachineGenerator().getNext();
-            String machineDomainDN = srcMachine.getMachineDomainDN();
-            ev = new ActiveDirectoryEvent(eventTime,
-                    getEventIdGenerator().getNext(),
-                    getUserGenerator().getNext(),
-                    getDataSourceGenerator().getNext(),
-                    getActiveDirOperationGenerator().getNext(),
-                    srcMachine,
-                    getDstMachineGenerator().getNext(),
-                    convertResultToQuestConvention(getResultGenerator().getNext()),
-                    objectName,
-                    getObjectDN(objectName, machineDomainDN),
-                    getTimeZoneOffsetGenerator().getNext()
-                    );
-            activeDirectoryDescriptionGenerator.updateDescription(ev);
-        }
+        Instant eventTime = getTimeGenerator().getNext();
+        String objectName = getObjectNameGenerator().getNext();
+        MachineEntity srcMachine = getSrcMachineGenerator().getNext();
+        String machineDomainDN = srcMachine.getMachineDomainDN();
+        ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
+                getEventIdGenerator().getNext(),
+                getUserGenerator().getNext(),
+                getDataSourceGenerator().getNext(),
+                getActiveDirOperationGenerator().getNext(),
+                srcMachine,
+                getDstMachineGenerator().getNext(),
+                convertResultToQuestConvention(getResultGenerator().getNext()),
+                objectName,
+                getObjectDN(objectName, machineDomainDN),
+                getTimeZoneOffsetGenerator().getNext()
+                );
+        activeDirectoryDescriptionGenerator.updateDescription(ev);
         return ev;
     }
 
