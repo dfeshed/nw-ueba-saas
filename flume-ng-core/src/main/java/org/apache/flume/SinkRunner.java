@@ -53,7 +53,7 @@ public class SinkRunner implements LifecycleAware {
     public static long backoffSleepIncrement = DEFAULT_BACKOFF_SLEEP_INCREMENT;
     public static long minBackoffSleep = DEFAULT_MIN_BACKOFF_SLEEP;
     public static long maxBackoffSleep = DEFAULT_MAX_BACKOFF_SLEEP;
-    private static long consecutiveBackoffCounter = 0L;
+    public static long consecutiveBackoffCounter = 0L;
 
     private PollingRunner runner;
     private Thread runnerThread;
