@@ -15,10 +15,6 @@ module.exports = function(environment) {
       set: {
         subscriptionDestination: '/user/queue/endpoint/packager/set',
         requestDestination: '/ws/endpoint/packager/set'
-      },
-      create: {
-        subscriptionDestination: '/user/queue/endpoint/management/packageconfig/create',
-        requestDestination: '/ws/endpoint/management/packageconfig/create'
       }
     }
   };

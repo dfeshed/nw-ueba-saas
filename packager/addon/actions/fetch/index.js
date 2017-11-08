@@ -1,7 +1,6 @@
-import { getPackagerConfig, setPackagerConfig, createPackagerLogConfig } from './packager';
+import { getPackagerConfig, setPackagerConfig } from './packager';
 
 export {
   getPackagerConfig,
-  setPackagerConfig,
-  createPackagerLogConfig
+  setPackagerConfig
 };

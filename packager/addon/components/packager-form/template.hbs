@@ -3,32 +3,32 @@
     <div class="field">
       <hbox xs="12">
         <div class="col-xs-5 host-ip-js">
-          {{rsa-form-input label=(t 'packager.server') value=configData.server}}
+          {{rsa-form-input label=(t 'packager.server') value=configData.packageConfig.server}}
         </div>
         <div class="col-xs-4 host-port-js">
-          {{rsa-form-input label=(t 'packager.port') value=configData.port}}
+          {{rsa-form-input label=(t 'packager.port') value=configData.packageConfig.port}}
         </div>
       </hbox>
     </div>
   </div>
   <div class="field rsa-form-radio-group">
     <h4 class='rsa-form-radio-group-label'>{{t 'packager.certificateValidation'}}</h4>
-    <label class="rsa-form-radio-label {{if (eq 'none' configData.certificateValidation) 'checked'}}">
+    <label class="rsa-form-radio-label {{if (eq 'none' configData.packageConfig.certificateValidation) 'checked'}}">
       {{radio-button
         value='none'
-        groupValue=configData.certificateValidation}}
+        groupValue=configData.packageConfig.certificateValidation}}
       {{t 'packager.none'}}
     </label>
-    <label class="rsa-form-radio-label {{if (eq 'fullchain' configData.certificateValidation) 'checked'}}">
+    <label class="rsa-form-radio-label {{if (eq 'fullchain' configData.packageConfig.certificateValidation) 'checked'}}">
       {{radio-button
         value='fullchain'
-        groupValue=configData.certificateValidation}}
+        groupValue=configData.packageConfig.certificateValidation}}
       {{t 'packager.fullChain'}}
     </label>
-    <label class="rsa-form-radio-label {{if (eq 'thumbprint' configData.certificateValidation) 'checked'}}">
+    <label class="rsa-form-radio-label {{if (eq 'thumbprint' configData.packageConfig.certificateValidation) 'checked'}}">
       {{radio-button
         value='thumbprint'
-        groupValue=configData.certificateValidation}}
+        groupValue=configData.packageConfig.certificateValidation}}
       {{t 'packager.thumbprint'}}
     </label>
   </div>
@@ -41,19 +41,19 @@
       incrementMinuteBy=5
       width=100
       minDate=minDate
-      value=(readonly configData.autoUninstall)
+      value=(readonly configData.packageConfig.autoUninstall)
       yearRange="currentYear, 2050"
-      onChange=(action (mut configData.autoUninstall))
+      onChange=(action (mut configData.packageConfig.autoUninstall))
     }}
   </div>
   <div class="field force-overwrite">
     {{#x-toggle
       showLabels=true
       onLabel=(t 'packager.forceOverwrite')
-      value=(readonly configData.forceOverwrite)
-      onToggle=(action (mut configData.forceOverwrite)) as |toggle|}}
+      value=(readonly configData.packageConfig.forceOverwrite)
+      onToggle=(action (mut configData.packageConfig.forceOverwrite)) as |toggle|}}
       {{toggle.switch}}
-      {{toggle.onLabel value=(not configData.forceOverwrite)}}
+      {{toggle.onLabel value=(not configData.packageConfig.forceOverwrite)}}
     {{/x-toggle}}
   </div>
 
@@ -61,27 +61,27 @@
     <div class="field">
       <hbox xs="12">
         <div class="col-xs-5 service-name-js">
-          {{rsa-form-input label=(t 'packager.serviceName') value=configData.serviceName}}
+          {{rsa-form-input label=(t 'packager.serviceName') value=configData.packageConfig.serviceName}}
         </div>
         <div class="col-xs-5 display-name-js">
-          {{rsa-form-input label=(t 'packager.displayName') value=configData.displayName}}
+          {{rsa-form-input label=(t 'packager.displayName') value=configData.packageConfig.displayName}}
         </div>
       </hbox>
     </div>
   </div>
   <div class="field">
     <div class="col-xs-12">
-      {{rsa-form-input label=(t 'packager.description') value=configData.description}}
+      {{rsa-form-input label=(t 'packager.description') value=configData.packageConfig.description}}
     </div>
   </div>
   <div class="field">
     <div class="col-xs-12">
-      {{rsa-form-textarea label=(t 'packager.proxyServers') value=configData.proxyServers}}
+      {{rsa-form-textarea label=(t 'packager.proxyServers') value=configData.packageConfig.proxyServers}}
     </div>
   </div>
   <div class="field">
     <div class="col-xs-12">
-      {{rsa-form-textarea label=(t 'packager.exceptions') value=configData.exceptions}}
+      {{rsa-form-textarea label=(t 'packager.exceptions') value=configData.packageConfig.exceptions}}
     </div>
   </div>
 </div>
@@ -89,47 +89,110 @@
 <div class="windows-log-collection">
   {{#rsa-content-accordion label=(t 'packager.windowsLogCollectionCongfig')}}
     <div class="field">
-      <label class="rsa-form-checkbox-label {{if configData.windowsLogCollection.enableLc 'checked'}}" >
+      <label class="rsa-form-checkbox-label {{if isLogCollectionEnabled 'checked'}}" >
         {{rsa-form-checkbox
-          checked=configData.windowsLogCollection.enableLc
-          change=(action 'toggleProperty' "configData.windowsLogCollection.enableLc")}}
+          checked=isLogCollectionEnabled
+          change=(action 'enableLogCollection')}}
         {{t 'packager.enableWindowsLogCollection'}}
       </label>
     </div>
-    <div class="col-xs-8 field">
-      {{rsa-form-input label=(t 'packager.configurationName') value=configData.windowsLogCollection.configName}}
-    </div>
-    <div class="server-input-group">
+    {{#if isLogCollectionEnabled}}
+
+      <div class="col-xs-12 field">
+        {{rsa-form-input label=(t 'packager.configurationName') value=configData.windowsLogCollection.configName isError=isError errorMessage=errorMessage}}
+      </div>
+
+      <div class="col-xs-12 field">
+        <label class={{className}}>
+          <div class="label-text">
+            {{t 'packager.primaryLogDecoder'}}
+          </div>
+
+          {{#power-select
+            placeholder=(t 'packager.placeholder')
+            options=configData.windowsLogCollection.primary
+            selected=selectedPrimary
+            triggerClass=errorClass
+            dropdownClass=errorClass
+            searchPlaceholder=(t 'packager.searchPlaceholder')
+            onchange=(action 'setSelect' 'primaryDestination' 'selectedPrimary') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
+      </div>
+
+      <div class="col-xs-12 field">
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t 'packager.secondaryLogDecoder'}}
+          </div>
+          {{#power-select
+            placeholder=(t 'packager.placeholder')
+            options=configData.windowsLogCollection.primary
+            selected=selectedSecondary
+            searchPlaceholder=(t 'packager.searchPlaceholder')
+            onchange=(action 'setSelect' 'secondaryDestination''selectedSecondary') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
+      </div>
+
+      <div class="col-xs-12 field">
+        {{rsa-form-input label=(t 'packager.channels') value=configData.windowsLogCollection.channels}}
+      </div>
+
+      <div class="col-xs-5 field">
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t 'packager.protocol'}}
+          </div>
+
+          {{#power-select
+            placeholder=(t 'packager.placeholder')
+            options=protocolOptions
+            selected=selectedProtocol
+            searchPlaceholder=(t 'packager.searchPlaceholder')
+            onchange=(action 'setSelect' 'protocol' 'selectedProtocol') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
+      </div>
+
       <div class="field">
-        <hbox xs="12">
-          <div class="col-xs-5">
-            {{rsa-form-input label=(t 'packager.primaryLogDecoder') value=configData.windowsLogCollection.primaryLd}}
+        <label class="rsa-form-checkbox-label {{if configData.windowsLogCollection.enableHeartbeat 'checked'}}">
+          {{rsa-form-checkbox
+            checked=configData.windowsLogCollection.enableHeartbeat
+            change=(action 'toggleProperty' "configData.windowsLogCollection.enableHeartbeat")}}
+          {{t 'packager.heartbeatLogs'}}
+        </label>
+        {{#if enableHeartFrequency}}
+          <div class="col-xs-5 field">
+            <label class="rsa-form-label power-select">
+              <div class="label-text">
+                {{t 'packager.heartbeatFrequency'}}
+              </div>
+              {{#power-select
+                placeholder=(t 'packager.placeholder')
+                options=heartbeatFrequency
+                selected=selectedFrequency
+                searchPlaceholder=(t 'packager.searchPlaceholder')
+                onchange=(action 'setSelect' 'heartbeatFrequency' 'selectedFrequency') as |option|}}
+                {{option}}
+              {{/power-select}}
+            </label>
           </div>
-          <div class="col-xs-5">
-            {{rsa-form-input label=(t 'packager.secondaryLogDecoder') value=configData.windowsLogCollection.secondaryLd}}
-          </div>
-        </hbox>
+        {{/if}}
       </div>
-    </div>
 
-    <div class="col-xs-8 field">
-      {{rsa-form-input label=(t 'packager.channels') value=configData.windowsLogCollection.channels}}
-    </div>
-
-    <div class="field">
-      <div class="col-xs-12">
-        {{rsa-form-textarea label=(t 'packager.eventId') value=configData.windowsLogCollection.eventId}}
+      <div class="field">
+        <label class="rsa-form-checkbox-label {{if configData.windowsLogCollection.enableTestLog 'checked'}}">
+          {{rsa-form-checkbox
+            checked=configData.windowsLogCollection.enableTestLog
+            change=(action 'toggleProperty' "configData.windowsLogCollection.enableTestLog")}}
+          {{t 'packager.testLog'}}
+        </label>
       </div>
-    </div>
-
-    <div class="field">
-      <label class="rsa-form-checkbox-label {{if configData.windowsLogCollection.heartbeatLogs 'checked'}}">
-        {{rsa-form-checkbox
-          checked=configData.windowsLogCollection.heartbeatLogs
-          change=(action 'toggleProperty' "configData.windowsLogCollection.heartbeatLogs")}}
-        {{t 'packager.heartbeatLogs'}}
-      </label>
-    </div>
+    {{/if}}
   {{/rsa-content-accordion}}
 </div>
 
@@ -141,7 +204,7 @@
     {{#rsa-form-button style='primary' isDisabled=isDisabled defaultAction=(action 'generateAgent')}}
       {{t 'packager.generateAgent'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button isDisabled=isDisabled defaultAction=(action 'generateLogConfig')}}
+    {{#rsa-form-button isDisabled=isGenerateLogDisabled defaultAction=(action 'generateLogConfig')}}
       {{t 'packager.generateLogConfig'}}
     {{/rsa-form-button}}
   </hbox>

@@ -30,15 +30,6 @@ const packagerReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.CREATE_LOG]: (state, action) => {
-    return handle(state, action, {
-      start: () => ({ ...state, updating: true, error: false, downloadLink: null }),
-      finish: (s) => ({ ...s, updating: false }),
-      failure: (s) => ({ ...s, error: true }),
-      success: (s) => ({ ...s, defaultPackagerConfig: action.payload.request.data })
-    });
-  },
-
   [ACTION_TYPES.DOWNLOAD_PACKAGE]: (state, { payload }) => ({
     ...state,
     downloadLink: payload

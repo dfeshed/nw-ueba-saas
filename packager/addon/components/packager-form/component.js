@@ -7,7 +7,6 @@ import { connect } from 'ember-redux';
 
 import {
   setConfig,
-  createLogConfig,
   resetForm
 } from '../../actions/data-creators';
 
@@ -22,7 +21,6 @@ const stateToComputed = ({ packager }) => ({
 
 const dispatchToActions = {
   setConfig,
-  createLogConfig,
   resetForm
 };
 
@@ -33,16 +31,55 @@ const formComponent = Component.extend({
   classNames: ['packager-form'],
 
   minDate: new Date(),
+  errorClass: null,
+  isError: false,
+  protocolOptions: ['UDP', 'TCP', 'TLS'],
+  heartbeatFrequency: ['1 Hour', '6 Hours', '12 Hours', '24 Hours'],
+  className: 'rsa-form-label power-select',
+  isGenerateLogDisabled: true,
+  isLogCollectionEnabled: false,
 
-  @alias('configData.autoUninstall')
+  @alias('configData.packageConfig.autoUninstall')
   autoUninstall: null,
 
-  @alias('configData.forceOverwrite')
+  @alias('configData.packageConfig.forceOverwrite')
   forceOverwrite: false,
 
-  @computed('configData.server', 'configData.port', 'isUpdating')
+  @alias('configData.windowsLogCollection.enableHeartbeat')
+  enableHeartFrequency: false,
+
+  @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
     return isEmpty(server) || isEmpty(port) || isUpdating;
+  },
+
+  validateMandatoryFields() {
+    if (this.get('configData.enableWindowsLogCollection')) {
+      if (isEmpty(this.get('configData.windowsLogCollection.configName'))) {
+        this.setProperties({
+          isError: true,
+          errorMessage: this.get('i18n').t('packager.emptyName')
+        });
+        return true;
+      }
+      if (!isEmpty(this.get('configData.windowsLogCollection.primaryDestination')) && isEmpty(this.get('selectedPrimary'))) {
+        this.setProperties({
+          errorClass: 'is-error',
+          className: 'rsa-form-label is-error power-select'
+        });
+        return true;
+      }
+    }
+    return false;
+  },
+
+  resetProperties() {
+    this.setProperties({
+      errorMessage: null,
+      isError: false,
+      errorClass: null,
+      className: 'rsa-form-label power-select'
+    });
   },
 
   actions: {
@@ -50,17 +87,35 @@ const formComponent = Component.extend({
     generateAgent() {
       const { autoUninstall } = this.get('configData');
       if (!isEmpty(autoUninstall[0])) {
-        this.set('configData.autoUninstall', moment(autoUninstall[0]).toISOString());
+        this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
       }
-      this.send('setConfig', this.get('configData'));
+      if (!this.validateMandatoryFields()) {
+        this.resetProperties();
+        this.send('setConfig', this.get('configData'));
+      }
+    },
+
+    generateLogConfig() {
+      if (!this.validateMandatoryFields()) {
+        this.resetProperties();
+        this.set('configData.generateLogConfigOnly', true);
+        this.send('setConfig', this.get('configData'));
+      }
+    },
+
+    enableLogCollection() {
+      this.toggleProperty('isGenerateLogDisabled');
+      this.set('configData.enableWindowsLogCollection', true);
+      this.toggleProperty('isLogCollectionEnabled');
     },
 
     toggleProperty(property) {
       this.toggleProperty(property);
     },
 
-    generateLogConfig() {
-      this.send('createLogConfig', this.get('configData.windowsLogCollection'));
+    setSelect(property, selected, option) {
+      this.set(selected, option);
+      this.set(`configData.windowsLogCollection.${property}`, option);
     }
   }
 });
