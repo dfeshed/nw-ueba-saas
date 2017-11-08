@@ -8,7 +8,7 @@ module.exports = [
     'lastModifiedOn': 1495517131585,
     'id': '5923c7cbd8d4ae128db98c98',
     'name': 'JAZZ_NWE_5_AGENTS',
-    'filterType': 'Machine',
+    'filterType': 'MACHINE',
     'criteria': {
       'criteriaList': [],
       'expressionList': [
@@ -33,7 +33,7 @@ module.exports = [
     'lastModifiedOn': 1495517157609,
     'id': '5923c7e5d8d4ae128db98c99',
     'name': 'windows_linux_mac_agents',
-    'filterType': 'Machine',
+    'filterType': 'MACHINE',
     'criteria': {
       'criteriaList': [],
       'expressionList': [
@@ -64,7 +64,7 @@ module.exports = [
     'lastModifiedOn': 1495517202472,
     'id': '5923c812d8d4ae128db98c9a',
     'name': 'Server_Machine_Names',
-    'filterType': 'Machine',
+    'filterType': 'MACHINE',
     'criteria': {
       'criteriaList': [],
       'expressionList': [

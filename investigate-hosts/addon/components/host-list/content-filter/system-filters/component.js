@@ -57,10 +57,10 @@ const FilterList = Component.extend({
       let expressionList = [];
       if (criteria) {
         expressionList = criteria.expressionList;
+        this.send('addSystemFilter', expressionList[0]);
       } else if (id === 'all') {
         this.send('resetFilters');
       }
-      this.send('addSystemFilter', expressionList[0]);
     },
 
     deleteSearch(id) {

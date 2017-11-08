@@ -40,7 +40,6 @@ export const filters = createSelector(
         if (values) {
           options = [...options, ...values];
         }
-
         const expression = expressionList.findBy('propertyName', propertyName);
         const selected = !!expression;
         const showRemoveButton = !isDefault && selected;

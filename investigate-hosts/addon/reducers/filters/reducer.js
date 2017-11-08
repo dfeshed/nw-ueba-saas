@@ -21,13 +21,11 @@ const _handleSystemFilter = (action) => {
     // if request came from manage saved queries, we need to load
     if (appliedHostFilter) {
       defaultSearch = filters.findBy('id', appliedHostFilter);
-    } else {
-      defaultSearch = filters.findBy('id', 'all');
     }
     return state.merge({
       filters,
       filterSelected: defaultSearch,
-      customSearchVisible: !defaultSearch.systemFilter,
+      customSearchVisible: !defaultSearch,
       expressionList: []
     });
   };

@@ -125,7 +125,7 @@ const FILTER_TYPES = [
     'label': 'investigateHosts.hosts.column.machineIdentity.agent.blockingEnabled',
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
-    'panelId': 'agent.blockingEnabled',
+    'panelId': 'agentBlockingEnabled',
     'isDefault': false
   },
   {
@@ -149,7 +149,7 @@ const FILTER_TYPES = [
     'label': 'investigateHosts.hosts.column.machineIdentity.hardware.processorArchitecture',
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
-    'panelId': '.processorArchitecture',
+    'panelId': 'processorArchitecture',
     'isDefault': false
   },
   {
@@ -186,7 +186,7 @@ const FILTER_TYPES = [
   },
   {
     'propertyName': 'agentStatus.lastSeenTime',
-    'label': 'investigateHosts.hosts.column.agentStatus.lastSeenTime',
+    'label': 'investigateHosts.hosts.filters.agentStatus.lastSeenTime',
     'options': [{ label: 'Last 1 Hour', id: 'LAST_ONE_HOUR' }, { label: 'Last 24 Hours', id: 'LAST_TWENTY_FOUR_HOURS' }, { label: 'Last 5 Days', id: 'LAST_FIVE_DAYS' }],
     'filterControl': 'host-list/content-filter/datetime-filter',
     'showDateRange': false,

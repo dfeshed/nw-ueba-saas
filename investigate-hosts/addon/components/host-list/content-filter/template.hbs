@@ -5,6 +5,7 @@
 
 {{host-list/content-filter/filter-trigger
   panelId='hostMoreOptions'
+  class='filter-add-more'
   filterLabel=(t 'investigateHosts.hosts.button.addMore')}}
 
 {{#rsa-content-tethered-panel
@@ -13,7 +14,7 @@
   position='bottom-right'
   panelId='hostMoreOptions'}}
   <section class="column-chooser-input">
-    {{rsa-form-input value=searchTerm placeholder=(t 'tables.columnChooser.filterPlaceHolder')}}
+    {{rsa-form-input value=searchTerm placeholder=(t 'investigateHosts.hosts.filters.searchPlaceHolder')}}
   </section>
   <ul class="rsa-dropdown-action-list">
     {{#each filterList as |option|}}
