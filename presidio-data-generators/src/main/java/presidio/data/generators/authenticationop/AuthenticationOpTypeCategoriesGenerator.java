@@ -11,8 +11,7 @@ import java.util.List;
  * Use custom constructor when need to generate specific categories.
  */
 public class AuthenticationOpTypeCategoriesGenerator implements IStringListGenerator {
-    private static final String[] ALL_AUTH_OP_TYPE_CATEGORIES = {
-    };
+    private static final String[] ALL_AUTH_OP_TYPE_CATEGORIES = {"INTERACTIVE_REMOTE"};
 
     private List<String> value = Arrays.asList(ALL_AUTH_OP_TYPE_CATEGORIES);
 

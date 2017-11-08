@@ -6,6 +6,7 @@ import presidio.data.domain.event.Event;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.event.authentication.AuthenticationEventsGenerator;
+import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,28 +19,30 @@ public class RandomMultiEventGeneratorUsageTest {
     @Test
     public void AuthenticationBulkEventsGenerator() throws GeneratorException {
         List<Event> events = new ArrayList<>();
-        AuthenticationEventsGenerator eventGenerator = new AuthenticationEventsGenerator();
+        AuthenticationEventsGenerator eventGenerator1 = new AuthenticationEventsGenerator();
+        eventGenerator1.setUserGenerator(new SingleUserGenerator("User1"));
+        AuthenticationEventsGenerator eventGenerator2 = new AuthenticationEventsGenerator();
+        eventGenerator2.setUserGenerator(new SingleUserGenerator("User2"));
 
         List< RandomMultiEventGenerator.EventGeneratorProbability > listOfProbabilities =
                 new ArrayList<>();
-        RandomMultiEventGenerator.EventGeneratorProbability probability =
-                new RandomMultiEventGenerator.EventGeneratorProbability(eventGenerator, 20.0);
-        listOfProbabilities.add(probability);
+        RandomMultiEventGenerator.EventGeneratorProbability probability1 =
+                new RandomMultiEventGenerator.EventGeneratorProbability(eventGenerator1, 1);
+        listOfProbabilities.add(probability1);
+
+        RandomMultiEventGenerator.EventGeneratorProbability probability2 =
+                new RandomMultiEventGenerator.EventGeneratorProbability(eventGenerator2, 0.5);
+        listOfProbabilities.add(probability2);
 
         RandomMultiEventGenerator generator = new RandomMultiEventGenerator(listOfProbabilities,
                 Instant.now().minus(10,ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS),
                 Instant.now().truncatedTo(ChronoUnit.DAYS), Duration.ofHours(1) );
 
-        // can generate events one by one
-        AuthenticationEvent event = (AuthenticationEvent) generator.generateNext();
-        events.add(event);
-
-        // or in bulks
-        events.addAll(generator.generate(10));
-        Assert.assertEquals(events.size(),11);
-
-        // or all at time
         events.addAll(generator.generate());
+
+        for (Event event : events){
+           // if ((Authentication)event.)
+        }
         Assert.assertEquals(events.size(), 240);
     }
 }
