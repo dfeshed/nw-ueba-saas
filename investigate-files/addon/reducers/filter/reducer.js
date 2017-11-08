@@ -47,7 +47,10 @@ const filterReducer = handleActions({
 
   [ACTION_TYPES.GET_FILTER]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('files', []),
+      start: (s) => s.merge({
+        'fileFilters': [],
+        'areFilesLoading': 'sorting'
+      }),
       failure: (s) => s.set('areFilesLoading', 'error'),
       success: (s) => {
         const { payload: { data } } = action;
@@ -59,7 +62,11 @@ const filterReducer = handleActions({
             expressionList = filter.criteria.expressionList;
           }
         }
-        return s.merge({ fileFilters: filters, expressionList });
+        return s.merge({
+          fileFilters: filters,
+          expressionList,
+          areFilesLoading: 'completed'
+        });
       }
     });
   },
@@ -80,11 +87,6 @@ const filterReducer = handleActions({
     areFilesLoading: 'sorting',
     lastFilterAdded: null,
     expressionList: state.expressionList.filter((item) => item.propertyName !== payload)
-  }),
-
-  [ACTION_TYPES.ADD_SYSTEM_FILTER]: (state, { payload }) => state.merge({
-    areFilesLoading: 'sorting',
-    expressionList: [ payload ]
   }),
 
   [ACTION_TYPES.SET_ACTIVE_FILTER]: (state, { payload }) => state.set('activeFilter', payload),
