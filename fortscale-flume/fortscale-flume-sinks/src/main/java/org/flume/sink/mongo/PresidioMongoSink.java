@@ -111,7 +111,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 recordType = getRecordType(recordTypeAsString);
             }
 
-            batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
+            batchSize = context.getInteger(BATCH_SIZE, 1000);
             collectionName = context.getString(COLLECTION_NAME);
 
             initRepository(context);
