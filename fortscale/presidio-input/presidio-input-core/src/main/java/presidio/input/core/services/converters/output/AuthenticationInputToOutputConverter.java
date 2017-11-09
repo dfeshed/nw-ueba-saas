@@ -21,7 +21,7 @@ public class AuthenticationInputToOutputConverter implements InputOutputConverte
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setSrcMachineId(transformedEvent.getSrcMachineId());
-        outputEvent.setSrcMachineNameRegexCluster(transformedEvent.getSrcMachineCluster());
+        outputEvent.setSrcMachineNameRegexCluster(transformedEvent.getSrcMachineCluster().isEmpty() ? transformedEvent.getSrcMachineName() : transformedEvent.getSrcMachineCluster());
         outputEvent.setDstMachineId(transformedEvent.getDstMachineId());
         outputEvent.setDstMachineNameRegexCluster(transformedEvent.getDstMachineCluster());
         outputEvent.setDstMachineDomain(transformedEvent.getDstMachineDomain());
