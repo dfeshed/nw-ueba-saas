@@ -719,5 +719,10 @@
             <name>mirror.fortscale.dom-snapshots</name>
             <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
         </snapshotRepository>
+         <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </repository>
     </distributionManagement>
 </project>
