@@ -12,6 +12,10 @@
 export default {
   modelName: 'investigate-events-preferences',
   additionalFilterKey: 'userServicePreferences.serviceId',
+  helpIds: {
+    moduleId: 'investigate',
+    topicId: 'investigateEventPreferences'
+  },
   items: [{
     name: 'preferences.investigate-events.defaultEventView',
     type: 'dropdown',

@@ -34,9 +34,9 @@ moduleForComponent('preferences-panel', 'Integration | Component | Preferences D
 
 skip('Preferences panel opens correctly with all user selected preferences', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    assert.equal(this.$('.rsa-preferences-field-content').length, 3);
+    assert.equal(this.$('.rsa-preferences-details-field-content').length, 3);
     let str = this.$('.ember-power-select-selected-item')[0].innerText.trim();
     assert.equal(str, 'Packet Analysis');
     str = this.$('.ember-power-select-selected-item')[1].innerText.trim();
@@ -48,7 +48,7 @@ skip('Preferences panel opens correctly with all user selected preferences', fun
 
 test('Preferences panel comes with valid options for Analysis', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
     clickTrigger();
     return waitFor('.ember-power-select-options').then(function() {
@@ -61,9 +61,9 @@ test('Preferences panel comes with valid options for Analysis', function(assert)
 
 test('Preferences panel comes with valid options for packet format', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    clickTrigger('.rsa-preferences-field-content:nth-child(3)');
+    clickTrigger('.rsa-preferences-details-field-content:nth-child(3)');
     return waitFor('.ember-power-select-options').then(function() {
       const $options = $('.ember-power-select-option');
       assert.equal($options.length, 4);
@@ -74,9 +74,9 @@ test('Preferences panel comes with valid options for packet format', function(as
 
 test('Preferences panel comes with valid options for log format', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    clickTrigger('.rsa-preferences-field-content:nth-child(2)');
+    clickTrigger('.rsa-preferences-details-field-content:nth-child(2)');
     return waitFor('.ember-power-select-options').then(function() {
       const $options = $('.ember-power-select-option');
       assert.equal($options.length, 4);
@@ -87,7 +87,7 @@ test('Preferences panel comes with valid options for log format', function(asser
 
 skip('Preferences panel saves new Analysis on change', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
     clickTrigger();
     return waitFor('.ember-power-select-options').then(function() {

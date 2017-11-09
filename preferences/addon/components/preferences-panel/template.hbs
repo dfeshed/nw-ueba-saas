@@ -3,6 +3,11 @@
     {{title}}
     {{t (concat "preferences." launchFor ".panelTitle")}}
     <div class="controls">
+      {{#rsa-form-button
+        isIconOnly=true title= (t 'context.header.help.title')
+        defaultAction=(action 'goToHelp')}}
+        {{rsa-icon name="help-circle" style="lined"}}
+      {{/rsa-form-button}}
       {{#rsa-form-button isIconOnly=true defaultAction=(action 'closePreferencesPanel')}}
         {{rsa-icon name="close" size="small"}}
       {{/rsa-form-button}}

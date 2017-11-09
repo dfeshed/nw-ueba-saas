@@ -23,6 +23,10 @@
 
     .controls {
       right: rsa-whitespace(less);
+
+      .rsa-form-button {
+        padding: rsa-whitespace(least);
+      }
     }
   }
 

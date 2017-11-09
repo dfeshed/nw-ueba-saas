@@ -19,3 +19,12 @@ export const getPreferencesConfig = createSelector(
     return null;
   }
 );
+
+export const getContextualHelp = createSelector(
+  [_launchFor],
+  (launchFor) => {
+    if (defaultConfig[launchFor]) {
+      return defaultConfig[launchFor].helpIds;
+    }
+  }
+);

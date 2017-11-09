@@ -3,12 +3,14 @@ import layout from './template';
 import { later, schedule, next } from 'ember-runloop';
 import { connect } from 'ember-redux';
 import { closePreferencesPanel, resetPreferencesPanel, loadPreferences, updatePanelClicked } from 'preferences/actions/interaction-creators';
+import { getContextualHelp } from 'preferences/reducers/preferences-panel/selectors';
 import service from 'ember-service/inject';
 
-const stateToComputed = ({ preferences: { launchFor, isExpanded, isClicked } }) => ({
-  isExpanded,
-  launchFor,
-  isClicked
+const stateToComputed = ({ preferences }) => ({
+  isExpanded: preferences.isExpanded,
+  launchFor: preferences.launchFor,
+  isClicked: preferences.isClicked,
+  helpId: getContextualHelp(preferences)
 });
 
 const dispatchToActions = {
@@ -26,6 +28,7 @@ const PreferencesPanel = Component.extend({
   classNameBindings: ['isExpanded'],
 
   eventBus: service(),
+  contextualHelp: service(),
 
   init() {
     this._super(arguments);
@@ -67,6 +70,13 @@ const PreferencesPanel = Component.extend({
         this.send('resetPreferencesPanel');
       }
     }, 650);
+  },
+
+  actions: {
+    goToHelp() {
+      const { moduleId, topicId } = this.get('helpId');
+      this.get('contextualHelp').goToHelp(moduleId, topicId);
+    }
   }
 });
 

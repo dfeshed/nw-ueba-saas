@@ -1,22 +1,24 @@
 {{#if preferencesConfig}}
   {{#each preferencesConfig as |item index|}}
-    <div class="rsa-preferences-field-content">
-      <label class="rsa-form-label power-select">
-        {{t item.name}}
-      </label>
+    <div class="rsa-preferences-details-field-content">
       {{#if (eq item.type 'dropdown')}}
-        {{#power-select
-          options=item.options
-          selected=(get preferences item.field)
-          searchEnabled=false
-          onchange=(action 'saveNewPreferences' item.field) as |option|}}
-          {{t (concat 'preferences.' launchFor '.' option)}}
-        {{/power-select}}
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t item.name}}
+          </div>
+          {{#power-select
+            options=item.options
+            selected=(get preferences item.field)
+            searchEnabled=false
+            onchange=(action 'saveNewPreferences' item.field) as |option|}}
+            {{t (concat 'preferences.' launchFor '.' option)}}
+          {{/power-select}}
+        </label>
       {{/if}}
     </div>
   {{/each}}
 {{else}}
-  <centered>
+  <centered class="rsa-loader-position">
     {{rsa-loader size='largest'}}
   </centered>
 {{/if}}

@@ -38,6 +38,7 @@ test('Preferences panel opens correctly', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
   return wait().then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
+    assert.equal(this.$('.rsa-icon-help-circle-lined').length, 1, 'Need to display help icons.');
   });
 });
 
@@ -55,9 +56,11 @@ test('Preferences panel should not closes if click on panel again', function(ass
   this.$('.rsa-icon-settings-1-filled').trigger('click');
   return wait().then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
+    assert.equal(this.$('.rsa-icon-help-circle-lined').length, 1, 'Need to display help icons.');
     this.$('.rsa-preferences-body-content').trigger('click');
     return wait().then(() => {
       assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel closed.');
+      assert.equal(this.$('.rsa-icon-help-circle-lined').length, 1, 'Need to display help icons.');
     });
   });
 });
