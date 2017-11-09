@@ -62,7 +62,7 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
         for (String context : contextIds) {
             List<AccumulatedSmartRecord> accumulatedSmartRecords = getAccumulatedSmartRecords(smartRecordConfName, context, startTime, endTimeInstant);
 
-            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(startTime,accumulatedSmartRecords);
+            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
             timePartitions.addAll(calcPartitions(accumulatedSmartRecords));
             for (SmartAggregatedRecordDataContainer smartAggregatedRecordDataContainer : smartAggregatedRecordDataContainers) {
                 finalSmartAggregatedRecordDataContainers.add(smartAggregatedRecordDataContainer);

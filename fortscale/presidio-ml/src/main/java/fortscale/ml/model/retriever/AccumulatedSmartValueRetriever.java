@@ -84,7 +84,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
             return retrieveGlobalModelBuilderData(timeRange,smartWeightsModel,weightsModelEndTime);
         }
         List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTimeInstant);
-        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = flattenSmartRecordToSmartAggrData(startTime, accumulatedSmartRecords);
+        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
         GenericHistogram reductionHistogram = new GenericHistogram();
         final boolean[] noDataInDatabase = {true};
 
@@ -136,7 +136,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         Set<Long> distinctParitionIds = new HashSet<>();
         for (String contextId : contextIds) {
             List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTime);
-            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(startTime, accumulatedSmartRecords);
+            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
 
             distinctParitionIds.addAll(calcNumOfPartitions(accumulatedSmartRecords));
             smartAggregatedRecordDataContainers.stream()

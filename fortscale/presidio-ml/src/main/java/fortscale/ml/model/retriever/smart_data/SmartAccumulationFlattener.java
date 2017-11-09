@@ -15,10 +15,11 @@ import java.util.Map;
 public class SmartAccumulationFlattener {
     protected static final Logger logger = Logger.getLogger(SmartAccumulationFlattener.class);
 
-    public static List<SmartAggregatedRecordDataContainer> flattenSmartRecordToSmartAggrData(Instant startTime, List<AccumulatedSmartRecord> accumulatedSmartRecords) {
+    public static List<SmartAggregatedRecordDataContainer> flattenSmartRecordToSmartAggrData(List<AccumulatedSmartRecord> accumulatedSmartRecords) {
         List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = new ArrayList<>();
         for (AccumulatedSmartRecord accumulatedSmartRecord: accumulatedSmartRecords)
         {
+            Instant accumulatedSmartRecordStartInstant = accumulatedSmartRecord.getStartInstant();
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
                 Map<String,Double> featureNameToScore = new HashMap<>();
@@ -33,7 +34,8 @@ public class SmartAccumulationFlattener {
                         featureNameToScore.put(featureName, activityTimeScore);
                     }
                 }
-                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startTime,featureNameToScore));
+
+                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(accumulatedSmartRecordStartInstant,featureNameToScore));
             }
         }
         return smartAggregatedRecordDataContainerList;
