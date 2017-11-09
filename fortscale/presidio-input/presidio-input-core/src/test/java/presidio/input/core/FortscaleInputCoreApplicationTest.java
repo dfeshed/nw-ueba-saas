@@ -46,9 +46,6 @@ public class FortscaleInputCoreApplicationTest {
     public static final String EXECUTION_COMMAND = "run  --schema DLPFILE --start_date 2017-06-13T07:00:00.00Z --end_date 2017-06-13T09:00:00.00Z --fixed_duration_strategy 3600";
 
     @Autowired
-    public ToCollectionNameTranslator toCollectionNameTranslator;
-
-    @Autowired
     private BootShim bootShim;
 
     @Autowired
@@ -56,9 +53,6 @@ public class FortscaleInputCoreApplicationTest {
 
     @Autowired
     private MetricCollectingService metricCollectingService;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Test
     public void contextLoads() throws Exception {
@@ -69,25 +63,6 @@ public class FortscaleInputCoreApplicationTest {
     public void inputCoreShellTest() {
         CommandResult commandResult = bootShim.getShell().executeCommand(EXECUTION_COMMAND);
         Assert.assertTrue(commandResult.isSuccess());
-    }
-
-    @Test
-    public void runAuthenticationEvent() throws Exception {
-
-        Instant startTime = Instant.now();
-
-
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
-                "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                "srcMachineId", "10.20.30.40", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
-        String collectionName = toCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION);
-        mongoTemplate.save(authenticationRawEvent, collectionName);
-
-        processService.run(Schema.AUTHENTICATION, startTime, startTime.plus(1L, ChronoUnit.HOURS), 0.5d);
-
-        List<AuthenticationTransformedEvent> transformedEvents = mongoTemplate.findAll(AuthenticationTransformedEvent.class);
     }
 
     @Configuration
