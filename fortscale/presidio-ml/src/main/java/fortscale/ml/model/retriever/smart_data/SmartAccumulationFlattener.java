@@ -1,8 +1,10 @@
 package fortscale.ml.model.retriever.smart_data;
 
 import fortscale.utils.logging.Logger;
+import org.junit.Assert;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +21,11 @@ public class SmartAccumulationFlattener {
         List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = new ArrayList<>();
         for (AccumulatedSmartRecord accumulatedSmartRecord: accumulatedSmartRecords)
         {
-            Instant accumulatedSmartRecordStartInstant = accumulatedSmartRecord.getStartInstant();
+            Instant startInstant = accumulatedSmartRecord.getStartInstant();
+
+            // todo: add this info into the smart record
+            Assert.assertTrue(accumulatedSmartRecord.getAdeEventType().toLowerCase().endsWith("hourly"));
+
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
                 Map<String,Double> featureNameToScore = new HashMap<>();
@@ -35,7 +41,8 @@ public class SmartAccumulationFlattener {
                     }
                 }
 
-                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(accumulatedSmartRecordStartInstant,featureNameToScore));
+                // todo: make more generic (duration should not be only of hours)
+                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startInstant.plus(Duration.ofHours(activityTime)),featureNameToScore));
             }
         }
         return smartAggregatedRecordDataContainerList;

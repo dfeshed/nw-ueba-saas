@@ -73,7 +73,7 @@ public class AccumulatedSmartValueRetrieverTest {
         AccumulatedSmartValueRetrieverConf smartValueRetrieverConf = new AccumulatedSmartValueRetrieverConf(timeRangeInSeconds, functions, smartRecordConfName, weightsModelName,86400);
         when(smartRecordConfService.getSmartRecordConf(smartValueRetrieverConf.getSmartRecordConfName())).thenReturn(smartRecordConf);
 
-        String featureName = "featureName";
+        String featureName = "featureName_hourly";
         double weight = 1.0;
         SmartWeightsModel smartWeightsModel = new SmartWeightsModel().setClusterConfs(Collections.singletonList(new ClusterConf(Collections.singletonList(featureName), weight)));
 
