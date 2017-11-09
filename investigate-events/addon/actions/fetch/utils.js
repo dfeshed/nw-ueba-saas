@@ -139,18 +139,13 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
  * @returns {string}
  * @public
  */
-export const encodeMetaFilterConditions = (conditions = [], language) => {
+export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
     .map((condition) => {
-      const { queryString, isKeyValuePair, key, value } = condition;
-      if (isKeyValuePair) {
-        const keyDefinition = language.findBy('metaName', key);
-        const useQuotes = String(keyDefinition.format).toLowerCase() === 'text';
-        const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
-        return `${key}=${valueEncoded}`;
-      } else {
-        return queryString;
-      }
+      const { meta, value, operator, metaFormat } = condition;
+      const useQuotes = String(metaFormat).toLowerCase() === 'text';
+      const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
+      return `${meta}${operator}${valueEncoded}`;
     })
     .join(' && ');
 };

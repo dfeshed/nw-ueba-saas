@@ -161,10 +161,10 @@ function parseEventQueryUri(uri) {
 
 /**
  * Parses a given URI string component that represents 0, 1 or more meta conditions for a Core query.
- * Assumes the URI is of the following syntax: `key1=value1/key2=value2/../keyN=valueN`, where each `key#` string is
- * a meta key identifier (e.g., `ip.src`, not a display name), and each `value#` string is a meta value (raw, not alias).
+ * Assumes the URI is of the following syntax: `key1 operator1 value1/key2 operator1 value2/../keyN operatorN valueN`, where each `key#` string is
+ * a meta key identifier (e.g., `ip.src`, not a display name), each operator is a logical operator (e.g. =, !=, <), and each `value#` string is a meta value (raw, not alias).
  * Assumes `key#` strings do not need URI decoding (they're just alphanumerics, plus dots maybe), but `value#` strings
- * will need URI decoding.
+ * and operators will need URI decoding.
  * If any duplicate conditions are found, the duplicates are discarded; i.e., only 1 instance of the condition is
  * returned. This is done because the duplicate conditions don't have any net effect on the filter.
  * @param {string} uri
@@ -182,17 +182,10 @@ function parseMetaFilterUri(uri) {
   return uri.split('/')
     .filter((segment) => !!segment)
     .map((queryString) => {
-      queryString = decodeURIComponent(queryString);
-      const condition = { queryString };
-      const matchPair = queryString.match(/([^\=]+)\=(.*)/);
-      const matchAndOr = queryString.match(/\&\&|\|\|/);
-      if (matchPair && !matchAndOr) {
-        const [ , key, value ] = matchPair;
-        condition.isKeyValuePair = true;
-        condition.key = key.trim();
-        condition.value = value.trim();
-      }
-      return condition;
+      const [ meta, operator, ...valuePieces ] = decodeURIComponent(queryString).split(' ');
+      const value = valuePieces.join(' ');
+
+      return { meta, value, operator };
     });
 }
 
@@ -226,9 +219,9 @@ function uriEncodeEventQuery(queryAttrs) {
 function uriEncodeMetaFilterConditions(conditions = []) {
   return conditions
     .map((condition) => {
-      return condition.isKeyValuePair ?
-        `${condition.key}=${encodeURIComponent(condition.value)}` :
-        encodeURIComponent(condition.queryString);
+      if (condition.meta && condition.operator && condition.value) {
+        return encodeURIComponent(`${condition.meta} ${condition.operator} ${condition.value}`);
+      }
     })
     .join('/');
 }
@@ -239,5 +232,6 @@ export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   parseEventQueryUri,
-  uriEncodeEventQuery
+  uriEncodeEventQuery,
+  uriEncodeMetaFilterConditions
 };

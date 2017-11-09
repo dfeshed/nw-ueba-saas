@@ -1,0 +1,34 @@
+{{context-menu}}
+
+{{#each filters as |filter index|}}
+  {{#query-filter-fragment
+    preloadedFilters=preloadedFilters
+    metaOptions=metaOptions
+    placeholder=placeholder
+    filterRecord=filter
+    filterIndex=index
+    meta=filter.meta
+    operator=filter.operator
+    selected=filter.selected
+    editActive=filter.editActive
+    value=filter.value
+    filterList=filters
+    setKeyboardPriority=(action 'setKeyboardPriority')
+    executeQuery=(action 'executeQuery')
+    deleteFilter=(action 'deleteSelected')}}
+    {{#if (gt filters.length 1)}}
+      <div title={{t 'queryBuilder.insertFilter'}} class="invisible-edit-trigger" {{action 'insertFilter' index}}></div>
+    {{/if}}
+  {{/query-filter-fragment}}
+{{/each}}
+
+{{#if queryable}}
+  <span class="controls">
+    {{rsa-icon
+      name="search"
+      class="execute-query"
+      title=(t 'queryBuilder.query')
+      click=(action 'executeQuery')
+      size="large"}}
+  </span>
+{{/if}}

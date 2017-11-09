@@ -17,7 +17,7 @@ const {
  * @returns {*}
  * @public
  */
-export function eventQueryUri([ queryAttrs, drillKey, drillValue ] /* , hash */) {
+export function eventQueryUri([ queryAttrs, drillKey, drillOperator, drillValue ] /* , hash */) {
   if (!queryAttrs) {
     return '';
   }
@@ -36,9 +36,9 @@ export function eventQueryUri([ queryAttrs, drillKey, drillValue ] /* , hash */)
       get(queryAttrs, 'metaFilter.conditions') || []
     );
     drillConditions.pushObject({
-      queryString: `${drillKey}=${drillValue}`,
-      isKeyValuePair: true,
-      key: drillKey,
+      queryString: `${drillKey} ${drillOperator} ${drillValue}`,
+      meta: drillKey,
+      operator: drillOperator,
       value: drillValue
     });
     set(drillQueryAttrs, 'metaFilter', { conditions: drillConditions });

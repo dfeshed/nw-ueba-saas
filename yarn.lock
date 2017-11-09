@@ -3709,9 +3709,28 @@ ember-new-computed@^1.0.2:
   dependencies:
     ember-cli-babel "^5.1.5"
 
+ember-power-select-typeahead@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/ember-power-select-typeahead/-/ember-power-select-typeahead-0.6.0.tgz#77e39e28d42db7b56f6c382f7c73bf701ad94baf"
+  dependencies:
+    ember-cli-babel "^6.3.0"
+    ember-cli-htmlbars "^2.0.1"
+    ember-power-select "^1.9.7"
+
 ember-power-select@1.9.6:
   version "1.9.6"
   resolved "https://registry.npmjs.org/ember-power-select/-/ember-power-select-1.9.6.tgz#3cb5245932db9174801c830497750b5e5c9dc786"
+  dependencies:
+    ember-basic-dropdown "^0.33.1"
+    ember-cli-babel "^6.6.0"
+    ember-cli-htmlbars "^2.0.1"
+    ember-concurrency "^0.8.1"
+    ember-text-measurer "^0.3.3"
+    ember-truth-helpers "^1.3.0"
+
+ember-power-select@^1.9.7:
+  version "1.9.9"
+  resolved "https://registry.npmjs.org/ember-power-select/-/ember-power-select-1.9.9.tgz#24b733f5be603a434dffdb57dffe702759448ca5"
   dependencies:
     ember-basic-dropdown "^0.33.1"
     ember-cli-babel "^6.6.0"

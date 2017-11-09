@@ -344,6 +344,9 @@ export default Ember$.extend({}, BaseSelectors, {
       'eventMetaDisplayIcon': '.rsa-icon-arrow-right-8-lined'
     },
     'investigate': {
+      'queryBuilder': '.rsa-investigate-breadcrumb .rsa-query-meta',
+      'queryBuilderButton': '.rsa-investigate-breadcrumb .rsa-query-meta .execute-query',
+      'queryBuilderTypeaheadSuggestions': '.rsa-query-fragment-dropdown',
       'breadcrumbMoreButton': '.rsa-investigate-breadcrumb__more .rsa-form-button',
       'breadcrumbQueryButton': '.rsa-investigate-breadcrumb__submit .rsa-form-button',
       'breadcrumbQueryInput': '.rsa-investigate-breadcrumb__query-input input',

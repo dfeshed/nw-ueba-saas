@@ -1,0 +1,37 @@
+{{#if editActive}}
+  {{#power-select-typeahead
+    searchMessage=null
+    placeholder=placeholder
+    allowClear=false
+    options=options
+    selected=filter
+    defaultHighlighted=null
+    dropdownClass="rsa-query-fragment-dropdown"
+    search=(action "lookup")
+    onfocus=(action 'onfocus')
+    onblur=(action 'onblur')
+    onkeydown=(action 'parseInput')
+    onchange=(action 'updateFilter') as |option|}}
+    {{#if option.metaName}}
+      {{option.metaName}}
+      {{#if option.displayName}}
+        ({{option.displayName}})
+      {{/if}}
+    {{else}}
+      {{option}}
+    {{/if}}
+  {{/power-select-typeahead}}
+{{else}}
+  <div class="meta" {{action 'toggleSelect'}}>
+    {{filter}}
+  </div>
+
+  {{rsa-icon
+    name="close"
+    title=(t 'queryBuilder.deleteFilter')
+    size="smaller"
+    class="delete-filter-fragment"
+    click=(action 'deleteFilter')}}
+{{/if}}
+
+{{yield}}

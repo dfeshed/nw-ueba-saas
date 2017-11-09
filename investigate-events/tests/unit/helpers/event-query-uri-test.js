@@ -6,11 +6,16 @@ module('Unit | Helper | event query uri');
 const serviceId = 'id1';
 const startTime = 1;
 const endTime = 2;
-const drillKey = 'foo';
-const drillValue = 'bar';
-const drillKey2 = 'ip.src';
+
+const drillMetaKey = 'ip.dest';
+const drillOperator = '=';
+const encodedDrillOperator = '%3D';
+const drillValue = '1.2.3.3';
+
+const drillMetaKey2 = 'ip.src';
+const drillOperator2 = '>';
+const encodedDrillOperator2 = '%3E';
 const drillValue2 = '1.2.3.4';
-const complexQueryString = 'foo > 2 && bar contains "exe"';
 
 const query = {
   serviceId,
@@ -28,21 +33,9 @@ const drillQuery = {
   endTime,
   metaFilter: {
     conditions: [{
-      queryString: `${drillKey}=${drillValue}`,
-      isKeyValuePair: true,
-      key: drillKey,
+      meta: drillMetaKey,
+      operator: drillOperator,
       value: drillValue
-    }]
-  }
-};
-
-const complexDrillQuery = {
-  serviceId,
-  startTime,
-  endTime,
-  metaFilter: {
-    conditions: [{
-      queryString: complexQueryString
     }]
   }
 };
@@ -55,25 +48,18 @@ test('it works', function(assert) {
     'Expected URI string with service id, start & end time, and no drill condition in meta filter.'
   );
 
-  result = eventQueryUri([ query, drillKey, drillValue ]);
+  result = eventQueryUri([ query, drillMetaKey, drillOperator, drillValue ]);
   assert.equal(
     result,
-    [ serviceId, startTime, endTime, `${drillKey}=${drillValue}` ].join('/'),
+    [ serviceId, startTime, endTime, `${drillMetaKey}%20${encodedDrillOperator}%20${drillValue}` ].join('/'),
     'Expected URI string with service id, start & end time, and 1 drill condition in meta filter.'
   );
 
-  result = eventQueryUri([ drillQuery, drillKey2, drillValue2 ]);
+  result = eventQueryUri([ drillQuery, drillMetaKey2, drillOperator2, drillValue2 ]);
   assert.equal(
     result,
-    [ serviceId, startTime, endTime, `${drillKey}=${drillValue}`, `${drillKey2}=${drillValue2}` ].join('/'),
+    [ serviceId, startTime, endTime, `${drillMetaKey}%20${encodedDrillOperator}%20${drillValue}`, `${drillMetaKey2}%20${encodedDrillOperator2}%20${drillValue2}` ].join('/'),
     'Expected URI string with service id, start & end time, and 2 drill conditions in meta filter.'
-  );
-
-  result = eventQueryUri([ complexDrillQuery, drillKey2, drillValue2 ]);
-  assert.equal(
-    result,
-    [ serviceId, startTime, endTime, encodeURIComponent(complexQueryString), `${drillKey2}=${drillValue2}` ].join('/'),
-    'Expected URI string with service id, start & end time, a complex condition & a simple key-value pair condition.'
   );
 
 });

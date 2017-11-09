@@ -4,10 +4,10 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
-const stateToComputed = ({ investigate }) => ({
-  aliases: investigate.dictionaries.aliases,
-  language: investigate.dictionaries.language,
-  reconSize: investigate.data.reconSize
+const stateToComputed = (state) => ({
+  aliases: state.investigate.dictionaries.aliases,
+  language: state.investigate.dictionaries.language,
+  reconSize: state.investigate.data.reconSize
 });
 
 const EventsTable = Component.extend({

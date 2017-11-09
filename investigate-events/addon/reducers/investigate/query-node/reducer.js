@@ -18,6 +18,10 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
+  [ACTION_TYPES.SET_QUERY_FILTER_META]: (state, { payload }) => {
+    return Immutable.setIn(state, ['metaFilter', 'conditions'], payload);
+  },
+
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
     let reducerState = {};
     if (payload && payload.investigate && payload.investigate.queryNode) {
@@ -60,10 +64,6 @@ export default handleActions({
 
   [ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS]: (state, { payload }) => {
     return state.merge(payload);
-  },
-
-  [ACTION_TYPES.SET_QUERY_STRING]: (state, { payload }) => {
-    return state.set('queryString', payload);
   },
 
   [ACTION_TYPES.SET_QUERY_TIME_RANGE]: (state, { payload }) => {

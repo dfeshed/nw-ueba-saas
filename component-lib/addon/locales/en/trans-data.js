@@ -112,6 +112,20 @@ export default {
       admin: 'Admin'
     }
   },
+  queryBuilder: {
+    noMatches: 'No matches found',
+    enterValue: 'Enter a single value',
+    insertFilter: 'Insert new filter',
+    query: 'Query with filters',
+    open: 'Open in a new tab',
+    delete: 'Delete selected filters',
+    deleteFilter: 'Delete this filter',
+    edit: 'Edit this filter',
+    placeholder: 'Enter a Meta Key and Value (optional)',
+    querySelected: 'Query with selected filters',
+    querySelectedNewTab: 'Query with selected filters in a new tab'
+  },
+
   ipConnections: {
     ipCount: '({{count}} IPs)',
     clickToCopy: 'Click to copy IP address',

@@ -4,14 +4,18 @@ import service from 'ember-service/inject';
 import {
   initializeInvestigate
 } from 'investigate-events/actions/data-creators';
+
 import {
   setMetaPanelSize,
   setReconPanelSize,
   setSelectedEvent,
   setReconOpen,
-  setReconClosed
+  setReconClosed,
+  setQueryFilterMeta
 } from 'investigate-events/actions/interaction-creators';
-// import { eventQueryUri } from 'investigate-events/helpers/event-query-uri';
+
+import { uriEncodeEventQuery, uriEncodeMetaFilterConditions } from 'investigate-events/actions/helpers/query-utils';
+
 import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
@@ -95,6 +99,18 @@ export default Route.extend({
           entityId: undefined
         }
       });
+    },
+
+    executeQuery(filters, externalLink = false) {
+      if (externalLink) {
+        const state = this.get('redux').getState().investigate.queryNode;
+        const query = `${state.serviceId}/${state.startTime}/${state.endTime}/${uriEncodeMetaFilterConditions(filters)}`;
+        const path = `${window.location.origin}/investigate/query/${query}`;
+        window.open(path, '_blank');
+      } else {
+        this.get('redux').dispatch(setQueryFilterMeta(filters));
+        this.transitionTo('query', uriEncodeEventQuery(this.get('redux').getState().investigate.queryNode));
+      }
     },
 
     metaPanelSize(size = META_PANEL_SIZES.DEFAULT) {

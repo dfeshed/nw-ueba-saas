@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { test } from 'qunit';
+import { skip } from 'qunit';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import moduleForLogin from 'sa/tests/helpers/module-for-login';
 
@@ -17,7 +17,7 @@ moduleForLogin('Acceptance | theme test', {
   }
 });
 
-test('theme will rehydrate from local storage on boot', function(assert) {
+skip('theme will rehydrate from local storage on boot', function(assert) {
   assert.expect(9);
 
   assert.ok($('body').hasClass('dark-theme'));

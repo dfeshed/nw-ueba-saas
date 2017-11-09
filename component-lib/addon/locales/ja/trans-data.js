@@ -112,6 +112,19 @@ export default {
       admin: 'ja_Admin'
     }
   },
+  queryBuilder: {
+    enterValue: 'ja_Enter a single value',
+    noMatches: 'ja_No matches found',
+    insertFilter: 'ja_Insert new filter',
+    query: 'ja_Query with filters',
+    open: 'ja_Open in a new tab',
+    delete: 'ja_Delete selected filters',
+    deleteFilter: 'ja_Delete this filter',
+    edit: 'ja_Edit this filter',
+    placeholder: 'ja_Enter a Meta Key and Value (optional)',
+    querySelected: 'ja_Query with selected filters',
+    querySelectedNewTab: 'ja_Query with selected filters in a new tab'
+  },
   ipConnections: {
     ipCount: '(ja_{{count}} IPs)',
     clickToCopy: 'ja_Click to copy IP address',

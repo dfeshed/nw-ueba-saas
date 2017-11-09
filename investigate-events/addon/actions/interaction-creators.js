@@ -21,14 +21,14 @@ export const setReconPanelSize = (size) => {
   }
 };
 
-export const setQueryParamsForTests = (params) => ({
-  type: ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS,
+export const setQueryFilterMeta = (params) => ({
+  type: ACTION_TYPES.SET_QUERY_FILTER_META,
   payload: params
 });
 
-export const setQueryString = (queryString) => ({
-  type: ACTION_TYPES.SET_QUERY_STRING,
-  payload: queryString
+export const setQueryParamsForTests = (params) => ({
+  type: ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS,
+  payload: params
 });
 
 /**
