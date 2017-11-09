@@ -57,11 +57,7 @@ public class TransformationServiceTest {
     @Test
     public void testRunAuthenticationSchemaSrcMachineTransformations_unresolvedMachineName() {
 
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
-                "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                "srcMachineId", "10.20.30.40", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+        AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "10.20.3.40");
         List<AbstractInputDocument> events = Arrays.asList(authenticationRawEvent);
         List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
 
@@ -71,15 +67,31 @@ public class TransformationServiceTest {
     @Test
     public void testRunAuthenticationSchemaSrcMachineTransformations_resolvedMachineName() {
 
-        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
-                "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                "srcMachineId", "dwef043.fortscale.com", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+        AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "SPBGDCW01.prod.quest.corp");
         List<AbstractInputDocument> events = Arrays.asList(authenticationRawEvent);
         List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
 
-        Assert.assertEquals("dwef.fortscale.com" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("SPBGDCW.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+    }
+
+    private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate, String srcMachineName) {
+        return new AuthenticationRawEvent(
+                eventDate,
+                "eventId",
+                "dataSource",
+                "userId",
+                "operationType",
+                null,
+                EventResult.SUCCESS,
+                "userName",
+                "userDisplayName",
+                null,
+                "srcMachineId",
+                srcMachineName,
+                "dstMachineId",
+                "dstMachineName",
+                "dstMachineDomain",
+                "resultCode");
     }
 
     @Configuration

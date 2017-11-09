@@ -31,34 +31,28 @@ public class PatternReplacementTransformerTest {
                         null,
                         AuthenticationTransformerManager.CLUSTER_POST_REPLACEMENT_CONDITION);
 
-        AuthenticationRawEvent authRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
-                "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                "srcMachineId", "dwef043.fortscale.com", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+        AuthenticationRawEvent authRawEvent = createAuthenticationEvent(Instant.now(), "dwef043.fortscale.com");
         List<AbstractInputDocument> transformedEvents = patternReplacementTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
 
         Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
     }
 
-    @Test
-    public void testTransformAuthenticationEventUnresolvedSrcMachineName() {
-        PatternReplacementTransformer patternReplacementTransformer =
-                new PatternReplacementTransformer(
-                        AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
-                        AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME,
-                        AuthenticationTransformerManager.IP_ADDRESS_PATTERN,
-                        "",
-                        null,
-                        null);
-
-        AuthenticationRawEvent authRawEvent = new AuthenticationRawEvent(Instant.now(), "eventId",
-                "dataSource", "userId", "operationType", null,
-                EventResult.SUCCESS, "userName", "userDisplayName", null,
-                "srcMachineId", "10.20.30.40", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
-        List<AbstractInputDocument> transformedEvents = patternReplacementTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
-
-        Assert.assertEquals("", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
+    private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate, String srcMachineName) {
+        return new AuthenticationRawEvent(eventDate,
+                "eventId",
+                "dataSource",
+                "userId",
+                "operationType",
+                null,
+                EventResult.SUCCESS,
+                "userName",
+                "userDisplayName",
+                null,
+                "srcMachineId",
+                srcMachineName,
+                "dstMachineId",
+                "dstMachineName",
+                "dstMachineDomain",
+                "resultCode");
     }
 }
