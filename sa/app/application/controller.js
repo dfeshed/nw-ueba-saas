@@ -3,6 +3,9 @@ import computed from 'ember-computed';
 import Controller from 'ember-controller';
 import service from 'ember-service/inject';
 
+const cssVariablesSupported = window.CSS &&
+    window.CSS.supports && window.CSS.supports('--a', 0);
+
 export default Controller.extend({
   redux: service(),
 
@@ -34,6 +37,33 @@ export default Controller.extend({
     $('body').addClass(`${themeName}-theme`);
   },
 
+  _generateFileName(themeName) {
+    const stylesheets = $('link[rel=stylesheet]').filter(function(i, style) {
+      return style.href.indexOf('assets/sa-') > -1;
+    });
+    if (stylesheets && stylesheets[0] && stylesheets[0].href) {
+      const [ stylesheet ] = stylesheets;
+      const { href } = stylesheet;
+      const pattern = new RegExp('/assets/sa-(.*)\.css');
+      const fingerprint = pattern.exec(href);
+      if (fingerprint && fingerprint[1]) {
+        return `/assets/${themeName}-${fingerprint[1]}.css`;
+      }
+    }
+    return `/assets/${themeName}.css`;
+  },
+
+  _fetchStylesheet(themeName) {
+    if (!cssVariablesSupported) {
+      const themeUrl = this._generateFileName(themeName);
+      const themeLink = document.createElement('link');
+      themeLink.href = themeUrl;
+      themeLink.rel = 'stylesheet';
+      themeLink.type = 'text/css';
+      document.body.appendChild(themeLink);
+    }
+  },
+
   init() {
     this._super(...arguments);
 
@@ -51,6 +81,7 @@ export default Controller.extend({
       if (themeName !== activeTheme) {
         activeTheme = themeName;
         this._updateBodyClass(themeName);
+        this._fetchStylesheet(themeName);
       }
     });
   }

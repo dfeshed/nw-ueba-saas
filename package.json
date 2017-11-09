@@ -109,6 +109,14 @@
     "sockjs-client-web": "1.1.1",
     "tether": "^1.4.0",
     "normalizr": "^3.2.2",
+    "mkdirp": "^0.5.1",
+    "mocha": "^4.0.1",
+    "broccoli-merge-trees": "^2.0.0",
+    "broccoli-theme": "file:broccoli-theme",
+    "broccoli": "^1.1.4",
+    "broccoli-caching-writer": "^3.0.3",
+    "postcss": "^6.0.14",
+    "postcss-custom-properties": "^6.2.0",
     "ember-context-menu": "0.4.0"
   },
   "engines": {

@@ -1,0 +1,14 @@
+.light-theme {
+  --bg-color: 255,255,255;
+  --color: 0,0,0;
+}
+
+.dark-theme {
+  --bg-color: 0,0,0;
+  --color: 255,255,255;
+}
+
+body {
+  background-color: rgba(var(--bg-color), 1);
+  color: rgba(var(--color), 1);
+}

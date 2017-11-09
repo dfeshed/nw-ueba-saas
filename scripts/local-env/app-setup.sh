@@ -56,6 +56,7 @@ prepareApp respond
 prepareApp context
 prepareApp preferences
 prepareApp test-helpers
+prepareApp broccoli-theme
 prepareApp sa
 
 cd $CWD

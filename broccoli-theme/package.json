@@ -1,0 +1,21 @@
+{
+  "name": "broccoli-theme",
+  "version": "0.0.0",
+  "description": "broccoli compiler for IE11",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "postcss": "^6.0.14",
+    "broccoli-caching-writer": "^3.0.3",
+    "postcss-custom-properties": "^6.2.0"
+  },
+  "devDependencies": {
+    "broccoli": "^1.1.4",
+    "mocha": "^4.0.0"
+  }
+}
