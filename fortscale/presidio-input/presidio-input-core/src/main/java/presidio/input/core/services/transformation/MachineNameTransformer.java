@@ -8,6 +8,8 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.utils.ReflectionUtils;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MachineNameTransformer implements Transformer {
 
@@ -17,8 +19,7 @@ public class MachineNameTransformer implements Transformer {
     private final String inputFieldName;
     private final PatternReplacement patternReplacement;
 
-    public static final String IP_ADDRESS_PATTERN = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-
+    private final Pattern ipPattern = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
     public MachineNameTransformer(String inputFieldName, String outputFieldName,
                                   String pattern,
@@ -41,7 +42,8 @@ public class MachineNameTransformer implements Transformer {
 
             //IP address is transformed to empty string
             String replacedPattern;
-            if(fieldValue1Str.matches(IP_ADDRESS_PATTERN)) {
+            Matcher matcher = ipPattern.matcher(fieldValue1Str);
+            if(matcher.matches()) {
                 replacedPattern = StringUtils.EMPTY;
             }
             else {
