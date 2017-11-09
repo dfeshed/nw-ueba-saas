@@ -1,11 +1,8 @@
 package presidio.input.core;
 
 
-import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.shell.command.PresidioCommands;
-import fortscale.domain.core.EventResult;
-import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -18,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
@@ -31,13 +27,6 @@ import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
-import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
-import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.List;
 import java.util.Properties;
 
 
