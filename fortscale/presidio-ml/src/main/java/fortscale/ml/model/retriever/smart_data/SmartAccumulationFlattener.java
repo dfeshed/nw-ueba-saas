@@ -1,7 +1,6 @@
 package fortscale.ml.model.retriever.smart_data;
 
 import fortscale.utils.logging.Logger;
-import org.junit.Assert;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 
 import java.time.Duration;
@@ -24,14 +23,20 @@ public class SmartAccumulationFlattener {
             Instant startInstant = accumulatedSmartRecord.getStartInstant();
 
             // todo: add this info into the smart record
-            Assert.assertTrue(accumulatedSmartRecord.getAdeEventType().toLowerCase().endsWith("hourly"));
 
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
                 Map<String,Double> featureNameToScore = new HashMap<>();
                 for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap().entrySet()) {
-                    Double activityTimeScore = aggrFeature.getValue().get(activityTime);
+
                     String featureName = aggrFeature.getKey();
+                    if(!featureName.toLowerCase().endsWith("hourly"))
+                    {
+                        throw new RuntimeException(String.format("featureName=%s does contain hourly suffix",featureName));
+                    }
+
+                    Double activityTimeScore = aggrFeature.getValue().get(activityTime);
+
                     if (activityTimeScore == null) {
                         logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName,activityTime);
                     }
