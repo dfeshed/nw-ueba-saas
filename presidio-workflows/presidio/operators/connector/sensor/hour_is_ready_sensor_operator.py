@@ -47,33 +47,23 @@ class HourIsReadySensorOperator(BaseSensorOperator):
                 raise EnvironmentError("PRESIDIO_HOME is not configured for user {0}".format(user))
             source_properties_file = os.path.join(presidio_home, "flume", "counters", "source", self._schema_name)
             logging.debug("source file = " + source_properties_file)
-     
 
             if not os.path.isfile(source_properties_file):
                 logging.info("No count file for source in path {0}".format(source_properties_file))
                 return False
 
-)
-
-
             latest_ready_hour = self.get_counter_property(LATEST_READY_HOUR_MARKER, source_properties_file)
             if latest_ready_hour is None:
                 raise RuntimeError("No {0} property!".format(LATEST_READY_HOUR_MARKER))
 
-           
-            
-            logging.info("latest_ready_hour = " + latest_ready_hour)
-
             # Convert the date times to epoch representation. example: 2017-06-27T19\:00\:00Z -> 1498579200.0
             hour_start_time_epoch_seconds = time.mktime(
-            datetime.strptime(self._hour_start_time.replace("\\", ""),
+                datetime.datetime.strptime(self._hour_start_time.replace("\\", ""),
                                            "%Y-%m-%dT%H:%M:%SZ").timetuple())
             latest_ready_hour_epoch_seconds = time.mktime(
                 datetime.datetime.strptime(latest_ready_hour.replace("\\", ""),
                                            "%Y-%m-%dT%H:%M:%SZ").timetuple())
             hour_is_ready = hour_start_time_epoch_seconds <= latest_ready_hour_epoch_seconds
-
-
 
             if hour_is_ready:
                 logging.info("Hour {0} is ready!".format(self._hour_start_time))
