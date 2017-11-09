@@ -11,11 +11,7 @@ export default {
     'description': 'NetWitness Agent Service',
     'certificateValidation': 'thumbprint'
   },
-  'windowsLogCollection': {
-    'channels': 'security',
-    'enableHeartbeat': false,
-    'enableTestLog': false
-  },
-  'generateLogConfigOnly': false,
-  'enableWindowsLogCollection': false
+  'logCollectionConfig': {
+
+  }
 };

@@ -99,7 +99,7 @@
     {{#if isLogCollectionEnabled}}
 
       <div class="col-xs-12 field">
-        {{rsa-form-input label=(t 'packager.configurationName') value=configData.windowsLogCollection.configName isError=isError errorMessage=errorMessage}}
+        {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=errorMessage}}
       </div>
 
       <div class="col-xs-12 field">
@@ -110,7 +110,7 @@
 
           {{#power-select
             placeholder=(t 'packager.placeholder')
-            options=configData.windowsLogCollection.primary
+            options=configData.logCollectionConfig.primaryDestination
             selected=selectedPrimary
             triggerClass=errorClass
             dropdownClass=errorClass
@@ -128,7 +128,7 @@
           </div>
           {{#power-select
             placeholder=(t 'packager.placeholder')
-            options=configData.windowsLogCollection.primary
+            options=configData.logCollectionConfig.primary
             selected=selectedSecondary
             searchPlaceholder=(t 'packager.searchPlaceholder')
             onchange=(action 'setSelect' 'secondaryDestination''selectedSecondary') as |option|}}
@@ -138,7 +138,7 @@
       </div>
 
       <div class="col-xs-12 field">
-        {{rsa-form-input label=(t 'packager.channels') value=configData.windowsLogCollection.channels}}
+        {{rsa-form-input label=(t 'packager.channels') value=configData.logCollectionConfig.channels}}
       </div>
 
       <div class="col-xs-5 field">
@@ -159,10 +159,10 @@
       </div>
 
       <div class="field">
-        <label class="rsa-form-checkbox-label {{if configData.windowsLogCollection.enableHeartbeat 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.enableHeartbeat 'checked'}}">
           {{rsa-form-checkbox
-            checked=configData.windowsLogCollection.enableHeartbeat
-            change=(action 'toggleProperty' "configData.windowsLogCollection.enableHeartbeat")}}
+            checked=configData.logCollectionConfig.enableHeartbeat
+            change=(action 'toggleProperty' "configData.logCollectionConfig.enableHeartbeat")}}
           {{t 'packager.heartbeatLogs'}}
         </label>
         {{#if enableHeartFrequency}}
@@ -185,10 +185,10 @@
       </div>
 
       <div class="field">
-        <label class="rsa-form-checkbox-label {{if configData.windowsLogCollection.enableTestLog 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.enableTestLog 'checked'}}">
           {{rsa-form-checkbox
-            checked=configData.windowsLogCollection.enableTestLog
-            change=(action 'toggleProperty' "configData.windowsLogCollection.enableTestLog")}}
+            checked=configData.logCollectionConfig.enableTestLog
+            change=(action 'toggleProperty' "configData.logCollectionConfig.enableTestLog")}}
           {{t 'packager.testLog'}}
         </label>
       </div>

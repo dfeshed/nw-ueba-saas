@@ -45,7 +45,7 @@ const formComponent = Component.extend({
   @alias('configData.packageConfig.forceOverwrite')
   forceOverwrite: false,
 
-  @alias('configData.windowsLogCollection.enableHeartbeat')
+  @alias('configData.logCollectionConfig.enableHeartbeat')
   enableHeartFrequency: false,
 
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
@@ -54,21 +54,19 @@ const formComponent = Component.extend({
   },
 
   validateMandatoryFields() {
-    if (this.get('configData.enableWindowsLogCollection')) {
-      if (isEmpty(this.get('configData.windowsLogCollection.configName'))) {
-        this.setProperties({
-          isError: true,
-          errorMessage: this.get('i18n').t('packager.emptyName')
-        });
-        return true;
-      }
-      if (!isEmpty(this.get('configData.windowsLogCollection.primaryDestination')) && isEmpty(this.get('selectedPrimary'))) {
-        this.setProperties({
-          errorClass: 'is-error',
-          className: 'rsa-form-label is-error power-select'
-        });
-        return true;
-      }
+    if (isEmpty(this.get('configData.logCollectionConfig.configName'))) {
+      this.setProperties({
+        isError: true,
+        errorMessage: this.get('i18n').t('packager.emptyName')
+      });
+      return true;
+    }
+    if (!isEmpty(this.get('configData.logCollectionConfig.primaryDestination')) && isEmpty(this.get('selectedPrimary'))) {
+      this.setProperties({
+        errorClass: 'is-error',
+        className: 'rsa-form-label is-error power-select'
+      });
+      return true;
     }
     return false;
   },
@@ -89,23 +87,25 @@ const formComponent = Component.extend({
       if (!isEmpty(autoUninstall[0])) {
         this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
       }
-      if (!this.validateMandatoryFields()) {
+      if (!this.get('isLogCollectionEnabled')) {
+        // only package data need to be send when windows log collection is not enable
+        this.send('setConfig', { packageConfig: this.get('configData.packageConfig') });
+      } else if (!this.validateMandatoryFields()) {
         this.resetProperties();
-        this.send('setConfig', this.get('configData'));
+        this.send('setConfig', this.get('configData'), false);
       }
     },
 
     generateLogConfig() {
       if (!this.validateMandatoryFields()) {
         this.resetProperties();
-        this.set('configData.generateLogConfigOnly', true);
-        this.send('setConfig', this.get('configData'));
+        // only log config data need to be send on click of this button.
+        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') });
       }
     },
 
     enableLogCollection() {
       this.toggleProperty('isGenerateLogDisabled');
-      this.set('configData.enableWindowsLogCollection', true);
       this.toggleProperty('isLogCollectionEnabled');
     },
 
@@ -115,7 +115,7 @@ const formComponent = Component.extend({
 
     setSelect(property, selected, option) {
       this.set(selected, option);
-      this.set(`configData.windowsLogCollection.${property}`, option);
+      this.set(`configData.logCollectionConfig.${property}`, option);
     }
   }
 });
