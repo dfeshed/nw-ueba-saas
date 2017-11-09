@@ -22,7 +22,6 @@ public class SmartAccumulationFlattener {
         {
             Instant startInstant = accumulatedSmartRecord.getStartInstant();
 
-            // todo: add this info into the smart record
 
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
@@ -30,19 +29,21 @@ public class SmartAccumulationFlattener {
                 for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap().entrySet()) {
 
                     String featureName = aggrFeature.getKey();
+                    // todo: add this info into the smart record
                     if(!featureName.toLowerCase().endsWith("hourly"))
                     {
-                        throw new RuntimeException(String.format("featureName=%s does contain hourly suffix",featureName));
-                    }
-
-                    Double activityTimeScore = aggrFeature.getValue().get(activityTime);
-
-                    if (activityTimeScore == null) {
-                        logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName,activityTime);
+                        logger.warn("featureName={} does contain hourly suffix",featureName);
                     }
                     else {
-                        logger.debug("score={} for aggrFeature={} at activityTime={}", activityTimeScore, featureName, activityTime);
-                        featureNameToScore.put(featureName, activityTimeScore);
+
+                        Double activityTimeScore = aggrFeature.getValue().get(activityTime);
+
+                        if (activityTimeScore == null) {
+                            logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName, activityTime);
+                        } else {
+                            logger.debug("score={} for aggrFeature={} at activityTime={}", activityTimeScore, featureName, activityTime);
+                            featureNameToScore.put(featureName, activityTimeScore);
+                        }
                     }
                 }
 
