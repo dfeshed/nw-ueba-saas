@@ -3,7 +3,6 @@ package fortscale.ml.model.retriever;
 import com.google.common.collect.Sets;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.*;
-import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelector;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
@@ -142,11 +141,11 @@ public class AccumulatedSmartValueRetrieverTest {
     @Test
     public void calcNumOfPartitions()
     {
-        List<SmartAggregatedRecordDataContainer> data = new LinkedList<>();
+        List<AccumulatedSmartRecord> data = new LinkedList<>();
         Instant startTime = Instant.EPOCH;
         for (int i=0; i<42 ; i++)
         {
-            data.add(new SmartAggregatedRecordDataContainer(startTime,new HashMap<>()));
+            data.add(new AccumulatedSmartRecord(startTime,startTime.plus(Duration.ofHours(1)),"",""));
             startTime = startTime.plus(Duration.ofHours(1));
         }
         Set<Long> partitionIds = retriever.calcNumOfPartitions(data);
