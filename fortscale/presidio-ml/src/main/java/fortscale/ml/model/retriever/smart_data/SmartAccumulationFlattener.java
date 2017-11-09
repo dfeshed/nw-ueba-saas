@@ -1,8 +1,10 @@
 package fortscale.ml.model.retriever.smart_data;
 
 import fortscale.utils.logging.Logger;
+import org.junit.Assert;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,10 +17,15 @@ import java.util.Map;
 public class SmartAccumulationFlattener {
     protected static final Logger logger = Logger.getLogger(SmartAccumulationFlattener.class);
 
-    public static List<SmartAggregatedRecordDataContainer> flattenSmartRecordToSmartAggrData(Instant startTime, List<AccumulatedSmartRecord> accumulatedSmartRecords) {
+    public static List<SmartAggregatedRecordDataContainer> flattenSmartRecordToSmartAggrData(List<AccumulatedSmartRecord> accumulatedSmartRecords) {
         List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = new ArrayList<>();
         for (AccumulatedSmartRecord accumulatedSmartRecord: accumulatedSmartRecords)
         {
+            Instant startInstant = accumulatedSmartRecord.getStartInstant();
+
+            // todo: add this info into the smart record
+            Assert.assertTrue(accumulatedSmartRecord.getAdeEventType().toLowerCase().endsWith("hourly"));
+
             for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
             {
                 Map<String,Double> featureNameToScore = new HashMap<>();
@@ -33,7 +40,9 @@ public class SmartAccumulationFlattener {
                         featureNameToScore.put(featureName, activityTimeScore);
                     }
                 }
-                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startTime,featureNameToScore));
+
+                // todo: make more generic (duration should not be only of hours)
+                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startInstant.plus(Duration.ofHours(activityTime)),featureNameToScore));
             }
         }
         return smartAggregatedRecordDataContainerList;
