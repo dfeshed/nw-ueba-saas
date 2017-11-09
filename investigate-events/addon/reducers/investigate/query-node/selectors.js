@@ -1,5 +1,5 @@
 import reselect from 'reselect';
-import { defaultTimeRangeId } from 'investigate-events/constants/time-ranges';
+import timeRanges, { defaultTimeRangeId } from 'investigate-events/constants/time-ranges';
 
 const { createSelector } = reselect;
 
@@ -30,5 +30,12 @@ export const selectedTimeRangeId = createSelector(
   (serviceId, previouslySelectedTimeRanges) => {
     const last = previouslySelectedTimeRanges[serviceId];
     return last ? last : defaultTimeRangeId;
+  }
+);
+
+export const selectedTimeRange = createSelector(
+  [selectedTimeRangeId],
+  (id) => {
+    return timeRanges.find((el) => el.id === id);
   }
 );

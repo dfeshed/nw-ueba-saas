@@ -7,6 +7,8 @@ import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
 import { eventsGetFirst } from './events-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
+import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
+import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 const { log } = console;
 
@@ -149,6 +151,13 @@ export const getServiceSummary = () => {
       meta: {
         onFailure(response) {
           log('getServiceSummary, onFailure', response);
+        },
+        onSuccess() {
+          // We always have a valid time range whether it's the default of
+          // 24 hours or a value pulled from localstorage. So get that range and
+          // set the query time range.
+          const range = selectedTimeRange(getState());
+          dispatch(setQueryTimeRange(range));
         }
       }
     });

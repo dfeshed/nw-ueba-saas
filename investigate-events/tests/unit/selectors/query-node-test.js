@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import {
   hasMetaFilters,
   queryParams,
+  selectedTimeRange,
   selectedTimeRangeId
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { defaultTimeRangeId } from 'investigate-events/constants/time-ranges';
@@ -108,4 +109,39 @@ test('will not retrieve incorrect range with multiple ranges', function(assert) 
   const selectedTimeRange = selectedTimeRangeId(state);
 
   assert.notEqual(selectedTimeRange, id2, `should not be ${id2}`);
+});
+
+test('retrieve correct default time range object', function(assert) {
+  assert.expect(2);
+
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: 'sd1',
+        previouslySelectedTimeRanges: {}
+      }
+    }
+  };
+  const range = selectedTimeRange(state);
+
+  assert.equal(typeof(range), 'object', 'range is of type "object"');
+  assert.equal(range.id, defaultTimeRangeId, `default object ${defaultTimeRangeId} was returned`);
+});
+
+test('retrieve correct specified time range object', function(assert) {
+  assert.expect(2);
+
+  const id = 'LAST_30_DAYS';
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: 'sd1',
+        previouslySelectedTimeRanges: { sd1: id }
+      }
+    }
+  };
+  const range = selectedTimeRange(state);
+
+  assert.equal(typeof(range), 'object', 'range is of type "object"');
+  assert.equal(range.id, id, `object for ${id} was returned`);
 });
