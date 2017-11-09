@@ -22,10 +22,10 @@ public class FileInputToOutputConverter implements InputOutputConverter {
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setAbsoluteSrcFilePath(transformedEvent.getSrcFilePath());
         outputEvent.setAbsoluteSrcFolderFilePath(transformedEvent.getSrcFolderPath());
-        outputEvent.setSrcDriveShared(transformedEvent.isSrcDriveShared());
+        outputEvent.setIsSrcDriveShared(transformedEvent.isSrcDriveShared());
         outputEvent.setAbsoluteDstFilePath(transformedEvent.getDstFilePath());
         outputEvent.setAbsoluteDstFolderFilePath(transformedEvent.getDstFolderPath());
-        outputEvent.setDstDriveShared(transformedEvent.isDstDriveShared());
+        outputEvent.setIsDstDriveShared(transformedEvent.isDstDriveShared());
         outputEvent.setFileSize(transformedEvent.getFileSize());
         outputEvent.setResultCode(transformedEvent.getResultCode());
         return outputEvent;
