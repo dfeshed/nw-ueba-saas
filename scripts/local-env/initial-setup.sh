@@ -6,7 +6,6 @@
 # NODE_VERSION
 # YARN_VERSION
 # EMBER_CLI_VERSION
-# PHANTOMJS_VERSION
 scriptDir="$(dirname "$0")"
 source $scriptDir/versions
 source $scriptDir/_util.sh
@@ -14,7 +13,7 @@ source $scriptDir/_util.sh
 # Setting up git hook
 ln -s -f ../../scripts/hooks/pre-commit $scriptDir/../.git/hooks/pre-commit
 
-echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nYarn: $YARN_VERSION\nember-cli: $EMBER_CLI_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
+echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nYarn: $YARN_VERSION\nember-cli: $EMBER_CLI_VERSION\n"
 
 function hasVersion {
   if [[ $($1 --version) =~ "$2" ]]
@@ -77,16 +76,6 @@ function installGlobalDependency {
 
 installGlobalDependency "Yarn" "yarn" "yarn" $YARN_VERSION
 installGlobalDependency "ember-cli" "ember-cli" "ember" $EMBER_CLI_VERSION
-
-# install phantomjs-prebuilt if it hasn't been
-if [[ "$(hasVersion "phantomjs" $PHANTOMJS_VERSION)" == "false" ]]
-then
-  info "Installing phantomjs-prebuilt"
-  npm install -g phantomjs-prebuilt@$PHANTOMJS_PREBUILT_VERSION
-  success "phantomjs-prebuilt installed!"
-else
-  info "Proper phantomjs-prebuilt version already installed"
-fi
 
 # Have to do this so that yarn doesn't go to registry.yarnpkg which causes
 # tier2 permission issues. registry.yarnpkg is a reverse proxy placeholder

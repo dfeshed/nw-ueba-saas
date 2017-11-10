@@ -127,7 +127,10 @@ function buildEmberApp {
 
 function buildMockServer {
   cd mock-server
+
+  setWebProxy
   yarn
+  unsetWebProxy
 
   # Run eslint/tests on mock-server code
   local shouldTestApp=$(doTestApp mock-server)
@@ -169,8 +172,6 @@ cd $CWD
 node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
 checkError "Translations do not sync up between languages"
 
-setWebProxy
-
 buildMockServer
 buildEmberApp streaming-data false true
 buildEmberApp component-lib false
@@ -185,8 +186,6 @@ buildEmberApp investigate-hosts false true
 buildEmberApp investigate-files false true
 buildEmberApp respond false true
 buildEmberApp sa true true
-
-unsetWebProxy
 
 success "All apps built"
 info "***********************"

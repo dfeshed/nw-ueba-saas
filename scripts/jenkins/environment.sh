@@ -67,7 +67,7 @@ function installNodeTarballIfNecessary {
 # $3, path to command
 # $4, desired version to install
 # $5, optional, desired version to check if install needed,
-#   for when installed versions reports something different than version actually insatlled (phantomjs)
+#   for when installed versions reports something different than version actually installed
 function installNPMLibraryIfNecessary {
   local hasPath=$(pathExists $3)
   local versionToCheck="${5:-$4}"
@@ -85,7 +85,7 @@ function installNPMLibraryIfNecessary {
 info "***********************"
 info "Beginning environment setup"
 
-echo -e "Verifying environment for:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION\phantomjs-prebuilt: $PHANTOMJS_VERSION"
+echo -e "Verifying environment for:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION"
 
 createDirectoryIfNecessary $LOCAL_CACHE_ROOT
 
@@ -108,7 +108,6 @@ info "Node is now $(which node)"
 # install NPM libraries if necessary
 installNPMLibraryIfNecessary "yarn" "yarn" $YARN_COMMAND $YARN_VERSION
 installNPMLibraryIfNecessary "ember-cli" "ember" $EMBER_CLI_COMMAND $EMBER_CLI_VERSION
-installNPMLibraryIfNecessary "phantomjs-prebuilt" "phantomjs" $PHANTOMJS_COMMAND $PHANTOMJS_PREBUILT_VERSION $PHANTOMJS_VERSION
 
 # Have to do this so that yarn doesn't go to registry.yarnpkg which causes
 # tier2 permission issues. registry.yarnpkg is a reverse proxy placeholder

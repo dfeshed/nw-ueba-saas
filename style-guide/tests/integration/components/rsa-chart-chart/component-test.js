@@ -18,7 +18,7 @@ test('The Chart component is properly sized when supplied with a margin attribut
   // For some reason the width of the SVG does not equal to the default size specified in rsa-chart.js.
   // It should be 600x150 (like in the test above), yet for some reason it's 1252x150. I don't understand
   // why.
-  const width = 1248;// $el.width();
+  const width = 1250;// $el.width();
   const height = 150;// $el.height();
   assert.equal(this.$('.rsa-chart-background').attr('width'), width, 'Width should be same as component width');
   assert.equal(this.$('.rsa-chart-background').attr('height'), height, 'Height should be same as component height');
