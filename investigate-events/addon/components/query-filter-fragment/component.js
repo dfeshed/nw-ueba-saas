@@ -78,8 +78,7 @@ export default Component.extend(contextMenuMixin, {
       'begins',
       'ends',
       'contains',
-      'regex',
-      'length'
+      'regex'
     ];
 
     if (metaFormat != 'Text') {

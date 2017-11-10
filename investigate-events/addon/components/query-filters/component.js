@@ -306,6 +306,10 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
     },
 
     executeQuery(filters, externalLink) {
+      if (isEmpty(filters)) {
+        filters = this.get('filters');
+      }
+
       const completeFilters = filters.without(this.get('filters.lastObject'));
       this.set('processedPreloadedFilters', completeFilters);
       this.executeQuery(completeFilters, externalLink);

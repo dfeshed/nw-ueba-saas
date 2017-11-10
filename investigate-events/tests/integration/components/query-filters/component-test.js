@@ -117,3 +117,15 @@ test('it allows fragment editing via keyboard', function(assert) {
   triggerKeyUp('Enter', $queryBuilder[0]);
   assert.ok($fragment.hasClass('edit-active'));
 });
+
+test('it can be submitted via submit button', function(assert) {
+  let submitted = false;
+  this.set('submit', () => {
+    submitted = true;
+  });
+
+  this.render(hbs`{{query-filters queryable=true executeQuery=submit}}`);
+  this.$('.execute-query').first().click();
+
+  assert.ok(submitted);
+});
