@@ -61,7 +61,7 @@ const QueryBarComponent = Component.extend({
     return i18n.t('investigate.services.noData');
   },
 
-  @and('selectedService.id', 'hasSummaryData', 'selectedTimeRangeId')
+  @and('selectedService.id', 'hasSummaryData', 'selectedTimeRange')
   hasRequiredValuesToQuery: false
 });
 
