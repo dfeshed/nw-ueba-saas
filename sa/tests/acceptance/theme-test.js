@@ -1,10 +1,11 @@
 import $ from 'jquery';
-import { skip } from 'qunit';
+import { test } from 'qunit';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import moduleForLogin from 'sa/tests/helpers/module-for-login';
 
 moduleForLogin('Acceptance | theme test', {
   beforeEach() {
+    $('body').removeClass('light-theme').addClass('dark-theme');
     localStorage.setItem('reduxPersist:global', JSON.stringify({
       preferences: {
         theme: 'LIGHT'
@@ -17,7 +18,7 @@ moduleForLogin('Acceptance | theme test', {
   }
 });
 
-skip('theme will rehydrate from local storage on boot', function(assert) {
+test('theme will rehydrate from local storage on boot', function(assert) {
   assert.expect(9);
 
   assert.ok($('body').hasClass('dark-theme'));
