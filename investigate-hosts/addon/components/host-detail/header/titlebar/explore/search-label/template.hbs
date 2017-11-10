@@ -1,6 +1,10 @@
 <div class="label-content" {{action 'toggleExploreSearchResults' true}}>
   {{rsa-content-label label=searchValue class="search-label__label"}}
 </div>
-{{#rsa-form-button click=(action 'resetExploreSearch')}}
-  {{rsa-icon size='small' name='close'}}
-{{/rsa-form-button}}
+{{#if searchResultLoading}}
+  {{rsa-loader class="host-explore__loader"}}
+{{else}}
+  {{#rsa-form-button click=(action 'resetExploreSearch')}}
+    {{rsa-icon size='small' name='close'}}
+  {{/rsa-form-button}}
+{{/if}}

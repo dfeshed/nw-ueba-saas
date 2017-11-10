@@ -4,9 +4,7 @@
                  placeholder=(t 'investigateHosts.hosts.explore.input.placeholder')
                  keyPress=(action 'submitSearch')}}
 {{#if searchResultLoading}}
-  <div class="host-explore__loader">
-    {{rsa-loader}}
-  </div>
+  {{rsa-loader class="host-explore__loader"}}
 {{else}}
   {{#rsa-form-button click=(action 'defaultAction')}}
     {{rsa-icon size='small' name='search'}}

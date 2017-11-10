@@ -13,10 +13,8 @@ $result-text-color: text-color(primary, light);
   height: 2.5rem;
 
   &__loader {
-    text-align: right;
-    float: right;
     height: 0;
-    padding: rsa-whitespace() rsa-whitespace(more) 0 0;
+    padding: rsa-whitespace(less) 0 0;
   }
   &__content {
     @include border(1px, solid, primary, dark);
@@ -98,8 +96,7 @@ $result-text-color: text-color(primary, light);
     &__label {
       margin: rsa-whitespace(least);
       cursor: pointer;
-      width: 95%;
-      overflow-x: hidden;
+      
     }
   }
 }
@@ -108,4 +105,5 @@ $result-text-color: text-color(primary, light);
 }
 .label-content {
   width: 93%;
+  overflow-x: hidden;
 }

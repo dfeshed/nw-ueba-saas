@@ -26,7 +26,8 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "ember-cli-babel": "^6.8.2",
     "ember-cli-htmlbars": "^2.0.1",
-    "flexi": "2.0.1"
+    "flexi": "2.0.1",
+    "ember-cli-seamless-immutable-shim": "1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
@@ -57,7 +58,8 @@
     "ember-symbol-observable": "1.0.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "loader.js": "^4.2.3",
-    "lodash-es": "4.17.4"
+    "lodash-es": "4.17.4",
+    "seamless-immutable": "7.1.2"
   },
   "engines": {
     "node": "7.5.0"
