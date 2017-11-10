@@ -7,8 +7,8 @@ import { hasServices } from 'investigate-events/reducers/investigate/services/se
 
 const stateToComputed = (state) => ({
   hasServices: hasServices(state),
-  isErrorServices: state.investigate.services.isError,
-  isLoadingServices: state.investigate.services.isLoading
+  isErrorServices: state.investigate.services.isServicesRetrieveError,
+  isLoadingServices: state.investigate.services.isServicesLoading
 });
 
 const dispatchToActions = {

@@ -1,9 +1,32 @@
+{{#if selectedService.id}}
+  {{#if isSummaryRetrieveError}}
+    {{#rsa-form-button title=summaryErrorTooltip}}
+      <div class="disclaimer">
+        {{rsa-icon name='report-problem-triangle'}}
+      </div>
+    {{/rsa-form-button}}
+  {{else}}
+    {{#if hasSummaryData}}
+      {{#rsa-form-button}}
+        {{rsa-icon style='lined' name='server-3'}}
+      {{/rsa-form-button}}
+    {{else}}
+      {{rsa-loader size='small' title='loading data'}}
+    {{/if}}
+  {{/if}}
+{{else}}
+  {{#rsa-form-button}}
+    {{rsa-icon style='lined' name='server-3'}}
+  {{/rsa-form-button}}
+{{/if}}
+
 {{#power-select
   class='rsa-investigate-query-bar__service'
   matchTriggerWidth=false
   onchange=(action 'setService')
   options=services
   placeholder='Select a Service'
+  triggerClass=powerSelectClass
   searchEnabled=false
   selected=selectedService
   tagName='div' as |option|}}

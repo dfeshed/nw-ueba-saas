@@ -429,6 +429,7 @@ export default {
     },
     services: {
       loading: 'ja_Loading list of available services',
+      noData: 'ja_The selected service does not have any data',
       empty: {
         title: 'ja_Unable to find services.',
         description: 'ja_No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'

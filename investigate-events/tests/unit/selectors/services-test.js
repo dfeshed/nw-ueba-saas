@@ -9,7 +9,7 @@ const startTime = endTime - 3600;
 const state = Immutable.from({
   investigate: {
     services: {
-      data: [
+      serviceData: [
         { id: 'id1', displayName: 'Service Name', name: 'SN' },
         { id: 'id2', displayName: 'Service Name2', name: 'SN2' }
       ],
@@ -36,8 +36,8 @@ const state = Immutable.from({
   }
 });
 
-const expectedServiceId = state.investigate.services.data[0].id;
-const expectedURI = `${state.investigate.services.data[0].id}/${startTime}/${endTime}/`;
+const expectedServiceId = state.investigate.services.serviceData[0].id;
+const expectedURI = `${state.investigate.services.serviceData[0].id}/${startTime}/${endTime}/`;
 
 test('servicesWithURI are computed correctly', function(assert) {
   // const state = Immutable.from(defaultState);

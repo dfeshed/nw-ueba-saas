@@ -17,19 +17,22 @@ const DEFAULT_DATA = {
     serviceId: 'id1'
   },
   services: {
-    data: [
+    serviceData: [
       { 'id': 'id1', 'displayName': 'Service Name', 'name': 'CONCENTRATOR' },
       { 'id': 'id2', 'displayName': 'Service Name2', 'name': 'BROKER' }
     ],
-    isLoading: false,
-    isError: false
+    isServicesLoading: false,
+    isServicesRetrieveError: false,
+    summaryData: undefined,
+    isSummaryRetrieveError: false,
+    summaryErrorMessage: undefined
   }
 };
 
-const getBrokerService = () => DEFAULT_DATA.services.data[1];
-const getBrokerServiceId = () => DEFAULT_DATA.services.data[1].id;
-const getConcentratorService = () => DEFAULT_DATA.services.data[0];
-const getConcentratorServiceId = () => DEFAULT_DATA.services.data[0].id;
+const getBrokerService = () => DEFAULT_DATA.services.serviceData[1];
+const getBrokerServiceId = () => DEFAULT_DATA.services.serviceData[1].id;
+const getConcentratorService = () => DEFAULT_DATA.services.serviceData[0];
+const getConcentratorServiceId = () => DEFAULT_DATA.services.serviceData[0].id;
 
 export default class DataHelper {
   constructor(redux) {

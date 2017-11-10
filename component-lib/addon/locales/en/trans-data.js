@@ -430,6 +430,7 @@ export default {
     },
     services: {
       loading: 'Loading list of available services',
+      noData: 'The selected service does not have any data',
       empty: {
         title: 'Unable to find services.',
         description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'

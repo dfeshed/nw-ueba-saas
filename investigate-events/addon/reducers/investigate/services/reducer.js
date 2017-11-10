@@ -5,11 +5,12 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  data: undefined,
-  isLoading: undefined,
-  isError: undefined,
+  serviceData: undefined,
+  isServicesLoading: undefined,
+  isServicesRetrieveError: undefined,
   summaryData: undefined,
-  summaryError: false
+  isSummaryRetrieveError: false,
+  summaryErrorMessage: undefined
 });
 
 export default handleActions({
@@ -19,9 +20,9 @@ export default handleActions({
 
   [ACTION_TYPES.SERVICES_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('isLoading', true),
-      failure: (s) => s.merge({ isError: true, isLoading: false }),
-      success: (s) => s.merge({ data: action.payload.data, isLoading: false })
+      start: (s) => s.set('isServicesLoading', true),
+      failure: (s) => s.merge({ isServicesRetrieveError: true, isServicesLoading: false }),
+      success: (s) => s.merge({ serviceData: action.payload.data, isServicesLoading: false, isServicesRetrieveError: false })
     });
   },
 
@@ -29,8 +30,8 @@ export default handleActions({
   // service.
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ summaryData: undefined, summaryError: false, summaryErrorMessage: undefined }),
-      failure: (s) => s.merge({ summaryError: true, summaryErrorMessage: action.payload.meta.message }),
+      start: (s) => s.merge({ summaryData: undefined, isSummaryRetrieveError: false, summaryErrorMessage: undefined }),
+      failure: (s) => s.merge({ isSummaryRetrieveError: true, summaryErrorMessage: action.payload.meta.message }),
       success: (s) => s.merge({
         summaryData: action.payload.data
       })

@@ -3,6 +3,21 @@ $powerSelectDisabledColor: border-color(primary);
 .rsa-investigate-query-bar {
   @include rsa-row(left, bottom);
 
+  /* For the service icons and the spinner. CSS to prevent any jumpiness when icons change */
+  .rsa-form-button {
+    border-style: none;
+    padding: 0.5rem 0 0.5rem 0.5rem;
+  }
+  .rsa-loader__wheel {
+    margin: 0 0.1rem;
+  }
+  .rsa-loader__text {
+    margin: 0.2rem 1.2rem 0 0;
+    padding: 0 0.5rem;
+  }
+  .disclaimer {
+    color:text-color(accentThree);
+  }
   &__service {
     @include rsa-vendor-prefix(flex-grow, 0);
     margin-right: rsa-whitespace();

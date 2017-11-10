@@ -31,6 +31,17 @@ test('it disables(CSS) the submit button if required inputs are not selected', f
   );
 });
 
+test('it disables the timerange if there is no summaryData on the service', function(assert) {
+  assert.expect(1);
+  new DataHelper(this.get('redux')).initializeData().setServiceId();
+  this.set('selectedService', broker);
+  this.render(hbs`{{events-container/query-bar selectedService=selectedService}}`);
+  assert.ok(
+    this.$('.rsa-investigate-query-bar__time-range').children()[0].hasAttribute('aria-disabled'),
+    'Expected disabled state on the timerange dropdown.'
+  );
+});
+
 skip('it enables(CSS) the submit button if required inputs are selected', function(assert) {
   assert.expect(1);
   new DataHelper(this.get('redux'))
