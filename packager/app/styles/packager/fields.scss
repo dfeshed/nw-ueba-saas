@@ -1,35 +1,55 @@
 .input-content {
-  padding: 0 rsa-whitespace();
-  &__description {
-    padding: rsa-whitespace();
-  }
-  &__fields {
-    .field {
-      padding: rsa-whitespace();
-      .ember-text-area {
-        min-height: 6rem;
-      }
+    padding: 0 rsa-whitespace();
+    &__description {
+        padding: rsa-whitespace();
     }
-    .buttons {
-      div {
-        padding-right: rsa-whitespace();
-      }
+    &__fields {
+        .field {
+            padding: rsa-whitespace();
+            .ember-text-area {
+                min-height: 6rem;
+            }
+        }
+        .buttons {
+            div {
+                padding-right: rsa-whitespace();
+            }
+        }
     }
-  }
-  .server-input-group {
-    div:first-child {
-      padding-right: rsa-whitespace();
+    .server-input-group {
+        div:first-child {
+            padding-right: rsa-whitespace();
+        }
     }
-  }
-
-  .windows-log-collection {
-    .rsa-content-accordion {
-      h3 {
-        color: text-color(secondary);
-      }
+    .windows-log-collection {
+        .rsa-content-accordion {
+            h3 {
+                color: text-color(secondary);
+            }
+        }
+        .fileContainer {
+            margin-top: 1rem;
+        }
+        .uploadConfig {
+            overflow: hidden;
+            position: relative;
+            padding: rsa-whitespace(less) rsa-whitespace();
+            border: 1px solid $formInputBorderColor;
+        }
+        .uploadConfig [type=file] {
+            display: block;
+            position: absolute;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+        .load-error-message {
+            position: fixed;
+            top: 5%;
+            left: 50%;
+            width: 100vw;
+            margin-left: -50vw;
+        }
     }
-  }
 }
-
-
-

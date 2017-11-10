@@ -98,9 +98,37 @@
     </div>
     {{#if isLogCollectionEnabled}}
 
-      <div class="col-xs-12 field">
-        {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=errorMessage}}
+      <div class="load-error-message">
+        <ul class="rsa-flash-messages">
+          {{#each flashMessages.queue as |flash|}}
+            {{#flash-message tagName="li" flash=flash as |component flash|}}
+              <hbox align="stretch">
+                <centered xs="2">
+                  {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
+                </centered>
+                <vbox xs="9" justify="center" class="message">
+                  {{flash.message}}
+                </vbox>
+                <vbox xs="1" justify="start" align="center">
+                  {{rsa-icon name="close"}}
+                </vbox>
+              </hbox>
+            {{/flash-message}}
+          {{/each}}
+        </ul>
       </div>
+
+      <hbox xs="12">
+        <div class="col-xs-5 field">
+          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=errorMessage}}
+        </div>
+        <div class="col-xs-6 field fileContainer">
+          <label class="uploadConfig">
+            {{t 'packager.loadExistingLogConfig'}}
+            <input type='file' onchange={{action 'uploadConfig'}} accept='.json' value='C:\Fakepath'>
+          </label>
+        </div>
+      </hbox>
 
       <div class="col-xs-12 field">
         <label class={{className}}>

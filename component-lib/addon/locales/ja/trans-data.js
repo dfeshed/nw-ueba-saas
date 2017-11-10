@@ -1553,6 +1553,7 @@ export default {
     none: 'ja_None',
     fullChain: 'ja_Full Chain',
     generateLogConfig: 'ja_Generate Log Configuration Only',
+    loadExistingLogConfig: 'ja_Load Existing Configuration...',
     thumbprint: 'ja_Thumbprint',
     reset: 'ja_Reset',
     generateAgent: 'ja_Generate Agent',
@@ -1560,6 +1561,10 @@ export default {
     title: 'Packager',
     becon: 'ja_Becon',
     displayName: 'ja_Display Name',
+    upload: {
+      success: 'ja_Configuration file loaded successfully.',
+      failure: 'ja_Unable to upload Configuration file.'
+    },
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.'
     },

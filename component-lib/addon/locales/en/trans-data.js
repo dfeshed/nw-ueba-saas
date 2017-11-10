@@ -1557,10 +1557,15 @@ export default {
     reset: 'Reset',
     generateAgent: 'Generate Agent',
     generateLogConfig: 'Generate Log Configuration Only',
+    loadExistingLogConfig: 'Load Existing Configuration...',
     description: 'Description',
     title: 'Packager',
     becon: 'Becon',
     displayName: 'Display Name',
+    upload: {
+      success: 'Configuration file loaded successfully.',
+      failure: 'Unable to upload Configuration file.'
+    },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.'
     },

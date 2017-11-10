@@ -4,6 +4,7 @@ import computed, { alias } from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
 import moment from 'moment';
 import { connect } from 'ember-redux';
+import service from 'ember-service/inject';
 
 import {
   setConfig,
@@ -80,6 +81,8 @@ const formComponent = Component.extend({
     });
   },
 
+  flashMessages: service(),
+
   actions: {
 
     generateAgent() {
@@ -116,8 +119,29 @@ const formComponent = Component.extend({
     setSelect(property, selected, option) {
       this.set(selected, option);
       this.set(`configData.logCollectionConfig.${property}`, option);
+    },
+
+    uploadConfig(ev) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          let fileContent = '';
+          let formContent = {};
+          fileContent = e.target.result;
+          formContent = JSON.parse(fileContent.substring(0, fileContent.indexOf('}') + 1));
+          this.set('configData.logCollectionConfig', formContent);
+          this.get('flashMessages').success(this.get('i18n').t('packager.upload.success'));
+        } catch (err) {
+          this.get('flashMessages').warning(this.get('i18n').t('packager.upload.failure'));
+        } finally {
+          ev.target.value = null;
+        }
+      };
+      reader.readAsText(ev.target.files[0]);
     }
+
   }
+
 });
 
 export default connect(stateToComputed, dispatchToActions)(formComponent);
