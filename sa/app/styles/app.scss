@@ -24,6 +24,8 @@
 /* Import investigate hosts styles from engine */
 @import 'investigate-hosts/manifest';
 
+/* Import packager styles */
+@import 'packager/manifest';
 
 /* Imports styles specific for this sa app. */
 @import 'sa/manifest';

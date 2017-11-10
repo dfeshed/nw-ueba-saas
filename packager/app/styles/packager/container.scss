@@ -2,7 +2,7 @@ $card-radius: 10px;
 $content-card-color: #bdbdbd;
 .packager-container {
   width: 100vw;
-  height: calc(100vh - 40px);
+  height: 100vh;
   padding: rsa-whitespace();
   &__body {
     height: 100%;
@@ -47,5 +47,12 @@ $content-card-color: #bdbdbd;
     &__caution{
       color: darkorange;
     }
+  }
+}
+
+// Temp solution to integrate packager into SA
+.iframed-into-classic {
+  .rsa-application-header {
+    display: none;
   }
 }

@@ -27,6 +27,7 @@ Router.map(function() {
 
   this.route('protected', { path: '/' }, function() {
     this.route('monitor');
+    this.route('packager');
     this.mount('respond');
     this.route('investigate', function() {
       this.mount('investigate-events', { path: 'events' });

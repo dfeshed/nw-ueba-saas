@@ -9,6 +9,7 @@ import service from 'ember-service/inject';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
+import $ from 'jquery';
 
 const {
   console
@@ -37,6 +38,15 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   queryParams: {
     /**
+     * Indicated whether route is included in iframe or not
+     * @type {boolean}
+     * @public
+     */
+    iframedIntoClassic: {
+      refreshModel: false,
+      replace: true
+    },
+    /**
      * The type of entity to be looked up in the Context Panel.
      * Entity types are defined in configurable Admin settings, but typically include 'IP', 'USER', 'DOMAIN', 'HOST', etc.
      * @type {string}
@@ -57,6 +67,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
+  iframedIntoClassic: false,
+
   afterModel(models, transition) {
     this._super(...arguments);
 
@@ -71,7 +83,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  model() {
+  model({ iframedIntoClassic }) {
+
+    // If packager route is from the classic SA then hide the application navigation as this route is mounted in iframe
+    if (iframedIntoClassic) {
+      $('body').addClass('iframed-into-classic');
+    } else {
+      $('body').removeClass('iframed-into-classic');
+    }
     const permissionsPromise = new RSVP.Promise((resolve, reject) => {
       this.request.promiseRequest({
         method: 'getPermissions',
@@ -183,6 +202,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   _checkAccessAndTransition(key, transitionName) {
     if ( // known transition into ember with perms
       (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
+      (transitionName && transitionName.includes('packager')) ||
       (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
     ) {
       return this.transitionTo(transitionName);
