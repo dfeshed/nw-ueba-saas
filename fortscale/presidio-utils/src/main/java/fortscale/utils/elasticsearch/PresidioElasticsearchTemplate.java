@@ -783,6 +783,7 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         return new MapBuilder<String, String>().put("index.number_of_shards", String.valueOf(persistentEntity.getShards()))
                 .put("index.number_of_replicas", String.valueOf(persistentEntity.getReplicas()))
                 .put("index.refresh_interval", persistentEntity.getRefreshInterval())
+                .put("index.max_result_window", "100000")
                 .put("index.store.type", persistentEntity.getIndexStoreType()).map();
     }
 
