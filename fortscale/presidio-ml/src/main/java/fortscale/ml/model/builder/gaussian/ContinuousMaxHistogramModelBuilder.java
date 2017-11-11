@@ -47,6 +47,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
 
         Duration instantStep = aggregatedFeatureValuesData.getInstantStep();
         TreeMap<Instant, Double> instantToFeatureValue = aggregatedFeatureValuesData.getInstantToAggregatedFeatureValues();
+        long numOfPartitions = instantToFeatureValue.keySet().stream().map(x -> (x.getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).distinct().count();
 
         //create ContinuousDataModel with all data
         Map<String, Double> histogram = createGenericHistogram(instantToFeatureValue.values()).getHistogramMap();
@@ -57,7 +58,6 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         logger.debug("maxValuesResult={} for aggregatedFeatureValuesData={}",maxValuesResult,aggregatedFeatureValuesData);
         List<Double> maxValues = maxValuesResult.getMaxValues();
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
-        long numOfPartitions = instantToFeatureValue.keySet().stream().map(x -> (x.getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).distinct().count();
         return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues,numOfPartitions);
     }
 
