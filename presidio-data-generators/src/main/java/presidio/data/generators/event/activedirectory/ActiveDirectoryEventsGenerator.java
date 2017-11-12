@@ -1,6 +1,7 @@
 package presidio.data.generators.event.activedirectory;
 
 import presidio.data.domain.MachineEntity;
+import presidio.data.domain.User;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
@@ -36,7 +37,6 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
     private IStringGenerator resultCodeGenerator;
     private IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator;
     private IStringGenerator objectNameGenerator;
-    private CyclicValuesGenerator<String> timeZoneOffsetGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         setFieldDefaultGenerators();
@@ -59,7 +59,6 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         resultCodeGenerator = new RandomStringGenerator();
         objectNameGenerator = new DefaultObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
-        timeZoneOffsetGenerator = new CyclicValuesGenerator<>(new String[] {"0", "1", "2"});
     }
 
     @Override
@@ -78,8 +77,9 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
                 convertResultToQuestConvention(getResultGenerator().getNext()),
                 objectName,
                 getObjectDN(objectName, machineDomainDN),
-                getTimeZoneOffsetGenerator().getNext()
-                );
+                getObjectCanonical(srcMachine.getDomainFQDN(), objectName)
+
+        );
         activeDirectoryDescriptionGenerator.updateDescription(ev);
         return ev;
     }
@@ -152,6 +152,10 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         return "ca=" + objectName + ",CN=Users," + machineDomainDN;
     }
 
+    private String getObjectCanonical(String domainFQDN, String userName) {
+        return domainFQDN + "/Users/" + userName;
+    }
+
     public IActiveDirectoryDescriptionGenerator getActiveDirectoryDescriptionGenerator() {
         return activeDirectoryDescriptionGenerator;
     }
@@ -166,14 +170,6 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
 
     public void setObjectNameGenerator(IStringGenerator objectNameGenerator) {
         this.objectNameGenerator = objectNameGenerator;
-    }
-
-    public CyclicValuesGenerator<String> getTimeZoneOffsetGenerator() {
-        return timeZoneOffsetGenerator;
-    }
-
-    public void setTimeZoneOffsetGenerator(CyclicValuesGenerator<String> timeZoneOffsetGenerator) {
-        this.timeZoneOffsetGenerator = timeZoneOffsetGenerator;
     }
 
     private String convertResultToQuestConvention(String result) {

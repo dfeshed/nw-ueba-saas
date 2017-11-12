@@ -49,14 +49,11 @@ public class RandomMultiMachineEntityGenerator implements IMachineGenerator {
 
         String machineId = machineName;
         String machineIP = machineIPGenerator.getNext();
-        String osVersion = OS_VERSION;
-        //TODO: cache the following values for performance.
         String machineDomainDN = String.format("DC=%s,DC=quest,DC=azure,DC=ca", machineDomain);
-        String origin = String.format("vmMember.%s.quest.azure.ca", machineDomain);
         String domainFQDN = String.format("%s.quest.azure.ca", machineDomain);
 
         return new MachineEntity(machineId, machineIP, machineNameRegexCluster, machineDomain,
-                machineDomainDN, osVersion, origin, domainFQDN);
+                machineDomainDN, domainFQDN);
     }
 
     private String randCluster(String domain){

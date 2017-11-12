@@ -94,8 +94,6 @@ public class QuestADMachineGenerator implements IMachineGenerator {
                 getMachineNameRegexClusterGenerator().getNext(),
                 getMachineDomainGenerator().getNext(),
                 getMachineDomainDN().getNext(),
-                getOsVersionGenerator().getNext(),
-                getOrigin().getNext(),
                 getMachineDomainFQDN().getNext());
     }
 }

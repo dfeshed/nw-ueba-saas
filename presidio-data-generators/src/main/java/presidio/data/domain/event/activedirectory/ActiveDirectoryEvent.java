@@ -22,7 +22,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private String activeDirectoryDescription;
     private String objectDN;
     private String objectName;
-    private String timeZoneOffset;
+    private String objectCanonical;
 
     public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation) {
         this.eventTime = eventTime;
@@ -32,7 +32,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.operation = operation;
     }
 
-    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN, String timeZoneOffset) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN, String objectCanonical) {
         this.eventTime = eventTime;
         this.eventId = eventId;
         this.operation = operation;
@@ -43,7 +43,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.result = result;
         this.objectDN = objectDN;
         this.objectName = objectName;
-        this.timeZoneOffset = timeZoneOffset;
+        this.objectCanonical = objectCanonical;
     }
 
     public Instant getEventTime() {
@@ -130,17 +130,17 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
 
     public void setObjectName(String objectName) { this.objectName = objectName; }
 
+    public String getObjectCanonical() {
+        return objectCanonical;
+    }
+
+    public void setObjectCanonical(String objectCanonical) {
+        this.objectCanonical = objectCanonical;
+    }
+
     @Override
     public Instant getDateTime() {
         return eventTime;
-    }
-
-    public String getTimeZoneOffset() {
-        return timeZoneOffset;
-    }
-
-    public void setTimeZoneOffset(String timeZoneOffset) {
-        this.timeZoneOffset = timeZoneOffset;
     }
 
     @Override
@@ -157,7 +157,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
                 ", activeDirectoryDescription='" + activeDirectoryDescription + '\'' +
                 ", objectDN='" + objectDN + '\'' +
                 ", objectName='" + objectName + '\'' +
-                ", timeZoneOffset='" + timeZoneOffset + '\'' +
+                ", objectCanonical='" + objectCanonical + '\'' +
                 '}';
     }
 }
