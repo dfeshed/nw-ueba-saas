@@ -142,9 +142,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback) {
+        if(alertId == null || feedback == null) {
+            logger.error("Failed to update alert- alert id or feedback cannot be null");
+            return;
+        }
         Alert alert = alertRepository.findOne(alertId);
         if(alert == null) {
-            logger.error("cannot update alert with id {}, alert not found", alertId);
+            logger.error("Failed to update alert. alert {} not found", alertId);
             return;
         }
 

@@ -793,7 +793,32 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
-    public void testUpdateFeedbackInvalidAlertId() {
-        alertPersistencyService.updateAlertFeedback("alertId", null);
+    public void testUpdateFeedbackAlertNotFound() {
+        try {
+            alertPersistencyService.updateAlertFeedback("alertId", AlertEnums.AlertFeedback.NOT_RISK);
+        }
+        catch(Exception e) {
+            Assert.fail("exception was thrown while trying to update not existing alert");
+        }
+    }
+
+    @Test
+    public void testUpdateFeedbackAlertIdNull() {
+        try {
+            alertPersistencyService.updateAlertFeedback(null, AlertEnums.AlertFeedback.NOT_RISK);
+        }
+        catch(Exception e) {
+            Assert.fail("exception was thrown while trying to update alert with id null");
+        }
+    }
+
+    @Test
+    public void testUpdateFeedbackWithNullFeedbackValue() {
+        try {
+            alertPersistencyService.updateAlertFeedback("alertId", null);
+        }
+        catch(Exception e) {
+            Assert.fail("exception was thrown while trying to update alert with id null");
+        }
     }
 }
