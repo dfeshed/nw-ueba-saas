@@ -7,9 +7,11 @@ import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 public class SimpleMachineGenerator implements IMachineGenerator {
+    private static final String OS_VERSION = "Windows Server 2016 Datacenter";
 
     private IStringGenerator machineIdGenerator;
     private IStringGenerator machineIP;
+    private IStringGenerator osVersionGenerator;
     private IStringGenerator machineNameRegexClusterGenerator;
     private IStringGenerator machineDomainGenerator;
     private IStringGenerator machineDomainDN;
@@ -68,6 +70,14 @@ public class SimpleMachineGenerator implements IMachineGenerator {
 
     public void setMachineDomainFQDN(IStringGenerator machineDomainFQDN) { this.machineDomainFQDN = machineDomainFQDN; }
 
+    public IStringGenerator getOsVersionGenerator() {
+        return osVersionGenerator;
+    }
+
+    public void setOsVersionGenerator(IStringGenerator osVersionGenerator) {
+        this.osVersionGenerator = osVersionGenerator;
+    }
+
     public MachineEntity getNext(){
         return new MachineEntity(
                 getMachineIdGenerator().getNext(),
@@ -75,6 +85,7 @@ public class SimpleMachineGenerator implements IMachineGenerator {
                 getMachineNameRegexClusterGenerator().getNext(),
                 getMachineDomainGenerator().getNext(),
                 getMachineDomainDN().getNext(),
-                getMachineDomainFQDN().getNext());
+                getMachineDomainFQDN().getNext(),
+                getOsVersionGenerator().getNext());
     }
 }
