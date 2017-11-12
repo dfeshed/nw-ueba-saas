@@ -27,7 +27,6 @@ import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
-
 import java.util.Properties;
 
 

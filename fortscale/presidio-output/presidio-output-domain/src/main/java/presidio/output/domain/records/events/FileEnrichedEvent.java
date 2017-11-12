@@ -111,11 +111,11 @@ public class FileEnrichedEvent extends EnrichedEvent {
         return fileSize;
     }
 
-    public Boolean getSrcDriveShared() {
+    public Boolean getIsSrcDriveShared() {
         return isSrcDriveShared;
     }
 
-    public Boolean getDstDriveShared() {
+    public Boolean getIsDstDriveShared() {
         return isDstDriveShared;
     }
 
@@ -139,11 +139,11 @@ public class FileEnrichedEvent extends EnrichedEvent {
         this.fileSize = fileSize;
     }
 
-    public void setSrcDriveShared(Boolean srcDriveShared) {
+    public void setIsSrcDriveShared(Boolean srcDriveShared) {
         isSrcDriveShared = srcDriveShared;
     }
 
-    public void setDstDriveShared(Boolean dstDriveShared) {
+    public void setIsDstDriveShared(Boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
     }
 }

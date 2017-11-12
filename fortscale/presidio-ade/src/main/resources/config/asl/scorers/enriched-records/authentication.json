@@ -55,7 +55,7 @@
               "conditional-value": "INTERACTIVE_REMOTE",
               "scorer": {
                 "type": "reduction-scorer",
-                "name": "dstMachine.userId.authentication.score",
+                "name": "dstMachine.userIdInteractiveRemote.authentication.score",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
                   "name": "dstMachineNameRegexCluster.userId.authentication.score",
