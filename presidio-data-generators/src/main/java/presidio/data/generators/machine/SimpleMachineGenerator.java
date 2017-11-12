@@ -24,6 +24,7 @@ public class SimpleMachineGenerator implements IMachineGenerator {
         machineDomainGenerator = new RandomStringGenerator(10);
         machineDomainDN = new StringCyclicValuesGenerator("DC=catest,DC=quest,DC=azure,DC=ca");
         machineDomainFQDN = new StringCyclicValuesGenerator("catest.quest.azure.ca");
+        osVersionGenerator =new StringCyclicValuesGenerator("Windows Server 2016 Datacenter");
     }
 
     public IStringGenerator getMachineIdGenerator() {
