@@ -396,6 +396,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restEvent.putAll(indicatorEvent.getFeatures());
         if (MapUtils.isNotEmpty(indicatorEvent.getScores())) {
             restEvent.setScores(indicatorEvent.getScores());
+            restEvent.put("scores",indicatorEvent.getScores());
         }
         return restEvent;
     }
