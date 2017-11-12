@@ -56,6 +56,16 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(severityQuery);
         }
 
+        // filter by feedback
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByFeedback())) {
+            BoolQueryBuilder feedbackQuery = new BoolQueryBuilder();
+            for (String feedback : alertQuery.getFilterByFeedback()) {
+                feedbackQuery.should(matchQuery(Alert.FEEDBACK, feedback));
+            }
+
+            boolQueryBuilder.must(feedbackQuery);
+        }
+
         // filter by classification
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByClassification())) {
             BoolQueryBuilder classificationQuery = new BoolQueryBuilder();

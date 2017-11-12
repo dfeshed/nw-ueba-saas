@@ -76,7 +76,8 @@ public class AlertApiControllerModuleTest {
         //save alerts in elastic
         Date date = new Date();
         alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
-        alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
         alertRepository.save(Arrays.asList(alert1, alert2));
     }
 
@@ -108,6 +109,49 @@ public class AlertApiControllerModuleTest {
 
         Collections.sort(expectedResponse.getAlerts(), defaultAlertComparator);
         Collections.sort(actualResponse.getAlerts(), defaultAlertComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getAlerts_filterByFeedback() throws Exception {
+
+        // init expected response
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        expectedAlert1.setFeedback(AlertQueryEnums.AlertFeedback.NOT_RISK);
+        AlertsWrapper expectedResponse = new AlertsWrapper();
+        expectedResponse.setTotal(1);
+        List<Alert> alerts = Arrays.asList(expectedAlert1);
+        expectedResponse.setAlerts(alerts);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("feedback", AlertQueryEnums.AlertFeedback.NOT_RISK.name()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getAlerts_filterBySeverity() throws Exception {
+
+        // init expected response
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        AlertsWrapper expectedResponse = new AlertsWrapper();
+        expectedResponse.setTotal(1);
+        List<Alert> alerts = Arrays.asList(expectedAlert1);
+        expectedResponse.setAlerts(alerts);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("severity", AlertQueryEnums.AlertSeverity.CRITICAL.name()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
         Assert.assertEquals(expectedResponse, actualResponse);
     }
 

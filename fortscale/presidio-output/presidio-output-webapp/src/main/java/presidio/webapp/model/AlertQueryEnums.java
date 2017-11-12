@@ -90,4 +90,35 @@ public class AlertQueryEnums {
             return null;
         }
     }
+
+    public enum AlertFeedback {
+
+        RISK("RISK"),
+
+        NOT_RISK("NOT_RISK"),
+
+        NONE("NONE");
+
+        private String value;
+
+        AlertFeedback(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static AlertFeedback fromValue(String text) {
+            for (AlertFeedback b : AlertFeedback.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
 }
