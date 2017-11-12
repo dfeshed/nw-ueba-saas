@@ -1,5 +1,6 @@
 package presidio.input.core.services.converters.output;
 
+import org.apache.commons.lang.StringUtils;
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -21,7 +22,7 @@ public class AuthenticationInputToOutputConverter implements InputOutputConverte
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setSrcMachineId(transformedEvent.getSrcMachineId());
-        outputEvent.setSrcMachineNameRegexCluster(transformedEvent.getSrcMachineCluster());
+        outputEvent.setSrcMachineNameRegexCluster(StringUtils.isEmpty(transformedEvent.getSrcMachineCluster()) ? transformedEvent.getSrcMachineName() : transformedEvent.getSrcMachineCluster());
         outputEvent.setDstMachineId(transformedEvent.getDstMachineId());
         outputEvent.setDstMachineNameRegexCluster(transformedEvent.getDstMachineCluster());
         outputEvent.setDstMachineDomain(transformedEvent.getDstMachineDomain());

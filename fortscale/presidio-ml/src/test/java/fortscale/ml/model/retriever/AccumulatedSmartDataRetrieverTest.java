@@ -2,7 +2,6 @@ package fortscale.ml.model.retriever;
 
 import fortscale.ml.model.DynamicModelConfServiceContainer;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -14,12 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,14 +63,14 @@ public class AccumulatedSmartDataRetrieverTest {
 
     @Test
     public void calcNumOfPartitions() throws Exception {
-        List<SmartAggregatedRecordDataContainer> data = new LinkedList<>();
+        List<AccumulatedSmartRecord> data = new LinkedList<>();
         Instant startTime = Instant.EPOCH;
         for (int i=0; i<42 ; i++)
         {
-            data.add(new SmartAggregatedRecordDataContainer(startTime,new HashMap<>()));
+            data.add(new AccumulatedSmartRecord(startTime,startTime.plus(Duration.ofHours(1)),"",""));
             startTime = startTime.plus(Duration.ofHours(1));
         }
-        long numOfPartitions = retriever.calcNumOfPartitions(data);
+        long numOfPartitions = retriever.calcPartitions(data).size();
 
         Assert.assertEquals(2,numOfPartitions);
     }
