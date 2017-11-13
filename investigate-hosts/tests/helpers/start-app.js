@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Application from '../../app';
 import config from '../../config/environment';
 import './redux-async-helpers';
+import 'ember-wait-for-test-helper/wait-for';
 
 const { merge, run } = Ember;
 

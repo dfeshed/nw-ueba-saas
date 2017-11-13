@@ -64,7 +64,8 @@
     "loader.js": "^4.2.3",
     "lodash-es": "4.17.4",
     "normalizr": "^3.2.2",
-    "seamless-immutable": "7.1.2"
+    "seamless-immutable": "7.1.2",
+    "ember-wait-for-test-helper": "1.1.0"
   },
   "engines": {
     "node": "7.5.0"
