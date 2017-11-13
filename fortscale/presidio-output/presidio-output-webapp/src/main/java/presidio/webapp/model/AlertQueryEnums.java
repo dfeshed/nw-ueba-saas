@@ -34,7 +34,7 @@ public class AlertQueryEnums {
 
     public enum AlertQueryAggregationFieldName {
         SEVERITY(Alert.SEVERITY), CLASSIFICATIONS(Alert.CLASSIFICATIONS), SEVERITY_DAILY(Alert.AGGR_SEVERITY_PER_DAY),
-        INDICATOR_NAMES(Alert.INDICATOR_NAMES);
+        INDICATOR_NAMES(Alert.INDICATOR_NAMES), FEEDBACK(Alert.FEEDBACK);
         private String value;
 
         AlertQueryAggregationFieldName(String value) {
