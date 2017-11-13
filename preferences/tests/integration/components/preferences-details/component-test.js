@@ -34,23 +34,44 @@ moduleForComponent('preferences-panel', 'Integration | Component | Preferences D
 
 skip('Preferences panel opens correctly with all user selected preferences', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
+  return waitFor('.ember-power-select-selected-item', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    assert.equal(this.$('.rsa-preferences-details-field-content').length, 3);
+    assert.equal(this.$('.rsa-preferences-field-content').length, 4);
     let str = this.$('.ember-power-select-selected-item')[0].innerText.trim();
-    assert.equal(str, 'Packet Analysis');
+    assert.equal(str, 'Events');
     str = this.$('.ember-power-select-selected-item')[1].innerText.trim();
-    assert.equal(str, 'Download XML');
+    assert.equal(str, 'Packet Analysis');
     str = this.$('.ember-power-select-selected-item')[2].innerText.trim();
-    assert.equal(str, 'Download Payload1');
+    assert.equal(str, 'Download XML');
+    str = this.$('.ember-power-select-selected-item')[3].innerText.trim();
+    assert.equal(str, 'Download Request Payload');
+  });
+});
+
+test('Preferences panel should show Time format Settings', function(assert) {
+  this.$('.rsa-icon-settings-1-filled').trigger('click');
+  return waitFor('.rsa-form-radio-group-label').then(() => {
+    assert.equal(this.$('.rsa-form-radio-label.DB.checked').length, 1);
+  });
+});
+
+skip('Preferences panel should change Time format Settings on click', function(assert) {
+  this.$('.rsa-icon-settings-1-filled').trigger('click');
+  return waitFor('.rsa-form-radio-group-label').then(() => {
+    assert.equal(this.$('.rsa-form-radio-label.DB.checked').length, 1);
+    assert.equal(this.$('.rsa-form-radio-label.WALL.checked').length, 0);
+    click($('.rsa-form-radio-label.WALL'));
+    return waitFor('.rsa-form-radio-label.WALL.checked').then(() => {
+      assert.equal(this.$('.rsa-form-radio-label.WALL.checked').length, 1);
+    });
   });
 });
 
 test('Preferences panel comes with valid options for Analysis', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-field-content', { count: 4 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    clickTrigger();
+    clickTrigger('.rsa-preferences-field-content:nth-child(1)');
     return waitFor('.ember-power-select-options').then(function() {
       const $options = $('.ember-power-select-option');
       assert.equal($options.length, 3);
@@ -61,9 +82,9 @@ test('Preferences panel comes with valid options for Analysis', function(assert)
 
 test('Preferences panel comes with valid options for packet format', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-field-content', { count: 4 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    clickTrigger('.rsa-preferences-details-field-content:nth-child(3)');
+    clickTrigger('.rsa-preferences-field-content:nth-child(3)');
     return waitFor('.ember-power-select-options').then(function() {
       const $options = $('.ember-power-select-option');
       assert.equal($options.length, 4);
@@ -74,9 +95,9 @@ test('Preferences panel comes with valid options for packet format', function(as
 
 test('Preferences panel comes with valid options for log format', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
+  return waitFor('.rsa-preferences-field-content', { count: 4 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
-    clickTrigger('.rsa-preferences-details-field-content:nth-child(2)');
+    clickTrigger('.rsa-preferences-field-content:nth-child(2)');
     return waitFor('.ember-power-select-options').then(function() {
       const $options = $('.ember-power-select-option');
       assert.equal($options.length, 4);
@@ -87,14 +108,14 @@ test('Preferences panel comes with valid options for log format', function(asser
 
 skip('Preferences panel saves new Analysis on change', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
-  return waitFor('.rsa-preferences-details-field-content', { count: 3 }).then(() => {
+  return waitFor('.ember-power-select-selected-item', { count: 3 }).then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
     clickTrigger();
     return waitFor('.ember-power-select-options').then(function() {
-      $('li:contains("Text Analysis")').trigger('click');
-      $('li:contains("Text Analysis")').click();
-      click($('li:contains("Text Analysis")'));
-      assert.ok($('.ember-power-select-trigger').text().indexOf('Packet Analysis') > 0);
+      $('li:contains("Events")').trigger('click');
+      $('li:contains("Events")').click();
+      click($('li:contains("Events")'));
+      assert.ok($('.ember-power-select-selected-item').text().indexOf('Events') > 0);
     });
   });
 });

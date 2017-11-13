@@ -1537,7 +1537,10 @@ export default {
       PAYLOAD2: 'ja_Download Response Payload',
       FILE: 'ja_File Analysis',
       TEXT: 'ja_Text Analysis',
-      PACKET: 'ja_Packet Analysis'
+      PACKET: 'ja_Packet Analysis',
+      queryTimeFormat: 'ja_Time format for query',
+      DB: 'ja_Database Time',
+      WALL: 'ja_Wall Clock Time'
     }
   },
   packager: {

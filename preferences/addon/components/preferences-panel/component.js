@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import layout from './template';
-import { later, schedule, next } from 'ember-runloop';
+import { later, schedule } from 'ember-runloop';
 import { connect } from 'ember-redux';
 import { closePreferencesPanel, resetPreferencesPanel, loadPreferences, updatePanelClicked } from 'preferences/actions/interaction-creators';
 import { getContextualHelp } from 'preferences/reducers/preferences-panel/selectors';
@@ -39,12 +39,10 @@ const PreferencesPanel = Component.extend({
   },
 
   _closePreferencesPanel() {
-    next(() => {
-      if (!this.get('isClicked')) {
-        this.send('closePreferencesPanel');
-      }
-      this.send('updatePanelClicked', false);
-    });
+    if (!this.get('isClicked')) {
+      this.send('closePreferencesPanel');
+    }
+    this.send('updatePanelClicked', false);
   },
   didInsertElement() {
     schedule('afterRender', () => {

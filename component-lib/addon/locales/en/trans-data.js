@@ -1538,7 +1538,10 @@ export default {
       PAYLOAD2: 'Download Response Payload',
       FILE: 'File Analysis',
       TEXT: 'Text Analysis',
-      PACKET: 'Packet Analysis'
+      PACKET: 'Packet Analysis',
+      queryTimeFormat: 'Time format for query',
+      DB: 'Database Time',
+      WALL: 'Wall Clock Time'
     }
   },
   packager: {

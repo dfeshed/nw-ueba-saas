@@ -1,6 +1,6 @@
 {{#if preferencesConfig}}
   {{#each preferencesConfig as |item index|}}
-    <div class="rsa-preferences-details-field-content">
+    <div class="rsa-preferences-field-content">
       {{#if (eq item.type 'dropdown')}}
         <label class="rsa-form-label power-select">
           <div class="label-text">
@@ -14,11 +14,33 @@
             {{t (concat 'preferences.' launchFor '.' option)}}
           {{/power-select}}
         </label>
+      {{else if (eq item.type 'checkbox')}}
+        <label class="rsa-form-checkbox-label {{if (get preferences item.field) 'checked'}}">
+          {{rsa-form-checkbox
+            checked=(get preferences item.field)
+            change=(action 'saveNewPreferences' item.field (if (get preferences item.field) false true))
+          }}
+          {{t item.name}}
+        </label>
+      {{else if (eq item.type 'radio')}}
+        <div class='rsa-form-radio-group'>
+          <h4 class='rsa-form-radio-group-label'>{{t item.name}}</h4>
+          {{#each item.options as |option|}}
+            <label class="rsa-form-radio-label {{option}} {{if (eq option (get preferences item.field)) 'checked'}}">
+              {{radio-button
+                value=option
+                changed=(action 'saveNewPreferences' item.field option) }}
+              {{t (concat 'preferences.' launchFor '.' option)}}
+            </label>
+          {{/each}}
+        </div>
+      {{else if (eq item.type 'divider')}}
+        <div class='rsa-preferences-divider'></div>
       {{/if}}
     </div>
   {{/each}}
 {{else}}
-  <centered class="rsa-loader-position">
+  <centered class="rsa-preferences-loader-position">
     {{rsa-loader size='largest'}}
   </centered>
 {{/if}}

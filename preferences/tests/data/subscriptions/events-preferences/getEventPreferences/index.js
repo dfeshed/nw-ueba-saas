@@ -6,8 +6,8 @@ export default {
     const data = {
       userPreferences: {
         defaultLogFormat: 'XML',
-        defaultLandingPage: '',
-        defaultPacketFormat: 'PAYLOAD1'
+        defaultPacketFormat: 'PAYLOAD1',
+        queryTimeFormat: 'DB'
       },
       userServicePreferences: {
         serviceId: 'TestServiceId',

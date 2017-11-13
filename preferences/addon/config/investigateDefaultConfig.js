@@ -47,12 +47,21 @@ export default {
       'PAYLOAD2'
     ],
     field: 'userPreferences.defaultPacketFormat'
+  },
+  {
+    name: 'preferences.investigate-events.queryTimeFormat',
+    type: 'radio',
+    options: [
+      'DB',
+      'WALL'
+    ],
+    field: 'userPreferences.queryTimeFormat'
   }],
   defaultPreferences: {
     userPreferences: {
       defaultLogFormat: 'LOG',
-      defaultLandingPage: '',
-      defaultPacketFormat: 'PCAP'
+      defaultPacketFormat: 'PCAP',
+      queryTimeFormat: 'DB'
     },
     userServicePreferences: {
       serviceId: 'TestServiceId',
