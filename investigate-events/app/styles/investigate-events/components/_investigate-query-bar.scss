@@ -40,6 +40,9 @@ $powerSelectDisabledColor: border-color(primary);
   &__submit {
     @include rsa-vendor-prefix(flex-grow, 0);
     margin-left: rsa-whitespace();
+    > .rsa-form-button {
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
   }
   .rsa-investigate-query-input {
     @include rsa-vendor-prefix(flex-grow, 1);
