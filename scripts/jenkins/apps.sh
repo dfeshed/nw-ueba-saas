@@ -153,6 +153,22 @@ function buildMockServer {
   cd $CWD
 }
 
+# $1 = name of library
+function buildLibrary {
+  cd $1
+
+  ln -s ../node_modules node_modules
+
+  info "Running tests for library: $1"
+
+  npm run test
+
+  checkError "test build failed for $1"
+  success "test build for $1 was successful"
+
+  cd $CWD
+}
+
 info "***********************"
 info "Building apps"
 
@@ -186,6 +202,7 @@ buildEmberApp investigate-hosts false true
 buildEmberApp investigate-files false true
 buildEmberApp respond false true
 buildEmberApp sa true true
+buildLibrary broccoli-theme
 
 success "All apps built"
 info "***********************"

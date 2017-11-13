@@ -4,12 +4,13 @@
   "description": "broccoli compiler for IE11",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "EMBER_ENV=production mocha test"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "mkdirp": "^0.5.1",
+    "fs-extra": "^4.0.2",
     "postcss": "^6.0.14",
     "broccoli-caching-writer": "^3.0.3",
     "postcss-custom-properties": "^6.2.0"
