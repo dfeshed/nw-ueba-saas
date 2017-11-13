@@ -1,23 +1,64 @@
-<div class="paging">
-  {{#rsa-form-button
-    isDisabled=isPreviousPageDisabled
-    defaultAction=(action 'pageFirst')}}
-    First
-  {{/rsa-form-button}}
-  {{#rsa-form-button
-    isDisabled=isPreviousPageDisabled
-    defaultAction=(action 'pagePrevious')}}
-    Previous
-  {{/rsa-form-button}}
-  <label>{{pageInformation}}</label>
-  {{#rsa-form-button
-    isDisabled=isNextPageDisabled
-    defaultAction=(action 'pageNext')}}
-    Next
-  {{/rsa-form-button}}
-  {{#rsa-form-button
-    isDisabled=isNextPageDisabled
-    defaultAction=(action 'pageLast')}}
-    Last
-  {{/rsa-form-button}}
-</div>
+
+{{#rsa-form-button
+  defaultAction=(action 'pageFirst') 
+  isIconOnly=true 
+  isDisabled=cannotGoToPreviousPage
+  class='page-first-button'}}
+  {{rsa-icon 
+    title=(t 'recon.reconPager.packetPagnationPageFirst')
+    class='rsa-icon-arrow-left-9-filled'
+    size='smaller'}}
+{{/rsa-form-button}}
+  
+{{#rsa-form-button 
+  defaultAction=(action 'pagePrevious') 
+  isIconOnly=true 
+  isDisabled=cannotGoToPreviousPage
+  class='page-previous-button'}}
+  {{rsa-icon
+    title=(t 'recon.reconPager.packetPagnationPagePrevious')
+    class='rsa-icon-arrow-left-12-filled'
+    size='smaller'}}
+{{/rsa-form-button}}
+
+<label class="page-text-box">
+  <input class="input-page-number" type="number" value={{currentPage}} onkeypress={{action "setPageNumber"}} >
+  <span class="input-span">of</span>
+  <span class="last-page">{{lastPageNumber}}</span>
+</label>
+
+{{#rsa-form-button 
+  defaultAction=(action 'pageNext') 
+  isIconOnly=true 
+  isDisabled=cannotGoToNextPage
+  class='page-next-button'}}
+  {{rsa-icon
+    title=(t 'recon.reconPager.packetPagnationPageNext')
+    class='rsa-icon-arrow-right-12-filled'
+    size='smaller'}}
+{{/rsa-form-button}}
+  
+{{#rsa-form-button 
+  defaultAction=(action 'pageLast') 
+  isIconOnly=true 
+  isDisabled=cannotGoToNextPage
+  class='page-last-button'}}
+  {{rsa-icon
+    title=(t 'recon.reconPager.packetPagnationPageLast')
+    class='rsa-icon-arrow-right-9-filled'
+    size='smaller'}}
+{{/rsa-form-button}}
+
+<label class="rsa-form-label power-select-dropdown">
+  {{#power-select 
+    triggerClass='inline'
+    options=options 
+    selected=packetsPageSize 
+    searchEnabled=false
+    onchange=(action 'changePacketsPerPage') as |option|}} 
+    {{option}} 
+  {{/power-select}}
+  <div class="label-text">
+    {{packetsPerPageText}}
+  </div>
+</label>

@@ -9,9 +9,11 @@
   height: rsa-whitespace(more);
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   .event-info {
-    padding-top: 3px;
+    padding: rsa-whitespace(less);
+    margin-left: rsa-whitespace(less);
   }
 
   .packet-info {
@@ -24,25 +26,80 @@
     }
   }
 
-  .input-packets-per-page {
-    width: 3em;
-    font-weight: bold;
-  }
-
-  .packets-paging {
-    padding-top: 2px;
-    font-size: 14px;
-  }
-
   .lighter {
-    color: text-color(primary, lighter);
+    color: text-color(primary, lightest);
   }
-}
 
-.data-pagination {
-
-  button {
-    margin: 0 2px 0 2px;
-    padding: 0.15em 0.15em !important;
+  .packet-pagination {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    align-items: center;
+  
+    .data-pagination {      
+      display: flex;
+      align-items: center;
+      padding: rsa-whitespace(less);
+      margin-left: rsa-whitespace(less);
+      margin-right: rsa-whitespace(less);
+      //icons
+      .rsa-icon {
+        &.active:not(.disabled) {
+          cursor: pointer;
+          color: text-color(primary, lightest);
+        }
+        &.disabled {
+          color: text-color(primary, dark);
+          cursor: default;
+        }
+      }  
+      //jump to specific page text box
+      .page-text-box {
+        display: flex;
+        align-items: center;
+        color: text-color(primary, lightest);
+         
+        .input-page-number {
+          margin-left: rsa-whitespace(less);
+          margin-top: .1rem;
+          text-align: center;
+          width: 21px;
+          line-height: 1rem;
+          -moz-appearance:textfield;
+          background-color: background-color(primary,dark);
+        }
+        .input-page-number::-webkit-outer-spin-button,
+        .input-page-number::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        .input-span {
+          margin-right: rsa-whitespace(less);
+          margin-left: rsa-whitespace(less);
+        }
+        .last-page {
+          margin-right: rsa-whitespace(less);
+        }
+      }
+      //dropdown
+      .power-select-dropdown{
+        display: flex;
+        align-items: center;
+        padding: rsa-whitespace(less);
+        margin-left: rsa-whitespace(more);
+        .ember-power-select-trigger {
+          border-bottom: 0;
+          font-weight: lighter;
+          margin-left: rsa-whitespace(less);
+        }
+        .label-text {
+          margin-left: rsa-whitespace(less);
+        }
+      }
+    //end of data-pagination
+    }
   }
 }

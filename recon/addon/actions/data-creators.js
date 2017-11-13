@@ -90,7 +90,7 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
   endpointId: data.endpointId,
   eventId: data.eventId,
   packetsPageSize: packets.packetsPageSize,
-  packetsRowIndex: ((packets.pageNumber === 1 ? 0 : packets.pageNumber) * packets.packetsPageSize),
+  packetsRowIndex: (packets.pageNumber - 1) * packets.packetsPageSize,
   maxPacketsForText: text.maxPacketsForText,
   decode: text.decode
 });
@@ -181,14 +181,14 @@ const pageFirst = () => {
 
 const pagePrevious = () => {
   return (dispatch, getState) => {
-    const pageNumber = getState().recon.packets.pageNumber - 1;
+    const pageNumber = Number(getState().recon.packets.pageNumber) - 1;
     dispatch(_changePageNumber(pageNumber));
   };
 };
 
 const pageNext = () => {
   return (dispatch, getState) => {
-    const pageNumber = getState().recon.packets.pageNumber + 1;
+    const pageNumber = Number(getState().recon.packets.pageNumber) + 1;
     dispatch(_changePageNumber(pageNumber));
   };
 };
@@ -196,9 +196,25 @@ const pageNext = () => {
 const pageLast = () => {
   return (dispatch, getState) => {
     const { recon, recon: { packets: { packetsPageSize } } } = getState();
-    const pageNumber = (Math.floor(packetTotal(recon) / packetsPageSize));
+    const pageNumber = Math.ceil(packetTotal(recon) / packetsPageSize);
     dispatch(_changePageNumber(pageNumber));
   };
+};
+
+const jumpToPage = (newPage) => {
+  if (newPage % 1 === 0) {
+    return (dispatch, getState) => {
+      const { recon, recon: { packets: { packetsPageSize } } } = getState();
+      const totalPages = Math.ceil(packetTotal(recon) / packetsPageSize);
+      if (newPage > 1 && newPage <= totalPages) {
+        dispatch(_changePageNumber(newPage));
+      } else if (newPage <= 1) {
+        dispatch(pageFirst());
+      } else if (newPage > totalPages) {
+        dispatch(pageLast());
+      }
+    };
+  }
 };
 
 const _changePageNumber = (pageNumber) => {
@@ -217,6 +233,7 @@ const changePacketsPerPage = (packetsPerPage) => {
       type: ACTION_TYPES.CHANGE_PACKETS_PER_PAGE,
       payload: packetsPerPage
     });
+    dispatch(pageFirst());
   };
 };
 
@@ -511,5 +528,6 @@ export {
   setNewReconView,
   teardownNotifications,
   toggleMetaData,
-  togglePayloadOnly
+  togglePayloadOnly,
+  jumpToPage
 };

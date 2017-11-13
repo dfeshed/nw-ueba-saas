@@ -3,9 +3,12 @@ import { processPacketPayloads } from './util';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 
 import { isRequestShown, isResponseShown } from 'recon/reducers/visuals/selectors';
+import { packetTotal } from 'recon/reducers/header/selectors';
 
 const { createSelector } = reselect;
 const packets = (recon) => recon.packets.packets || [];
+const packetsPageSize = (recon) => recon.packets.packetsPageSize;
+const pageNumber = (recon) => recon.packets.pageNumber;
 const renderIds = (recon) => recon.packets.renderIds;
 const headerItems = (recon) => recon.header.headerItems;
 const isPayloadOnly = (recon) => recon.packets.isPayloadOnly;
@@ -85,6 +88,26 @@ export const hasPackets = createSelector(
 export const numberOfPackets = createSelector(
   [hasPackets, packets],
   (hasPackets, packets) => (!hasPackets) ? 0 : packets.length
+);
+
+const _rawNumberOfPages = createSelector(
+  [packetTotal, packetsPageSize],
+  (packetTotal, packetsPageSize) => Math.ceil(packetTotal / packetsPageSize)
+);
+
+export const lastPageNumber = createSelector(
+  [_rawNumberOfPages],
+  (_rawNumberOfPages) => (_rawNumberOfPages === 0) ? 1 : _rawNumberOfPages
+);
+
+export const cannotGoToNextPage = createSelector(
+  [_rawNumberOfPages, pageNumber],
+  (_rawNumberOfPages, pageNumber) => _rawNumberOfPages <= pageNumber
+);
+
+export const cannotGoToPreviousPage = createSelector(
+  [pageNumber],
+  (pageNumber) => pageNumber === 1
 );
 
 export const packetRenderingUnderWay = createSelector(

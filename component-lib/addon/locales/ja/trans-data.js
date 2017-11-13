@@ -203,6 +203,13 @@ export default {
       headerDisplayLabel: 'ja_{{label}} = {{displayValue}}',
       renderingMore: 'ja_Showing more...'
     },
+    reconPager: {
+      packetPagnationPageFirst: 'ja_First',
+      packetPagnationPagePrevious: 'ja_Previous',
+      packetPagnationPageNext: 'ja_Next',
+      packetPagnationPageLast: 'ja_Last',
+      packetsPerPageText: 'ja_Packets Per Page'
+    },
     fileView: {
       downloadFile: 'ja_Download File',
       downloadFiles: 'ja_Download Files ({{fileCount}})',

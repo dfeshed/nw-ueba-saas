@@ -5,13 +5,13 @@
   </div>
 {{/if}}
 
+
 {{#if isPacket}}
-  <div class="packets-per-page">
-    <input type="number" min="10" max="200" step="10" class="input-packets-per-page" value="{{packetsPageSize}}" onChange={{action 'setPacketsPerPage' value="target.value"}}>
-    <label for="">packets per page</label>
-  </div>
-  {{recon-pager/data-pagination}} 
+  <hbox class="packet-pagination">
+    {{recon-pager/data-pagination}}
+  </hbox>
 {{/if}}
+
 
 {{#if (and isText maxPacketMessaging)}}
   <div class="packet-info">

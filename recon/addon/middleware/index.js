@@ -20,6 +20,7 @@ if (config.environment !== 'test') {
       'packets.isPayloadOnly',
       'packets.hasStyledBytes',
       'packets.hasSignaturesHighlighted',
+      'packets.packetsPageSize',
       'text.decode',
       'visuals.defaultReconView',
       'visuals.currentReconView',

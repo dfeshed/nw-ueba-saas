@@ -204,6 +204,13 @@ export default {
       headerDisplayLabel: '{{label}} = {{displayValue}}',
       renderingMore: 'Showing more...'
     },
+    reconPager: {
+      packetPagnationPageFirst: 'First',
+      packetPagnationPagePrevious: 'Previous',
+      packetPagnationPageNext: 'Next',
+      packetPagnationPageLast: 'Last',
+      packetsPerPageText: 'Packets Per Page'
+    },
     fileView: {
       downloadFile: 'Download File',
       downloadFiles: 'Download Files ({{fileCount}})',

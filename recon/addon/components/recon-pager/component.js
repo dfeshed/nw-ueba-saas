@@ -1,4 +1,4 @@
-import run from 'ember-runloop';
+
 import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
@@ -65,17 +65,6 @@ const reconPagerComponent = Component.extend({
   @computed('packetCount', 'packetTotal')
   isHidden(total = 0, pageSize = 0) {
     return total === pageSize;
-  },
-
-  doChangePacketsPerPage(newPacketsPerPage) {
-    this.send('changePacketsPerPage', newPacketsPerPage, false);
-    this.send('pageFirst');
-  },
-
-  actions: {
-    setPacketsPerPage(newPacketsPerPage) {
-      run.debounce(this, this.doChangePacketsPerPage, newPacketsPerPage, 2000);
-    }
   }
 
 });

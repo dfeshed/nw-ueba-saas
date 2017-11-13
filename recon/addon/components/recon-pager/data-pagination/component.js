@@ -2,43 +2,59 @@ import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { pageFirst, pagePrevious, pageNext, pageLast } from 'recon/actions/data-creators';
+import { pageFirst, pagePrevious, pageNext, pageLast, jumpToPage, changePacketsPerPage } from 'recon/actions/data-creators';
 import { packetTotal } from 'recon/reducers/header/selectors';
+import { lastPageNumber, cannotGoToNextPage, cannotGoToPreviousPage } from 'recon/reducers/packets/selectors';
+import service from 'ember-service/inject';
 
 const stateToComputed = ({ recon, recon: { packets } }) => ({
   pageNumber: packets.pageNumber,
   packetsTotal: packetTotal(recon),
-  packetsPerPage: packets.packetsPageSize
+  lastPageNumber: lastPageNumber(recon),
+  cannotGoToNextPage: cannotGoToNextPage(recon),
+  cannotGoToPreviousPage: cannotGoToPreviousPage(recon),
+  packetsPageSize: packets.packetsPageSize
 });
 
 const dispatchToActions = {
   pageFirst,
   pagePrevious,
   pageNext,
-  pageLast
+  pageLast,
+  jumpToPage,
+  changePacketsPerPage
 };
+
+const PACKETS_PER_PAGE = [
+  '100',
+  '300',
+  '500'
+];
 
 const reconDataPagination = Component.extend({
   layout,
-
   classNames: ['data-pagination'],
-
-  @computed('pageNumber', 'packetsPerPage', 'packetsTotal')
-  pageInformation(pageState, packetsPerPage, packetsTotal) {
-    const lastPageNumber = (Math.floor(packetsTotal / packetsPerPage) === 0 ? 1 : Math.floor(packetsTotal / packetsPerPage));
-    return `${this.get('pageNumber')} of ${lastPageNumber}`;
-  },
+  options: PACKETS_PER_PAGE,
+  i18n: service(),
 
   @computed('pageNumber')
-  isPreviousPageDisabled(pageNumber) {
-    return pageNumber === 1;
+  currentPage(pageNumber) {
+    return `${pageNumber}`;
   },
 
-  @computed('pageNumber', 'packetsPerPage', 'packetsTotal')
-  isNextPageDisabled(pageNumber, packetsPerPage, packetsTotal) {
-    return (Math.floor(packetsTotal / packetsPerPage) <= pageNumber);
-  }
+  @computed('i18n')
+  packetsPerPageText(i18n) {
+    return i18n.t('recon.reconPager.packetsPerPageText');
+  },
 
+  actions: {
+    setPageNumber(event) {
+      if (event.keyCode === 13) {
+        const newPage = event.target.value;
+        this.send('jumpToPage', newPage);
+      }
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(reconDataPagination);
