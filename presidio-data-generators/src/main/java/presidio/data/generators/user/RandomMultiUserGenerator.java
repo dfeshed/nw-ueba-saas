@@ -13,12 +13,12 @@ public class RandomMultiUserGenerator implements IUserGenerator{
     private Random random;
 
     public RandomMultiUserGenerator(List<UserGeneratorProbability> userGeneratorProbabilityList){
-        double minProb = userGeneratorProbabilityList.stream().map(u -> u.probablility).min((p1, p2) -> Double.compare(p1,p2)).get();
+        double minProb = userGeneratorProbabilityList.stream().map(u -> u.probability).min((p1, p2) -> Double.compare(p1,p2)).get();
         Assert.isTrue(minProb<=1 && minProb>=0, "The minimum probability should be in the range [0,1]");
-        double maxProb = userGeneratorProbabilityList.stream().map(u -> u.probablility).max((p1, p2) -> Double.compare(p1,p2)).get();
+        double maxProb = userGeneratorProbabilityList.stream().map(u -> u.probability).max((p1, p2) -> Double.compare(p1,p2)).get();
         Assert.isTrue(maxProb<=1 && maxProb>0, "The maximum probability should be in the range (0,1]");
         double multiptyMaxProbToOne = 1/maxProb;
-        userGeneratorProbabilityList.forEach(userGeneratorProbability -> userGeneratorProbability.setProbablility(userGeneratorProbability.getProbablility()*multiptyMaxProbToOne));
+        userGeneratorProbabilityList.forEach(userGeneratorProbability -> userGeneratorProbability.setProbability(userGeneratorProbability.getProbability()*multiptyMaxProbToOne));
         this.userGeneratorProbabilityList = userGeneratorProbabilityList;
         resetEventGeneratorProbabilityIterator();
         random = new Random(0);
@@ -36,7 +36,7 @@ public class RandomMultiUserGenerator implements IUserGenerator{
             if(!userGeneratorProbabilityIterator.hasNext()){
                 resetEventGeneratorProbabilityIterator();
             }
-            if (random.nextDouble() <= userGeneratorProbability.getProbablility()) {
+            if (random.nextDouble() <= userGeneratorProbability.getProbability()) {
                 ret = userGeneratorProbability.getUserGenerator().getNext();
             }
         }
@@ -46,23 +46,23 @@ public class RandomMultiUserGenerator implements IUserGenerator{
 
     public static class UserGeneratorProbability{
         private IUserGenerator userGenerator;
-        private double probablility;
+        private double probability;
 
-        public UserGeneratorProbability(IUserGenerator userGenerator, double probablility){
+        public UserGeneratorProbability(IUserGenerator userGenerator, double probability){
             this.userGenerator = userGenerator;
-            this.probablility = probablility;
+            this.probability = probability;
         }
 
         public IUserGenerator getUserGenerator() {
             return userGenerator;
         }
 
-        public double getProbablility() {
-            return probablility;
+        public double getProbability() {
+            return probability;
         }
 
-        public void setProbablility(double probablility) {
-            this.probablility = probablility;
+        public void setProbability(double probability) {
+            this.probability = probability;
         }
     }
 }
