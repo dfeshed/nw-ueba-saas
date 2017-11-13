@@ -70,7 +70,7 @@ public class RandomMultiMachineEntityGenerator implements IMachineGenerator {
 		    generatedClusters.add(cluster);
         }
 
-        return cluster + "_" +domain;
+        return clusterPrefix + cluster + "_" +domain;
     }
 
     private String randDomain(){
