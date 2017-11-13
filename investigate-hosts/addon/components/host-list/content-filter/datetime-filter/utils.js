@@ -1,6 +1,6 @@
 /**
  * Adds the appropriate date value to the property value
- * @param {*} expression
+ * @param {*} propertyValues
  * @public
  */
 

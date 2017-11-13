@@ -6,7 +6,7 @@ import Immutable from 'seamless-immutable';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 
-import endpoint from '../../state/hostlist.filter';
+import endpoint from '../../state/schema';
 
 const initState = Immutable.from({
   endpoint: {

@@ -29,6 +29,17 @@ const dispatchToActions = {
   updateFilter
 };
 
+/**
+ * Adds the appropriate date value to the property value
+ * @param {*} propertyValues
+ * @public
+ */
+const preparePropertyValues = (propertyValues) => {
+  propertyValues = propertyValues.split('|');
+  return propertyValues.map((value) => {
+    return { value: value.trim() };
+  });
+};
 
 const TextFilter = Component.extend(FilterMixin, {
 
@@ -54,7 +65,10 @@ const TextFilter = Component.extend(FilterMixin, {
    */
   @computed('config.expression')
   restrictionType(expression) {
-    return expression && expression.propertyValues ? expression.restrictionType : 'LIKE';
+    if (expression && expression.propertyValues && expression.restrictionType != 'IN') {
+      return expression.restrictionType;
+    }
+    return 'LIKE';
   },
 
   /**
@@ -65,7 +79,11 @@ const TextFilter = Component.extend(FilterMixin, {
    */
   @computed('config.expression')
   value(expression) {
-    return expression && expression.propertyValues ? expression.propertyValues[0].value : '';
+    if (expression && expression.propertyValues) {
+      const { propertyValues } = expression;
+      const values = propertyValues.map((item) => item.value);
+      return `${values.join('|')}`;
+    }
   },
 
   /**
@@ -77,10 +95,13 @@ const TextFilter = Component.extend(FilterMixin, {
   @computed('config.expression')
   filterLabel(expression) {
     const filterName = this.get('i18n').t(this.get('config.label'));
+    let label;
     if (expression && expression.propertyValues) {
       const { restrictionType, propertyValues: [{ value: inputValue }] } = expression;
-      const { label } = RESTRICTION_TYPES_BY_TYPE[restrictionType];
-      return `${filterName}: ${this.get('i18n').t(label)} ${inputValue}`;
+      if (restrictionType !== 'IN') {
+        label = RESTRICTION_TYPES_BY_TYPE[restrictionType].label;
+        return `${filterName}: ${this.get('i18n').t(label)} ${inputValue}`;
+      }
     }
     return `${filterName}: All`;
   },
@@ -94,10 +115,15 @@ const TextFilter = Component.extend(FilterMixin, {
     onUpdate() {
       const {
         config: { propertyName },
-        restrictionType,
         value
-      } = this.getProperties('config', 'restrictionType', 'value');
-      const propertyValues = value && !isEmpty(value) ? [{ value }] : null;
+      } = this.getProperties('config', 'value');
+
+      let restrictionType = this.get('restrictionType');
+
+      const propertyValues = value && !isEmpty(value) ? preparePropertyValues(value) : null;
+      if (propertyValues.length > 1) {
+        restrictionType = 'IN';
+      }
       this.send('updateFilter', { restrictionType, propertyName, propertyValues });
     }
   }

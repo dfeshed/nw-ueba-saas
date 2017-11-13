@@ -18,7 +18,7 @@
           </div>
           {{#power-select
               options=listOptions
-              selected=selected
+              selected= selectedDateRangeOption
               searchPlaceholder=(t 'investigateHosts.hosts.filters.searchPlaceHolder')
               onchange=(action 'onSelection') as |option|}}
             {{option.name}}
@@ -51,14 +51,14 @@
       {{#if (eq restrictionType.type 'BETWEEN')}}
         <div class='body__input col-xs-6'>
           {{rsa-form-datetime
-            selected=dateStartValue
+            value=(unbound dateStartValue)
             placeholder=(t 'investigateHosts.hosts.filters.customStartDate')
             onChange=(action (mut dateStartValue))
             }}
         </div>
         <div class='body__input col-xs-6'>
           {{rsa-form-datetime
-          selected=dateEndValue
+          value=dateEndValue
           placeholder=(t 'investigateHosts.hosts.filters.customEndDate')
           onChange=(action (mut dateEndValue))
           }}
@@ -67,7 +67,7 @@
         <div class='body__input col-xs-6'>
           {{rsa-form-datetime
             placeholder=(t 'investigateHosts.hosts.filters.customDateRange')
-            selected=dateValue
+            value=dateValue
             onChange=(action (mut dateValue))
             }}
         </div>

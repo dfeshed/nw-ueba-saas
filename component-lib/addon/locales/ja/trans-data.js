@@ -1974,6 +1974,7 @@ export default {
         customDate: 'ja_Custom Date',
         operator: 'ja_Operator',
         searchPlaceHolder: 'ja_Type to filter options',
+        mutlipleValuesNote: 'ja_Note: To search multiple values, use | as a separator',
         agentStatus: {
           lastSeenTime: 'ja_Agent Not Seen Since'
         }

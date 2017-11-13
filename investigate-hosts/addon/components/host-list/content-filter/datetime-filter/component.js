@@ -57,6 +57,8 @@ const DateTimeFilter = Component.extend(FilterMixin, {
 
   restrictionTypes: RESTRICTION_TYPES,
 
+  selectedDateRangeOption: {},
+
    /**
    * Restriction type for the list filter
    * @public
@@ -73,7 +75,11 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   @computed('config.options', 'config.selected')
   listOptions(options, selections) {
     return options.map((item) => {
-      return { name: item.label, id: item.id, selected: selections.includes(item) };
+      const listOption = { name: item.label, id: item.id, selected: item.selected };
+      if (item.label === selections[0] || item.selected) {
+        this.set('selectedDateRangeOption', listOption);
+      }
+      return listOption;
     });
   },
 
@@ -104,6 +110,20 @@ const DateTimeFilter = Component.extend(FilterMixin, {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
       const values = propertyValues.map((item) => item.displayValue);
+
+      this.set('restrictionType', RESTRICTION_TYPES_BY_TYPE[expression.restrictionType]);
+      if (expression.isCustom) {
+        this.set('isCustomChecked', true);
+        if (expression.restrictionType === 'GREATER_THAN' || expression.restrictionType === 'LESS_THAN') {
+          this.set('dateValue', expression.propertyValues[0].value);
+        } else if (expression.restrictionType === 'BETWEEN') {
+          this.set('dateStartValue', expression.propertyValues[0].value);
+          this.set('dateEndValue', expression.propertyValues[1].value);
+        }
+      } else {
+        this.set('isCustomChecked', false);
+      }
+
       return `${filterName}: ${values.join(',')}`;
     }
     return `${filterName}: All`;
@@ -157,7 +177,7 @@ const DateTimeFilter = Component.extend(FilterMixin, {
         this.set('showListOptions', false);
       } else {
         const values = [{ value: option.id, displayValue: option.name }];
-        this.send('updateFilter', { propertyName, restrictionType: type, propertyValues: prepareExpressionProperty(values) });
+        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues: prepareExpressionProperty(values) });
       }
     },
     onFilterUpdate() {
@@ -167,12 +187,27 @@ const DateTimeFilter = Component.extend(FilterMixin, {
         dateEndValue,
         restrictionType: { type },
         dateValue,
-        config: { propertyName }
-      } = this.getProperties('config', 'dateValue', 'dateStartValue', 'dateEndValue', 'restrictionType');
+        config: { propertyName },
+        isCustomChecked,
+        selectedDateRangeOption
+      } = this.getProperties('config', 'dateValue', 'dateStartValue', 'dateEndValue', 'restrictionType', 'isCustomChecked', 'selectedDateRangeOption');
 
-      propertyValues = type === 'BETWEEN' ? [{ value: dateStartValue }, { value: dateEndValue }] : [{ value: dateValue }];
+      if (!isCustomChecked) {
+        const values = [{ value: selectedDateRangeOption.id, displayValue: selectedDateRangeOption.name }];
+        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues: prepareExpressionProperty(values) });
+      } else {
+        if (type === 'BETWEEN') {
+          propertyValues = [
+            { value: dateStartValue, displayValue: new Date(dateStartValue).toString() },
+            { value: dateEndValue, displayValue: new Date(dateEndValue).toString() }
+          ];
+        } else {
+          propertyValues = [{ value: dateValue, displayValue: new Date(dateValue).toString() }];
+        }
 
-      this.send('updateFilter', { propertyName, restrictionType: type, propertyValues: prepareExpressionProperty(propertyValues) });
+        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: true, propertyValues: prepareExpressionProperty(propertyValues) });
+      }
+
     },
     toggleIsChecked() {
       this.toggleProperty('isCustomChecked');
