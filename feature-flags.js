@@ -1,7 +1,6 @@
 module.exports = {
   // used to manage future features
   future(environment, flagValue) {
-
     // if environment is test, then we want 'future' on
     // as we do not want to have to deal with changing
     // tests for short period

@@ -230,7 +230,8 @@ export default {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
       noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.',
-      permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.'
+      permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
+      sessionUnavailable: 'Session is unavailable for viewing.'
     },
     toggles: {
       header: 'Show/Hide Header',

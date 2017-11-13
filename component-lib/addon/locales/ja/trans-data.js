@@ -229,7 +229,8 @@ export default {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'ja_This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
       noTextContentData: 'ja_No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.',
-      permissionError: 'ja_Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.'
+      permissionError: 'ja_Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
+      sessionUnavailable: 'ja_Session is unavailable for viewing.'
     },
     toggles: {
       header: 'ja_Show/Hide Header',
