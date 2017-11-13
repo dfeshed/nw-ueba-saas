@@ -6,7 +6,6 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
@@ -41,11 +40,12 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
-
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(adeEventType, timeRange);
+        FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
+
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
-            List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator,contextTypes, createFeatureBucketStrategyData(timeRange));
+            List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
             storeFeatureBuckets(featureBucketsToInsert);
         }
     }
@@ -67,9 +67,9 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
         }
     }
 
-    protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
-        String strategyName = "fixed_duration_" + StringUtils.lowerCase(this.strategy.name());
-        return new FeatureBucketStrategyData(strategyName,strategyName,timeRange);
+    protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange) {
+        String strategyName = strategy.toStrategyName();
+        return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
     @Override
