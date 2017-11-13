@@ -15,13 +15,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.client.model.AlertQuery;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
@@ -56,9 +57,6 @@ public class AlertApiControllerModuleTest {
 
     private ObjectMapper objectMapper;
 
-    private presidio.output.domain.records.alerts.Alert alert1;
-    private presidio.output.domain.records.alerts.Alert alert2;
-
     private Comparator<Alert> defaultAlertComparator = new Comparator<Alert>() {
         @Override
         public int compare(Alert o1, Alert o2) {
@@ -70,26 +68,23 @@ public class AlertApiControllerModuleTest {
     public void setup() {
         //starting up the webapp server
         alertsApiMVC = MockMvcBuilders.standaloneSetup(alertsApi).setMessageConverters(mappingJackson2HttpMessageConverter).build();
-
         this.objectMapper = ObjectMapperProvider.customJsonObjectMapper();
-
-        //save alerts in elastic
-        Date date = new Date();
-        alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
-        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
-        alertRepository.save(Arrays.asList(alert1, alert2));
     }
 
     @After
     public void cleanTestData() {
         //delete the created users
-        alertRepository.delete(alert1);
-        alertRepository.delete(alert2);
+        Iterable<presidio.output.domain.records.alerts.Alert> allAlerts = alertRepository.findAll();
+        alertRepository.delete(allAlerts);
     }
 
     @Test
     public void getAllAlerts() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alertRepository.save(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -114,6 +109,12 @@ public class AlertApiControllerModuleTest {
 
     @Test
     public void getAlerts_filterByFeedback() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alertRepository.save(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -135,7 +136,97 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
+    public void getAlerts_FilterByFeedback_multipleValues() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alertRepository.save(Arrays.asList(alert1, alert2));
+
+        // init expected response
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        expectedAlert1.setFeedback(AlertQueryEnums.AlertFeedback.NOT_RISK);
+        Alert expectedAlert2 = convertDomainAlertToRestAlert(alert2);
+        expectedAlert2.setFeedback(AlertQueryEnums.AlertFeedback.NONE);
+        AlertsWrapper expectedResponse = new AlertsWrapper();
+        expectedResponse.setTotal(2);
+        List<Alert> alerts = Arrays.asList(expectedAlert1, expectedAlert2);
+        expectedResponse.setAlerts(alerts);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI)
+                .param("feedback", AlertQueryEnums.AlertFeedback.NOT_RISK.name())
+                .param("feedback", AlertQueryEnums.AlertFeedback.NONE.name()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
+        Collections.sort(expectedResponse.getAlerts(), defaultAlertComparator);
+        Collections.sort(actualResponse.getAlerts(), defaultAlertComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getAlerts_sortByFeedback() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert  alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert2.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert3 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert3.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert4 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert4.setFeedback(AlertEnums.AlertFeedback.RISK);
+
+        alertRepository.save(Arrays.asList(alert1, alert2, alert3, alert4));
+
+        // init expected response
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        Alert expectedAlert2 = convertDomainAlertToRestAlert(alert2);
+        Alert expectedAlert3 = convertDomainAlertToRestAlert(alert3);
+        Alert expectedAlert4 = convertDomainAlertToRestAlert(alert4);
+        AlertsWrapper expectedResponse = new AlertsWrapper();
+        expectedResponse.setTotal(4);
+        List<Alert> alerts = Arrays.asList(expectedAlert1, expectedAlert2, expectedAlert3, expectedAlert4);
+        expectedResponse.setAlerts(alerts);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI)
+                .param("sortFieldNames", String.valueOf(AlertQueryEnums.AlertQuerySortFieldName.FEEDBACK.name()))
+                .param("sortDirection", String.valueOf(AlertQuery.SortDirectionEnum.ASC.name())))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
+        Collections.sort(expectedResponse.getAlerts(), new Comparator<Alert>() {
+            @Override
+            public int compare(Alert o1, Alert o2) {
+                return o2.getFeedback().compareTo(o1.getFeedback());
+            }
+        });
+        Assert.assertEquals(expectedResponse.getTotal(), actualResponse.getTotal());
+        Assert.assertEquals(expectedResponse.getAlerts().size(), actualResponse.getAlerts().size());
+        Assert.assertEquals(AlertQueryEnums.AlertFeedback.NOT_RISK, actualResponse.getAlerts().get(0).getFeedback());
+        Assert.assertEquals(AlertQueryEnums.AlertFeedback.NOT_RISK, actualResponse.getAlerts().get(1).getFeedback());
+        Assert.assertEquals(AlertQueryEnums.AlertFeedback.NOT_RISK, actualResponse.getAlerts().get(2).getFeedback());
+        Assert.assertEquals(AlertQueryEnums.AlertFeedback.RISK, actualResponse.getAlerts().get(3).getFeedback());
+
+
+    }
+
+    @Test
     public void getAlerts_filterBySeverity() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alertRepository.save(Arrays.asList(alert1, alert2));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -157,6 +248,12 @@ public class AlertApiControllerModuleTest {
 
     @Test
     public void getAlertById() throws Exception {
+
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        alertRepository.save(Arrays.asList(alert1));
 
         // init expected response
         Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
@@ -191,27 +288,27 @@ public class AlertApiControllerModuleTest {
         restAlert.setIndicatorsNum(alert.getIndicatorsNum());
         restAlert.setIndicatorsName(alert.getIndicatorsNames() == null ? new ArrayList<>() : alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
+        restAlert.setFeedback(AlertQueryEnums.AlertFeedback.fromValue(alert.getFeedback().toString()));
         return restAlert;
     }
 
     @Test
     public void testGetIndicatorEvents() throws Exception{
-        alertRepository.delete(alert1);
 
-        generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date());
+        presidio.output.domain.records.alerts.Alert alert = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date());
 
         //generate indicators
-        Indicator indicator = new Indicator(alert1.getId());
+        Indicator indicator = new Indicator(alert.getId());
 
         //generate events
         List<IndicatorEvent> indicatorEvents = generateEvents(102, indicator.getId());
         indicator.setEvents(indicatorEvents);
-        alert1.setIndicators(Arrays.asList(indicator));
+        alert.setIndicators(Arrays.asList(indicator));
 
-        alertPersistencyService.save(Arrays.asList(alert1));
+        alertPersistencyService.save(Arrays.asList(alert));
 
         // get actual response not paged
-        MvcResult mvcResult = alertsApiMVC.perform(get(EVENTS_BY_INDICATOR_ID_URI, alert1.getId(), indicator.getId()))
+        MvcResult mvcResult = alertsApiMVC.perform(get(EVENTS_BY_INDICATOR_ID_URI, alert.getId(), indicator.getId()))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
