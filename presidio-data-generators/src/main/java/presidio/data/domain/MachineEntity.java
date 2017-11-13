@@ -20,12 +20,13 @@ public class MachineEntity {
         this.machineIp = machineIp;
     }
 
-    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN) {
+    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion) {
         this.machineId = machineId;
         this.machineIp = machineIP;
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
         this.machineDomainDN = machineDomainDN;
+        this.osVersion = osVersion;
     }
 
     public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String domainFQDN, String osVersion) {
@@ -34,8 +35,8 @@ public class MachineEntity {
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
         this.machineDomainDN = machineDomainDN;
-        this.domainFQDN = domainFQDN;
         this.osVersion = osVersion;
+        this.domainFQDN = domainFQDN;
     }
 
     public String getMachineId() {
