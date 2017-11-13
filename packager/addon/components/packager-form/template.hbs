@@ -138,14 +138,15 @@
 
           {{#power-select
             placeholder=(t 'packager.placeholder')
-            options=configData.logCollectionConfig.primaryDestination
-            selected=selectedPrimary
+            options=listOfService
             triggerClass=errorClass
             dropdownClass=errorClass
             searchPlaceholder=(t 'packager.searchPlaceholder')
-            onchange=(action 'setSelect' 'primaryDestination' 'selectedPrimary') as |option|}}
-            {{option}}
+            selected=selectedPrimaryDestination
+            onchange=(action 'setPrimaryDestination' value="id") as |list|}}
+            {{list.value}}
           {{/power-select}}
+
         </label>
       </div>
 
@@ -156,11 +157,13 @@
           </div>
           {{#power-select
             placeholder=(t 'packager.placeholder')
-            options=configData.logCollectionConfig.primary
-            selected=selectedSecondary
+            options=listOfSecondaryService
+            triggerClass=errorClass
+            dropdownClass=errorClass
             searchPlaceholder=(t 'packager.searchPlaceholder')
-            onchange=(action 'setSelect' 'secondaryDestination''selectedSecondary') as |option|}}
-            {{option}}
+            selected=selectedSecondaryDestination
+            onchange=(action 'setSecondaryDestination' value="id") as |list|}}
+            {{list.value}}
           {{/power-select}}
         </label>
       </div>

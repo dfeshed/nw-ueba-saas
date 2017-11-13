@@ -39,6 +39,8 @@ const formComponent = Component.extend({
   className: 'rsa-form-label power-select',
   isGenerateLogDisabled: true,
   isLogCollectionEnabled: false,
+  primaryDestination: '',
+  secondaryDestination: '',
 
   @alias('configData.packageConfig.autoUninstall')
   autoUninstall: null,
@@ -52,6 +54,34 @@ const formComponent = Component.extend({
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
     return isEmpty(server) || isEmpty(port) || isUpdating;
+  },
+
+  @computed('configData.logCollectionConfig.listOfService')
+  listOfService(list) {
+    const services = [];
+    for (let i = 0; i < list.length; i++) {
+      const service = {};
+      const key = Object.keys(list[i]);
+      service.id = key.toString();
+      service.value = Object.values(list[i][key]).toString().replace(/,/g, ' ');
+      services.push(service);
+    }
+    return services;
+  },
+
+  @computed('listOfService', 'primaryDestination')
+  listOfSecondaryService(list, id) {
+    return list.filter((obj) => id !== obj.id);
+  },
+
+  @computed('listOfService', 'primaryDestination')
+  selectedPrimaryDestination(list, id) {
+    return list.find((obj) => obj.id === id);
+  },
+
+  @computed('listOfService', 'secondaryDestination')
+  selectedSecondaryDestination(list, id) {
+    return list.find((obj) => obj.id === id);
   },
 
   validateMandatoryFields() {
@@ -119,6 +149,15 @@ const formComponent = Component.extend({
     setSelect(property, selected, option) {
       this.set(selected, option);
       this.set(`configData.logCollectionConfig.${property}`, option);
+    },
+
+    setPrimaryDestination(destination) {
+      this.set('primaryDestination', destination);
+      this.set('secondaryDestination', '');
+    },
+
+    setSecondaryDestination(destination) {
+      this.set('secondaryDestination', destination);
     },
 
     uploadConfig(ev) {
