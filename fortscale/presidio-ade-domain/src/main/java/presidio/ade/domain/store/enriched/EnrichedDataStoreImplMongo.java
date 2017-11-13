@@ -212,5 +212,21 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
         mongoTemplate.remove(query, collectionName);
     }
 
+    @Override
+    public long countRecords(EnrichedRecordsMetadata recordsMetadata, String contextType, String contextId) {
 
+        Instant startDate = recordsMetadata.getStartInstant();
+        Instant endDate = recordsMetadata.getEndInstant();
+        Criteria dateTimeCriteria = Criteria.where(EnrichedRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
+
+        String adeEventType = recordsMetadata.getAdeEventType();
+        Class<? extends AdeRecord> pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
+        String fieldName = getFieldName(pojoClass, contextType);
+        Criteria contextCriteria = Criteria.where(fieldName).is(contextId);
+
+        Query query = new Query(dateTimeCriteria).addCriteria(contextCriteria);
+
+        String collectionName = translator.toCollectionName(recordsMetadata);
+        return mongoTemplate.count(query, collectionName);
+    }
 }

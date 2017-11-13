@@ -155,7 +155,6 @@
         <podam.version>7.0.5.RELEASE</podam.version>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <spring-actuator-aop.version>1.5.4.RELEASE</spring-actuator-aop.version>
         <org.aspectj-version>1.8.7</org.aspectj-version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
         <elasticsearch.version>5.4.0</elasticsearch.version>
@@ -167,6 +166,7 @@
         <swagger-annotations.version>1.5.16</swagger-annotations.version>
         <json-patch.version>1.9</json-patch.version>
         <javax.el-version>3.0.0</javax.el-version>
+        <mongodb-driver-async.version>3.4.2</mongodb-driver-async.version>
     </properties>
 
     <dependencyManagement>
@@ -176,16 +176,6 @@
                 <artifactId>presidio-data-generators</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${spring-actuator-aop.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-aop</artifactId>
-                <version>${spring-actuator-aop.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -495,6 +485,11 @@
                 <version>${json-patch.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-async</artifactId>
+                <version>${mongodb-driver-async.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.el</artifactId>
                 <version>${javax.el-version}</version>
@@ -523,6 +518,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -719,5 +719,10 @@
             <name>mirror.fortscale.dom-snapshots</name>
             <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
         </snapshotRepository>
+         <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </repository>
     </distributionManagement>
 </project>

@@ -5,14 +5,10 @@ import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.boot.actuate.endpoint.MetricsEndpoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
-import presidio.monitoring.aspect.metrics.PresidioCustomMetrics;
+import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.factory.PresidioMetricFactory;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -31,19 +27,17 @@ public class MonitoringAspects {
     private final String RUN_TIME = ".RunTime";
     private final String NUMBER_OF_FAILED_VALIDATION = ".NumberOfFailedValidation";
     private final String NUMBER_OF_FILTERED_EVENTS = ".NumberOfFilteredEvents";
-
-
     private final String UNIT_TYPE_LONG = "long";
-    private final String UNIT_TYPE_DOUBLE = "double";
-    public MetricsEndpoint metricsEndpoint;
-    public PresidioCustomMetrics presidioCustomMetrics;
 
+    private PresidioMetricEndPoint presidioMetricEndPoint;
+    private PresidioMetricFactory presidioMetricFactory;
 
-    public MonitoringAspects(MetricsEndpoint metricsEndpoint, PresidioCustomMetrics presidioCustomMetrics) {
-        logger.info("Aspect is activated");
-        this.presidioCustomMetrics = presidioCustomMetrics;
-        this.metricsEndpoint = metricsEndpoint;
-        this.metricsEndpoint.registerPublicMetrics(this.presidioCustomMetrics);
+    public MonitoringAspects() {
+    }
+
+    public void setMetrics(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricFactory presidioMetricFactory) {
+        this.presidioMetricEndPoint = presidioMetricEndPoint;
+        this.presidioMetricFactory = presidioMetricFactory;
     }
 
     /**
@@ -58,8 +52,7 @@ public class MonitoringAspects {
     @Before("@annotation(presidio.monitoring.aspect.annotations.Start)")
     public void start(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + START;
-        Set tags = new HashSet();
-        presidioCustomMetrics.addMetric(metric, 1, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, UNIT_TYPE_LONG));
         logger.info("Metric {} increment with annotation Start. ", metric);
     }
 
@@ -75,8 +68,7 @@ public class MonitoringAspects {
     @After("@annotation(presidio.monitoring.aspect.annotations.End)")
     public void end(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + END;
-        Set tags = new HashSet();
-        presidioCustomMetrics.addMetric(metric, 1, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, UNIT_TYPE_LONG));
         logger.debug("Metric {} increment with annotation End. ", metric);
     }
 
@@ -92,8 +84,7 @@ public class MonitoringAspects {
     @AfterThrowing("@annotation(presidio.monitoring.aspect.annotations.ExceptionThrown)")
     public void exceptionThrown(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + EXCEPTION_THROWN;
-        Set tags = new HashSet();
-        presidioCustomMetrics.addMetric(metric, 1, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, UNIT_TYPE_LONG));
         logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
 
@@ -113,8 +104,7 @@ public class MonitoringAspects {
         joinPoint.proceed();
         long endTime = System.nanoTime();
         long time = Long.divideUnsigned(endTime - startTime, 1000000000);
-        Set tags = new HashSet();
-        presidioCustomMetrics.addMetric(metricName, time, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, time, UNIT_TYPE_LONG));
         logger.debug("Metric {} run time is {} milli seconds. ", metricName, time);
     }
 
@@ -137,7 +127,7 @@ public class MonitoringAspects {
         int numberOfFilteredEvents = numberOfEventsEntered - result.size();
         Set tags = new HashSet();
         tags.add(schema);
-        presidioCustomMetrics.addMetric(metricName, numberOfFilteredEvents, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, numberOfFilteredEvents, tags, UNIT_TYPE_LONG));
         logger.debug("Metric {} add {} events filtered. ", metricName, numberOfFilteredEvents);
         return returnVal;
     }
@@ -155,8 +145,8 @@ public class MonitoringAspects {
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString() + NUMBER_OF_FAILED_VALIDATION;
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        Set tags = new HashSet();
-        presidioCustomMetrics.addMetric(metricName, numberOfFailedValidationDocuments, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, numberOfFailedValidationDocuments, UNIT_TYPE_LONG));
+
         logger.debug("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 
@@ -176,7 +166,7 @@ public class MonitoringAspects {
         String metric = joinPoint.getSignature().toShortString() + schema.getName();
         Set tags = new HashSet();
         tags.add(schema.getName());
-        presidioCustomMetrics.addMetric(metric, 1, tags, UNIT_TYPE_LONG);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, tags, UNIT_TYPE_LONG));
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }
 

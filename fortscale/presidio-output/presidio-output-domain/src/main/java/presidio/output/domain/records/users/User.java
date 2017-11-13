@@ -88,6 +88,7 @@ public class User extends AbstractElasticDocument {
         this.userName = userName;
         this.indexedUserName = userName;
         this.userDisplayName = userDisplayName;
+        this.severity = UserSeverity.LOW;
         this.tags = tags;
     }
 

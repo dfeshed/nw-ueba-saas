@@ -120,7 +120,7 @@ public abstract class AbstractModelScorer extends AbstractScorer {
     }
 
     protected Model getModel(AdeRecordReader adeRecordReader, String modelName, List<String> contextFieldNames) {
-        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextFieldNames);
+        return eventModelsCacheService.getLatestModelBeforeEventTime(adeRecordReader, modelName, contextFieldNames);
     }
 
     @Override

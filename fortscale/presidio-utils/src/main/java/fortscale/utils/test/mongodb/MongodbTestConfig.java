@@ -1,8 +1,9 @@
 package fortscale.utils.test.mongodb;
 
-import com.github.fakemongo.Fongo;
+import com.github.fakemongo.async.FongoAsync;
 import com.mongodb.Mongo;
 import fortscale.utils.mongodb.config.MongoConfig;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -21,6 +22,16 @@ import org.springframework.context.annotation.Import;
 @Import(MongodbTestPropertiesConfig.class)
 public class MongodbTestConfig extends MongoConfig {
 
+    @Bean FongoAsync fongoAsync() {
+        FongoAsync fongoAsync = new FongoAsync(mongoDBName);
+        return fongoAsync;
+    }
+
+    @Bean
+    public com.mongodb.async.client.MongoClient asyncClient() throws Exception {
+        return fongoAsync().getMongo();
+    }
+
     @Override
     protected String getDatabaseName() {
         return mongoDBName;
@@ -28,8 +39,8 @@ public class MongodbTestConfig extends MongoConfig {
 
     @Override
     public Mongo mongo() throws Exception {
-        Fongo fongo = new Fongo(mongoDBName);
-
-        return fongo.getMongo();
+        return fongoAsync().getFongo().getMongo();
     }
+
+
 }

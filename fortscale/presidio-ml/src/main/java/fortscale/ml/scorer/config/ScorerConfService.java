@@ -35,7 +35,7 @@ public abstract class ScorerConfService extends AslConfigurationService {
 
     private void loadAdeEventTypeScorerConfs(JSONObject adeEventTypeScorerConfsJSON) {
         String errorMsg;
-        ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
+        ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         String jsonString = adeEventTypeScorerConfsJSON.toJSONString();
 
         try {

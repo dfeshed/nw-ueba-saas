@@ -46,7 +46,7 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
 
     @Override
     public ModelBuilderData retrieve(String contextId, Date endTime) {
-        Assert.isNull(contextId,"context must be not null");
+        Assert.isNull(contextId,"context must be null");
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
         TimeRange timeRange = new TimeRange(startTime, endTimeInstant);
@@ -55,20 +55,30 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
                 new AccumulatedSmartContextSelectorConf(smartRecordConfName));
 
         Set<String> contextIds = contextSelector.getContexts(timeRange);
-        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = contextIds.stream()
-                .flatMap(context -> readSmartAggregatedRecordData(smartRecordConfName, context, startTime, endTimeInstant).stream())
-                .collect(Collectors.toList());
+        List<SmartAggregatedRecordDataContainer> finalSmartAggregatedRecordDataContainers = new ArrayList<>();
+
+        Set<Long> timePartitions = new HashSet<>();
+
+        for (String context : contextIds) {
+            List<AccumulatedSmartRecord> accumulatedSmartRecords = getAccumulatedSmartRecords(smartRecordConfName, context, startTime, endTimeInstant);
+
+            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
+            timePartitions.addAll(calcPartitions(accumulatedSmartRecords));
+            for (SmartAggregatedRecordDataContainer smartAggregatedRecordDataContainer : smartAggregatedRecordDataContainers) {
+                finalSmartAggregatedRecordDataContainers.add(smartAggregatedRecordDataContainer);
+            }
+        }
+
         int amountOfContextIds = contextIds.size();
-        long numOfPartitions = calcNumOfPartitions(smartAggregatedRecordDataContainers);
-        return new ModelBuilderData(new SmartWeightsModelBuilderData(amountOfContextIds,smartAggregatedRecordDataContainers,numOfPartitions));
+        long numOfPartitions = timePartitions.size();
+        return new ModelBuilderData(new SmartWeightsModelBuilderData(amountOfContextIds,finalSmartAggregatedRecordDataContainers,numOfPartitions));
     }
 
-    private List<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordData(
-            String smartConfName, String contextId, Instant startTime, Instant endTime) {
 
-        List<AccumulatedSmartRecord> accumulatedSmartRecords = dataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
-                smartConfName, contextId, startTime, endTime);
-        return flattenSmartRecordToSmartAggrData(startTime,accumulatedSmartRecords);
+
+    private List<AccumulatedSmartRecord> getAccumulatedSmartRecords(String smartConfName, String contextId, Instant startTime, Instant endTime) {
+        return dataReader.findAccumulatedEventsByContextIdAndStartTimeRange(
+                    smartConfName, contextId, startTime, endTime);
     }
 
     @Override
@@ -78,8 +88,8 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
                 getClass().getSimpleName()));
     }
 
-    protected long calcNumOfPartitions(List<SmartAggregatedRecordDataContainer> data) {
-        return data.stream().map(x -> (x.getStartTime().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).distinct().count();
+    protected Set<Long> calcPartitions(List<AccumulatedSmartRecord> data) {
+        return data.stream().map(x -> (x.getStartInstant().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds).collect(Collectors.toSet());
     }
 
     @Override

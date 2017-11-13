@@ -23,8 +23,10 @@ import java.sql.Date;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.notNull;
 import static org.mockito.Mockito.when;
@@ -47,8 +49,16 @@ public class RestUserServiceTest {
     public void testReturnUserWithoutExpand() {
         User user = createUser(1);
         when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
-        presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", false);
+        presidio.webapp.model.User resultUser = restUserService.getUserById(user.getId(), false);
         Assert.assertNotNull(resultUser);
+        assertEquals(user.getUserId(), resultUser.getUserId());
+        assertEquals(user.getAlertClassifications(), resultUser.getAlertClassifications());
+        assertEquals(user.getAlertsCount(), resultUser.getAlertsCount().intValue());
+        assertEquals(user.getId(), resultUser.getId());
+        assertEquals(0, Double.compare(user.getScore(), resultUser.getScore().doubleValue()));
+        assertEquals(user.getSeverity().toString(), resultUser.getSeverity().toString());
+        assertEquals(user.getUserDisplayName(), resultUser.getUserDisplayName());
+        assertEquals(user.getUserName(), resultUser.getUsername());
     }
 
 
@@ -62,7 +72,7 @@ public class RestUserServiceTest {
         when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
         presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", true);
 
-        Assert.assertEquals(1, resultUser.getAlerts().size());
+        assertEquals(1, resultUser.getAlerts().size());
 
 
     }
@@ -84,8 +94,8 @@ public class RestUserServiceTest {
         UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
         List<presidio.webapp.model.User> resultUser = usersWrapper.getUsers();
 
-        Assert.assertEquals(3, resultUser.size());
-        Assert.assertEquals(5, usersWrapper.getTotal().intValue());
+        assertEquals(3, resultUser.size());
+        assertEquals(5, usersWrapper.getTotal().intValue());
     }
 
     @Test
@@ -105,8 +115,8 @@ public class RestUserServiceTest {
         UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
         List<presidio.webapp.model.User> resultUser = usersWrapper.getUsers();
 
-        Assert.assertEquals(1, resultUser.size());
-        Assert.assertEquals(2, usersWrapper.getTotal().intValue());
+        assertEquals(1, resultUser.size());
+        assertEquals(2, usersWrapper.getTotal().intValue());
     }
 
 
@@ -148,6 +158,7 @@ public class RestUserServiceTest {
         User user = new User();
         user.setUserName("user" + number);
         user.setId("useruser" + number);
+        user.setUserId("vendorUserId" + number);
         user.setAlertsCount(1);
         user.setUserDisplayName("superuser" + number);
         user.setScore(60);

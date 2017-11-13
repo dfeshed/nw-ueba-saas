@@ -23,6 +23,7 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.processor.config.HistoricalDataConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.DailyHistogram;
@@ -259,7 +260,9 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
     private PageIterator<EnrichedRecord> getEnrichedRecordPageIterator(String contextValue, Schema schema, TimeRange inMemoryTimeRange) {
         Set<String> user = new HashSet<String>(Arrays.asList(contextValue));
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, 1000, 100, CommonStrings.CONTEXT_USERID);
-        return enrichedRecordPaginationService.getPageIterator(schema.name().toLowerCase(), inMemoryTimeRange, user, 100);
+        EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(schema.getName().toLowerCase(), inMemoryTimeRange.getStart(), inMemoryTimeRange.getEnd());
+        int total = (int) enrichedDataStore.countRecords(enrichedRecordsMetadata, CommonStrings.CONTEXT_USERID, contextValue);
+        return enrichedRecordPaginationService.getPageIterator(schema.name().toLowerCase(), inMemoryTimeRange, user, total);
     }
 
     private Map<String, String> getContextIdMap(String contextField, String contextValue) {

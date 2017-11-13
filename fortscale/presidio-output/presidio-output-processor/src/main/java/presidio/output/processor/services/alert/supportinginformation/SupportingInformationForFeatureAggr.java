@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.records.alerts.HistoricalData;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.config.AnomalyFiltersConfig;
@@ -25,11 +22,7 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Supporting information (indicators, events and historical data) for FEATURE_AGGREGATION events (AKA 'F')
@@ -44,16 +37,18 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     private EventPersistencyService eventPersistencyService;
 
     private HistoricalDataPopulatorFactory historicalDataPopulatorFactory;
+    private ObjectMapper objectMapper;
 
 
     public SupportingInformationForFeatureAggr(SupportingInformationConfig config, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory) {
         this.config = config;
         this.eventPersistencyService = eventPersistencyService;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
+        this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
     }
 
     @Override
-    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert) throws Exception {
+    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit) throws Exception {
         List<Indicator> indicators = new ArrayList<Indicator>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
@@ -72,7 +67,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit) throws Exception {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
@@ -91,12 +86,13 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
             features.put(fieldName, featureValue);
         }
 
-        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features);
+        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
 
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
 
         for (EnrichedEvent rawEvent : rawEvents) {
-            Map<String, Object> rawEventFeatures = new ObjectMapper().convertValue(rawEvent, Map.class);
+
+            Map<String, Object> rawEventFeatures = objectMapper.convertValue(rawEvent, Map.class);
             IndicatorEvent event = new IndicatorEvent();
             event.setFeatures(rawEventFeatures);
             event.setIndicatorId(indicator.getId());

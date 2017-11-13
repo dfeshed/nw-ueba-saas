@@ -2,9 +2,11 @@ package fortscale.ml.model.builder;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.SMARTValuesModel;
+import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,9 +41,9 @@ public class SMARTValuesModelBuilderTest {
 		Assert.assertEquals(sumOfValues, model.getSumOfValues(), 0.0001);
 	}
 
-	private static GenericHistogram castModelBuilderData(Map<Double, Long> map) {
+	private static SmartValueData castModelBuilderData(Map<Double, Long> map) {
 		GenericHistogram histogram = new GenericHistogram();
 		map.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-		return histogram;
+		return new SmartValueData(histogram, Instant.now());
 	}
 }

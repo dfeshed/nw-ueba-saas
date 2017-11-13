@@ -15,11 +15,10 @@ public class AlertEnumsConfig {
     private double highScore;
     @Value("${severity.mid}")
     private double midScore;
-    @Value("${severity.low}")
-    private double lowScore;
+
 
     @Bean
     public AlertEnumsSeverityService alertEnumsSeverityService() {
-        return new AlertEnumsSeverityService(criticalScore, highScore, midScore, lowScore);
+        return new AlertEnumsSeverityService(criticalScore, highScore, midScore);
     }
 }

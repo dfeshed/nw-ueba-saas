@@ -10,7 +10,6 @@ import fortscale.ml.scorer.record.TestAdeRecord;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -162,7 +161,7 @@ public class PersonalThresholdModelScorerTest {
         Mockito.when(baseScorer.getMainModel(adeRecordReader)).thenReturn(baseScorerModel);
         List<String> contextFieldNames = Collections.singletonList("context");
 
-        when(modelsCacheService.getModel(
+        when(modelsCacheService.getLatestModelBeforeEventTime(
                 Mockito.anyString(),
                 Mockito.anyMapOf(String.class, String.class),
                 Mockito.any(Instant.class))

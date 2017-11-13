@@ -28,6 +28,7 @@ public class TtlData {
     @Field(APPLICATION_NAME_FIELD)
     private String applicationName;
     @Field
+    @Indexed
     private String storeName;
     @Field
     private String collectionName;

@@ -614,7 +614,7 @@ public class SmartApplicationTest extends BaseAppTest {
         double avgSmartValue = avgFeatureValueForLowAnomaliesUser * minWeight;
         double sumOfValues = avgSmartValue * numOfPositiveValues;
         SMARTValuesModel smartValuesModel = new SMARTValuesModel();
-        smartValuesModel.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 30);
+        smartValuesModel.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 30, end);
         ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartValuesModel, end.minus(Duration.ofDays(90)), end);
         mongoTemplate.insert(modelDao, "model_smart.userId.hourly");
     }
@@ -633,6 +633,7 @@ public class SmartApplicationTest extends BaseAppTest {
         double prior = avgFeatureValueForLowAnomaliesUser * minWeight;
         SMARTValuesPriorModel smartValuesPriorModel = new SMARTValuesPriorModel();
         smartValuesPriorModel.init(prior);
+        smartValuesPriorModel.setWeightsModelEndTime(end);
         ModelDAO modelDao = new ModelDAO("test-session-id", null, smartValuesPriorModel, end.minus(Duration.ofDays(90)), end);
         mongoTemplate.insert(modelDao, "model_smart.global.prior.userId.hourly");
     }
