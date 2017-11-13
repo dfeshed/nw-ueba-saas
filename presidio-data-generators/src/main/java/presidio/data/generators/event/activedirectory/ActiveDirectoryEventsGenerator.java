@@ -20,6 +20,7 @@ import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
+import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Instant;
 
@@ -37,6 +38,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
     private IStringGenerator resultCodeGenerator;
     private IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator;
     private IStringGenerator objectNameGenerator;
+    private IUserGenerator initiatorUserGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         setFieldDefaultGenerators();
@@ -59,6 +61,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         resultCodeGenerator = new RandomStringGenerator();
         objectNameGenerator = new DefaultObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
+        initiatorUserGenerator = new SingleUserGenerator("initiator_user", "initiator_user_id", "initiator_user@initiator.com");
     }
 
     @Override
@@ -67,9 +70,10 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         String objectName = getObjectNameGenerator().getNext();
         MachineEntity srcMachine = getSrcMachineGenerator().getNext();
         String machineDomainDN = srcMachine.getMachineDomainDN();
+        User user = getUserGenerator().getNext();
         ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
                 getEventIdGenerator().getNext(),
-                getUserGenerator().getNext(),
+                user,
                 getDataSourceGenerator().getNext(),
                 getActiveDirOperationGenerator().getNext(),
                 srcMachine,
@@ -77,11 +81,20 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
                 convertResultToQuestConvention(getResultGenerator().getNext()),
                 objectName,
                 getObjectDN(objectName, machineDomainDN),
-                getObjectCanonical(srcMachine.getDomainFQDN(), objectName)
+                getObjectCanonical(srcMachine.getDomainFQDN(), objectName),
+                initiatorUserGenerator.getNext()
 
         );
         activeDirectoryDescriptionGenerator.updateDescription(ev);
         return ev;
+    }
+
+    public IUserGenerator getInitiatorUserGenerator() {
+        return initiatorUserGenerator;
+    }
+
+    public void setInitiatorUserGenerator(IUserGenerator initiatorUserGenerator) {
+        this.initiatorUserGenerator = initiatorUserGenerator;
     }
 
     public IStringGenerator getEventIdGenerator() {

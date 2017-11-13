@@ -23,6 +23,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private String objectDN;
     private String objectName;
     private String objectCanonical;
+    private User initiator;
 
     public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation) {
         this.eventTime = eventTime;
@@ -32,7 +33,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.operation = operation;
     }
 
-    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN, String objectCanonical) {
+    public ActiveDirectoryEvent(Instant eventTime, String eventId, User user, String dataSource, ActiveDirectoryOperation operation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String objectName, String objectDN, String objectCanonical, User initiatorUser) {
         this.eventTime = eventTime;
         this.eventId = eventId;
         this.operation = operation;
@@ -44,6 +45,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.objectDN = objectDN;
         this.objectName = objectName;
         this.objectCanonical = objectCanonical;
+        this.initiator = initiatorUser;
     }
 
     public Instant getEventTime() {
@@ -138,6 +140,14 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
         this.objectCanonical = objectCanonical;
     }
 
+    public User getInitiator() {
+        return initiator;
+    }
+
+    public void setInitiator(User initiator) {
+        this.initiator = initiator;
+    }
+
     @Override
     public Instant getDateTime() {
         return eventTime;
@@ -158,6 +168,7 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
                 ", objectDN='" + objectDN + '\'' +
                 ", objectName='" + objectName + '\'' +
                 ", objectCanonical='" + objectCanonical + '\'' +
+                ", initiator=" + initiator +
                 '}';
     }
 }
