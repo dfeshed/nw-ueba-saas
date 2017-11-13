@@ -1,6 +1,7 @@
 package presidio.data.generators.event.activedirectory;
 
 import presidio.data.domain.MachineEntity;
+import presidio.data.domain.User;
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
@@ -19,6 +20,7 @@ import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
+import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Instant;
 
@@ -36,7 +38,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
     private IStringGenerator resultCodeGenerator;
     private IActiveDirectoryDescriptionGenerator activeDirectoryDescriptionGenerator;
     private IStringGenerator objectNameGenerator;
-    private CyclicValuesGenerator<String> timeZoneOffsetGenerator;
+    private IUserGenerator initiatorUserGenerator;
 
     public ActiveDirectoryEventsGenerator() throws GeneratorException {
         setFieldDefaultGenerators();
@@ -59,7 +61,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         resultCodeGenerator = new RandomStringGenerator();
         objectNameGenerator = new DefaultObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
-        timeZoneOffsetGenerator = new CyclicValuesGenerator<>(new String[] {"0", "1", "2"});
+        initiatorUserGenerator = new SingleUserGenerator("initiator_user", "initiator_user_id", "initiator_user@initiator.com");
     }
 
     @Override
@@ -68,9 +70,10 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         String objectName = getObjectNameGenerator().getNext();
         MachineEntity srcMachine = getSrcMachineGenerator().getNext();
         String machineDomainDN = srcMachine.getMachineDomainDN();
+        User user = getUserGenerator().getNext();
         ActiveDirectoryEvent ev = new ActiveDirectoryEvent(eventTime,
                 getEventIdGenerator().getNext(),
-                getUserGenerator().getNext(),
+                user,
                 getDataSourceGenerator().getNext(),
                 getActiveDirOperationGenerator().getNext(),
                 srcMachine,
@@ -78,10 +81,20 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
                 convertResultToQuestConvention(getResultGenerator().getNext()),
                 objectName,
                 getObjectDN(objectName, machineDomainDN),
-                getTimeZoneOffsetGenerator().getNext()
-                );
+                getObjectCanonical(srcMachine.getDomainFQDN(), objectName),
+                initiatorUserGenerator.getNext()
+
+        );
         activeDirectoryDescriptionGenerator.updateDescription(ev);
         return ev;
+    }
+
+    public IUserGenerator getInitiatorUserGenerator() {
+        return initiatorUserGenerator;
+    }
+
+    public void setInitiatorUserGenerator(IUserGenerator initiatorUserGenerator) {
+        this.initiatorUserGenerator = initiatorUserGenerator;
     }
 
     public IStringGenerator getEventIdGenerator() {
@@ -152,6 +165,10 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         return "ca=" + objectName + ",CN=Users," + machineDomainDN;
     }
 
+    private String getObjectCanonical(String domainFQDN, String userName) {
+        return domainFQDN + "/Users/" + userName;
+    }
+
     public IActiveDirectoryDescriptionGenerator getActiveDirectoryDescriptionGenerator() {
         return activeDirectoryDescriptionGenerator;
     }
@@ -166,14 +183,6 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
 
     public void setObjectNameGenerator(IStringGenerator objectNameGenerator) {
         this.objectNameGenerator = objectNameGenerator;
-    }
-
-    public CyclicValuesGenerator<String> getTimeZoneOffsetGenerator() {
-        return timeZoneOffsetGenerator;
-    }
-
-    public void setTimeZoneOffsetGenerator(CyclicValuesGenerator<String> timeZoneOffsetGenerator) {
-        this.timeZoneOffsetGenerator = timeZoneOffsetGenerator;
     }
 
     private String convertResultToQuestConvention(String result) {

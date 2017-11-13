@@ -7,6 +7,8 @@ public class User {
     private String lastName;
     private Boolean isAdministrator;
     private Boolean isAnonymous;
+    private String email;
+
 
 
     public User(String username) {
@@ -30,6 +32,14 @@ public class User {
         this.lastName = lastName;
         this.isAdministrator = isAdministrator;
         this.isAnonymous = isAnonymous;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getUsername() {

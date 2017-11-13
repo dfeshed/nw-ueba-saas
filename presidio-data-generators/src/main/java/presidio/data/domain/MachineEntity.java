@@ -6,9 +6,8 @@ public class MachineEntity {
     private String machineNameRegexCluster;
     private String machineDomain;
     private String machineDomainDN;
-    private String osVersion;
-    private String origin;
     private String domainFQDN;
+    private String osVersion;
 
     public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain) {
         this.machineId = machineId;
@@ -21,33 +20,22 @@ public class MachineEntity {
         this.machineIp = machineIp;
     }
 
-    public MachineEntity(String machineId, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin) {
-        this.machineId = machineId;
-        this.machineNameRegexCluster = machineNameRegexCluster;
-        this.machineDomain = machineDomain;
-        this.machineDomainDN = machineDomainDN;
-        this.osVersion = osVersion;
-        this.origin = origin;
-    }
-
-    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin) {
+    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion) {
         this.machineId = machineId;
         this.machineIp = machineIP;
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
         this.machineDomainDN = machineDomainDN;
         this.osVersion = osVersion;
-        this.origin = origin;
     }
 
-    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String osVersion, String origin, String domainFQDN) {
+    public MachineEntity(String machineId, String machineIP, String machineNameRegexCluster, String machineDomain, String machineDomainDN, String domainFQDN, String osVersion) {
         this.machineId = machineId;
         this.machineIp = machineIP;
         this.machineNameRegexCluster = machineNameRegexCluster;
         this.machineDomain = machineDomain;
         this.machineDomainDN = machineDomainDN;
         this.osVersion = osVersion;
-        this.origin = origin;
         this.domainFQDN = domainFQDN;
     }
 
@@ -83,28 +71,12 @@ public class MachineEntity {
         this.machineDomain = machineDomain;
     }
 
-    public String getOsVersion() {
-        return osVersion;
-    }
-
-    public void setOsVersion(String osVersion) {
-        this.osVersion = osVersion;
-    }
-
     public String getMachineDomainDN() {
         return machineDomainDN;
     }
 
     public void setMachineDomainDN(String machineDomainDN) {
         this.machineDomainDN = machineDomainDN;
-    }
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
     }
 
     public String getDomainFQDN() {
@@ -115,6 +87,14 @@ public class MachineEntity {
         this.domainFQDN = domainFQDN;
     }
 
+    public String getOsVersion() {
+        return osVersion;
+    }
+
+    public void setOsVersion(String osVersion) {
+        this.osVersion = osVersion;
+    }
+
     @Override
     public String toString() {
         return "MachineEntity{" +
@@ -123,9 +103,8 @@ public class MachineEntity {
                 ", machineNameRegexCluster='" + machineNameRegexCluster + '\'' +
                 ", machineDomain='" + machineDomain + '\'' +
                 ", machineDomainDN='" + machineDomainDN + '\'' +
-                ", osVersion='" + osVersion + '\'' +
-                ", origin='" + origin + '\'' +
                 ", domainFQDN='" + domainFQDN + '\'' +
+                ", osVersion='" + osVersion + '\'' +
                 '}';
     }
 }

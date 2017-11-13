@@ -7,14 +7,14 @@ import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 public class SimpleMachineGenerator implements IMachineGenerator {
+    private static final String OS_VERSION = "Windows Server 2016 Datacenter";
 
     private IStringGenerator machineIdGenerator;
     private IStringGenerator machineIP;
+    private IStringGenerator osVersionGenerator;
     private IStringGenerator machineNameRegexClusterGenerator;
     private IStringGenerator machineDomainGenerator;
-    private IStringGenerator osVersionGenerator;
     private IStringGenerator machineDomainDN;
-    private IStringGenerator origin;
     private IStringGenerator machineDomainFQDN;
 
     public SimpleMachineGenerator()  {
@@ -22,10 +22,9 @@ public class SimpleMachineGenerator implements IMachineGenerator {
         machineIP = new FixedIPsGenerator();
         machineNameRegexClusterGenerator = new RandomStringGenerator(10);
         machineDomainGenerator = new RandomStringGenerator(10);
-        osVersionGenerator = new StringCyclicValuesGenerator("Windows Server 2016 Datacenter");
         machineDomainDN = new StringCyclicValuesGenerator("DC=catest,DC=quest,DC=azure,DC=ca");
-        origin = new StringCyclicValuesGenerator("vmMember.catest.quest.azure.ca");
         machineDomainFQDN = new StringCyclicValuesGenerator("catest.quest.azure.ca");
+        osVersionGenerator =new StringCyclicValuesGenerator("Windows Server 2016 Datacenter");
     }
 
     public IStringGenerator getMachineIdGenerator() {
@@ -52,28 +51,12 @@ public class SimpleMachineGenerator implements IMachineGenerator {
         this.machineDomainGenerator = machineDomainGenerator;
     }
 
-    public IStringGenerator getOsVersionGenerator() {
-        return osVersionGenerator;
-    }
-
-    public void setOsVersionGenerator(IStringGenerator osVersionGenerator) {
-        this.osVersionGenerator = osVersionGenerator;
-    }
-
     public IStringGenerator getMachineDomainDN() {
         return machineDomainDN;
     }
 
     public void setMachineDomainDN(IStringGenerator machineDomainDN) {
         this.machineDomainDN = machineDomainDN;
-    }
-
-    public IStringGenerator getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(IStringGenerator origin) {
-        this.origin = origin;
     }
 
     public IStringGenerator getMachineIP() {
@@ -88,6 +71,14 @@ public class SimpleMachineGenerator implements IMachineGenerator {
 
     public void setMachineDomainFQDN(IStringGenerator machineDomainFQDN) { this.machineDomainFQDN = machineDomainFQDN; }
 
+    public IStringGenerator getOsVersionGenerator() {
+        return osVersionGenerator;
+    }
+
+    public void setOsVersionGenerator(IStringGenerator osVersionGenerator) {
+        this.osVersionGenerator = osVersionGenerator;
+    }
+
     public MachineEntity getNext(){
         return new MachineEntity(
                 getMachineIdGenerator().getNext(),
@@ -95,8 +86,7 @@ public class SimpleMachineGenerator implements IMachineGenerator {
                 getMachineNameRegexClusterGenerator().getNext(),
                 getMachineDomainGenerator().getNext(),
                 getMachineDomainDN().getNext(),
-                getOsVersionGenerator().getNext(),
-                getOrigin().getNext(),
-                getMachineDomainFQDN().getNext());
+                getMachineDomainFQDN().getNext(),
+                getOsVersionGenerator().getNext());
     }
 }

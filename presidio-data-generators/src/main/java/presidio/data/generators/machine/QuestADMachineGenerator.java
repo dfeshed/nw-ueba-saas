@@ -8,6 +8,8 @@ import presidio.data.generators.common.StringCyclicValuesGenerator;
 
 public class QuestADMachineGenerator implements IMachineGenerator {
 
+    private static final String OS_VERSION = "Windows Server 2016 Datacenter";
+
     private IStringGenerator machineIdGenerator;
     private IStringGenerator machineIPGenerator;
     private IStringGenerator machineNameRegexClusterGenerator;
@@ -26,6 +28,7 @@ public class QuestADMachineGenerator implements IMachineGenerator {
         machineDomainDN = new StringCyclicValuesGenerator("DC=catest,DC=quest,DC=azure,DC=ca");
         origin = new StringCyclicValuesGenerator("vmMember.catest.quest.azure.ca");
         machineDomainFQDN = new StringCyclicValuesGenerator("catest.quest.azure.ca");
+        osVersionGenerator = new StringCyclicValuesGenerator(OS_VERSION);
     }
 
     public IStringGenerator getMachineIdGenerator() {
@@ -94,8 +97,7 @@ public class QuestADMachineGenerator implements IMachineGenerator {
                 getMachineNameRegexClusterGenerator().getNext(),
                 getMachineDomainGenerator().getNext(),
                 getMachineDomainDN().getNext(),
-                getOsVersionGenerator().getNext(),
-                getOrigin().getNext(),
-                getMachineDomainFQDN().getNext());
+                getMachineDomainFQDN().getNext(),
+                getOsVersionGenerator().getNext());
     }
 }

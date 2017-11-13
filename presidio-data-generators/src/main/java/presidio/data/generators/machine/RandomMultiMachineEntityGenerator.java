@@ -1,10 +1,10 @@
 package presidio.data.generators.machine;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.util.Assert;
 import presidio.data.domain.MachineEntity;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 import presidio.data.generators.common.random.RandomIpGenerator;
 import presidio.data.generators.common.random.RandomNumberedStringGenerator;
 
@@ -17,6 +17,7 @@ public class RandomMultiMachineEntityGenerator implements IMachineGenerator {
     private static final String OS_VERSION = "Windows Server 2016 Datacenter";
 
     private IStringGenerator machineIPGenerator;
+    private IStringGenerator osVersionGenerator;
     private List<String> domains;
     private int numOfClusters;
     private String clusterPrefix;
@@ -35,6 +36,7 @@ public class RandomMultiMachineEntityGenerator implements IMachineGenerator {
         this.clusterPrefix = clusterPrefix;
 		this.generatedClusters = new ArrayList();
         machineIPGenerator = new RandomIpGenerator();
+        osVersionGenerator = new StringCyclicValuesGenerator(OS_VERSION);
 
         random = new Random();
         randomStringClusterGenerator = new RandomStringGenerator(20);
@@ -52,11 +54,10 @@ public class RandomMultiMachineEntityGenerator implements IMachineGenerator {
         String osVersion = OS_VERSION;
         //TODO: cache the following values for performance.
         String machineDomainDN = String.format("DC=%s,DC=quest,DC=azure,DC=ca", machineDomain);
-        String origin = String.format("vmMember.%s.quest.azure.ca", machineDomain);
         String domainFQDN = String.format("%s.quest.azure.ca", machineDomain);
 
         return new MachineEntity(machineId, machineIP, machineNameRegexCluster, machineDomain,
-                machineDomainDN, osVersion, origin, domainFQDN);
+                machineDomainDN, domainFQDN, osVersion);
     }
 
     private String randCluster(String domain){
