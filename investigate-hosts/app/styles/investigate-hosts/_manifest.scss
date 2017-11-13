@@ -1,18 +1,6 @@
 @import './_styles';
 @import 'components/manifest';
 
-.host-content {
-  .liquid-container,
-  .liquid-child {
-    position: relative !important;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: inherit;
-  }
-}
-
 @mixin detail-sizing($width) {
   .host-container {
     &-list {
@@ -58,11 +46,8 @@
 
   .liquid-container,
   .liquid-child {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
+    height: 100%;
+    width: 100%;
     display: flex;
   }
 

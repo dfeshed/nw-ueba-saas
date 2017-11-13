@@ -19,20 +19,20 @@ module.exports = function(environment) {
         requestDestination: '/ws/endpoint/file/search'
       },
       exportFile: {
-        subscriptionDestination: '/user/queue/endpoint/data/files/export',
-        requestDestination: '/ws/endpoint/data/files/export'
+        subscriptionDestination: '/user/queue/endpoint/file/property/download',
+        requestDestination: '/ws/endpoint/file/property/download'
       },
       saveFilter: {
-        subscriptionDestination: '/user/queue/endpoint/data/filter/set',
-        requestDestination: '/ws/endpoint/data/filter/set'
+        subscriptionDestination: '/user/queue/endpoint/filter/set',
+        requestDestination: '/ws/endpoint/filter/set'
       },
       getFilter: {
-        subscriptionDestination: '/user/queue/endpoint/data/filter/getall',
-        requestDestination: '/ws/endpoint/data/filter/getall'
+        subscriptionDestination: '/user/queue/endpoint/filter/get-all',
+        requestDestination: '/ws/endpoint/filter/get-all'
       },
       deleteFilter: {
-        subscriptionDestination: '/user/queue/endpoint/data/filter/remove',
-        requestDestination: '/ws/endpoint/data/filter/remove'
+        subscriptionDestination: '/user/queue/endpoint/filter/remove',
+        requestDestination: '/ws/endpoint/filter/remove'
       }
     }
   };

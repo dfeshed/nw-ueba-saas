@@ -21,7 +21,7 @@ const stateToComputed = (state) => ({
 
 const SystemInformation = Component.extend({
 
-  tagName: 'vbox',
+  tagName: 'box',
 
   classNames: ['system-information'],
 

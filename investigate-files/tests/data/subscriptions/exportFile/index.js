@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/endpoint/data/files/export',
-  requestDestination: '/ws/endpoint/data/files/export',
+  subscriptionDestination: '/user/queue/endpoint/file/property/download',
+  requestDestination: '/ws/endpoint/file/property/download',
   message(/* frame */) {
     const now = Number(new Date());
     const id = `1/FilesExported.zip?datetime=${now}`;
