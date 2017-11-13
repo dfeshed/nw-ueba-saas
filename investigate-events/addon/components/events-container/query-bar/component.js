@@ -4,7 +4,8 @@ import computed, { and } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import {
   hasSummaryData,
-  selectedService
+  selectedService,
+  isSummaryDataInvalid
 } from 'investigate-events/reducers/investigate/services/selectors';
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
@@ -17,7 +18,7 @@ const stateToComputed = (state) => ({
   hasSummaryData: hasSummaryData(state),
   selectedService: selectedService(state),
   selectedTimeRange: selectedTimeRange(state),
-  isSummaryRetrieveError: state.investigate.services.isSummaryRetrieveError,
+  isSummaryDataInvalid: isSummaryDataInvalid(state),
   summaryErrorMessage: state.investigate.services.summaryErrorMessage,
   services: state.investigate.services.serviceData
 });
@@ -40,9 +41,9 @@ const QueryBarComponent = Component.extend({
    * Returns a string that is used to wire the triggerClass property on the powerSelect.
    * Setting class `is-error` shows the service in red color.
    */
-  @computed('selectedService.id', 'hasSummaryData', 'isSummaryRetrieveError')
-  powerSelectClass(id, hasSummaryData, isSummaryRetrieveError) {
-    return (id && !hasSummaryData && isSummaryRetrieveError) ? 'is-error' : 'null';
+  @computed('selectedService.id', 'isSummaryDataInvalid')
+  powerSelectClass(id, isSummaryDataInvalid) {
+    return (id && isSummaryDataInvalid) ? 'is-error' : 'null';
   },
 
   /**

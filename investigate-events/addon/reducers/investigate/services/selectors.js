@@ -7,6 +7,7 @@ const { createSelector } = reselect;
 const _services = (state) => state.investigate.services.serviceData;
 const _queryNode = (state) => state.investigate.queryNode;
 const _summaryData = (state) => state.investigate.services.summaryData;
+const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
 
 export const getDbEndTime = (state) => state.investigate.services.summaryData.endTime;
 export const getDbStartTime = (state) => state.investigate.services.summaryData.startTime;
@@ -33,6 +34,19 @@ export const hasServices = createSelector(
 export const hasSummaryData = createSelector(
   [_summaryData],
   (summaryData) => !!summaryData && summaryData.startTime !== 0
+);
+
+// Checks if the summaryData is invalid.
+// If the aggregation has never started on a service (zero startTime), it is considered invalid.
+export const isSummaryDataInvalid = createSelector(
+  [_summaryData, _isSummaryRetrieveError],
+  (summaryData, isSummaryRetrieveError) => {
+    let ret = false;
+    if ((summaryData && summaryData.startTime === 0) || isSummaryRetrieveError) {
+      ret = true;
+    }
+    return ret;
+  }
 );
 
 export const servicesWithURI = createSelector(
