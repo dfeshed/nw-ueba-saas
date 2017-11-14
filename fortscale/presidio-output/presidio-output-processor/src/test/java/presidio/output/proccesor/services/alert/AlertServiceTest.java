@@ -10,6 +10,7 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -66,6 +67,7 @@ import static org.mockito.Matchers.eq;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, TestConfig.class})
 @ActiveProfiles("useEmbeddedElastic")
+@Ignore
 public class AlertServiceTest {
 
     @MockBean

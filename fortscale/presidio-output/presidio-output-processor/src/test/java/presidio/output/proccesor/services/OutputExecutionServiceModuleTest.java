@@ -46,6 +46,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, FongoTestConfig.class})
 @ActiveProfiles("useEmbeddedElastic")
+@Ignore
 public class OutputExecutionServiceModuleTest {
     public static final String USER_ID_TEST_USER = "userId#testUser";
 
@@ -108,7 +109,6 @@ public class OutputExecutionServiceModuleTest {
         mongoTemplate.insert(event, fileEnrichedEventCollectionName);
     }
 
-    @Ignore
     @Test
     public void createAlertForNewUser() {
         try {
@@ -129,7 +129,6 @@ public class OutputExecutionServiceModuleTest {
         }
     }
 
-    @Ignore
     @Test
     public void createAlertForExistingUser() {
         User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8);
