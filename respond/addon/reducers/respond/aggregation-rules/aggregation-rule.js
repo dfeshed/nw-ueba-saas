@@ -81,8 +81,8 @@ const reducer = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.AGGREGATION_RULES_UPDATE_INFO]: (state, { payload: { fields, value } }) => {
-    const field = fields.join('.');
+  [ACTION_TYPES.AGGREGATION_RULES_UPDATE_INFO]: (state, { payload: { field, value } }) => {
+    const fields = field.split('.');
     // Update the value in the ruleInfo, and keep track of the field as having been visited by the user.
     // Visited fields will show error / validation messages
     return state.setIn(fields, value).set('visited', [...state.visited, field]);

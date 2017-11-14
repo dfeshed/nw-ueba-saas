@@ -6,10 +6,10 @@ import ruleNormalizer from 'respond/reducers/respond/util/aggregation-rule-norma
 import ruleData from '../../data/subscriptions/aggregation-rules/queryRecord/data';
 import fieldData from '../../data/subscriptions/aggregation-fields/findAll/data';
 
-module('Unit | Utility | Aggregation Rule Builder Reducers');
+module('Unit | Utility | Aggregation Rule Reducers');
 
 const initialState = {
-  rule: null,
+  ruleInfo: null,
   ruleStatus: null,
   conditionGroups: null,
   conditions: null,
@@ -29,6 +29,27 @@ const normalizedConditions = {
     '1': { filterType: 'FILTER', property: 'alert.events.domain', operator: '=', value: 'meiske.com', groupId: 0, id: 1 },
     '2': { filterType: 'FILTER', property: 'alert.events.destination.device.port', operator: '=', value: 8080, groupId: 1, id: 2 },
     '3': { filterType: 'FILTER', property: 'alert.severity', operator: '>=', value: 80, groupId: 2, id: 3 }
+  }
+};
+
+// A new rule has only one group
+const baseConditionGroups = {
+  0: {
+    filterType: 'FILTER_GROUP',
+    id: 0,
+    logicalOperator: 'and'
+  }
+};
+
+// A new rule has only one condition (incomplete)
+const baseConditions = {
+  0: {
+    filterType: 'FILTER',
+    groupId: 0,
+    id: 0,
+    operator: null,
+    property: null,
+    value: null
   }
 };
 
@@ -204,5 +225,159 @@ test('With AGGREGATION_RULES_UPDATE_GROUP, the group is updated', function(asser
     payload: { groupId: 5, changes: { logicalOperator: 'or' } }
   };
   const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With NEW_AGGREGATION_RULE, the ruleInfo and associated state is reset to defaults', function(assert) {
+  const initState = {
+    ...initialState,
+    ruleInfo: {
+      incidentCreationOptions: {
+        ruleTitle: 'Test',
+        categories: [{}]
+      },
+      priorityScale: {
+        CRITICAL: 70,
+        HIGH: 40,
+        MEDIUM: 20,
+        LOW: 10
+      },
+      incidentScoringOptions: {
+        type: 'high'
+      },
+      notificationOptions: { test: 'test' }
+    },
+    conditionGroups: normalizedConditions.groups,
+    conditions: normalizedConditions.conditions
+  };
+
+  const expectedEndState = {
+    ...initialState,
+    ruleInfo: {
+      incidentCreationOptions: {
+        ruleTitle: '${ruleName} for ${groupByValue1}',
+        categories: []
+      },
+      priorityScale: {
+        CRITICAL: 90,
+        HIGH: 50,
+        MEDIUM: 20,
+        LOW: 1
+      },
+      incidentScoringOptions: {
+        type: 'average'
+      },
+      notificationOptions: {}
+    },
+    conditionGroups: baseConditionGroups,
+    conditions: baseConditions
+  };
+
+  const action = {
+    type: ACTION_TYPES.NEW_AGGREGATION_RULE
+  };
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With AGGREGATION_RULES_UPDATE_INFO, the rule field is updated', function(assert) {
+  const initState = {
+    ruleInfo: {
+      incidentCreationOptions: {
+        ruleTitle: ''
+      }
+    },
+    visited: []
+  };
+
+  const expectedEndState = {
+    ruleInfo: {
+      incidentCreationOptions: {
+        ruleTitle: 'Testing 123'
+      }
+    },
+    visited: ['ruleInfo.incidentCreationOptions.ruleTitle']
+  };
+
+  const action = {
+    type: ACTION_TYPES.AGGREGATION_RULES_UPDATE_INFO,
+    payload: {
+      field: 'ruleInfo.incidentCreationOptions.ruleTitle',
+      value: 'Testing 123'
+    }
+  };
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With AGGREGATION_RULES_CLEAR_MATCH_CONDITIONS, the match conditions get reverted to one-group-one-condition state', function(assert) {
+  const initState = {
+    ruleInfo: {
+      uiFilterConditions: 'Non empty',
+      matchConditions: 'Non empty'
+    },
+    conditionGroups: normalizedConditions.groups,
+    conditions: normalizedConditions.conditions
+  };
+
+  const expectedEndState = {
+    ruleInfo: {
+      uiFilterConditions: '',
+      matchConditions: ''
+    },
+    conditionGroups: baseConditionGroups,
+    conditions: baseConditions
+  };
+
+  const action = {
+    type: ACTION_TYPES.AGGREGATION_RULES_CLEAR_MATCH_CONDITIONS
+  };
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With AGGREGATION_RULES_SAVE_STARTED, the ruleState is properly set', function(assert) {
+  const action = {
+    type: ACTION_TYPES.AGGREGATION_RULES_SAVE_STARTED
+  };
+  const expectedEndState = {
+    ...initialState,
+    isTransactionUnderway: true
+  };
+
+  const endState = reducer(Immutable.from(initialState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With AGGREGATION_RULES_SAVE, the rule builder conditions are properly parsed and normalized', function(assert) {
+  ruleNormalizer.resetCounters();
+  const initState = { isTransactionUnderway: true };
+  const payload = { data: ruleData };
+  const action = {
+    type: ACTION_TYPES.AGGREGATION_RULES_SAVE,
+    payload
+  };
+
+  const expectedEndState = {
+    ruleInfo: payload.data,
+    conditionGroups: normalizedConditions.groups,
+    conditions: normalizedConditions.conditions,
+    isTransactionUnderway: false
+  };
+
+  const endState = reducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('With AGGREGATION_RULES_SAVE_FAILED, the ruleState is properly set', function(assert) {
+  const action = {
+    type: ACTION_TYPES.AGGREGATION_RULES_SAVE_FAILED
+  };
+  const expectedEndState = {
+    ...initialState,
+    isTransactionUnderway: false
+  };
+
+  const endState = reducer(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState);
 });

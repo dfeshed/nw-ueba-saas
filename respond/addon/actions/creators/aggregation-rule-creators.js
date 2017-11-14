@@ -301,7 +301,7 @@ const updateGroup = (groupId, changes) => {
  */
 const updateRule = (field, value) => {
   const payload = {
-    fields: field.split('.'),
+    field,
     value
   };
   return {
