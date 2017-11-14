@@ -1,5 +1,6 @@
 package presidio.output.proccesor.services;
 
+import com.google.common.collect.Lists;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
@@ -11,6 +12,8 @@ import javafx.util.Pair;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
