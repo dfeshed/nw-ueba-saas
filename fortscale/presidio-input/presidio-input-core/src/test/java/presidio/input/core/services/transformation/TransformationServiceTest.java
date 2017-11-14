@@ -55,26 +55,36 @@ public class TransformationServiceTest {
     TransformationService transformationService;
 
     @Test
-    public void testRunAuthenticationSchemaSrcMachineTransformations_unresolvedMachineName() {
+    public void testRunAuthenticationSchemaSrcMachineTransformations_unresolvedMachineNameAndId() {
 
-        AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "10.20.3.40");
+        AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "10.20.3.40", "1.34.56.255", "12.4.6.74", "10.65.20.88");
         List<AbstractInputDocument> events = Arrays.asList(authenticationRawEvent);
         List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
 
-        Assert.assertEquals("",((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
+        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
+        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
     }
 
     @Test
-    public void testRunAuthenticationSchemaSrcMachineTransformations_resolvedMachineName() {
+    public void testRunAuthenticationSchemaSrcMachineTransformations_resolvedMachineNameAndId() {
 
-        AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "SPBGDCW01.prod.quest.corp");
+        AuthenticationRawEvent authenticationRawEvent = createAuthenticationEvent(Instant.now(), "nameSPBGDCW01.prod.quest.corp", "idSPBGDCW01.prod.quest.corp", "nameSPBGDCW02.prod.quest.corp", "idSPBGDCW02.prod.quest.corp");
         List<AbstractInputDocument> events = Arrays.asList(authenticationRawEvent);
         List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
 
-        Assert.assertEquals("SPBGDCW.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("nameSPBGDCW.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("idSPBGDCW01.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
+        Assert.assertEquals("nameSPBGDCW.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
+        Assert.assertEquals("idSPBGDCW02.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
     }
 
-    private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate, String srcMachineName) {
+    private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate,
+                                                             String srcMachineName,
+                                                             String srcMachineId,
+                                                             String dstMachineName,
+                                                             String dstMachineId) {
         return new AuthenticationRawEvent(
                 eventDate,
                 "eventId",
@@ -86,10 +96,10 @@ public class TransformationServiceTest {
                 "userName",
                 "userDisplayName",
                 null,
-                "srcMachineId",
+                srcMachineId,
                 srcMachineName,
-                "dstMachineId",
-                "dstMachineName",
+                dstMachineId,
+                dstMachineName,
                 "dstMachineDomain",
                 "resultCode");
     }
