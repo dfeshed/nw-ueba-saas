@@ -70,9 +70,10 @@ public class ModelStore implements TtlServiceAware {
         List<ModelDAO> queryResults = null;
         Map<String, ModelDAO> contextIdToModelDaoMap = new HashMap<>();
         int pageIndex = 0;
+        Date latestEndDate = Date.from(eventEpochtime);
         do{
             Query query = new Query()
-                    .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(Date.from(eventEpochtime)))
+                    .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
                     .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD))
                     .skip(pageIndex*modelQueryPaginationSize)
                     .limit(modelQueryPaginationSize);

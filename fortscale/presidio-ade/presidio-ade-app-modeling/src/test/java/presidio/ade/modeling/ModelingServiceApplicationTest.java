@@ -170,7 +170,7 @@ public class ModelingServiceApplicationTest {
 		List<ModelDAO> modelDaoList = modelDAOs.stream().sorted(comparing(ModelDAO::getContextId)).collect(toList());
 
 		// Assert context ID #1 model
-		ModelDAO modelDao = modelDaoList.iterator().next();
+		ModelDAO modelDao = modelDaoList.get(0);
 		Assert.assertEquals("test-run", modelDao.getSessionId());
 		Assert.assertEquals("userId###test_user_1", modelDao.getContextId());
 		ContinuousDataModel continuousDataModel = (ContinuousDataModel)modelDao.getModel();
