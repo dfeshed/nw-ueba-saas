@@ -30,7 +30,7 @@ import presidio.output.processor.spring.UserServiceConfig;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({MongodbTestConfig.class,
+@Import({
         AdeManagerSdkConfig.class,
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,

@@ -1,6 +1,7 @@
 package presidio.output.proccesor;
 
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,7 @@ import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, MongodbTestConfig.class})
 @ActiveProfiles("useEmbeddedElastic")
 public class OutputProcessorApplicationShellTest {
 

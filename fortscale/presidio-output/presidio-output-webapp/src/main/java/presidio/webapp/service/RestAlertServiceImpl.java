@@ -344,6 +344,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setIndicatorsName(alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         restAlert.setUserScoreContribution(new BigDecimal(alert.getContributionToUserScore()));
+        restAlert.setFeedback(AlertQueryEnums.AlertFeedback.fromValue(alert.getFeedback().toString()));
         return restAlert;
     }
 

@@ -38,4 +38,7 @@ public class AlertEnums {
         SCORE_AGGREGATION, FEATURE_AGGREGATION, STATIC_INDICATOR
     }
 
+    public enum AlertFeedback {
+        NONE, RISK, NOT_RISK
+    }
 }
