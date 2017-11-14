@@ -34,6 +34,7 @@ nukeNode respond
 nukeNode context
 nukeNode preferences
 nukeNode test-helpers
+nukeNode broccoli-theme
 nukeNode sa
 
 red "                               ________________
