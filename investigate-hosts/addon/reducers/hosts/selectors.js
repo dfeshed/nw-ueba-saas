@@ -74,7 +74,7 @@ export const hostListForScanning = createSelector(
   [_selectedHostList, _hostDetailId],
   (selectedHostList, hostDetailId) => {
     if (hostDetailId) {
-      return [hostDetailId];
+      return [{ id: hostDetailId }];
     }
     return selectedHostList;
   }

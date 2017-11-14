@@ -29,20 +29,20 @@ module.exports = function(env) {
         requestDestination: '/ws/endpoint/machine/aggregate/group-count'
       },
       getProcessList: {
-        subscriptionDestination: '/user/queue/endpoint/process/list',
-        requestDestination: '/ws/endpoint/process/list'
+        subscriptionDestination: '/user/queue/endpoint/machine/process/list',
+        requestDestination: '/ws/endpoint/machine/process/list'
       },
       getProcessTree: {
-        subscriptionDestination: '/user/queue/endpoint/process/tree',
-        requestDestination: '/ws/endpoint/process/tree'
+        subscriptionDestination: '/user/queue/endpoint/machine/process/tree',
+        requestDestination: '/ws/endpoint/machine/process/tree'
       },
       getProcess: {
-        subscriptionDestination: '/user/queue/endpoint/process/get',
-        requestDestination: '/ws/endpoint/process/get'
+        subscriptionDestination: '/user/queue/endpoint/machine/process/get',
+        requestDestination: '/ws/endpoint/machine/process/get'
       },
       getHostFileContext: {
-        subscriptionDestination: '/user/queue/endpoint/process/get-all',
-        requestDestination: '/ws/endpoint/process/get-all'
+        subscriptionDestination: '/user/queue/endpoint/machine/process/get-all',
+        requestDestination: '/ws/endpoint/machine/process/get-all'
       },
       saveFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/set',
