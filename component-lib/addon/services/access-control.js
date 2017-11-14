@@ -1,4 +1,4 @@
-import computed, { intersect, gt } from 'ember-computed-decorators';
+import computed, { intersect, gt, or } from 'ember-computed-decorators';
 import config from 'ember-get-config';
 import Service from 'ember-service';
 
@@ -11,19 +11,24 @@ export default Service.extend({
 
   adminRoles: ['*', 'accessAdminModule', 'viewAppliances', 'viewServices', 'viewEventSources', 'accessHealthWellness', 'manageSystemSettings', 'manageSASecurity'],
   configRoles: ['*', 'searchLiveResources', 'accessManageAlertHandlingRules', 'accessViewRules', 'manageLiveResources', 'manageLiveFeeds'],
-  investigationRoles: ['*', 'accessInvestigationModule', 'investigate-server.*'],
+
+  investigationEmberRoles: ['*', 'investigate-server.configuration.manage', 'investigate-server.logs.manage', 'investigate-server.security.read', 'investigate-server.process.manage', 'investigate-server.health.read', 'investigate-server.*', 'investigate-server.security.manage', 'investigate-server.metrics.read', 'investigate-server.event.read', 'investigate-server.content.export', 'investigate-server.content.reconstruct'],
+  investigationClassicRoles: ['*', 'accessInvestigationModule', 'manageContextList', 'contextLookup', 'navigateDevices', 'navigateCreateIncidents', 'navigateEvents'],
 
   // computed intersections between roles and role groups
 
   @intersect('adminRoles', 'roles') adminAccessIntersections: null,
   @intersect('configRoles', 'roles') configAccessIntersections: null,
-  @intersect('investigationRoles', 'roles') investigateAccessIntersections: null,
+  @intersect('investigationClassicRoles', 'roles') investigateClassicAccessIntersections: null,
+  @intersect('investigationEmberRoles', 'roles') investigateEmberAccessIntersections: null,
 
   // permissions derived from roles returned by admin server
 
+  @gt('investigateClassicAccessIntersections.length', 0) hasInvestigateClassicAccess: null,
+  @gt('investigateEmberAccessIntersections.length', 0) hasInvestigateEmberAccess: null,
   @gt('adminAccessIntersections.length', 0) hasAdminAccess: null,
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
-  @gt('investigateAccessIntersections.length', 0) hasInvestigateAccess: null,
+  @or('hasInvestigateClassicAccess', 'hasInvestigateEmberAccess') hasInvestigateAccess: null,
 
   // Begin respond access permissions
 
@@ -90,6 +95,21 @@ export default Service.extend({
   @computed('roles.[]')
   respondCanManageJournal(roles) {
     return this._hasPermission(roles, 'respond-server.journal.manage');
+  },
+
+  @computed('hasInvestigateAccess', 'hasInvestigateEmberAccess', 'hasInvestigateClassicAccess')
+  investigateUrl: (hasInvestigateAccess, hasInvestigateEmberAccess, hasInvestigateClassicAccess) => {
+    let url = null;
+
+    if (hasInvestigateAccess) {
+      if (hasInvestigateEmberAccess) {
+        url = '/investigate';
+      } else if (hasInvestigateClassicAccess) {
+        url = '/investigation';
+      }
+    }
+
+    return url;
   },
 
   // End respond access permissions

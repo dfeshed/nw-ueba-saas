@@ -2,7 +2,7 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('route:protected/investigate', 'Unit | Route | protected/investigate', {
   // Specify the other units that are required for this test.
-  needs: ['service:headData']
+  needs: ['service:headData', 'service:accessControl']
 });
 
 test('it exists', function(assert) {

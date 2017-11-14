@@ -33,9 +33,15 @@
     {{/if}}
 
     {{#if accessControl.hasInvestigateAccess}}
-      {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
-        {{t "investigate.title"}}
-      {{/link-to}}
+      {{#if accessControl.hasInvestigateEmberAccess}}
+        {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}
+          {{t "investigate.title"}}
+        {{/link-to}}
+      {{else}}
+        <a href="{{accessControl.investigateUrl}}" class="rsa-header-nav-investigate js-test-nav-investigate-link">
+          {{t "investigate.title"}}
+        </a>
+      {{/if}}
     {{/if}}
 
     {{#if accessControl.hasMonitorAccess}}

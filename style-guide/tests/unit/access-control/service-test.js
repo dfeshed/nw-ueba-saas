@@ -11,8 +11,120 @@ test('hasMonitorAccess is true by default', function(assert) {
 test('hasInvestigateAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasInvestigateAccess'), false);
+  service.get('roles').clear().addObject('*');
+  assert.equal(service.get('hasInvestigateAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateAccess'), false);
   service.get('roles').clear().addObject('accessInvestigationModule');
   assert.equal(service.get('hasInvestigateAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.configuration.manage');
+  assert.equal(service.get('hasInvestigateAccess'), true);
+  service.get('roles').clear();
+});
+
+test('hasInvestigateClassicAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('*');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('accessInvestigationModule');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('manageContextList');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('contextLookup');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('navigateDevices');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('navigateCreateIncidents');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateClassicAccess'), false);
+  service.get('roles').clear().addObject('navigateEvents');
+  assert.equal(service.get('hasInvestigateClassicAccess'), true);
+  service.get('roles').clear();
+});
+
+test('hasInvestigateEmberAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('*');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.configuration.manage');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.logs.manage');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.security.read');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.process.manage');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.health.read');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.*');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.security.manage');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.metrics.read');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.event.read');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.content.export');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
+
+  assert.equal(service.get('hasInvestigateEmberAccess'), false);
+  service.get('roles').clear().addObject('investigate-server.content.reconstruct');
+  assert.equal(service.get('hasInvestigateEmberAccess'), true);
+  service.get('roles').clear();
 });
 
 test('hasRespondAccess is set when required roles are included', function(assert) {

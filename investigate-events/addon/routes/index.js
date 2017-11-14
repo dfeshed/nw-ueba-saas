@@ -14,15 +14,10 @@ export default Route.extend({
   redux: service(),
 
   beforeModel() {
-    // Re-route back to the parent's protected route if we don't have permission
-    if (!this.get('accessControl.hasInvestigateAccess')) {
-      this.transitionToExternal('protected');
-    } else {
-      // Get services
-      this.get('redux').dispatch(initializeServices());
-      // Initialize the query state
-      this.get('redux').dispatch(initializeQuery());
-    }
+    // Get services
+    this.get('redux').dispatch(initializeServices());
+    // Initialize the query state
+    this.get('redux').dispatch(initializeQuery());
   },
 
   actions: {
