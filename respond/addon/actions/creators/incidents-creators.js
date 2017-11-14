@@ -365,18 +365,17 @@ const setDefaultSearchTimeFrameName = (name) => ({ type: ACTION_TYPES.SET_DEFAUL
 const setDefaultSearchEntityType = (type) => ({ type: ACTION_TYPES.SET_DEFAULT_SEARCH_ENTITY_TYPE, payload: type });
 
 // Kicks off a search for related indicators with the given filter criteria.
-const startSearchRelatedIndicators = (entityType, entityId, timeFrameName, devices) => {
+const startSearchRelatedIndicators = (entityType, entityId, timeFrameName) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STARTED,
-      payload: { entityType, entityId, timeFrameName, devices }
+      payload: { entityType, entityId, timeFrameName }
     });
 
     Incidents.getRelatedAlerts(
       entityType,
       entityId,
       timeFrameName,
-      devices,
       {
         onInit: (stopStreamFn) => {
           dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STREAM_INITIALIZED, payload: stopStreamFn });

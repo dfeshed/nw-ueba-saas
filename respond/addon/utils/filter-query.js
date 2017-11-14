@@ -1,10 +1,9 @@
 import Ember from 'ember';
-import { SINCE_WHEN_TYPES_BY_NAME } from 'respond/utils/since-when-types';
-import moment from 'moment';
+import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
 import { assert } from 'ember-metal/utils';
 import computed, { readOnly } from 'ember-computed-decorators';
 
-const { A, Object: EmberObject, typeOf, isEmpty, isNone, isPresent, isArray } = Ember;
+const { A, Object: EmberObject, isEmpty, isPresent, isArray } = Ember;
 
 /**
  * A class that represents a filter query
@@ -214,14 +213,11 @@ const FilterQuery = EmberObject.extend({
    * @returns the resolved unix start time used in the range filter
    */
   addSinceWhenFilter(field, sinceWhen, returnTimestamp = false) {
-    // User can supply either the name value of the since-when-type, or the full object reference
-    const since = typeOf(sinceWhen) === 'string' ? SINCE_WHEN_TYPES_BY_NAME[sinceWhen] : sinceWhen;
-
-    if (isEmpty(field) || isEmpty(since) || isNone(since.subtract) || isNone(since.unit)) {
+    if (isEmpty(field)) {
       return this; // noop if we're missing an expected field
     }
 
-    const startTimeUnix = this._resolveSinceWhenStartTime(since);
+    const startTimeUnix = resolveSinceWhenStartTime(sinceWhen);
     this.addRangeFilter(field, startTimeUnix);
     return returnTimestamp ? startTimeUnix : this;
   },
@@ -265,21 +261,6 @@ const FilterQuery = EmberObject.extend({
    */
   _removeEmptyValues(values) {
     return values.without(undefined).without(null);
-  },
-
-  /**
-   * Returns the unix timestamp for a time in the past
-   *
-   * Example:
-   * { subtract: 48, unit: 'hours' } will return the Unix Timestamp (milliseconds) for exactly 48 hours ago
-   *
-   * @param subtract {number} The amount to subtract from the current time
-   * @param unit {string} The unit to subtract (e.g, 'hours', 'days', 'months', etc)
-   * @returns {number} Unix Timestamp (milliseconds)
-   * @private
-   */
-  _resolveSinceWhenStartTime({ subtract, unit }) {
-    return moment().subtract(subtract, unit).valueOf();
   },
 
   /**

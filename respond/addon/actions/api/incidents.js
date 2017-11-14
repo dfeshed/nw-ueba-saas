@@ -1,5 +1,6 @@
 import EmberObject from 'ember-object';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
+import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
 import FilterQuery from 'respond/utils/filter-query';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
@@ -117,6 +118,7 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getAlertsForIncident(incidentId, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const streamOptions = { cancelPreviouslyExecuting: true };
     const query = FilterQuery.create()
       .addSortBy('receivedTime', false)
       .addFilter('incidentId', incidentId);
@@ -125,6 +127,7 @@ IncidentsAPI.reopenClass({
       method: 'stream',
       modelName: 'alerts',
       query: query.toJSON(),
+      streamOptions,
       onInit,
       onResponse,
       onError,
@@ -137,55 +140,27 @@ IncidentsAPI.reopenClass({
    * @param {String} entityType Either 'IP', 'MAC_ADDRESS', 'HOST', 'DOMAIN', 'FILE_NAME' or 'FILE_HASH'
    * @param {String} entityId ID of an entity; e.g. '10.20.30.40', 'HOST1', 'g00gle.com', 'john_smith', 'setup.exe'
    * @param {String} sinceWhen Name of a canned time range object.
-   * @param {String[]} devices List of device fields to be included in filter.
-   * Each device field is either: 'source.device', 'destination.device', 'detector' or 'domain'.
-   * For now, only the first device will be used. When backend supports querying multiple device fields, all the given
-   * devices will be used.
    * @param {{ onResponse: Function, onError: Function, onInit: Function, onCompleted: Function }} callbacks
    * @public
    */
-  getRelatedAlerts(entityType, entityId, sinceWhen, devices, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
-
-    // Map the given list of devices to fields in the IM Mongo database.
-    // For now, only map the first one; ignore the others until backend supports querying multiple fields with an OR.
-    let [ deviceField ] = devices || [];
-    if (String(deviceField).match(/source|destination/)) {
-      deviceField += '.device';
-    }
-    let eventField;
-    switch (entityType) {
-      case 'FILE_NAME':
-        eventField = 'data.filename';
-        break;
-      case 'FILE_HASH':
-        eventField = 'data.hash';
-        break;
-      case 'IP':
-        eventField = `${deviceField}.ip_address`;
-        break;
-      case 'MAC_ADDRESS':
-        eventField = `${deviceField}.mac_address`;
-        break;
-      case 'DOMAIN':
-        eventField = `${deviceField}.dns_domain`;
-        break;
-      case 'HOST':
-        eventField = (deviceField === 'domain') ? deviceField : `${deviceField}.dns_hostname`;
-        break;
-      case 'USER':
-        eventField = `${deviceField}.user.username`;
-        break;
-    }
-
-    const query = FilterQuery.create()
-      .addSortBy('receivedTime', false)
-      .addSinceWhenFilter('receivedTime', sinceWhen)
-      .addFilter(`alert.events.${eventField}`, entityId);
+  getRelatedAlerts(entityType, entityId, sinceWhen, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const streamOptions = { cancelPreviouslyExecuting: true };
+    const lower = resolveSinceWhenStartTime(sinceWhen);
+    const query = {
+      entityType,
+      data: entityId,
+      timeRange: {
+        lower
+      },
+      limit: 1000,
+      chunkSize: 100
+    };
 
     return streamRequest({
       method: 'stream',
-      modelName: 'alerts',
-      query: query.toJSON(),
+      modelName: 'related-alerts-search',
+      query,
+      streamOptions,
       onInit,
       onResponse,
       onError,

@@ -12,7 +12,6 @@ moduleForComponent('rsa-alerts-search-results', 'Integration | Component | Alert
 
 const entity = { id: '10.20.30.40', type: 'IP' };
 const timeFrameName = SINCE_WHEN_TYPES[0].name;
-const devices = ['source.device'];
 const itemsStatus = 'complete';
 const items = [
   { id: 1, alert: { name: 'Alert 1' } },
@@ -24,7 +23,6 @@ test('it renders the header DOM and results DOM as expected', function(assert) {
   this.setProperties({
     entity,
     timeFrameName,
-    devices,
     itemsStatus,
     items
   });
@@ -32,7 +30,6 @@ test('it renders the header DOM and results DOM as expected', function(assert) {
   this.render(hbs`{{#rsa-alerts-search/results 
     entity=entity
     timeFrameName=timeFrameName
-    devices=devices
     itemsStatus=itemsStatus
     items=items
     as |item index column|
@@ -47,7 +44,6 @@ test('it renders the header DOM and results DOM as expected', function(assert) {
       const $header = this.$('.rsa-alerts-search-results__header');
       assert.ok($header.length, 'Expected to find header DOM');
 
-      assert.equal(this.$('.rsa-alerts-search-results__device').length, devices.length, 'Expected to find devices in header DOM');
       assert.ok(this.$('.rsa-alerts-search-results__time-frame').length, 'Expected to find time frame in header DOM');
       assert.notOk(this.$('.rsa-loader').length, 'Expected to not find wait DOM when status is complete');
 
@@ -65,14 +61,12 @@ test('it renders a loading icon when the results status is streaming', function(
   this.setProperties({
     entity,
     timeFrameName,
-    devices,
     items
   });
 
   this.render(hbs`{{rsa-alerts-search/results 
     entity=entity
     timeFrameName=timeFrameName
-    devices=devices
     itemsStatus="streaming"
     items=items
     }}`);

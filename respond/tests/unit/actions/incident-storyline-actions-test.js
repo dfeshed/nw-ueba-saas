@@ -56,20 +56,18 @@ test('When SEARCH_RELATED_INDICATORS_STARTED, the incident search state is reset
   const entityId = '10.20.30.40';
   const entityType = 'IP';
   const timeFrameName = 'LAST_24_HOURS';
-  const devices = ['source.device'];
   const searchResults = [];
   const searchStatus = 'streaming';
   const expectedEndState = {
     ...initialState,
     searchEntity: { type: entityType, id: entityId },
     searchTimeFrameName: timeFrameName,
-    searchDevices: devices,
     searchResults,
     searchStatus
   };
   const action = {
     type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_STARTED,
-    payload: { entityId, entityType, timeFrameName, devices }
+    payload: { entityId, entityType, timeFrameName }
   };
   const endState = incidentReducer(initialState, action);
   assert.deepEqual(endState, expectedEndState);

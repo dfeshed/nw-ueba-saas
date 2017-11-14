@@ -10,13 +10,6 @@
       <span class="rsa-alerts-search-results__time-frame">
         {{t (concat 'respond.timeframeOptions.' timeFrameName) }}
       </span>
-      <span class="rsa-alerts-search-results__devices">
-        {{#each devices as |device|}}
-          <span class="rsa-alerts-search-results__device">
-            &middot;&nbsp;{{t (concat 'respond.incident.search.devices.' device)}}
-          </span>
-        {{/each}}
-      </span>
     </div>
     <vbox fit align="center" class="rsa-alerts-search-results__header-wait">
       {{#if (eq itemsStatus 'streaming')}}

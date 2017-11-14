@@ -33,62 +33,7 @@ test('it renders the form with correct default state based on its inputs', funct
       assert.ok($el.find('.ember-power-select-trigger').text().trim(), 'Expected time frame picker to display default');
       assert.ok($el.find('.rsa-alerts-search-form__text:enabled').length, 'Expected to find text input field enabled');
       assert.equal($el.find('.rsa-alerts-search-form__text').val(), inputText, 'Expected input text field to display default');
-      assert.equal($el.find('.rsa-alerts-search-form__device').length, 3, 'Expected to find 3 device picker options for an IP');
       assert.ok($el.find('.rsa-alerts-search-form__submit button:enabled').length, 'Expected submit button to be enabled');
-    });
-});
-
-test('it shows and hides the device picker options depending upon the selected entity type', function(assert) {
-  this.setProperties({
-    selectedTimeFrameName,
-    selectedEntityTypeName: 'IP'
-  });
-
-  this.render(hbs`{{rsa-alerts-search/form 
-    selectedTimeFrameName=selectedTimeFrameName
-    selectedEntityTypeName=selectedEntityTypeName
-    isSearchUnderway=false
-    }}`);
-
-  return wait()
-    .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for IP');
-
-      this.set('selectedEntityTypeName', 'MAC_ADDRESS');
-      return wait();
-    })
-    .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for MAC_ADDRESS');
-
-      this.set('selectedEntityTypeName', 'HOST');
-      return wait();
-    })
-    .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 4, 'Expected to find device picker options enabled for HOST');
-
-      this.set('selectedEntityTypeName', 'DOMAIN');
-      return wait();
-    })
-    .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for DOMAIN');
-
-      this.set('selectedEntityTypeName', 'USER');
-      return wait();
-    })
-    .then(() => {
-      assert.equal(this.$('.rsa-alerts-search-form__device:enabled').length, 3, 'Expected to find device picker options enabled for USER');
-
-      this.set('selectedEntityTypeName', 'FILE_NAME');
-      return wait();
-    })
-    .then(() => {
-      assert.notOk(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected not to find any device picker options for FILE_NAME');
-
-      this.set('selectedEntityTypeName', 'FILE_HASH');
-      return wait();
-    })
-    .then(() => {
-      assert.notOk(this.$('.rsa-alerts-search-form__device:enabled').length, 'Expected not to find any device picker options for FILE_HASH');
     });
 });
 

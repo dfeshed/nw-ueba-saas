@@ -65,10 +65,6 @@ let initialState = {
   // identifier name of the time frame for the `searchResults` filter
   searchTimeFrameName: null,
 
-  // array of device identifiers for the `searchResults` filter;
-  // each device identifier is one of: 'source.device', 'destination.device' or 'detector'
-  searchDevices: null,
-
   // status of the fetch for `searchResults`; either 'streaming', 'complete' or 'error'
   searchStatus: null,
 
@@ -400,11 +396,10 @@ const incident = reduxActions.handleActions({
     return state.set('defaultSearchEntityType', payload);
   }),
 
-  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_STARTED]: (state, { payload: { entityId, entityType, timeFrameName, devices } }) => {
+  [ACTION_TYPES.SEARCH_RELATED_INDICATORS_STARTED]: (state, { payload: { entityId, entityType, timeFrameName } }) => {
     return state.merge({
       searchEntity: { id: entityId, type: entityType },
       searchTimeFrameName: timeFrameName,
-      searchDevices: devices,
       searchResults: [],
       searchStatus: 'streaming'
     });

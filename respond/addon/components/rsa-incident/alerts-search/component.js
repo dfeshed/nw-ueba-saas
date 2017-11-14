@@ -22,7 +22,6 @@ const stateToComputed = ({
       defaultSearchEntityType,
       searchEntity,
       searchTimeFrameName,
-      searchDevices,
       searchStatus,
       searchResults,
       addRelatedIndicatorsStatus
@@ -35,7 +34,6 @@ const stateToComputed = ({
   defaultSearchEntityType,
   searchEntity,
   searchTimeFrameName,
-  searchDevices,
   searchStatus,
   searchResults,
   addRelatedIndicatorsStatus

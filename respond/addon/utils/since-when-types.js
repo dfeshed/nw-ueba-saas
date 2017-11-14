@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import moment from 'moment';
+
 /**
  * A set of types representing the time range since a starting point time (e.g., since 7 days ago)
  * @public
@@ -85,7 +88,27 @@ const SINCE_WHEN_TYPES_BY_NAME = {};
 
 SINCE_WHEN_TYPES.forEach((t) => SINCE_WHEN_TYPES_BY_NAME[t.name] = t);
 
+/**
+ * Returns the unix timestamp for a time in the past.
+ *
+ * Example:
+ * 'LAST_FORTY_EIGHT_HOURS' will return the Unix Timestamp (milliseconds) for exactly 48 hours ago
+ *
+ * @param sinceWhen string The name of the since-when option (e.g., LAST_7_DAYS, ALL_TIME)
+ * @returns {number} Unix Timestamp (milliseconds)
+ * @public
+ */
+function resolveSinceWhenStartTime(sinceWhen) {
+  const since = typeof sinceWhen === 'string' ? SINCE_WHEN_TYPES_BY_NAME[sinceWhen] : sinceWhen;
+  if (!since || _.isUndefined(since.subtract) || _.isUndefined(since.unit)) {
+    throw new Error(`resolveSinceWhenStartTime could not find the corresponding since-when option from ${sinceWhen}`);
+  }
+  // if the sinceWhen is for all time, just set the unix timestamp to be 0 (i.e., jan 1 1970), otherwise calculate
+  return sinceWhen === 'ALL_TIME' ? 0 : moment().subtract(since.subtract, since.unit).valueOf();
+}
+
 export {
   SINCE_WHEN_TYPES,
-  SINCE_WHEN_TYPES_BY_NAME
+  SINCE_WHEN_TYPES_BY_NAME,
+  resolveSinceWhenStartTime
 };

@@ -126,6 +126,29 @@ test('Calling addSinceWhenFilter() creates the proper range query', function(ass
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
 
+test('Calling addSinceWhenFilter() creates the proper range query using ALL_TIME', function(assert) {
+  const query = FilterQuery.create();
+  query.addSortBy('riskScore', true);
+  const field = 'modifiedDate';
+  query.addSinceWhenFilter(field, 'ALL_TIME');
+
+  const expectedJson = {
+    filter: [
+      {
+        field,
+        range: {
+          from: 0,
+          to: undefined,
+          type: 'date'
+        }
+      }
+    ],
+    sort: defaultSort,
+    stream: defaultStream
+  };
+  assert.deepEqual(query.toJSON(), expectedJson, 'The resulting query should have 0 has the from value for ALL_TIME');
+});
+
 test('Calling addSinceWhenFilter() twice removes the first filter and adds the second', function(assert) {
   const query = FilterQuery.create();
   query.addSortBy('riskScore', true);

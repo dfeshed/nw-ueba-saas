@@ -132,6 +132,13 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/alerts/associate'
       }
     },
+    'related-alerts-search': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/related/alerts',
+        requestDestination: '/ws/respond/related/alerts'
+      }
+    },
     'original-alert': {
       socketUrl,
       queryRecord: {
