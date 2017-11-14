@@ -145,7 +145,7 @@ const ContentFilter = Component.extend({
         }
       }
       if (isFieldsEmpty) {
-        this.get('flashMessage').showFlashMessage('investigateHosts.hosts.customFilter.save.filterFieldEmptyMessage');
+        this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateHosts.hosts.customFilter.save.filterFieldEmptyMessage'));
         return;
       }
       if (!hasError) {

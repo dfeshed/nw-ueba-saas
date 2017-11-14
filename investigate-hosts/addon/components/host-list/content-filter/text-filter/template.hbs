@@ -27,7 +27,9 @@
       {{#rsa-form-button style='primary' defaultAction=(action 'onUpdate')}}
         {{t 'investigateHosts.hosts.button.update'}}
       {{/rsa-form-button}}
-      {{t 'investigateHosts.hosts.filters.mutlipleValuesNote'}}
+      {{#if (eq restrictionType 'EQUAL')}}
+        {{t 'investigateHosts.hosts.filters.mutlipleValuesNote'}}
+      {{/if}}
     </section>
   </section>
 {{/rsa-content-tethered-panel}}

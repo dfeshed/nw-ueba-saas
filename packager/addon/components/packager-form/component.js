@@ -117,7 +117,7 @@ const formComponent = Component.extend({
 
     generateAgent() {
       const { autoUninstall } = this.get('configData');
-      if (!isEmpty(autoUninstall[0])) {
+      if (autoUninstall && !isEmpty(autoUninstall[0])) {
         this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
       }
       if (!this.get('isLogCollectionEnabled')) {
