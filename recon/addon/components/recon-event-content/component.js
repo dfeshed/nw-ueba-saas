@@ -28,15 +28,22 @@ const EventContentComponent = Component.extend({
    */
   @computed('contentError')
   errorMessage(errorCode) {
-    if (errorCode === 2) {
-      return this.get('i18n').t('recon.error.missingRecon', { id: this.get('eventId') });
-    } else if (errorCode === 13 || errorCode === 110) {
-      return this.get('i18n').t('recon.error.permissionError');
-    } else if (errorCode === 115) {
-      return this.get('i18n').t('recon.error.sessionUnavailable');
-    } else {
-      return this.get('i18n').t('recon.error.generic');
+    let ret;
+    switch (errorCode) {
+      case 2:
+        ret = this.get('i18n').t('recon.error.missingRecon', { id: this.get('eventId') });
+        break;
+      case 13:
+      case 110:
+        ret = this.get('i18n').t('recon.error.permissionError');
+        break;
+      case 115:
+        ret = this.get('i18n').t('recon.error.sessionUnavailable');
+        break;
+      default:
+        ret = this.get('i18n').t('recon.error.generic');
     }
+    return ret;
   },
 
   /**
