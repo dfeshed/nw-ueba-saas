@@ -57,7 +57,7 @@ const ListFilter = Component.extend(FilterMixin, {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
       const values = propertyValues.map((item) => item.value);
-      return `${filterName}: ${values.join(',')}`;
+      return values.length ? `${filterName}: ${values.join(',')}` : `${filterName}: All`;
     }
     return `${filterName}: All`;
   },

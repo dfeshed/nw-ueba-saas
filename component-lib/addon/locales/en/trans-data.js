@@ -1986,7 +1986,7 @@ export default {
         customDate: 'Custom Date',
         operator: 'Operator',
         searchPlaceHolder: 'Type to filter options',
-        mutlipleValuesNote: 'Note: To search multiple values, use | as a separator',
+        mutlipleValuesNote: 'Note: To search multiple values, use || as a separator',
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         }

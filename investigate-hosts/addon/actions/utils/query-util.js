@@ -16,10 +16,18 @@ const addFilter = (query, expressionList) => {
   if (expressionList && expressionList.length) {
     const list = expressionList.filterBy('propertyValues');
     if (list.length) {
-      query.criteria = {
-        expressionList: list,
-        predicateType: 'AND'
-      };
+      const modifiedList = list.map((item) => {
+        if (item.propertyValues.length) {
+          return item;
+        }
+      }).compact();
+
+      if (modifiedList.length) {
+        query.criteria = {
+          expressionList: modifiedList,
+          predicateType: 'AND'
+        };
+      }
     }
   }
   return query;

@@ -35,7 +35,7 @@ const dispatchToActions = {
  * @public
  */
 const preparePropertyValues = (propertyValues) => {
-  propertyValues = propertyValues.split('|');
+  propertyValues = propertyValues.split('||');
   return propertyValues.map((value) => {
     return { value: value.trim() };
   });
@@ -82,7 +82,7 @@ const TextFilter = Component.extend(FilterMixin, {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
       const values = propertyValues.map((item) => item.value);
-      return `${values.join('|')}`;
+      return `${values.join('||')}`;
     }
   },
 
