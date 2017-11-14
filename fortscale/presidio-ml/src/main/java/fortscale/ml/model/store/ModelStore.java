@@ -78,10 +78,8 @@ public class ModelStore implements TtlServiceAware {
                     .limit(modelQueryPaginationSize);
             queryResults = mongoTemplate.find(query, ModelDAO.class, collectionName);
             for(ModelDAO modelDAO: queryResults){
-                ModelDAO latestModelDao = contextIdToModelDaoMap.get(modelDAO.getContextId());
-                if(latestModelDao == null || latestModelDao.getEndTime().isBefore(modelDAO.getEndTime())){
-                    contextIdToModelDaoMap.put(modelDAO.getContextId(), modelDAO);
-                }
+                //the models are ordered by time so we don't have to check if the map contains a model with larger time.
+                contextIdToModelDaoMap.put(modelDAO.getContextId(), modelDAO);
             }
             pageIndex++;
         } while(queryResults != null && queryResults.size() == modelQueryPaginationSize);

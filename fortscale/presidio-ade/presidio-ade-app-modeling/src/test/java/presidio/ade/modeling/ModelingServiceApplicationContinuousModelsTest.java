@@ -195,6 +195,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
             properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff", "PT48H");
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
+            properties.put("presidio.model.store.query.pagination.size", "5");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
