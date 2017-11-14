@@ -21,9 +21,22 @@ if (config.environment !== 'test') {
     ]
   );
 
+  const reconFilter = createFilter(
+    'recon',
+    [
+      'packets.isPayloadOnly',
+      'packets.hasStyledBytes',
+      'packets.hasSignaturesHighlighted',
+      'packets.packetsPageSize',
+      'text.decode',
+      'visuals.defaultReconView',
+      'visuals.currentReconView'
+    ]
+  );
+
   setup = (store) => {
     persistStore(store, {
-      transforms: [investigateFilter],
+      transforms: [investigateFilter, reconFilter],
       debounce: 1000
     });
   };
