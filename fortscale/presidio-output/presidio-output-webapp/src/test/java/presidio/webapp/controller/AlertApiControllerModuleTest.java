@@ -216,8 +216,38 @@ public class AlertApiControllerModuleTest {
         Assert.assertEquals(AlertQueryEnums.AlertFeedback.NOT_RISK, actualResponse.getAlerts().get(1).getFeedback());
         Assert.assertEquals(AlertQueryEnums.AlertFeedback.NOT_RISK, actualResponse.getAlerts().get(2).getFeedback());
         Assert.assertEquals(AlertQueryEnums.AlertFeedback.RISK, actualResponse.getAlerts().get(3).getFeedback());
+    }
 
+    @Test
+    public void getAlerts_feedbackAggregations() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert2.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert3 = generateAlert("userId2", "smartId3", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert3.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        presidio.output.domain.records.alerts.Alert alert4 = generateAlert("userId2", "smartId4", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert4.setFeedback(AlertEnums.AlertFeedback.RISK);
+        presidio.output.domain.records.alerts.Alert alert5 = generateAlert("userId2", "smartId5", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert5.setFeedback(AlertEnums.AlertFeedback.RISK);
+        presidio.output.domain.records.alerts.Alert alert6 = generateAlert("userId2", "smartId6", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert6.setFeedback(AlertEnums.AlertFeedback.NONE);
+        alertRepository.save(Arrays.asList(alert1, alert2, alert3, alert4, alert5, alert6));
 
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI)
+                .param("aggregateBy", AlertQueryEnums.AlertQueryAggregationFieldName.FEEDBACK.name()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
+        Map<String, Long> feedbackAggr = actualResponse.getAggregationData().get(AlertQueryEnums.AlertQueryAggregationFieldName.FEEDBACK.name());
+        Assert.assertEquals(Long.valueOf(3), feedbackAggr.get(AlertQueryEnums.AlertFeedback.NOT_RISK.name()));
+        Assert.assertEquals(Long.valueOf(2), feedbackAggr.get(AlertQueryEnums.AlertFeedback.RISK.name()));
+        Assert.assertEquals(Long.valueOf(1), feedbackAggr.get(AlertQueryEnums.AlertFeedback.NONE.name()));
     }
 
     @Test

@@ -145,6 +145,9 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             if (alertQuery.getAggregateByFields().contains(Alert.SEVERITY)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY));
             }
+            if (alertQuery.getAggregateByFields().contains(Alert.FEEDBACK)) {
+                super.addAggregation(AggregationBuilders.terms(Alert.FEEDBACK).field(Alert.FEEDBACK));
+            }
             if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS).size(DEFAULT_AGG_BULK_SIZE));
             }
