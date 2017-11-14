@@ -2,6 +2,7 @@ package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.junit.*;
@@ -38,7 +39,7 @@ import java.util.List;
 
 @Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, MongodbTestConfig.class})
 @ActiveProfiles("useEmbeddedElastic")
 public class UserScoreServiceModuleTest {
 

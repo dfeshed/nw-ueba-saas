@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.TestConfig;
@@ -777,5 +778,37 @@ public class AlertPersistencyServiceTest {
         Assert.assertEquals(1, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstUserName, iterator.next().getUserName());
+    }
+
+    @Test
+    public void testUpdateFeedback() {
+        Alert alert1 = new Alert("userId1", "smartId", null, "username", new Date(), new Date(), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        Alert alertCreated = alertPersistencyService.save(alert1);
+
+        assertEquals(AlertEnums.AlertFeedback.NONE, alert1.getFeedback());
+        alertPersistencyService.updateAlertFeedback(alertCreated.getId(), AlertEnums.AlertFeedback.NOT_RISK);
+
+        Alert updatedAlert = alertPersistencyService.findOne(alertCreated.getId());
+        assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
+    }
+
+    @Test
+    public void testUpdateFeedbackAlertIdNull() {
+        try {
+            alertPersistencyService.updateAlertFeedback(null, AlertEnums.AlertFeedback.NOT_RISK);
+        }
+        catch(Exception e) {
+            Assert.fail("exception was thrown while trying to update alert with id null");
+        }
+    }
+
+    @Test
+    public void testUpdateFeedbackWithNullFeedbackValue() {
+        try {
+            alertPersistencyService.updateAlertFeedback("alertId", null);
+        }
+        catch(Exception e) {
+            Assert.fail("exception was thrown while trying to update alert with id null");
+        }
     }
 }

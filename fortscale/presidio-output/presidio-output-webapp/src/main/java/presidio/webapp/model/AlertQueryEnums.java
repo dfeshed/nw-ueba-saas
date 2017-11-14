@@ -7,7 +7,7 @@ import presidio.output.domain.records.alerts.Alert;
 public class AlertQueryEnums {
     public enum AlertQuerySortFieldName {
         SCORE(Alert.SCORE), START_DATE(Alert.START_DATE), END_DATE(Alert.END_DATE), INDICATORS_NUM(Alert.INDICATORS_NUM),
-        USER_NAME(Alert.INDEXED_USER_NAME);
+        USER_NAME(Alert.INDEXED_USER_NAME), FEEDBACK(Alert.FEEDBACK);
 
         private String value;
 
@@ -83,6 +83,37 @@ public class AlertQueryEnums {
         @JsonCreator
         public static AlertSeverity fromValue(String text) {
             for (AlertSeverity b : AlertSeverity.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum AlertFeedback {
+
+        RISK("RISK"),
+
+        NOT_RISK("NOT_RISK"),
+
+        NONE("NONE");
+
+        private String value;
+
+        AlertFeedback(String value) {
+            this.value = value;
+        }
+
+        @Override
+        @JsonValue
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static AlertFeedback fromValue(String text) {
+            for (AlertFeedback b : AlertFeedback.values()) {
                 if (String.valueOf(b.value).equals(text)) {
                     return b;
                 }
