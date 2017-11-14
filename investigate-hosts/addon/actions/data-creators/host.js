@@ -3,6 +3,7 @@ import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import Ember from 'ember';
 const { Logger } = Ember;
+import _ from 'lodash';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -192,6 +193,27 @@ const setHostColumnSort = (columnSort) => {
   };
 };
 
+const deleteHosts = (callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const { selectedHostList } = getState().endpoint.machines;
+    dispatch({
+      type: ACTION_TYPES.DELETE_HOSTS,
+      promise: Machines.deleteHosts(_.map(selectedHostList, 'id')),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.DELETE_HOSTS, response);
+          callbacks.onSuccess(response);
+          dispatch(getPageOfMachines());
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.DELETE_HOSTS, response);
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
+
 export {
   getAllSchemas,
   getPageOfMachines,
@@ -199,6 +221,7 @@ export {
   createCustomSearch,
   exportAsFile,
   updateColumnVisibility,
-  setHostColumnSort
+  setHostColumnSort,
+  deleteHosts
 };
 

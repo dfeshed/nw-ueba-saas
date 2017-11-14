@@ -1640,6 +1640,7 @@ export default {
           invalidInput: 'ja_Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
         },
         delete: {
+          successMessage: 'ja_Query deleted successfully.',
           confirmMessage: 'ja_Are you sure you want to delete the selected query?'
         }
       }
@@ -2388,8 +2389,7 @@ export default {
       yesBtn: 'ja_Yes',
       noBtn: 'ja_No',
       delete: {
-        successMessage: 'ja_Query/Queries deleted successfully.',
-        failureMessage: 'ja_Query/Queries deletion failed.',
+        successMessage: 'ja_Query deleted successfully.',
         confirmMessage: 'ja_Are you sure you want to delete the selected query/queries?'
       },
       edit: {

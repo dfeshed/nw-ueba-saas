@@ -1641,6 +1641,7 @@ export default {
           invalidInput: 'Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
         },
         delete: {
+          successMessage: 'Query deleted successfully.',
           confirmMessage: 'Are you sure you want to delete the selected query?'
         }
       }
@@ -2389,8 +2390,7 @@ export default {
       yesBtn: 'Yes',
       noBtn: 'No',
       delete: {
-        successMessage: 'Query/Queries deleted successfully.',
-        failureMessage: 'Query/Queries deletion failed.',
+        successMessage: 'Query deleted successfully.',
         confirmMessage: 'Are you sure you want to delete the selected query/queries?'
       },
       edit: {

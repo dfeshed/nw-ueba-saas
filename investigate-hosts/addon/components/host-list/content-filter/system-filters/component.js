@@ -9,11 +9,6 @@ import {
   deleteSavedSearch
 } from 'investigate-hosts/actions/data-creators/filter';
 
-const message = {
-  success: 'investigateHosts.savedQueries.delete.successMessage',
-  failure: 'investigateHosts.savedQueries.delete.failureMessage'
-};
-
 const stateToComputed = ({ endpoint }) => ({
   isFilterReset: endpoint.filter.isFilterReset,
   systemFilterList: endpoint.filter.filters
@@ -24,8 +19,8 @@ const dispatchToActions = (dispatch) => ({
   resetFilters: () => dispatch(resetFilters()),
   deleteSelected(id) {
     dispatch(deleteSavedSearch(id, {
-      onSuccess: () => (this.get('flashMessage').showFlashMessage(message.success)),
-      onFailure: () => (this.get('flashMessage').showFlashMessage(message.failure))
+      onSuccess: () => (this.get('flashMessage').showFlashMessage('investigateHosts.savedQueries.delete.successMessage')),
+      onFailure: ({ meta: message }) => (this.get('flashMessage').showErrorMessage(message.message))
     }));
   }
 });

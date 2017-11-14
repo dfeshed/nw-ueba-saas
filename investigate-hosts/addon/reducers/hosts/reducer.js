@@ -142,7 +142,13 @@ const hosts = reduxActions.handleActions({
 
   [ACTION_TYPES.SELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', state.hostList.map((host) => ({ id: host.id, version: host.machine.agentVersion }))),
 
-  [ACTION_TYPES.DESELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', [])
+  [ACTION_TYPES.DESELECT_ALL_HOSTS]: (state) => state.set('selectedHostList', []),
+
+  [ACTION_TYPES.DELETE_HOSTS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('hostList', [])
+    });
+  }
 
 }, initialState);
 

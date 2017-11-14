@@ -15,7 +15,8 @@ const Eng = Engine.extend({
       'timeFormat',
       'timezone',
       'i18n',
-      'flashMessages'
+      'flashMessages',
+      'eventBus'
     ],
     externalRoutes: [
       'protected',

@@ -1,5 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
+import injectService from 'ember-service/inject';
 
 import {
   addSystemFilter,
@@ -25,6 +26,8 @@ const CustomFilterList = Component.extend({
 
   activeFilter: null,
 
+  flashMessage: injectService(),
+
   actions: {
     applyCustomFilter(filter) {
       const { criteria: { expressionList } } = filter;
@@ -32,6 +35,15 @@ const CustomFilterList = Component.extend({
       this.set('activeFilter', filterId);
       this.send('setSystemFilterFlag', false);
       this.send('addSystemFilter', expressionList);
+    },
+    deleteSelectedFilter(id) {
+      const callbackOptions = {
+        onSuccess: () => {
+          this.get('flashMessage').showFlashMessage('investigateFiles.filter.customFilters.delete.successMessage');
+        },
+        onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
+      };
+      this.send('deleteFilter', id, callbackOptions);
     }
   }
 });

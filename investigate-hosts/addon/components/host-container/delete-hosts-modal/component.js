@@ -1,14 +1,13 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
-import { Machines } from 'investigate-hosts/actions/api';
-import { getPageOfMachines } from 'investigate-hosts/actions/data-creators/host';
+import { getPageOfMachines, deleteHosts } from 'investigate-hosts/actions/data-creators/host';
 import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
-import _ from 'lodash';
 
 const dispatchToActions = {
   toggleDeleteHostsModal,
-  getPageOfMachines
+  getPageOfMachines,
+  deleteHosts
 };
 
 const stateToComputed = ({ endpoint: { machines } }) => ({
@@ -21,15 +20,13 @@ const DeleteHostsModal = Component.extend({
 
   actions: {
     handleDeleteHosts() {
-      Machines.deleteHosts(_.map(this.get('selectedHostList'), 'id'))
-        .then(() => {
+      const callBackOptions = {
+        onSuccess: () => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.success');
-          // Refresh the page if deletion is successful
-          this.send('getPageOfMachines');
-        })
-        .catch(() => {
-          this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.error');
-        });
+        },
+        onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
+      };
+      this.send('deleteHosts', callBackOptions);
       this.send('closeDeleteHostsModal');
     },
     closeDeleteHostsModal() {

@@ -123,18 +123,24 @@ const getFilter = () => {
   };
 };
 
-const deleteFilter = (id) => ({
-  type: ACTION_TYPES.DELETE_FILTER,
-  promise: File.deleteFilter(id),
-  meta: {
-    onSuccess: (response) => {
-      Logger.debug(ACTION_TYPES.DELETE_FILTER, response);
-    },
-    onFailure: (response) => {
-      _handleError(ACTION_TYPES.DELETE_FILTER, response);
-    }
-  }
-});
+const deleteFilter = (id, callbacks = callbacksDefault) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DELETE_FILTER,
+      promise: File.deleteFilter(id),
+      meta: {
+        onSuccess: (response) => {
+          Logger.debug(ACTION_TYPES.DELETE_FILTER, response);
+          callbacks.onSuccess(response);
+        },
+        onFailure: (response) => {
+          _handleError(ACTION_TYPES.DELETE_FILTER, response);
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
 
 /**
  * Action creator for adding the expression to the expression list.
