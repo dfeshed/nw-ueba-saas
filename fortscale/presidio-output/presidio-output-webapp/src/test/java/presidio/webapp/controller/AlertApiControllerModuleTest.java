@@ -4,10 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,14 +19,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import presidio.output.client.model.AlertQuery;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.*;
 import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertQueryEnums;
+import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.EventsWrapper;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
@@ -175,7 +181,7 @@ public class AlertApiControllerModuleTest {
         Date date = new Date();
         presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
         alert1.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
-        presidio.output.domain.records.alerts.Alert  alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
         alert2.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
         presidio.output.domain.records.alerts.Alert alert3 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
         alert3.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
@@ -198,7 +204,7 @@ public class AlertApiControllerModuleTest {
         // get actual response
         MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI)
                 .param("sortFieldNames", String.valueOf(AlertQueryEnums.AlertQuerySortFieldName.FEEDBACK.name()))
-                .param("sortDirection", String.valueOf(AlertQuery.SortDirectionEnum.ASC.name())))
+                .param("sortDirection", String.valueOf(Sort.Direction.ASC)))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
@@ -323,7 +329,7 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void testGetIndicatorEvents() throws Exception{
+    public void testGetIndicatorEvents() throws Exception {
 
         presidio.output.domain.records.alerts.Alert alert = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, new Date());
 
@@ -351,7 +357,7 @@ public class AlertApiControllerModuleTest {
 
     private List<IndicatorEvent> generateEvents(int eventsNum, String indicatorId) {
         List<IndicatorEvent> events = new ArrayList<>();
-        for(int i = 1; i <= eventsNum; i ++) {
+        for (int i = 1; i <= eventsNum; i++) {
             IndicatorEvent event = new IndicatorEvent();
             event.setSchema(Schema.ACTIVE_DIRECTORY);
             event.setEventTime(new Date());
