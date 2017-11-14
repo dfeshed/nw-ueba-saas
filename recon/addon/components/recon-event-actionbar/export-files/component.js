@@ -10,7 +10,8 @@ import layout from './template';
 const stateToComputed = ({ recon, recon: { files } }) => ({
   selectedFiles: selectedFiles(recon),
   extractLink: files.fileExtractLink,
-  status: files.fileExtractStatus
+  status: files.fileExtractStatus,
+  isAutoDownloadFile: files.isAutoDownloadFile
 });
 
 const dispatchToActions = {

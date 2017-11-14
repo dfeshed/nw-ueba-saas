@@ -3,11 +3,9 @@ import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
 import { patchSocket } from '../../../../helpers/patch-socket';
-import startApp from '../../../../helpers/start-app';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-
-const application = startApp();
-initialize(application);
+import { patchFlash } from '../../../../helpers/patch-flash';
+import { getOwner } from '@ember/application';
 
 const data = {
   eventType: { name: 'LOG' }
@@ -16,8 +14,10 @@ const data = {
 moduleForComponent('recon-event-actionbar/export-logs', 'Integration | Component | recon event actionbar/export logs', {
   integration: true,
   beforeEach() {
-    this.registry.injection('component:recon-event-actionbar/export-logs', 'i18n', 'service:i18n', 'service:flashMessages');
+    this.registry.injection('component:recon-event-actionbar/export-logs', 'i18n', 'service:i18n');
     this.inject.service('redux');
+    this.inject.service('flash-messages');
+    initialize(this);
     this.inject.service('preferences');
   }
 });
@@ -98,5 +98,43 @@ test('Recon should pick default Log format set by the user', function(assert) {
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
     assert.equal(str, 'Download XML');
+  });
+});
+
+test('the extracted file must be downloaded automatically', function(assert) {
+  const fileLink = 'http://extracted-file-download-link/';
+  new DataHelper(this.get('redux'))
+      .initializeData()
+      .setAutoDownloadPreference(true)
+      .setExtractedFileLink(fileLink);
+  this.render(hbs`{{recon-event-actionbar/export-logs}}`);
+
+  return wait().then(() => {
+    const iframe = this.$('.js-export-logs-iframe');
+    assert.equal(iframe.length, 1);
+    assert.equal(iframe[0].src, fileLink);
+  });
+});
+
+test('the extracted file must not be downloaded automatically', function(assert) {
+  const fileLink = 'http://extracted-file-download-link/';
+  new DataHelper(this.get('redux'))
+      .initializeData()
+      .setAutoDownloadPreference(false)
+      .setExtractedFileLink(fileLink);
+
+  patchFlash((flash) => {
+    const translation = getOwner(this).lookup('service:i18n');
+    const expectedMsg = translation.t('recon.extractedFileReady');
+    assert.equal(flash.type, 'success');
+    assert.equal(flash.message.string, expectedMsg);
+  });
+
+  this.render(hbs`{{recon-event-actionbar/export-logs}}`);
+
+  return wait().then(() => {
+    const iframe = this.$('.js-export-logs-iframe');
+    assert.equal(iframe.length, 1);
+    assert.equal(iframe[0].src, '');
   });
 });

@@ -8,7 +8,8 @@ export default {
         defaultLogFormat: 'LOG',
         defaultLandingPage: '',
         defaultPacketFormat: 'PCAP',
-        queryTimeFormat: 'DB'
+        queryTimeFormat: 'DB',
+        autoDownloadExtractedFiles: false
       },
       userServicePreferences: {
         serviceId: 'TestServiceId',

@@ -167,6 +167,17 @@ class DataHelper {
       });
     this.redux.dispatch(action);
   }
+
+  setAutoDownloadPreference(value) {
+    initiatePreferences.userPreferences.autoDownloadExtractedFiles = value;
+    this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
+    return this;
+  }
+
+  setExtractedFileLink(extractedLink) {
+    this.redux.dispatch({ type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS, payload: { link: extractedLink } });
+    return this;
+  }
 }
 
 export default DataHelper;

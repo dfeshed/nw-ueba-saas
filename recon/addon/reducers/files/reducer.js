@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
+import { handlePreference } from 'recon/reducers/util';
 
 import * as ACTION_TYPES from 'recon/actions/types';
 
@@ -21,7 +22,8 @@ const filesInitialState = Immutable.from({
   // Rather, they are essentially shortcuts to another event query.
   // When the user clicks on a linked file, recon invokes a configurable callback
   // that is responsible for handling it (e.g., launching a new query).
-  linkToFileAction: null
+  linkToFileAction: null,
+  isAutoDownloadFile: true
 });
 
 /**
@@ -41,6 +43,11 @@ const _fileExtractState = (state) => ({
 const filesReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload: { linkToFileAction } }) => {
     return filesInitialState.merge({ ..._fileExtractState(state), linkToFileAction });
+  },
+
+  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload, payload: { userPreferences } }) => {
+    const isAutoDownloadFile = handlePreference(payload, userPreferences.autoDownloadExtractedFiles);
+    return state.merge({ isAutoDownloadFile });
   },
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => {

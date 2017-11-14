@@ -56,12 +56,18 @@ export default {
       'WALL'
     ],
     field: 'userPreferences.queryTimeFormat'
+  },
+  {
+    name: 'preferences.investigate-events.autoDownloadExtractedFiles',
+    type: 'checkbox',
+    field: 'userPreferences.autoDownloadExtractedFiles'
   }],
   defaultPreferences: {
     userPreferences: {
       defaultLogFormat: 'LOG',
       defaultPacketFormat: 'PCAP',
-      queryTimeFormat: 'DB'
+      queryTimeFormat: 'DB',
+      autoDownloadExtractedFiles: true
     },
     userServicePreferences: {
       serviceId: 'TestServiceId',

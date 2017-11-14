@@ -145,6 +145,7 @@ export default {
   },
   recon: {
     extractWarning: '<span>ja_You have navigated away before the downloaded files could be attached to the browser tray. Your download will be available <a href="{{url}}" target="_blank">here</a>.</span>',
+    extractedFileReady: 'ja_The file has been extracted. Please go to the job queue to download',
     titleBar: {
       titles: {
         endpoint: 'ja_Endpoint Event Details',
@@ -1591,7 +1592,8 @@ export default {
       PACKET: 'ja_Packet Analysis',
       queryTimeFormat: 'ja_Time format for query',
       DB: 'ja_Database Time',
-      WALL: 'ja_Wall Clock Time'
+      WALL: 'ja_Wall Clock Time',
+      autoDownloadExtractedFiles: 'ja_Download extracted files automatically'
     }
   },
   packager: {

@@ -27,7 +27,8 @@ const summaryData = {
 const initiatePreferences = {
   userPreferences: {
     defaultLogFormat: 'LOG',
-    defaultPacketFormat: 'PCAP'
+    defaultPacketFormat: 'PCAP',
+    autoDownloadExtractedFiles: true
   },
   userServicePreferences: {
     eventsPreferences: {

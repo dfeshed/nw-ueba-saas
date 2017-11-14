@@ -10,7 +10,8 @@ const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
   status: files.fileExtractStatus,
   extractLink: files.fileExtractLink,
   hasPayload: hasPayload(recon),
-  defaultPacketFormat: visuals.defaultPacketFormat
+  defaultPacketFormat: visuals.defaultPacketFormat,
+  isAutoDownloadFile: files.isAutoDownloadFile
 });
 
 const dispatchToActions = {

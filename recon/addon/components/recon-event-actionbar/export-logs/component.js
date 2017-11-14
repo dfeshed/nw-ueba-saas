@@ -14,7 +14,8 @@ import layout from './template';
 const stateToComputed = ({ recon: { files, visuals } }) => ({
   extractLink: files.fileExtractLink,
   status: files.fileExtractStatus,
-  defaultLogFormat: visuals.defaultLogFormat
+  defaultLogFormat: visuals.defaultLogFormat,
+  isAutoDownloadFile: files.isAutoDownloadFile
 });
 
 const dispatchToActions = {
