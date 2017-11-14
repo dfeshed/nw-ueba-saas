@@ -94,6 +94,14 @@ const respondConfigGen = function(environment) {
       deleteRecord: {
         subscriptionDestination: '/user/queue/alertrules/delete',
         requestDestination: '/ws/respond/alertrules/delete'
+      },
+      updateRecord: {
+        subscriptionDestination: '/user/queue/alertrules/update',
+        requestDestination: '/ws/respond/alertrules/update'
+      },
+      createRecord: {
+        subscriptionDestination: '/user/queue/alertrules/create',
+        requestDestination: '/ws/respond/alertrules/create'
       }
     },
     'aggregation-fields': {

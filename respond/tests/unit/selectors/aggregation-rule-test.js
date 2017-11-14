@@ -9,7 +9,7 @@ import {
   getFields,
   isLoading
 } from 'respond/selectors/aggregation-rule';
-import rule from '../../data/subscriptions/aggregation-rules/queryRecord/data';
+import ruleInfo from '../../data/subscriptions/aggregation-rules/queryRecord/data';
 import fields from '../../data/subscriptions/aggregation-fields/findAll/data';
 
 module('Unit | Utility | Aggregation Rule Selectors');
@@ -19,7 +19,7 @@ const conditionGroups = { 2: rootGroup, 3: { id: 3 } };
 const conditions = { 1: { id: 1, groupId: 2 } };
 
 const aggregationRule = {
-  rule,
+  ruleInfo,
   ruleStatus: 'wait',
   conditionGroups,
   conditions,
@@ -29,12 +29,15 @@ const aggregationRule = {
 
 const state = {
   respond: {
-    aggregationRule
+    aggregationRule,
+    dictionaries: {
+      categoryTags: []
+    }
   }
 };
 
 test('Basic Aggregation Rules selectors', function(assert) {
-  assert.equal(getRuleInfo(state), rule, 'The returned value from the getRuleInfo selector is as expected');
+  assert.equal(getRuleInfo(state), ruleInfo, 'The returned value from the getRuleInfo selector is as expected');
   assert.equal(getRuleStatus(state), 'wait', 'The returned value from the getRuleStatus selector is as expected');
   assert.equal(getRuleConditionGroups(state), conditionGroups, 'The returned value from the getRuleConditionGroups selector is as expected');
   assert.equal(getRuleConditions(state), conditions, 'The returned value from the getRuleConditions selector is as expected');

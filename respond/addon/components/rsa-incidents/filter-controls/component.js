@@ -2,12 +2,12 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { debounce } from 'ember-runloop';
+import { getTopLevelCategoryNames, getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
 
 const stateToComputed = (state) => {
   const {
     respond: {
       users,
-      dictionaries: { categoryTags, priorityTypes, statusTypes },
       incidents: { itemsFilters }
     }
   } = state;
@@ -18,10 +18,10 @@ const stateToComputed = (state) => {
     idFilter: itemsFilters.id,
     isUnassignedFilter: itemsFilters.assignee && itemsFilters.assignee.isNull,
     assigneeFilters: itemsFilters['assignee.id'],
-    priorityTypes,
-    statusTypes,
+    priorityTypes: getPriorityTypes(state),
+    statusTypes: getStatusTypes(state),
     categoryFilters: itemsFilters['categories.parent'],
-    categoryTags,
+    categoryTags: getTopLevelCategoryNames(state),
     users: users.enabledUsers
   };
 };

@@ -20,7 +20,7 @@ export default reduxActions.handleActions({
     handle(state, action, {
       start: (s) => s.set('categoryTags', []),
       failure: (s) => s.set('categoryTags', []),
-      success: (s) => s.set('categoryTags', action.payload.data.mapBy('parent').uniq().compact()) }
+      success: (s) => s.set('categoryTags', action.payload.data) }
     )
   ),
 

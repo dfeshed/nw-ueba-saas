@@ -14,5 +14,11 @@ export default Route.extend({
     if (!this.get('accessControl.hasRespondConfigureAccess')) {
       this.transitionTo('index');
     }
+  },
+
+  actions: {
+    transitionToRules() {
+      this.transitionTo('aggregation-rules');
+    }
   }
 });

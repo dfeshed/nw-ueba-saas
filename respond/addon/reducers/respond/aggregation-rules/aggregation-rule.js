@@ -1,104 +1,97 @@
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'respond/actions/types';
+import ruleNormalizer from 'respond/reducers/respond/util/aggregation-rule-normalizer';
 import reduxActions from 'redux-actions';
-import { handle } from 'redux-pack';
-
-export const ruleNormalizer = {
-  conditionCounter: 0,
-  groupCounter: 0,
-  // The processRuleConfiguration func flattens out the nested/hierarchical rule condition data structure to a set of groups and
-  // conditions objects for easy updating via reducer. It also uses group/condition counters to add de facto
-  // IDs to each group and condition, and groupId references for the nested relationship
-  processRuleConfiguration(config) {
-    const normalizedRules = {
-      groups: {},
-      conditions: {}
-    };
-    const process = (config, groupId) => {
-      Object.keys(config).forEach((key) => {
-        const filter = config[key];
-        // If it's a grouping
-        if (key === 'alertRuleFilterGroup') {
-          const id = this.getNewGroupId();
-          filter.id = id;
-          if (groupId !== undefined) {
-            filter.groupId = groupId;
-          }
-          normalizedRules.groups[id] = filter;
-          if (filter.filters && filter.filters.length) {
-            filter.filters.forEach((condition) => {
-              process(condition, id);
-              delete filter.filters;
-            });
-          }
-        } else {
-          // Otherwise it's a condition
-          const conditionId = this.getNewConditionId();
-          filter.groupId = groupId;
-          filter.id = conditionId;
-          normalizedRules.conditions[conditionId] = filter;
-        }
-      });
-    };
-    process(config);
-    return normalizedRules;
-  },
-  getNewGroupId() {
-    return this.groupCounter++;
-  },
-  getNewConditionId() {
-    return this.conditionCounter++;
-  },
-  resetCounters() {
-    this.conditionCounter = 0;
-    this.groupCounter = 0;
-  }
-};
 
 const initialState = {
-  rule: null,
+  // rule information
+  ruleInfo: null,
+
+  // fetch status of the rule information: 'wait' 'complete', or 'error'
   ruleStatus: null,
+
+  // a map of the rule builder groups (organized by id)
   conditionGroups: null,
+
+  // a map of the rule builder conditions (organized by key id)
   conditions: null,
+
+  // fields used in rules and group-by configuration
   fields: [],
-  fieldsStatus: null
+
+  // fetch status of the fields used in rules and group-by configuration: 'wait', 'complete', or 'error'
+  fieldsStatus: null,
+
+  // whether a save (or equivalent) operation is occurring
+  isTransactionUnderway: false,
+
+  // keeps track of the form controls visited by the user
+  visited: []
 };
 
 const reducer = reduxActions.handleActions({
-  [ACTION_TYPES.FETCH_AGGREGATION_RULE]: (state, action) => {
-    return handle(state, action, {
-      start: (s) => s.set('ruleStatus', 'wait'),
-      success: (s) => {
-        const { payload: { data } } = action;
-        const normalizedConditions = ruleNormalizer.processRuleConfiguration(JSON.parse(data.uiFilterConditions));
-        return s.merge({
-          ruleStatus: 'complete',
-          rule: data,
-          conditionGroups: normalizedConditions.groups,
-          conditions: normalizedConditions.conditions
-        });
+  [ACTION_TYPES.NEW_AGGREGATION_RULE]: (state) => {
+    const normalizedConditions = ruleNormalizer.emptyConditions();
+    return state.merge({
+      ruleInfo: {
+        incidentCreationOptions: {
+          ruleTitle: '${ruleName} for ${groupByValue1}',
+          categories: []
+        },
+        priorityScale: {
+          CRITICAL: 90,
+          HIGH: 50,
+          MEDIUM: 20,
+          LOW: 1
+        },
+        incidentScoringOptions: {
+          type: 'average'
+        },
+        notificationOptions: {}
       },
-      failure: (s) => s.set('ruleStatus', 'error')
+      conditionGroups: normalizedConditions && normalizedConditions.groups,
+      conditions: normalizedConditions && normalizedConditions.conditions
     });
   },
-  [ACTION_TYPES.FETCH_AGGREGATION_FIELDS]: (state, action) => {
-    const { payload } = action;
-    return handle(state, action, {
-      start: (s) => s.set('fieldsStatus', 'wait'),
-      success: (s) => s.merge({
-        fields: payload.data,
-        fieldsStatus: 'complete'
-      }),
-      failure: (s) => s.merge({
-        fields: [],
-        fieldsStatus: 'error'
-      })
+  [ACTION_TYPES.FETCH_AGGREGATION_FIELDS_STARTED]: (state) => state.set('fieldsStatus', 'wait'),
+  [ACTION_TYPES.FETCH_AGGREGATION_FIELDS_FAILED]: (state) => {
+    return state.merge({
+      fields: [],
+      fieldsStatus: 'error'
     });
   },
+
+  [ACTION_TYPES.FETCH_AGGREGATION_FIELDS]: (state, { payload }) => {
+    return state.merge({
+      fields: payload.data,
+      fieldsStatus: 'complete'
+    });
+  },
+
+  [ACTION_TYPES.FETCH_AGGREGATION_RULE_STARTED]: (state) => state.merge({ ruleStatus: 'wait', visited: [] }),
+  [ACTION_TYPES.FETCH_AGGREGATION_RULE_FAILED]: (state) => state.set('ruleStatus', 'error'),
+  [ACTION_TYPES.FETCH_AGGREGATION_RULE]: (state, action) => {
+    const { payload: { data } } = action;
+    const normalizedConditions = !data.advancedUiFilterConditions ? ruleNormalizer.processRuleConfiguration(data.uiFilterConditions) : {};
+    return state.merge({
+      ruleStatus: 'complete',
+      ruleInfo: data,
+      conditionGroups: normalizedConditions && normalizedConditions.groups,
+      conditions: normalizedConditions && normalizedConditions.conditions
+    });
+  },
+
+  [ACTION_TYPES.AGGREGATION_RULES_UPDATE_INFO]: (state, { payload: { fields, value } }) => {
+    const field = fields.join('.');
+    // Update the value in the ruleInfo, and keep track of the field as having been visited by the user.
+    // Visited fields will show error / validation messages
+    return state.setIn(fields, value).set('visited', [...state.visited, field]);
+  },
+
   [ACTION_TYPES.AGGREGATION_RULES_ADD_CONDITION]: (state, { payload }) => {
     const id = ruleNormalizer.getNewConditionId();
     const condition = {
-      [id]: { id, groupId: payload }
+      [id]: { id, groupId: payload, filterType: 'FILTER' }
     };
     return state.set('conditions', Immutable.merge(state.conditions, condition));
   },
@@ -108,7 +101,7 @@ const reducer = reduxActions.handleActions({
   [ACTION_TYPES.AGGREGATION_RULES_ADD_GROUP]: (state) => {
     const id = ruleNormalizer.getNewGroupId();
     const group = {
-      [id]: { id, groupId: 0, logicalOperator: 'and' } // all additional groups are added under the root level group
+      [id]: { id, filterType: 'FILTER_GROUP', groupId: 0, logicalOperator: 'and' } // all additional groups are added under the root level group
     };
     return state.set('conditionGroups', Immutable.merge(state.conditionGroups, group));
   },
@@ -128,6 +121,29 @@ const reducer = reduxActions.handleActions({
       [groupId]: group.merge(changes)
     };
     return state.set('conditionGroups', Immutable.merge(state.conditionGroups, updatedGroup));
+  },
+  // Clear/remove all of the rule query conditions (uiFilterConditions, matchConditions) and all normalized conditionGroups and conditions
+  [ACTION_TYPES.AGGREGATION_RULES_CLEAR_MATCH_CONDITIONS]: (state) => {
+    const normalizedConditions = ruleNormalizer.emptyConditions();
+    return state.merge({
+      ruleInfo: state.ruleInfo.merge({
+        uiFilterConditions: '',
+        matchConditions: ''
+      }),
+      conditionGroups: normalizedConditions && normalizedConditions.groups,
+      conditions: normalizedConditions && normalizedConditions.conditions
+    });
+  },
+  [ACTION_TYPES.AGGREGATION_RULES_SAVE_STARTED]: (state) => state.set('isTransactionUnderway', true),
+  [ACTION_TYPES.AGGREGATION_RULES_SAVE_FAILED]: (state) => state.set('isTransactionUnderway', false),
+  [ACTION_TYPES.AGGREGATION_RULES_SAVE]: (state, { payload: { data } }) => {
+    const normalizedConditions = !data.advancedUiFilterConditions ? ruleNormalizer.processRuleConfiguration(data.uiFilterConditions) : {};
+    return state.merge({
+      ruleInfo: data,
+      conditionGroups: normalizedConditions.groups,
+      conditions: normalizedConditions.conditions,
+      isTransactionUnderway: false
+    });
   }
 }, Immutable.from(initialState));
 

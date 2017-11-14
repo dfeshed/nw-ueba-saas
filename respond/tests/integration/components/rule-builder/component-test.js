@@ -5,7 +5,7 @@ import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import Immutable from 'seamless-immutable';
 import rule from '../../../data/subscriptions/aggregation-rules/queryRecord/data';
 import fields from '../../../data/subscriptions/aggregation-fields/findAll/data';
-import { ruleNormalizer } from 'respond/reducers/respond/aggregation-rules/aggregation-rule';
+import ruleNormalizer from 'respond/reducers/respond/util/aggregation-rule-normalizer';
 import * as aggregationRuleCreators from 'respond/actions/creators/aggregation-rule-creators';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';

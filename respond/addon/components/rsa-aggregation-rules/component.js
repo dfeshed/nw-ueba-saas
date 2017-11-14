@@ -3,7 +3,8 @@ import {
   getAggregationRules,
   getAggregationRulesStatus,
   getIsAggregationRulesTransactionUnderway,
-  getSelectedAggregationRuleId } from 'respond/selectors/aggregation-rules';
+  getSelectedAggregationRuleId
+} from 'respond/selectors/aggregation-rules';
 import { selectRule, reorderRules, getRules } from 'respond/actions/creators/aggregation-rule-creators';
 import { connect } from 'ember-redux';
 import columns from './columns';

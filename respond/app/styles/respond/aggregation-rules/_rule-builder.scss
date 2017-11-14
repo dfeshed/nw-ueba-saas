@@ -3,6 +3,7 @@ $ruleBuilderControlsFontSize: 0.8rem;
 // Rule Builder
 .rsa-rule-builder {
   width: 100%;
+  min-width: 745px;
   height: 100%;
   font-size: $ruleBuilderControlsFontSize;
 
@@ -13,6 +14,7 @@ $ruleBuilderControlsFontSize: 0.8rem;
       flex-direction: row-reverse;
     }
   }
+
   .rsa-rule-condition-group {
     padding: rsa-whitespace();
     min-height: 50px;
@@ -43,9 +45,6 @@ $ruleBuilderControlsFontSize: 0.8rem;
 
     .remove-group {
       align-items: flex-end;
-      .rsa-form-button {
-        color: text-color(accentOne);
-      }
     }
   }
 
@@ -92,6 +91,22 @@ $ruleBuilderControlsFontSize: 0.8rem;
       vertical-align: top;
       i {
         font-size: 11px;
+      }
+    }
+  }
+
+  &.is-invalid {
+    footer {
+      height: auto;
+      padding: rsa-whitespace(less);
+      border-top: 1px solid border-color(accentOne);
+
+      > ul {
+        margin-left: rsa-whitespace(more);
+        > li {
+          list-style-type: disc;
+          padding: rsa-whitespace(less);
+        }
       }
     }
   }

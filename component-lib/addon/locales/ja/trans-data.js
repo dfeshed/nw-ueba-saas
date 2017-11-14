@@ -510,8 +510,10 @@ export default {
     }
   },
   respond: {
+    confirm: 'ja_Are you sure you want to do this?',
     aggregationRules: {
-      backToRules: 'ja_Back to Rules',
+      action: 'ja_Action',
+      actionMessage: 'ja_Choose the action taken if the rule matches an alert',
       error: 'ja_There was a problem loading alert rules',
       noResults: 'ja_No alert rules were found',
       createRule: 'ja_Create Rule',
@@ -522,10 +524,53 @@ export default {
       enabled: 'ja_Enabled',
       name: 'ja_Name',
       namePlaceholder: 'ja_Provide a unique name for the rule',
+      ruleNameRequired: 'ja_You must provide a rule name',
       description: 'ja_Description',
+      descriptionPlaceholder: 'ja_Provide a description of the rule',
       lastMatched: 'ja_Last Matched',
       alertsMatchedCount: 'ja_Matched Alerts',
       incidentsCreatedCount: 'ja_Incidents',
+      matchConditions: 'ja_Match Conditions',
+      queryMode: 'ja_Query Mode',
+      queryModes: {
+        RULE_BUILDER: 'ja_Rule Builder',
+        ADVANCED: 'ja_Advanced'
+      },
+      queryBuilderQuery: 'ja_Query Builder',
+      advancedQuery: 'ja_Advanced',
+      advancedQueryRequired: 'ja_Advanced Query cannot be empty',
+      groupingOptions: 'ja_Grouping Options',
+      groupBy: 'ja_Group By',
+      groupByPlaceholder: 'ja_Choose a group-by field (required)',
+      groupByError: 'ja_A minimum of one group-by field is required, and a maximum of two is allowed',
+      timeWindow: 'ja_Time Window',
+      incidentOptions: 'ja_Incident Options',
+      incidentTitle: 'ja_Title',
+      incidentTitleRequired: 'ja_You must provide a title for Incidents created from this rule',
+      incidentTitlePlaceholder: 'ja_Enter a title for the incident created by this rule',
+      incidentTitleHelp: 'ja_The Title template is used to create the Incident title. For ex- If rule has name Rule-01 and groupBy field is Severity, groupBy value is 50 and template is ${ruleName} for ${groupByValue1}, then incident will be created with name Rule-01 for 50.',
+      incidentSummary: 'ja_Summary',
+      incidentSummaryPlaceholder: 'ja_Enter a summary for the incident created by this rule',
+      incidentCategories: 'ja_Categories',
+      incidentCategoriesPlaceholder: 'ja_Choose a category (optional)',
+      incidentAssignee: 'ja_Assignee',
+      incidentAssigneePlaceholder: 'ja_Choose an assignee (optional)',
+      incidentPriority: 'ja_Priority',
+      incidentPriorityInstruction: 'ja_Use the following to set the priority for the incident',
+      incidentPriorityAverage: 'ja_Average of Risk Score across all of the Alerts',
+      incidentPriorityHighestScore: 'ja_Highest Risk Score available across all of the Alerts',
+      incidentPriorityAlertCount: 'ja_Number of Alerts in the time window',
+      priorityScoreError: 'ja_The priority score ranges are invalid',
+      confirmQueryChange: 'ja_Confirm Query Change',
+      confirmAdvancedQueryMessage: 'ja_Switching from Query Builder mode to Advanced mode will reset your match criteria.',
+      confirmQueryBuilderMessage: 'ja_Switching from Advanced mode to Query Builder mode will reset your match criteria.',
+      groupAction: 'ja_Group into an Incident',
+      suppressAction: 'ja_Suppress the Alert',
+      timeUnits: {
+        DAY: 'ja_Days',
+        HOUR: 'ja_Hours',
+        MINUTE: 'ja_Minutes'
+      },
       ruleBuilder: {
         addConditionGroup: 'ja_Add Group',
         removeConditionGroup: 'ja_Remove Group',
@@ -551,11 +596,14 @@ export default {
           or: 'ja_Any of these',
           not: 'ja_None of these'
         },
-        value: 'ja_Value'
+        value: 'ja_Value',
+        hasGroupsWithoutConditions: 'ja_All groups must have at least one condition',
+        hasMissingConditionInfo: 'ja_One or more conditions is missing some information'
       },
       actionMessages: {
         deleteRuleConfirmation: 'ja_Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.'
-      }
+      },
+      missingRequiredInfo: 'ja_There is required information missing from the aggregation rule'
     },
     title: 'ja_Respond',
     common: {
@@ -603,7 +651,9 @@ export default {
         createSuccess: 'ja_You successfully added a new record',
         createFailure: 'ja_There was a problem creating this record',
         deleteSuccess: 'ja_You successfully deleted this record',
-        deleteFailure: 'ja_There was a problem deleting this record'
+        deleteFailure: 'ja_There was a problem deleting this record',
+        saveSuccess: 'ja_Your changes were successfully saved',
+        saveFailure: 'ja_There was a problem saving this record'
       },
       alert: 'ja_Alert'
     },

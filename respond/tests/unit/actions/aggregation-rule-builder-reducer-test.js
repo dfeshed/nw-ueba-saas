@@ -1,9 +1,8 @@
 import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
-import { LIFECYCLE } from 'redux-pack';
 import ACTION_TYPES from 'respond/actions/types';
-import reducer, { ruleNormalizer } from 'respond/reducers/respond/aggregation-rules/aggregation-rule';
-import makePackAction from '../../helpers/make-pack-action';
+import reducer from 'respond/reducers/respond/aggregation-rules/aggregation-rule';
+import ruleNormalizer from 'respond/reducers/respond/util/aggregation-rule-normalizer';
 import ruleData from '../../data/subscriptions/aggregation-rules/queryRecord/data';
 import fieldData from '../../data/subscriptions/aggregation-fields/findAll/data';
 
@@ -15,7 +14,8 @@ const initialState = {
   conditionGroups: null,
   conditions: null,
   fields: [],
-  fieldsStatus: null
+  fieldsStatus: null,
+  visited: []
 };
 
 const normalizedConditions = {
@@ -32,10 +32,10 @@ const normalizedConditions = {
   }
 };
 
-test('With FETCH_AGGREGATION_RULE starting, the ruleState is properly set', function(assert) {
-  const action = makePackAction(LIFECYCLE.START, {
-    type: ACTION_TYPES.FETCH_AGGREGATION_RULE
-  });
+test('With FETCH_AGGREGATION_RULE_STARTED, the ruleState is properly set', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FETCH_AGGREGATION_RULE_STARTED
+  };
   const expectedEndState = {
     ...initialState,
     ruleStatus: 'wait'
@@ -48,14 +48,14 @@ test('With FETCH_AGGREGATION_RULE starting, the ruleState is properly set', func
 test('With FETCH_AGGREGATION_RULE, the rule builder conditions are properly parsed and normalized', function(assert) {
   ruleNormalizer.resetCounters();
   const payload = { data: ruleData };
-  const action = makePackAction(LIFECYCLE.SUCCESS, {
+  const action = {
     type: ACTION_TYPES.FETCH_AGGREGATION_RULE,
     payload
-  });
+  };
 
   const expectedEndState = {
     ...initialState,
-    rule: payload.data,
+    ruleInfo: payload.data,
     ruleStatus: 'complete',
     conditionGroups: normalizedConditions.groups,
     conditions: normalizedConditions.conditions
@@ -66,9 +66,9 @@ test('With FETCH_AGGREGATION_RULE, the rule builder conditions are properly pars
 });
 
 test('With FETCH_AGGREGATION_RULE failure, the ruleState is properly set', function(assert) {
-  const action = makePackAction(LIFECYCLE.FAILURE, {
-    type: ACTION_TYPES.FETCH_AGGREGATION_RULE
-  });
+  const action = {
+    type: ACTION_TYPES.FETCH_AGGREGATION_RULE_FAILED
+  };
   const expectedEndState = {
     ...initialState,
     ruleStatus: 'error'
@@ -78,10 +78,10 @@ test('With FETCH_AGGREGATION_RULE failure, the ruleState is properly set', funct
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('With FETCH_AGGREGATION_FIELDS starting, the fieldState is properly set', function(assert) {
-  const action = makePackAction(LIFECYCLE.START, {
-    type: ACTION_TYPES.FETCH_AGGREGATION_FIELDS
-  });
+test('With FETCH_AGGREGATION_FIELDS_STARTED starting, the fieldState is properly set', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FETCH_AGGREGATION_FIELDS_STARTED
+  };
   const expectedEndState = {
     ...initialState,
     fieldsStatus: 'wait'
@@ -93,10 +93,10 @@ test('With FETCH_AGGREGATION_FIELDS starting, the fieldState is properly set', f
 
 test('With FETCH_AGGREGATION_FIELDS, the fields are updated in state', function(assert) {
   const payload = { data: fieldData };
-  const action = makePackAction(LIFECYCLE.SUCCESS, {
+  const action = {
     type: ACTION_TYPES.FETCH_AGGREGATION_FIELDS,
     payload
-  });
+  };
 
   const expectedEndState = {
     ...initialState,
@@ -108,10 +108,10 @@ test('With FETCH_AGGREGATION_FIELDS, the fields are updated in state', function(
   assert.deepEqual(endState, expectedEndState);
 });
 
-test('With FETCH_AGGREGATION_FIELDS failure, the fieldsStatus is properly set', function(assert) {
-  const action = makePackAction(LIFECYCLE.FAILURE, {
-    type: ACTION_TYPES.FETCH_AGGREGATION_FIELDS
-  });
+test('With FETCH_AGGREGATION_FIELDS_FAILED failure, the fieldsStatus is properly set', function(assert) {
+  const action = {
+    type: ACTION_TYPES.FETCH_AGGREGATION_FIELDS_FAILED
+  };
   const expectedEndState = {
     ...initialState,
     fieldsStatus: 'error'
@@ -127,7 +127,7 @@ test('With AGGREGATION_RULES_ADD_CONDITION, a new condition is added to the cond
     conditions: {}
   };
   const expectedEndState = {
-    conditions: { [conditionId]: { id: conditionId, groupId: 0 } }
+    conditions: { [conditionId]: { id: conditionId, filterType: 'FILTER', groupId: 0 } }
   };
   const action = {
     type: ACTION_TYPES.AGGREGATION_RULES_ADD_CONDITION,
@@ -158,7 +158,7 @@ test('With AGGREGATION_RULES_ADD_GROUP, a new group is added to the conditionGro
     conditionGroups: {}
   };
   const expectedEndState = {
-    conditionGroups: { [groupId]: { id: groupId, logicalOperator: 'and', groupId: 0 } }
+    conditionGroups: { [groupId]: { id: groupId, filterType: 'FILTER_GROUP', logicalOperator: 'and', groupId: 0 } }
   };
   const action = { type: ACTION_TYPES.AGGREGATION_RULES_ADD_GROUP };
   const endState = reducer(Immutable.from(initState), action);

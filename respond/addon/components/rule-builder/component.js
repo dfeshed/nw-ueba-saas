@@ -1,11 +1,19 @@
 import Component from '@ember/component';
-import { getRootConditionGroup } from 'respond/selectors/aggregation-rule';
+import {
+  getRootConditionGroup,
+  isRuleBuilderInvalid,
+  hasGroupsWithoutConditions,
+  hasMissingConditionInfo
+} from 'respond/selectors/aggregation-rule';
 import { addGroup } from 'respond/actions/creators/aggregation-rule-creators';
 import { connect } from 'ember-redux';
 
 const stateToComputed = (state) => {
   return {
-    rootGroup: getRootConditionGroup(state)
+    rootGroup: getRootConditionGroup(state),
+    isInvalid: isRuleBuilderInvalid(state),
+    hasGroupsWithoutConditions: hasGroupsWithoutConditions(state),
+    hasMissingConditionInfo: hasMissingConditionInfo(state)
   };
 };
 
@@ -23,7 +31,8 @@ const dispatchToActions = function(dispatch) {
  */
 
 const AggregationRuleBuilder = Component.extend({
-  classNames: ['rsa-rule-builder']
+  classNames: ['rsa-rule-builder'],
+  classNameBindings: ['isInvalid']
 });
 
 export default connect(stateToComputed, dispatchToActions)(AggregationRuleBuilder);

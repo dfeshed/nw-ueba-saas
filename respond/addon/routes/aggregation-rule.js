@@ -20,5 +20,11 @@ export default Route.extend({
     return {
       ruleId
     };
+  },
+
+  actions: {
+    transitionToRules() {
+      this.transitionTo('aggregation-rules');
+    }
   }
 });

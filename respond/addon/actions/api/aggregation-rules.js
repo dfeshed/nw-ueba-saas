@@ -18,6 +18,22 @@ function cloneAggregationRule(id) {
 }
 
 /**
+ * Creates an aggregation rule from the rule information provided
+ * @param rule
+ * @returns {*}
+ * @public
+ */
+function createAggregationRule(rule) {
+  return promiseRequest({
+    method: 'createRecord',
+    modelName: 'aggregation-rules',
+    query: {
+      data: rule
+    }
+  });
+}
+
+/**
  * Deletes an aggregation rule
  * @method deleteAggregationRule
  * @param id
@@ -98,11 +114,29 @@ function reorderAggregationRules(ruleIds) {
   });
 }
 
+/**
+ * Makes an update call to the service to persist the provided aggregation rule
+ * @param rule {Object} The rule information to persist
+ * @returns {*}
+ * @public
+ */
+function saveAggregationRule(rule) {
+  return promiseRequest({
+    method: 'updateRecord',
+    modelName: 'aggregation-rules',
+    query: {
+      data: rule
+    }
+  });
+}
+
 export default {
   cloneAggregationRule,
+  createAggregationRule,
   deleteAggregationRule,
   getAggregationRule,
   getAggregationRules,
   getAggregationFields,
-  reorderAggregationRules
+  reorderAggregationRules,
+  saveAggregationRule
 };

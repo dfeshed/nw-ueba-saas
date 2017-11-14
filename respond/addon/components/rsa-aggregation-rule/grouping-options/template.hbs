@@ -1,0 +1,231 @@
+<div class="form">
+  <div class="form-row">
+    <div class="form-cell group-name">{{t 'respond.aggregationRules.groupingOptions'}}</div>
+    <div class="form-cell">
+      <div class="form">
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.groupBy'}}*</div>
+          <div class="form-cell content">
+            <div class="rule-control group-by-fields">
+              {{#power-select-multiple
+                options=fields
+                selected=selectedGroupByFields
+                triggerClass=(if (and hasInvalidGroupByFields (contains 'ruleInfo.groupByFields' visited)) 'is-error')
+                placeholder=(t 'respond.aggregationRules.groupByPlaceholder')
+                searchEnabled=false
+                onchange=(action 'handleGroupByChange') as |field|}}
+
+                {{field.name}}
+
+              {{/power-select-multiple}}
+              {{#if hasInvalidGroupByFields}}
+                <div class="input-error">
+                  {{t 'respond.aggregationRules.groupByError'}}
+                </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.timeWindow'}}</div>
+          <div class="form-cell content">
+            <div class="rule-control time-window">
+              <label class="rsa-form-input {{if hasInvalidTimeValue 'is-error'}}">
+                <span class="rsa-form-label"></span>
+                {{input
+                  type='number'
+                  value=(readonly timeWindowValue)
+                  min="1"
+                  max=maxTimeWindowValue
+                  focus-out=(action 'handleTimeWindowValueChange')
+                }}
+              </label>
+              {{#power-select
+                options=timeWindowOptions
+                selected=timeWindowUnit
+                searchEnabled=false
+                onchange=(action 'handleTimeWindowUnitChange') as |unit|}}
+
+                {{t (concat 'respond.aggregationRules.timeUnits.' unit)}}
+
+              {{/power-select}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentOptions'}}</div>
+    <div class="form-cell">
+      <div class="form">
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentTitle'}}*</div>
+          <div class="form-cell content">
+            <div class="rule-control incident-title">
+              {{rsa-form-input
+                value=(readonly incidentRuleTitle)
+                focusOut=(action 'handleIncidentTitleChange' value='target.value')
+                placeholder=(t 'respond.aggregationRules.incidentTitlePlaceholder')
+                isError=(not incidentRuleTitle)
+                errorMessage=(t 'respond.aggregationRules.incidentTitleRequired')
+              }}
+            </div>
+            {{#rsa-content-tethered-panel-trigger panel='rule-title-help'}}
+              {{#rsa-form-button isIconOnly=true}}{{rsa-icon style='lined' name='help-circle'}}{{/rsa-form-button}}
+            {{/rsa-content-tethered-panel-trigger}}
+
+            {{#rsa-content-tethered-panel position='top' panelId='rule-title-help' as |hide|}}
+              <section>{{t 'respond.aggregationRules.incidentTitleHelp'}}</section>
+            {{/rsa-content-tethered-panel}}
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentSummary'}}</div>
+          <div class="form-cell content">
+            <div class="rule-control incident-summary">
+              {{rsa-form-textarea
+                value=(readonly incidentCreationOptions.ruleSummary)
+                focusOut=(action 'handleIncidentSummaryChange' value='target.value')
+                placeholder=(t 'respond.aggregationRules.incidentSummaryPlaceholder')
+              }}
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentCategories'}}</div>
+          <div class="form-cell content">
+            <div class="rule-control incident-categories">
+              {{#power-select-multiple
+                options=groupedCategories
+                selected=selectedCategories
+                searchEnabled=false
+                placeholder=(t 'respond.aggregationRules.incidentCategoriesPlaceholder')
+                onchange=(action 'handleCategoriesChange') as |category|}}
+
+                {{category.parent}}: {{category.name}}
+
+              {{/power-select-multiple}}
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentAssignee'}}</div>
+          <div class="form-cell content">
+            <div class="rule-control incident-assignee">
+              {{#power-select
+                options=assigneeOptions
+                matcher=assigneeMatcher
+                selected=selectedAssignee
+                placeholder=(t 'respond.aggregationRules.incidentAssigneePlaceholder')
+                searchField="name"
+                onchange=(action "handleAssigneeChange") as |users|}}
+
+                {{#if (not users.id)}}
+                  {{t 'respond.assignee.none'}}
+                {{else}}
+                  {{or users.name users.id}}
+                {{/if}}
+
+              {{/power-select}}
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentPriority'}}</div>
+          <div class="form-cell content">
+            <hbox class="rule-control priority">
+              <box class="scoring-options">
+                <label>{{t 'respond.aggregationRules.incidentPriorityInstruction'}}</label>
+                <div class='rsa-form-radio-group query-type'>
+                  <label class="average-score rsa-form-radio-label {{if (eq incidentScoringOptions.type 'average') 'checked'}}">
+                    {{radio-button
+                      value='average'
+                      groupValue=(readonly incidentScoringOptions.type)
+                      changed='handlePriorityScoringChange'}}
+                    {{t 'respond.aggregationRules.incidentPriorityAverage'}}
+                  </label>
+                  {{log incidentScoringOptions.type}}
+                  <label class="highest-score rsa-form-radio-label {{if (eq incidentScoringOptions.type 'high') 'checked'}}">
+                    {{radio-button
+                      value='high'
+                      groupValue=(readonly incidentScoringOptions.type)
+                      changed='handlePriorityScoringChange'}}
+                    {{t 'respond.aggregationRules.incidentPriorityHighestScore'}}
+                  </label>
+
+                  <label class="number-alerts rsa-form-radio-label {{if (eq incidentScoringOptions.type 'count') 'checked'}}">
+                    {{radio-button
+                      value='count'
+                      groupValue=(readonly incidentScoringOptions.type)
+                      changed='handlePriorityScoringChange'}}
+                    {{t 'respond.aggregationRules.incidentPriorityAlertCount'}}
+                  </label>
+                </div>
+              </box>
+              <box class="scoring-ranges">
+                <ul>
+                  <li>
+                    <label>{{t 'respond.priority.CRITICAL'}}</label>
+                    <span class="rsa-form-input">
+                      {{input
+                        class='critical'
+                        type='number'
+                        min=4
+                        max=100
+                        value=(readonly priorityScale.CRITICAL)
+                        focus-out=(action 'handlePriorityScoreChange' 'ruleInfo.priorityScale.CRITICAL')
+                      }}
+                    </span>
+                  </li>
+                  <li>
+                    <label>{{t 'respond.priority.HIGH'}}</label>
+                    <span class="rsa-form-input">
+                      {{input
+                        class='high'
+                        type='number'
+                        min=3
+                        max=99
+                        value=(readonly priorityScale.HIGH)
+                        focus-out=(action 'handlePriorityScoreChange' 'ruleInfo.priorityScale.HIGH')
+                      }}
+                    </span>
+                  </li>
+                  <li>
+                    <label>{{t 'respond.priority.MEDIUM'}}</label>
+                    <span class="rsa-form-input">
+                      {{input
+                        class='medium'
+                        type='number'
+                        min=2
+                        max=98
+                        value=(readonly priorityScale.MEDIUM)
+                        focus-out=(action 'handlePriorityScoreChange' 'ruleInfo.priorityScale.MEDIUM')
+                      }}
+                    </span>
+                  </li>
+                  <li>
+                    <label>{{t 'respond.priority.LOW'}}</label>
+                    <span class="rsa-form-input">
+                      {{input
+                        class='low'
+                        type='number'
+                        min=1
+                        max=97
+                        value=(readonly priorityScale.LOW)
+                        focus-out=(action 'handlePriorityScoreChange' 'ruleInfo.priorityScale.LOW')
+                      }}
+                    </span>
+                  </li>
+                </ul>
+                {{#if hasInvalidPriorityScale}}
+                  <span class="priority-score-error">{{t 'respond.aggregationRules.priorityScoreError'}}</span>
+                {{/if}}
+              </box>
+            </hbox>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

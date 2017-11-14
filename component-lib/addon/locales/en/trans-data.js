@@ -511,8 +511,10 @@ export default {
     }
   },
   respond: {
+    confirm: 'Are you sure you want to do this?',
     aggregationRules: {
-      backToRules: 'Back to Rules',
+      action: 'Action',
+      actionMessage: 'Choose the action taken if the rule matches an alert',
       error: 'There was a problem loading alert rules',
       noResults: 'No alert rules were found',
       createRule: 'Create Rule',
@@ -523,10 +525,53 @@ export default {
       enabled: 'Enabled',
       name: 'Name',
       namePlaceholder: 'Provide a unique name for the rule',
+      ruleNameRequired: 'You must provide a rule name',
       description: 'Description',
+      descriptionPlaceholder: 'Provide a description of the rule',
       lastMatched: 'Last Matched',
       alertsMatchedCount: 'Matched Alerts',
       incidentsCreatedCount: 'Incidents',
+      matchConditions: 'Match Conditions',
+      queryMode: 'Query Mode',
+      queryModes: {
+        RULE_BUILDER: 'Rule Builder',
+        ADVANCED: 'Advanced'
+      },
+      queryBuilderQuery: 'Query Builder',
+      advancedQuery: 'Advanced',
+      advancedQueryRequired: 'Advanced Query cannot be empty',
+      groupingOptions: 'Grouping Options',
+      groupBy: 'Group By',
+      groupByPlaceholder: 'Choose a group-by field (required)',
+      groupByError: 'A minimum of one group-by field is required, and a maximum of two is allowed',
+      timeWindow: 'Time Window',
+      incidentOptions: 'Incident Options',
+      incidentTitle: 'Title',
+      incidentTitleRequired: 'You must provide a title for Incidents created from this rule',
+      incidentTitlePlaceholder: 'Enter a title for the incident created by this rule',
+      incidentTitleHelp: 'The Title template is used to create the Incident title. For ex- If rule has name Rule-01 and groupBy field is Severity, groupBy value is 50 and template is ${ruleName} for ${groupByValue1}, then incident will be created with name Rule-01 for 50.',
+      incidentSummary: 'Summary',
+      incidentSummaryPlaceholder: 'Enter a summary for the incident created by this rule',
+      incidentCategories: 'Categories',
+      incidentCategoriesPlaceholder: 'Choose a category (optional)',
+      incidentAssignee: 'Assignee',
+      incidentAssigneePlaceholder: 'Choose an assignee (optional)',
+      incidentPriority: 'Priority',
+      incidentPriorityInstruction: 'Use the following to set the priority for the incident',
+      incidentPriorityAverage: 'Average of Risk Score across all of the Alerts',
+      incidentPriorityHighestScore: 'Highest Risk Score available across all of the Alerts',
+      incidentPriorityAlertCount: 'Number of Alerts in the time window',
+      priorityScoreError: 'The priority score ranges are invalid',
+      confirmQueryChange: 'Confirm Query Change',
+      confirmAdvancedQueryMessage: 'Switching from Query Builder mode to Advanced mode will reset your match criteria.',
+      confirmQueryBuilderMessage: 'Switching from Advanced mode to Query Builder mode will reset your match criteria.',
+      groupAction: 'Group into an Incident',
+      suppressAction: 'Suppress the Alert',
+      timeUnits: {
+        DAY: 'Days',
+        HOUR: 'Hours',
+        MINUTE: 'Minutes'
+      },
       ruleBuilder: {
         addConditionGroup: 'Add Group',
         removeConditionGroup: 'Remove Group',
@@ -552,11 +597,14 @@ export default {
           or: 'Any of these',
           not: 'None of these'
         },
-        value: 'Value'
+        value: 'Value',
+        hasGroupsWithoutConditions: 'All groups must have at least one condition',
+        hasMissingConditionInfo: 'At least one condition is missing a field, operator, or value'
       },
       actionMessages: {
         deleteRuleConfirmation: 'Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.'
-      }
+      },
+      missingRequiredInfo: 'There is required information missing from the aggregation rule'
     },
     title: 'Respond',
     common: {
@@ -604,7 +652,9 @@ export default {
         createSuccess: 'You successfully added a new record',
         createFailure: 'There was a problem creating this record',
         deleteSuccess: 'You successfully deleted this record',
-        deleteFailure: 'There was a problem deleting this record'
+        deleteFailure: 'There was a problem deleting this record',
+        saveSuccess: 'Your changes were successfully saved',
+        saveFailure: 'There was a problem saving this record'
       },
       alert: 'Alert'
     },
