@@ -42,7 +42,6 @@
     .data-pagination {      
       display: flex;
       align-items: center;
-      padding: rsa-whitespace(less);
       margin-left: rsa-whitespace(less);
       margin-right: rsa-whitespace(less);
       //icons
@@ -88,7 +87,6 @@
       .power-select-dropdown{
         display: flex;
         align-items: center;
-        padding: rsa-whitespace(less);
         margin-left: rsa-whitespace(more);
         .ember-power-select-trigger {
           border-bottom: 0;

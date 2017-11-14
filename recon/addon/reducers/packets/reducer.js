@@ -33,7 +33,8 @@ const packetReducer = handleActions({
     return packetsInitialState.merge({
       isPayloadOnly: state.isPayloadOnly,
       hasStyledBytes: state.hasStyledBytes,
-      hasSignaturesHighlighted: state.hasSignaturesHighlighted
+      hasSignaturesHighlighted: state.hasSignaturesHighlighted,
+      packetsPageSize: state.packetsPageSize
     });
   },
 
