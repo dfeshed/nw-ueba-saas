@@ -9,8 +9,11 @@ import { eventsGetFirst } from './events-creators';
 import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { lookup } from 'ember-dependency-lookup';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 const { log } = console;
+const prefService = lookup('service:preferences');
 
 const _showFutureFeatures = config.featureFlags.future;
 
@@ -94,6 +97,23 @@ const _initializeServices = (dispatch, getState) => {
     } else {
       resolve();
     }
+  });
+};
+
+/**
+ * Getting the persisted setting from preferences service and resetting
+ * the reconSize on the bases of isReconExpanded field
+ * @private
+ */
+const _getPreferences = (dispatch, getState) => {
+  const { serviceId } = getState().investigate.queryNode;
+  prefService.getPreferences('investigate-events', serviceId).then((data) => {
+    const { isReconExpanded } = data.userServicePreferences.eventsPreferences;
+    const reconSize = isReconExpanded ? RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
+    dispatch({
+      type: ACTION_TYPES.SET_RECON_PANEL_SIZE,
+      payload: reconSize
+    });
   });
 };
 
@@ -186,6 +206,7 @@ export const initializeInvestigate = (params) => {
       payload: parsedQueryParams
     });
     // Get data
+    _getPreferences(dispatch, getState);
     _initializeServices(dispatch, getState);
     _initializeDictionaries(dispatch, getState)
     .then(() => {

@@ -3,14 +3,15 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
 import DataHelper, { getConcentratorServiceId } from '../../../helpers/data-helper';
 import wait from 'ember-test-helpers/wait';
-import { initialize, triggerKeyUp } from 'ember-keyboard';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { triggerKeyUp } from 'ember-keyboard';
 
 moduleForComponent('query-filters', 'Integration | Component | query-filters', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
     this.inject.service('redux');
-    initialize();
+    initialize(this);
   }
 });
 
@@ -128,4 +129,17 @@ test('it can be submitted via submit button', function(assert) {
   this.$('.execute-query').first().click();
 
   assert.ok(submitted);
+});
+
+test('check the recon size value', function(assert) {
+  let submitted = false;
+  this.set('submit', () => {
+    submitted = true;
+  });
+
+  this.render(hbs`{{query-filters queryable=true executeQuery=submit}}`);
+  this.$('.execute-query').first().click();
+
+  assert.ok(submitted);
+  assert.equal(this.get('redux').getState().investigate.data.reconSize, 'max');
 });

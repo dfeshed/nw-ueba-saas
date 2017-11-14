@@ -2,12 +2,14 @@ import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
 import DataHelper, { getBrokerService } from '../../../helpers/data-helper';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('query-bar', 'Integration | Component | query bar', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
     this.inject.service('redux');
+    initialize(this);
   }
 });
 

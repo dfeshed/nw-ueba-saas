@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import engineResolverFor from '../../../helpers/engine-resolver';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 const {
   $,
@@ -142,4 +143,30 @@ test('it renders a row of cells correctly', function(assert) {
 
   // Check that clickAction is invoked.
   $root.trigger('click');
+});
+
+test('render recon container and check recon size', function(assert) {
+  this.setProperties({
+    i18n,
+    item,
+    height,
+    relativeIndex,
+    relativeIndexOffset,
+    table,
+    clickAction: makeClickAction(assert)
+  });
+
+  this.render(hbs`{{events-table-row
+    i18n=i18n
+    item=item height=height
+    relativeIndex=relativeIndex
+    relativeIndexOffset=relativeIndexOffset
+    table=table
+    clickAction=clickAction}}`);
+
+  // Click on the row to open recon container.
+  this.$('.rsa-investigate-events-table-row').trigger('click');
+  waitFor('.recon-container').then(() => {
+    assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 1);
+  });
 });
