@@ -19,7 +19,8 @@ const {
   Logger
 } = Ember;
 
-const _needToPersist = (type) => [ACTION_TYPES.TOGGLE_HEADER].includes(type);
+const _needToPersist = (type) => [ACTION_TYPES.TOGGLE_HEADER,
+  ACTION_TYPES.TOGGLE_REQUEST, ACTION_TYPES.TOGGLE_RESPONSE, ACTION_TYPES.TOGGLE_EXPANDED].includes(type);
 
 const createToggleActionCreator = (type) => {
   return (setTo) => {
@@ -36,13 +37,18 @@ const createToggleActionCreator = (type) => {
     return (dispatch, getState) => {
       dispatch(returnVal);
       if (_needToPersist(type)) {
-        const prefService = lookup('service:preferences');
-        prefService.setPreferences('investigate-events', getReconPreferences(getState())).then(() => {
-          Logger.info('Successfully persisted Header Value');
-        });
+        persistPreferences(getState);
       }
     };
   };
+};
+
+const persistPreferences = (getState) => {
+  const prefService = lookup('service:preferences');
+  const { endpointId } = getState().recon.data;
+  prefService.setPreferences('investigate-events', endpointId, getReconPreferences(getState())).then(() => {
+    Logger.info('Successfully persisted Value');
+  });
 };
 
 /**
@@ -68,6 +74,7 @@ const closeRecon = () => ({ type: ACTION_TYPES.CLOSE_RECON });
 export {
   closeRecon,
   createToggleActionCreator,
+  persistPreferences,
   toggleByteStyling,
   toggleKnownSignatures,
   toggleReconExpanded,

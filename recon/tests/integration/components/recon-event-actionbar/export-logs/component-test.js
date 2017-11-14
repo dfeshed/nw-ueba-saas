@@ -2,6 +2,12 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
+import { patchSocket } from '../../../../helpers/patch-socket';
+import startApp from '../../../../helpers/start-app';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
+const application = startApp();
+initialize(application);
 
 const data = {
   eventType: { name: 'LOG' }
@@ -12,6 +18,7 @@ moduleForComponent('recon-event-actionbar/export-logs', 'Integration | Component
   beforeEach() {
     this.registry.injection('component:recon-event-actionbar/export-logs', 'i18n', 'service:i18n', 'service:flashMessages');
     this.inject.service('redux');
+    this.inject.service('preferences');
   }
 });
 
@@ -73,5 +80,23 @@ test('it renders proper label when downloading log data', function(assert) {
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
     assert.equal(str, 'Downloading...');
+  });
+});
+
+/*
+ *@private
+ *checks if serviceCall for getPreferences is happening successfully
+ * if default download preference is changed to eg XML, then corresponding caption should change and reflect the same
+*/
+test('Recon should pick default Log format set by the user', function(assert) {
+  new DataHelper(this.get('redux')).initializeData().setDownloadFormatToXml();
+  patchSocket((method, modelName) => {
+    assert.equal(method, 'getPreferences');
+    assert.equal(modelName, 'investigate-events-preferences');
+  });
+  this.render(hbs`{{recon-event-actionbar/export-logs}}`);
+  return wait().then(() => {
+    const str = this.$()[0].innerText.trim();
+    assert.equal(str, 'Download XML');
   });
 });

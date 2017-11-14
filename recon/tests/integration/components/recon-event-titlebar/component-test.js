@@ -3,20 +3,23 @@ import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from '../../../helpers/ember-power-select';
+import { patchSocket } from '../../../helpers/patch-socket';
+import startApp from '../../../helpers/start-app';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
+const application = startApp();
+initialize(application);
 const { $ } = Ember;
 
 import DataHelper from '../../../helpers/data-helper';
 
 let redux;
-
 moduleForComponent('recon-event-titlebar', 'Integration | Component | recon event titlebar', {
   integration: true,
   beforeEach() {
     this.inject.service('redux');
+    this.inject.service('preferences');
     redux = this.get('redux');
-    initialize(this);
   }
 });
 
@@ -86,6 +89,58 @@ test('clicking header toggle executes action', function(assert) {
   });
 });
 
+/*
+ *@private
+ *checks if serviceCall for getPreferences is happening successfully
+ * checks if whatever the get call returns is set to the state and used succesfully
+*/
+test('Recon should initialize with default preferences set by user', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
+  patchSocket((method, modelName) => {
+    assert.equal(method, 'getPreferences');
+    assert.equal(modelName, 'investigate-events-preferences');
+  });
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
+  this.$('.rsa-icon-layout-6-filled').click();
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isHeaderOpen, false);
+  });
+});
+
+/*
+ *@private
+ *checks if serviceCall for setPreferences is happening successfully
+ * checks if whatever the user sets, same is given to setPreferences
+*/
+test('Toggle should call setPreferences with complete preferences object', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
+  const done = assert.async(1);
+  this.get('preferences').getPreferences('investigate-events').then((data) => {
+    this.render(hbs`{{recon-event-titlebar}}`);
+    assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
+    data.userServicePreferences.eventsPreferences.isHeaderOpen = false;
+    data.userServicePreferences.eventsPreferences.isReconOpen = false;
+    this.$('.rsa-icon-layout-6-filled').click();
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'setPreferences');
+      assert.equal(modelName, 'investigate-events-preferences');
+      assert.deepEqual(query, {
+        data
+      });
+    });
+    done();
+    return wait().then(() => {
+      assert.equal(redux.getState().recon.visuals.isHeaderOpen, false);
+    });
+  });
+});
+
+
 test('clicking meta toggle executes actions', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData(initializeData)
@@ -95,6 +150,30 @@ test('clicking meta toggle executes actions', function(assert) {
   this.$('.rsa-icon-layout-2-filled').click();
   return wait().then(() => {
     assert.equal(redux.getState().recon.visuals.isMetaShown, false);
+  });
+});
+
+test('clicking request toggle executes actions', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+     .setViewToText();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isRequestShown, true);
+  this.$('.rsa-icon-arrow-circle-right-2-filled').click();
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isRequestShown, false);
+  });
+});
+
+test('clicking response toggle executes actions', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(redux.getState().recon.visuals.isResponseShown, true);
+  this.$('.rsa-icon-arrow-circle-left-2-filled').click();
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.isResponseShown, false);
   });
 });
 
@@ -109,7 +188,6 @@ test('title renders', function(assert) {
     assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
   });
 });
-
 
 test('all views enabled for network sessions', function(assert) {
   assert.expect(3);

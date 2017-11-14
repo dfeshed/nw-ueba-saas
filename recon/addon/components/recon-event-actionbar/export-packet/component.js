@@ -6,16 +6,22 @@ import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 import { hasPayload } from 'recon/reducers/packets/selectors';
 
-const stateToComputed = ({ recon, recon: { files } }) => ({
+const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
   status: files.fileExtractStatus,
   extractLink: files.fileExtractLink,
-  hasPayload: hasPayload(recon)
+  hasPayload: hasPayload(recon),
+  defaultPacketFormat: visuals.defaultPacketFormat
 });
 
 const dispatchToActions = {
   extractFiles,
   didDownloadFiles
 };
+
+const downloadFormat = [{ key: 'PCAP', value: 'downloadPCAP' },
+  { key: 'PAYLOAD', value: 'downloadPayload' },
+  { key: 'PAYLOAD1', value: 'downloadPayload1' },
+  { key: 'PAYLOAD2', value: 'downloadPayload2' } ];
 
 const menuOffsetsStyle = (el) => {
   if (el) {
@@ -35,10 +41,15 @@ const DownloadPacketComponent = Component.extend(ReconExport, {
 
   offsetsStyle: null,
 
-  @computed('isDownloading')
-  caption(isDownloading) {
-    return isDownloading ? this.get('i18n').t('recon.packetView.isDownloading') :
-      this.get('i18n').t('recon.packetView.defaultDownloadPCAP');
+  downloadFormats: downloadFormat,
+
+  @computed('isDownloading', 'defaultPacketFormat')
+  caption(isDownloading, defaultPacketFormat) {
+    if (isDownloading) {
+      return this.get('i18n').t('recon.packetView.isDownloading');
+    }
+    const packetFormat = downloadFormat.find((x) => x.key === defaultPacketFormat);
+    return this.get('i18n').t(`recon.packetView.${packetFormat.value}`);
   },
 
   @computed('hasPayload', 'isDownloading')

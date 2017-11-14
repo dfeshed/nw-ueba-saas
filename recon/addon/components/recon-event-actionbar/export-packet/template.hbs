@@ -1,7 +1,7 @@
 <hbox class="rsa-button-group">
   {{#rsa-form-button
     class="export-packet-button"
-    defaultAction=(action 'processDefault' 'PCAP')
+    defaultAction=(action 'processDefault' defaultPacketFormat)
   }}
     {{#if isDownloading}}
       {{rsa-loader}}
@@ -16,18 +16,11 @@
       {{rsa-icon name="arrow-down-12"}}
     {{/rsa-form-button}}
     {{#recon-button-menu isExpanded=isExpanded style=offsetsStyle menuStyle='export-packet-menu'}}
-      <li>
-        <a {{action 'processMenuItem' 'PCAP'}}>{{t 'recon.packetView.downloadPCAP'}}</a>
-      </li>
-      <li>
-        <a {{action 'processMenuItem' 'PAYLOAD'}} class="{{isPayloadDisabled}}">{{t 'recon.packetView.downloadPayload'}}</a>
-      </li>
-      <li>
-        <a {{action 'processMenuItem' 'PAYLOAD1'}} class="{{isPayloadDisabled}}">{{t 'recon.packetView.downloadPayload1'}}</a>
-      </li>
-      <li>
-        <a {{action 'processMenuItem' 'PAYLOAD2'}} class="{{isPayloadDisabled}}">{{t 'recon.packetView.downloadPayload2'}}</a>
-      </li>
+      {{#each downloadFormats as |download|}}
+        <li>
+          <a {{action 'processMenuItem' download.key}}>{{t (concat 'recon.packetView.' (get download 'value'))}}</a>
+        </li>
+      {{/each}}
     {{/recon-button-menu}}
   {{/click-outside}}
 </hbox>

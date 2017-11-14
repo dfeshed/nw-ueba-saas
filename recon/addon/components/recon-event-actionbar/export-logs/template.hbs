@@ -1,7 +1,7 @@
 <hbox class="rsa-button-group">
   {{#rsa-form-button
     class="export-logs-button"
-    defaultAction=(action 'processFiles' 'LOG')
+    defaultAction=(action 'processFiles' defaultLogFormat)
     isDisabled=isDownloading
   }}
     {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
@@ -15,18 +15,13 @@
       {{rsa-icon name="arrow-down-12"}}
     {{/rsa-form-button}}
     {{#recon-button-menu isExpanded=isExpanded style=offsetsStyle}}
-      <li>
-        <a {{action 'processMenuItem' 'LOG'}}>{{defaultOption}}</a>
-      </li>
-      <li>
-        <a {{action 'processMenuItem' 'CSV'}}>{{t 'recon.textView.downloadCsv'}}</a>
-      </li>
-      <li>
-        <a {{action 'processMenuItem' 'XML'}}>{{t 'recon.textView.downloadXml'}}</a>
-      </li>
-      <li>
-        <a {{action 'processMenuItem' 'JSON'}}>{{t 'recon.textView.downloadJson'}}</a>
-      </li>
+      {{#each downloadFormats as |download|}}
+        <li>
+          <a {{action 'processMenuItem' download.key}}>
+            {{t (concat 'recon.textView.' (get download 'value'))}}
+          </a>
+        </li>
+      {{/each}}
     {{/recon-button-menu}}
   {{/click-outside}}
 </hbox>

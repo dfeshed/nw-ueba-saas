@@ -2,6 +2,12 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
+import { patchSocket } from '../../../../helpers/patch-socket';
+import startApp from '../../../../helpers/start-app';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
+const application = startApp();
+initialize(application);
 
 const data = {
   eventType: { name: 'NETWORK' }
@@ -58,5 +64,23 @@ test('it renders proper label when export pcap data', function(assert) {
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
     assert.equal(str, 'Downloading...');
+  });
+});
+
+/*
+ *@private
+ *checks if serviceCall for getPreferences is happening successfully
+ * if default download preference is changed to eg Payload, then corresponding caption should change and reflect the same
+*/
+test('Recon should pick default Packet format set by user', function(assert) {
+  new DataHelper(this.get('redux')).initializeData().setDownloadFormatToPayload();
+  patchSocket((method, modelName) => {
+    assert.equal(method, 'getPreferences');
+    assert.equal(modelName, 'investigate-events-preferences');
+  });
+  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  return wait().then(() => {
+    const str = this.$()[0].innerText.trim();
+    assert.equal(str, 'Download All Payloads');
   });
 });

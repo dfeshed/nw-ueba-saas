@@ -145,11 +145,19 @@ test('allDataHidden', function(assert) {
 test('getReconPreferences', function(assert) {
   const result = getReconPreferences(Immutable.from({
     recon: {
+      data: {
+        endpointId: '1234'
+      },
       visuals: {
+        isHeaderOpen: true,
         isMetaShown: true,
-        isHeaderOpen: false
+        isReconExpanded: true,
+        isReconOpen: false,
+        isRequestShown: true,
+        isResponseShown: true
       }
     }
   }));
-  assert.deepEqual(result, { eventsPreferences: { isMetaShown: true, isHeaderOpen: false } });
+  assert.deepEqual(result, { userServicePreferences: { serviceId: '1234',
+    eventsPreferences: { isHeaderOpen: true, isMetaShown: true, isReconExpanded: true, isReconOpen: false, isRequestShown: true, isResponseShown: true } } });
 });

@@ -24,11 +24,30 @@ const summaryData = {
   packetFields: summaryDataInput.packetFields
 };
 
+const initiatePreferences = {
+  userPreferences: {
+    defaultLogFormat: 'LOG',
+    defaultPacketFormat: 'PCAP'
+  },
+  userServicePreferences: {
+    eventsPreferences: {
+      currentReconView: 'TEXT',
+      isHeaderOpen: true,
+      isMetaShown: true,
+      isReconExpanded: true,
+      isReconOpen: false,
+      isRequestShown: true,
+      isResponseShown: true
+    }
+  }
+};
+
 export {
   augmentedTextData,
   decodedTextData,
   encodedTextData,
   files,
   packetDataWithSide,
-  summaryData
+  summaryData,
+  initiatePreferences
 };

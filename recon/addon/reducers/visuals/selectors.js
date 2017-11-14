@@ -7,8 +7,8 @@ const _typeCode = createSelector(
   [_currentReconView],
   (currentReconView) => currentReconView ? currentReconView.code : null
 );
-const isMetaShown = (state) => state.recon.visuals.isMetaShown;
-const isHeaderOpen = (state) => state.recon.visuals.isHeaderOpen;
+const visuals = (state) => state.recon.visuals;
+const serviceId = (state) => state.recon.data.endpointId;
 
 export const isRequestShown = (recon) => recon.visuals.isRequestShown;
 
@@ -20,9 +20,10 @@ export const allDataHidden = createSelector(
 );
 
 export const getReconPreferences = createSelector(
-  [isMetaShown, isHeaderOpen],
-  (isMetaShown, isHeaderOpen) => {
-    return { 'eventsPreferences': { isMetaShown, isHeaderOpen } };
+  [visuals, serviceId],
+  (visuals, serviceId) => {
+    const filterVal = visuals .without('defaultReconView', 'currentReconView', 'defaultLogFormat', 'defaultPacketFormat');
+    return { 'userServicePreferences': { serviceId, 'eventsPreferences': filterVal } };
   }
 );
 

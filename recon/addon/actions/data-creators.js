@@ -11,15 +11,14 @@
 
 import Ember from 'ember';
 import { lookup } from 'ember-dependency-lookup';
-import { getStoredState } from 'redux-persist';
 import { later } from 'ember-runloop';
+import { getStoredState } from 'redux-persist';
 
 import * as ACTION_TYPES from './types';
-import { createToggleActionCreator } from './visual-creators';
+import { createToggleActionCreator, persistPreferences } from './visual-creators';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
 import { killAllBatching } from './util/batch-data-handler';
-import { getReconPreferences } from 'recon/reducers/visuals/selectors';
 import {
   fetchAliases,
   fetchLanguage,
@@ -54,7 +53,7 @@ const _retrieveMeta = (dataState) => {
         onSuccess(data) {
           // have new meta, now need to possibly set to new recon view
           // and fetch data for that view
-          dispatch(_determineReconView(data));
+          dispatch(_determineReconView(data, dataState.size));
         },
         onFailure(response) {
           Logger.error('Could not retrieve event meta', response);
@@ -292,15 +291,6 @@ const setNewReconView = (newView) => {
 const initializeRecon = (reconInputs) => {
   return (dispatch, getState) => {
     const dataState = getState().recon.data;
-    if (!isPreferencesInitializedOnce) {
-      isPreferencesInitializedOnce = true;
-      prefService.getPreferences('investigate-events').then((data) => {
-        dispatch({
-          type: ACTION_TYPES.INITIATE_PREFERENCES,
-          payload: data
-        });
-      });
-    }
     dispatch({
       type: ACTION_TYPES.OPEN_RECON
     });
@@ -362,7 +352,7 @@ const initializeRecon = (reconInputs) => {
       if (!reconInputs.meta) {
         dispatch(_retrieveMeta(reconInputs));
       } else {
-        dispatch(_determineReconView(reconInputs.meta));
+        dispatch(_determineReconView(reconInputs.meta, reconInputs.size));
       }
     }
   };
@@ -372,9 +362,34 @@ const initializeRecon = (reconInputs) => {
  * Function reused whenever meta is determined, either when it is passed in
  * or when it is retrieved
  */
-const _determineReconView = (meta) => {
+const _determineReconView = (meta, size) => {
   return (dispatch, getState) => {
     const { forcedView } = eventTypeFromMetaArray(meta);
+    // For the first time, default preferences should be picked from backend
+    if (!isPreferencesInitializedOnce) {
+      isPreferencesInitializedOnce = true;
+      const { endpointId } = getState().recon.data;
+      prefService.getPreferences('investigate-events', endpointId).then((data) => {     // For the first time, preferences should be picked from backend
+        if (data) {
+          dispatch({
+            type: ACTION_TYPES.INITIATE_PREFERENCES,
+            payload: data
+          });
+        }
+
+        /*
+        * needs to be called after the value for 'isMetaShown' is fetched from the backend
+        * and the above dispatch gets the default preferences and sets them
+        */
+        if (size !== 'full') {
+          dispatch({
+            type: ACTION_TYPES.TOGGLE_EXPANDED,
+            payload: { setTo: size === 'max' }
+          });
+        }
+      });
+    }
+
     if (forcedView) {
       // Taking advantage of existing action creator that handles
       // changing the recon view AND fetching the appropriate data
@@ -429,9 +444,7 @@ const toggleMetaData = (setTo) => {
     }
 
     dispatch(returnVal);
-    prefService.setPreferences('investigate-events', getReconPreferences(getState())).then(() => {
-      Logger.info('Successfully persisted Meta Value');
-    });
+    persistPreferences(getState);
   };
 };
 

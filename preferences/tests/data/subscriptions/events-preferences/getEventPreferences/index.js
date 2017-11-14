@@ -5,15 +5,16 @@ export default {
   message(/* frame */) {
     const data = {
       userPreferences: {
-        defaultLogFormat: 'XML',
-        defaultPacketFormat: 'PAYLOAD1',
+        defaultLogFormat: 'LOG',
+        defaultLandingPage: '',
+        defaultPacketFormat: 'PCAP',
         queryTimeFormat: 'DB'
       },
       userServicePreferences: {
         serviceId: 'TestServiceId',
         collectionName: 'Test',
         eventsPreferences: {
-          currentReconView: 'PACKET',
+          currentReconView: 'TEXT',
           isHeaderOpen: true,
           isMetaShown: true,
           isReconExpanded: true,

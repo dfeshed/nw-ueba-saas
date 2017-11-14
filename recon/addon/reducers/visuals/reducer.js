@@ -6,14 +6,16 @@ import * as ACTION_TYPES from 'recon/actions/types';
 import { handleSetTo, handlePreference } from 'recon/reducers/util';
 
 const visualsInitialState = Immutable.from({
-  defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis
+  defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis,
   currentReconView: null,
   isHeaderOpen: true,
   isMetaShown: true,
   isReconExpanded: true,
   isReconOpen: false,
   isRequestShown: true,
-  isResponseShown: true
+  isResponseShown: true,
+  defaultLogFormat: 'LOG',
+  defaultPacketFormat: 'PCAP'
 });
 
 const visuals = handleActions({
@@ -37,10 +39,15 @@ const visuals = handleActions({
     return state.set('currentReconView', newView);
   },
 
-  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload }) => {
-    const isMetaShown = handlePreference(payload, payload.isMetaShown);
-    const isHeaderOpen = handlePreference(payload, payload.isHeaderOpen);
-    return state.merge({ isMetaShown, isHeaderOpen });
+  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload: { userPreferences, userServicePreferences: { eventsPreferences } } }) => {
+    const isMetaShown = handlePreference(eventsPreferences, eventsPreferences.isMetaShown);
+    const isHeaderOpen = handlePreference(eventsPreferences, eventsPreferences.isHeaderOpen);
+    const isReconExpanded = handlePreference(eventsPreferences, eventsPreferences.isReconExpanded);
+    const isRequestShown = handlePreference(eventsPreferences, eventsPreferences.isRequestShown);
+    const isResponseShown = handlePreference(eventsPreferences, eventsPreferences.isResponseShown);
+    const { defaultLogFormat } = userPreferences;
+    const { defaultPacketFormat } = userPreferences;
+    return state.merge({ isMetaShown, isHeaderOpen, isReconExpanded, isRequestShown, isResponseShown, defaultLogFormat, defaultPacketFormat });
   },
 
   [ACTION_TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => {

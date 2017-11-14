@@ -4,9 +4,6 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import {
-  isEndpointEvent
-} from 'recon/reducers/meta/selectors';
-import {
   didDownloadFiles,
   extractFiles
 } from 'recon/actions/interaction-creators';
@@ -14,16 +11,21 @@ import {
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { files } }) => ({
+const stateToComputed = ({ recon: { files, visuals } }) => ({
   extractLink: files.fileExtractLink,
-  isEndpointEvent: isEndpointEvent(recon),
-  status: files.fileExtractStatus
+  status: files.fileExtractStatus,
+  defaultLogFormat: visuals.defaultLogFormat
 });
 
 const dispatchToActions = {
   didDownloadFiles,
   extractFiles
 };
+
+const downloadFormat = [{ key: 'LOG', value: 'downloadLog' },
+  { key: 'CSV', value: 'downloadCsv' },
+  { key: 'XML', value: 'downloadXml' },
+  { key: 'JSON', value: 'downloadJson' } ];
 
 const menuOffsetsStyle = (el) => {
   if (el) {
@@ -39,15 +41,15 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
   classNameBindings: ['isExpanded:expanded:collapsed'],
   isExpanded: false,
   offsetsStyle: null,
+  downloadFormats: downloadFormat,
 
-  @computed('i18n', 'isDownloading', 'defaultOption')
-  caption(i18n, isDownloading, defaultOption) {
-    return isDownloading ? i18n.t('recon.textView.isDownloading') : defaultOption;
-  },
-
-  @computed('i18n', 'isEndpointEvent')
-  defaultOption(i18n, isEndpointEvent) {
-    return isEndpointEvent ? i18n.t('recon.textView.downloadEndpointEvent') : i18n.t('recon.textView.downloadLog');
+  @computed('i18n', 'isDownloading', 'defaultLogFormat')
+  caption(i18n, isDownloading, defaultLogFormat) {
+    if (isDownloading) {
+      return i18n.t('recon.textView.isDownloading');
+    }
+    const logFormat = downloadFormat.find((x) => x.key === defaultLogFormat);
+    return i18n.t(`recon.textView.${logFormat.value}`);
   },
 
   actions: {

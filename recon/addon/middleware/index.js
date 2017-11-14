@@ -23,10 +23,7 @@ if (config.environment !== 'test') {
       'packets.packetsPageSize',
       'text.decode',
       'visuals.defaultReconView',
-      'visuals.currentReconView',
-      'visuals.isReconExpanded',
-      'visuals.isRequestShown',
-      'visuals.isResponseShown'
+      'visuals.currentReconView'
     ]
   );
 

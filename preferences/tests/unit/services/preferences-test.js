@@ -18,7 +18,7 @@ test('it can get preferences for given preference type', function(assert) {
   assert.ok(service);
   const done = assert.async();
   service.getPreferences('investigate-events').then((response) => {
-    assert.equal(response.userServicePreferences.eventsPreferences.currentReconView, 'PACKET', 'Expected to return defaultAnalysisView as text.');
+    assert.equal(response.userServicePreferences.eventsPreferences.currentReconView, 'TEXT', 'Expected to return defaultAnalysisView as text.');
     done();
   });
 });

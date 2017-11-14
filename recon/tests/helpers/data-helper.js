@@ -9,7 +9,8 @@ import {
   decodedTextData,
   encodedTextData,
   packetDataWithSide,
-  summaryData
+  summaryData,
+  initiatePreferences
 } from './data';
 
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
@@ -37,6 +38,7 @@ const _dispatchInitializeData = (redux, inputs) => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
     redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
     redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: packetDataWithSide });
+    redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
   });
 };
 
@@ -66,6 +68,18 @@ class DataHelper {
 
   setViewToPacket() {
     _setViewTo(this.redux, RECON_VIEW_TYPES_BY_NAME.PACKET);
+    return this;
+  }
+
+  setDownloadFormatToXml() {
+    initiatePreferences.userPreferences.defaultLogFormat = 'XML';
+    this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
+    return this;
+  }
+
+  setDownloadFormatToPayload() {
+    initiatePreferences.userPreferences.defaultPacketFormat = 'PAYLOAD';
+    this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
     return this;
   }
 
