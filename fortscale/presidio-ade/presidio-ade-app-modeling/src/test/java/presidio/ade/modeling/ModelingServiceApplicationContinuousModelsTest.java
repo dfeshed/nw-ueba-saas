@@ -103,7 +103,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
         List<ModelConf> priorModelConfs = modelConfs.stream().filter(x -> x.getName().contains("prior.global")).collect(Collectors.toList());
         Assert.assertTrue("conf must have at least 1 prior model", priorModelConfs.size() > 0);
         priorModelConfs.forEach(modelConf -> {
-            List<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
+            Collection<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
             Assert.assertTrue(modelDaos.size() > 0);
             Optional<ModelDAO> modelWithSegmentPrior = modelDaos.stream().filter(modelDAO -> {
                 GaussianPriorModel model = (GaussianPriorModel) modelDAO.getModel();
@@ -116,7 +116,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
         List<ModelConf> continousMaxModelConfs = modelConfs.stream().filter(x->(x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf)).collect(Collectors.toList());
         Assert.assertTrue("conf must have at least 1 continousMaxModelConfs model", continousMaxModelConfs.size() > 0);
         continousMaxModelConfs.forEach(modelConf -> {
-            List<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
+            Collection<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
             Assert.assertTrue(modelDaos.size() > 0);
             modelDaos.forEach(modelDAO -> {
                 ContinuousMaxDataModel model = (ContinuousMaxDataModel) modelDAO.getModel();

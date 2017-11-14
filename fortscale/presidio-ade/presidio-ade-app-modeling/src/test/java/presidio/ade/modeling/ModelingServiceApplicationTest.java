@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.modeling.config.ModelingServiceConfigurationTest;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class ModelingServiceApplicationTest {
 		Assert.assertTrue(commandResult.isSuccess());
 
 		// Assert number of models
-		List<ModelDAO> modelDaoList = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(getModelConf(), Instant.ofEpochSecond(1483228800));
+		Collection<ModelDAO> modelDaoList = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(getModelConf(), Instant.ofEpochSecond(1483228800));
 		Assert.assertEquals(2, modelDaoList.size());
 
 		// Assert models
@@ -165,11 +166,11 @@ public class ModelingServiceApplicationTest {
 				new ContinuousHistogramModelBuilderConf());
 	}
 
-	private void assertModels(List<ModelDAO> modelDaoList) {
-		modelDaoList = modelDaoList.stream().sorted(comparing(ModelDAO::getContextId)).collect(toList());
+	private void assertModels(Collection<ModelDAO> modelDAOs) {
+		List<ModelDAO> modelDaoList = modelDAOs.stream().sorted(comparing(ModelDAO::getContextId)).collect(toList());
 
 		// Assert context ID #1 model
-		ModelDAO modelDao = modelDaoList.get(0);
+		ModelDAO modelDao = modelDaoList.iterator().next();
 		Assert.assertEquals("test-run", modelDao.getSessionId());
 		Assert.assertEquals("userId###test_user_1", modelDao.getContextId());
 		ContinuousDataModel continuousDataModel = (ContinuousDataModel)modelDao.getModel();
