@@ -1,6 +1,5 @@
 package fortscale.utils.replacement;
 
-import org.springframework.util.Assert;
 
 public class PatternReplacementConf {
 	private String pattern;

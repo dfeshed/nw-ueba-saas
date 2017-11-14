@@ -519,6 +519,11 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
@@ -714,5 +719,10 @@
             <name>mirror.fortscale.dom-snapshots</name>
             <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
         </snapshotRepository>
+         <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </repository>
     </distributionManagement>
 </project>

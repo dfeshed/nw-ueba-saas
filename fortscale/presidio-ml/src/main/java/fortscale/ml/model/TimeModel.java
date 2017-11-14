@@ -129,4 +129,26 @@ public class TimeModel implements PartitionedDataModel {
 	public long getNumOfPartitions() {
 		return categoryRarityModel.getNumOfPartitions();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TimeModel)) return false;
+		TimeModel timeModel = (TimeModel)o;
+		if (timeResolution != timeModel.timeResolution) return false;
+		if (bucketSize != timeModel.bucketSize) return false;
+		if (numOfSamples != timeModel.numOfSamples) return false;
+		if (!smoothedBuckets.equals(timeModel.smoothedBuckets)) return false;
+		return categoryRarityModel.equals(timeModel.categoryRarityModel);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = timeResolution;
+		result = 31 * result + bucketSize;
+		result = 31 * result + smoothedBuckets.hashCode();
+		result = 31 * result + categoryRarityModel.hashCode();
+		result = 31 * result + (int)(numOfSamples ^ (numOfSamples >>> 32));
+		return result;
+	}
 }

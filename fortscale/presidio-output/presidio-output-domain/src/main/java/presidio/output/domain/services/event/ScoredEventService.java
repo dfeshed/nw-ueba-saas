@@ -10,8 +10,8 @@ import java.util.Map;
 
 public interface ScoredEventService {
 
-    List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String,String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, Map<String, Object> featuresFilters);
+    List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, Map<String, Object> featuresFilters, int eventsLimit);
 
-    List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, Map<String, Object> featuresFilters);
+    List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, Map<String, Object> featuresFilters, int eventsLimit);
 
 }

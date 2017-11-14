@@ -28,4 +28,4 @@ WHERE execution_day_1 >= (SELECT Max(execution_date) - interval ''{{logical_days
                              FROM   task_instance
                              WHERE  operator != ''SubDagOperator''
                                     AND state = ''success''
-                                    AND dag_id LIKE ''%full_flow%'') ', false, true, true, 600, '{"logical_days_back":"30"}', true, 16, '2017-10-31 14:33:22.879552');
+                                    AND dag_id LIKE ''full_flow%'') ', false, true, true, 600, '{"logical_days_back":"30"}', true, 16, '2017-10-31 14:33:22.879552');
