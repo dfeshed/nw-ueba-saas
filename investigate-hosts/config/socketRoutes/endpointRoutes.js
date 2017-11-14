@@ -9,8 +9,8 @@ module.exports = function(env) {
     endpoint: {
       socketUrl,
       export: {
-        subscriptionDestination: '/user/queue/endpoint/machine/export',
-        requestDestination: '/ws/endpoint/machine/export'
+        subscriptionDestination: '/user/queue/endpoint/machine/property/export',
+        requestDestination: '/ws/endpoint/machine/property/export'
       },
       machines: {
         subscriptionDestination: '/user/queue/endpoint/machine/search',

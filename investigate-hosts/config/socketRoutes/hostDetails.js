@@ -21,8 +21,8 @@ module.exports = function(env) {
         requestDestination: '/ws/endpoint/filecontext/list'
       },
       exportFileContext: {
-        subscriptionDestination: '/user/queue/endpoint/machine/proporty/export',
-        requestDestination: '/ws/endpoint/machine/proporty/export'
+        subscriptionDestination: '/user/queue/endpoint/machine/export',
+        requestDestination: '/ws/endpoint/machine/export'
       },
       getHostFilesPages: {
         subscriptionDestination: '/user/queue/endpoint/filecontext/list-page',
