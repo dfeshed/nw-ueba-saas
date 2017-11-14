@@ -146,14 +146,6 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
             logger.error("Failed to update alert- alert id or feedback cannot be null");
             return;
         }
-        Alert alert = alertRepository.findOne(alertId);
-        if(alert == null) {
-            logger.error("Failed to update alert. alert {} not found", alertId);
-            return;
-        }
-
-        alert.setFeedback(feedback);
-
         //building update request-
         IndexRequest indexRequest = new IndexRequest();
         indexRequest.source(Alert.FEEDBACK, feedback);
