@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -48,6 +49,7 @@ import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OutputExecutionServiceModuleTest {
     public static final String USER_ID_TEST_USER = "userId#testUser";
 
