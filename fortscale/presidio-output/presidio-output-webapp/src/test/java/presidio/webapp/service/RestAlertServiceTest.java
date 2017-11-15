@@ -155,6 +155,7 @@ public class RestAlertServiceTest {
         features.put("operationTypeCategories", new String[] {"FILE_ACTION"});
         features.put("result", "SUCCESS");
         features.put("resultCode", null);
+        features.put("scores", "");
         Map<String, String> additionalInfo = new HashMap<String, String>();
         additionalInfo.put("originIPv4","10.154.12.165");
         additionalInfo.put("description", "New folder c:tmp created on PRODAAA.");
