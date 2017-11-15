@@ -1,5 +1,6 @@
 package org.flume.sink.input;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoException;
@@ -34,6 +35,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     static {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private static final String SCHEMA = "schema";
