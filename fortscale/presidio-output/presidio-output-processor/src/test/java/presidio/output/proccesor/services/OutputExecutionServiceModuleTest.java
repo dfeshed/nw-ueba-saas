@@ -9,8 +9,6 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import javafx.util.Pair;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
