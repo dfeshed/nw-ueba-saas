@@ -1,7 +1,7 @@
 @import "./event-dropdowns";
 
 .recon-event-header {
-  background-color: background-color(primary, darkest, nearly-opaque);
+  background-color: background-color(primary, darkest);
 
   .divider {
     @include border-left(1px, solid, neutral);
