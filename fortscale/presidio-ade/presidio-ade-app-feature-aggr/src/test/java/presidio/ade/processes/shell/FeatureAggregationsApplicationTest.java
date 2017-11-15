@@ -435,16 +435,16 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     private Map<String, Double> getExpectedFeatureToScoreOfLowAnomaliesUser() {
         Map<String, Double> featureToScore = new HashedMap();
         featureToScore.put("numberOfSuccessfulFileActionsUserIdFileHourly", 100.0);
-        featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 99.3724729749748);
         featureToScore.put("numberOfFileMovedUserIdFileHourly", 100.0);
-        featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 99.81836346749674);
-        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 99.81836346749674);
-        featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 99.3724729749748);
+        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 99.3724729749748);
+        featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 99.3724729749748);
         featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 100.0);
-        featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 99.81836346749674);
-        featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 99.81836346749674);
-        featureToScore.put("numberOfFileDeletedUserIdFileHourly", 99.81836346749674);
-        featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 99.81836346749674);
+        featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 99.3724729749748);
+        featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 99.3724729749748);
+        featureToScore.put("numberOfFileDeletedUserIdFileHourly", 99.3724729749748);
+        featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 99.3724729749748);
 
         return featureToScore;
     }
@@ -458,11 +458,11 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Map<String, Double> featureToScore = new HashedMap();
         featureToScore.put("numberOfSuccessfulFileActionsUserIdFileHourly", 100.0);
         featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 0.0);
-        featureToScore.put("numberOfFileMovedUserIdFileHourly", 98.32706265874862);
+        featureToScore.put("numberOfFileMovedUserIdFileHourly", 94.36692074654613);
         featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 0.0);
         featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 0.0);
         featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 0.0);
-        featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 98.32706265874862);
+        featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 94.36692074654613);
         featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 0.0);
         featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 0.0);
         featureToScore.put("numberOfFileDeletedUserIdFileHourly", 0.0);
