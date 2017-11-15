@@ -23,6 +23,9 @@ dags:
         xms: 70
   operators:
     default_jar_values:
+      retry_args:
+        retries: 2
+        retry_delay: 30
       java_path: /usr/bin/java
       jvm_args:
         xms: 100

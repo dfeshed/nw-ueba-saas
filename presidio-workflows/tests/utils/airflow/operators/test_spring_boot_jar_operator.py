@@ -55,9 +55,7 @@ def default_args():
         'start_date': DEFAULT_DATE,
         'email': ['airflow@airflow.com'],
         'email_on_failure': False,
-        'email_on_retry': False,
-        'retries': 1,
-        'retry_delay': timedelta(minutes=5),
+        'email_on_retry': False
     }
 
 
@@ -368,3 +366,41 @@ class TestSpringBootJarOperator(object):
         expected_java_args = {'a': 'one', 'b': 'two', 'c': 'three'}
         assert_bash_comment(task, expected_bash_comment, expected_java_args)
         assert_task_success_state(tis, 'run_jar_file')
+
+    def test_retries(self, default_args, java_args):
+        """
+
+        Test cleanup is called once failure appear
+        :param default_args: default_args to dag
+        :type default_args: dict
+        :return:
+        """
+        logging.info('test update of java args:')
+        jvm_args = {
+            'jar_path': "fake_path",
+            'main_class': "fake_class",
+        }
+        dag = DAG(
+            "test_retry", default_args=default_args, schedule_interval=timedelta(1))
+
+        task = TestOperator(
+            task_id='run_jar_file',
+            command='run',
+            jvm_args=jvm_args,
+            java_args=java_args,
+            dag=dag)
+
+        task.clear()
+        try:
+            task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE)
+        except Exception:
+            pass
+        assert task.cleanup_cnt > 0
+
+
+class TestOperator (SpringBootJarOperator):
+    cleanup_cnt = 0
+    def get_cleanup_command(self):
+        self.cleanup_cnt=self.cleanup_cnt+1
+        return "echo hiiiiiii"
+
