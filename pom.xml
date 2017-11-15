@@ -1024,13 +1024,6 @@
                 <artifactId>flume-ng-hbase-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
-
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-                <artifactId>flume-ng-elasticsearch-sink</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-morphline-solr-sink</artifactId>
