@@ -68,11 +68,6 @@ public class OutputExecutionServiceModuleTest {
 
     @Before
     public void setup() {
-        esTemplate.deleteIndex(Alert.class);
-        esTemplate.createIndex(Alert.class);
-        esTemplate.putMapping(Alert.class);
-        esTemplate.refresh(Alert.class);
-
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
         String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
 
@@ -110,6 +105,19 @@ public class OutputExecutionServiceModuleTest {
 
         mongoTemplate.insert(smartRecords, smartUserIdHourlyCollectionName);
         mongoTemplate.insert(event, fileEnrichedEventCollectionName);
+    }
+
+    @After
+    public void deleteTestData() {
+        esTemplate.deleteIndex(Alert.class);
+        esTemplate.createIndex(Alert.class);
+        esTemplate.putMapping(Alert.class);
+        esTemplate.refresh(Alert.class);
+
+        esTemplate.deleteIndex(User.class);
+        esTemplate.createIndex(User.class);
+        esTemplate.putMapping(User.class);
+        esTemplate.refresh(User.class);
     }
 
     @Test
