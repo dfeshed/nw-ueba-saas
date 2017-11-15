@@ -19,7 +19,7 @@ import presidio.output.processor.services.user.UserServiceImpl;
  * Created by efratn on 22/08/2017.
  */
 @Configuration
-@Import({EventPersistencyServiceConfig.class})
+//@Import({EventPersistencyServiceConfig.class})
 public class UserServiceConfig {
 
     @Value("${user.severities.batch.size:2000}")

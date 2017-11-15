@@ -29,7 +29,7 @@ public class ElasticsearchTestConfig {
     private String EsClusterName;
 
     @Autowired
-    private EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
+    public EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
 
     @Bean
     public Client client() throws Exception {

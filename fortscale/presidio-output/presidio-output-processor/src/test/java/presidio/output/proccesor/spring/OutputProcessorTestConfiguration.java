@@ -32,12 +32,9 @@ import presidio.output.processor.spring.UserServiceConfig;
  */
 @Configuration
 @Import({
-        AdeManagerSdkConfig.class,
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,
-        BootShimConfig.class,
-        UserServiceConfig.class,
-        EventPersistencyServiceConfig.class})
+        BootShimConfig.class})
 public class OutputProcessorTestConfiguration {
 
     @Bean

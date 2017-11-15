@@ -16,7 +16,6 @@ import presidio.monitoring.sdk.impl.spring.ExternalMonitoringTestConfiguration;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ExternalMonitoringTestConfiguration.class)
-@ActiveProfiles("useEmbeddedElastic")
 public class ExternalMonitoringServiceTest {
 
     @Autowired
