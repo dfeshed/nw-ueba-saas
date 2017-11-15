@@ -56,6 +56,16 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
             boolQueryBuilder.must(severityQuery);
         }
 
+        // filter by feedback
+        if (CollectionUtils.isNotEmpty(alertQuery.getFilterByFeedback())) {
+            BoolQueryBuilder feedbackQuery = new BoolQueryBuilder();
+            for (String feedback : alertQuery.getFilterByFeedback()) {
+                feedbackQuery.should(matchQuery(Alert.FEEDBACK, feedback));
+            }
+
+            boolQueryBuilder.must(feedbackQuery);
+        }
+
         // filter by classification
         if (CollectionUtils.isNotEmpty(alertQuery.getFilterByClassification())) {
             BoolQueryBuilder classificationQuery = new BoolQueryBuilder();
@@ -134,6 +144,9 @@ public class AlertElasticsearchQueryBuilder extends ElasticsearchQueryBuilder<Al
         if (CollectionUtils.isNotEmpty(alertQuery.getAggregateByFields())) {
             if (alertQuery.getAggregateByFields().contains(Alert.SEVERITY)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.SEVERITY).field(Alert.SEVERITY));
+            }
+            if (alertQuery.getAggregateByFields().contains(Alert.FEEDBACK)) {
+                super.addAggregation(AggregationBuilders.terms(Alert.FEEDBACK).field(Alert.FEEDBACK));
             }
             if (alertQuery.getAggregateByFields().contains(Alert.CLASSIFICATIONS)) {
                 super.addAggregation(AggregationBuilders.terms(Alert.CLASSIFICATIONS).field(Alert.CLASSIFICATIONS).size(DEFAULT_AGG_BULK_SIZE));

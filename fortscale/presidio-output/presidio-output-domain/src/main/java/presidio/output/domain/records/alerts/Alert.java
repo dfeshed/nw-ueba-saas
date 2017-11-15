@@ -35,6 +35,8 @@ public class Alert extends AbstractElasticDocument {
     public static final String CONTRIBUTION_TO_USER_SCORE_FIELD_NAME = "contributionToUserScore";
     public static final String AGGR_SEVERITY_PER_DAY = "severityPerDay";
     public static final String INDEXED_USER_NAME = "indexedUserName";
+    public static final String FEEDBACK = "feedback";
+
 
     @JsonProperty(CLASSIFICATIONS)
     private List<String> classifications;
@@ -83,6 +85,10 @@ public class Alert extends AbstractElasticDocument {
     @JsonProperty(CONTRIBUTION_TO_USER_SCORE_FIELD_NAME)
     private Double contributionToUserScore;
 
+    @Enumerated(EnumType.STRING)
+    @JsonProperty(FEEDBACK)
+    private AlertEnums.AlertFeedback feedback;
+
     public Alert() {
         // empty const for JSON deserialization
     }
@@ -102,6 +108,7 @@ public class Alert extends AbstractElasticDocument {
         this.severity = severity;
         this.userTags = userTags;
         this.contributionToUserScore = contributionToUserScore;
+        this.feedback = AlertEnums.AlertFeedback.NONE;
     }
 
     public String getSmartId() {
@@ -218,5 +225,13 @@ public class Alert extends AbstractElasticDocument {
 
     public void setContributionToUserScore(Double contributionToUserScore) {
         this.contributionToUserScore = contributionToUserScore;
+    }
+
+    public AlertEnums.AlertFeedback getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(AlertEnums.AlertFeedback feedback) {
+        this.feedback = feedback;
     }
 }
