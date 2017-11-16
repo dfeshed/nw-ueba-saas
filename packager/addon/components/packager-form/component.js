@@ -5,6 +5,7 @@ import { isEmpty } from 'ember-utils';
 import moment from 'moment';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
+import _ from 'lodash';
 
 import {
   setConfig,
@@ -14,8 +15,7 @@ import {
 
 const stateToComputed = ({ packager }) => ({
   // Already saved agent information
-  configData: { ...packager.defaultPackagerConfig },
-
+  configData: _.cloneDeep(packager.defaultPackagerConfig),
   // Flag to indicate config is currently updating or not
   isUpdating: packager.updating
 });
@@ -41,6 +41,7 @@ const formComponent = Component.extend({
   isLogCollectionEnabled: false,
   primaryDestination: '',
   secondaryDestination: '',
+  selectedFrequency: '1 Hour',
 
   @alias('configData.packageConfig.autoUninstall')
   autoUninstall: null,
@@ -56,7 +57,7 @@ const formComponent = Component.extend({
     return isEmpty(server) || isEmpty(port) || isUpdating;
   },
 
-  @computed('configData.logCollectionConfig.listOfService')
+  @computed('configData.listOfService')
   listOfService(list) {
     const services = [];
     for (let i = 0; i < list.length; i++) {
@@ -69,17 +70,17 @@ const formComponent = Component.extend({
     return services;
   },
 
-  @computed('listOfService', 'primaryDestination')
+  @computed('listOfService', 'configData.logCollectionConfig.primaryDestination')
   listOfSecondaryService(list, id) {
     return list.filter((obj) => id !== obj.id);
   },
 
-  @computed('listOfService', 'primaryDestination')
+  @computed('listOfService', 'configData.logCollectionConfig.primaryDestination')
   selectedPrimaryDestination(list, id) {
     return list.find((obj) => obj.id === id);
   },
 
-  @computed('listOfService', 'secondaryDestination')
+  @computed('listOfService', 'configData.logCollectionConfig.secondaryDestination')
   selectedSecondaryDestination(list, id) {
     return list.find((obj) => obj.id === id);
   },
@@ -92,10 +93,17 @@ const formComponent = Component.extend({
       });
       return true;
     }
-    if (!isEmpty(this.get('configData.logCollectionConfig.primaryDestination')) && isEmpty(this.get('selectedPrimary'))) {
+    if (!isEmpty(this.get('configData.logCollectionConfig.primaryDestination')) && isEmpty(this.get('selectedPrimaryDestination'))) {
       this.setProperties({
         errorClass: 'is-error',
         className: 'rsa-form-label is-error power-select'
+      });
+      return true;
+    }
+    if (isEmpty(this.get('configData.logCollectionConfig.protocol'))) {
+      this.setProperties({
+        protocolErrorClass: 'is-error',
+        protocolClassName: 'rsa-form-label is-error power-select'
       });
       return true;
     }
@@ -107,7 +115,9 @@ const formComponent = Component.extend({
       errorMessage: null,
       isError: false,
       errorClass: null,
-      className: 'rsa-form-label power-select'
+      className: 'rsa-form-label power-select',
+      protocolErrorClass: null,
+      protocolClassName: 'rsa-form-label power-select'
     });
   },
 
@@ -116,7 +126,7 @@ const formComponent = Component.extend({
   actions: {
 
     generateAgent() {
-      const { autoUninstall } = this.get('configData');
+      const { autoUninstall } = this.get('configData.packageConfig');
       if (autoUninstall && !isEmpty(autoUninstall[0])) {
         this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
       }
@@ -130,6 +140,10 @@ const formComponent = Component.extend({
     },
 
     generateLogConfig() {
+      const logConfig = this.get('configData.logCollectionConfig');
+      if (logConfig.enableHeartbeat && isEmpty(logConfig.heartbeatFrequency)) {
+        this.set('configData.logCollectionConfig.heartbeatFrequency', this.get('selectedFrequency'));
+      }
       if (!this.validateMandatoryFields()) {
         this.resetProperties();
         // only log config data need to be send on click of this button.
@@ -152,12 +166,12 @@ const formComponent = Component.extend({
     },
 
     setPrimaryDestination(destination) {
-      this.set('primaryDestination', destination);
-      this.set('secondaryDestination', '');
+      this.set('configData.logCollectionConfig.primaryDestination', destination);
+      this.set('configData.logCollectionConfig.secondaryDestination', '');
     },
 
     setSecondaryDestination(destination) {
-      this.set('secondaryDestination', destination);
+      this.set('configData.logCollectionConfig.secondaryDestination', destination);
     },
 
     uploadConfig(ev) {

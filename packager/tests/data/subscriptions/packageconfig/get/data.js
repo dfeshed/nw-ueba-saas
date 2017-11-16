@@ -13,5 +13,20 @@ export default {
   },
   'logCollectionConfig': {
 
-  }
+  },
+  'listOfService': [
+    {
+      'id-1': {
+        'name': 'test',
+        'ip': '10.12.12.12',
+        'device': 'log decoder'
+      }
+    },
+    {
+      'id-2': {
+        'name': 'asd',
+        'ip': '10.12.12.10',
+        'device': 'log collector'
+      }
+    }]
 };

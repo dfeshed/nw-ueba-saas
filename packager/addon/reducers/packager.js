@@ -26,8 +26,7 @@ const packagerReducer = handleActions({
     return handle(state, action, {
       start: () => state.merge({ updating: true, error: false, downloadLink: null }),
       finish: (s) => s.set('updating', false),
-      failure: (s) => s.set('error', true),
-      success: (s) => s.set('defaultPackagerConfig', action.payload.request.data)
+      failure: (s) => s.set('error', true)
     });
   },
 

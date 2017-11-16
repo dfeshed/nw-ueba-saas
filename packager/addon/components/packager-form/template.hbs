@@ -158,8 +158,6 @@
           {{#power-select
             placeholder=(t 'packager.placeholder')
             options=listOfSecondaryService
-            triggerClass=errorClass
-            dropdownClass=errorClass
             searchPlaceholder=(t 'packager.searchPlaceholder')
             selected=selectedSecondaryDestination
             onchange=(action 'setSecondaryDestination' value="id") as |list|}}
@@ -172,8 +170,8 @@
         {{rsa-form-input label=(t 'packager.channels') value=configData.logCollectionConfig.channels}}
       </div>
 
-      <div class="col-xs-5 field">
-        <label class="rsa-form-label power-select">
+      <div class="col-xs-5 field protocol-js">
+        <label class={{protocolClassName}}>
           <div class="label-text">
             {{t 'packager.protocol'}}
           </div>
@@ -182,6 +180,8 @@
             placeholder=(t 'packager.placeholder')
             options=protocolOptions
             selected=selectedProtocol
+            triggerClass=protocolErrorClass
+            dropdownClass=protocolErrorClass
             searchPlaceholder=(t 'packager.searchPlaceholder')
             onchange=(action 'setSelect' 'protocol' 'selectedProtocol') as |option|}}
             {{option}}
@@ -232,7 +232,7 @@
     {{#rsa-form-button isDisabled=isResetDisabled defaultAction=(action 'resetForm')}}
       {{t 'packager.reset'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button style='primary' isDisabled=isDisabled defaultAction=(action 'generateAgent')}}
+    {{#rsa-form-button style='primary' class="generateButton-js" isDisabled=isDisabled defaultAction=(action 'generateAgent')}}
       {{t 'packager.generateAgent'}}
     {{/rsa-form-button}}
     {{#rsa-form-button isDisabled=isGenerateLogDisabled defaultAction=(action 'generateLogConfig')}}

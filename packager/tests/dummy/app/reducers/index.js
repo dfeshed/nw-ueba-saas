@@ -1,3 +1,1 @@
-import packager from 'packager/reducers/index';
-
-export default packager;
+export { default } from 'packager/reducers/index';

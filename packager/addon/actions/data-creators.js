@@ -21,6 +21,8 @@ import {
 const { Logger } = Ember;
 
 const downloadURL = '/rsa/nwe/management/packager/download';
+const downloadURLLogConfig = '/endpoint/logconfig/download';
+
 /**
  * Action creator for fetching packager config information.
  * @method getConfig
@@ -55,7 +57,10 @@ const setConfig = (configData) => {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.GET_INFO, response);
           if ('OK' === response.data.statusCode || 'Success' === response.data) {
-            const url = response.data.link || downloadURL;
+            let url = downloadURL;
+            if (response.data.configType == 'LOGCONFIG') {
+              url = downloadURLLogConfig;
+            }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
         },
