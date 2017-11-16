@@ -145,7 +145,6 @@
                       changed='handlePriorityScoringChange'}}
                     {{t 'respond.aggregationRules.incidentPriorityAverage'}}
                   </label>
-                  {{log incidentScoringOptions.type}}
                   <label class="highest-score rsa-form-radio-label {{if (eq incidentScoringOptions.type 'high') 'checked'}}">
                     {{radio-button
                       value='high'

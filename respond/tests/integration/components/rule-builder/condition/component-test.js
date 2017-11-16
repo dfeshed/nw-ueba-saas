@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import Immutable from 'seamless-immutable';
-import rule from '../../../../data/subscriptions/aggregation-rules/queryRecord/data';
+import ruleInfo from '../../../../data/subscriptions/aggregation-rules/queryRecord/data';
 import fields from '../../../../data/subscriptions/aggregation-fields/findAll/data';
 import * as aggregationRuleCreators from 'respond/actions/creators/aggregation-rule-creators';
 import sinon from 'sinon';
@@ -11,7 +11,7 @@ import wait from 'ember-test-helpers/wait';
 import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
 
 const initialState = {
-  rule,
+  ruleInfo,
   ruleStatus: 'complete',
   conditionGroups: {},
   conditions: { '0': { id: 0, property: 'alert.type', operator: '=' } },
