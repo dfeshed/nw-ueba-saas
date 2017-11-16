@@ -1,9 +1,9 @@
 import logging
 
-from airflow.operators.sensors import BaseSensorOperator
-from airflow.utils.state import State
 from airflow import settings
 from airflow.models import DagRun
+from airflow.operators.sensors import BaseSensorOperator
+from airflow.utils.state import State
 
 
 class RootDagGapSensorOperator(BaseSensorOperator):
@@ -24,7 +24,7 @@ class RootDagGapSensorOperator(BaseSensorOperator):
             external_dag_id,
             execution_delta,
             *args, **kwargs):
-        super(RootDagGapSensorOperator, self).__init__(*args, **kwargs)
+        super(RootDagGapSensorOperator, self).__init__(retries=4,retry_exponential_backoff=True,max_retry_delay=300,retry_delay=5 ,*args, **kwargs)
 
         self._execution_delta = execution_delta
         self._root_external_dag_id = external_dag_id.split(".", 1)[0]
