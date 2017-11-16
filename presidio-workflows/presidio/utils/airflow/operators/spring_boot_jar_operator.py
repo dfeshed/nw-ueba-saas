@@ -69,10 +69,12 @@ class SpringBootJarOperator(BashOperator):
             retry_callback = kwargs['retry_callback']
         else:
             retry_callback = SpringBootJarOperator.handle_retry
-        kwargs['params']['cleanup_command'] = self.get_cleanup_command()
+        kwargs['params']['retry_command'] = self.get_retry_command()
 
         super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'] ,retry_delay=retry_args['retry_delay'],
-                                                    bash_command=bash_command,on_retry_callback=retry_callback,
+                                                    retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                                                    max_retry_delay=retry_args['max_retry_delay'],
+                                                    bash_command=bash_command, on_retry_callback=retry_callback,
                                                     *args, **kwargs)
 
     def _calc_retry_args(self):
@@ -411,7 +413,7 @@ class SpringBootJarOperator(BashOperator):
     def get_retry_args_task_instance_conf_key_prefix(self):
         return "%s.%s.%s" % (self.get_task_instance_conf_key_prefix(), self.task_id, RETRY_ARGS_CONF_KEY)
 
-    def get_cleanup_command(self):
+    def get_retry_command(self):
         bash_command = []
         self.java_path(bash_command)
 
@@ -434,8 +436,8 @@ class SpringBootJarOperator(BashOperator):
     @staticmethod
     def handle_retry(context):
         logging.info("executing default retry handler")
-        if 'cleanup_command' in context['params']:
-            bash_command = context['params']['cleanup_command']
+        if 'retry_command' in context['params']:
+            bash_command = context['params']['retry_command']
             logging.info("tmp dir root location: \n" + gettempdir())
             task_instance_key_str = context['task_instance_key_str']
             with TemporaryDirectory(prefix='airflowtmp') as tmp_dir:

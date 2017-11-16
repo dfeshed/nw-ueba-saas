@@ -25,7 +25,9 @@ class ConfigServerConfigurationReaderTestBuilder():
                             },
                         "retry_args":{
                             "retries": 3,
-                            "retry_delay": 0
+                            "retry_delay": 0,
+                            "retry_exponential_backoff": True,
+                            "max_retry_delay": 300
                         }
                     }
                 }

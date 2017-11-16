@@ -400,7 +400,7 @@ class TestSpringBootJarOperator(object):
 
 class TestOperator (SpringBootJarOperator):
     cleanup_cnt = 0
-    def get_cleanup_command(self):
+    def get_retry_command(self):
         self.cleanup_cnt=self.cleanup_cnt+1
         return "echo hiiiiiii"
 
