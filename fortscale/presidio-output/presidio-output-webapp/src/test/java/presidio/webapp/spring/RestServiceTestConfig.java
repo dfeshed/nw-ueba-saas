@@ -11,7 +11,7 @@ import presidio.webapp.service.RestUserService;
 import presidio.webapp.service.RestUserServiceImpl;
 
 @Configuration
-public class OutputWebappConfigurationTest {
+public class RestServiceTestConfig {
     @MockBean
     AlertPersistencyService alertService;
 

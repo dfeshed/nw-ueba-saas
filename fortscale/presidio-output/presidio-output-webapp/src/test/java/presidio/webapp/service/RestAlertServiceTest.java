@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,8 +15,7 @@ import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
-import presidio.webapp.spring.OutputWebappConfigurationTest;
-import scala.util.parsing.combinator.testing.Str;
+import presidio.webapp.spring.RestServiceTestConfig;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -28,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = OutputWebappConfigurationTest.class)
+@ContextConfiguration(classes = RestServiceTestConfig.class)
 public class RestAlertServiceTest {
 
     @Autowired

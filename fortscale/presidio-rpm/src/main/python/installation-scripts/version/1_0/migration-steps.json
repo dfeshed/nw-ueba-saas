@@ -21,7 +21,7 @@
       "uninstall_description":"Uninstalling configuration server"
     },
     {
-      "filePath": "airflow_charts.py",
+      "filePath": "airflow_charts.sh",
       "executor": "default",
       "description": "Inserting monitoring charts into airflow db",
       "has_uninstall":"false"
