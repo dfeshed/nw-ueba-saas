@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeatureEvent {
-    private boolean removeNA = false;
+    private boolean removeNA = true;
 
     private List<String> additionalNAValues = Collections.emptyList();
 	

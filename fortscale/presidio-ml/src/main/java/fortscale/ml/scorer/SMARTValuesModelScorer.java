@@ -7,6 +7,7 @@ import fortscale.ml.model.PartitionedDataModel;
 import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
+import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ModelScorerConf;
@@ -15,12 +16,13 @@ import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
 public class SMARTValuesModelScorer extends AbstractScorer {
     private SMARTValuesModelScorerAlgorithm algorithm;
-    protected Scorer baseScorer;
+    protected SmartWeightsModelScorer smartWeightsModelScorer;
     private String modelName;
     private String globalModelName;
     private int minNumOfPartitionsToInfluence = ModelScorerConf.MIN_NUM_OF_PARTITIONS_TO_INFLUENCE_DEFAULT_VALUE;
@@ -45,7 +47,9 @@ public class SMARTValuesModelScorer extends AbstractScorer {
 
         Assert.notNull(baseScorerConf, "base scorer should not be null");
         Assert.notNull(factoryService, "factory service should not be null");
-        baseScorer = factoryService.getProduct(baseScorerConf);
+        Scorer tmp = factoryService.getProduct(baseScorerConf);
+        Assert.isTrue(tmp instanceof SmartWeightsModelScorer, "SMARTValuesModelScorer expecting to get configuration of SmartWeightsModelScorer");
+        smartWeightsModelScorer = (SmartWeightsModelScorer) tmp;
 
         assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
         assertEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
@@ -62,27 +66,58 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         algorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
     }
 
-    protected Model getMainModel(AdeRecordReader adeRecordReader) {
+    protected List<ModelDAO> getMainModel(AdeRecordReader adeRecordReader) {
         return getModel(adeRecordReader, modelName, adeRecordReader.getContext(SmartRecord.CONTEXT_ID_FIELD));
     }
 
-    protected Model getGlobalModel(AdeRecordReader adeRecordReader) {
+    protected List<ModelDAO> getGlobalModel(AdeRecordReader adeRecordReader) {
         return getModel(adeRecordReader, globalModelName, null);
     }
 
-    protected Model getModel(AdeRecordReader adeRecordReader, String modelName, String contextId) {
-        return eventModelsCacheService.getModel(adeRecordReader, modelName, contextId);
+    protected List<ModelDAO> getModel(AdeRecordReader adeRecordReader, String modelName, String contextId) {
+        return eventModelsCacheService.getModelDAOsSortedByEndTimeDesc(adeRecordReader, modelName, contextId);
     }
 
     @Override
     public FeatureScore calculateScore(AdeRecordReader adeRecordReader){
-        Model model = getMainModel(adeRecordReader);
-        Model globalModel = getGlobalModel(adeRecordReader);
-        FeatureScore featureScore = calculateScore(model, globalModel, adeRecordReader);
+        List<ModelDAO> mainModelDAOs = getMainModel(adeRecordReader);
+        List<ModelDAO> globalModelDAOs = getGlobalModel(adeRecordReader);
+        SMARTValuesModel mainModel = null;
+        Model globalModel = null;
+        Instant weightModelEndTime = null;
+
+        for (ModelDAO globalModelDAO : globalModelDAOs) {
+            SMARTValuesPriorModel smartValuesPriorModel = (SMARTValuesPriorModel) globalModelDAO.getModel();
+            if (smartValuesPriorModel == null) {
+                continue;
+            }
+            Instant smartValuePriorWightsModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
+            boolean foundMatchingModels = false;
+            for (ModelDAO mainModelDAO : mainModelDAOs) {
+                SMARTValuesModel mainModelDAOModel = (SMARTValuesModel) mainModelDAO.getModel();
+                if (mainModelDAOModel == null) {
+                    continue;
+                }
+                Instant smartValueWeightsModelEndTime = mainModelDAOModel.getWeightsModelEndTime();
+
+                if (smartValuePriorWightsModelEndTime.equals(smartValueWeightsModelEndTime)) {
+                    mainModel = mainModelDAOModel;
+                    globalModel = smartValuesPriorModel;
+                    weightModelEndTime = smartValueWeightsModelEndTime;
+                    foundMatchingModels = true;
+                    break;
+                }
+            }
+            if(foundMatchingModels)
+            {
+                break;
+            }
+        }
+        FeatureScore featureScore = calculateScore(mainModel, globalModel, adeRecordReader, weightModelEndTime);
         if (featureScore == null) {
             return new CertaintyFeatureScore(getName(), 0d, 0d);
         }
-        double certainty = calculateCertainty(model);
+        double certainty = calculateCertainty(mainModel);
         if (isUseCertaintyToCalculateScore) {
             featureScore.setScore(featureScore.getScore() * certainty);
         } else {
@@ -98,15 +133,19 @@ public class SMARTValuesModelScorer extends AbstractScorer {
 
     final protected FeatureScore calculateScore(Model model,
                                                 Model globalModel,
-                                                AdeRecordReader adeRecordReader){
-        FeatureScore baseScore = baseScorer.calculateScore(adeRecordReader);
-        List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
+                                                AdeRecordReader adeRecordReader,
+                                                Instant weightModelEndTime){
         if (model == null || globalModel == null) {
+            FeatureScore baseScore = smartWeightsModelScorer.calculateScore(adeRecordReader);
+            List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
             return new CertaintyFeatureScore(getName(), 0.0, baseFeatureScores, 0.0);
+        } else {
+            FeatureScore baseScore = smartWeightsModelScorer.calculateScore(adeRecordReader, weightModelEndTime);
+            List<FeatureScore> baseFeatureScores = Collections.singletonList(baseScore);
+            FeatureScore featureScore = calculateScore(baseScore.getScore(), model, globalModel);
+            featureScore.setFeatureScores(baseFeatureScores);
+            return featureScore;
         }
-        FeatureScore featureScore = calculateScore(baseScore.getScore(), model, globalModel);
-        featureScore.setFeatureScores(baseFeatureScores);
-        return featureScore;
     }
 
     private FeatureScore calculateScore(double baseScore,

@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.notNull;
 import static org.mockito.Mockito.when;
@@ -49,8 +49,16 @@ public class RestUserServiceTest {
     public void testReturnUserWithoutExpand() {
         User user = createUser(1);
         when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
-        presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", false);
+        presidio.webapp.model.User resultUser = restUserService.getUserById(user.getId(), false);
         Assert.assertNotNull(resultUser);
+        assertEquals(user.getUserId(), resultUser.getUserId());
+        assertEquals(user.getAlertClassifications(), resultUser.getAlertClassifications());
+        assertEquals(user.getAlertsCount(), resultUser.getAlertsCount().intValue());
+        assertEquals(user.getId(), resultUser.getId());
+        assertEquals(0, Double.compare(user.getScore(), resultUser.getScore().doubleValue()));
+        assertEquals(user.getSeverity().toString(), resultUser.getSeverity().toString());
+        assertEquals(user.getUserDisplayName(), resultUser.getUserDisplayName());
+        assertEquals(user.getUserName(), resultUser.getUsername());
     }
 
 
@@ -64,7 +72,7 @@ public class RestUserServiceTest {
         when(userPersistencyService.findUserById(eq(user.getId()))).thenReturn(user);
         presidio.webapp.model.User resultUser = restUserService.getUserById("useruser1", true);
 
-        Assert.assertEquals(1, resultUser.getAlerts().size());
+        assertEquals(1, resultUser.getAlerts().size());
 
 
     }
@@ -86,8 +94,8 @@ public class RestUserServiceTest {
         UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
         List<presidio.webapp.model.User> resultUser = usersWrapper.getUsers();
 
-        Assert.assertEquals(3, resultUser.size());
-        Assert.assertEquals(5, usersWrapper.getTotal().intValue());
+        assertEquals(3, resultUser.size());
+        assertEquals(5, usersWrapper.getTotal().intValue());
     }
 
     @Test
@@ -107,8 +115,8 @@ public class RestUserServiceTest {
         UsersWrapper usersWrapper = restUserService.getUsers(userQuery);
         List<presidio.webapp.model.User> resultUser = usersWrapper.getUsers();
 
-        Assert.assertEquals(1, resultUser.size());
-        Assert.assertEquals(2, usersWrapper.getTotal().intValue());
+        assertEquals(1, resultUser.size());
+        assertEquals(2, usersWrapper.getTotal().intValue());
     }
 
 
@@ -132,12 +140,12 @@ public class RestUserServiceTest {
         List<presidio.webapp.model.User> resultUser = restUserService.getUsers(userQuery).getUsers();
         resultUser.forEach(user -> {
             if (user.getId().equals("useruser1"))
-                Assert.assertEquals(1, user.getAlerts().size());
+                assertEquals(1, user.getAlerts().size());
             else {
                 if (user.getId().equals("useruser2"))
-                    Assert.assertEquals(2, user.getAlerts().size());
+                    assertEquals(2, user.getAlerts().size());
                 else
-                    Assert.assertEquals(0, user.getAlerts().size());
+                    assertEquals(0, user.getAlerts().size());
             }
         });
     }
@@ -147,6 +155,7 @@ public class RestUserServiceTest {
         User user = new User();
         user.setUserName("user" + number);
         user.setId("useruser" + number);
+        user.setUserId("vendorUserId" + number);
         user.setAlertsCount(1);
         user.setUserDisplayName("superuser" + number);
         user.setScore(60);
@@ -161,6 +170,6 @@ public class RestUserServiceTest {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("useruser" + number, "smartId", classifications, "user" + number,
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
-                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null,0D);
+                10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null, 0D);
     }
 }

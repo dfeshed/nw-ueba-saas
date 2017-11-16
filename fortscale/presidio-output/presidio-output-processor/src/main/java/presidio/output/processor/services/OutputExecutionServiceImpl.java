@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.aspect.services.MetricCollectingService;
+import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
@@ -44,6 +45,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     @Autowired
     MetricCollectingService metricCollectingService;
+
+    @Autowired
+    PresidioMetricFactory presidioMetricFactory;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
@@ -107,7 +111,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetric(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG);
+                    metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG, startDate));
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
@@ -123,9 +127,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        metricCollectingService.addMetric(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG);
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG, startDate));
         if (CollectionUtils.isNotEmpty(smarts)) {
-            metricCollectingService.addMetric(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG);
+            metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG, startDate));
         }
     }
 

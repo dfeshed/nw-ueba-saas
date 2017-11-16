@@ -192,17 +192,21 @@
                         export PRESIDIO_HOME=${rpm-maven-plugin.deployment_target_directory}
                         echo "Writing env variable PRESIDIO_HOME to /etc/profile"
                         echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile
-                        <!-- deploy presidio-workflows lib-->
+                        <!--always upgrade presidio-workflows python package-->
+                        echo "Running upgrading presidio workflows"
+                        bash ${rpm-maven-plugin.workflows-upgrade-script-path}
+
                         echo "Running Python migration project"
                         <!-- post installation commands: -->
                         ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
 
+                        <!-- It takes 15 seconds for the config server to initialize -->
+                        sleep 20
+
                         <!--changing ownership of project main folder -->
                         #echo "Changing ownership of /project main repository"
                         chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
-                        <!--always upgrade presidio-workflows python package-->
-                        echo "Running upgrading presidio workflows"
-                        bash ${rpm-maven-plugin.workflows-upgrade-script-path}
+
                         #echo "Removing temporary files"
                         rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
                         echo "Restarting Tomcat"
@@ -210,10 +214,10 @@
                         echo "creating configuration group for common reads and writes"
                         mkdir -p ${common-conf-path}
                         groupadd ${presidio-conf-group}
-                        usermod -a -G ${presidio-conf-group} tomcat
-                        usermod -a -G ${presidio-conf-group} presidio
-                        chgrp -R ${presidio-conf-group} ${common-conf-path}
-                        chmod -R 777 /home/presidio/presidio-core/configurations/airflow/
+                        
+                        chown -R -v tomcat:tomcat /home/presidio/presidio-core/configurations/airflow/*
+                        
+                        chmod 777 /home/presidio/presidio-core/configurations/airflow/
                         chmod 777 /home/presidio/presidio-core/configurations/
                         chmod 777 /home/presidio/presidio-core/
                         chmod 777 /home/presidio/

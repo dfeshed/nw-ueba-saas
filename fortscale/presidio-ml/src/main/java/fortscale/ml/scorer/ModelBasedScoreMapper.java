@@ -72,7 +72,7 @@ public class ModelBasedScoreMapper extends AbstractModelInternalUniScorer {
 //	}
 //
 //	private double mapScore(AdeRecordReader adeRecordReader, FeatureScore baseScore) {
-//		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
+//		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getLatestModelBeforeEventTime(
 //				adeRecordReader, modelName, contextFieldNames);
 //		return ScoreMapping.mapScore(baseScore.getScore(), createScoreMappingConf(model));
 //	}

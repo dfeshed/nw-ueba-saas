@@ -12,6 +12,8 @@ import org.springframework.util.Assert;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +29,7 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     private AbstractDataRetriever retriever;
     private Duration maxDiffBetweenCachedModelAndEvent;
     private LRUMap lruModelsMap;
+    private int numOfModelsPerContextId;
 
     /**
      * @param modelStore                           persistent db containing all models
@@ -35,58 +38,55 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
      * @param maxDiffBetweenCachedModelAndEvent cached model can be older then eventTime by this diff. if bigger, cached model is deleted and the latest model is retrieved from db
      * @param lruModelCacheSize                    the cache size
      */
-    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration maxDiffBetweenCachedModelAndEvent, int lruModelCacheSize) {
+    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration maxDiffBetweenCachedModelAndEvent, int lruModelCacheSize, int numOfModelsPerContextId) {
         this.modelStore = modelStore;
         this.modelConf = modelConf;
         this.retriever = retriever;
         this.maxDiffBetweenCachedModelAndEvent = maxDiffBetweenCachedModelAndEvent;
         this.lruModelsMap = new LRUMap(lruModelCacheSize);
+        this.numOfModelsPerContextId = numOfModelsPerContextId;
     }
 
     @Override
-    public Model getModel(Map<String, String> context, Instant eventTime) {
+    public Model getLatestModelBeforeEventTime(Map<String, String> context, Instant eventTime) {
         String contextId = getContextId(context);
-        return getModel(contextId, eventTime);
+        return getLatestModelBeforeEventTime(contextId, eventTime);
     }
     @Override
-    public Model getModel(String contextId, Instant eventTime) {
-        ModelDAO cachedModelDao;
+    public Model getLatestModelBeforeEventTime(String contextId, Instant eventTime) {
         logger.debug("getting model for params: contextId={},eventTime={},modelConf={}", contextId,  eventTime,modelConf);
-        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
+        ModelDAO cachedModelDao = getLatestBeforeEventTimeAfterOldestAllowedModelDao(contextId, eventTime);
+        return cachedModelDao.getModel();
+    }
 
+    private ModelDAO getLatestBeforeEventTimeAfterOldestAllowedModelDao(String contextId, Instant eventTime) {
+        List<ModelDAO> retrievedModelDAOs = getModelDAOsSortedByEndTimeDesc(contextId,eventTime);
+        return retrievedModelDAOs.get(0);
+    }
+
+    @Override
+    public List<ModelDAO> getModelDAOsSortedByEndTimeDesc(String contextId, Instant eventTime){
+        Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
         if (lruModelsMap.containsKey(contextId)) {
             Object cachedObject = lruModelsMap.get(contextId);
-            cachedModelDao = (ModelDAO) cachedObject;
-            // check if model time is valid
-            if (isModelTimeValid(cachedModelDao, oldestAllowedModelTime)) {
-                logger.debug("found cached model={}", cachedModelDao);
-                return cachedModelDao.getModel();
-            }
-            // if the model in the cache is too old -> return null and keep it in cache in order to avoid unnecessary access to store.
-            else {
-                logger.debug("too old model={} found", cachedModelDao);
-                //todo: add metrics
-            }
-        }
-        else {
+            List<ModelDAO> ret = (List<ModelDAO>) cachedObject;
+            logger.debug("found cached models={}", ret);
+            return ret;
+
+        } else{
             logger.debug("no matching model found in cache. retrieving model from db");
-            ModelDAO retrievedModelDAO =
-                    modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(modelConf, contextId, eventTime, oldestAllowedModelTime);
-            if (retrievedModelDAO != null) {
-                logger.debug("found matching modelDAO={} in db, updating cache", retrievedModelDAO);
-                // insert the model into cache
-                lruModelsMap.put(contextId, retrievedModelDAO);
-                return retrievedModelDAO.getModel();
+            List<ModelDAO> retrievedModelDAOs =
+                    modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(modelConf, contextId, eventTime, oldestAllowedModelTime, numOfModelsPerContextId);
+            if (retrievedModelDAOs == null || !retrievedModelDAOs.isEmpty()) {
+                logger.debug("found matching modelDAO={} in db", retrievedModelDAOs);
+            } else {
+                logger.debug("did not find matching model in db. caching empty model");
+                retrievedModelDAOs = Collections.singletonList(new EmptyModelDao(eventTime));
             }
-            logger.debug("did not find matching model in db. caching empty model");
-            lruModelsMap.put(contextId, new EmptyModelDao(eventTime));
+            // insert the model into cache
+            lruModelsMap.put(contextId, retrievedModelDAOs);
+            return retrievedModelDAOs;
         }
-
-        return null;
-    }
-
-    public boolean isModelTimeValid(ModelDAO modelDAO, Instant latestModelEventTime) {
-        return modelDAO.getEndTime().compareTo(latestModelEventTime) >= 0;
     }
 
     @Override

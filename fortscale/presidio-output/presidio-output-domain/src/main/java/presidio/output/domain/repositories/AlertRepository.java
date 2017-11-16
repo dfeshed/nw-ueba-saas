@@ -17,7 +17,4 @@ public interface AlertRepository extends ElasticsearchRepository<Alert, String> 
     Page<Alert> findById(String Id, Pageable pageable);
 
     Page<Alert> findByUserIdIn(Collection<String> ids, Pageable pageable);
-
-    Page<Alert> findByClassifications(List<String> classifications, Pageable pageable);
-
 }

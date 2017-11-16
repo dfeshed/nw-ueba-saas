@@ -19,7 +19,7 @@ public interface EventRepository {
      */
     void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception;
 
-    List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features) throws Exception;
+    List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features, int limitEvents) throws Exception;
 
     EnrichedEvent findLatestEventForUser(String userId);
 }

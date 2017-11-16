@@ -4,7 +4,6 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
@@ -43,14 +42,6 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
     /**
      * C'tor
-     * @param strategy
-     * @param enrichedDataStore
-     * @param enrichedEventsScoringService
-     * @param aggregationRecordsCreator
-     * @param aggregatedDataStore
-     * @param aggregatedFeatureEventsConfService
-     * @param pageSize
-     * @param maxGroupSize
      */
     public ScoreAggregationsService(FixedDurationStrategy strategy, EnrichedDataStore enrichedDataStore,
                                     EnrichedEventsScoringService enrichedEventsScoringService,
@@ -83,17 +74,17 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         List<String> contextTypes = new ArrayList<>();
         contextTypes.add(contextType);
         boolean isStoreScoredEnrichedRecords = isStoreScoredEnrichedRecords(timeRange, dataSource);
-
-
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
         List<PageIterator<EnrichedRecord>> pageIterators = enrichedRecordPaginationService.getPageIterators(dataSource, timeRange);
+        FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
+
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
                 List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords);
-                FeatureBucketStrategyData featureBucketStrategyData = createFeatureBucketStrategyData(timeRange);
                 scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextTypes, featureBucketStrategyData);
             }
+
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
@@ -116,10 +107,9 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         return ret;
     }
 
-    protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange){
+    protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange) {
         String strategyName = strategy.toStrategyName();
-
-        return new FeatureBucketStrategyData(strategyName,strategyName,timeRange);
+        return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
     public List<String> getDistinctContextTypes(String dataSource){

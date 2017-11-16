@@ -49,31 +49,37 @@
               "reduction-weight": 0.5
             },
             {
-              "type": "reduction-scorer",
-              "name": "dstMachine.userId.authentication.score",
-              "main-scorer": {
-                "type": "category-rarity-model-scorer",
-                "name": "dstMachineNameRegexCluster.userId.authentication.score",
-                "model": {
-                  "name": "dstMachineNameRegexCluster.userId.authentication"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15
-              },
-              "reduction-scorer": {
-                "type": "score-and-certainty-multiplier-scorer",
-                "name": "userId.dstMachineId.authentication.reduction.score",
-                "base-scorer": {
+              "type": "list-conditional-scorer",
+              "name": "dstMachine.userIdInteractiveRemote.authentication.score",
+              "conditional-field": "operationTypeCategories",
+              "conditional-value": "INTERACTIVE_REMOTE",
+              "scorer": {
+                "type": "reduction-scorer",
+                "name": "dstMachine.userIdInteractiveRemote.authentication.score",
+                "main-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "userId.dstMachineId.authentication.score",
+                  "name": "dstMachineNameRegexCluster.userId.authentication.score",
                   "model": {
-                    "name": "userId.dstMachineId.authentication"
+                    "name": "dstMachineNameRegexCluster.userIdInteractiveRemote.authentication"
                   },
                   "max-rare-count": 5,
                   "max-num-of-rare-features": 15
-                }
-              },
-              "reduction-weight": 0.5
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userId.dstMachineId.authentication.reduction.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userId.dstMachineId.authentication.score",
+                    "model": {
+                      "name": "userId.dstMachineIdInteractiveRemote.authentication"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15
+                  }
+                },
+                "reduction-weight": 0.5
+              }
             }
           ]
         }

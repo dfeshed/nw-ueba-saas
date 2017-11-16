@@ -1,14 +1,17 @@
 package fortscale.ml.model.cache;
 
 import fortscale.ml.model.Model;
+import fortscale.ml.model.store.ModelDAO;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 public interface ModelsCacheService {
 
-	Model getModel(String modelConfName, Map<String, String> context, Instant eventTime);
-	Model getModel(String modelConfName, String contextId, Instant eventTime);
+	Model getLatestModelBeforeEventTime(String modelConfName, Map<String, String> context, Instant eventTime);
+	Model getLatestModelBeforeEventTime(String modelConfName, String contextId, Instant eventTime);
+	List<ModelDAO> getModelDAOsSortedByEndTimeDesc(String modelConfName, String contextId, Instant eventTime);
 	/**
 	 * refresh model (lazy cache) by deleting the model from the relevant cache manager
 	 *

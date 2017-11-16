@@ -31,7 +31,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			String aggregatedFeatureEventsAdditionalConfigurationPath,
 			BucketConfigurationService bucketConfigurationService) {
 
-		this.objectMapper= ObjectMapperProvider.getInstance().getObjectMapper();
+		this.objectMapper= ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 		this.aggregatedFeatureEventsBaseConfigurationPath = aggregatedFeatureEventsBaseConfigurationPath;
 		this.aggregatedFeatureEventsOverridingConfigurationPath = aggregatedFeatureEventsOverridingConfigurationPath;
 		this.aggregatedFeatureEventsAdditionalConfigurationPath = aggregatedFeatureEventsAdditionalConfigurationPath;

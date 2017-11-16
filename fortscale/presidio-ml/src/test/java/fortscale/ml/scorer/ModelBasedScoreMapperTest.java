@@ -124,7 +124,7 @@ public class ModelBasedScoreMapperTest {
         AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
         when(baseScorer.calculateScore(eq(adeRecordReader))).thenReturn(baseScore);
-        when(modelsCacheService.getModel(anyString(), anyMapOf(String.class, String.class), any(Instant.class))).thenReturn(model);
+        when(modelsCacheService.getLatestModelBeforeEventTime(anyString(), anyMapOf(String.class, String.class), any(Instant.class))).thenReturn(model);
 
         return new ModelBasedScoreMapper(
                 featureScoreName,

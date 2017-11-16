@@ -3,7 +3,7 @@ package fortscale.ml.model.retriever;
 import com.google.common.collect.Sets;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.*;
-import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
+import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelector;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
@@ -73,7 +73,7 @@ public class AccumulatedSmartValueRetrieverTest {
         AccumulatedSmartValueRetrieverConf smartValueRetrieverConf = new AccumulatedSmartValueRetrieverConf(timeRangeInSeconds, functions, smartRecordConfName, weightsModelName,86400);
         when(smartRecordConfService.getSmartRecordConf(smartValueRetrieverConf.getSmartRecordConfName())).thenReturn(smartRecordConf);
 
-        String featureName = "featureName";
+        String featureName = "featureName_hourly";
         double weight = 1.0;
         SmartWeightsModel smartWeightsModel = new SmartWeightsModel().setClusterConfs(Collections.singletonList(new ClusterConf(Collections.singletonList(featureName), weight)));
 
@@ -86,8 +86,7 @@ public class AccumulatedSmartValueRetrieverTest {
 
         String globalContextId = null;
         ModelDAO modelDAO = new ModelDAO("sessionId", globalContextId, smartWeightsModel, startTime, endTime);
-        when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(eq(smartWeightsModelConf), eq(globalContextId), any(), any()))
-                .thenReturn((modelDAO));
+        when(modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(eq(smartWeightsModelConf), eq(globalContextId), any(), any(), eq(1))).thenReturn(Collections.singletonList(modelDAO));
 
         retriever = new AccumulatedSmartValueRetriever(smartValueRetrieverConf, smartAccumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, new SmartWeightsScorerAlgorithm(0.5, 50));
 
@@ -121,7 +120,7 @@ public class AccumulatedSmartValueRetrieverTest {
     public void retrieveGlobalContext() throws Exception {
         ModelBuilderData modelBuilderData = retriever.retrieve(null, Date.from(endTime));
         assertEquals(null,modelBuilderData.getNoDataReason());
-        GenericHistogram genericHistogram = (GenericHistogram) modelBuilderData.getData();
+        GenericHistogram genericHistogram = ((SmartValueData) modelBuilderData.getData()).getGenericHistogram();
 
         assertEquals(genericHistogram.getTotalCount(),3,0);
         assertEquals(2.0,genericHistogram.get(0.92),0);
@@ -133,7 +132,7 @@ public class AccumulatedSmartValueRetrieverTest {
     {
         ModelBuilderData modelBuilderData = retriever.retrieve(contextId1, Date.from(endTime));
         assertEquals(null,modelBuilderData.getNoDataReason());
-        GenericHistogram genericHistogram = (GenericHistogram) modelBuilderData.getData();
+        GenericHistogram genericHistogram =((SmartValueData) modelBuilderData.getData()).getGenericHistogram();
 
         assertEquals(genericHistogram.getTotalCount(),1,0);
         assertEquals(1.0,genericHistogram.get(0.95),0);
@@ -142,11 +141,11 @@ public class AccumulatedSmartValueRetrieverTest {
     @Test
     public void calcNumOfPartitions()
     {
-        List<SmartAggregatedRecordDataContainer> data = new LinkedList<>();
+        List<AccumulatedSmartRecord> data = new LinkedList<>();
         Instant startTime = Instant.EPOCH;
         for (int i=0; i<42 ; i++)
         {
-            data.add(new SmartAggregatedRecordDataContainer(startTime,new HashMap<>()));
+            data.add(new AccumulatedSmartRecord(startTime,startTime.plus(Duration.ofHours(1)),"",""));
             startTime = startTime.plus(Duration.ofHours(1));
         }
         Set<Long> partitionIds = retriever.calcNumOfPartitions(data);

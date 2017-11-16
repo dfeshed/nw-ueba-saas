@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
+import presidio.output.domain.spring.TestConfig;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 import java.time.Instant;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {MongodbTestConfig.class, EventPersistencyServiceConfig.class})
+@ContextConfiguration(classes = {MongodbTestConfig.class, EventPersistencyServiceConfig.class, TestConfig.class})
 public class EventPersistencyServiceTest {
 
     @Autowired

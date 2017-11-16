@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver" additivity="false"
+            level="warning"/>
+    <logger name="org.springframework.data.mongodb" level="INFO"/>
+    <logger name="org.springframework.data" level="INFO"/>
+    <logger name="com.github.fakemongo" level="INFO" />
+    <logger name="com.mongodb.FongoDBCollection" level="INFO" />
+    <logger name="com.mongodb.FongoDB" level="INFO" />
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</included>

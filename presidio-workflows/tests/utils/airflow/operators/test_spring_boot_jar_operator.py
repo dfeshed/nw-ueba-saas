@@ -238,11 +238,12 @@ class TestSpringBootJarOperator(object):
             'remote_debug_suspend': False,
             'jmx_enabled': False,
             'jmx_port': 9302,
+            'extra_jvm': '-XX:+UseG1GC -XX:MaxGCPauseMillis=200'
         }
         dag = DAG(
             "test_all_params", default_args=default_args, schedule_interval=timedelta(1))
 
-        expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -Duser.timezone=America/New_York -Dlogging.config=' + PATH + '/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9222,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
+        expected_bash_comment = '/usr/bin/java -Xms101m -Xmx2049m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Duser.timezone=America/New_York -Dlogging.config=' + PATH + '/tests/resources/xmls/test_logback.xml -agentlib:jdwp=transport=dt_socket,address=9222,server=y,suspend=n -cp ' + JAR_PATH + ' -Dloader.main=' + MAIN_CLASS + ' ' + LAUNCHER
         expected_java_args = {'a': 'one', 'b': 'two'}
         build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected_java_args)
 

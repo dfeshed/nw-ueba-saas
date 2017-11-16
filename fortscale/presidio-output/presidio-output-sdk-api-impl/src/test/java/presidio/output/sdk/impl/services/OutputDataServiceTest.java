@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.sdk.api.OutputDataServiceSDK;
+import presidio.output.sdk.impl.services.spring.TestConfig;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.time.Instant;
@@ -25,7 +26,7 @@ import java.util.List;
  * Created by efratn on 02/08/2017.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {MongodbTestConfig.class, OutputDataServiceConfig.class})
+@ContextConfiguration(classes = {MongodbTestConfig.class, OutputDataServiceConfig.class, TestConfig.class})
 public class OutputDataServiceTest {
 
     @Autowired

@@ -1,8 +1,11 @@
 package presidio.ade.domain.record;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.recordreader.ReflectionRecordReader;
 import fortscale.utils.recordreader.transformation.Transformation;
+import net.minidev.json.JSONObject;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
@@ -17,7 +20,9 @@ import java.util.Set;
  * Created by Lior Govrin on 19/06/2017.
  */
 public class AdeRecordReader extends ReflectionRecordReader {
+	private ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 	private AdeRecord adeRecord;
+	private JSONObject adeRecordJson;
 
 	/**
 	 * C'tor.
@@ -93,6 +98,13 @@ public class AdeRecordReader extends ReflectionRecordReader {
 
 	public AdeRecord getAdeRecord(){
 		return this.adeRecord;
+	}
+
+	public JSONObject getAdeRecordAsJsonObject() {
+		if (adeRecordJson == null) {
+			adeRecordJson = objectMapper.convertValue(adeRecord, JSONObject.class);
+		}
+		return adeRecordJson;
 	}
 
 	/**

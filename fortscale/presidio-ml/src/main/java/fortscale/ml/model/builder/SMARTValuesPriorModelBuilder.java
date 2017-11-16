@@ -3,9 +3,11 @@ package fortscale.ml.model.builder;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SMARTValuesPriorModel;
+import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class SMARTValuesPriorModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
-            "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
+            "Model builder data must be of type %s.", SmartValueData.class.getSimpleName());
 
     private SMARTValuesPriorModelBuilderConf conf;
 
@@ -24,11 +26,17 @@ public class SMARTValuesPriorModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-		GenericHistogram genericHistogram = getGenericHistogram(modelBuilderData);
+
+		Assert.isInstanceOf(SmartValueData.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
+		SmartValueData smartValueData = (SmartValueData) modelBuilderData;
+		GenericHistogram genericHistogram = smartValueData.getGenericHistogram();
+		Instant weightsModelEndTime = smartValueData.getWeightsModelEndTime();
 
 		Map<Double, Long> smartValueToCountMap = castModelBuilderData(genericHistogram);
 		smartValueToCountMap.remove(0.0);
 		SMARTValuesPriorModel res = new SMARTValuesPriorModel();
+
+		res.setWeightsModelEndTime(weightsModelEndTime);
 
 		long numOfPartitions = genericHistogram.getNumberOfPartitions();
 		res.setNumOfPartitions(numOfPartitions);
@@ -62,8 +70,4 @@ public class SMARTValuesPriorModelBuilder implements IModelBuilder {
         return map;
     }
 
-	private GenericHistogram getGenericHistogram(Object modelBuilderData) {
-		Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
-		return (GenericHistogram) modelBuilderData;
-	}
 }

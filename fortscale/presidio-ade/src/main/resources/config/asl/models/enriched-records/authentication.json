@@ -62,16 +62,16 @@
       }
     },
     {
-      "name" : "dstMachineNameRegexCluster.userId.authentication",
+      "name" : "dstMachineNameRegexCluster.userIdInteractiveRemote.authentication",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily"
+        "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdInteractiveRemoteAuthenticationDaily"
       },
       "retriever" : {
         "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+        "featureBucketConfName" : "dstMachineNameRegexClusterHistogramUserIdInteractiveRemoteAuthenticationDaily",
         "featureName" : "dstMachineNameRegexClusterHistogram"
       },
       "builder" : {
@@ -82,16 +82,16 @@
       }
     },
     {
-      "name" : "userId.dstMachineId.authentication",
+      "name" : "userId.dstMachineIdInteractiveRemote.authentication",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily"
+        "featureBucketConfName" : "userIdHistogramDstMachineIdInteractiveRemoteAuthenticationDaily"
       },
       "retriever" : {
         "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "userIdHistogramDstMachineIdAuthenticationDaily",
+        "featureBucketConfName" : "userIdHistogramDstMachineIdInteractiveRemoteAuthenticationDaily",
         "featureName" : "userIdHistogram"
       },
       "builder" : {

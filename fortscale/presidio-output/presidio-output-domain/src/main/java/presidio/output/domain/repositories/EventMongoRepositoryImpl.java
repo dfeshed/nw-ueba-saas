@@ -4,7 +4,6 @@ import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -19,9 +18,6 @@ import java.util.Map;
  * Created by efratn on 02/08/2017.
  */
 public class EventMongoRepositoryImpl implements EventRepository {
-
-    @Value("${output.events.limit: #{100}}")
-    private int limitEvents;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -42,7 +38,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features) throws Exception {
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features, int limitEvents) throws Exception {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD)
                         .is(userId))

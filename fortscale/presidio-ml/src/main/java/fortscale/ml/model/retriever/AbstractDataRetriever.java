@@ -22,7 +22,7 @@ public abstract class AbstractDataRetriever {
 		this.dataRetrieverConf = dataRetrieverConf;
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
 
-		ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getObjectMapper();
+		ObjectMapper objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 		functions = new ArrayList<>();
 
 		for (JSONObject functionConf : dataRetrieverConf.getFunctionConfs()) {

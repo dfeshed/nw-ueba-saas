@@ -5,6 +5,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.*;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordData;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
+import fortscale.ml.model.retriever.smart_data.SmartValueData;
 import fortscale.ml.model.selector.AccumulatedSmartContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelDAO;
@@ -74,23 +75,25 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
         TimeRange timeRange = new TimeRange(startTime,endTimeInstant);
+        ModelDAO weightsModelDAO = getModelDAO(endTimeInstant);
+        Instant weightsModelEndTime = weightsModelDAO.getEndTime();
+        SmartWeightsModel smartWeightsModel = (SmartWeightsModel) weightsModelDAO.getModel();
 
         // If the retrieve is called for building a global model
         if (contextId == null) {
-            return retrieveGlobalModelBuilderData(timeRange);
+            return retrieveGlobalModelBuilderData(timeRange,smartWeightsModel,weightsModelEndTime);
         }
-        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = readSmartAggregatedRecordDataContainers(
-                contextId, startTime, endTimeInstant);
+        List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTimeInstant);
+        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
         GenericHistogram reductionHistogram = new GenericHistogram();
         final boolean[] noDataInDatabase = {true};
 
         smartAggregatedRecordDataContainerList.forEach(recordsDataContainer -> {
             noDataInDatabase[0] = false;
-            double smartValue = calculateSmartValue(endTimeInstant, recordsDataContainer);
+            double smartValue = calculateSmartValue(recordsDataContainer,smartWeightsModel);
             // TODO: Retriever functions should be iterated and executed here.
             reductionHistogram.add(smartValue, 1d);
         });
-
         if (reductionHistogram.getN() == 0) {
             if (noDataInDatabase[0]) {
                 return new ModelBuilderData(NO_DATA_IN_DATABASE);
@@ -98,48 +101,46 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
                 return new ModelBuilderData(ModelBuilderData.NoDataReason.ALL_DATA_FILTERED);
             }
         } else {
-            long numOfPartitions = calcNumOfPartitions(smartAggregatedRecordDataContainerList).size();
+            long numOfPartitions = calcNumOfPartitions(accumulatedSmartRecords).size();
             reductionHistogram.setNumberOfPartitions(numOfPartitions);
-            return new ModelBuilderData(reductionHistogram);
+            SmartValueData smartValueData = new SmartValueData(reductionHistogram,weightsModelEndTime);
+            return new ModelBuilderData(smartValueData);
         }
     }
 
-    private double calculateSmartValue(Instant endTimeInstant, SmartAggregatedRecordDataContainer recordsDataContainer) {
-        SmartWeightsModel smartWeightsModel = getModel(endTimeInstant);
+    private double calculateSmartValue(SmartAggregatedRecordDataContainer recordsDataContainer, SmartWeightsModel smartWeightsModel) {
         List<ClusterConf> clusterConfs = smartWeightsModel.getClusterConfs();
         List<SmartAggregatedRecordData> aggregatedRecordsData = recordsDataContainer.getSmartAggregatedRecordsData();
         return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData,clusterConfs);
     }
 
-    private SmartWeightsModel getModel(Instant endTimeInstant) {
+    private ModelDAO getModelDAO(Instant endTimeInstant) {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
-        ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDao(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime);
-        return (SmartWeightsModel) latestBeforeEventTimeAfterOldestAllowedModelDao.getModel();
-    }
-
-    private List<SmartAggregatedRecordDataContainer> readSmartAggregatedRecordDataContainers(String contextId, Instant startTime, Instant endTime) {
-        List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTime);
-        return flattenSmartRecordToSmartAggrData(startTime, accumulatedSmartRecords);
+        ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
+        return  latestBeforeEventTimeAfterOldestAllowedModelDao;
     }
 
 
-    private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange) {
+
+    private ModelBuilderData retrieveGlobalModelBuilderData(TimeRange timeRange, SmartWeightsModel smartWeightsModel, Instant weightsModelEndTime) {
         AccumulatedSmartContextSelectorConf conf = new AccumulatedSmartContextSelectorConf(smartRecordConfName);
         IContextSelector contextSelector = contextSelectorFactoryService.getProduct(conf);
         Set<String> contextIds = contextSelector.getContexts(timeRange);
         logger.info("Number of contextIds: " + contextIds.size());
         GenericHistogram reductionHistogram = new GenericHistogram();
-
+        Instant startTime = timeRange.getStart();
+        Instant endTime = timeRange.getEnd();
         if (contextIds.isEmpty()) {
             return new ModelBuilderData(NO_DATA_IN_DATABASE);
         }
         Set<Long> distinctParitionIds = new HashSet<>();
         for (String contextId : contextIds) {
-            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers =
-                    readSmartAggregatedRecordDataContainers(contextId, timeRange.getStart(), timeRange.getEnd());
-            distinctParitionIds.addAll(calcNumOfPartitions(smartAggregatedRecordDataContainers));
+            List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTime);
+            List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
+
+            distinctParitionIds.addAll(calcNumOfPartitions(accumulatedSmartRecords));
             smartAggregatedRecordDataContainers.stream()
-                    .mapToDouble(smartData -> calculateSmartValue(timeRange.getEnd(), smartData))
+                    .mapToDouble(smartData -> calculateSmartValue(smartData, smartWeightsModel))
                     .max()
                     .ifPresent(maxSmartValue -> {
                         // TODO: Retriever functions should be iterated and executed here.
@@ -151,7 +152,8 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
             return new ModelBuilderData(ModelBuilderData.NoDataReason.ALL_DATA_FILTERED);
         } else {
             reductionHistogram.setNumberOfPartitions(distinctParitionIds.size());
-            return new ModelBuilderData(reductionHistogram);
+            SmartValueData smartValueData = new SmartValueData(reductionHistogram,weightsModelEndTime);
+            return new ModelBuilderData(smartValueData);
         }
     }
 
@@ -177,9 +179,9 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         return AccumulatedSmartRecord.getAggregatedFeatureContextId(context);
     }
 
-    Set<Long> calcNumOfPartitions(List<SmartAggregatedRecordDataContainer> data) {
+    Set<Long> calcNumOfPartitions(List<AccumulatedSmartRecord> data) {
         return data.stream().map(x -> {
-            long partitionId = ((long) x.getStartTime().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
+            long partitionId = ((long) x.getStartInstant().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
             return partitionId;
         }).distinct().collect(Collectors.toSet());
     }

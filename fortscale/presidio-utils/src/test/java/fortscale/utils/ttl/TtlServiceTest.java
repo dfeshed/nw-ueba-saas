@@ -83,7 +83,7 @@ public class TtlServiceTest {
         //assert ttlData list, which saved to mongo.
         Set<String> collectionNames = mongoTemplate.getCollectionNames();
         // 3 collections: collectionNameTest, collectionNameDefaultTTlTest, management_ttl.
-        Assert.assertTrue(collectionNames.size() == 3);
+        Assert.assertTrue(collectionNames.size() == 4);
 
         String collectionName = TtlData.class.getAnnotation(Document.class).collection();
         List<TtlData> ttlDataList = mongoTemplate.findAll(TtlData.class, collectionName);

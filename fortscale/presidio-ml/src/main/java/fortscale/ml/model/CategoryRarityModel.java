@@ -116,4 +116,28 @@ public class CategoryRarityModel implements PartitionedDataModel {
 	public Map<String, Double> getFeatureOccurrences() {
 		return featureOccurrences;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CategoryRarityModel)) return false;
+		CategoryRarityModel that = (CategoryRarityModel)o;
+		if (numOfSamples != that.numOfSamples) return false;
+		if (numDistinctFeatures != that.numDistinctFeatures) return false;
+		if (numOfPartitions != that.numOfPartitions) return false;
+		if (numberOfEntriesToSaveInModel != that.numberOfEntriesToSaveInModel) return false;
+		if (!Arrays.equals(buckets, that.buckets)) return false;
+		return featureOccurrences.equals(that.featureOccurrences);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Arrays.hashCode(buckets);
+		result = 31 * result + (int)(numOfSamples ^ (numOfSamples >>> 32));
+		result = 31 * result + (int)(numDistinctFeatures ^ (numDistinctFeatures >>> 32));
+		result = 31 * result + featureOccurrences.hashCode();
+		result = 31 * result + (int)(numOfPartitions ^ (numOfPartitions >>> 32));
+		result = 31 * result + numberOfEntriesToSaveInModel;
+		return result;
+	}
 }
