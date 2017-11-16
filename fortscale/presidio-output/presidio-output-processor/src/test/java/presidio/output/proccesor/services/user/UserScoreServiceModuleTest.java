@@ -1,9 +1,13 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,7 +40,7 @@ import java.util.List;
 
 @Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class})
 public class UserScoreServiceModuleTest {
 
     @Autowired
