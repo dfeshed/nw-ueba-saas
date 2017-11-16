@@ -192,8 +192,8 @@ public class ModelingServiceApplicationSmartModelsTest {
     @Test
     public void weightModelWithSameFeatureForSmartsIDayAndDescendingScoreTest() throws GeneratorException {
         int groupSize = 4;
-        double firstScore = 60.0;
-        double secondScore = 20.0;
+        double firstScore = 100.0;
+        double secondScore = 55.0;
         int probability = 100;
         int numOfSmarts = 10;
 
@@ -277,12 +277,12 @@ public class ModelingServiceApplicationSmartModelsTest {
      * Assert that features in each group get same weight.
      *
      */
-    public void AssertWeightsOfTwoGroups(List<String> oneDayFeatures , List<String> restDaysFeatures) {
+    public void AssertWeightsOfTwoGroups(List<String> highScoreFeaturesForOneDay , List<String> lowScoreFeaturesForRestDays) {
         List<ModelDAO> weightModel = mongoTemplate.findAll(ModelDAO.class, "model_smart.global.weights.userId.hourly");
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
-        List<ClusterConf> firstGroupClusterConf = clusterConfs.stream().filter(clusterConf -> oneDayFeatures.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
-        List<ClusterConf> secondGroupClusterConf = clusterConfs.stream().filter(clusterConf -> restDaysFeatures.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
+        List<ClusterConf> firstGroupClusterConf = clusterConfs.stream().filter(clusterConf -> highScoreFeaturesForOneDay.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
+        List<ClusterConf> secondGroupClusterConf = clusterConfs.stream().filter(clusterConf -> lowScoreFeaturesForRestDays.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
 
         Double firstGroupWeight = firstGroupClusterConf.get(0).getWeight();
         firstGroupClusterConf.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(firstGroupWeight)));

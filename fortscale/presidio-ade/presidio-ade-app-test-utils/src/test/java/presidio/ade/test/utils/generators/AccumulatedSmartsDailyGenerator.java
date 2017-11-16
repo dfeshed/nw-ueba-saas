@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class AccumulatedSmartsDailyGenerator implements IEventGenerator<AccumulatedSmartRecord> {
+public class AccumulatedSmartsDailyGenerator {
     private IStringGenerator contextIdGenerator;
     private TimeGenerator timeGenerator;
     private Map<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresToScoreAndProbabilityMap;
@@ -48,7 +48,6 @@ public class AccumulatedSmartsDailyGenerator implements IEventGenerator<Accumula
      * @return
      * @throws GeneratorException
      */
-    @Override
     public List<AccumulatedSmartRecord> generate() throws GeneratorException {
 
         List<AccumulatedSmartRecord> evList = new ArrayList<>();
