@@ -8,10 +8,9 @@ import fortscale.ml.scorer.ScoreMapping;
 import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class ScoreMapperConf extends AbstractScorerConf {
+public class ScoreMapperConf extends AbstractScorerMapperConf {
 	public static final String SCORER_TYPE = "score-mapper";
 
-	private IScorerConf baseScorerConf;
 	private ScoreMapping.ScoreMappingConf scoreMappingConf;
 
 	@JsonCreator
@@ -20,20 +19,14 @@ public class ScoreMapperConf extends AbstractScorerConf {
 			@JsonProperty("base-scorer") IScorerConf baseScorerConf,
 			@JsonProperty("score-mapping-conf") ScoreMapping.ScoreMappingConf scoreMappingConf) {
 
-		super(name);
-		Assert.notNull(baseScorerConf);
+		super(name, baseScorerConf);
 		Assert.notNull(scoreMappingConf);
-		this.baseScorerConf = baseScorerConf;
 		this.scoreMappingConf = scoreMappingConf;
 	}
 
 	@Override
 	public String getFactoryName() {
 		return SCORER_TYPE;
-	}
-
-	public IScorerConf getBaseScorerConf() {
-		return baseScorerConf;
 	}
 
 	public ScoreMapping.ScoreMappingConf getScoreMappingConf() {
