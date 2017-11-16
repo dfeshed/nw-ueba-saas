@@ -1,12 +1,14 @@
 import logging
 
-from datetime import timedelta
+from datetime import timedelta, datetime
+
+import airflow
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.operators.connector.sensor.hour_is_ready_sensor_operator import HourIsReadySensorOperator
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
+from presidio_extension.builders.adapter.adapter_dag_builder_extension import AdapterDagBuilderExtension
 
 ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
 
@@ -18,13 +20,13 @@ class AdapterDagBuilder(PresidioDagBuilder):
     returns the DAG according to the given attributes.
     """
 
-    conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
+    conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
 
     def __init__(self, data_sources):
         """
         C'tor.
-        :param data_source: The data source whose events we should work on
-        :type data_source: str
+        :param data_sources: The data source whose events we should work on
+        :type data_sources: str
         """
 
         self.data_sources = data_sources
@@ -47,12 +49,6 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 'schema': data_source,
             }
 
-            hour_is_ready_sensor = HourIsReadySensorOperator(dag=adapter_dag,
-                                                             task_id='adapter_sensor_{}'.format(data_source),
-                                                             poke_interval=60,  # 1 minute
-                                                             timeout=60*60*24*7,  # 1 week
-                                                             schema_name=data_source)
-
             # Create jar operator for each data source
             jar_operator = FixedDurationJarOperator(
                 task_id='adapter_{}'.format(data_source),
@@ -62,6 +58,17 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 java_args=java_args,
                 dag=adapter_dag)
 
-            hour_is_ready_sensor >> jar_operator
+            adapter_dag_extened = AdapterDagBuilderExtension()
+            adapter_dag_extened.build(adapter_dag, data_source, jar_operator)
 
         return adapter_dag
+
+builder = AdapterDagBuilder("file")
+adapter_config = airflow.models.DAG("adapter")
+#adapter_config.date_range(datetime.now(), 1)
+adapter_config.dag_id = "123"
+adapter_config.default_args = ""
+adapter_config.params = ""
+adapter_config.schedule_interval = 100
+adapter_config.start_date = datetime.now()
+builder.build(adapter_config)
