@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 @Configuration
-@Import({OutputWebappConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class})
+@Import({OutputWebappTestConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class})
 public class ApiControllerModuleTestConfig {
 
     @Bean
