@@ -38,7 +38,7 @@ public class EmbeddedElasticsearchInitialiser {
         try {
             embeddedElastic = EmbeddedElastic.builder()
                     .withElasticVersion(EL_TEST_VERSION)
-                    .withStartTimeout(2, TimeUnit.MINUTES)
+                    .withStartTimeout(1, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
                     .withCleanInstallationDirectoryOnStop(true)

@@ -18,6 +18,9 @@ public class User {
     @JsonProperty("id")
     private String id = null;
 
+    @JsonProperty("userId")
+    private String userId = null;
+
     @JsonProperty("username")
     private String username = null;
 
@@ -60,6 +63,26 @@ public class User {
     public void setId(String id) {
         this.id = id;
     }
+
+    public User userId(String userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    /**
+     * Get id
+     *
+     * @return id
+     **/
+    @ApiModelProperty(example = "d290f1ee-6c54-4b01-90e6-d701748f0851", required = true, value = "")
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
 
     public User username(String username) {
         this.username = username;
@@ -229,47 +252,42 @@ public class User {
         this.alertClassifications = alertClassifications;
     }
 
-
     @Override
-    public boolean equals(java.lang.Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(this.id, user.id) &&
-                Objects.equals(this.username, user.username) &&
-                Objects.equals(this.userDisplayName, user.userDisplayName) &&
-                Objects.equals(this.tags, user.tags) &&
-                Objects.equals(this.score, user.score) &&
-                Objects.equals(this.severity, user.severity) &&
-                Objects.equals(this.alertsCount, user.alertsCount) &&
-                Objects.equals(this.alerts, user.alerts) &&
-                Objects.equals(this.alertClassifications, user.alertClassifications);
+        return Objects.equals(id, user.id) &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(userDisplayName, user.userDisplayName) &&
+                Objects.equals(tags, user.tags) &&
+                Objects.equals(score, user.score) &&
+                severity == user.severity &&
+                Objects.equals(alertsCount, user.alertsCount) &&
+                Objects.equals(alerts, user.alerts) &&
+                Objects.equals(alertClassifications, user.alertClassifications);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, userDisplayName, tags, score, severity, alertsCount, alerts, alertClassifications);
+        return Objects.hash(id, userId, username, userDisplayName, tags, score, severity, alertsCount, alerts, alertClassifications);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class User {\n");
-
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    username: ").append(toIndentedString(username)).append("\n");
-        sb.append("    userDisplayName: ").append(toIndentedString(userDisplayName)).append("\n");
-        sb.append("    tags: ").append(toIndentedString(tags)).append("\n");
-        sb.append("    score: ").append(toIndentedString(score)).append("\n");
-        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
-        sb.append("    alertsCount: ").append(toIndentedString(alertsCount)).append("\n");
-        sb.append("    alerts: ").append(toIndentedString(alerts)).append("\n");
-        sb.append("    alertClassifications: ").append(toIndentedString(alertClassifications)).append("\n");
-        sb.append("}");
+        final StringBuilder sb = new StringBuilder("User{");
+        sb.append("id='").append(id).append('\'');
+        sb.append(", userId='").append(userId).append('\'');
+        sb.append(", username='").append(username).append('\'');
+        sb.append(", userDisplayName='").append(userDisplayName).append('\'');
+        sb.append(", tags=").append(tags);
+        sb.append(", score=").append(score);
+        sb.append(", severity=").append(severity);
+        sb.append(", alertsCount=").append(alertsCount);
+        sb.append(", alerts=").append(alerts);
+        sb.append(", alertClassifications=").append(alertClassifications);
+        sb.append('}');
         return sb.toString();
     }
 

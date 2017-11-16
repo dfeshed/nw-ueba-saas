@@ -187,6 +187,7 @@ public class UserApiControllerModuleTest {
         convertedUser.setUsername(user.getUserName());
         convertedUser.setAlertClassifications(user.getAlertClassifications());
         convertedUser.setAlertsCount(user.getAlertsCount());
+        convertedUser.setUserId(user.getUserId());
         return convertedUser;
     }
 

@@ -48,7 +48,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert) throws Exception {
+    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit) throws Exception {
         List<Indicator> indicators = new ArrayList<Indicator>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
@@ -67,7 +67,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit) throws Exception {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
@@ -86,7 +86,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
             features.put(fieldName, featureValue);
         }
 
-        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features);
+        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
 
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
 
