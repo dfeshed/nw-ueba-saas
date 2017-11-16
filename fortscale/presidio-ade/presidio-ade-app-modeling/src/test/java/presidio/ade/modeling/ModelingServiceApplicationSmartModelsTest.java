@@ -282,7 +282,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
         List<ClusterConf> firstGroupClusterConf = clusterConfs.stream().filter(clusterConf -> oneDayFeatures.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
-        List<ClusterConf> secondGroupClusterConf = clusterConfs.stream().filter(clusterConf -> oneDayFeatures.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
+        List<ClusterConf> secondGroupClusterConf = clusterConfs.stream().filter(clusterConf -> restDaysFeatures.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
 
         Double firstGroupWeight = firstGroupClusterConf.get(0).getWeight();
         firstGroupClusterConf.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(firstGroupWeight)));
