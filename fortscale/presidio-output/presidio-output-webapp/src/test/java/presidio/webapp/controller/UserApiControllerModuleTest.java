@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
-@ActiveProfiles("useEmbeddedElastic")
 public class UserApiControllerModuleTest {
 
     private static final String USERS_URI = "/users";

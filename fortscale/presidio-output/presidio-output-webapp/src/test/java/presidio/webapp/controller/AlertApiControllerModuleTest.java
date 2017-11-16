@@ -40,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
-@ActiveProfiles("useEmbeddedElastic")
 public class AlertApiControllerModuleTest {
 
     private static final String ALERTS_URI = "/alerts";
