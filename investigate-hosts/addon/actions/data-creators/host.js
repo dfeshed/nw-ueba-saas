@@ -1,9 +1,14 @@
 import { Machines } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
+import { isEmpty } from 'ember-utils';
+import { setAppliedHostFilter, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
+import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
+import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
+import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
+import _ from 'lodash';
 import Ember from 'ember';
 const { Logger } = Ember;
-import _ from 'lodash';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -214,6 +219,25 @@ const deleteHosts = (callbacks = callbacksDefault) => {
   };
 };
 
+const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }) => {
+  return (dispatch) => {
+    // On clicking the host name setting the machineId in the URL, on close removing the it from url
+    if (machineId && !isEmpty(machineId)) {
+      dispatch(initializeAgentDetails({ agentId: machineId }, true));
+      dispatch(changeDetailTab(tabName));
+    } else {
+      // Resetting the details data and input data
+      dispatch(resetDetailsInputAndContent());
+    }
+    if (filterId && !isEmpty(filterId)) {
+      dispatch(setAppliedHostFilter(filterId, true));
+    }
+    // Parse the query string and set the filter
+    if (query && !isEmpty(query)) {
+      dispatch(addExternalFilter(parseQueryString(query)));
+    }
+  };
+};
 export {
   getAllSchemas,
   getPageOfMachines,
@@ -222,6 +246,7 @@ export {
   exportAsFile,
   updateColumnVisibility,
   setHostColumnSort,
-  deleteHosts
+  deleteHosts,
+  initializeHostPage
 };
 

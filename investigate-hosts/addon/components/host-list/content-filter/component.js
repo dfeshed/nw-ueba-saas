@@ -40,6 +40,8 @@ const ContentFilter = Component.extend({
 
   flashMessage: service(),
 
+  routing: service('-routing'),
+
   classNames: 'content-filter',
 
   saveFilterName: null,
@@ -125,6 +127,12 @@ const ContentFilter = Component.extend({
       run.next(() => {
         this.get('eventBus').trigger('rsa-application-modal-close-save-search');
       });
+    },
+
+    resetFilter() {
+      const routName = 'protected.investigate.investigate-hosts.hosts';
+      this.get('routing').transitionTo(routName, [], { query: null });
+      this.send('resetFilters');
     },
 
     saveFilter() {

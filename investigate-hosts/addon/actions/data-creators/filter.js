@@ -108,10 +108,18 @@ const updateFilter = (expression) => {
  */
 const addSystemFilter = (expression) => {
   return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.ADD_SYSTEM_FILTER, payload: expression });
+    dispatch({ type: ACTION_TYPES.ADD_SYSTEM_FILTER, payload: [expression] });
     dispatch(getPageOfMachines());
   };
 };
+
+
+const addExternalFilter = (expression) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.ADD_SYSTEM_FILTER, payload: expression });
+  };
+};
+
 
 /**
  * Action creator for deleting the saved search
@@ -137,6 +145,7 @@ const deleteSavedSearch = (id, callbacks = callbacksDefault) => {
   };
 };
 
+
 export {
   setActiveFilter,
   updateFilter,
@@ -145,5 +154,6 @@ export {
   removeFilter,
   resetFilters,
   createCustomSearch,
-  deleteSavedSearch
+  deleteSavedSearch,
+  addExternalFilter
 };

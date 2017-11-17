@@ -7,7 +7,7 @@ import Immutable from 'seamless-immutable';
 const initialState = Immutable.from({
   filters: null,
   activeFilter: null,
-  expressionList: null,
+  expressionList: [],
   lastFilterAdded: null
 });
 
@@ -25,8 +25,7 @@ const _handleSystemFilter = (action) => {
     return state.merge({
       filters,
       filterSelected: defaultSearch,
-      customSearchVisible: !defaultSearch,
-      expressionList: []
+      customSearchVisible: !defaultSearch
     });
   };
 };
@@ -102,7 +101,7 @@ const filterReducer = handleActions({
   }),
 
   [ACTION_TYPES.ADD_SYSTEM_FILTER]: (state, { payload }) => state.merge({
-    expressionList: [payload]
+    expressionList: payload
   }),
 
   [ACTION_TYPES.SET_ACTIVE_FILTER]: (state, { payload }) => state.set('activeFilter', payload),

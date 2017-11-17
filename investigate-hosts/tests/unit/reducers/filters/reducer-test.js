@@ -41,7 +41,7 @@ test('should return the initial state', function(assert) {
   assert.deepEqual(result, {
     filters: null,
     activeFilter: null,
-    expressionList: null,
+    expressionList: [],
     lastFilterAdded: null
   });
 });
