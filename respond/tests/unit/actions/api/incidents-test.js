@@ -10,13 +10,15 @@ test('it creates the proper query for the getRelatedIndicators API method', func
     assert.equal(method, 'stream');
     assert.equal(modelName, 'related-alerts-search');
     assert.deepEqual(query, {
+      criteria: {
+        data: '1.1.1.1',
+        entityType: 'IP',
+        timeRange: {
+          lower: 0
+        }
+      },
       limit: 1000,
-      chunkSize: 100,
-      data: '1.1.1.1',
-      entityType: 'IP',
-      timeRange: {
-        lower: 0
-      }
+      chunkSize: 100
     });
   });
   Incidents.getRelatedAlerts('IP', '1.1.1.1', 'ALL_TIME', {});

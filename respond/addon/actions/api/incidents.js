@@ -147,10 +147,12 @@ IncidentsAPI.reopenClass({
     const streamOptions = { cancelPreviouslyExecuting: true };
     const lower = resolveSinceWhenStartTime(sinceWhen);
     const query = {
-      entityType,
-      data: entityId,
-      timeRange: {
-        lower
+      criteria: {
+        entityType,
+        data: entityId,
+        timeRange: {
+          lower
+        }
       },
       limit: 1000,
       chunkSize: 100
