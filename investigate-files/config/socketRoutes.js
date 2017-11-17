@@ -19,8 +19,8 @@ module.exports = function(environment) {
         requestDestination: '/ws/endpoint/file/search'
       },
       exportFile: {
-        subscriptionDestination: '/user/queue/endpoint/file/property/download',
-        requestDestination: '/ws/endpoint/file/property/download'
+        subscriptionDestination: '/user/queue/endpoint/file/property/export',
+        requestDestination: '/ws/endpoint/file/property/export'
       },
       saveFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/set',

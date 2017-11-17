@@ -6,6 +6,7 @@ const _hostDetails = (state) => state.endpoint.overview.hostDetails || [];
 const _snapShots = (state) => state.endpoint.detailsInput.snapShots;
 const _exportJsonStatus = (state) => state.endpoint.overview.exportJSONStatus;
 const _agentStatus = (state) => state.endpoint.machines.agentStatus;
+const _downloadId = (state) => state.endpoint.overview.downloadId;
 
 const _hostAgentStatus = createSelector(
   _hostDetails,
@@ -146,5 +147,14 @@ export const getBashHistories = createSelector(
       }
     }
     return [];
+  }
+);
+
+export const downloadLink = createSelector(
+  [ _downloadId ],
+  (downloadId) => {
+    if (downloadId) {
+      return `${location.origin}/endpoint/files/download/${downloadId}`;
+    }
   }
 );

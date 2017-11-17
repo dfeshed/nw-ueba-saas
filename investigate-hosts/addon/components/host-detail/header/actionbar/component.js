@@ -1,9 +1,8 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import injectService from 'ember-service/inject';
 import moment from 'moment';
-import { isJsonExportCompleted, isSnapshotsAvailable } from 'investigate-hosts/reducers/details/overview/selectors';
+import { isJsonExportCompleted, isSnapshotsAvailable, downloadLink } from 'investigate-hosts/reducers/details/overview/selectors';
 import { toggleInitiateScanModal } from 'investigate-hosts/actions/ui-state-creators';
 
 import {
@@ -18,7 +17,7 @@ const stateToComputed = (state) => ({
   host: state.endpoint.overview.hostDetails,
   agentId: state.endpoint.detailsInput.agentId,
   snapShots: state.endpoint.detailsInput.snapShots,
-  downloadId: state.endpoint.overview.downloadId,
+  downloadLink: downloadLink(state),
   isExportDisabled: !isSnapshotsAvailable(state),
   isJsonExportCompleted: isJsonExportCompleted(state)
 });
@@ -69,14 +68,6 @@ const ActionBar = Component.extend({
       const agentId = this.get('agentId');
       this.send('exportFileContext', { agentId, scanTime, categories: ['AUTORUNS'] });
     }
-  },
-
-  @computed('downloadId')
-  downloadLink(downloadId) {
-    if (downloadId) {
-      return `${location.origin}/endpoint/file/download/${downloadId}`;
-    }
   }
 });
-
 export default connect(stateToComputed, dispatchToActions)(ActionBar);
