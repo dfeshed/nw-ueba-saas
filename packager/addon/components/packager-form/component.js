@@ -132,7 +132,7 @@ const formComponent = Component.extend({
       }
       if (!this.get('isLogCollectionEnabled')) {
         // only package data need to be send when windows log collection is not enable
-        this.send('setConfig', { packageConfig: this.get('configData.packageConfig') });
+        this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
       } else if (!this.validateMandatoryFields()) {
         this.resetProperties();
         this.send('setConfig', this.get('configData'), false);
@@ -147,7 +147,7 @@ const formComponent = Component.extend({
       if (!this.validateMandatoryFields()) {
         this.resetProperties();
         // only log config data need to be send on click of this button.
-        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') });
+        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
       }
     },
 

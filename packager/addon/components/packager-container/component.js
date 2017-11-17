@@ -34,7 +34,7 @@ const Container = Component.extend({
     let source = null;
     if (!isEmpty(link)) {
       const time = Number(new Date());
-      source = `${link}?${time}`;
+      source = link.includes('?') ? `${link}&${time}` : `${link}?${time}`;
     }
     return source;
   },

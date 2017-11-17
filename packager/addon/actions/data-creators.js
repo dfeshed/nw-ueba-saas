@@ -21,7 +21,7 @@ import {
 const { Logger } = Ember;
 
 const downloadURL = '/rsa/nwe/management/packager/download';
-const downloadURLLogConfig = '/endpoint/logconfig/download';
+const downloadURLLogConfig = 'rsa/nwe/management/logconfig/download';
 
 /**
  * Action creator for fetching packager config information.
@@ -48,7 +48,7 @@ const getConfig = () => {
  * @public
  * @returns {Object}
  */
-const setConfig = (configData) => {
+const setConfig = (configData, configType) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SAVE_INFO,
@@ -56,10 +56,10 @@ const setConfig = (configData) => {
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.GET_INFO, response);
-          if ('OK' === response.data.statusCode || 'Success' === response.data) {
-            let url = downloadURL;
-            if (response.data.configType == 'LOGCONFIG') {
-              url = downloadURLLogConfig;
+          if (response.data.id) {
+            let url = `${downloadURL}?id=${response.data.id}`;
+            if (configType === 'LOG_CONFIG') {
+              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
             }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
