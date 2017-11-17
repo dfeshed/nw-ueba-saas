@@ -36,7 +36,7 @@
   }
   .meta-name {
     @include rsa-font(header, small);
-    color: text-color(primary, light);
+    color: text-color(primary, lighter);
     padding-right: rsa-whitespace();
   }
   .meta-value {

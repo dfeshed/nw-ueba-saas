@@ -3,14 +3,14 @@
 
   &__header {
     @include rsa-vendor-prefix(flex-grow,0);
-    background-color: background-color(primary, darker);
-    @include border-bottom(1px, solid, primary, dark);
+    background-color: background-color(primary, darkest);
+    @include border-bottom(1px, solid, primary, darker);
     align-items: baseline;
     justify-content: space-between;
     h2 {
       @include rsa-font(header, large);
       padding: rsa-whitespace();
-      color: text-color(primary, light);
+      color: text-color(primary, lighter);
 
       .rsa-investigate-events-table__sums {
         .rsa-investigate-event-counter__count {
@@ -79,6 +79,7 @@
 
     &-body-row {
       cursor: default;
+      border-top: 1px solid border-color(primary, dark);
     }
 
     &-body-cell {

@@ -92,7 +92,7 @@ $formSelectReadOnlyTypeColor: text-color(primary, light);
 $formSelectReadOnlyTagBackgroundColor: background-color(primary);
 $formSelectReadOnlyTagTypeColor: text-color(primary, lightest);
 
-$formButtonTypeColor: text-color(primary, lighter);
+$formButtonTypeColor: text-color(primary, lightest);
 $formButtonIconHoverColor: border-color(primary, lightest);
 $formButtonHoverTypeColor: text-color(primary, lightest);
 $formButtonDropdownOptionHoverTypeColor: text-color(primary, lightest);
@@ -100,7 +100,7 @@ $formButtonDropdownBackgroundColor: background-color(primary, darkest);
 $formButtonDropdownBorderColor: border-color(primary, lightest);
 $formButtonDropdownOptionBorderColor: border-color(primary, dark);
 $formButtonDropdownOptionHoverBackgroundColor: background-color(secondary, darker);
-$formButtonBorderColor: border-color(primary, light);
+$formButtonBorderColor: border-color(primary, lighter);
 $formButtonHoverBorderColor: border-color(primary, lightest);
 $formButtonActiveBackgroundColor: background-color(primary, darkest, nearly-transparent);
 

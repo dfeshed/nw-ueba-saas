@@ -6,7 +6,7 @@ $investigateReconFullWidth: 100%;
   .rsa-investigate-query__body {
     &-master {
       right: $reconWidth;
-      background-color: background-color(neutral,dark,nearly-transparent);
+      background-color: background-color(primary,darker);
     }
     &-slave {
       width: $reconWidth;
@@ -24,7 +24,7 @@ $investigateReconFullWidth: 100%;
   @include rsa-col(justify,fill);
 
   &__header {
-    background-color: background-color(primary,darkest,translucent);
+    background-color: background-color(primary,darkest);
     @include border-bottom(1px, solid, neutral, dark);
     @include rsa-vendor-prefix(flex-shrink, 1);
     padding: rsa-whitespace(least) rsa-whitespace();
@@ -94,7 +94,7 @@ $investigateReconFullWidth: 100%;
     }
     &-master-main {
       @include rsa-vendor-prefix(flex-grow,1);
-      background-color: background-color(neutral,dark,nearly-transparent);
+      background-color: background-color(primary,darkest);
     }
     &-master-aside {
       @include rsa-vendor-prefix(flex-shrink,0);
@@ -117,7 +117,7 @@ $investigateReconFullWidth: 100%;
       .rsa-investigate-query__body {
         &-master-aside {
           @include rsa-vendor-prefix(flex-basis,0);
-          background-color: background-color(neutral,dark,nearly-transparent);
+          background-color: background-color(primary,darkest);
           z-index: 1;
         }
         &-master-main {
@@ -151,10 +151,10 @@ $investigateReconFullWidth: 100%;
     bottom: 0;
     left: 0;
     right: 1px;
-    background-color: background-color(neutral,dark,nearly-transparent);
+    background-color: background-color(primary,darkest);
 
     &__header {
-      background-color: background-color(neutral,dark,nearly-transparent);
+      background-color: background-color(primary,darker);
     }
 
     .rsa-list-button {
@@ -171,7 +171,7 @@ $investigateReconFullWidth: 100%;
     }
 
     &-key-values {
-      @include border-bottom(1px, solid, primary, base, nearly-transparent);
+      @include border-bottom(1px, solid, primary, dark);
       color: text-color(primary,lightest);
       &:last-child {
         h2,
@@ -180,7 +180,7 @@ $investigateReconFullWidth: 100%;
         }
       }
       &__value {
-        @include border(1px, solid, neutral, base, nearly-transparent);
+        @include border(1px, solid, neutral, dark);
         border-radius: 2px;
         &.selected,
         &:hover {
@@ -208,7 +208,7 @@ $investigateReconFullWidth: 100%;
     .hover-data {
       height: 1.5rem;
       line-height: 2rem;
-      background-color: background-color(neutral,dark,nearly-transparent);
+      background-color: background-color(primary,darker);
       position: absolute;
       top: 2.5rem;
       left: 0;
@@ -236,7 +236,7 @@ $investigateReconFullWidth: 100%;
       position: absolute;
       right: 0;
       padding: 7px 9px;
-      background-color: background-color(neutral,dark,translucent);
+      background-color: background-color(primary,darker);
     }
 
     .timestamp {
@@ -247,7 +247,7 @@ $investigateReconFullWidth: 100%;
       padding: 0.75rem 0;
       text-align: center;
       color: text-color(primary,light);
-      background-color: background-color(neutral,dark,translucent);
+      background-color: background-color(primary,darker);
       &.right {
         right: 39px;
       }
@@ -259,7 +259,7 @@ $investigateReconFullWidth: 100%;
 
     .rsa-chart {
       margin: 0;
-      background-color: background-color(neutral,dark,nearly-transparent);
+      background-color: background-color(primary,darker);
       &.master {
         left: 185px;
         right: 224px;

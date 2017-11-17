@@ -7,7 +7,7 @@ $navTabActiveBorderBottomColor: border-color(secondary);
 $navTabActiveTypeColor: text-color(primary, lightest);
 $navTabHoverTypeColor: text-color(primary, lightest);
 $navTabImageryTypeColor: text-color(primary, light);
-$navTabLabelTypeColor: text-color(primary, light);
+$navTabLabelTypeColor: text-color(primary, lighter);
 
 @import 'nav-link-list';
 @import 'nav-tab';

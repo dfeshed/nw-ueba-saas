@@ -8,7 +8,7 @@
 }
 
 .panel-content {
-  background: background-color(primary, darker);
+  background: background-color(primary, darkest);
   color: text-color(primary, lighter);
   text-align: left;
   position: relative;
@@ -306,7 +306,6 @@
 
   .rsa-dropdown-action-list {
     li {
-      border-bottom: 1px solid border-color(primary, dark);
       @include rsa-font(body);
       padding: rsa-whitespace(less) rsa-whitespace();
     }
@@ -326,8 +325,6 @@
   .rsa-dropdown-link-list,
   .rsa-dropdown-action-list {
     li {
-      border-bottom: 1px solid border-color(primary, dark);
-
       &:last-child {
         border-bottom: none!important;
       }

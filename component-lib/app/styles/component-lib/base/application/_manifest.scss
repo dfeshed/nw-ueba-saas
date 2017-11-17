@@ -31,14 +31,7 @@ $applicationLoginVersionColor: text-color(primary, light);
 $applicationLoaderColor: text-color(primary, darker);
 $applicationLoaderColorAlt: text-color(secondary);
 $applicationLoaderLabelColor: text-color(primary, lightest);
-
-// sass-lint:disable-block indentation
-$applicationBodyBackgroundImage: radial-gradient(circle at 0px 25%, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%),
-radial-gradient(circle at 70% 0px, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%),
-radial-gradient(circle at 35% 65%, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%),
-radial-gradient(circle at 85% 85%, background-color(secondary, darker, almost-transparent) 0, background-color(secondary, darker, transparent) 75%);
-
-$applicationBodyBackgroundColor: background-color(primary, dark);
+$applicationBodyBackgroundColor: background-color(primary, darkest);
 
 @mixin global-nav() {
   position: fixed;
@@ -53,7 +46,6 @@ body, html {
 }
 
 body {
-  background-image: $applicationBodyBackgroundImage;
   background-color: $applicationBodyBackgroundColor;
 
   background-repeat: no-repeat;

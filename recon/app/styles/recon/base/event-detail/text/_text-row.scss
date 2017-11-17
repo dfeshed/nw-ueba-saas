@@ -1,7 +1,7 @@
 .rsa-text-entry {
   padding: 0 rsa-whitespace();
   min-height: 2rem;
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
 
   .text-container {
     line-height: 1.75rem;
@@ -19,6 +19,6 @@
 
   .highlighted-meta {
     background-color: background-color(secondary);
-    color: text-color(primary, lightest);
+    color: text-color(neutral);
   }
 }

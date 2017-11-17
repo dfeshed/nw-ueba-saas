@@ -33,7 +33,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       top: 0;
       border-left: 1px solid border-color(neutral, dark);
       z-index: 99;
-      background-image: $applicationBodyBackgroundImage;
       background-color: $applicationBodyBackgroundColor;
 
       i {
@@ -114,7 +113,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     left: rsa-whitespace(less);
     right: rsa-whitespace(less);
     @include rsa-font(paragraph, small);
-    color: text-color(primary, light);
+    color: text-color(primary, lightest);
     border-top: 1px solid border-color(primary, darkest);
 
     &:hover,
@@ -123,15 +122,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       margin: 0 calc(#{rsa-whitespace(less)} * -1);
       padding: 0 rsa-whitespace(less);
       border-top: 1px solid transparent;
-
-      + .rsa-data-table-body-row {
-        border-top: 1px solid transparent;
-      }
     }
 
     &:hover {
       .rsa-data-table-body-cell {
-        background-color: background-color(primary, darkest, nearly-transparent);
+        background-color: background-color(primary, darker);
       }
     }
 

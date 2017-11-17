@@ -19,7 +19,7 @@
 
       .name {
         @include rsa-font(header, small);
-        color: text-color(primary, light);
+        color: text-color(primary, lighter);
         padding-bottom: rsa-whitespace(least);
       }
 
