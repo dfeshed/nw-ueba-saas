@@ -32,7 +32,7 @@ const initiatePreferences = {
   },
   userServicePreferences: {
     eventsPreferences: {
-      currentReconView: 'TEXT',
+      currentReconView: 'PACKET',
       isHeaderOpen: true,
       isMetaShown: true,
       isReconExpanded: true,

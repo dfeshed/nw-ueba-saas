@@ -84,7 +84,6 @@ test('it renders proper label when downloading log data', function(assert) {
 });
 
 /*
- *@private
  *checks if serviceCall for getPreferences is happening successfully
  * if default download preference is changed to eg XML, then corresponding caption should change and reflect the same
 */

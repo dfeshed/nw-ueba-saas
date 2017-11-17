@@ -21,9 +21,7 @@ if (config.environment !== 'test') {
       'packets.hasStyledBytes',
       'packets.hasSignaturesHighlighted',
       'packets.packetsPageSize',
-      'text.decode',
-      'visuals.defaultReconView',
-      'visuals.currentReconView'
+      'text.decode'
     ]
   );
 

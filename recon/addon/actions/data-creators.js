@@ -12,7 +12,6 @@
 import Ember from 'ember';
 import { lookup } from 'ember-dependency-lookup';
 import { later } from 'ember-runloop';
-import { getStoredState } from 'redux-persist';
 
 import * as ACTION_TYPES from './types';
 import { createToggleActionCreator, persistPreferences } from './visual-creators';
@@ -382,43 +381,35 @@ const _checkForFatalApiError = (code) => {
 const _determineReconView = (meta, size) => {
   return (dispatch, getState) => {
     const { forcedView } = eventTypeFromMetaArray(meta);
-    // For the first time, default preferences should be picked from backend
-    if (!isPreferencesInitializedOnce) {
+    /*
+    * For the first time, default preferences should be picked from backend
+    * Also only for the packet event,default analysis view should be picked from backend
+    * Hence if condition is evaluated for the first time
+    * and for subsequent calls of Network events
+    */
+    if (!isPreferencesInitializedOnce || !forcedView) {
       isPreferencesInitializedOnce = true;
       const { endpointId } = getState().recon.data;
-      prefService.getPreferences('investigate-events', endpointId).then((data) => {     // For the first time, preferences should be picked from backend
+      prefService.getPreferences('investigate-events', endpointId).then((data) => {
         if (data) {
           dispatch({
             type: ACTION_TYPES.INITIATE_PREFERENCES,
             payload: data
           });
         }
-
-        /*
-        * needs to be called after the value for 'isMetaShown' is fetched from the backend
-        * and the above dispatch gets the default preferences and sets them
-        */
+        // it should be called after the value for 'isMetaShown' is fetched from the backend
         if (size !== 'full') {
           dispatch({
             type: ACTION_TYPES.TOGGLE_EXPANDED,
             payload: { setTo: size === 'max' }
           });
         }
-      });
-    }
-
-    if (forcedView) {
-      // Taking advantage of existing action creator that handles
-      // changing the recon view AND fetching the appropriate data
-      dispatch(setNewReconView(forcedView));
-    } else {
-      getStoredState({}, (err, storedState) => {
-        let newView = getState().recon.visuals.defaultReconView;
-        if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
-          newView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
-        }
+        const newView = forcedView || getState().recon.visuals.defaultReconView;
         dispatch(setNewReconView(newView));
       });
+    } else {
+      // For log event default analysis view should be text always so it comes to else part
+      dispatch(setNewReconView(forcedView));
     }
   };
 };

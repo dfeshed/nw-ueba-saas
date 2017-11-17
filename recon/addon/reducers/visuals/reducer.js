@@ -45,9 +45,10 @@ const visuals = handleActions({
     const isReconExpanded = handlePreference(eventsPreferences, eventsPreferences.isReconExpanded);
     const isRequestShown = handlePreference(eventsPreferences, eventsPreferences.isRequestShown);
     const isResponseShown = handlePreference(eventsPreferences, eventsPreferences.isResponseShown);
+    const defaultReconView = RECON_VIEW_TYPES_BY_NAME[eventsPreferences.currentReconView];
     const { defaultLogFormat } = userPreferences;
     const { defaultPacketFormat } = userPreferences;
-    return state.merge({ isMetaShown, isHeaderOpen, isReconExpanded, isRequestShown, isResponseShown, defaultLogFormat, defaultPacketFormat });
+    return state.merge({ isMetaShown, isHeaderOpen, isReconExpanded, isRequestShown, isResponseShown, defaultReconView, defaultLogFormat, defaultPacketFormat });
   },
 
   [ACTION_TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => {

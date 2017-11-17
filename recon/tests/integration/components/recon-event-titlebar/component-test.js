@@ -90,7 +90,6 @@ test('clicking header toggle executes action', function(assert) {
 });
 
 /*
- *@private
  *checks if serviceCall for getPreferences is happening successfully
  * checks if whatever the get call returns is set to the state and used succesfully
 */
@@ -111,7 +110,6 @@ test('Recon should initialize with default preferences set by user', function(as
 });
 
 /*
- *@private
  *checks if serviceCall for setPreferences is happening successfully
  * checks if whatever the user sets, same is given to setPreferences
 */
@@ -240,5 +238,35 @@ test('request/response insure that request, response, Top/Bottom and Side by Sid
     assert.equal(this.$('.rsa-icon-view-agenda-filled').length, false, 'Top/Bottom View button does not exist for log');
     assert.equal(this.$('.rsa-icon-layout-4-filled').length, false, 'Side by Side View button does not exist for log');
     assert.equal(this.$('.toggle-meta').length, true, 'Show/Hide Meta button should exist for log');
+  });
+});
+
+test('it renders packet view when set to text', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData(initializeData)
+    .setViewToText();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'TEXT');
+  });
+});
+
+test('it renders packet view when set to packet', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData()
+    .setViewToPacket();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'PACKET');
+  });
+});
+
+test('it renders packet view when preference set to packet', function(assert) {
+  new DataHelper(this.get('redux'))
+    .setViewToText()
+    .initializeData();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(redux.getState().recon.visuals.defaultReconView.name, 'PACKET');
   });
 });

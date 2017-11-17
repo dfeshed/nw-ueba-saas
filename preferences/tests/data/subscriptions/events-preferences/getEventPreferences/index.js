@@ -15,7 +15,7 @@ export default {
         serviceId: 'TestServiceId',
         collectionName: 'Test',
         eventsPreferences: {
-          currentReconView: 'TEXT',
+          currentReconView: 'PACKET',
           isHeaderOpen: true,
           isMetaShown: true,
           isReconExpanded: true,
