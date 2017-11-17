@@ -11,6 +11,7 @@ import { setQueryTimeRange } from 'investigate-events/actions/interaction-creato
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { lookup } from 'ember-dependency-lookup';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import { INITIATE_PREFERENCES } from 'recon/actions/types';
 
 const { log } = console;
 const prefService = lookup('service:preferences');
@@ -221,3 +222,15 @@ export const initializeInvestigate = (params) => {
     });
   };
 };
+
+/**
+ * This action is triggered when the preferences are updated for this module. This dispatches recon action to update
+ * the preferences state in recon
+ * TODO: This action creator would move to recon eventually when the preferences are split
+ * @param preferences The preferences data
+ * @public
+ */
+export const reconPreferencesUpdated = (preferences) => ({
+  type: INITIATE_PREFERENCES,
+  payload: preferences
+});

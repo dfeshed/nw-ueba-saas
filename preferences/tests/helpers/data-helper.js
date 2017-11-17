@@ -43,6 +43,16 @@ class DataHelper {
       });
     this.redux.dispatch(action);
   }
+
+  savePreference(preferences) {
+    const action = makePackAction(
+      LIFECYCLE.SUCCESS,
+      {
+        type: ACTION_TYPES.SAVE_PREFERENCES,
+        payload: preferences
+      });
+    this.redux.dispatch(action);
+  }
 }
 
 export default DataHelper;
