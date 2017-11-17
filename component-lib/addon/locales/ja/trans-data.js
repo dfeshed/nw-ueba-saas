@@ -233,6 +233,9 @@ export default {
       permissionError: 'ja_Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
       sessionUnavailable: 'ja_Session is unavailable for viewing.'
     },
+    fatalError: {
+      124: 'ja_Invalid session ID: {{eventId}}'
+    },
     toggles: {
       header: 'ja_Show/Hide Header',
       request: 'ja_Show/Hide Request',

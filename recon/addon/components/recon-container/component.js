@@ -1,7 +1,7 @@
 import { assert } from 'ember-metal/utils';
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { and } from 'ember-computed-decorators';
+import computed, { and } from 'ember-computed-decorators';
 import observer from 'ember-metal/observer';
 import { later, next } from 'ember-runloop';
 import service from 'ember-service/inject';
@@ -23,7 +23,8 @@ const stateToComputed = ({ recon, recon: { files, visuals, notifications } }) =>
   isReconExpanded: visuals.isReconExpanded,
   isReconOpen: visuals.isReconOpen,
   stopNotifications: notifications.stopNotifications,
-  status: files.fileExtractStatus
+  status: files.fileExtractStatus,
+  apiFatalErrorCode: recon.data.apiFatalErrorCode
 });
 
 const dispatchToActions = {
@@ -41,6 +42,7 @@ const ReconContainer = Component.extend({
   classNameBindings: ['isReady::loading'],
 
   flashMessages: service(),
+  i18n: service(),
 
   // BEGIN Component inputs
   endpointId: null,
@@ -67,6 +69,10 @@ const ReconContainer = Component.extend({
   @and('isViewReady', 'isAnimationDone')
   isReady: false,
 
+  @computed('i18n', 'apiFatalErrorCode', 'eventId')
+  errorMessage(i18n, code, eventId) {
+    return i18n.t(`recon.fatalError.${code}`, { eventId });
+  },
   // Temporary observer hacks while only doing redux half-way
   // If container participated in redux, then it would simply
   // bind to the same isReconExpanded and act directly, without

@@ -234,6 +234,9 @@ export default {
       permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
       sessionUnavailable: 'Session is unavailable for viewing.'
     },
+    fatalError: {
+      124: 'Invalid session ID: {{eventId}}'
+    },
     toggles: {
       header: 'Show/Hide Header',
       request: 'Show/Hide Request',

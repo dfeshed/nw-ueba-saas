@@ -7,11 +7,12 @@ const dataInitialState = Immutable.from({
   // Recon inputs
   endpointId: null,
   eventId: null,
-  contentError: null,
+  contentError: null, // handler for content related errors
   contentLoading: false,
   isStandalone: false,
   startTime: -1,
-  endTime: -1
+  endTime: -1,
+  apiFatalErrorCode: 0 // handler for shutting down recon and displaying error
 });
 
 const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);
@@ -33,6 +34,9 @@ const data = handleActions({
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: dataReceivedDoneLoading,
   [ACTION_TYPES.SET_INDEX_AND_TOTAL]: (state, { payload: { index, total } }) => {
     return state.merge({ index, total });
+  },
+  [ACTION_TYPES.SET_FATAL_API_ERROR_FLAG]: (state, { payload }) => {
+    return state.set('apiFatalErrorCode', payload);
   }
 }, dataInitialState);
 

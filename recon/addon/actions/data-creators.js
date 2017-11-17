@@ -18,6 +18,7 @@ import * as ACTION_TYPES from './types';
 import { createToggleActionCreator, persistPreferences } from './visual-creators';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
+import { FATAL_ERROR_CODES, GENERIC_API_ERROR } from 'recon/utils/error-codes';
 import { killAllBatching } from './util/batch-data-handler';
 import {
   fetchAliases,
@@ -340,6 +341,7 @@ const initializeRecon = (reconInputs) => {
         promise: fetchReconSummary(reconInputs),
         meta: {
           onFailure(response) {
+            dispatch(_checkForFatalApiError(response.code));
             Logger.error('Could not retrieve event summary', response);
           }
         }
@@ -354,6 +356,21 @@ const initializeRecon = (reconInputs) => {
       } else {
         dispatch(_determineReconView(reconInputs.meta, reconInputs.size));
       }
+    }
+  };
+};
+
+
+// This action creator will shut down recon completely.
+// We check for error codes that we are expecting, and only call this
+// dispatch function when we know that error code is being handled
+const _checkForFatalApiError = (code) => {
+  return (dispatch) => {
+    if (FATAL_ERROR_CODES.includes(code)) {
+      dispatch({
+        type: ACTION_TYPES.SET_FATAL_API_ERROR_FLAG,
+        payload: code || GENERIC_API_ERROR
+      });
     }
   };
 };
