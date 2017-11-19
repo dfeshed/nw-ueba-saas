@@ -25,9 +25,8 @@ import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:monitoring.properties")
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
-@Import({ElasticsearchTestConfig.class})
+@Import({ElasticsearchTestConfig.class,TestConfig.class})
 public class ExternalMonitoringTestConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
