@@ -48,8 +48,8 @@ dags:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr-*.jar
         main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
-        xmx: 1024
-        xms: 1024
+        xmx: 2048
+        xms: 2048
         extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     RawModelFeatureAggregationBucketsOperator:
       jvm_args:
