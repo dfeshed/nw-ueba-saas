@@ -1,9 +1,5 @@
 import logging
 
-from airflow import settings
-from airflow.models import DagRun
-from airflow.operators.sensors import BaseSensorOperator
-from airflow.utils.state import State
 from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
@@ -12,7 +8,7 @@ from airflow.utils.state import State
 
 class RootDagGapSensorOperator(BaseSensorOperator):
     """
-    Sensor all root dag instances with the specified dag_id (or that contain the sub dag id) until all root dag instances with execution_date that has greater 
+    Sensor all root dag instances with the specified dag_id (or that contain the sub dag id) until all root dag instances with execution_date that has greater
     gap than the given delta time finished running (reached to one of the following states: success, failed)
 
     :param external_dag_id: The dag_id that you want to wait for
@@ -28,7 +24,14 @@ class RootDagGapSensorOperator(BaseSensorOperator):
             external_dag_id,
             execution_delta,
             *args, **kwargs):
-        super(RootDagGapSensorOperator, self).__init__(retries=4,retry_exponential_backoff=True,max_retry_delay=300,retry_delay=5 ,*args, **kwargs)
+        super(RootDagGapSensorOperator, self).__init__(
+            retries=4,
+            retry_exponential_backoff=True,
+            max_retry_delay=300,
+            retry_delay=5,
+            *args,
+            **kwargs
+        )
 
         self._execution_delta = execution_delta
         self._root_external_dag_id = external_dag_id.split(".", 1)[0]

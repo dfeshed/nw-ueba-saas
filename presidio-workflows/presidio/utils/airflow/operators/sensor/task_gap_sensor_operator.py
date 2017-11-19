@@ -1,9 +1,5 @@
 import logging
 
-from airflow import settings
-from airflow.models import DagRun
-from airflow.operators.sensors import BaseSensorOperator
-from airflow.utils.state import State
 from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
@@ -33,7 +29,14 @@ class TaskGapSensorOperator(BaseSensorOperator):
             external_task_id,
             execution_delta,
             *args, **kwargs):
-        super(TaskGapSensorOperator, self).__init__(retries=4,retry_exponential_backoff=True,max_retry_delay=300,retry_delay=5,*args, **kwargs)
+        super(TaskGapSensorOperator, self).__init__(
+            retries=4,
+            retry_exponential_backoff=True,
+            max_retry_delay=300,
+            retry_delay=5,
+            *args,
+            **kwargs
+        )
 
         self._execution_delta = execution_delta
         self._external_dag_id = external_dag_id
