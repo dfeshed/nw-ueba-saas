@@ -13,12 +13,14 @@ import java.util.List;
 public class MultiRangeTimeGeneratorTest {
 
     @Test
-    public void MultiRangeTimeGeneratorDebugTest() throws GeneratorException {
+    public void MultiRangeTimeGeneratorTest() throws GeneratorException {
 
         List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
-        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(12,0), LocalTime.of(20,0), Duration.ofSeconds(60)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(1,0), LocalTime.of(2,0), Duration.ofSeconds(600)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(2,20), LocalTime.of(3,40), Duration.ofMinutes(15)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(6,22), LocalTime.of(16,40), Duration.ofMinutes(60)));
 
-        ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).plus(11, ChronoUnit.HOURS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
+        ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).plus(0, ChronoUnit.HOURS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
                 rangesList, Duration.ofMinutes(30));
         while (TG.hasNext()) System.out.println(TG.getNext().toString());
         Assert.assertTrue(true);

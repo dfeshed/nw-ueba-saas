@@ -1,18 +1,14 @@
 package presidio.data.generators.common.time;
 
-import org.apache.commons.lang3.tuple.Pair;
 import presidio.data.generators.common.GeneratorException;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import static java.lang.Math.max;
 
 /**
  * This {@link ITimeGenerator} returns {@link Instant}s from
@@ -26,8 +22,7 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
     private final Duration defaultInterval;
 
     private Instant nextInstant;
-    private int currentRangeIdx = -1;
-    private int previousRangeIdx = -1;
+    private int currentRangeIdx = 0;
 
 
     /**
@@ -62,8 +57,6 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
 
         if (defaultInterval.isZero()) {
             this.nextInstant = startInstant.truncatedTo(ChronoUnit.DAYS).plus(this.activityRanges.get(0).duration);
-            this.currentRangeIdx = 0;
-            this.previousRangeIdx = 0;
         } else {
             this.nextInstant = startInstant;
         }
@@ -76,41 +69,24 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
 
     @Override
     public Instant getNext() throws GeneratorException {
+
         if (hasNext()) {
             Instant returnedInstant = nextInstant;
-            int nextRangeIdx = -1;
             Duration activityRangeInterval = defaultInterval;
 
-            for (int rangeIdx = max(0,currentRangeIdx); rangeIdx < activityRanges.size(); rangeIdx++) {
+            for (int rangeIdx = currentRangeIdx; rangeIdx < activityRanges.size(); rangeIdx++) {
                 ActivityRange currentRange = activityRanges.get(rangeIdx);
                 Instant rangeStart = nextInstant.truncatedTo(ChronoUnit.DAYS).plus(currentRange.startNanoOfADay,ChronoUnit.NANOS);
                 Instant rangeEnd = nextInstant.truncatedTo(ChronoUnit.DAYS).plus(currentRange.endNanoOfADay,ChronoUnit.NANOS);
-                if (nextInstant.isAfter(rangeStart) && nextInstant.isBefore(rangeEnd))
+
+                if ((nextInstant.isAfter(rangeStart) || nextInstant.equals(rangeStart)) && nextInstant.isBefore(rangeEnd))
                 {
                     activityRangeInterval = currentRange.duration;
-                    nextRangeIdx = rangeIdx;
+                    currentRangeIdx = rangeIdx;
                     break;
                 }
             }
-            /** if in this iteration moved out of current range, need to set nextInstant to the end of currentInterval and advance the currentRange idx
-             *  if were between ranges, or stay in the same range - just increment by current interval
-            **/
-            if (nextRangeIdx == -1 && currentRangeIdx > previousRangeIdx && previousRangeIdx >= 0) // just stepped out of a range - set nextInstant to previous range end
-            {
-                nextInstant = startInstant.truncatedTo(ChronoUnit.DAYS).plus(activityRanges.get(currentRangeIdx).endNanoOfADay, ChronoUnit.NANOS);
-                previousRangeIdx = currentRangeIdx;
-            }
-            else if (nextRangeIdx > currentRangeIdx) // just moved to new range - set nextInstant to range start
-            {
-                nextInstant = startInstant.truncatedTo(ChronoUnit.DAYS).plus(activityRanges.get(nextRangeIdx).startNanoOfADay, ChronoUnit.NANOS);
-                previousRangeIdx = currentRangeIdx;
-                currentRangeIdx = nextRangeIdx;
-
-            }
-            else {
-                nextInstant = nextInstant.plus(activityRangeInterval);
-            }
-
+            nextInstant = nextInstant.plus(activityRangeInterval);
             return returnedInstant;
         } else {
             throw new NoSuchElementException("There are no more instants.");
