@@ -23,10 +23,10 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     }
 
     @Override
-    public void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Instant logicTime) {
-        Map<MetricEnums.MetricValues, Number> valuesmap = new HashMap<>();
-        valuesmap.put(MetricEnums.MetricValues.SUM, value);
-        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, valuesmap, tags, valueType, logicTime));
+    public void reportCustomMetric(String metricName, Number value, Set<String> tags, String valueType, Instant logicTime) {
+        Map<MetricEnums.MetricValues, Number> valuesMap = new HashMap<>();
+        valuesMap.put(MetricEnums.MetricValues.SUM, value);
+        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, valuesMap, tags, valueType, logicTime));
     }
 
     @Override

@@ -4,8 +4,8 @@ package presidio.monitoring.records;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.mongodb.core.index.Indexed;
 import presidio.monitoring.enums.MetricEnums;
 
 import java.util.Date;
@@ -31,8 +31,7 @@ public class MetricDocument {
     @Field(type = FieldType.String, store = true)
     private String name;
 
-    @Field(type = FieldType.Object, store = true)
-    @Indexed
+    @Field(type = FieldType.Object, store = true, index = FieldIndex.analyzed)
     private Map<MetricEnums.MetricValues, Number> value;
 
     @Field(type = FieldType.Date, store = true)

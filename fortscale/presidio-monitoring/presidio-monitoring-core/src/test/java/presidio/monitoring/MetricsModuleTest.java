@@ -2,7 +2,6 @@ package presidio.monitoring;
 
 
 import org.apache.commons.collections.IteratorUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = MetricGenerateServiceTestConfig.class)
 public class MetricsModuleTest {

@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface PresidioExternalMonitoringService {
 
-    void reportCustomMetric(String metricName, long value, Set<String> tags, String valueType, Instant logicTime);
+    void reportCustomMetric(String metricName, Number value, Set<String> tags, String valueType, Instant logicTime);
 
     void reportCustomMetricMultipleValues(String metricName, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String valueType, Instant logicTime);
 
