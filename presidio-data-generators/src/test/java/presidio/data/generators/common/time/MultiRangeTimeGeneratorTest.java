@@ -22,8 +22,12 @@ public class MultiRangeTimeGeneratorTest {
 
         ITimeGenerator TG = new MultiRangeTimeGenerator(Instant.now().truncatedTo(ChronoUnit.DAYS).plus(0, ChronoUnit.HOURS),Instant.now().truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS),
                 rangesList, Duration.ofMinutes(30));
-        while (TG.hasNext()) System.out.println(TG.getNext().toString());
-        Assert.assertTrue(true);
+        int count = 0;
+        while (TG.hasNext()) {
+            System.out.print(++count + " ");
+            System.out.println(TG.getNext().toString());
+        }
+        Assert.assertEquals(45, count);
     }
 
 }
