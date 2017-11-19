@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,12 +40,10 @@ import presidio.ade.test.utils.generators.AccumulatedSmartsDailyGenerator;
 import presidio.data.generators.common.*;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
-import scala.util.parsing.combinator.testing.Str;
 
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -113,9 +113,10 @@ public class ModelingServiceApplicationSmartModelsTest {
             contextIdPatternIndex++;
         }
 
-        CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, Instant.now()));
+        Instant end = Instant.now();
+        CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, end));
         Assert.assertTrue(commandResult.isSuccess());
-        AssertDescendingWeightAvgBetweenGroups(featuresGroupToScoreAndProbabilityMap);
+        AssertDescendingWeightAvgBetweenGroups(featuresGroupToScoreAndProbabilityMap, end);
     }
 
 
@@ -144,9 +145,10 @@ public class ModelingServiceApplicationSmartModelsTest {
 
         GenerateAccumulatedSmarts(featuresGroupToScoreAndProbabilityMap, numOfSmarts, generatorContextIdPattern, daysBackFrom, daysBackTo);
 
-        CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, Instant.now()));
+        Instant end = Instant.now();
+        CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, end));
         Assert.assertTrue(commandResult.isSuccess());
-        AssertDescendingWeightAvgBetweenGroups(featuresGroupToScoreAndProbabilityMap);
+        AssertDescendingWeightAvgBetweenGroups(featuresGroupToScoreAndProbabilityMap, end);
     }
 
     /**
@@ -174,16 +176,17 @@ public class ModelingServiceApplicationSmartModelsTest {
 
         GenerateAccumulatedSmarts(featuresGroupToScoreAndProbabilityMap, numOfSmarts, generatorContextIdPattern, daysBackFrom, daysBackTo);
 
-        CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, Instant.now()));
+        Instant end = Instant.now();
+        CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, end));
         Assert.assertTrue(commandResult.isSuccess());
-        AssertDescendingWeightAvgBetweenGroups(featuresGroupToScoreAndProbabilityMap);
+        AssertDescendingWeightAvgBetweenGroups(featuresGroupToScoreAndProbabilityMap, end);
     }
 
     /**
      * Create 2 groups of features with different 4 features, where first group has high score and second group has low score.
      * 1 day - 10 smarts will be generated with first group.
      * 29 days - 10 smarts will generated with second group per day.
-     *
+     * <p>
      * results:
      * weight of second group features should be lower than weight of first group.
      *
@@ -204,55 +207,55 @@ public class ModelingServiceApplicationSmartModelsTest {
         List<String> ContextIdPatternList = createContextIdPatternList(featureGroups.size());
         Iterator<List<AggregatedFeatureEventConf>> iterator = featureGroups.iterator();
 
-        if(iterator.hasNext()) {
+        if (iterator.hasNext()) {
             List<AggregatedFeatureEventConf> firstGroup = iterator.next();
 
             while (iterator.hasNext()) {
                 mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
-                LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> twoGroups = new LinkedHashMap<>();
 
                 List<AggregatedFeatureEventConf> secondGroup = iterator.next();
                 String generatorContextIdPattern = ContextIdPatternList.get(contextIdPatternIndex);
 
-                List<String> firstGroupFeatures = GenerateAccumulatedSmartsWithFeaturesGroup(firstGroup,  firstScore,  probability,  numOfSmarts,  generatorContextIdPattern,  2, 1);
-                List<String> secondGroupFeatures =  GenerateAccumulatedSmartsWithFeaturesGroup(secondGroup,  secondScore,  probability,  numOfSmarts,  generatorContextIdPattern,  32, 2);
+                List<String> firstFeaturesGroup = GenerateAccumulatedSmartsWithFeaturesGroup(firstGroup, firstScore, probability, numOfSmarts, generatorContextIdPattern, 2, 1);
+                List<String> secondFeaturesGroup = GenerateAccumulatedSmartsWithFeaturesGroup(secondGroup, secondScore, probability, numOfSmarts, generatorContextIdPattern, 32, 2);
 
                 firstGroup = secondGroup;
                 contextIdPatternIndex++;
 
-                CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, Instant.now()));
+                Instant end = Instant.now();
+                CommandResult commandResult = bootShim.getShell().executeCommand(String.format(FEATURE_AGGREGATION_RECORDS_LINE_FORMAT, end));
                 Assert.assertTrue(commandResult.isSuccess());
 
-                AssertWeightsOfTwoGroups(firstGroupFeatures, secondGroupFeatures);
+                AssertWeightsOfTwoGroups(firstFeaturesGroup, secondFeaturesGroup, end);
             }
         }
     }
 
     /**
-     *
-     * @param group group of features
-     * @param score score of features
-     * @param probability probability
-     * @param numOfSmarts num of smarts
+     * @param group                     group of features
+     * @param score                     score of features
+     * @param probability               probability
+     * @param numOfSmarts               num of smarts
      * @param generatorContextIdPattern generatorContextIdPattern
-     * @param daysBackFrom daysBackFrom
-     * @param daysBackTo daysBackTo
+     * @param daysBackFrom              daysBackFrom
+     * @param daysBackTo                daysBackTo
      * @throws GeneratorException
      */
-    public List<String> GenerateAccumulatedSmartsWithFeaturesGroup(List<AggregatedFeatureEventConf> group, Double score, int probability, int numOfSmarts, String generatorContextIdPattern, int daysBackFrom, int daysBackTo) throws GeneratorException{
-        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>>  featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
+    public List<String> GenerateAccumulatedSmartsWithFeaturesGroup(List<AggregatedFeatureEventConf> group, Double score, int probability, int numOfSmarts, String generatorContextIdPattern, int daysBackFrom, int daysBackTo) throws GeneratorException {
+        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
         featuresGroupToScoreAndProbabilityMap.put(group, new Pair<>(score, probability));
         GenerateAccumulatedSmarts(featuresGroupToScoreAndProbabilityMap, numOfSmarts, generatorContextIdPattern, daysBackFrom, daysBackTo);
         return group.stream().map(features -> features.getName()).collect(Collectors.toList());
     }
 
 
-
     /**
      * Assert descending weight avg between groups
      */
-    public void AssertDescendingWeightAvgBetweenGroups(LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap) {
-        List<ModelDAO> weightModel = mongoTemplate.findAll(ModelDAO.class, "model_smart.global.weights.userId.hourly");
+    public void AssertDescendingWeightAvgBetweenGroups(LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap, Instant end) {
+        Query query = new Query()
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(end));
+        List<ModelDAO> weightModel = mongoTemplate.find(query ,ModelDAO.class, "model_smart.global.weights.userId.hourly");
 
         Double oneBeforeCurrentAvgWeight = 0.0;
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
@@ -273,22 +276,24 @@ public class ModelingServiceApplicationSmartModelsTest {
     /**
      * Assert that weight of oneDayFeatures(features with high score for 1 day)
      * greater than weight of restDaysFeatures (features with low score for 29 days).     *
-     *
+     * <p>
      * Assert that features in each group get same weight.
-     *
      */
-    public void AssertWeightsOfTwoGroups(List<String> highScoreFeaturesForOneDay , List<String> lowScoreFeaturesForRestDays) {
-        List<ModelDAO> weightModel = mongoTemplate.findAll(ModelDAO.class, "model_smart.global.weights.userId.hourly");
+    public void AssertWeightsOfTwoGroups(List<String> highScoreFeaturesForOneDay, List<String> lowScoreFeaturesForRestDays,  Instant end) {
+        Query query = new Query()
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(end));
+        List<ModelDAO> weightModel = mongoTemplate.find(query ,ModelDAO.class, "model_smart.global.weights.userId.hourly");
+
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
-        List<ClusterConf> firstGroupClusterConf = clusterConfs.stream().filter(clusterConf -> highScoreFeaturesForOneDay.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
-        List<ClusterConf> secondGroupClusterConf = clusterConfs.stream().filter(clusterConf -> lowScoreFeaturesForRestDays.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
+        List<ClusterConf> firstClusterConfGroup = clusterConfs.stream().filter(clusterConf -> highScoreFeaturesForOneDay.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
+        List<ClusterConf> secondClusterConfGroup = clusterConfs.stream().filter(clusterConf -> lowScoreFeaturesForRestDays.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
 
-        Double firstGroupWeight = firstGroupClusterConf.get(0).getWeight();
-        firstGroupClusterConf.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(firstGroupWeight)));
+        Double firstGroupWeight = firstClusterConfGroup.get(0).getWeight();
+        firstClusterConfGroup.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(firstGroupWeight)));
 
-        Double secondGroupWeight =  secondGroupClusterConf.get(0).getWeight();
-        secondGroupClusterConf.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(secondGroupWeight)));
+        Double secondGroupWeight = secondClusterConfGroup.get(0).getWeight();
+        secondClusterConfGroup.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(secondGroupWeight)));
 
         Assert.assertTrue(firstGroupWeight > secondGroupWeight);
     }
@@ -331,27 +336,28 @@ public class ModelingServiceApplicationSmartModelsTest {
 
 
     /**
-     *  Create features group
-     * @param groupSize group size
+     * Create features group
+     *
+     * @param groupSize   group size
      * @param firstScore
      * @param secondScore
      * @param probability
      * @return
      */
-    public LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> createFeaturesGroupPairs(int groupSize, Double firstScore,  Double secondScore, int probability) {
+    public LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> createFeaturesGroupPairs(int groupSize, Double firstScore, Double secondScore, int probability) {
         List<AggregatedFeatureEventConf> features = getAggregatedFeatureWithoutZeroWeightFeatures();
         List<List<AggregatedFeatureEventConf>> featureGroups = Lists.partition(features, groupSize);
         LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
 
         Iterator<List<AggregatedFeatureEventConf>> iterator = featureGroups.iterator();
-        if(iterator.hasNext()) {
+        if (iterator.hasNext()) {
             List<AggregatedFeatureEventConf> firstGroup = iterator.next();
 
             while (iterator.hasNext()) {
-                    List<AggregatedFeatureEventConf> secondGroup = iterator.next();
+                List<AggregatedFeatureEventConf> secondGroup = iterator.next();
 
-                    featuresGroupToScoreAndProbabilityMap.put(firstGroup, new Pair<>(firstScore, probability));
-                    featuresGroupToScoreAndProbabilityMap.put(secondGroup, new Pair<>(secondScore, probability));
+                featuresGroupToScoreAndProbabilityMap.put(firstGroup, new Pair<>(firstScore, probability));
+                featuresGroupToScoreAndProbabilityMap.put(secondGroup, new Pair<>(secondScore, probability));
 
                 firstGroup = secondGroup;
 
