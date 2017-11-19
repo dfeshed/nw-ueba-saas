@@ -4,6 +4,8 @@ if [ "$1" = "--uninstall" ]; then
 
 echo "Stopping config server"
 systemctl stop configserver
+echo "Sleeping for 5 seconds before deleting configuration service files"
+sleep 5
 echo "Removing chkconfig setting"
 chkconfig --del configserver
 echo "Removing configuration service files"

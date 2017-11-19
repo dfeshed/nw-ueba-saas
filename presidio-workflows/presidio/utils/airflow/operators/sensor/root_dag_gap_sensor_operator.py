@@ -4,6 +4,10 @@ from airflow import settings
 from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.state import State
+from airflow.models import DagRun
+from airflow.operators.sensors import BaseSensorOperator
+from airflow.utils.db import provide_session
+from airflow.utils.state import State
 
 
 class RootDagGapSensorOperator(BaseSensorOperator):
@@ -45,9 +49,8 @@ class RootDagGapSensorOperator(BaseSensorOperator):
 
         return self._is_finished_wait_for_gapped_dag(execution_date_lt)
 
-
-    def _is_finished_wait_for_gapped_dag(self, execution_date_lt):
-        session = settings.Session()
+    @provide_session
+    def _is_finished_wait_for_gapped_dag(self, execution_date_lt,session=None):
 
         gapped_root_dag_run = session.query(DagRun).filter(
             DagRun.dag_id == self._root_external_dag_id,
@@ -56,8 +59,5 @@ class RootDagGapSensorOperator(BaseSensorOperator):
         ).order_by(
             DagRun.execution_date.asc()
         ).first()
-
-        session.commit()
-        session.close()
 
         return gapped_root_dag_run == None

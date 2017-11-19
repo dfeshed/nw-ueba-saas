@@ -4,12 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.domain.spring.EventPersistencyServiceConfig;
-import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
@@ -19,7 +16,6 @@ import presidio.output.processor.services.user.UserServiceImpl;
  * Created by efratn on 22/08/2017.
  */
 @Configuration
-@Import({EventPersistencyServiceConfig.class})
 public class UserServiceConfig {
 
     @Value("${user.severities.batch.size:2000}")
@@ -62,13 +58,13 @@ public class UserServiceConfig {
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays,defaultAlertsBatchFile );
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchFile);
     }
 
     @Bean
-    public UserScoreService userScoreService(){
-        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService,defaultUsersBatchFile,defaultAlertsBatchFile,percentThresholdCritical,percentThresholdHigh,percentThresholdMedium
-                ,alertContributionCritical,alertContributionHigh,alertContributionMedium,alertContributionLow);
+    public UserScoreService userScoreService() {
+        return new UserScoreServiceImpl(userPersistencyService, alertPersistencyService, defaultUsersBatchFile, defaultAlertsBatchFile, percentThresholdCritical, percentThresholdHigh, percentThresholdMedium
+                , alertContributionCritical, alertContributionHigh, alertContributionMedium, alertContributionLow);
     }
 
 }

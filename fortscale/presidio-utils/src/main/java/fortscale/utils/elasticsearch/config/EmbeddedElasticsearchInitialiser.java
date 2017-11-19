@@ -28,8 +28,7 @@ public class EmbeddedElasticsearchInitialiser {
 
     private EmbeddedElastic embeddedElastic = null;
 
-    @PostConstruct
-    public void setupEmbeddedElasticsearch() {
+    public void start() {
         if(embeddedElastic != null) {
             logger.debug("embedded elasticsearch already started, skipping startup");
             return;
@@ -45,14 +44,12 @@ public class EmbeddedElasticsearchInitialiser {
                     .build()
                     .start();
         } catch (Exception e) {
-//            stopEmbeddedElasticsearch();
             embeddedElastic = null;
             Assert.fail("Failed to start elasticsearch");
         }
     }
 
-    @PreDestroy
-    public void stopEmbeddedElasticsearch() {
+    public void stop() {
         logger.debug("stopping embedded elasticsearch");
         embeddedElastic.stop();
 
