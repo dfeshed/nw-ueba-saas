@@ -32,11 +32,11 @@ public class MetricsModuleTest {
     public void createTestMetrics() {
         Instant from = Instant.now().minusMillis(1000000);
         Instant to = Instant.now().minusMillis(1000);
-        List values = new LinkedList();
+        List<Number> values = new LinkedList();
         values.add(100);
         values.add(50);
         values.add(10);
-        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, "test", null, false);
+        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, "test", null);
         Iterable<MetricDocument> responce = presidioMetricPersistencyService.save(metricList);
         List<MetricDocument> metricDocumentList = IteratorUtils.toList(responce.iterator());
     }

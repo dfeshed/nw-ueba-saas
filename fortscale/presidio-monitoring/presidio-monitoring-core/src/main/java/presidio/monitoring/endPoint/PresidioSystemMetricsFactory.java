@@ -3,15 +3,18 @@ package presidio.monitoring.endPoint;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.util.StringUtils;
+import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
@@ -40,15 +43,21 @@ public class PresidioSystemMetricsFactory {
     }
 
     private Metric createMemoryMetric(String name, long value) {
-        return new Metric(name, value, tags, MEMORY, false);
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, value);
+        return new Metric(name, map, tags, MEMORY, false);
     }
 
     private Metric createSystemMetric(String name, long value) {
-        return new Metric(name, value, tags, SYSTEM, false);
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, value);
+        return new Metric(name, map, tags, SYSTEM, false);
     }
 
     private Metric createThreadsMetric(String name, long value) {
-        return new Metric(name, value, tags, THREADS, false);
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, value);
+        return new Metric(name, map, tags, THREADS, false);
     }
 
     public List<Metric> metrics() {

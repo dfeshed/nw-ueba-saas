@@ -5,14 +5,21 @@ import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.factory.PresidioMetricFactory;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -104,7 +111,9 @@ public class MonitoringAspects {
         joinPoint.proceed();
         long endTime = System.nanoTime();
         long time = Long.divideUnsigned(endTime - startTime, 1000000000);
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, time, UNIT_TYPE_LONG));
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, time);
+        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, map, UNIT_TYPE_LONG));
         logger.debug("Metric {} run time is {} milli seconds. ", metricName, time);
     }
 

@@ -5,8 +5,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.mongodb.core.index.Indexed;
+import presidio.monitoring.enums.MetricEnums;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,8 +31,9 @@ public class MetricDocument {
     @Field(type = FieldType.String, store = true)
     private String name;
 
-    @Field(type = FieldType.Long, store = true)
-    private long value;
+    @Field(type = FieldType.Object, store = true)
+    @Indexed
+    private Map<MetricEnums.MetricValues, Number> value;
 
     @Field(type = FieldType.Date, store = true)
     private Date timestamp;
@@ -40,37 +44,45 @@ public class MetricDocument {
     @Field(type = FieldType.String, store = true)
     private String unit;
 
-    public MetricDocument(String name, long value, Set<String> tags, String unit) {
-        this.id = UUID.randomUUID().toString();
-        this.name = name;
-        this.value = value;
-        this.timestamp = new Date();
-        this.tags = tags;
-        this.unit = unit;
-    }
+    @Field(type = FieldType.Date, store = true)
+    private Date logicTime;
 
-    public MetricDocument(String name, long value, Date timestamp, Set<String> tags, String unit) {
+    public MetricDocument(String name, Map<MetricEnums.MetricValues, Number> value, Date timestamp, Set<String> tags, String unit, Date logicTime) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.value = value;
         this.timestamp = timestamp;
         this.tags = tags;
         this.unit = unit;
+        this.logicTime = logicTime;
+    }
+
+    public MetricDocument() {
+    }
+
+
+    public Date getLogicTime() {
+        return logicTime;
+    }
+
+    public void setLogicTime(Date logicTime) {
+        this.logicTime = logicTime;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public MetricDocument() {
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setValue(long value) {
+    public void setValue(Map<MetricEnums.MetricValues, Number> value) {
         this.value = value;
+    }
+
+    public void addValue(MetricEnums.MetricValues name, Number value) {
+        this.value.put(name, value);
     }
 
     public void setTimestamp(Date timestamp) {
@@ -93,7 +105,7 @@ public class MetricDocument {
         return id;
     }
 
-    public long getValue() {
+    public Map<MetricEnums.MetricValues, Number> getValue() {
         return value;
     }
 
@@ -114,7 +126,7 @@ public class MetricDocument {
         return "PresidioMetric{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", value=" + value +
+                ", value=" + value.toString() +
                 ", timestamp=" + timestamp +
                 ", tags=" + tags +
                 ", unit='" + unit + '\'' +
