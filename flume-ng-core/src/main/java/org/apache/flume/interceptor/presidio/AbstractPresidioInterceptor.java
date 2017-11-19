@@ -11,6 +11,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * This class adds support for 2 things:
+ * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio sink/source must also be used when using a Presidio interceptor.
+ * 2) for using a metric service (that needs an application name).
+ */
 public abstract class AbstractPresidioInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory

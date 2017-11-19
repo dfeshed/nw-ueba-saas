@@ -17,6 +17,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * This interceptor is used to modify the of values in the received JSON according to the given patterns/replace-strings.
+ * Returns the same JSON with the updated values
+ */
 public class JsonSearchAndReplaceInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory

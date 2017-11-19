@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * This interceptor is used to modify the names of the fields in the received JSON according to the given configuration.
+ * Returns the same JSON with the updated values
+ */
 public class JsonFieldRenamerInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory

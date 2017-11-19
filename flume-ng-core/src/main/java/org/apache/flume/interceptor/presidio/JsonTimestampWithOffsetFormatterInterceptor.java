@@ -18,6 +18,10 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * This interceptor is used to modify the format of the timestamp the received JSON.
+ * Returns the same JSON with the updated timestamp (in the dame field  or a new field depends on the configuration)
+ */
 public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidioInterceptor {
 
 

@@ -25,7 +25,7 @@ import static org.apache.flume.CommonStrings.START_DATE;
 
 /**
  * This class adds support for 2 things:
- * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A batchable sink must also be used when using a batchable source.
+ * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio sink/interceptors must also be used when using a Presidio source.
  * 2) for using a metric service (that needs an application name).
  */
 public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {

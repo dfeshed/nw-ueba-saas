@@ -6,6 +6,11 @@ import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
 import org.apache.flume.interceptor.Interceptor;
 
+
+/**
+ * This class adds support for 2 things:
+ * 2) for using a metric service (that needs an application name).
+ */
 public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.Builder {
 
     protected String applicationName;

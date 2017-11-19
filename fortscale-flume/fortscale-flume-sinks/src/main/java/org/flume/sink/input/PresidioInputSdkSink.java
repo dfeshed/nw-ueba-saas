@@ -26,6 +26,9 @@ import java.util.Map;
 
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 
+/**
+ * an AbstractPresidioSink that uses the InputSDK jar to write events to Presidio-Input's input
+ */
 public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioInputSdkSink.class);

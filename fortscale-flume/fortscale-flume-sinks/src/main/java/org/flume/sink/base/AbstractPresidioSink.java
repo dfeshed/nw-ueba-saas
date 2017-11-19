@@ -13,11 +13,15 @@ import java.util.List;
 import static org.apache.flume.CommonStrings.APPLICATION_NAME;
 import static org.apache.flume.CommonStrings.IS_BATCH;
 
+/**
+ * This class adds support for 3 things:
+ * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio source\interceptors must also be used when using a Presidio source.
+ * 2) for using a metric service (that needs an application name).
+ * 3) using the backoff mechanism with Presidio's default configurations
+ */
 public abstract class AbstractPresidioSink<T> extends AbstractSink implements Configurable {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSink.class);
-
-//    protected final SinkCounter sinkCounter = new SinkCounter(getName() + "-counter");
 
     private static final String MIN_BACKOFF_SLEEP = "minBackoffSleep";
     private static final String MAX_BACKOFF_SLEEP = "maxBackoffSleep";
@@ -42,15 +46,11 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     @Override
     public void start() {
-//        if (sinkCounter.getStartTime() == 0L) { //if wasn't started yet
-//            sinkCounter.start();
-//        }
         super.start();
     }
 
     @Override
     public void stop() {
-//        sinkCounter.stop();
         super.stop();
     }
 

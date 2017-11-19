@@ -39,6 +39,10 @@ import static org.apache.flume.CommonStrings.PASSWORD;
 import static org.apache.flume.CommonStrings.PORT;
 import static org.apache.flume.CommonStrings.USERNAME;
 
+
+/**
+ * an AbstractPresidioSink that writes events to MongoDB
+ */
 public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
