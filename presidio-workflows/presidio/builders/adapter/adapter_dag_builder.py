@@ -1,8 +1,7 @@
 import logging
 
-from datetime import timedelta, datetime
+from datetime import timedelta
 
-import airflow
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
@@ -20,7 +19,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
     returns the DAG according to the given attributes.
     """
 
-    conf_reader = ConfigServerConfigurationReaderSingleton().config_server_reader
+    conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     def __init__(self, data_sources):
         """
@@ -58,17 +57,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
                 java_args=java_args,
                 dag=adapter_dag)
 
-            adapter_dag_extened = AdapterDagBuilderExtension()
-            adapter_dag_extened.build(adapter_dag, data_source, jar_operator)
+            adapter_dag_extended= AdapterDagBuilderExtension()
+            adapter_dag_extended.build(adapter_dag, data_source, jar_operator)
 
         return adapter_dag
-
-builder = AdapterDagBuilder("file")
-adapter_config = airflow.models.DAG("adapter")
-#adapter_config.date_range(datetime.now(), 1)
-adapter_config.dag_id = "123"
-adapter_config.default_args = ""
-adapter_config.params = ""
-adapter_config.schedule_interval = 100
-adapter_config.start_date = datetime.now()
-builder.build(adapter_config)
