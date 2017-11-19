@@ -17,7 +17,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.model.UserQuery;
 import presidio.webapp.model.UsersWrapper;
-import presidio.webapp.spring.OutputWebappConfigurationTest;
+import presidio.webapp.spring.RestServiceTestConfig;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = OutputWebappConfigurationTest.class)
+@ContextConfiguration(classes = RestServiceTestConfig.class)
 public class RestUserServiceTest {
 
     @Autowired
