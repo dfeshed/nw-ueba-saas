@@ -230,7 +230,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>auto-generate-output-yml</id>
+                        <id>auto-generate-manager-yml</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>generate</goal>
