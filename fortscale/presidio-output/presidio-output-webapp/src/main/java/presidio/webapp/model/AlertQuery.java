@@ -37,7 +37,7 @@ public class AlertQuery {
     private BigDecimal startTimeTo = null;
 
     @JsonProperty("feedback")
-    private List<Feedback> feedback = new ArrayList<Feedback>();
+    private List<AlertQueryEnums.AlertFeedback> feedback = new ArrayList<AlertQueryEnums.AlertFeedback>();
 
     @JsonProperty("tags")
     private List<String> tags = new ArrayList<String>();
@@ -183,12 +183,12 @@ public class AlertQuery {
         this.startTimeTo = startTimeTo;
     }
 
-    public AlertQuery feedback(List<Feedback> feedback) {
+    public AlertQuery feedback(List<AlertQueryEnums.AlertFeedback> feedback) {
         this.feedback = feedback;
         return this;
     }
 
-    public AlertQuery addFeedbackItem(Feedback feedbackItem) {
+    public AlertQuery addFeedbackItem(AlertQueryEnums.AlertFeedback feedbackItem) {
         this.feedback.add(feedbackItem);
         return this;
     }
@@ -199,11 +199,11 @@ public class AlertQuery {
      * @return feedback
      **/
     @ApiModelProperty(value = "")
-    public List<Feedback> getFeedback() {
+    public List<AlertQueryEnums.AlertFeedback> getFeedback() {
         return feedback;
     }
 
-    public void setFeedback(List<Feedback> feedback) {
+    public void setFeedback(List<AlertQueryEnums.AlertFeedback> feedback) {
         this.feedback = feedback;
     }
 

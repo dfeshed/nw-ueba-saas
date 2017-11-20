@@ -344,6 +344,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restAlert.setIndicatorsName(alert.getIndicatorsNames());
         restAlert.setTimeframe(Alert.TimeframeEnum.fromValue(alert.getTimeframe().toString()));
         restAlert.setUserScoreContribution(new BigDecimal(alert.getContributionToUserScore()));
+        restAlert.setFeedback(AlertQueryEnums.AlertFeedback.fromValue(alert.getFeedback().toString()));
         return restAlert;
     }
 
@@ -399,6 +400,10 @@ public class RestAlertServiceImpl implements RestAlertService {
         restEvent.setSchema(indicatorEvent.getSchema().name());
         restEvent.setTime(BigDecimal.valueOf(TimeUnit.SECONDS.convert(indicatorEvent.getEventTime().getTime(), TimeUnit.MILLISECONDS)));
         restEvent.putAll(indicatorEvent.getFeatures());
+        if (MapUtils.isNotEmpty(indicatorEvent.getScores())) {
+            restEvent.setScores(indicatorEvent.getScores());
+            restEvent.put("scores",indicatorEvent.getScores());
+        }
         return restEvent;
     }
 

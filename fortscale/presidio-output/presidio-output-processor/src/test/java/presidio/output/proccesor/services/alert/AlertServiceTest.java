@@ -4,18 +4,21 @@ package presidio.output.proccesor.services.alert;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -63,7 +66,8 @@ import static org.mockito.Matchers.eq;
  * Created by efratn on 24/07/2017.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AlertServiceTest {
 
     @MockBean

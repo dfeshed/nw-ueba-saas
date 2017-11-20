@@ -1,6 +1,7 @@
 package presidio.webapp.spring;
 
 import fortscale.utils.RestTemplateConfig;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 @Configuration
-@Import({OutputWebappConfiguration.class, RestTemplateConfig.class})
+@Import({OutputWebappTestConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class})
 public class ApiControllerModuleTestConfig {
 
     @Bean

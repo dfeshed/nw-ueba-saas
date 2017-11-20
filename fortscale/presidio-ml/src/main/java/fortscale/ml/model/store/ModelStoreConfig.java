@@ -14,11 +14,13 @@ public class ModelStoreConfig {
 	private MongoTemplate mongoTemplate;
 	@Value("#{T(java.time.Duration).parse('${presidio.ttl.oldest.allowed.model:P100D}')}")
 	private Duration ttlOldestAllowedModel;
-	@Value("${presidio.model.pagination.size:10000}")
-	private int modelPaginationSize;
+	@Value("${presidio.model.store.aggregation.pagination.size:10000}")
+	private int modelAggregationPaginationSize;
+	@Value("${presidio.model.store.query.pagination.size:200000}")
+	private int modelQueryPaginationSize;
 
 	@Bean
 	public ModelStore modelStore() {
-		return new ModelStore(mongoTemplate, ttlOldestAllowedModel, modelPaginationSize);
+		return new ModelStore(mongoTemplate, ttlOldestAllowedModel, modelAggregationPaginationSize, modelQueryPaginationSize);
 	}
 }

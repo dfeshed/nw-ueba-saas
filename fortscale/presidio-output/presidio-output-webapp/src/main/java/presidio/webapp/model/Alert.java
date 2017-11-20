@@ -43,7 +43,7 @@ public class Alert {
     private Integer score = null;
 
     @JsonProperty("feedback")
-    private Feedback feedback = null;
+    private AlertQueryEnums.AlertFeedback feedback = null;
 
     @JsonProperty("userScoreContribution")
     private BigDecimal userScoreContribution = null;
@@ -256,7 +256,7 @@ public class Alert {
         this.score = score;
     }
 
-    public Alert feedback(Feedback feedback) {
+    public Alert feedback(AlertQueryEnums.AlertFeedback feedback) {
         this.feedback = feedback;
         return this;
     }
@@ -267,11 +267,11 @@ public class Alert {
      * @return feedback
      **/
     @ApiModelProperty(value = "")
-    public Feedback getFeedback() {
+    public AlertQueryEnums.AlertFeedback getFeedback() {
         return feedback;
     }
 
-    public void setFeedback(Feedback feedback) {
+    public void setFeedback(AlertQueryEnums.AlertFeedback feedback) {
         this.feedback = feedback;
     }
 

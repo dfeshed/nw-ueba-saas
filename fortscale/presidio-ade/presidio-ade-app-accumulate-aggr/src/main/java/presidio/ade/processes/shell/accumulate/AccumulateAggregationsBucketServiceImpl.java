@@ -12,15 +12,12 @@ import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
-import org.apache.commons.lang3.StringUtils;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 
 import java.time.Instant;
 import java.util.*;
-
-import static java.util.Collections.reverseOrder;
 
 /**
  * Created by maria_dorohin on 7/30/17.
@@ -88,7 +85,7 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
      */
     private FeatureBucketStrategyData createFeatureBucketStrategyData(Instant startDate, FixedDurationStrategy featureBucketStrategy) {
         TimeRange timeRange = new TimeRange(startDate, startDate.plus(featureBucketStrategy.toDuration()));
-        String strategyName = "fixed_duration_" + StringUtils.lowerCase(featureBucketStrategy.name());
+        String strategyName = featureBucketStrategy.toStrategyName();
         return new FeatureBucketStrategyData(strategyName, strategyName, timeRange);
     }
 
@@ -99,7 +96,6 @@ public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggreg
      * 01-01-2017T00:00:00 , list of records that startInstant between 01-01-2017T00:00:00 - 01-01-2017T01:00:00
      * 01-01-2017T01:00:00 , list of records that startInstant between 01-01-2017T01:00:00 - 01-01-2017T02:00:00
      *
-     * @param adeRecords
      * @return ordered map of startDate to AdeRecords
      */
     private Map<Instant, List<AdeRecord>> getStartDateToRecordsOrderedMap(List<? extends AdeRecord> adeRecords, FixedDurationStrategy featureBucketStrategy) {
