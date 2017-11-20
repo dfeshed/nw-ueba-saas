@@ -7,6 +7,7 @@ const ALL_SUBMODULES = [
   'investigate-hosts',
   'investigate-files',
   'respond',
+  'configure',
   'sa',
   'streaming-data',
   'style-guide',
@@ -28,6 +29,7 @@ const saModuleDependants = {
     'investigate-files',
     'packager',
     'respond',
+    'configure',
     'context',
     'preferences'
   ],
@@ -40,6 +42,7 @@ const saModuleDependants = {
     'investigate-files',
     'packager',
     'respond',
+    'configure',
     'context'
   ],
   'investigate-events': ['sa'],
@@ -52,6 +55,7 @@ const saModuleDependants = {
   ],
   sa: [], // sa is an end state app, nothing depends on it
   respond: ['sa'],
+  configure: ['sa'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
@@ -60,6 +64,7 @@ const saModuleDependants = {
     'investigate-files',
     'packager',
     'respond',
+    'configure',
     'sa',
     'style-guide',
     'context'

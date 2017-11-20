@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+/* Pulling in local respond styles */
+@import "configure/manifest";
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.configure-engine-dummy {
+  color: text-color(primary, light);
+  .engine-splash-page {
+    .rsa-logo {
+      .rsa-logo__title {
+        color: text-color(accentTwo);
+        text-align: center;
+        font-size: 25px;
+      }
+    }
+    a:-webkit-any-link {
+      text-decoration: none;
+    }
+  }
+}
+
+
+/*
+  Overlays the context panel over the right-side of the app's main outlet.
+  The panel is hidden unless we have some entity to display inside of it.
+*/
+.configure-engine-dummy {
+  &__main {
+
+    &-body {
+      z-index: 1;
+    }
+
+    &-aside {
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      z-index: 2;
+      transition: width 300ms;
+    }
+
+    &.has-entity-info {
+      .respond-engine-dummy__main {
+        &-aside {
+          width: 75%;
+          box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
+        }
+      }
+    }
+  }
+}
+
+.configure-engine {
+  .background-icon {
+    font-size: 15rem;
+    color: text-color(accentOne, dark);
+  }
+}

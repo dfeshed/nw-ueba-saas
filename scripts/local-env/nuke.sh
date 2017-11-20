@@ -31,6 +31,7 @@ nukeNode investigate-events
 nukeNode investigate-hosts
 nukeNode investigate-files
 nukeNode respond
+nukeNode configure
 nukeNode context
 nukeNode preferences
 nukeNode test-helpers

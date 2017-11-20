@@ -53,6 +53,7 @@ prepareApp investigate-events
 prepareApp investigate-hosts
 prepareApp investigate-files
 prepareApp respond
+prepareApp configure
 prepareApp context
 prepareApp preferences
 prepareApp test-helpers
