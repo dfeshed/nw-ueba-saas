@@ -24,7 +24,7 @@ public class PatternReplacementTransformer implements Transformer {
         this.inputFieldName = inputFieldName;
         this.outputFieldName = outputFieldName;
 
-        PatternReplacementConf patternReplacementConf = new PatternReplacementConf(pattern, replacement, postReplacementCondition, preReplacementCondition);
+        PatternReplacementConf patternReplacementConf = new PatternReplacementConf(pattern, replacement, preReplacementCondition, postReplacementCondition);
 
         this.patternReplacement = new PatternReplacement(patternReplacementConf);
     }

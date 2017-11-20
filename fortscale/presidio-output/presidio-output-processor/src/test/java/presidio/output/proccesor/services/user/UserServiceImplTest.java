@@ -1,7 +1,6 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.domain.core.EventResult;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -26,15 +25,9 @@ import presidio.output.processor.services.user.UserServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by shays on 27/08/2017.
@@ -105,9 +98,9 @@ public class UserServiceImplTest {
         });
 
         List<User> changedUsers = Whitebox.invokeMethod(userService, "updateUserAlertDataForBatch", newUsersScore, usersIDForBatch);
-        Assert.assertEquals(2, changedUsers.size());
-        Assert.assertEquals(80D, changedUsers.get(0).getScore(), 0.00001);
-        Assert.assertEquals(30D, changedUsers.get(1).getScore(), 0.00001);
+        assertEquals(2, changedUsers.size());
+        assertEquals(80D, changedUsers.get(0).getScore(), 0.00001);
+        assertEquals(30D, changedUsers.get(1).getScore(), 0.00001);
 
 
     }
@@ -122,20 +115,20 @@ public class UserServiceImplTest {
         indicators2 = new ArrayList<>(Arrays.asList("c", "d"));
         classification3 = new ArrayList<>(Arrays.asList("a", "c"));
         indicators3 = new ArrayList<>(Arrays.asList("c", "e"));
-        Assert.assertEquals(null, user1.getIndicators());
-        Assert.assertEquals(null, user1.getAlertClassifications());
+        assertEquals(null, user1.getIndicators());
+        assertEquals(null, user1.getAlertClassifications());
         userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
-        Assert.assertEquals(null, user1.getIndicators());
-        Assert.assertEquals(null, user1.getAlertClassifications());
+        assertEquals(null, user1.getIndicators());
+        assertEquals(null, user1.getAlertClassifications());
         userService.setUserAlertData(user1, classification2, indicators2, AlertEnums.AlertSeverity.CRITICAL);
-        Assert.assertEquals(2, user1.getIndicators().size());
-        Assert.assertEquals(2, user1.getAlertClassifications().size());
+        assertEquals(2, user1.getIndicators().size());
+        assertEquals(2, user1.getAlertClassifications().size());
         userService.setUserAlertData(user1, classification3, indicators3, AlertEnums.AlertSeverity.CRITICAL);
-        Assert.assertEquals(3, user1.getIndicators().size());
-        Assert.assertEquals(3, user1.getAlertClassifications().size());
+        assertEquals(3, user1.getIndicators().size());
+        assertEquals(3, user1.getAlertClassifications().size());
         userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
-        Assert.assertEquals(3, user1.getIndicators().size());
-        Assert.assertEquals(3, user1.getAlertClassifications().size());
+        assertEquals(3, user1.getIndicators().size());
+        assertEquals(3, user1.getAlertClassifications().size());
 
     }
 
@@ -148,8 +141,8 @@ public class UserServiceImplTest {
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
-        User user = userService.createUserEntity("event1");
-        Assert.assertEquals(0, user.getTags().size());
+        User user = userService.createUserEntity("userId1");
+        assertEquals(0, user.getTags().size());
     }
 
     @Test
@@ -161,10 +154,28 @@ public class UserServiceImplTest {
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
         Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
-        User user = userService.createUserEntity("event1");
-        Assert.assertEquals(1, user.getTags().size());
-        Assert.assertEquals("admin", user.getTags().get(0));
+        User user = userService.createUserEntity("userId1");
+        assertEquals(1, user.getTags().size());
+        assertEquals("admin", user.getTags().get(0));
     }
 
+    @Test
+    public void createUserFromEnrichedEvent() {
+        EventResult result = EventResult.SUCCESS;
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "false");
+        String userId = "userId1";
+        String userName = "userName1";
+        String userDisplayName = "userDisplayName1";
+        EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", userId, userName,
+                userDisplayName, "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
+        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
 
+        User user = userService.createUserEntity(userId);
+        assertEquals(0, user.getTags().size());
+        assertEquals(userId, user.getUserId());
+        assertEquals(userName, user.getUserName());
+        assertEquals(userName, user.getIndexedUserName());
+        assertEquals(userDisplayName, user.getUserDisplayName());
+    }
 }

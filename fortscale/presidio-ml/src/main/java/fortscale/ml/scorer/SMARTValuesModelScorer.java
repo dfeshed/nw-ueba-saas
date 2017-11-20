@@ -92,6 +92,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
                 continue;
             }
             Instant smartValuePriorWightsModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
+            boolean foundMatchingModels = false;
             for (ModelDAO mainModelDAO : mainModelDAOs) {
                 SMARTValuesModel mainModelDAOModel = (SMARTValuesModel) mainModelDAO.getModel();
                 if (mainModelDAOModel == null) {
@@ -103,8 +104,13 @@ public class SMARTValuesModelScorer extends AbstractScorer {
                     mainModel = mainModelDAOModel;
                     globalModel = smartValuesPriorModel;
                     weightModelEndTime = smartValueWeightsModelEndTime;
+                    foundMatchingModels = true;
                     break;
                 }
+            }
+            if(foundMatchingModels)
+            {
+                break;
             }
         }
         FeatureScore featureScore = calculateScore(mainModel, globalModel, adeRecordReader, weightModelEndTime);

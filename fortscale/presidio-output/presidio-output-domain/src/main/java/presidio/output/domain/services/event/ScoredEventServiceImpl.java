@@ -25,9 +25,9 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
     @Override
-    public List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, Map<String, Object> featuresFilters) {
+    public List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, Map<String, Object> featuresFilters, int eventsLimit) {
 
-        List<? extends EnrichedEvent> events = eventPersistencyService.findEvents(schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters);
+        List<? extends EnrichedEvent> events = eventPersistencyService.findEvents(schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, eventsLimit);
 
         // filter by score (change to join within mongo once the performance is stable)
         List<String> eventsIds = events.stream().map(e -> e.getEventId()).collect(Collectors.toList());
@@ -46,12 +46,12 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
 
-    public List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, Map<String, Object> featuresFilters) {
+    public List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, Map<String, Object> featuresFilters, int eventsLimit) {
 
         List<ScoredEnrichedEvent> scoredEnrichedEvents = new ArrayList<ScoredEnrichedEvent>();
 
         // get raw events from output_ collections
-        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(schema, userId, timeRange, featuresFilters);
+        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(schema, userId, timeRange, featuresFilters, eventsLimit);
 
         if (CollectionUtils.isNotEmpty(rawEvents)) {
 

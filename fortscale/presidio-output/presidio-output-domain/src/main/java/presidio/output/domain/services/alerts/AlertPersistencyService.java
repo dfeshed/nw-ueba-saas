@@ -39,5 +39,6 @@ public interface AlertPersistencyService {
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
 
+    void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback);
 
 }

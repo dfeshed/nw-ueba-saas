@@ -1,7 +1,6 @@
 package fortscale.ml.model.retriever.smart_data;
 
 import fortscale.utils.logging.Logger;
-import org.junit.Assert;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 
 import java.time.Duration;
@@ -19,30 +18,33 @@ public class SmartAccumulationFlattener {
 
     public static List<SmartAggregatedRecordDataContainer> flattenSmartRecordToSmartAggrData(List<AccumulatedSmartRecord> accumulatedSmartRecords) {
         List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainerList = new ArrayList<>();
-        for (AccumulatedSmartRecord accumulatedSmartRecord: accumulatedSmartRecords)
-        {
+        for (AccumulatedSmartRecord accumulatedSmartRecord : accumulatedSmartRecords) {
             Instant startInstant = accumulatedSmartRecord.getStartInstant();
 
-            // todo: add this info into the smart record
-            Assert.assertTrue(accumulatedSmartRecord.getAdeEventType().toLowerCase().endsWith("hourly"));
 
-            for(Integer activityTime: accumulatedSmartRecord.getActivityTime())
-            {
-                Map<String,Double> featureNameToScore = new HashMap<>();
+            for (Integer activityTime : accumulatedSmartRecord.getActivityTime()) {
+                Map<String, Double> featureNameToScore = new HashMap<>();
                 for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap().entrySet()) {
-                    Double activityTimeScore = aggrFeature.getValue().get(activityTime);
+
                     String featureName = aggrFeature.getKey();
-                    if (activityTimeScore == null) {
-                        logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName,activityTime);
+                    // todo: add this info into the smart record
+                    if (!featureName.toLowerCase().endsWith("hourly")) {
+                        logger.warn("featureName={} does contain hourly suffix", featureName);
                     }
-                    else {
+
+                    Double activityTimeScore = aggrFeature.getValue().get(activityTime);
+
+                    if (activityTimeScore == null) {
+                        logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName, activityTime);
+                    } else {
                         logger.debug("score={} for aggrFeature={} at activityTime={}", activityTimeScore, featureName, activityTime);
                         featureNameToScore.put(featureName, activityTimeScore);
                     }
+
                 }
 
                 // todo: make more generic (duration should not be only of hours)
-                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startInstant.plus(Duration.ofHours(activityTime)),featureNameToScore));
+                smartAggregatedRecordDataContainerList.add(new SmartAggregatedRecordDataContainer(startInstant.plus(Duration.ofHours(activityTime)), featureNameToScore));
             }
         }
         return smartAggregatedRecordDataContainerList;

@@ -20,6 +20,7 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = TimeModelScorerConf.class, name = TimeModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = SMARTValuesModelScorerConf.class, name = SMARTValuesModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ScoreMapperConf.class, name = ScoreMapperConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = ScoreExponentialMapperConf.class, name = ScoreExponentialMapperConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ModelBasedScoreMapperConf.class, name = ModelBasedScoreMapperConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ScoreAndCertaintyMultiplierScorerConf.class, name = ScoreAndCertaintyMultiplierScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = GaussianModelScorerConf.class, name = GaussianModelScorerConf.SCORER_TYPE),
