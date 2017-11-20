@@ -5,6 +5,7 @@ import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creato
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
 import { hasPayload } from 'recon/reducers/packets/selectors';
+import service from 'ember-service/inject';
 
 const stateToComputed = ({ recon, recon: { files, visuals } }) => ({
   status: files.fileExtractStatus,
@@ -34,6 +35,7 @@ const menuOffsetsStyle = (el) => {
 };
 
 const DownloadPacketComponent = Component.extend(ReconExport, {
+  accessControl: service(),
   layout,
 
   classNameBindings: ['isExpanded:expanded:collapsed'],
@@ -53,9 +55,9 @@ const DownloadPacketComponent = Component.extend(ReconExport, {
     return this.get('i18n').t(`recon.packetView.${packetFormat.value}`);
   },
 
-  @computed('hasPayload', 'isDownloading')
-  isDisabled(hasPayload, isDownloading) {
-    if (hasPayload && !isDownloading) {
+  @computed('hasPayload', 'isDownloading', 'accessControl.hasInvestigateContentExportAccess')
+  isDisabled(hasPayload, isDownloading, hasInvestigateContentExportAccess) {
+    if (hasInvestigateContentExportAccess && hasPayload && !isDownloading) {
       return false;
     }
     return true;

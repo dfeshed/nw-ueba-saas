@@ -231,6 +231,8 @@ export default Component.extend(contextMenuMixin, {
               input.width(input.val().length * 8);
             }
           } else {
+            this.set('type', 'meta');
+            this.set('meta', null);
             this.set('typing', false);
           }
 

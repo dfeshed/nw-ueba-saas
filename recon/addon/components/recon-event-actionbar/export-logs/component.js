@@ -2,6 +2,7 @@ import Component from 'ember-component';
 import { htmlSafe } from 'ember-string';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import service from 'ember-service/inject';
 
 import {
   didDownloadFiles,
@@ -38,11 +39,18 @@ const menuOffsetsStyle = (el) => {
 };
 
 const DownloadLogsComponent = Component.extend(ReconExport, {
+
+  accessControl: service(),
   layout,
   classNameBindings: ['isExpanded:expanded:collapsed'],
   isExpanded: false,
   offsetsStyle: null,
   downloadFormats: downloadFormat,
+
+  @computed('isDownloading', 'accessControl.hasInvestigateContentExportAccess')
+  isDisabled(isDownloading, hasInvestigateContentExportAccess) {
+    return isDownloading || !hasInvestigateContentExportAccess;
+  },
 
   @computed('i18n', 'isDownloading', 'defaultLogFormat')
   caption(i18n, isDownloading, defaultLogFormat) {

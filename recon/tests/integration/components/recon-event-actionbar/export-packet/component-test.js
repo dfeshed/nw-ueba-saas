@@ -6,6 +6,7 @@ import { patchSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
+import EmberObject from 'ember-object';
 
 const data = {
   eventType: { name: 'NETWORK' }
@@ -17,6 +18,7 @@ moduleForComponent('recon-event-actionbar/export-packet', 'Integration | Compone
     this.registry.injection('component:recon-event-actionbar/export-packet', 'i18n', 'service:i18n');
     this.inject.service('redux');
     this.inject.service('flash-messages');
+    this.inject.service('access-control');
     initialize(this);
   }
 });
@@ -51,6 +53,23 @@ test('the menu renders properly and has the correct labels for export pcap menu'
     assert.equal(ulElChildren[1].innerText.trim(), 'Download All Payloads');
     assert.equal(ulElChildren[2].innerText.trim(), 'Download Request Payload');
     assert.equal(ulElChildren[3].innerText.trim(), 'Download Response Payload');
+  });
+});
+
+test('the button disables when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
+  const _data = {
+    ...data,
+    fileExtractStatus: 'idle'
+  };
+  new DataHelper(this.get('redux')).initializeData(_data);
+
+  this.set('accessControl', EmberObject.create({}));
+  this.set('accessControl.hasInvestigateContentExportAccess', false);
+
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
+
+  return wait().then(() => {
+    assert.equal(this.$('.export-packet-button.is-disabled').length, 1);
   });
 });
 

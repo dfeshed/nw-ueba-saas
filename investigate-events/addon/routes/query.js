@@ -105,7 +105,7 @@ export default Route.extend({
       if (externalLink) {
         const state = this.get('redux').getState().investigate.queryNode;
         const query = `${state.serviceId}/${state.startTime}/${state.endTime}/${uriEncodeMetaFilterConditions(filters)}`;
-        const path = `${window.location.origin}/investigate/query/${query}`;
+        const path = `${window.location.origin}/investigate/events/query/${query}`;
         window.open(path, '_blank');
       } else {
         this.get('redux').dispatch(setQueryFilterMeta(filters));
@@ -172,18 +172,20 @@ export default Route.extend({
     },
 
     selectEvent(event) {
-      const { reconSize } = this.get('redux').getState().investigate.data;
-      const { sessionId } = event;
-      this.get('redux').dispatch(setSelectedEvent(event));
-      this.get('redux').dispatch(setReconOpen());
-      this.send('contextPanelClose');
-      this.transitionTo({
-        queryParams: {
-          eventId: sessionId,
-          reconSize,
-          metaPanelSize: META_PANEL_SIZES.MIN
-        }
-      });
+      if (this.get('accessControl.hasReconAccess')) {
+        const { reconSize } = this.get('redux').getState().investigate.data;
+        const { sessionId } = event;
+        this.get('redux').dispatch(setSelectedEvent(event));
+        this.get('redux').dispatch(setReconOpen());
+        this.send('contextPanelClose');
+        this.transitionTo({
+          queryParams: {
+            eventId: sessionId,
+            reconSize,
+            metaPanelSize: META_PANEL_SIZES.MIN
+          }
+        });
+      }
     },
 
     toggleReconSize() {

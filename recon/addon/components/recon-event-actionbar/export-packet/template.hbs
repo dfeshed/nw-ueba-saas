@@ -2,6 +2,7 @@
   {{#rsa-form-button
     class="export-packet-button"
     defaultAction=(action 'processDefault' defaultPacketFormat)
+    isDisabled=isDisabled
   }}
     {{#if isDownloading}}
       {{rsa-loader}}

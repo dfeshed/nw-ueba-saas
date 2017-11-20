@@ -2,7 +2,7 @@
   {{#rsa-form-button
     class="export-logs-button"
     defaultAction=(action 'processFiles' defaultLogFormat)
-    isDisabled=isDownloading
+    isDisabled=isDisabled
   }}
     {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
     {{caption}}

@@ -6,6 +6,7 @@ import { patchSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
+import EmberObject from 'ember-object';
 
 const data = {
   eventType: { name: 'LOG' }
@@ -55,7 +56,11 @@ test('the menu renders properly and has the correct labels for down logs menu', 
   };
   new DataHelper(this.get('redux')).initializeData(_data);
 
-  this.render(hbs`{{recon-event-actionbar/export-logs}}`);
+  this.set('accessControl', EmberObject.create({}));
+
+  this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
+  this.set('accessControl.hasInvestigateContentExportAccess', true);
+
   this.$('.rsa-split-dropdown').find('.rsa-form-button').click();
 
   return wait().then(() => {
@@ -67,6 +72,23 @@ test('the menu renders properly and has the correct labels for down logs menu', 
     assert.equal(ulElChildren[1].innerText.trim(), 'Download CSV');
     assert.equal(ulElChildren[2].innerText.trim(), 'Download XML');
     assert.equal(ulElChildren[3].innerText.trim(), 'Download JSON');
+  });
+});
+
+test('the button disables when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
+  const _data = {
+    ...data,
+    fileExtractStatus: 'idle'
+  };
+  new DataHelper(this.get('redux')).initializeData(_data);
+
+  this.set('accessControl', EmberObject.create({}));
+  this.set('accessControl.hasInvestigateContentExportAccess', false);
+
+  this.render(hbs`{{recon-event-actionbar/export-logs accessControl=accessControl}}`);
+
+  return wait().then(() => {
+    assert.equal(this.$('.export-logs-button.is-disabled').length, 1);
   });
 });
 

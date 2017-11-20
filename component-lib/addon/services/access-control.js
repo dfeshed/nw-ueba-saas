@@ -30,6 +30,16 @@ export default Service.extend({
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
   @or('hasInvestigateClassicAccess', 'hasInvestigateEmberAccess') hasInvestigateAccess: null,
 
+  @computed('roles.[]')
+  hasInvestigateContentExportAccess(roles) {
+    return this._hasPermission(roles, 'investigate-server.content.export');
+  },
+
+  @computed('roles.[]')
+  hasReconAccess(roles) {
+    return this._hasPermission(roles, 'investigate-server.content.reconstruct');
+  },
+
   // Begin respond access permissions
 
   @computed('roles.[]')
@@ -97,6 +107,8 @@ export default Service.extend({
     return this._hasPermission(roles, 'respond-server.journal.manage');
   },
 
+  // End respond access permissions
+
   @computed('hasInvestigateAccess', 'hasInvestigateEmberAccess', 'hasInvestigateClassicAccess')
   investigateUrl: (hasInvestigateAccess, hasInvestigateEmberAccess, hasInvestigateClassicAccess) => {
     let url = null;
@@ -111,8 +123,6 @@ export default Service.extend({
 
     return url;
   },
-
-  // End respond access permissions
 
   @computed('adminAccessIntersections.[]')
   adminUrl: (intersections) => {

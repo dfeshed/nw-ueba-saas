@@ -127,6 +127,20 @@ test('hasInvestigateEmberAccess is set when required roles are included', functi
   service.get('roles').clear();
 });
 
+test('hasInvestigateContentExportAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  assert.equal(service.get('hasInvestigateContentExportAccess'), false);
+  service.set('roles', ['investigate-server.content.export']);
+  assert.equal(service.get('hasInvestigateContentExportAccess'), true);
+});
+
+test('hasReconAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  assert.equal(service.get('hasReconAccess'), false);
+  service.set('roles', ['investigate-server.content.reconstruct']);
+  assert.equal(service.get('hasReconAccess'), true);
+});
+
 test('hasRespondAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasRespondAccess'), false);
