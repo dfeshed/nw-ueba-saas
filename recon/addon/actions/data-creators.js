@@ -8,16 +8,15 @@
  *
  * @public
  */
-
-import Ember from 'ember';
 import { lookup } from 'ember-dependency-lookup';
 import { later } from 'ember-runloop';
+import { warn } from 'ember-debug';
 
 import * as ACTION_TYPES from './types';
 import { createToggleActionCreator, persistPreferences } from './visual-creators';
 import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
-import { FATAL_ERROR_CODES, GENERIC_API_ERROR } from 'recon/utils/error-codes';
+import { FATAL_ERROR_CODES, GENERIC_API_ERROR_CODE } from 'recon/utils/error-codes';
 import { killAllBatching } from './util/batch-data-handler';
 import {
   fetchAliases,
@@ -33,13 +32,11 @@ import {
 } from './fetch';
 import { packetTotal } from 'recon/reducers/header/selectors';
 
-const { Logger } = Ember;
 const prefService = lookup('service:preferences');
 let isPreferencesInitializedOnce = false;
 
 /**
  * Will fetch and dispatch event meta
- *
  * @param {object} dataState
  * @returns {function} redux-thunk
  * @private
@@ -55,8 +52,8 @@ const _retrieveMeta = (dataState) => {
           // and fetch data for that view
           dispatch(_determineReconView(data, dataState.size));
         },
-        onFailure(response) {
-          Logger.error('Could not retrieve event meta', response);
+        onFailure() {
+          warn('Could not retrieve event meta');
         }
       }
     });
@@ -72,11 +69,17 @@ const _fetchTextData = function(dispatch, state) {
   );
 };
 
-// Generic handler for errors fetching recon view data
+/**
+ * Generic handler for errors fetching recon view data.
+ * @param {object} response - Promise response object.
+ * @param {string} type - Type of recon data.
+ * @return {function} redux-thunk
+ * @private
+ */
 const _handleContentError = (response, type) => {
   return (dispatch) => {
     if (response.code !== 2) {
-      Logger.error(`Could not retrieve ${type} recon data`, response);
+      warn(`Could not retrieve ${type} recon data`);
     }
     dispatch({
       type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
@@ -95,11 +98,11 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
 });
 
 /**
- * We need to set the index and total for the event footer,
- * after we receive them from investigate
- *
- * @param index The event index in the list
- * @param total The total number of events
+ * We need to set the index and total for the event footer, after we receive
+ * them from investigate.
+ * @param {number} index - The event index in the list.
+ * @param {number} total - The total number of events.
+ * @return {object}
  * @public
  */
 const setIndexAndTotal = (index, total) => ({
@@ -237,25 +240,19 @@ const changePacketsPerPage = (packetsPerPage) => {
 };
 
 /**
- * An Action Creator for changing a recon view.
- *
- * Dispatches action to update visual indicators, then will
- * either fetch the data for the recon view or prepare the data
- * already in state.
- *
- * @param {object} newView an object from the reconstruction-types.js list
+ * An Action Creator for changing a recon view. Dispatches action to update
+ * visual indicators, then will either fetch the data for the recon view or
+ * prepare the data already in state.
+ * @param {object} newView - An object from the reconstruction-types.js list
  * @returns {function} redux-thunk
  * @public
  */
 const setNewReconView = (newView) => {
   return (dispatch, getState) => {
-
     // first dispatch the new view
     dispatch({
       type: ACTION_TYPES.CHANGE_RECON_VIEW,
-      payload: {
-        newView
-      }
+      payload: { newView }
     });
 
     // No need to fetch/dispatch recon view data if it already exists
@@ -272,22 +269,20 @@ const setNewReconView = (newView) => {
 
 /**
  * An Action Creator thunk that builds/sends action for initializing recon.
- *
- * If the incoming event is the same as the existing event, no dispatch occurs
- *
- * Otherwise...
- * 1) the inputs are dispatched
- * 2) If language is not an input, it is fetched/dispatched
- * 3) If aliases is not an input, it is fetched/dispatched
- * 4) The summary data for the event is fetched/dispatched
- * 5) If meta is not provided, meta is fetched/dispatched
- * 6) If meta is provided, the event data is fetched
- *
- * @param {object} reconInputs the hash of inputs provided to recon
+ * If the incoming event is the same as the existing event, no dispatch occurs,
+ * otherwise...
+ * ```
+ * 1. The inputs are dispatched
+ * 2. If language is not an input, it is fetched/dispatched
+ * 3. If aliases is not an input, it is fetched/dispatched
+ * 4. The summary data for the event is fetched/dispatched
+ * 5. If meta is not provided, meta is fetched/dispatched
+ * 6. If meta is provided, the event data is fetched
+ * ```
+ * @param {object} reconInputs - The hash of inputs provided to recon
  * @returns {function} redux-thunk
  * @public
  */
-
 const initializeRecon = (reconInputs) => {
   return (dispatch, getState) => {
     const dataState = getState().recon.data;
@@ -312,10 +307,10 @@ const initializeRecon = (reconInputs) => {
           type: ACTION_TYPES.LANGUAGE_RETRIEVE,
           promise: fetchLanguage(reconInputs),
           meta: {
-            onFailure(response) {
+            onFailure() {
               // failure to get language is no good, but
               // is not critical error no need to dispatch
-              Logger.error('Could not retrieve language', response);
+              warn('Could not retrieve language');
             }
           }
         });
@@ -328,8 +323,8 @@ const initializeRecon = (reconInputs) => {
           type: ACTION_TYPES.ALIASES_RETRIEVE,
           promise: fetchAliases(reconInputs),
           meta: {
-            onFailure(response) {
-              Logger.error('Could not retrieve aliases', response);
+            onFailure() {
+              warn('Could not retrieve aliases');
             }
           }
         });
@@ -341,7 +336,7 @@ const initializeRecon = (reconInputs) => {
         meta: {
           onFailure(response) {
             dispatch(_checkForFatalApiError(response.code));
-            Logger.error('Could not retrieve event summary', response);
+            warn('Could not retrieve event summary');
           }
         }
       });
@@ -359,24 +354,29 @@ const initializeRecon = (reconInputs) => {
   };
 };
 
-
-// This action creator will shut down recon completely.
-// We check for error codes that we are expecting, and only call this
-// dispatch function when we know that error code is being handled
+/**
+ * This action creator will shut down recon completely. We check for error codes
+ * that we are expecting, and only call this dispatch function when we know that
+ * error code is being handled.
+ * @param {number} code - API error code.
+ * @return {function} Redux Thunk that determines if the supplied code is fatal.
+ * @private
+ */
 const _checkForFatalApiError = (code) => {
   return (dispatch) => {
     if (FATAL_ERROR_CODES.includes(code)) {
       dispatch({
         type: ACTION_TYPES.SET_FATAL_API_ERROR_FLAG,
-        payload: code || GENERIC_API_ERROR
+        payload: code || GENERIC_API_ERROR_CODE
       });
     }
   };
 };
 
-/*
+/**
  * Function reused whenever meta is determined, either when it is passed in
  * or when it is retrieved
+ * @private
  */
 const _determineReconView = (meta, size) => {
   return (dispatch, getState) => {
@@ -416,14 +416,15 @@ const _determineReconView = (meta, size) => {
 
 /**
  * This Action Creator thunk can possibly dispatch two actions:
- * 1) It will always dispatch the TOGGLE_META action which
+ * ```
+ * 1. It will always dispatch the TOGGLE_META action which
  *   is responsible for switching meta display state
- * 2) If no meta is available (wasn't passed to recon)
+ * 2. If no meta is available (wasn't passed to recon)
  *   then this action will retrieve the meta for the event
  *   and dispatch a META_RETRIEVED action
- *
- * @param {boolean} [setTo] a means to force the 'toggle' to
- *   set meta one way or another
+ * ```
+ * @param {boolean} [setTo] - A means to force the 'toggle' to set meta one way
+ * or another
  * @returns {function} redux-thunk
  * @public
  */
@@ -461,7 +462,6 @@ const toggleMetaData = (setTo) => {
  * downloads are finished/failed. Eventually we will have a standalone
  * notifications UI outside of recon, but for now it's all handled
  * internally in recon.
- *
  * @public
  */
 const initializeNotifications = () => {
@@ -494,8 +494,8 @@ const initializeNotifications = () => {
         }
       },
       // some job failed
-      (err) => {
-        Logger.error('Error in file extract job', err);
+      () => {
+        warn('Error in file extract job');
       }
     );
   };

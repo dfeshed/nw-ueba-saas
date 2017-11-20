@@ -3,7 +3,7 @@
     {{rsa-loader size='larger'}}
   </div>
 {{else}}
-  {{#if contentError}}
+  {{#if isContentError}}
     {{rsa-panel-message message=errorMessage}}
   {{else}}
     {{component currentReconView.component}}

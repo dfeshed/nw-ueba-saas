@@ -20,7 +20,7 @@ test('it renders child view', function(assert) {
     .setViewToText();
   this.render(hbs`{{recon-event-content}}`);
   return wait().then(() => {
-    assert.equal(this.$().find('.recon-event-detail-text').length, 1);
+    assert.equal(this.$().find('.recon-event-detail-text').length, 1, 'Child view missing');
   });
 });
 
@@ -30,7 +30,7 @@ test('it renders content error', function(assert) {
     .contentRetrieveFailure(2);
   this.render(hbs`{{recon-event-content}}`);
   return wait().then(() => {
-    assert.equal(this.$().find('.rsa-panel-message').length, 1);
+    assert.equal(this.$().find('.rsa-panel-message').length, 1, 'Content error not set');
   });
 });
 
@@ -40,7 +40,7 @@ test('it renders spinner', function(assert) {
     .contentRetrieveStarted();
   this.render(hbs`{{recon-event-content}}`);
   return wait().then(() => {
-    assert.equal(this.$().find('.recon-loader').length, 1);
+    assert.equal(this.$().find('.recon-loader').length, 1, 'Spinner missing');
   });
 });
 
