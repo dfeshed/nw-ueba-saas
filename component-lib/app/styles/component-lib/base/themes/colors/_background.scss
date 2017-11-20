@@ -67,7 +67,8 @@ $background-colors: (
 
   custom: (
     respond:  var(--background-color-respond-specific),
-    nav:      var(--background-color-nav-specific)
+    nav:      var(--background-color-nav-specific),
+    byteCell: var(--background-color-byte-cell)
   )
 
 );

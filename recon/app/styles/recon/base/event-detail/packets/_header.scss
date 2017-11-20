@@ -9,7 +9,7 @@
     padding-bottom: rsa-whitespace();
     .label {
       @include rsa-font(header, small);
-      color: text-color(primary, light);
+      color: text-color(primary, lighter);
       margin-right: rsa-whitespace(least);
     }
     .toggle-icon {

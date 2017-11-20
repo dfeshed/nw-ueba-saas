@@ -62,52 +62,52 @@ $base-color: white;
   &.has-styled-bytes {
     .byte-cell {
       .shade-1 {
-        color: rgba($base-color, .06 );
+        color: text-color(primary, lightest, shadeOne);
       }
       .shade-2 {
-        color: rgba($base-color, .13 );
+        color: text-color(primary, lightest, shadeTwo);
       }
       .shade-3 {
-        color: rgba($base-color, .19 );
+        color: text-color(primary, lightest, shadeThree);
       }
       .shade-4 {
-        color: rgba($base-color, .25 );
+        color: text-color(primary, lightest, shadeFour);
       }
       .shade-5 {
-        color: rgba($base-color, .31 );
+        color: text-color(primary, lightest, shadeFive);
       }
       .shade-6 {
-        color: rgba($base-color, .38 );
+        color: text-color(primary, lightest, shadeSix);
       }
       .shade-7 {
-        color: rgba($base-color, .44 );
+        color: text-color(primary, lightest, shadeSeven);
       }
       .shade-8 {
-        color: rgba($base-color, .50 );
+        color: text-color(primary, lightest, shadeEight);
       }
       .shade-9 {
-        color: rgba($base-color, .56 );
+        color: text-color(primary, lightest, shadeNine);
       }
       .shade-10 {
-        color: rgba($base-color, .63 );
+        color: text-color(primary, lightest, shadeTen);
       }
       .shade-11 {
-        color: rgba($base-color, .69 );
+        color: text-color(primary, lightest, shadeEleven);
       }
       .shade-12 {
-        color: rgba($base-color, .75 );
+        color: text-color(primary, lightest, shadeTwelve);
       }
       .shade-13 {
-        color: rgba($base-color, .81 );
+        color: text-color(primary, lightest, shadeThirteen);
       }
       .shade-14 {
-        color: rgba($base-color, .88 );
+        color: text-color(primary, lightest, shadeFourteen);
       }
       .shade-15 {
-        color: rgba($base-color, .94 );
+        color: text-color(primary, lightest, shadeFifteen);
       }
       .shade-16 {
-        color: rgba($base-color, 1 );
+        color: text-color(primary, lightest, shadeSixteen);
       }
     }
   }
@@ -115,14 +115,13 @@ $base-color: white;
   &.has-signatures-highlighted {
     .byte-cell {
       &.is-known {
-        // orange @ 20% opacity, but we don't actually want opacity
-        background-color: #4b2c24;
-        color: text-color(neutral);
+        background-color: background-color(custom, byteCell);
+        color: text-color(primary, lightest);
         &[data-is-hover="true"] {
           &.packet-field-value {
             span {
               background-color: background-color(accentThree, darkest);
-              color: text-color(neutral);
+              color: text-color(primary, lightest);
             }
           }
         }
