@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -26,7 +25,7 @@ import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 @Configuration
 @EnableScheduling
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
-@Import({ElasticsearchTestConfig.class,TestConfig.class})
+@Import({ElasticsearchTestConfig.class, TestConfig.class})
 public class ExternalMonitoringTestConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
@@ -58,7 +57,7 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()), presidioMetricFactory());
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()));
     }
 
 

@@ -50,9 +50,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Autowired
     MetricCollectingService metricCollectingService;
 
-    @Autowired
-    PresidioMetricFactory presidioMetricFactory;
-
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
@@ -85,7 +82,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         List<Alert> alerts = new ArrayList<>();
         List<User> users = new ArrayList<>();
-        Map tags = new HashMap();
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toString());
         List<SmartRecord> smarts = null;
         while (smartPageIterator.hasNext()) {
@@ -144,7 +141,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 build());
         if (CollectionUtils.isNotEmpty(smarts)) {
             tags = new HashMap();
-            tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toEpochMilli());
+            tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toEpochMilli() + "");
             metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
                     setMetricValue(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli()).
                     setMetricTags(tags).setMetricUnit(MetricEnums.MetricUnitType.NUMBER).

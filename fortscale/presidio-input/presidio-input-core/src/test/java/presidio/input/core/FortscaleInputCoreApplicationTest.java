@@ -23,10 +23,10 @@ import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
+
 import java.util.Properties;
 
 
@@ -74,19 +74,15 @@ public class FortscaleInputCoreApplicationTest {
         }
 
         @Bean
-        public PresidioMetricFactory presidioMetricFactory() {
-            return new PresidioMetricFactory("input-core");
-        }
-
-        @Bean
         public MonitoringAspects monitoringAspects() {
             return new MonitoringAspects();
         }
 
         @Bean
         public MonitroingAspectSetup monitroingAspectSetup() {
-            return  new MonitroingAspectSetup(presidioMetricEndPoint(), presidioMetricFactory());
+            return new MonitroingAspectSetup(presidioMetricEndPoint());
         }
+
         @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();

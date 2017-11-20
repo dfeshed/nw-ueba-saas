@@ -31,9 +31,6 @@ public class InputCoreManager {
     private final String LAST_EVENT_TIME_PROCESSED_METRIC_NAME = "last.event.time.processed.input";
     private final String TOTAL_EVENTS_PROCESSED_METRIC_NAME = "total.events.processed.input";
 
-    private final String TYPE_LONG = "long";
-    private final String TYPE_MILLI_SECONDS = "milliSeconds";
-
     private final PresidioInputPersistencyService persistencyService;
     private final AdeDataService adeDataService;
     private final OutputDataServiceSDK outputDataServiceSDK;
@@ -42,9 +39,6 @@ public class InputCoreManager {
 
     @Autowired
     MetricCollectingService metricCollectingService;
-
-    @Autowired
-    PresidioMetricFactory presidioMetricFactory;
 
     @Value("${page.iterator.page.size}")
     private Integer pageSize;

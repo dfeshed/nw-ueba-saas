@@ -13,11 +13,9 @@ import java.util.Map;
 public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMonitoringService {
 
     private MetricCollectingService metricCollectingService;
-    private PresidioMetricFactory presidioMetricFactory;
 
 
-    public PresidioExternalMonitoringServiceImpl(MetricCollectingService metricCollectingService, PresidioMetricFactory presidioMetricFactory) {
-        this.presidioMetricFactory = presidioMetricFactory;
+    public PresidioExternalMonitoringServiceImpl(MetricCollectingService metricCollectingService) {
         this.metricCollectingService = metricCollectingService;
     }
 

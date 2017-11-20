@@ -35,14 +35,12 @@ public class MonitoringAspects {
     private final String UNIT_TYPE_LONG = "long";
 
     private PresidioMetricEndPoint presidioMetricEndPoint;
-    private PresidioMetricFactory presidioMetricFactory;
 
     public MonitoringAspects() {
     }
 
-    public void setMetrics(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricFactory presidioMetricFactory) {
+    public void setMetrics(PresidioMetricEndPoint presidioMetricEndPoint) {
         this.presidioMetricEndPoint = presidioMetricEndPoint;
-        this.presidioMetricFactory = presidioMetricFactory;
     }
 
     /**

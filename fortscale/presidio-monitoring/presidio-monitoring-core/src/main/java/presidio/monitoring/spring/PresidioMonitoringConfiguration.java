@@ -8,7 +8,6 @@ import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 
@@ -30,18 +29,13 @@ public class PresidioMonitoringConfiguration {
     }
 
     @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory(applicationName);
-    }
-
-    @Bean
     public MonitoringAspects monitoringAspects() {
         return new MonitoringAspects();
     }
 
     @Bean
     public MonitroingAspectSetup monitroingAspectSetup() {
-        return  new MonitroingAspectSetup(presidioMetricEndPoint(), presidioMetricFactory());
+        return new MonitroingAspectSetup(presidioMetricEndPoint());
     }
 
 }

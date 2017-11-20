@@ -1,6 +1,7 @@
 package presidio.monitoring.factory;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class PresidioMetricFactory {
 
+    @Value("${spring.application.name}")
     private static String applicationName;
 
     public PresidioMetricFactory(String applicationName) {
