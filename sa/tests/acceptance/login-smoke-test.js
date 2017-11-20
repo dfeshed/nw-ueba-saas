@@ -1,27 +1,26 @@
-import { test } from 'qunit';
+import { skip } from 'qunit';
 import moduleForLogin from 'sa/tests/helpers/module-for-login';
 
 moduleForLogin('Acceptance | login smoke test', {
   beforeEach() {
     localStorage.removeItem('rsa-post-auth-redirect');
+    localStorage.removeItem('rsa-i18n-default-locale');
   }
 });
 
-test('login authenticates user without classic redirect', function(assert) {
-  assert.expect(4);
+skip('locale defaults to english regardless of users language preference', function(assert) {
+  assert.expect(3);
 
   visit('/');
   andThen(() => {
     assert.equal(currentURL(), '/login');
-    assert.equal(find('[test-id=loginButton] button').attr('disabled'), 'disabled');
   });
   fillIn('[test-id=loginUsername] input', 'admin');
   fillIn('[test-id=loginPassword] input', 'netwitness');
-  andThen(() => {
-    assert.equal(find('[test-id=loginButton] button').attr('disabled'), undefined);
-  });
   click('[test-id=loginButton] button');
   andThen(() => {
-    assert.notEqual(currentURL(), '/login');
+    assert.equal(currentURL(), '/respond/incidents');
+    const locale = this.application.__container__.lookup('service:i18n').get('locale');
+    assert.equal(locale, 'en');
   });
 });

@@ -23,7 +23,7 @@ module.exports = function(environment) {
     landingPageDefault: '/respond',
     i18n: {
       defaultLocale: 'en',
-      includedLocales: ['en', 'ja']
+      includedLocales: ['en']
     },
     timezones: [{
       'displayLabel': 'UTC (GMT+00:00)',
@@ -142,12 +142,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // Tweak feature flags for production here
-    ENV.i18n = {
-      defaultLocale: 'en',
-      includedLocales: ['en']
-    };
-
     // Ensure useMockServer is always false in production build
     ENV.useMockServer = false;
   }
