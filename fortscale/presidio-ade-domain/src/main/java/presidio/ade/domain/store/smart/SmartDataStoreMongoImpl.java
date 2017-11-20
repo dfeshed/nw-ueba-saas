@@ -91,4 +91,9 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, StoreManagerAwar
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
         mongoTemplate.remove(query, collectionName);
     }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+
+    }
 }

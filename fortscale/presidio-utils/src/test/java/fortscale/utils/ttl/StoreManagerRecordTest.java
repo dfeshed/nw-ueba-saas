@@ -10,8 +10,9 @@ import java.time.Instant;
 public class StoreManagerRecordTest {
 
     public final static String END_FIELD = "end";
+    public final static String START_FIELD = "start";
 
-    @Field
+    @Field(START_FIELD)
     private Instant start;
     @Field(END_FIELD)
     private Instant end;
@@ -22,5 +23,9 @@ public class StoreManagerRecordTest {
         this.start = start;
         this.end = end;
         this.name = name;
+    }
+
+    public Instant getStart() {
+        return start;
     }
 }

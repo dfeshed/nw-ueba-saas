@@ -14,6 +14,7 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedRecordPaginationService;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
  * @author Barak Schuster
@@ -177,6 +179,13 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 

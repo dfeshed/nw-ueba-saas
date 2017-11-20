@@ -30,7 +30,14 @@ public class StoreManagerAwareTest implements StoreManagerAware {
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
-                .addCriteria(where(StoreManagerRecordTest.END_FIELD).lte(until));
+                .addCriteria(where(StoreManagerRecordTest.START_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(StoreManagerRecordTest.START_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 
@@ -43,5 +50,11 @@ public class StoreManagerAwareTest implements StoreManagerAware {
         mongoTemplate.insert(storeManagerRecordTest,collectionName);
         storeManager.registerWithTtl(getStoreName(), collectionName);
     }
+
+    public void register(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
+        mongoTemplate.insert(storeManagerRecordTest, collectionName);
+        storeManager.register(getStoreName(), collectionName);
+    }
+
 
 }

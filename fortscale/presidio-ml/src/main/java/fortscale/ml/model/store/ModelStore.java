@@ -120,6 +120,11 @@ public class ModelStore implements StoreManagerAware {
         removeContextIdOldModels(collectionName, until);
     }
 
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+
+    }
+
 
     /**
      * Remove models of contextIds, where contextId has at least one model that greater than until instant.

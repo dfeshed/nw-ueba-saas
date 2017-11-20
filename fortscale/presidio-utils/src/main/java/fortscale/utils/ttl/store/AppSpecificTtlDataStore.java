@@ -61,6 +61,27 @@ public class AppSpecificTtlDataStore {
     }
 
     /**
+     * Save TtlData records without ttl and without cleanupInterval
+     * @param storeName store name
+     * @param collectionName collection name
+     */
+    public void save(String storeName, String collectionName) {
+        Map<String, TtlData> storeNameToTtlData = ttlDataMap.get(storeName);
+        if (storeNameToTtlData != null) {
+            TtlData ttlData = storeNameToTtlData.get(collectionName);
+            if (ttlData == null) {
+                //create new ttlData if collection is not exist
+                ttlData = new TtlData(appName, storeName, collectionName, null, null);
+                storeNameToTtlData.put(collectionName, ttlData);
+                ttlDataRepository.save(ttlData);
+            }
+        } else {
+            //create new record if store is not exist in the Map.
+            createNewTtlData(storeName, collectionName, null, null);
+        }
+    }
+
+    /**
      * get ttlData list
      *
      * @return List<TtlData>

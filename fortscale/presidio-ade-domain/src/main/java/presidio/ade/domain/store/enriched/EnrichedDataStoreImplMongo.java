@@ -30,6 +30,7 @@ import java.util.Set;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
@@ -209,6 +210,13 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end) {
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 

@@ -24,6 +24,14 @@ public interface StoreManagerAware {
     void remove(String collectionName, Instant until);
 
     /**
+     * Remove collection between start and end instants
+     * @param collectionName collection name
+     * @param start start instant
+     * @param end end instant
+     */
+    void remove(String collectionName, Instant start, Instant end);
+
+    /**
      * @return get store name
      */
     default String getStoreName(){

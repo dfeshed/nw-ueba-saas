@@ -117,4 +117,11 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
         mongoTemplate.remove(query, collectionName);
     }
 
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
+        mongoTemplate.remove(query, collectionName);
+    }
+
 }

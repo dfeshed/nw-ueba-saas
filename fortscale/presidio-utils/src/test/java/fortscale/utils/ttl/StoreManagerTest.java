@@ -8,12 +8,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Duration;
@@ -35,39 +37,47 @@ public class StoreManagerTest {
     private StoreManagerAwareTest storeManagerAwareTest;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Value("#{T(java.time.Duration).parse('${presidio.default.ttl.duration}')}")
+    private Duration defaultTtl;
+    @Value("#{T(java.time.Duration).parse('${presidio.default.cleanup.interval}')}")
+    private Duration defaultCleanupInterval;
 
     private final static String COLLECTION_NAME_TEST = "collectionNameTest";
     private final static String COLLECTION_NAME_DEFAULT_TTL_TEST = "collectionNameDefaultTTlTest";
 
-    /**
-     * Create 5 records and 2 collections(collectionNameTest, collectionNameDefaultTTlTest) .
-     * 1. collectionNameTest contains 1 record.
-     * 2. collectionNameDefaultTTlTest contains 4 records.
-     */
+
     @Before
     public void setup() {
         mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
-
-        StoreManagerRecordTest storeManagerRecordTest1 = new StoreManagerRecordTest("test1", Instant.EPOCH, Instant.EPOCH.plus(Duration.ofDays(1)));
-        StoreManagerRecordTest storeManagerRecordTest2 = new StoreManagerRecordTest("test2", Instant.EPOCH, Instant.EPOCH.plus(Duration.ofDays(1)));
-        StoreManagerRecordTest storeManagerRecordTest3 = new StoreManagerRecordTest("test3", Instant.EPOCH.plus(Duration.ofDays(2)), Instant.EPOCH.plus(Duration.ofDays(3)));
-        StoreManagerRecordTest storeManagerRecordTest4 = new StoreManagerRecordTest("test4", Instant.EPOCH.plus(Duration.ofDays(3)), Instant.EPOCH.plus(Duration.ofDays(4)));
-        StoreManagerRecordTest storeManagerRecordTest5 = new StoreManagerRecordTest("test5", Instant.EPOCH.plus(Duration.ofDays(4)), Instant.EPOCH.plus(Duration.ofDays(5)));
-
-        storeManagerAwareTest.save(storeManagerRecordTest1, COLLECTION_NAME_TEST, Duration.ofDays(4), Duration.ofDays(5));
-        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest2, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest3, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest4, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest5, COLLECTION_NAME_DEFAULT_TTL_TEST);
     }
 
     /**
-     * Test save and cleanupCollection methods
+     * Test registerWithTtl and cleanupCollection methods
      */
     @Test
     public void TtlStoreManagerTest() {
-        TtlSaveTest();
-        TtlCleanupTest();
+        //2 collections in the same store
+        int numOfTtlDataRecords = 2;
+        Instant start = Instant.EPOCH;
+        Instant end = start.plus(Duration.ofDays(10));
+        Duration ttl = Duration.ofDays(4);
+        Duration cleanupInterval = Duration.ofDays(5);
+
+        createStoreManagerRecordsWithTtl(start, end, ttl, cleanupInterval);
+        AssertTtlData(numOfTtlDataRecords, ttl, cleanupInterval);
+        AssertTtlCleanup(start.plus(Duration.ofDays(4)), cleanupInterval);
+    }
+
+
+    /**
+     * Test register and cleanupCollection methods
+     */
+    @Test
+    public void cleanupStoreManagerTest() {
+        Instant start = Instant.EPOCH;
+        Instant end = start.plus(Duration.ofDays(1));
+        createStoreManagerRecordsForTimeRangeCleanup(start, end);
+        AssertCleanupInTimeRange(start.plus(Duration.ofHours(2)), start.plus(Duration.ofHours(3)));
     }
 
     /**
@@ -75,59 +85,103 @@ public class StoreManagerTest {
      * 1. with default ttl and cleanup interval values
      * 2. defined ttl and cleanup interval values
      */
-    public void TtlSaveTest() {
-
-        //2 collections in the same store
-        int numOfTtlDataRecords = 2;
-
-        //assert ttlData list, which saved to mongo.
-        Set<String> collectionNames = mongoTemplate.getCollectionNames();
-        // 3 collections: collectionNameTest, collectionNameDefaultTTlTest, management_ttl.
-        Assert.assertTrue(collectionNames.size() == 4);
-
+    public void AssertTtlData(int numOfTtlDataRecords, Duration ttl, Duration cleanupInterval) {
         String collectionName = TtlData.class.getAnnotation(Document.class).collection();
         List<TtlData> ttlDataList = mongoTemplate.findAll(TtlData.class, collectionName);
-        assertTtlData(ttlDataList, numOfTtlDataRecords);
-    }
 
-
-    /**
-     * Test clean up collections.
-     */
-    public void TtlCleanupTest() {
-        storeManager.cleanupCollections(Instant.EPOCH.plus(Duration.ofDays(5)));
-
-        //StoreManagerRecordTest2 record deleted:
-        // 1. ttl default duration is 2 days(48 hours).
-        // 2. cleanup run on day 6.
-        // 3. records, who has start instant less or equal than day 4 (6-2), should be deleted.
-        List<StoreManagerRecordTest> defaultTtlRecords = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        Assert.assertTrue(defaultTtlRecords.size() == 2);
-
-        //StoreManagerRecordTest1 record deleted due to cleanup interval:
-        List<StoreManagerRecordTest> records = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_TEST);
-        Assert.assertTrue(records.size() == 0);
-    }
-
-
-    /**
-     * Assert TtlData
-     *
-     * @param ttlDataRecords      list of TtlData
-     * @param numOfTtlDataRecords num of saved records
-     */
-    private void assertTtlData(List<TtlData> ttlDataRecords, int numOfTtlDataRecords) {
-
-        Assert.assertTrue(ttlDataRecords.size() == numOfTtlDataRecords);
-        for (TtlData ttlData : ttlDataRecords) {
+        Assert.assertTrue(ttlDataList.size() == numOfTtlDataRecords);
+        for (TtlData ttlData : ttlDataList) {
             if (ttlData.getCollectionName().equals(COLLECTION_NAME_TEST)) {
-                Assert.assertTrue(ttlData.getTtlDuration().equals(Duration.ofDays(4)));
-                Assert.assertTrue(ttlData.getCleanupInterval().equals(Duration.ofDays(5)));
+                Assert.assertTrue(ttlData.getTtlDuration().equals(ttl));
+                Assert.assertTrue(ttlData.getCleanupInterval().equals(cleanupInterval));
 
             } else if (ttlData.getCollectionName().equals(COLLECTION_NAME_DEFAULT_TTL_TEST)) {
-                Assert.assertTrue(ttlData.getTtlDuration().equals(Duration.ofDays(2)));
-                Assert.assertTrue(ttlData.getCleanupInterval().equals(Duration.ofDays(1)));
+                Assert.assertTrue(ttlData.getTtlDuration().equals(defaultTtl));
+                Assert.assertTrue(ttlData.getCleanupInterval().equals(defaultCleanupInterval));
             }
+        }
+    }
+
+
+    /**
+     * Test cleanup collections with until instant, depends on cleanupInterval.
+     */
+    public void AssertTtlCleanup(Instant until, Duration cleanupInterval) {
+        long numOfDefaultTtlRecords = mongoTemplate.count(new Query(), COLLECTION_NAME_DEFAULT_TTL_TEST);
+        long numOfRecords = mongoTemplate.count(new Query(), COLLECTION_NAME_TEST);
+
+        storeManager.cleanupCollections(until);
+
+        List<StoreManagerRecordTest> defaultTtlRecords = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        if (until.getEpochSecond() % defaultCleanupInterval.getSeconds() == 0) {
+            defaultTtlRecords.forEach(defaultTtlRecord -> {
+                Assert.assertTrue(defaultTtlRecord.getStart().isAfter(until.minus(defaultTtl)) || defaultTtlRecord.getStart().equals(until.minus(defaultTtl)));
+            });
+        } else {
+            Assert.assertTrue(numOfDefaultTtlRecords == mongoTemplate.count(new Query(), COLLECTION_NAME_DEFAULT_TTL_TEST));
+        }
+
+        List<StoreManagerRecordTest> records = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_TEST);
+        if (until.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
+            defaultTtlRecords.forEach(defaultTtlRecord -> {
+                Assert.assertTrue(defaultTtlRecord.getStart().isAfter(until.minus(defaultTtl)) || defaultTtlRecord.getStart().equals(until.minus(defaultTtl)));
+            });
+        } else {
+            Assert.assertTrue(numOfRecords == mongoTemplate.count(new Query(), COLLECTION_NAME_TEST));
+        }
+
+    }
+
+    /**
+     * Test cleanup collections between time range.
+     */
+    public void AssertCleanupInTimeRange(Instant start, Instant end) {
+        storeManager.cleanupCollections(start, end);
+
+        List<StoreManagerRecordTest> defaultTtlRecords = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        List<StoreManagerRecordTest> records = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_TEST);
+        records.addAll(defaultTtlRecords);
+
+        records.forEach(record -> {
+            Assert.assertTrue(record.getStart().isAfter(end) || record.getStart().equals(end) || record.getStart().isBefore(start));
+        });
+
+    }
+
+
+    /**
+     * create record with mentioned ttl and cleanupInterval and default ttl and cleanupInterval for cleanup test with until instant
+     *
+     * @param start           start instant
+     * @param end             end instant
+     * @param ttl             ttl
+     * @param cleanupInterval cleanupInterval
+     */
+    public void createStoreManagerRecordsWithTtl(Instant start, Instant end, Duration ttl, Duration cleanupInterval) {
+        Duration interval = Duration.ofDays(1);
+        while (start.isBefore(end)) {
+            StoreManagerRecordTest record = new StoreManagerRecordTest("test" + start.toString(), start, start.plus(interval));
+            StoreManagerRecordTest recordDefaultTtl = new StoreManagerRecordTest("testDefaultTtl" + start.toString(), start, start.plus(interval));
+            storeManagerAwareTest.save(record, COLLECTION_NAME_TEST, ttl, cleanupInterval);
+            storeManagerAwareTest.saveWithDefaultTtl(recordDefaultTtl, COLLECTION_NAME_DEFAULT_TTL_TEST);
+            start = start.plus(interval);
+        }
+    }
+
+    /**
+     * create records without ttl and cleanupInterval and with default ttl and cleanupInterval for cleanup test between time range
+     *
+     * @param start start instant
+     * @param end   end instant
+     */
+    public void createStoreManagerRecordsForTimeRangeCleanup(Instant start, Instant end) {
+        Duration interval = Duration.ofHours(1);
+        while (start.isBefore(end)) {
+            StoreManagerRecordTest record = new StoreManagerRecordTest("test" + start.toString(), start, start.plus(interval));
+            StoreManagerRecordTest recordDefaultTtl = new StoreManagerRecordTest("testDefaultTtl" + start.toString(), start, start.plus(interval));
+            storeManagerAwareTest.register(record, COLLECTION_NAME_TEST);
+            storeManagerAwareTest.saveWithDefaultTtl(recordDefaultTtl, COLLECTION_NAME_DEFAULT_TTL_TEST);
+            start = start.plus(interval);
         }
     }
 

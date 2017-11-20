@@ -115,4 +115,9 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
         mongoTemplate.remove(query, collectionName);
     }
 
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+
+    }
+
 }

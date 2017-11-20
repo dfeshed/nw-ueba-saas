@@ -276,4 +276,10 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
         String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
         storeManager.cleanupCollections(storeName, until, enrichedTtl, enrichedCleanupInterval);
     }
+
+    @Override
+    public void cleanupEnrichedData(TimeRange timeRange) {
+        String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
+        storeManager.cleanupCollections(storeName, timeRange);
+    }
 }

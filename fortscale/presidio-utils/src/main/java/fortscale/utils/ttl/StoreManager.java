@@ -1,5 +1,6 @@
 package fortscale.utils.ttl;
 
+import fortscale.utils.time.TimeRange;
 import fortscale.utils.ttl.record.TtlData;
 import fortscale.utils.ttl.store.AppSpecificTtlDataStore;
 import fortscale.utils.ttl.store.TtlDataRepository;
@@ -28,7 +29,7 @@ public class StoreManager {
         this.defaultTtl = defaultTtl;
         this.defaultCleanupInterval = defaultCleanupInterval;
         this.ttlDataRepository = ttlDataRepository;
-        this.executeTtlCleanup =  executeTtlCleanup;
+        this.executeTtlCleanup = executeTtlCleanup;
         appSpecificTtlDataStore = new AppSpecificTtlDataStore(appName, ttlDataRepository);
         buildStoreNameToStoreManagerAwareMap(storeManagerAwares);
     }
@@ -51,6 +52,17 @@ public class StoreManager {
     /**
      * Register TtlData
      *
+     * @param storeName      store name
+     * @param collectionName collection name
+     */
+    public void register(String storeName, String collectionName) {
+        appSpecificTtlDataStore.save(storeName, collectionName);
+    }
+
+
+    /**
+     * Register TtlData
+     *
      * @param storeName       store name
      * @param collectionName  collection name
      * @param ttl             ttl
@@ -61,7 +73,7 @@ public class StoreManager {
     }
 
     /**
-     *  Register TtlData - storeName and collectionName with default ttl and default cleanup.
+     * Register TtlData - storeName and collectionName with default ttl and default cleanup.
      *
      * @param storeName      store name
      * @param collectionName collection name
@@ -81,7 +93,7 @@ public class StoreManager {
      *                e.g: endInstant => store remove all records, where endInstant is less or equal than (endInstant - tll)
      */
     public void cleanupCollections(Instant instant) {
-        if(executeTtlCleanup) {
+        if (executeTtlCleanup) {
             List<TtlData> ttlDataList = appSpecificTtlDataStore.getTtlDataList();
             ttlDataList.forEach(ttlData -> {
                         StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(ttlData.getStoreName());
@@ -100,6 +112,22 @@ public class StoreManager {
 
 
     /**
+     * cleanup collections in time range(start, end).
+     * @param start start instant
+     * @param end end instant
+     */
+    public void cleanupCollections(Instant start, Instant end) {
+        List<TtlData> ttlDataList = appSpecificTtlDataStore.getTtlDataList();
+        ttlDataList.forEach(ttlData -> {
+                    StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(ttlData.getStoreName());
+                    String collectionName = ttlData.getCollectionName();
+                    storeManagerAware.remove(collectionName, start, end);
+                }
+        );
+    }
+
+
+    /**
      * Cleanup all collections of the given Store until the given instant according to ttl and cleanupInterval.
      *
      * @param storeName       store name
@@ -108,7 +136,7 @@ public class StoreManager {
      * @param cleanupInterval cleanup interval
      */
     public void cleanupCollections(String storeName, Instant until, Duration ttl, Duration cleanupInterval) {
-        if(executeTtlCleanup) {
+        if (executeTtlCleanup) {
             if (until.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
                 List<TtlData> ttlDataList = ttlDataRepository.findByStoreName(storeName);
                 StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeName);
@@ -119,5 +147,20 @@ public class StoreManager {
                 );
             }
         }
+    }
+
+    /**
+     * Cleanup  all collections of the given Store in mentioned time range.
+     * @param storeName store name
+     * @param timeRange timeRange
+     */
+    public void cleanupCollections(String storeName, TimeRange timeRange) {
+        List<TtlData> ttlDataList = ttlDataRepository.findByStoreName(storeName);
+        StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeName);
+        ttlDataList.forEach(ttlData -> {
+                    String collectionName = ttlData.getCollectionName();
+                    storeManagerAware.remove(collectionName, timeRange.getStart(), timeRange.getEnd());
+                }
+        );
     }
 }

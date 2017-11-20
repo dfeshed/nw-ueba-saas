@@ -55,6 +55,11 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     }
 
     @Override
+    public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+        storeManager.cleanupCollections(startDate, endDate);
+    }
+
+    @Override
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }

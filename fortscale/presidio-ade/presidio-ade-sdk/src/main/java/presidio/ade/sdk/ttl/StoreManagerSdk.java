@@ -1,6 +1,8 @@
 package presidio.ade.sdk.ttl;
 
 
+import fortscale.utils.time.TimeRange;
+
 import java.time.Duration;
 import java.time.Instant;
 
@@ -16,4 +18,11 @@ public interface StoreManagerSdk {
 	 * @param enrichedCleanupInterval cleanup interval
 	 */
 	void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval);
+
+
+	/**
+	 * cleanup enriched data in mentioned timeRange
+	 * @param timeRange timeRange, when enriched data should be cleaned.
+	 */
+	void cleanupEnrichedData(TimeRange timeRange);
 }
