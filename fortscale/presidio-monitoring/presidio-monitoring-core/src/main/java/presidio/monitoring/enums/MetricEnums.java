@@ -44,4 +44,29 @@ public class MetricEnums {
     public enum MetricTagKeysEnum {
         HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, DATE;
     }
+
+    public enum MetricUnitType {
+        NUMBER("number"), KB("kiloByte"), MB("megaByte"), GB("gigaByte"), MILLI_SECOND("milliSecond"), SECOND("second"), DATE("date");
+
+        private String value;
+
+        MetricUnitType(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        public static MetricUnitType fromValue(String text) {
+            for (MetricUnitType b : MetricUnitType.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+
+    }
 }

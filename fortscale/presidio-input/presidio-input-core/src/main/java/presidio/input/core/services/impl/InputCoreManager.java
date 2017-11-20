@@ -88,7 +88,7 @@ public class InputCoreManager {
                 metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(TOTAL_EVENTS_PROCESSED_METRIC_NAME).
                         setMetricValue(transformedEvents != null ? transformedEvents.size() : 0).
                         setMetricTags(tags).
-                        setMetricUnit(TYPE_LONG).
+                        setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                         setMetricLogicTime(startDate).
                         build());
             }
@@ -99,7 +99,7 @@ public class InputCoreManager {
             metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(LAST_EVENT_TIME_PROCESSED_METRIC_NAME).
                     setMetricValue(time).
                     setMetricTags(tags).
-                    setMetricUnit(TYPE_MILLI_SECONDS).
+                    setMetricUnit(MetricEnums.MetricUnitType.MILLI_SECOND).
                     setMetricLogicTime(startDate).
                     build());
         }

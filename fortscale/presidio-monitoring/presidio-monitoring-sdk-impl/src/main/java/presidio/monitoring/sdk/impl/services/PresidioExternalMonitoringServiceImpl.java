@@ -22,7 +22,7 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     }
 
     @Override
-    public void reportCustomMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String valueType, Instant logicTime) {
+    public void reportCustomMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime) {
         Map<MetricEnums.MetricValues, Number> valuesMap = new HashMap<>();
         valuesMap.put(MetricEnums.MetricValues.SUM, value);
         metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(metricName).
@@ -34,7 +34,7 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     }
 
     @Override
-    public void reportCustomMetricMultipleValues(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String valueType, Instant logicTime) {
+    public void reportCustomMetricMultipleValues(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime) {
         metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(metricName).
                 setMetricMultipleValues(value).
                 setMetricTags(tags).

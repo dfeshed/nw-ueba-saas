@@ -60,7 +60,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.info("Metric {} increment with annotation Start. ", metric);
     }
@@ -80,7 +80,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} increment with annotation End. ", metric);
     }
@@ -100,7 +100,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
@@ -126,7 +126,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
                 setMetricName(metricName).
                 setMetricMultipleValues(map).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.DATE).
                 build());
         logger.debug("Metric {} run time is {} milli seconds. ", metricName, time);
     }
@@ -154,7 +154,7 @@ public class MonitoringAspects {
                 setMetricName(metricName).
                 setMetricValue(numberOfFilteredEvents).
                 setMetricTags(tags).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} add {} events filtered. ", metricName, numberOfFilteredEvents);
         return returnVal;
@@ -176,7 +176,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
                 setMetricName(metricName).
                 setMetricValue(numberOfFailedValidationDocuments).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
@@ -201,7 +201,7 @@ public class MonitoringAspects {
                 setMetricName(metric).
                 setMetricValue(1).
                 setMetricTags(tags).
-                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }

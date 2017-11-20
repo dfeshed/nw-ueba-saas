@@ -31,7 +31,7 @@ public class PresidioMetricFactory {
         private Map<MetricEnums.MetricTagKeysEnum, String> metricTags;
         private Instant metricLogicTime;
         private boolean metricReportOnce;
-        private String metricUnit;
+        private MetricEnums.MetricUnitType metricUnit;
 
         public MetricBuilder() {
         }
@@ -41,7 +41,7 @@ public class PresidioMetricFactory {
             return this;
         }
 
-        public MetricBuilder setMetricUnit(String metricUnit) {
+        public MetricBuilder setMetricUnit(MetricEnums.MetricUnitType metricUnit) {
             this.metricUnit = metricUnit;
             return this;
         }
@@ -79,7 +79,7 @@ public class PresidioMetricFactory {
                 this.metricTags = tags;
             }
             metricTags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
-            metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit);
+            metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit.toString());
             return new Metric(metricName, metricValues, Date.from(metricLogicTime), metricTags, metricReportOnce);
         }
 
