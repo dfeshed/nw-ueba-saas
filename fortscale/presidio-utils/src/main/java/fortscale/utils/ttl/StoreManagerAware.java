@@ -4,16 +4,16 @@ package fortscale.utils.ttl;
 import java.time.Instant;
 
 /**
- * stores, who use Ttl service should extends TtlServiceAware.
+ * stores, who use StoreManager should extends StoreManagerAware.
  */
-public interface TtlServiceAware {
+public interface StoreManagerAware {
 
     /**
-     * Set tTtlService
+     * Set StoreManager
      *
-     * @param ttlService
+     * @param storeManager
      */
-    void setTtlService(TtlService ttlService);
+    void setStoreManager(StoreManager storeManager);
 
     /**
      * Remove collection

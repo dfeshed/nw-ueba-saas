@@ -6,8 +6,8 @@ import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceConfig;
+import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.ttl.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ import presidio.ade.processes.shell.config.InMemoryFeatureAggregatorConfig;
         //        common application confs
         EnrichedDataStoreConfig.class,
         AggregatedDataStoreConfig.class,
-        TtlServiceConfig.class,
+        StoreManagerConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
 })
 public class FeatureAggregationsConfiguration {
@@ -57,10 +57,10 @@ public class FeatureAggregationsConfiguration {
     @Value("${feature.aggregation.pageIterator.maxGroupSize}")
     private int maxGroupSize;
     @Autowired
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     @Bean
     public PresidioExecutionService featureAggregationBucketExecutionService() {
-        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, ttlService, pageSize, maxGroupSize);
+        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, storeManager, pageSize, maxGroupSize);
     }
 }

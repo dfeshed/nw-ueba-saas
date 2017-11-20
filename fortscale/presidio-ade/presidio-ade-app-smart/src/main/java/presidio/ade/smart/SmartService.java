@@ -1,6 +1,5 @@
 package presidio.ade.smart;
 
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.smart.SmartRecordAggregator;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -8,7 +7,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.StoreManager;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -36,7 +35,7 @@ public class SmartService {
 	private final AggregatedDataReader aggregatedDataReader;
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
-	private final TtlService ttlService;
+	private final StoreManager storeManager;
 
 	/**
 	 * C'tor.
@@ -54,14 +53,14 @@ public class SmartService {
 			AggregatedDataReader aggregatedDataReader,
 			SmartScoringService smartScoringService,
 			SmartDataStore smartDataStore,
-			TtlService ttlService) {
+			StoreManager storeManager) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
 		this.aggregatedDataReader = aggregatedDataReader;
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
-		this.ttlService = ttlService;
+		this.storeManager = storeManager;
 	}
 
 	/**
@@ -100,6 +99,6 @@ public class SmartService {
 
 		}
 
-		ttlService.cleanupCollections(timeRange.getStart());
+		storeManager.cleanupCollections(timeRange.getStart());
 	}
 }

@@ -5,7 +5,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.StoreManager;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketService;
@@ -24,13 +24,13 @@ public class AccumulateAggregationsExecutionService {
     private final int maxGroupSize;
     private final AccumulateAggregationsBucketService accumulateAggregationsBucketService;
     private final AccumulationsCache accumulationsCache;
-    private final TtlService ttlService;
+    private final StoreManager storeManager;
 
     public AccumulateAggregationsExecutionService(BucketConfigurationService bucketConfigurationService,
                                                   EnrichedDataStore enrichedDataStore,
                                                   AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore,
                                                   AccumulateAggregationsBucketService accumulateAggregationsBucketService,
-                                                  AccumulationsCache accumulationsCache, TtlService ttlService, int pageSize, int maxGroupSize) {
+                                                  AccumulationsCache accumulationsCache, StoreManager storeManager, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.aggregationEventsAccumulationDataStore = aggregationEventsAccumulationDataStore;
@@ -38,7 +38,7 @@ public class AccumulateAggregationsExecutionService {
         this.maxGroupSize = maxGroupSize;
         this.accumulateAggregationsBucketService = accumulateAggregationsBucketService;
         this.accumulationsCache = accumulationsCache;
-        this.ttlService = ttlService;
+        this.storeManager = storeManager;
     }
 
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
@@ -50,7 +50,7 @@ public class AccumulateAggregationsExecutionService {
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());
 
-        ttlService.cleanupCollections(startDate);
+        storeManager.cleanupCollections(startDate);
     }
 
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {

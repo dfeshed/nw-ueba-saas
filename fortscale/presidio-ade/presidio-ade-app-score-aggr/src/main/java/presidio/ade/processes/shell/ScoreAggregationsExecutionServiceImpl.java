@@ -4,11 +4,10 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.StoreManager;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketService;
@@ -25,14 +24,14 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 	private ScoreAggregationsBucketService scoreAggregationsBucketService;
 	private AggregationRecordsCreator aggregationRecordsCreator;
 	private AggregatedDataStore aggregatedDataStore;
-	private TtlService ttlService;
+	private StoreManager storeManager;
 
 	public ScoreAggregationsExecutionServiceImpl(
-			EnrichedEventsScoringService enrichedEventsScoringService,
-			EnrichedDataStore enrichedDataStore,
-			ScoreAggregationsBucketService scoreAggregationsBucketService,
-			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
-			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, TtlService ttlService, int pageSize, int maxGroupSize) {
+            EnrichedEventsScoringService enrichedEventsScoringService,
+            EnrichedDataStore enrichedDataStore,
+            ScoreAggregationsBucketService scoreAggregationsBucketService,
+            AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
+            AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, StoreManager storeManager, int pageSize, int maxGroupSize) {
 
 
 		this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -41,7 +40,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		this.aggregationRecordsCreator = aggregationRecordsCreator;
 		this.aggregatedDataStore = aggregatedDataStore;
 		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-		this.ttlService = ttlService;
+		this.storeManager = storeManager;
 		this.pageSize = pageSize;
 		this.maxGroupSize = maxGroupSize;
 	}
@@ -54,7 +53,7 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize);
 
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
-		ttlService.cleanupCollections(startInstant);
+		storeManager.cleanupCollections(startInstant);
 	}
 
 	@Override

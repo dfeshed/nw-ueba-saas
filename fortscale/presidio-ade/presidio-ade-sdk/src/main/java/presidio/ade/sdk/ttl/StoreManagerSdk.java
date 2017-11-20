@@ -7,7 +7,7 @@ import java.time.Instant;
 /**
  * Cleanup data
  */
-public interface TtlServiceSdk {
+public interface StoreManagerSdk {
 	/**
 	 * cleanup enriched data until the given instant according to ttl and cleanupInterval.
 	 *

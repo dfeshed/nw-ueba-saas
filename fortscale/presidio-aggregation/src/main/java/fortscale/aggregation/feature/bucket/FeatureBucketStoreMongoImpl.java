@@ -3,8 +3,8 @@ package fortscale.aggregation.feature.bucket;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.ttl.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -20,13 +20,13 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * A Mongo based {@link FeatureBucketStore}.
  */
-public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServiceAware {
+public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreManagerAware {
 	private static final Logger logger = Logger.getLogger(FeatureBucketStoreMongoImpl.class);
 	public static final String COLLECTION_NAME_PREFIX = "aggr_";
 	private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
 	private MongoTemplate mongoTemplate;
-	private TtlService ttlService;
+	private StoreManager storeManager;
 
 	/**
 	 * C'tor.
@@ -85,7 +85,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServi
 
 		try {
 			mongoDbBulkOpUtil.insertUnordered(featureBuckets,collectionName);
-			ttlService.save(getStoreName(), collectionName);
+			storeManager.registerWithTtl(getStoreName(), collectionName);
 		} catch (Exception e) {
 			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBuckets, collectionName, e);
 		}
@@ -101,8 +101,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, TtlServi
 
 
 	@Override
-	public void setTtlService(TtlService ttlService) {
-		this.ttlService = ttlService;
+	public void setStoreManager(StoreManager storeManager) {
+		this.storeManager = storeManager;
 	}
 
 	@Override

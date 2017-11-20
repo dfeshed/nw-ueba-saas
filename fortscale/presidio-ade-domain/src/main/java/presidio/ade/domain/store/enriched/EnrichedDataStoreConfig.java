@@ -27,7 +27,7 @@ public class EnrichedDataStoreConfig {
     private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
     @Bean
-    public TtlServiceAwareEnrichedDataStore enrichedDataStore() {
+    public StoreManagerAwareEnrichedDataStore enrichedDataStore() {
         return new EnrichedDataStoreImplMongo(mongoTemplate, translator, adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil);
     }
 }

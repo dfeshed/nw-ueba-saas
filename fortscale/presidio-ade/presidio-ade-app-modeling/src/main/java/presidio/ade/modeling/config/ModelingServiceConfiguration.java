@@ -14,8 +14,8 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
 import fortscale.utils.factory.FactoryService;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceConfig;
+import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.ttl.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +35,7 @@ import java.util.Collection;
 		ModelStoreConfig.class,
 		ModelingServiceDependencies.class,
 		ModelingServiceCommands.class,
-		TtlServiceConfig.class,
+		StoreManagerConfig.class,
 })
 public class ModelingServiceConfiguration {
 	@Value("${presidio.ade.modeling.enriched.records.group.name}")
@@ -64,7 +64,7 @@ public class ModelingServiceConfiguration {
 	@Autowired
 	private AslResourceFactory aslResourceFactory;
 	@Autowired
-	private TtlService ttlService;
+	private StoreManager storeManager;
 
 	@Bean
 	public ModelingEngineFactory modelingEngineFactory() {
@@ -86,6 +86,6 @@ public class ModelingServiceConfiguration {
 				new AslConfigurationPaths(enrichedRecordsGroupName, enrichedRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(smartRecordsGroupName, smartRecordsBaseConfigurationPath));
-		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, ttlService);
+		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, storeManager);
 	}
 }

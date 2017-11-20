@@ -12,61 +12,61 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TtlService responsible for:
+ * StoreManager responsible for:
  * saving new or changed TtlData records.
  * cleaning up collections based on ttl and cleanupInterval.
  */
-public class TtlService {
+public class StoreManager {
     private AppSpecificTtlDataStore appSpecificTtlDataStore;
     private Duration defaultTtl;
     private Duration defaultCleanupInterval;
-    private Map<String, TtlServiceAware> storeToTtlServiceAware;
+    private Map<String, StoreManagerAware> storeNameToStoreManagerAware;
     private TtlDataRepository ttlDataRepository;
     private Boolean executeTtlCleanup;
 
-    public TtlService(String appName, Collection<TtlServiceAware> ttlServiceAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataRepository ttlDataRepository, Boolean executeTtlCleanup) {
+    public StoreManager(String appName, Collection<StoreManagerAware> storeManagerAwares, Duration defaultTtl, Duration defaultCleanupInterval, TtlDataRepository ttlDataRepository, Boolean executeTtlCleanup) {
         this.defaultTtl = defaultTtl;
         this.defaultCleanupInterval = defaultCleanupInterval;
         this.ttlDataRepository = ttlDataRepository;
         this.executeTtlCleanup =  executeTtlCleanup;
         appSpecificTtlDataStore = new AppSpecificTtlDataStore(appName, ttlDataRepository);
-        buildStoreNameToTtlServiceAwareMap(ttlServiceAwares);
+        buildStoreNameToStoreManagerAwareMap(storeManagerAwares);
     }
 
     /**
-     * Build store to ttlServiceAware map.
-     * Set the ttlService for each ttlServiceAware.
+     * Build store name to StoreManagerAware map.
+     * Set the StoreManager for each StoreManagerAware.
      *
-     * @param ttlServiceAwares ttlServiceAware stores
+     * @param storeManagerAwares storeManagerAware stores
      */
-    private void buildStoreNameToTtlServiceAwareMap(Collection<TtlServiceAware> ttlServiceAwares) {
-        storeToTtlServiceAware = new HashMap<>();
+    private void buildStoreNameToStoreManagerAwareMap(Collection<StoreManagerAware> storeManagerAwares) {
+        storeNameToStoreManagerAware = new HashMap<>();
 
-        ttlServiceAwares.forEach((ttlServiceAware) -> {
-            ttlServiceAware.setTtlService(this);
-            storeToTtlServiceAware.put(ttlServiceAware.getStoreName(), ttlServiceAware);
+        storeManagerAwares.forEach((storeManagerAware) -> {
+            storeManagerAware.setStoreManager(this);
+            storeNameToStoreManagerAware.put(storeManagerAware.getStoreName(), storeManagerAware);
         });
     }
 
     /**
-     * Save TtlData
+     * Register TtlData
      *
      * @param storeName       store name
      * @param collectionName  collection name
      * @param ttl             ttl
      * @param cleanupInterval clean up interval
      */
-    public void save(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
+    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
         appSpecificTtlDataStore.save(storeName, collectionName, ttl, cleanupInterval);
     }
 
     /**
-     * TtlData with default ttl and cleanupInterval.
+     *  Register TtlData - storeName and collectionName with default ttl and default cleanup.
      *
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void save(String storeName, String collectionName) {
+    public void registerWithTtl(String storeName, String collectionName) {
         appSpecificTtlDataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval);
     }
 
@@ -84,14 +84,14 @@ public class TtlService {
         if(executeTtlCleanup) {
             List<TtlData> ttlDataList = appSpecificTtlDataStore.getTtlDataList();
             ttlDataList.forEach(ttlData -> {
-                        TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(ttlData.getStoreName());
+                        StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(ttlData.getStoreName());
                         String collectionName = ttlData.getCollectionName();
 
                         Duration ttl = ttlData.getTtlDuration();
                         Duration cleanupInterval = ttlData.getCleanupInterval();
 
                         if (instant.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
-                            ttlServiceAware.remove(collectionName, instant.minus(ttl));
+                            storeManagerAware.remove(collectionName, instant.minus(ttl));
                         }
                     }
             );
@@ -111,10 +111,10 @@ public class TtlService {
         if(executeTtlCleanup) {
             if (until.getEpochSecond() % cleanupInterval.getSeconds() == 0) {
                 List<TtlData> ttlDataList = ttlDataRepository.findByStoreName(storeName);
-                TtlServiceAware ttlServiceAware = storeToTtlServiceAware.get(storeName);
+                StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeName);
                 ttlDataList.forEach(ttlData -> {
                             String collectionName = ttlData.getCollectionName();
-                            ttlServiceAware.remove(collectionName, until.minus(ttl));
+                            storeManagerAware.remove(collectionName, until.minus(ttl));
                         }
                 );
             }

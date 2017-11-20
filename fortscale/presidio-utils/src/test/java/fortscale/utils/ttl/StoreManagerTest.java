@@ -27,12 +27,12 @@ import java.util.Set;
  */
 @Configuration
 @RunWith(SpringRunner.class)
-public class TtlServiceTest {
+public class StoreManagerTest {
 
     @Autowired
-    private TtlService ttlService;
+    private StoreManager storeManager;
     @Autowired
-    private TtlServiceAwareStoreTest ttlServiceAwareStoreTest;
+    private StoreManagerAwareTest storeManagerAwareTest;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -48,26 +48,26 @@ public class TtlServiceTest {
     public void setup() {
         mongoTemplate.getCollectionNames().forEach(collection -> mongoTemplate.dropCollection(collection));
 
-        TtlServiceRecordTest ttlServiceRecordTest1 = new TtlServiceRecordTest("test1", Instant.EPOCH, Instant.EPOCH.plus(Duration.ofDays(1)));
-        TtlServiceRecordTest ttlServiceRecordTest2 = new TtlServiceRecordTest("test2", Instant.EPOCH, Instant.EPOCH.plus(Duration.ofDays(1)));
-        TtlServiceRecordTest ttlServiceRecordTest3 = new TtlServiceRecordTest("test3", Instant.EPOCH.plus(Duration.ofDays(2)), Instant.EPOCH.plus(Duration.ofDays(3)));
-        TtlServiceRecordTest ttlServiceRecordTest4 = new TtlServiceRecordTest("test4", Instant.EPOCH.plus(Duration.ofDays(3)), Instant.EPOCH.plus(Duration.ofDays(4)));
-        TtlServiceRecordTest ttlServiceRecordTest5 = new TtlServiceRecordTest("test5", Instant.EPOCH.plus(Duration.ofDays(4)), Instant.EPOCH.plus(Duration.ofDays(5)));
+        StoreManagerRecordTest storeManagerRecordTest1 = new StoreManagerRecordTest("test1", Instant.EPOCH, Instant.EPOCH.plus(Duration.ofDays(1)));
+        StoreManagerRecordTest storeManagerRecordTest2 = new StoreManagerRecordTest("test2", Instant.EPOCH, Instant.EPOCH.plus(Duration.ofDays(1)));
+        StoreManagerRecordTest storeManagerRecordTest3 = new StoreManagerRecordTest("test3", Instant.EPOCH.plus(Duration.ofDays(2)), Instant.EPOCH.plus(Duration.ofDays(3)));
+        StoreManagerRecordTest storeManagerRecordTest4 = new StoreManagerRecordTest("test4", Instant.EPOCH.plus(Duration.ofDays(3)), Instant.EPOCH.plus(Duration.ofDays(4)));
+        StoreManagerRecordTest storeManagerRecordTest5 = new StoreManagerRecordTest("test5", Instant.EPOCH.plus(Duration.ofDays(4)), Instant.EPOCH.plus(Duration.ofDays(5)));
 
-        ttlServiceAwareStoreTest.save(ttlServiceRecordTest1, COLLECTION_NAME_TEST, Duration.ofDays(4), Duration.ofDays(5));
-        ttlServiceAwareStoreTest.saveWithDefaultTtl(ttlServiceRecordTest2, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        ttlServiceAwareStoreTest.saveWithDefaultTtl(ttlServiceRecordTest3, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        ttlServiceAwareStoreTest.saveWithDefaultTtl(ttlServiceRecordTest4, COLLECTION_NAME_DEFAULT_TTL_TEST);
-        ttlServiceAwareStoreTest.saveWithDefaultTtl(ttlServiceRecordTest5, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        storeManagerAwareTest.save(storeManagerRecordTest1, COLLECTION_NAME_TEST, Duration.ofDays(4), Duration.ofDays(5));
+        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest2, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest3, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest4, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        storeManagerAwareTest.saveWithDefaultTtl(storeManagerRecordTest5, COLLECTION_NAME_DEFAULT_TTL_TEST);
     }
 
     /**
      * Test save and cleanupCollection methods
      */
     @Test
-    public void TtlServiceTest() {
-        TtlServiceSaveTest();
-        TtlServiceCleanupTest();
+    public void TtlStoreManagerTest() {
+        TtlSaveTest();
+        TtlCleanupTest();
     }
 
     /**
@@ -75,7 +75,7 @@ public class TtlServiceTest {
      * 1. with default ttl and cleanup interval values
      * 2. defined ttl and cleanup interval values
      */
-    public void TtlServiceSaveTest() {
+    public void TtlSaveTest() {
 
         //2 collections in the same store
         int numOfTtlDataRecords = 2;
@@ -94,18 +94,18 @@ public class TtlServiceTest {
     /**
      * Test clean up collections.
      */
-    public void TtlServiceCleanupTest() {
-        ttlService.cleanupCollections(Instant.EPOCH.plus(Duration.ofDays(5)));
+    public void TtlCleanupTest() {
+        storeManager.cleanupCollections(Instant.EPOCH.plus(Duration.ofDays(5)));
 
-        //ttlServiceRecordTest2 record deleted:
+        //StoreManagerRecordTest2 record deleted:
         // 1. ttl default duration is 2 days(48 hours).
         // 2. cleanup run on day 6.
         // 3. records, who has start instant less or equal than day 4 (6-2), should be deleted.
-        List<TtlServiceRecordTest> defaultTtlRecords = mongoTemplate.findAll(TtlServiceRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
+        List<StoreManagerRecordTest> defaultTtlRecords = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
         Assert.assertTrue(defaultTtlRecords.size() == 2);
 
-        //ttlServiceRecordTest1 record deleted due to cleanup interval:
-        List<TtlServiceRecordTest> records = mongoTemplate.findAll(TtlServiceRecordTest.class, COLLECTION_NAME_TEST);
+        //StoreManagerRecordTest1 record deleted due to cleanup interval:
+        List<StoreManagerRecordTest> records = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_TEST);
         Assert.assertTrue(records.size() == 0);
     }
 
@@ -133,15 +133,15 @@ public class TtlServiceTest {
 
 
     @Configuration
-    @Import({MongodbTestConfig.class, TtlServiceConfig.class})
+    @Import({MongodbTestConfig.class, StoreManagerConfig.class})
     @EnableSpringConfigured
-    public static class TtlServiceTestConfig {
+    public static class StoreManagerTestConfig {
 
         @Autowired
         private MongoTemplate mongoTemplate;
 
         @Bean
-        public static TestPropertiesPlaceholderConfigurer TtlServiceTestConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer StoreManagereTestConfigurer() {
             Properties properties = new Properties();
             properties.put("spring.application.name", "test-app-name");
             properties.put("presidio.default.ttl.duration", "PT48H");
@@ -150,8 +150,8 @@ public class TtlServiceTest {
         }
 
         @Bean
-        TtlServiceAwareStoreTest ttlServiceAwareStoreTest() {
-            return new TtlServiceAwareStoreTest(mongoTemplate);
+        StoreManagerAwareTest storeManagerAwareTest() {
+            return new StoreManagerAwareTest(mongoTemplate);
         }
     }
 

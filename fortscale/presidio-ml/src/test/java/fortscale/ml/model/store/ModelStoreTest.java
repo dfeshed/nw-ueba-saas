@@ -4,7 +4,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.StoreManager;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +30,8 @@ public class ModelStoreTest {
 		when(modelConf.getName()).thenReturn("modelConfName");
 		String collectionName = ModelStore.getCollectionName(modelConf);
 		Assert.assertFalse(mongoTemplate.getCollectionNames().contains(collectionName));
-		TtlService ttlService = mock(TtlService.class);
-		modelStore.setTtlService(ttlService);
+		StoreManager storeManager = mock(StoreManager.class);
+		modelStore.setStoreManager(storeManager);
 		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0));
 		Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName));
 	}

@@ -6,7 +6,7 @@ import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.StoreManager;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.time.Instant;
@@ -18,19 +18,19 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
 	private EnrichedDataStore enrichedDataStore;
 	private InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator;
 	private FeatureBucketStore featureBucketStore;
-	private TtlService ttlService;
+	private StoreManager storeManager;
 
 	public ModelFeatureAggregationBucketsExecutionServiceImpl(
-			BucketConfigurationService bucketConfigurationService,
-			EnrichedDataStore enrichedDataStore,
-			InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
-			FeatureBucketStore featureBucketStore, TtlService ttlService, int pageSize, int maxGroupSize) {
+            BucketConfigurationService bucketConfigurationService,
+            EnrichedDataStore enrichedDataStore,
+            InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator,
+            FeatureBucketStore featureBucketStore, StoreManager storeManager, int pageSize, int maxGroupSize) {
 
 		this.bucketConfigurationService = bucketConfigurationService;
 		this.enrichedDataStore = enrichedDataStore;
 		this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
 		this.featureBucketStore = featureBucketStore;
-		this.ttlService = ttlService;
+		this.storeManager = storeManager;
 		this.pageSize = pageSize;
 		this.maxGroupSize = maxGroupSize;
 	}
@@ -40,7 +40,7 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
 		ModelFeatureAggregationBucketsService service = new ModelFeatureAggregationBucketsService(
 				bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, pageSize, maxGroupSize);
 		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
-		ttlService.cleanupCollections(startInstant);
+		storeManager.cleanupCollections(startInstant);
 	}
 
 	@Override

@@ -5,11 +5,10 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.ttl.StoreManager;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.aggregation.FeatureAggregationService;
@@ -25,7 +24,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     private AggregatedDataStore scoredFeatureAggregatedStore;
     private int pageSize;
     private int maxGroupSize;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public FeatureAggregationsExecutionServiceImpl(BucketConfigurationService bucketConfigurationService,
                                                    EnrichedDataStore enrichedDataStore,
@@ -33,7 +32,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
                                                    FeatureAggregationScoringService featureAggregationScoringService,
                                                    AggregationRecordsCreator featureAggregationsCreator,
                                                    AggregatedDataStore scoredFeatureAggregatedStore,
-                                                   TtlService ttlService, int pageSize, int maxGroupSize) {
+                                                   StoreManager storeManager, int pageSize, int maxGroupSize) {
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
         this.featureAggregationScoringService = featureAggregationScoringService;
@@ -42,7 +41,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
-        this.ttlService = ttlService;
+        this.storeManager = storeManager;
     }
 
     //todo: data source should be event_type
@@ -52,7 +51,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize);
         TimeRange timeRange = new TimeRange(startDate, endDate);
         featureAggregationBucketsService.execute(timeRange, schema.getName());
-        ttlService.cleanupCollections(startDate);
+        storeManager.cleanupCollections(startDate);
     }
 
     @Override

@@ -5,9 +5,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.Instant;
 
 /**
- * TtlServiceRecordTest record used for TtlServiceTest.
+ * StoreManagerRecordTest record used for StoreManagerTest.
  */
-public class TtlServiceRecordTest {
+public class StoreManagerRecordTest {
 
     public final static String END_FIELD = "end";
 
@@ -18,7 +18,7 @@ public class TtlServiceRecordTest {
     @Field
     private String name;
 
-    public TtlServiceRecordTest(String name, Instant start, Instant end) {
+    public StoreManagerRecordTest(String name, Instant start, Instant end) {
         this.start = start;
         this.end = end;
         this.name = name;
