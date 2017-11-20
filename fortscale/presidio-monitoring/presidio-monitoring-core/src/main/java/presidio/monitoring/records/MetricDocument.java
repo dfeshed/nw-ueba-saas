@@ -84,7 +84,7 @@ public final class MetricDocument {
     }
 
     public void setTags(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
-        this.tags.putAll(tags);
+        this.tags = tags;
     }
 
     public String getName() {
