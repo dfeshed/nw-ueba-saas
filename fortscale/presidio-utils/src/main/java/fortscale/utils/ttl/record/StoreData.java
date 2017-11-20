@@ -17,7 +17,7 @@ import java.time.Instant;
  */
 @Document(collection = "management_ttl")
 @CompoundIndexes(@CompoundIndex(name="managementTtlCompoundIndex", def = "{'applicationName':1, 'storeName':1, 'collectionName':1}", unique = true))
-public class TtlData {
+public class StoreData {
     public static final String APPLICATION_NAME_FIELD = "applicationName";
 
     @Id
@@ -38,7 +38,7 @@ public class TtlData {
     private Duration cleanupInterval;
 
 
-    public TtlData(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval){
+    public StoreData(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval){
         this.applicationName = applicationName;
         this.storeName = storeName;
         this.collectionName = collectionName;

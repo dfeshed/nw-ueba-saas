@@ -2,7 +2,7 @@ package fortscale.utils.ttl;
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
-import fortscale.utils.ttl.record.TtlData;
+import fortscale.utils.ttl.record.StoreData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Created by maria_dorohin on 9/4/17.
@@ -86,18 +85,18 @@ public class StoreManagerTest {
      * 2. defined ttl and cleanup interval values
      */
     public void AssertTtlData(int numOfTtlDataRecords, Duration ttl, Duration cleanupInterval) {
-        String collectionName = TtlData.class.getAnnotation(Document.class).collection();
-        List<TtlData> ttlDataList = mongoTemplate.findAll(TtlData.class, collectionName);
+        String collectionName = StoreData.class.getAnnotation(Document.class).collection();
+        List<StoreData> storeDataList = mongoTemplate.findAll(StoreData.class, collectionName);
 
-        Assert.assertTrue(ttlDataList.size() == numOfTtlDataRecords);
-        for (TtlData ttlData : ttlDataList) {
-            if (ttlData.getCollectionName().equals(COLLECTION_NAME_TEST)) {
-                Assert.assertTrue(ttlData.getTtlDuration().equals(ttl));
-                Assert.assertTrue(ttlData.getCleanupInterval().equals(cleanupInterval));
+        Assert.assertTrue(storeDataList.size() == numOfTtlDataRecords);
+        for (StoreData storeData : storeDataList) {
+            if (storeData.getCollectionName().equals(COLLECTION_NAME_TEST)) {
+                Assert.assertTrue(storeData.getTtlDuration().equals(ttl));
+                Assert.assertTrue(storeData.getCleanupInterval().equals(cleanupInterval));
 
-            } else if (ttlData.getCollectionName().equals(COLLECTION_NAME_DEFAULT_TTL_TEST)) {
-                Assert.assertTrue(ttlData.getTtlDuration().equals(defaultTtl));
-                Assert.assertTrue(ttlData.getCleanupInterval().equals(defaultCleanupInterval));
+            } else if (storeData.getCollectionName().equals(COLLECTION_NAME_DEFAULT_TTL_TEST)) {
+                Assert.assertTrue(storeData.getTtlDuration().equals(defaultTtl));
+                Assert.assertTrue(storeData.getCleanupInterval().equals(defaultCleanupInterval));
             }
         }
     }
