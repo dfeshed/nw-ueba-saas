@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
+import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.spring.ExternalMonitoringConfiguration;
@@ -32,7 +33,7 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         }
-        presidioSystemMetricsFactory.addTag(applicationName);
+        presidioSystemMetricsFactory.addTag(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
         metricsExporterBean.setApplicationName(applicationName);
         return presidioExternalMonitoringServiceBean;
     }

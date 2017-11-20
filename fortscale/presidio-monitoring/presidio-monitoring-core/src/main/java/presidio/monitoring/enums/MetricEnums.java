@@ -8,7 +8,7 @@ import java.util.Set;
 public class MetricEnums {
 
     public enum MetricValues {
-        SUM("sum"), MAX("max"), AVG("avg"), COUNT("count");
+        DEFAULT_METRIC_VALUE("metric_value"), SUM("sum"), MAX("max"), AVG("avg"), COUNT("count");
 
         private String value;
 
@@ -37,5 +37,9 @@ public class MetricEnums {
             set.add(fromValue("avg"));
             return set;
         }
+    }
+
+    public enum MetricTagKeysEnum {
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID;
     }
 }

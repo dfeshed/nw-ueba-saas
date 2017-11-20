@@ -19,61 +19,72 @@ public class PresidioMetricFactory {
         this.applicationName = applicationName;
     }
 
-    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String unit, Instant logicTime, boolean reportOnce) {
-        tags.add(applicationName);
-        return createMetric(metricName, value, tags, unit, Date.from(logicTime), reportOnce);
+    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit, Instant logicTime, boolean reportOnce) {
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+
+        return createMetric(metricName, value, tags, Date.from(logicTime), reportOnce);
     }
 
-    public Metric creatingPresidioMetric(String metricName, Number value, Set<String> tags, String unit, Instant logicTime, boolean reportOnce) {
+    public Metric creatingPresidioMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit, Instant logicTime, boolean reportOnce) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.SUM, value);
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
+
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
         return creatingPresidioMetric(metricName, map, tags, unit, logicTime, reportOnce);
     }
 
-    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String unit, Instant logicTime) {
-        tags.add(applicationName);
-        return createMetric(metricName, value, tags, unit, Date.from(logicTime), false);
+    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit, Instant logicTime) {
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+        return createMetric(metricName, value, tags, Date.from(logicTime), false);
     }
 
-    public Metric creatingPresidioMetric(String metricName, Number value, Set<String> tags, String unit, Instant logicTime) {
+    public Metric creatingPresidioMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit, Instant logicTime) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.SUM, value);
-        return createMetric(metricName, map, tags, unit, Date.from(logicTime), false);
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+        return createMetric(metricName, map, tags, Date.from(logicTime), false);
     }
 
-    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String unit, boolean reportOnce) {
-        tags.add(applicationName);
-        return createMetric(metricName, value, tags, unit, null, reportOnce);
+    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit, boolean reportOnce) {
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+        return createMetric(metricName, value, tags, null, reportOnce);
     }
 
-    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String unit) {
-        tags.add(applicationName);
-        return createMetric(metricName, value, tags, unit, null, false);
+    public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit) {
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+        return createMetric(metricName, value, tags, null, false);
 
     }
 
-    public Metric creatingPresidioMetric(String metricName, Number value, Set<String> tags, String unit) {
+    public Metric creatingPresidioMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String unit) {
         Metric metric = creatingPresidioMetric(metricName, value, unit);
         metric.setTags(tags);
         return metric;
     }
 
     public Metric creatingPresidioMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, String unit) {
-        Set<String> tags = new HashSet<>();
-        tags.add(applicationName);
-        return createMetric(metricName, value, tags, unit, null, false);
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+        return createMetric(metricName, value, tags, null, false);
     }
 
     public Metric creatingPresidioMetric(String metricName, Number value, String unit) {
-        Set<String> tags = new HashSet<>();
-        tags.add(applicationName);
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, unit);
+
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.SUM, value);
-        return createMetric(metricName, map, tags, unit, null, false);
+        return createMetric(metricName, map, tags, null, false);
     }
 
-    private Metric createMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String unit, Date logicTime, boolean reportOnce) {
-        return new Metric(metricName, value, logicTime, tags, unit, reportOnce);
+    private Metric createMetric(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, Date logicTime, boolean reportOnce) {
+        return new Metric(metricName, value, logicTime, tags, reportOnce);
     }
 
     public void setApplicationName(String applicationName) {

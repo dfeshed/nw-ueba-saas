@@ -70,6 +70,6 @@ public class PresidioMetricEndPoint {
     }
 
     private MetricDocument buildPresidioMetric(Metric metric) {
-        return new MetricDocument(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getUnit(), metric.getLogicTime());
+        return new MetricDocument(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getLogicTime());
     }
 }

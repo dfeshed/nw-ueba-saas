@@ -16,14 +16,14 @@ import java.util.Set;
 
 public class MetricGeneratorService {
 
-    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, List values, String unit, Set tags) {
+    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, List values, Map<MetricEnums.MetricTagKeysEnum, String> tags) {
         List<MetricDocument> metrics = new LinkedList<>();
         long timeBetweenMetrics = (toDate.getEpochSecond() - fromDate.getEpochSecond()) / numberOfMetrics;
         Date timeStemp = new Date();
         for (int i = 0; i < numberOfMetrics; i++) {
             MetricDocument metric;
             Date time = Date.from(fromDate.plusMillis(timeBetweenMetrics * i));
-            metric = new MetricDocument(metricName, valuesMapGenerator(values), timeStemp, tags, unit, time);
+            metric = new MetricDocument(metricName, valuesMapGenerator(values), timeStemp, tags, time);
             metrics.add(metric);
         }
         return metrics;

@@ -16,7 +16,7 @@ public class MetricCollectingServiceImpl implements MetricCollectingService {
 
     @Override
     public void addMetric(Metric metric) {
-        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", metric.getName(), metric.getValue(), metric.getTags(), metric.getUnit());
+        logger.debug("Adding metric name {} , value {} , tags {} , unit {}", metric.getName(), metric.getValue(), metric.getTags());
         presidioCustomMetrics.addMetric(metric);
     }
 

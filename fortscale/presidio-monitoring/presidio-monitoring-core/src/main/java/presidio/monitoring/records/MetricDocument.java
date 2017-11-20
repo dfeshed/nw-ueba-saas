@@ -37,22 +37,18 @@ public class MetricDocument {
     @Field(type = FieldType.Date, store = true)
     private Date timestamp;
 
-    @Field(type = FieldType.String, store = true)
-    private Set<String> tags;
-
-    @Field(type = FieldType.String, store = true)
-    private String unit;
+    @Field(type = FieldType.Object, store = true, index = FieldIndex.analyzed)
+    Map<MetricEnums.MetricTagKeysEnum, String> tags;
 
     @Field(type = FieldType.Date, store = true)
     private Date logicTime;
 
-    public MetricDocument(String name, Map<MetricEnums.MetricValues, Number> value, Date timestamp, Set<String> tags, String unit, Date logicTime) {
+    public MetricDocument(String name, Map<MetricEnums.MetricValues, Number> value, Date timestamp, Map<MetricEnums.MetricTagKeysEnum, String> tags, Date logicTime) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.value = value;
         this.timestamp = timestamp;
         this.tags = tags;
-        this.unit = unit;
         this.logicTime = logicTime;
     }
 
@@ -88,12 +84,8 @@ public class MetricDocument {
         this.timestamp = timestamp;
     }
 
-    public void setTags(Set<String> tags) {
-        this.tags.addAll(tags);
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setTags(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
+        this.tags.putAll(tags);
     }
 
     public String getName() {
@@ -112,12 +104,8 @@ public class MetricDocument {
         return timestamp;
     }
 
-    public Set<String> getTags() {
+    public Map<MetricEnums.MetricTagKeysEnum, String> getTags() {
         return tags;
-    }
-
-    public String getUnit() {
-        return unit;
     }
 
     @Override
@@ -128,7 +116,7 @@ public class MetricDocument {
                 ", value=" + value.toString() +
                 ", timestamp=" + timestamp +
                 ", tags=" + tags +
-                ", unit='" + unit + '\'' +
+                '\'' +
                 '}';
     }
 

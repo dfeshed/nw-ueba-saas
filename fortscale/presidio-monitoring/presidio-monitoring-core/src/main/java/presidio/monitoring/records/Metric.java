@@ -3,10 +3,7 @@ package presidio.monitoring.records;
 
 import presidio.monitoring.enums.MetricEnums;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Metric {
 
@@ -14,30 +11,28 @@ public class Metric {
     private Map<MetricEnums.MetricValues, Number> value;
     private Date time;
     private Date logicTime;
-    private Set<String> tags;
-    private String unit;
+    private Map<MetricEnums.MetricTagKeysEnum, String> tags;
     private boolean reportOneTime;
 
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, Date logicTime, Set<String> tags, String unit, boolean reportOneTime) {
+    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, Date logicTime, Map<MetricEnums.MetricTagKeysEnum, String> tags, boolean reportOneTime) {
         this.name = name;
         this.value = value;
         this.time = new Date();
         this.logicTime = logicTime;
         this.tags = tags;
-        this.unit = unit;
         this.reportOneTime = reportOneTime;
     }
 
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, Set<String> tags, String unit, boolean reportOneTime) {
-        this(name, value, null, tags, unit, reportOneTime);
+    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, boolean reportOneTime) {
+        this(name, value, null, tags, reportOneTime);
     }
 
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, String unit, boolean reportOneTime) {
-        this(name, value, new HashSet<>(), unit, reportOneTime);
+    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, boolean reportOneTime) {
+        this(name, value, new HashMap<>(), reportOneTime);
     }
 
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, String unit) {
-        this(name, value, unit, false);
+    public Metric(String name, Map<MetricEnums.MetricValues, Number> value) {
+        this(name, value, false);
     }
 
     public void setName(String name) {
@@ -56,12 +51,8 @@ public class Metric {
         this.time = time;
     }
 
-    public void setTags(Set<String> tags) {
+    public void setTags(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
         this.tags = tags;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     public void setReportOneTime(boolean reportOneTime) {
@@ -81,12 +72,8 @@ public class Metric {
         return time;
     }
 
-    public Set<String> getTags() {
+    public Map<MetricEnums.MetricTagKeysEnum, String> getTags() {
         return tags;
-    }
-
-    public String getUnit() {
-        return unit;
     }
 
     public boolean isReportOneTime() {

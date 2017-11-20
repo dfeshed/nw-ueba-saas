@@ -134,8 +134,8 @@ public class MonitoringAspects {
         Object returnVal = joinPoint.proceed();
         List result = (List) returnVal;
         int numberOfFilteredEvents = numberOfEventsEntered - result.size();
-        Set tags = new HashSet();
-        tags.add(schema);
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema);
         presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, numberOfFilteredEvents, tags, UNIT_TYPE_LONG));
         logger.debug("Metric {} add {} events filtered. ", metricName, numberOfFilteredEvents);
         return returnVal;
@@ -173,8 +173,8 @@ public class MonitoringAspects {
     @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(schema,..)")
     public void dataSourceProcess(JoinPoint joinPoint, Schema schema) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + schema.getName();
-        Set tags = new HashSet();
-        tags.add(schema.getName());
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();
+        tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema.getName());
         presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, tags, UNIT_TYPE_LONG));
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }

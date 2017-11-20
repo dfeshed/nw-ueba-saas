@@ -32,11 +32,11 @@ public class PresidioSystemMetricsFactory {
     private Runtime runtime;
     private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
     private ThreadMXBean threadMxBean;
-    private Set<String> tags;
+    private Map<MetricEnums.MetricTagKeysEnum, String> tags;
 
     public PresidioSystemMetricsFactory(String applicationName) {
-        tags = new HashSet<>();
-        tags.add(applicationName);
+        tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
         runtime = Runtime.getRuntime();
         garbageCollectorMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
         threadMxBean = ManagementFactory.getThreadMXBean();
@@ -45,19 +45,22 @@ public class PresidioSystemMetricsFactory {
     private Metric createMemoryMetric(String name, long value) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
-        return new Metric(name, map, tags, MEMORY, false);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MEMORY);
+        return new Metric(name, map, tags, false);
     }
 
     private Metric createSystemMetric(String name, long value) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
-        return new Metric(name, map, tags, SYSTEM, false);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, SYSTEM);
+        return new Metric(name, map, tags, false);
     }
 
     private Metric createThreadsMetric(String name, long value) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
-        return new Metric(name, map, tags, THREADS, false);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, THREADS);
+        return new Metric(name, map, tags, false);
     }
 
     public List<Metric> metrics() {
@@ -128,7 +131,7 @@ public class PresidioSystemMetricsFactory {
         }
     }
 
-    public void addTag(String tag) {
-        this.tags.add(tag);
+    public void addTag(MetricEnums.MetricTagKeysEnum tagKey, String tagValue) {
+        this.tags.put(tagKey, tagValue);
     }
 }
