@@ -1,6 +1,5 @@
 import reselect from 'reselect';
 const { createSelector } = reselect;
-import _ from 'lodash';
 
 const _hostDetails = (state) => state.endpoint.overview.hostDetails || [];
 const _snapShots = (state) => state.endpoint.detailsInput.snapShots;
@@ -90,64 +89,6 @@ export const isJsonExportCompleted = createSelector(
 export const isSnapshotsAvailable = createSelector(
   _snapShots,
   (snapShots) => snapShots && snapShots.length
-);
-
-const _machineData = createSelector(
-  _hostDetails,
-  (hostDetails) => hostDetails.machine
-);
-
-export const getHostFileEntries = createSelector(
-  [ _machineData ],
-  (_machineData) => {
-    if (_machineData) {
-      return _machineData.hostFileEntries;
-    }
-    return [];
-  }
-);
-
-export const getMountedPaths = createSelector(
-  [ _machineData ],
-  (_machineData) => {
-    if (_machineData) {
-      return _machineData.mountedPaths;
-    }
-    return [];
-  }
-);
-
-export const getNetworkShares = createSelector(
-  [ _machineData ],
-  (_machineData) => {
-    if (_machineData) {
-      return _machineData.networkShares;
-    }
-    return [];
-  }
-);
-
-export const getBashHistories = createSelector(
-  [ _machineData ],
-  (_machineData) => {
-    if (_machineData) {
-      const { bashHistory } = _machineData;
-      if (bashHistory) {
-        const history = bashHistory.map((item) => {
-          const { username: userName, commands } = item;
-          const modified = commands.map((command) => {
-            return {
-              userName,
-              command
-            };
-          });
-          return modified;
-        });
-        return _.flatten(history).reverse();
-      }
-    }
-    return [];
-  }
 );
 
 export const downloadLink = createSelector(

@@ -179,7 +179,8 @@ export const hostDetails = {
       'fileSystem': 'binfmt_misc',
       'options': 'rw,relatime',
       'remotePath': 'binfmt_misc'
-    }]
+    }],
+    systemPatches: ['KB974405', '982861', 'KB2670838', 'KB2830477', 'KB2592687', 'KB2393802']
   },
   'machineIdentity': {
     'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',

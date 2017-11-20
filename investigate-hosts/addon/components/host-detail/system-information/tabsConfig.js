@@ -21,6 +21,18 @@ const tabs = [
     name: 'BASH_HISTORY',
     hiddenFor: ['windows'],
     id: '4'
+  },
+  {
+    label: 'investigateHosts.tabs.securityProducts',
+    name: 'SECURITY_PRODUCTS',
+    hiddenFor: ['mac', 'linux'],
+    id: '5'
+  },
+  {
+    label: 'investigateHosts.tabs.windowsPatches',
+    name: 'WINDOWS_PATCHES',
+    hiddenFor: ['mac', 'linux'],
+    id: '6'
   }
 ];
 

@@ -1890,7 +1890,10 @@ export default {
       networkShares: 'ja_Network Shares',
       bashHistories: 'ja_Bash History',
       libraries: 'ja_Libraries',
-      explore: 'ja_explore'
+      explore: 'ja_explore',
+      securityProducts: 'ja_Security Products',
+      windowsPatches: 'ja_Windows Patches'
+
     },
     systemInformation: {
       ipAddress: 'ja_IP Address',
@@ -1909,7 +1912,8 @@ export default {
       command: 'ja_Command',
       commandNote: 'ja_Note: Most recent commands are on the top',
       filterUser: 'ja_Type to filter user',
-      filterBy: 'ja_Filter By User'
+      filterBy: 'ja_Filter By User',
+      patches: 'ja_Patches'
     },
     process: {
       title: 'ja_Process',

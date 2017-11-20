@@ -8,7 +8,8 @@ import {
   getMountedPaths,
   getNetworkShares,
   getBashHistories,
-  machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
+  machineOsType,
+  getWindowsPatches } from 'investigate-hosts/reducers/details/system-information/selectors';
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
@@ -16,7 +17,8 @@ const stateToComputed = (state) => ({
   mountedPaths: getMountedPaths(state),
   networkShares: getNetworkShares(state),
   bashHistories: getBashHistories(state),
-  machineOsType: machineOsType(state)
+  machineOsType: machineOsType(state),
+  windowsPatches: getWindowsPatches(state)
 });
 
 const SystemInformation = Component.extend({
@@ -60,7 +62,7 @@ const SystemInformation = Component.extend({
    * @returns {{data, columns}}
    * @public
    */
-  @computed('selectedTab', 'hostFileEntries')
+  @computed('selectedTab')
   tableData(selectedTab) {
     const { field, columns } = COLUMNS[selectedTab];
     return {

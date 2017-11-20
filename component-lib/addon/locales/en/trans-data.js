@@ -1919,7 +1919,9 @@ export default {
       networkShares: 'Network Shares',
       bashHistories: 'Bash History',
       libraries: 'Libraries',
-      explore: 'Explore'
+      explore: 'Explore',
+      securityProducts: 'Security Products',
+      windowsPatches: 'Windows Patches'
     },
     systemInformation: {
       ipAddress: 'IP Address',
@@ -1938,7 +1940,8 @@ export default {
       command: 'Command',
       commandNote: 'Note: Most recent commands are on the top',
       filterUser: 'Type to filter user',
-      filterBy: 'Filter By User'
+      filterBy: 'Filter By User',
+      patches: 'Patches'
     },
     hosts: {
       title: 'Hosts',

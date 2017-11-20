@@ -94,6 +94,16 @@ const columns = {
         width: '70%'
       }
     ]
+  },
+  'WINDOWS_PATCHES': {
+    field: 'windowsPatches',
+    columns: [
+      {
+        field: 'windowsPatch',
+        title: 'investigateHosts.systemInformation.patches',
+        width: '20%'
+      }
+    ]
   }
 };
 export default columns;

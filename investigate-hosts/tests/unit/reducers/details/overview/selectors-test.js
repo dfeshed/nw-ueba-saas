@@ -7,10 +7,7 @@ module('Unit | Selectors | overview');
 import {
   processHost,
   machineOsType,
-  isJsonExportCompleted,
-  getHostFileEntries,
-  getMountedPaths
-} from 'investigate-hosts/reducers/details/overview/selectors';
+  isJsonExportCompleted } from 'investigate-hosts/reducers/details/overview/selectors';
 
 
 test('processHost', function(assert) {
@@ -27,18 +24,6 @@ test('machineOsType', function(assert) {
 test('isJsonExportCompleted', function(assert) {
   const result = isJsonExportCompleted(Immutable.from({ endpoint: { overview: { exportJSONStatus: 'completed' } } }));
   assert.equal(result, true);
-});
-
-test('getHostFileEntries', function(assert) {
-  const result = getHostFileEntries(Immutable.from({ endpoint: { overview: { hostDetails } } }));
-  assert.equal(result.length, 3);
-  assert.equal(result[0].ip, '127.0.0.1');
-});
-
-test('getMountedPaths', function(assert) {
-  const result = getMountedPaths(Immutable.from({ endpoint: { overview: { hostDetails } } }));
-  assert.equal(result.length, 28);
-  assert.equal(result[0].fileSystem, 'rootfs');
 });
 
 
