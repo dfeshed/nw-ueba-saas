@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class MetricGeneratorService {
 
@@ -33,6 +32,9 @@ public class MetricGeneratorService {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         Iterator itr = MetricEnums.MetricValues.collectionOfMetricValues().iterator();
         int number = new Random().nextInt(values.size());
+        if(number == 0) {
+            map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, 3);
+        }
         for (int i = 0; i < number; i++) {
             map.put((MetricEnums.MetricValues) itr.next(), values.get(i));
         }

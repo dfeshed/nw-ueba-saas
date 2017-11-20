@@ -1,31 +1,40 @@
 package presidio.monitoring;
 
 
-import org.apache.commons.collections.IteratorUtils;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.generator.MetricGeneratorService;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
 
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-//@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = MetricGenerateServiceTestConfig.class)
-public class MetricsModuleTest {
+public class MetricPersistencyServiceTest {
 
     @Autowired
     private MetricGeneratorService metricGeneratorService;
 
     @Autowired
     private PresidioMetricPersistencyService presidioMetricPersistencyService;
+
+    @Autowired
+    public MetricRepository metricRepository;
+
+    @After
+    public void deleteTestData() {
+        metricRepository.delete(metricRepository.findAll());
+    }
 
     @Test
     public void createTestMetrics() {
@@ -35,8 +44,14 @@ public class MetricsModuleTest {
         values.add(100);
         values.add(50);
         values.add(10);
-        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, null);
-        Iterable<MetricDocument> responce = presidioMetricPersistencyService.save(metricList);
-        List<MetricDocument> metricDocumentList = IteratorUtils.toList(responce.iterator());
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, tags);
+        presidioMetricPersistencyService.save(metricList);
+
+        Assert.assertEquals(100, metricRepository.count());
+        //verify first metric only:
+        MetricDocument metric = metricRepository.findAll().iterator().next();
+        Assert.assertFalse(metric.getValue().isEmpty());
+        Assert.assertEquals("test", metric.getName());
     }
 }
