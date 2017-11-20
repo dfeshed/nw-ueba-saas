@@ -4,6 +4,7 @@ package presidio.monitoring.endPoint;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.StringUtils;
 import presidio.monitoring.enums.MetricEnums;
+import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.records.Metric;
 
 import java.lang.management.GarbageCollectorMXBean;
@@ -11,11 +12,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
@@ -46,21 +45,30 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MEMORY);
-        return new Metric(name, map, tags, false);
+        return new PresidioMetricFactory.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
     }
 
     private Metric createSystemMetric(String name, long value) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, SYSTEM);
-        return new Metric(name, map, tags, false);
+        return new PresidioMetricFactory.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
     }
 
     private Metric createThreadsMetric(String name, long value) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, THREADS);
-        return new Metric(name, map, tags, false);
+        return new PresidioMetricFactory.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
     }
 
     public List<Metric> metrics() {
