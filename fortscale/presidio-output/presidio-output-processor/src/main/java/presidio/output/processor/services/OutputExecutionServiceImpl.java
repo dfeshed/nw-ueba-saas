@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
+import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
@@ -18,7 +19,12 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shays on 17/05/2017.
@@ -81,8 +87,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         List<Alert> alerts = new ArrayList<>();
         List<User> users = new ArrayList<>();
-        Set tags = new HashSet();
-        tags.add(startDate.toString());
+        Map tags = new HashMap();
+        tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toString());
         List<SmartRecord> smarts = null;
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
@@ -111,7 +117,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name(), 1, tags, UNIT_TYPE_LONG, startDate));
+                    metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name()).
+                            setMetricValue(1).
+                            setMetricTags(tags).
+                            setMetricUnit(UNIT_TYPE_LONG).
+                            setMetricLogicTime(startDate).
+                            build());
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
@@ -127,9 +138,20 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(NUMBER_OF_ALERTS_METRIC_NAME, alerts.size(), tags, UNIT_TYPE_LONG, startDate));
+        metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(NUMBER_OF_ALERTS_METRIC_NAME).
+                setMetricValue(alerts.size()).
+                setMetricTags(tags).
+                setMetricUnit(UNIT_TYPE_LONG).
+                setMetricLogicTime(startDate).
+                build());
         if (CollectionUtils.isNotEmpty(smarts)) {
-            metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(LAST_SMART_TIME_METRIC_NAME, smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), new HashSet(Arrays.asList(startDate.toEpochMilli() + "")), TYPE_LONG, startDate));
+            tags = new HashMap();
+            tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toEpochMilli());
+            metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
+                    setMetricValue(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli()).
+                    setMetricTags(tags).setMetricUnit(UNIT_TYPE_LONG).
+                    setMetricLogicTime(startDate).
+                    build());
         }
     }
 

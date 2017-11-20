@@ -35,11 +35,13 @@ public class MetricEnums {
             set.add(fromValue("sum"));
             set.add(fromValue("max"));
             set.add(fromValue("avg"));
+            set.add(fromValue("metric_value"));
+            set.add(fromValue("count"));
             return set;
         }
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, DATE;
     }
 }

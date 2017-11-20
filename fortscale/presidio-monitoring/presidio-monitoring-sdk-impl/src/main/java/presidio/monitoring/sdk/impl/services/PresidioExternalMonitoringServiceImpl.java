@@ -9,7 +9,6 @@ import presidio.monitoring.services.MetricCollectingService;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMonitoringService {
 
@@ -26,12 +25,22 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     public void reportCustomMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String valueType, Instant logicTime) {
         Map<MetricEnums.MetricValues, Number> valuesMap = new HashMap<>();
         valuesMap.put(MetricEnums.MetricValues.SUM, value);
-        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, valuesMap, tags, valueType, logicTime));
+        metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(metricName).
+                setMetricMultipleValues(valuesMap).
+                setMetricTags(tags).
+                setMetricUnit(valueType).
+                setMetricLogicTime(logicTime).
+                build());
     }
 
     @Override
     public void reportCustomMetricMultipleValues(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, String valueType, Instant logicTime) {
-        metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, value, tags, valueType, logicTime));
+        metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(metricName).
+                setMetricMultipleValues(value).
+                setMetricTags(tags).
+                setMetricUnit(valueType).
+                setMetricLogicTime(logicTime).
+                build());
 
     }
 }

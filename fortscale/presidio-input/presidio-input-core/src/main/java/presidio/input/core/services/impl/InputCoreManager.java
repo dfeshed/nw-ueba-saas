@@ -11,6 +11,7 @@ import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
+import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -18,9 +19,9 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class InputCoreManager {
 
@@ -65,8 +66,8 @@ public class InputCoreManager {
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
         List transformedEvents = null;
         List nextEvents = null;
-        Set tags = new HashSet();
-        tags.add(schema.toString());
+        Map tags = new HashMap();
+        tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema.toString());
         while (rawEventsPageIterator.hasNext()) {
             try {
                 nextEvents = rawEventsPageIterator.next();
@@ -84,15 +85,23 @@ public class InputCoreManager {
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
             } finally {
-                metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(TOTAL_EVENTS_PROCESSED_METRIC_NAME,
-                        transformedEvents != null ? transformedEvents.size() : 0,
-                        tags, TYPE_LONG, startDate));
+                metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(TOTAL_EVENTS_PROCESSED_METRIC_NAME).
+                        setMetricValue(transformedEvents != null ? transformedEvents.size() : 0).
+                        setMetricTags(tags).
+                        setMetricUnit(TYPE_LONG).
+                        setMetricLogicTime(startDate).
+                        build());
             }
         }
         if (CollectionUtils.isNotEmpty(nextEvents)) {
             long time = ((AbstractInputDocument) nextEvents.get(nextEvents.size() - 1)).getDateTime().toEpochMilli();
-            tags.add(startDate.toString());
-            metricCollectingService.addMetric(presidioMetricFactory.creatingPresidioMetric(LAST_EVENT_TIME_PROCESSED_METRIC_NAME, time, tags, TYPE_MILLI_SECONDS, startDate));
+            tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toString());
+            metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(LAST_EVENT_TIME_PROCESSED_METRIC_NAME).
+                    setMetricValue(time).
+                    setMetricTags(tags).
+                    setMetricUnit(TYPE_MILLI_SECONDS).
+                    setMetricLogicTime(startDate).
+                    build());
         }
     }
 
