@@ -4,6 +4,7 @@ import presidio.data.domain.event.Event;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.time.FixedRangeTimeGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
+import presidio.data.generators.common.time.MultiRangeTimeGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,6 +24,17 @@ public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
         resetEventGeneratorProbabilityIterator();
         for (EventGeneratorProbability eventGeneratorProbability: eventGeneratorProbabilityList){
             timeGenerator = new FixedRangeTimeGenerator(startInstant, endInstant, interval);
+            eventGeneratorProbability.getEventGenerator().setTimeGenerator(timeGenerator);
+        }
+        random = new Random(0);
+    }
+
+    public RandomMultiEventGenerator(List<EventGeneratorProbability> eventGeneratorProbabilityList,
+                                     Instant startInstant, Instant endInstant, List<MultiRangeTimeGenerator.ActivityRange> activityRanges, Duration interval) throws GeneratorException {
+        this.eventGeneratorProbabilityList = eventGeneratorProbabilityList;
+        resetEventGeneratorProbabilityIterator();
+        for (EventGeneratorProbability eventGeneratorProbability: eventGeneratorProbabilityList){
+            timeGenerator = new MultiRangeTimeGenerator(startInstant, endInstant, activityRanges, interval);
             eventGeneratorProbability.getEventGenerator().setTimeGenerator(timeGenerator);
         }
         random = new Random(0);
