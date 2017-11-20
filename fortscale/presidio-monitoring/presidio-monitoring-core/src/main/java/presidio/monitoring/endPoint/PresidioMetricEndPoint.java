@@ -25,12 +25,12 @@ public class PresidioMetricEndPoint {
     public void addMetric(Metric metric) {
         metric.addTag(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
         if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
-            updateValuesForMetric(metric, applicationMetrics.get(metric.getName()).getValue());
+            aggregateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
         }
         applicationMetrics.put(metric.getName(), metric);
     }
 
-    private void updateValuesForMetric(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
+    private void aggregateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
         Map<MetricEnums.MetricValues, Number> metricValues = metric.getValue();
         for (Map.Entry<MetricEnums.MetricValues, Number> entry : metricValues.entrySet()) {
             if (value.get(entry.getKey()) != null) {

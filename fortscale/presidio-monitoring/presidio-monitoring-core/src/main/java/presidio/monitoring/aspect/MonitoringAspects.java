@@ -32,7 +32,7 @@ public class MonitoringAspects {
     private final String RUN_TIME = ".RunTime";
     private final String NUMBER_OF_FAILED_VALIDATION = ".NumberOfFailedValidation";
     private final String NUMBER_OF_FILTERED_EVENTS = ".NumberOfFilteredEvents";
-    private final String UNIT_TYPE_LONG = "long";
+
 
     private PresidioMetricEndPoint presidioMetricEndPoint;
 
@@ -58,7 +58,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                setMetricUnit(MetricEnums.MetricUnitType.DEFAULT_METRIC_TYPE).
                 build());
         logger.info("Metric {} increment with annotation Start. ", metric);
     }
@@ -78,7 +78,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                setMetricUnit(MetricEnums.MetricUnitType.DEFAULT_METRIC_TYPE).
                 build());
         logger.debug("Metric {} increment with annotation End. ", metric);
     }
@@ -98,7 +98,7 @@ public class MonitoringAspects {
         presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                setMetricUnit(MetricEnums.MetricUnitType.DEFAULT_METRIC_TYPE).
                 build());
         logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
@@ -120,7 +120,7 @@ public class MonitoringAspects {
         long endTime = System.nanoTime();
         long time = Long.divideUnsigned(endTime - startTime, 1000000000);
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.COUNT, time);
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, time);
         presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metricName).
                 setMetricMultipleValues(map).

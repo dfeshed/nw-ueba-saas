@@ -60,7 +60,7 @@ public class InputCoreManager {
         RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
         List transformedEvents = null;
         List nextEvents = null;
-        Map tags = new HashMap();
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();
         tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema.toString());
         while (rawEventsPageIterator.hasNext()) {
             try {
