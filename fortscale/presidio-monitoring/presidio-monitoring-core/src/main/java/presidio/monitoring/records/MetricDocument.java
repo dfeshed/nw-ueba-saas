@@ -18,7 +18,7 @@ import static presidio.monitoring.records.MetricDocument.TYPE;
 
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
-public class MetricDocument {
+public final class MetricDocument {
 
 
     public static final String METRIC_INDEX_NAME = "presidio-monitoring";
