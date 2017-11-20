@@ -12,15 +12,18 @@ import java.util.Map;
 
 public class PresidioMetricEndPoint {
 
+    private String applicationName;
     private Map<String, Metric> applicationMetrics;
     private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
 
-    public PresidioMetricEndPoint(PresidioSystemMetricsFactory presidioSystemMetricsFactory) {
+    public PresidioMetricEndPoint(PresidioSystemMetricsFactory presidioSystemMetricsFactory, String applicationName) {
+        this.applicationName = applicationName;
         this.presidioSystemMetricsFactory = presidioSystemMetricsFactory;
         this.applicationMetrics = new HashMap<>();
     }
 
     public void addMetric(Metric metric) {
+        metric.addTag(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
         if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
             updateValuesForMetric(metric, applicationMetrics.get(metric.getName()).getValue());
         }
@@ -71,5 +74,9 @@ public class PresidioMetricEndPoint {
 
     private MetricDocument buildPresidioMetric(Metric metric) {
         return new MetricDocument(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getLogicTime());
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 }

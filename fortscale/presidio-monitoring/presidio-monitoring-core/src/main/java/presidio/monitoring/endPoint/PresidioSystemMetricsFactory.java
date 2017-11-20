@@ -4,7 +4,6 @@ package presidio.monitoring.endPoint;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.StringUtils;
 import presidio.monitoring.enums.MetricEnums;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.records.Metric;
 
 import java.lang.management.GarbageCollectorMXBean;
@@ -45,7 +44,7 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MEMORY);
-        return new PresidioMetricFactory.MetricBuilder().setMetricName(name).
+        return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();
@@ -55,7 +54,7 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, SYSTEM);
-        return new PresidioMetricFactory.MetricBuilder().setMetricName(name).
+        return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();
@@ -65,7 +64,7 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, THREADS);
-        return new PresidioMetricFactory.MetricBuilder().setMetricName(name).
+        return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();

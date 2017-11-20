@@ -13,7 +13,7 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import presidio.monitoring.endPoint.PresidioMetricEndPoint;
 import presidio.monitoring.enums.MetricEnums;
-import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.records.Metric;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class MonitoringAspects {
     @Before("@annotation(presidio.monitoring.aspect.annotations.Start)")
     public void start(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + START;
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -75,7 +75,7 @@ public class MonitoringAspects {
     @After("@annotation(presidio.monitoring.aspect.annotations.End)")
     public void end(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + END;
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -95,7 +95,7 @@ public class MonitoringAspects {
     @AfterThrowing("@annotation(presidio.monitoring.aspect.annotations.ExceptionThrown)")
     public void exceptionThrown(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + EXCEPTION_THROWN;
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -121,7 +121,7 @@ public class MonitoringAspects {
         long time = Long.divideUnsigned(endTime - startTime, 1000000000);
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, time);
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metricName).
                 setMetricMultipleValues(map).
                 setMetricUnit(MetricEnums.MetricUnitType.DATE).
@@ -148,7 +148,7 @@ public class MonitoringAspects {
         int numberOfFilteredEvents = numberOfEventsEntered - result.size();
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema);
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metricName).
                 setMetricValue(numberOfFilteredEvents).
                 setMetricTags(tags).
@@ -171,7 +171,7 @@ public class MonitoringAspects {
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString() + NUMBER_OF_FAILED_VALIDATION;
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metricName).
                 setMetricValue(numberOfFailedValidationDocuments).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -195,7 +195,7 @@ public class MonitoringAspects {
         String metric = joinPoint.getSignature().toShortString() + schema.getName();
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();
         tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema.getName());
-        presidioMetricEndPoint.addMetric(new PresidioMetricFactory.MetricBuilder().
+        presidioMetricEndPoint.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
                 setMetricTags(tags).

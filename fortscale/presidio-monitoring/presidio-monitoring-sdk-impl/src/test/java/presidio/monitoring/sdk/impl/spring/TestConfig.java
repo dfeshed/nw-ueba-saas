@@ -22,4 +22,5 @@ public class TestConfig {
         properties.put("spring.autoconfigure.exclude", "org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
+
 }

@@ -2,6 +2,7 @@ package presidio.monitoring.generator;
 
 
 import presidio.monitoring.enums.MetricEnums;
+import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
 
 import java.time.Instant;
@@ -15,15 +16,15 @@ import java.util.Random;
 
 public class MetricGeneratorService {
 
-    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, String metricName, List values, Map<MetricEnums.MetricTagKeysEnum, String> tags) {
+    public List<MetricDocument> generateMetrics(long numberOfMetrics, Instant fromDate, Instant toDate, List values, Metric metric) {
         List<MetricDocument> metrics = new LinkedList<>();
         long timeBetweenMetrics = (toDate.getEpochSecond() - fromDate.getEpochSecond()) / numberOfMetrics;
         Date timeStemp = new Date();
         for (int i = 0; i < numberOfMetrics; i++) {
-            MetricDocument metric;
+            MetricDocument MetricDocument;
             Date time = Date.from(fromDate.plusMillis(timeBetweenMetrics * i));
-            metric = new MetricDocument(metricName, valuesMapGenerator(values), timeStemp, tags, time);
-            metrics.add(metric);
+            MetricDocument = new MetricDocument(metric.getName(), valuesMapGenerator(values), timeStemp, metric.getTags(), time);
+            metrics.add(MetricDocument);
         }
         return metrics;
     }
@@ -32,7 +33,7 @@ public class MetricGeneratorService {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         Iterator itr = MetricEnums.MetricValues.collectionOfMetricValues().iterator();
         int number = new Random().nextInt(values.size());
-        if(number == 0) {
+        if (number == 0) {
             map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, 3);
         }
         for (int i = 0; i < number; i++) {

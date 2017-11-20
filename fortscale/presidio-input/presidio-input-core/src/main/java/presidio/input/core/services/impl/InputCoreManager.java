@@ -12,7 +12,7 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.monitoring.enums.MetricEnums;
-import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.records.Metric;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -79,7 +79,7 @@ public class InputCoreManager {
             } catch (IllegalArgumentException ex) {
                 logger.error("Error reading events from repository.", ex);
             } finally {
-                metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(TOTAL_EVENTS_PROCESSED_METRIC_NAME).
+                metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(TOTAL_EVENTS_PROCESSED_METRIC_NAME).
                         setMetricValue(transformedEvents != null ? transformedEvents.size() : 0).
                         setMetricTags(tags).
                         setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -90,7 +90,7 @@ public class InputCoreManager {
         if (CollectionUtils.isNotEmpty(nextEvents)) {
             long time = ((AbstractInputDocument) nextEvents.get(nextEvents.size() - 1)).getDateTime().toEpochMilli();
             tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toString());
-            metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(LAST_EVENT_TIME_PROCESSED_METRIC_NAME).
+            metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(LAST_EVENT_TIME_PROCESSED_METRIC_NAME).
                     setMetricValue(time).
                     setMetricTags(tags).
                     setMetricUnit(MetricEnums.MetricUnitType.MILLI_SECOND).

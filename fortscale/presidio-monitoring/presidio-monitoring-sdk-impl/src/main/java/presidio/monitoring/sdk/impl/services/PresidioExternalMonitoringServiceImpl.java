@@ -2,7 +2,7 @@ package presidio.monitoring.sdk.impl.services;
 
 
 import presidio.monitoring.enums.MetricEnums;
-import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.services.MetricCollectingService;
 
@@ -23,7 +23,7 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     public void reportCustomMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime) {
         Map<MetricEnums.MetricValues, Number> valuesMap = new HashMap<>();
         valuesMap.put(MetricEnums.MetricValues.SUM, value);
-        metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(metricName).
+        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(metricName).
                 setMetricMultipleValues(valuesMap).
                 setMetricTags(tags).
                 setMetricUnit(valueType).
@@ -33,7 +33,7 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
 
     @Override
     public void reportCustomMetricMultipleValues(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime) {
-        metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(metricName).
+        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(metricName).
                 setMetricMultipleValues(value).
                 setMetricTags(tags).
                 setMetricUnit(valueType).

@@ -30,6 +30,9 @@ public class ExternalMonitoringTestConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
 
+
+    private String applicationName = "External-monitoring";
+
     @Autowired
     public MetricRepository metricRepository;
 
@@ -63,7 +66,7 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(presidioSystemMetrics());
+        return new PresidioMetricEndPoint(presidioSystemMetrics(), applicationName);
     }
 
 

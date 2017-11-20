@@ -10,7 +10,6 @@ import presidio.monitoring.enums.MetricEnums;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;
@@ -38,7 +37,7 @@ public final class MetricDocument {
     private Date timestamp;
 
     @Field(type = FieldType.Object, store = true, index = FieldIndex.analyzed)
-    Map<MetricEnums.MetricTagKeysEnum, String> tags;
+    private Map<MetricEnums.MetricTagKeysEnum, String> tags;
 
     @Field(type = FieldType.Date, store = true)
     private Date logicTime;

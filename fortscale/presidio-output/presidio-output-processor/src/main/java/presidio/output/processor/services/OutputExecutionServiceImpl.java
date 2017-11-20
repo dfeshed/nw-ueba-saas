@@ -10,7 +10,7 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.monitoring.enums.MetricEnums;
-import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.records.Metric;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
@@ -112,7 +112,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name()).
+                    metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name()).
                             setMetricValue(1).
                             setMetricTags(tags).
                             setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -133,7 +133,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             this.userScoreService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(NUMBER_OF_ALERTS_METRIC_NAME).
+        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUMBER_OF_ALERTS_METRIC_NAME).
                 setMetricValue(alerts.size()).
                 setMetricTags(tags).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
@@ -142,7 +142,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         if (CollectionUtils.isNotEmpty(smarts)) {
             tags = new HashMap();
             tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toEpochMilli() + "");
-            metricCollectingService.addMetric(new PresidioMetricFactory.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
+            metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
                     setMetricValue(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli()).
                     setMetricTags(tags).setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                     setMetricLogicTime(startDate).

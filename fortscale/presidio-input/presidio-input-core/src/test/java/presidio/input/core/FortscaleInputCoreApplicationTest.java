@@ -63,6 +63,10 @@ public class FortscaleInputCoreApplicationTest {
             OutputDataServiceConfig.class})
     @EnableSpringConfigured
     public static class springConfig {
+
+        private String applicationName = "input-core";
+
+
         @Bean
         public MetricCollectingService metricCollectingService() {
             return new MetricCollectingServiceImpl(presidioMetricEndPoint());
@@ -70,7 +74,7 @@ public class FortscaleInputCoreApplicationTest {
 
         @Bean
         public PresidioMetricEndPoint presidioMetricEndPoint() {
-            return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory("input-core"));
+            return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory(applicationName), applicationName);
         }
 
         @Bean

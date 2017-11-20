@@ -10,13 +10,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.generator.MetricGeneratorService;
+import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = MetricGenerateServiceTestConfig.class)
@@ -44,8 +45,8 @@ public class MetricPersistencyServiceTest {
         values.add(100);
         values.add(50);
         values.add(10);
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
-        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, "test", values, tags);
+        List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, values,
+                new Metric.MetricBuilder().setMetricName("test").build());
         presidioMetricPersistencyService.save(metricList);
 
         Assert.assertEquals(100, metricRepository.count());

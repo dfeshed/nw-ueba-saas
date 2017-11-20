@@ -25,7 +25,7 @@ public class PresidioMonitoringConfiguration {
 
     @Bean
     public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory(applicationName));
+        return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory(applicationName), applicationName);
     }
 
     @Bean
