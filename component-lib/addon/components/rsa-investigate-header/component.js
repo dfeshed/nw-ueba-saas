@@ -10,8 +10,13 @@ const TABS = [
     label: 'Navigate'
   },
   {
-    name: 'protected.investigate.investigate-events',
+    isClassic: true,
+    url: '/investigation/events',
     label: 'Events'
+  },
+  {
+    name: 'protected.investigate.investigate-events',
+    label: 'Event Analysis'
   },
   {
     name: 'protected.investigate.investigate-hosts',

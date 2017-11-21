@@ -3,7 +3,9 @@
     {{#each tabs as |tab|}}
       <li>
         {{#if tab.isActive}}
-          <a href='#'>{{tab.label}}</a>
+          <span class="is-active">
+            <a href='#'>{{tab.label}}</a>
+          </span>
         {{else if tab.isClassic}}
           <a href={{tab.url}} class={{concat 'js-test-investigate-' tab.label '-classic'}}>{{tab.label}}</a>
         {{else}}

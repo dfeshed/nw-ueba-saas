@@ -2,6 +2,7 @@ $investigateReconWidth: 50%;
 $investigateReconExpandedWidth: 75%;
 $investigateReconFullWidth: 100%;
 $investigateNavHeight: 40px;
+$investigateBorderBottomColor: border-color(secondary);
 
 .rsa-investigate__nav {
   @include rsa-vendor-prefix(flex-shrink, 0);
@@ -23,6 +24,10 @@ $investigateNavHeight: 40px;
     li {
       list-style: none;
       display: inline;
+      .is-active {
+        padding-bottom: 0.5rem;
+        border-bottom: 0.25rem solid $investigateBorderBottomColor;
+      }
     }
     a {
       @include rsa-font(navigation);
