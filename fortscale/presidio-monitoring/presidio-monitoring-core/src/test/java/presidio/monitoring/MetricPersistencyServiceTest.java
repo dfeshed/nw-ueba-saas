@@ -16,6 +16,7 @@ import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,13 +47,17 @@ public class MetricPersistencyServiceTest {
         values.add(50);
         values.add(10);
         List<MetricDocument> metricList = metricGeneratorService.generateMetrics(100, from, to, values,
-                new Metric.MetricBuilder().setMetricName("test").build());
+                new Metric.MetricBuilder().setMetricName("test")
+                        .setMetricTags(new HashMap<>())
+                        .build());
         presidioMetricPersistencyService.save(metricList);
 
-        Assert.assertEquals(100, metricRepository.count());
         //verify first metric only:
         MetricDocument metric = metricRepository.findAll().iterator().next();
         Assert.assertFalse(metric.getValue().isEmpty());
         Assert.assertEquals("test", metric.getName());
+
+        Assert.assertEquals(100, metricRepository.count());
+
     }
 }

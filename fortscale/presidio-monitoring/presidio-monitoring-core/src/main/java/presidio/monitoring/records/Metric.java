@@ -1,7 +1,7 @@
 package presidio.monitoring.records;
 
 
-import org.springframework.util.ObjectUtils;
+import org.apache.commons.collections.MapUtils;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.time.Instant;
@@ -60,7 +60,7 @@ public class Metric {
     }
 
     public void addTag(MetricEnums.MetricTagKeysEnum key, String tag) {
-        if (ObjectUtils.isEmpty(this.tags)) {
+        if (MapUtils.isEmpty(this.tags)) {
             this.tags = new HashMap<>();
         }
         this.tags.put(key, tag);
@@ -150,14 +150,11 @@ public class Metric {
 
         public Metric build() {
             Date date = null;
-            if (ObjectUtils.isEmpty(this.metricTags)) {
+            if (MapUtils.isEmpty(this.metricTags)) {
                 this.metricTags = new HashMap<>();
             }
-            if (ObjectUtils.isEmpty(this.metricUnit)) {
-                this.metricUnit = MetricEnums.MetricUnitType.fromValue("metric_type");
-            }
-            if (!ObjectUtils.isEmpty(this.metricLogicTime)) {
-                date = Date.from(metricLogicTime);
+            if (this.metricUnit == null) {
+                this.metricUnit = MetricEnums.MetricUnitType.NUMBER;
             }
             metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit.toString());
             return new Metric(metricName, metricValues, date, metricTags, metricReportOnce);
