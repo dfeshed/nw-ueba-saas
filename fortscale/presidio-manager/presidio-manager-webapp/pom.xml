@@ -201,7 +201,7 @@
                             </schemes>
                             <info>
                                 <title>Presidio Rest API</title>
-                                <version>1.0.0</version>
+                                <version>${project.version}</version>
                                 <description>Fortscale Presidio is a plug-in that can be natively embedded by security infrastructure solutions to deliver the visibility and risk-based analysis they need to make better, smarter security decisions. Leveraging the engine from Fortscale’s award-winning user and entity behavioral analytics (UEBA) platform, Presidio enables SIEM, EDR/EPP, DLP, CASB, IAM and other security infrastructure vendors to quickly and simply incorporate real-time, risk-based intelligence on the activity of users and entities within the customer’s environment to enhance their own analysis and security enforcement.
                                     [ Configuration sequence diagram ](https://www.draw.io/?state=%7B%22ids%22:%5B%220By8FcYQOrmVpVzNJQ2NuNkV0T1k%22%5D,%22action%22:%22open%22,%22userId%22:%22100443953654893261199%22%7D#G0By8FcYQOrmVpVzNJQ2NuNkV0T1k)
                                     [Webhook specification](https://docs.google.com/document/d/1iFC4SaVSfkkSZ5vi-0fJaTiBQ7heVqNZj13_u0B6pMk/edit)
