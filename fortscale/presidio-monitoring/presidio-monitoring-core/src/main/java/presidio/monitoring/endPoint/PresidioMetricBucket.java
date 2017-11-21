@@ -1,9 +1,9 @@
 package presidio.monitoring.endPoint;
 
 import org.springframework.util.ObjectUtils;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.util.HashMap;
 import java.util.LinkedList;

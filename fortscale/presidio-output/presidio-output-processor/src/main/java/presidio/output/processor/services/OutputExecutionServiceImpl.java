@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
@@ -83,7 +83,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<Alert> alerts = new ArrayList<>();
         List<User> users = new ArrayList<>();
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
-        tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toString());
         List<SmartRecord> smarts = null;
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
@@ -141,7 +140,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 build());
         if (CollectionUtils.isNotEmpty(smarts)) {
             tags = new HashMap();
-            tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toEpochMilli() + "");
             metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
                     setMetricValue(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli()).
                     setMetricTags(tags).setMetricUnit(MetricEnums.MetricUnitType.NUMBER).

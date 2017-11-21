@@ -1,4 +1,4 @@
-package presidio.monitoring.enums;
+package presidio.monitoring.sdk.api.services.enums;
 
 
 import java.util.Collection;
@@ -42,11 +42,11 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, DATE;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID;
     }
 
     public enum MetricUnitType {
-        DEFAULT_METRIC_TYPE("metric_type"), NUMBER("number"), KB("kilo_byte"), MB("mega_byte"), GB("giga_byte"), MILLI_SECOND("milli_second"), SECOND("second"), DATE("date");
+        NUMBER("number"), KB("kilo_byte"), MB("mega_byte"), GB("giga_byte"), MILLI_SECOND("milli_second"), SECOND("second"), DATE("date");
 
         private String value;
 

@@ -3,8 +3,8 @@ package presidio.monitoring.endPoint;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.util.StringUtils;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;

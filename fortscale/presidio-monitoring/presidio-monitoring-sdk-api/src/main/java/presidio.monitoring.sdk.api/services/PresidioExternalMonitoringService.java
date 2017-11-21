@@ -1,7 +1,7 @@
 package presidio.monitoring.sdk.api.services;
 
 
-import presidio.monitoring.enums.MetricEnums;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.time.Instant;
 import java.util.Map;

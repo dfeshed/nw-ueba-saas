@@ -2,7 +2,7 @@ package presidio.monitoring.records;
 
 
 import org.springframework.util.ObjectUtils;
-import presidio.monitoring.enums.MetricEnums;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.time.Instant;
 import java.util.Date;

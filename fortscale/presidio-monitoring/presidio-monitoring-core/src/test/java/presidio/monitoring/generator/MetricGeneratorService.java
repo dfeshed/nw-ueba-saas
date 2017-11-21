@@ -1,9 +1,9 @@
 package presidio.monitoring.generator;
 
 
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.time.Instant;
 import java.util.Date;

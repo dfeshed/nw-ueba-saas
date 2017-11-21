@@ -6,8 +6,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.sdk.impl.spring.ExternalMonitoringConfiguration;
 
 import java.io.Closeable;

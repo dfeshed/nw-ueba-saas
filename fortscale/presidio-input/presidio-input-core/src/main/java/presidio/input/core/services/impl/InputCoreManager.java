@@ -11,8 +11,8 @@ import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -89,7 +89,6 @@ public class InputCoreManager {
         }
         if (CollectionUtils.isNotEmpty(nextEvents)) {
             long time = ((AbstractInputDocument) nextEvents.get(nextEvents.size() - 1)).getDateTime().toEpochMilli();
-            tags.put(MetricEnums.MetricTagKeysEnum.DATE, startDate.toString());
             metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(LAST_EVENT_TIME_PROCESSED_METRIC_NAME).
                     setMetricValue(time).
                     setMetricTags(tags).

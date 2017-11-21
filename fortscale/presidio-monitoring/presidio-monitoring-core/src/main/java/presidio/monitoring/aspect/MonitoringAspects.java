@@ -1,7 +1,6 @@
 package presidio.monitoring.aspect;
 
 
-import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -12,8 +11,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -58,7 +57,7 @@ public class MonitoringAspects {
         presidioMetricBucket.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(MetricEnums.MetricUnitType.DEFAULT_METRIC_TYPE).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.info("Metric {} increment with annotation Start. ", metric);
     }
@@ -78,7 +77,7 @@ public class MonitoringAspects {
         presidioMetricBucket.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(MetricEnums.MetricUnitType.DEFAULT_METRIC_TYPE).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} increment with annotation End. ", metric);
     }
@@ -98,7 +97,7 @@ public class MonitoringAspects {
         presidioMetricBucket.addMetric(new Metric.MetricBuilder().
                 setMetricName(metric).
                 setMetricValue(1).
-                setMetricUnit(MetricEnums.MetricUnitType.DEFAULT_METRIC_TYPE).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 build());
         logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
@@ -179,7 +178,7 @@ public class MonitoringAspects {
         logger.debug("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 
-
+//Example
     /**
      * This method provides us counting of a method invocation that process a data source .
      * The annotation Before lets us perform custom behavior before a method invocation.
@@ -189,7 +188,7 @@ public class MonitoringAspects {
      * @param schema    - enum of a type date source.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
-
+/*
     @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(schema,..)")
     public void dataSourceProcess(JoinPoint joinPoint, Schema schema) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + schema.getName();
@@ -203,5 +202,5 @@ public class MonitoringAspects {
                 build());
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }
-
+*/
 }

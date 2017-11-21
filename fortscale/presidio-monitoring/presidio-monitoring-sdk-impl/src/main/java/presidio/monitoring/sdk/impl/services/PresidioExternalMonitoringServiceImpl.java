@@ -1,9 +1,9 @@
 package presidio.monitoring.sdk.impl.services;
 
 
-import presidio.monitoring.enums.MetricEnums;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 
 import java.time.Instant;
@@ -31,7 +31,7 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
     @Override
     public void reportCustomMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime) {
         Map<MetricEnums.MetricValues, Number> valuesMap = new HashMap<>();
-        valuesMap.put(MetricEnums.MetricValues.SUM, value);
+        valuesMap.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
         metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(metricName).
                 setMetricMultipleValues(valuesMap).
                 setMetricTags(tags).
