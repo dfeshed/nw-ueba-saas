@@ -93,6 +93,9 @@
   .host-action-buttons {
     .action-button {
       padding-left: rsa-whitespace(more);
+      &.ecatUI button{
+        width:200px;
+      }
     }
     .rsa-form-button {
       height: 32px;

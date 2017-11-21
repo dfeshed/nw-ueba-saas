@@ -18,15 +18,8 @@
   <div class="action-button">
     {{#rsa-form-button click=(action 'toggleInitiateScanModal')}}{{t 'investigateHosts.hosts.button.initiateScan'}}{{/rsa-form-button}}
   </div>
-  <div class="action-button">
-    {{#rsa-content-tethered-panel-trigger panel='panel1'}}
-      {{#rsa-form-button isDisabled=isExportDisabled withDropdown=true}}{{t 'investigateHosts.hosts.button.moreActions'}}{{/rsa-form-button}}
-    {{/rsa-content-tethered-panel-trigger}}
-    {{#rsa-content-tethered-panel displayCloseButton=false position='bottom-left' panelId='panel1'}}
-      <ul class="rsa-dropdown-action-list">
-        <li><a id="ecatUI" {{action "openInAction"}}>{{t 'investigateHosts.hosts.moreActions.openIn'}}</a></li>
-      </ul>
-    {{/rsa-content-tethered-panel}}
+  <div class="action-button ecatUI">
+    {{#rsa-form-button click=(action 'openInAction')}}{{t 'investigateHosts.hosts.moreActions.openIn'}}{{/rsa-form-button}}
   </div>
   <div class="action-button">
     {{#if isJsonExportCompleted}}
