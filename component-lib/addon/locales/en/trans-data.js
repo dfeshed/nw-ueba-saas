@@ -460,13 +460,20 @@ export default {
   configure: {
     liveContent: 'Live Content',
     esaRules: 'ESA Rules',
-    incidentRules: 'Incident Rules',
+    incidentRulesTitle: 'Incident Rules',
     subscriptions: 'Subscriptions',
-    customFeeds: 'Custom Feeds'
-  },
-  respond: {
-    confirm: 'Are you sure you want to do this?',
-    aggregationRules: {
+    customFeeds: 'Custom Feeds',
+    incidentRules: {
+      confirm: 'Are you sure you want to do this?',
+      assignee: {
+        none: '(Unassigned)'
+      },
+      priority: {
+        LOW: 'Low',
+        MEDIUM: 'Medium',
+        HIGH: 'High',
+        CRITICAL: 'Critical'
+      },
       action: 'Action',
       actionMessage: 'Choose the action taken if the rule matches an alert',
       error: 'There was a problem loading alert rules',
@@ -556,10 +563,22 @@ export default {
         hasMissingConditionInfo: 'At least one condition is missing a field, operator, or value'
       },
       actionMessages: {
-        deleteRuleConfirmation: 'Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.'
+        deleteRuleConfirmation: 'Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.',
+        reorderSuccess: 'You successfully changed the order of the rules',
+        reorderFailure: 'There was a problem changing the order of the rules',
+        cloneSuccess: 'You successfully cloned the selected rule',
+        cloneFailure: 'There was a problem cloning the selected rule',
+        createSuccess: 'You successfully created a new rule',
+        createFailure: 'There was a problem creating the new rule',
+        deleteSuccess: 'You successfully deleted the selected rule',
+        deleteFailure: 'There was a problem deleting the selected rule',
+        saveSuccess: 'The changes to the rule were successfully saved',
+        saveFailure: 'There was a problem saving the changes to the rule'
       },
       missingRequiredInfo: 'There is required information missing from the aggregation rule'
-    },
+    }
+  },
+  respond: {
     title: 'Respond',
     common: {
       yes: 'Yes',
@@ -567,7 +586,6 @@ export default {
       true: 'Yes',
       false: 'No'
     },
-    configure: 'Configure',
     none: 'None',
     select: 'Select',
     close: 'Close',
@@ -599,7 +617,6 @@ export default {
       incidents: 'Incidents',
       remediationTasks: 'Tasks',
       alerts: 'Alerts',
-      incidentRules: 'Incident Rules',
       actionMessages: {
         updateSuccess: 'Your change was successful',
         updateFailure: 'There was a problem updating the field for this record',

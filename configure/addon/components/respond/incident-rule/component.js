@@ -107,8 +107,8 @@ const IncidentRule = Component.extend(Confirmable, {
     handleQueryTypeChange(value) {
       const isChangingToAdvanced = value === 'ADVANCED';
       const warning = isChangingToAdvanced ?
-        this.i18n.t('respond.aggregationRules.confirmAdvancedQueryMessage') :
-        this.i18n.t('respond.aggregationRules.confirmQueryBuilderMessage');
+        this.i18n.t('configure.incidentRules.confirmAdvancedQueryMessage') :
+        this.i18n.t('configure.incidentRules.confirmQueryBuilderMessage');
       this.send('showConfirmationDialog', 'change-query-type', { warning }, () => {
         this.send('update', 'ruleInfo.advancedUiFilterConditions', isChangingToAdvanced);
         this.send('clearQuery');

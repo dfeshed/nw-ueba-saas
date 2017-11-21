@@ -28,12 +28,12 @@
           {{rsa-loader size='larger'}}
         </centered>
       {{else if (eq rulesStatus 'error')}}
-        <centered class="rules-error">{{t 'respond.aggregationRules.error'}}</centered>
+        <centered class="rules-error">{{t 'configure.incidentRules.error'}}</centered>
       {{else}}
 
           {{#rsa-data-table/body
             rowComponentClass='respond/incident-rules/row'
-            noResultsMessage=(t 'respond.aggregationRules.noResults') as |item index column|}}
+            noResultsMessage=(t 'configure.incidentRules.noResults') as |item index column|}}
             {{#rsa-data-table/body-cell item=item column=column}}
               {{#if (eq column.id 'select')}}
                 <centered>

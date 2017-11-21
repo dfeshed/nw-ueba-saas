@@ -7,7 +7,7 @@ export default Route.extend({
   i18n: inject(),
 
   titleToken() {
-    return this.get('i18n').t('respond.entities.incidentRules');
+    return this.get('i18n').t('configure.incidentRulesTitle');
   },
 
   beforeModel() {

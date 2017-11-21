@@ -3,7 +3,7 @@
     <div class="action-control create-rule-button">
       {{#link-to 'respond.incident-rule-create'}}
         {{#rsa-form-button}}
-          {{t 'respond.aggregationRules.createRule'}}
+          {{t 'configure.incidentRules.createRule'}}
         {{/rsa-form-button}}
       {{/link-to}}
     </div>
@@ -11,7 +11,7 @@
       {{#rsa-form-button
         isDisabled=(not hasSelectedRule)
         defaultAction='clone'}}
-        {{t 'respond.aggregationRules.cloneRule'}}
+        {{t 'configure.incidentRules.cloneRule'}}
       {{/rsa-form-button}}
     </div>
     <div class="action-control delete-rule-button">
@@ -19,15 +19,15 @@
         style='danger'
         isDisabled=(not hasSelectedRule)
         defaultAction='delete'}}
-        {{t 'respond.aggregationRules.deleteRule'}}
+        {{t 'configure.incidentRules.deleteRule'}}
       {{/rsa-form-button}}
     </div>
   {{/if}}
 </section>
 {{#if showConfirmationDialog}}
-  {{#rsa-application-modal eventId='delete-rule' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+  {{#rsa-application-modal eventId='delete-rule' label=(t "configure.incidentRules.deleteRule") style="standard respond-confirmation-dialog"}}
     <div class='modal-content'>
-      <p>{{t 'respond.aggregationRules.actionMessages.deleteRuleConfirmation'}}</p>
+      <p>{{t 'configure.incidentRules.actionMessages.deleteRuleConfirmation'}}</p>
     </div>
     <footer>
       <hbox class="modal-footer-buttons">

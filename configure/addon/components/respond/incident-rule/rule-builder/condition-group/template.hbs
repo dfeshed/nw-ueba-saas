@@ -5,14 +5,14 @@
       selected=selectedGroupOperator
       searchEnabled=false
       onchange=(action 'updateGroupOperator') as |groupOperator|}}
-      {{ t (concat 'respond.aggregationRules.ruleBuilder.groupOperators.' groupOperator)}}
+      {{ t (concat 'configure.incidentRules.ruleBuilder.groupOperators.' groupOperator)}}
     {{/power-select}}
   </box>
   <box class="add-condition">
     {{#rsa-form-button
       isDisabled=hasInvalidConditions
       defaultAction='addCondition'}}
-      {{t 'respond.aggregationRules.ruleBuilder.addCondition'}}
+      {{t 'configure.incidentRules.ruleBuilder.addCondition'}}
     {{/rsa-form-button}}
   </box>
   {{! The root grouping of condidtions cannot be removed }}
@@ -20,7 +20,7 @@
     {{#if (not isRootGroup)}}
       {{#rsa-form-button
         defaultAction='removeGroup'}}
-        {{t 'respond.aggregationRules.ruleBuilder.removeConditionGroup'}}
+        {{t 'configure.incidentRules.ruleBuilder.removeConditionGroup'}}
       {{/rsa-form-button}}
     {{/if}}
   </box>

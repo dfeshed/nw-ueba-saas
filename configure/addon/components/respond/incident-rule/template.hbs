@@ -14,26 +14,26 @@
                 checked=ruleInfo.enabled
                 change=(action 'update' 'ruleInfo.enabled' (not ruleInfo.enabled))
               }}
-              {{t 'respond.aggregationRules.enabled'}}
+              {{t 'configure.incidentRules.enabled'}}
             </label>
           </div>
 
           <div class="rule-control name">
             {{rsa-form-input
-              label=(concat (t 'respond.aggregationRules.name') '*')
+              label=(concat (t 'configure.incidentRules.name') '*')
               value=(readonly ruleInfo.name)
-              placeholder=(t 'respond.aggregationRules.namePlaceholder')
+              placeholder=(t 'configure.incidentRules.namePlaceholder')
               focusOut=(action 'handleNameChange' value='target.value')
               isError=(and (contains 'ruleInfo.name' visited) (not ruleInfo.name))
-              errorMessage=(t 'respond.aggregationRules.ruleNameRequired')
+              errorMessage=(t 'configure.incidentRules.ruleNameRequired')
             }}
           </div>
 
           <div class="rule-control description">
             {{rsa-form-textarea
-              label=(t 'respond.aggregationRules.description')
+              label=(t 'configure.incidentRules.description')
               value=(readonly ruleInfo.description)
-              placeholder=(t 'respond.aggregationRules.descriptionPlaceholder')
+              placeholder=(t 'configure.incidentRules.descriptionPlaceholder')
               focusOut=(action 'handleDescriptionChange' value='target.value')
             }}
           </div>
@@ -41,17 +41,17 @@
 
       </div>
       <div class="form-row">
-        <div class="form-cell group-name">{{t 'respond.aggregationRules.matchConditions'}}*</div>
+        <div class="form-cell group-name">{{t 'configure.incidentRules.matchConditions'}}*</div>
         <div class="form-cell">
           <div class="rule-control match-conditions">
             <div class='query-type'>
-              <label>{{t 'respond.aggregationRules.queryMode'}}</label>
+              <label>{{t 'configure.incidentRules.queryMode'}}</label>
               {{#power-select
                 options=queryModes
                 selected=queryMode
                 searchEnabled=false
                 onchange=(action 'handleQueryTypeChange') as |queryMode|}}
-                {{t (concat 'respond.aggregationRules.queryModes.' queryMode)}}
+                {{t (concat 'configure.incidentRules.queryModes.' queryMode)}}
               {{/power-select}}
             </div>
             {{#if hasAdvancedQuery}}
@@ -67,17 +67,17 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-cell group-name">{{t 'respond.aggregationRules.action'}}*</div>
+        <div class="form-cell group-name">{{t 'configure.incidentRules.action'}}*</div>
         <div class="form-cell">
           <div class="rule-control action">
             <div class='rsa-form-radio-group'>
-              <h4 class='rsa-form-radio-group-label'>{{t 'respond.aggregationRules.actionMessage'}}</h4>
+              <h4 class='rsa-form-radio-group-label'>{{t 'configure.incidentRules.actionMessage'}}</h4>
               <label class="rsa-form-radio-label {{if (eq ruleInfo.action 'GROUP_INTO_INCIDENT') 'checked'}}">
                 {{radio-button
                   value='GROUP_INTO_INCIDENT'
                   groupValue=(readonly ruleInfo.action)
                   changed='handleActionChange'}}
-                {{t 'respond.aggregationRules.groupAction'}}
+                {{t 'configure.incidentRules.groupAction'}}
               </label>
 
               <label class="rsa-form-radio-label {{if (eq ruleInfo.action 'SUPPRESS_ALERT') 'checked'}}">
@@ -85,7 +85,7 @@
                   value='SUPPRESS_ALERT'
                   groupValue=(readonly ruleInfo.action)
                   changed='handleActionChange'}}
-                {{t 'respond.aggregationRules.suppressAction'}}
+                {{t 'configure.incidentRules.suppressAction'}}
               </label>
             </div>
           </div>
@@ -104,7 +104,7 @@
     {{#if isMissingRequiredData}}
       <span class="missing-information-warning">
         {{rsa-icon name='report-problem-triangle'}}
-        {{t 'respond.aggregationRules.missingRequiredInfo'}}
+        {{t 'configure.incidentRules.missingRequiredInfo'}}
       </span>
     {{/if}}
 
@@ -127,12 +127,12 @@
   </div>
 {{/if}}
 {{#if showConfirmationDialog}}
-  {{#rsa-application-modal eventId='change-query-type' label=(t "respond.aggregationRules.confirmQueryChange") style="standard respond-confirmation-dialog"}}
+  {{#rsa-application-modal eventId='change-query-type' label=(t "configure.incidentRules.confirmQueryChange") style="standard respond-confirmation-dialog"}}
     <div class='modal-content'>
       {{#if confirmationData.warning}}
         <p>{{confirmationData.warning}}</p>
       {{/if}}
-      <p>{{t 'respond.confirm'}}</p>
+      <p>{{t 'configure.incidentRules.confirm'}}</p>
     </div>
     <footer>
       <hbox class="modal-footer-buttons">

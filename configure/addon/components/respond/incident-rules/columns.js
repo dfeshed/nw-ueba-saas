@@ -7,48 +7,48 @@ export default [
   },
   {
     id: 'select',
-    title: 'respond.aggregationRules.select',
+    title: 'configure.incidentRules.select',
     width: '3%'
   },
   {
     field: 'order',
-    title: 'respond.aggregationRules.order',
+    title: 'configure.incidentRules.order',
     width: '3%',
     dataType: 'text'
   },
   {
     field: 'enabled',
-    title: 'respond.aggregationRules.enabled',
+    title: 'configure.incidentRules.enabled',
     width: '3%',
     dataType: 'text'
   },
   {
     field: 'name',
-    title: 'respond.aggregationRules.name',
+    title: 'configure.incidentRules.name',
     width: '22%',
     dataType: 'text'
   },
   {
     field: 'description',
-    title: 'respond.aggregationRules.description',
+    title: 'configure.incidentRules.description',
     width: '45%',
     dataType: 'text'
   },
   {
     field: 'lastMatched',
-    title: 'respond.aggregationRules.lastMatched',
+    title: 'configure.incidentRules.lastMatched',
     width: '5%',
     dataType: 'date'
   },
   {
     field: 'alertsMatchedCount',
-    title: 'respond.aggregationRules.alertsMatchedCount',
+    title: 'configure.incidentRules.alertsMatchedCount',
     width: '5%',
     dataType: 'number'
   },
   {
     field: 'incidentsCreatedCount',
-    title: 'respond.aggregationRules.incidentsCreatedCount',
+    title: 'configure.incidentRules.incidentsCreatedCount',
     width: '5%',
     dataType: 'number'
   }

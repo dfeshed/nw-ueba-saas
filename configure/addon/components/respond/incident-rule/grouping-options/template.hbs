@@ -1,17 +1,17 @@
 <div class="form">
   <div class="form-row">
-    <div class="form-cell group-name">{{t 'respond.aggregationRules.groupingOptions'}}</div>
+    <div class="form-cell group-name">{{t 'configure.incidentRules.groupingOptions'}}</div>
     <div class="form-cell">
       <div class="form">
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.groupBy'}}*</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.groupBy'}}*</div>
           <div class="form-cell content">
             <div class="rule-control group-by-fields">
               {{#power-select-multiple
                 options=fields
                 selected=selectedGroupByFields
                 triggerClass=(if (and hasInvalidGroupByFields (contains 'ruleInfo.groupByFields' visited)) 'is-error')
-                placeholder=(t 'respond.aggregationRules.groupByPlaceholder')
+                placeholder=(t 'configure.incidentRules.groupByPlaceholder')
                 searchEnabled=false
                 onchange=(action 'handleGroupByChange') as |field|}}
 
@@ -20,14 +20,14 @@
               {{/power-select-multiple}}
               {{#if hasInvalidGroupByFields}}
                 <div class="input-error">
-                  {{t 'respond.aggregationRules.groupByError'}}
+                  {{t 'configure.incidentRules.groupByError'}}
                 </div>
               {{/if}}
             </div>
           </div>
         </div>
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.timeWindow'}}</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.timeWindow'}}</div>
           <div class="form-cell content">
             <div class="rule-control time-window">
               <label class="rsa-form-input {{if hasInvalidTimeValue 'is-error'}}">
@@ -46,7 +46,7 @@
                 searchEnabled=false
                 onchange=(action 'handleTimeWindowUnitChange') as |unit|}}
 
-                {{t (concat 'respond.aggregationRules.timeUnits.' unit)}}
+                {{t (concat 'configure.incidentRules.timeUnits.' unit)}}
 
               {{/power-select}}
             </div>
@@ -56,19 +56,19 @@
     </div>
   </div>
   <div class="form-row">
-    <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentOptions'}}</div>
+    <div class="form-cell group-name">{{t 'configure.incidentRules.incidentOptions'}}</div>
     <div class="form-cell">
       <div class="form">
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentTitle'}}*</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.incidentTitle'}}*</div>
           <div class="form-cell content">
             <div class="rule-control incident-title">
               {{rsa-form-input
                 value=(readonly incidentRuleTitle)
                 focusOut=(action 'handleIncidentTitleChange' value='target.value')
-                placeholder=(t 'respond.aggregationRules.incidentTitlePlaceholder')
+                placeholder=(t 'configure.incidentRules.incidentTitlePlaceholder')
                 isError=(not incidentRuleTitle)
-                errorMessage=(t 'respond.aggregationRules.incidentTitleRequired')
+                errorMessage=(t 'configure.incidentRules.incidentTitleRequired')
               }}
             </div>
             {{#rsa-content-tethered-panel-trigger panel='rule-title-help'}}
@@ -76,31 +76,31 @@
             {{/rsa-content-tethered-panel-trigger}}
 
             {{#rsa-content-tethered-panel position='top' panelId='rule-title-help' as |hide|}}
-              <section>{{t 'respond.aggregationRules.incidentTitleHelp'}}</section>
+              <section>{{t 'configure.incidentRules.incidentTitleHelp'}}</section>
             {{/rsa-content-tethered-panel}}
           </div>
         </div>
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentSummary'}}</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.incidentSummary'}}</div>
           <div class="form-cell content">
             <div class="rule-control incident-summary">
               {{rsa-form-textarea
                 value=(readonly incidentCreationOptions.ruleSummary)
                 focusOut=(action 'handleIncidentSummaryChange' value='target.value')
-                placeholder=(t 'respond.aggregationRules.incidentSummaryPlaceholder')
+                placeholder=(t 'configure.incidentRules.incidentSummaryPlaceholder')
               }}
             </div>
           </div>
         </div>
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentCategories'}}</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.incidentCategories'}}</div>
           <div class="form-cell content">
             <div class="rule-control incident-categories">
               {{#power-select-multiple
                 options=groupedCategories
                 selected=selectedCategories
                 searchEnabled=false
-                placeholder=(t 'respond.aggregationRules.incidentCategoriesPlaceholder')
+                placeholder=(t 'configure.incidentRules.incidentCategoriesPlaceholder')
                 onchange=(action 'handleCategoriesChange') as |category|}}
 
                 {{category.parent}}: {{category.name}}
@@ -110,19 +110,19 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentAssignee'}}</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.incidentAssignee'}}</div>
           <div class="form-cell content">
             <div class="rule-control incident-assignee">
               {{#power-select
                 options=assigneeOptions
                 matcher=assigneeMatcher
                 selected=selectedAssignee
-                placeholder=(t 'respond.aggregationRules.incidentAssigneePlaceholder')
+                placeholder=(t 'configure.incidentRules.incidentAssigneePlaceholder')
                 searchField="name"
                 onchange=(action "handleAssigneeChange") as |users|}}
 
                 {{#if (not users.id)}}
-                  {{t 'respond.assignee.none'}}
+                  {{t 'configure.incidentRules.assignee.none'}}
                 {{else}}
                   {{or users.name users.id}}
                 {{/if}}
@@ -132,25 +132,25 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-cell group-name">{{t 'respond.aggregationRules.incidentPriority'}}</div>
+          <div class="form-cell group-name">{{t 'configure.incidentRules.incidentPriority'}}</div>
           <div class="form-cell content">
             <hbox class="rule-control priority">
               <box class="scoring-options">
-                <label>{{t 'respond.aggregationRules.incidentPriorityInstruction'}}</label>
+                <label>{{t 'configure.incidentRules.incidentPriorityInstruction'}}</label>
                 <div class='rsa-form-radio-group query-type'>
                   <label class="average-score rsa-form-radio-label {{if (eq incidentScoringOptions.type 'average') 'checked'}}">
                     {{radio-button
                       value='average'
                       groupValue=(readonly incidentScoringOptions.type)
                       changed='handlePriorityScoringChange'}}
-                    {{t 'respond.aggregationRules.incidentPriorityAverage'}}
+                    {{t 'configure.incidentRules.incidentPriorityAverage'}}
                   </label>
                   <label class="highest-score rsa-form-radio-label {{if (eq incidentScoringOptions.type 'high') 'checked'}}">
                     {{radio-button
                       value='high'
                       groupValue=(readonly incidentScoringOptions.type)
                       changed='handlePriorityScoringChange'}}
-                    {{t 'respond.aggregationRules.incidentPriorityHighestScore'}}
+                    {{t 'configure.incidentRules.incidentPriorityHighestScore'}}
                   </label>
 
                   <label class="number-alerts rsa-form-radio-label {{if (eq incidentScoringOptions.type 'count') 'checked'}}">
@@ -158,14 +158,14 @@
                       value='count'
                       groupValue=(readonly incidentScoringOptions.type)
                       changed='handlePriorityScoringChange'}}
-                    {{t 'respond.aggregationRules.incidentPriorityAlertCount'}}
+                    {{t 'configure.incidentRules.incidentPriorityAlertCount'}}
                   </label>
                 </div>
               </box>
               <box class="scoring-ranges">
                 <ul>
                   <li>
-                    <label>{{t 'respond.priority.CRITICAL'}}</label>
+                    <label>{{t 'configure.incidentRules.priority.CRITICAL'}}</label>
                     <span class="rsa-form-input">
                       {{input
                         class='critical'
@@ -178,7 +178,7 @@
                     </span>
                   </li>
                   <li>
-                    <label>{{t 'respond.priority.HIGH'}}</label>
+                    <label>{{t 'configure.incidentRules.priority.HIGH'}}</label>
                     <span class="rsa-form-input">
                       {{input
                         class='high'
@@ -191,7 +191,7 @@
                     </span>
                   </li>
                   <li>
-                    <label>{{t 'respond.priority.MEDIUM'}}</label>
+                    <label>{{t 'configure.incidentRules.priority.MEDIUM'}}</label>
                     <span class="rsa-form-input">
                       {{input
                         class='medium'
@@ -204,7 +204,7 @@
                     </span>
                   </li>
                   <li>
-                    <label>{{t 'respond.priority.LOW'}}</label>
+                    <label>{{t 'configure.incidentRules.priority.LOW'}}</label>
                     <span class="rsa-form-input">
                       {{input
                         class='low'
@@ -218,7 +218,7 @@
                   </li>
                 </ul>
                 {{#if hasInvalidPriorityScale}}
-                  <span class="priority-score-error">{{t 'respond.aggregationRules.priorityScoreError'}}</span>
+                  <span class="priority-score-error">{{t 'configure.incidentRules.priorityScoreError'}}</span>
                 {{/if}}
               </box>
             </hbox>

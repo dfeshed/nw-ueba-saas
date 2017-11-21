@@ -42,10 +42,10 @@ function* deleteRuleAsync(action) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_DELETE_STARTED });
     const payload = yield call(incidentRules.deleteIncidentRule, ruleId);
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_DELETE, payload });
-    success('respond.entities.actionMessages.deleteSuccess');
+    success('configure.incidentRules.actionMessages.deleteSuccess');
   } catch (e) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_DELETE_FAILED });
-    failure('respond.entities.actionMessages.deleteFailure');
+    failure('configure.incidentRules.actionMessages.deleteFailure');
   }
 }
 
@@ -55,10 +55,10 @@ function* reorderRulesAsync(action) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_REORDER_STARTED });
     const payload = yield call(incidentRules.reorderIncidentRules, ruleIds);
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_REORDER, payload });
-    success('respond.entities.actionMessages.updateSuccess');
+    success('configure.incidentRules.actionMessages.reorderSuccess');
   } catch (e) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_REORDER_FAILED });
-    failure('respond.entities.actionMessages.updateFailure');
+    failure('configure.incidentRules.actionMessages.reorderFailure');
   }
 }
 
@@ -68,10 +68,11 @@ function* cloneRuleAsync(action) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_CLONE_STARTED });
     const payload = yield call(incidentRules.cloneIncidentRule, templateRuleId);
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_CLONE, payload });
+    success('configure.incidentRules.actionMessages.cloneSuccess');
     onSuccess(payload.data.id);
   } catch (e) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_CLONE_FAILED });
-    failure('respond.entities.actionMessages.createFailure');
+    failure('configure.incidentRules.actionMessages.cloneFailure');
   }
 }
 
@@ -81,11 +82,11 @@ function* saveRuleAsync(action) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_SAVE_STARTED });
     const payload = yield call(incidentRules.saveIncidentRule, ruleInfo);
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_SAVE, payload });
-    success('respond.entities.actionMessages.saveSuccess');
+    success('configure.incidentRules.actionMessages.saveSuccess');
     onSuccess();
   } catch (e) {
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_SAVE_FAILED });
-    failure('respond.entities.actionMessages.saveFailure');
+    failure('configure.incidentRules.actionMessages.saveFailure');
   }
 }
 
@@ -95,11 +96,11 @@ function* createRuleAsync(action) {
     yield put({ type: ACTION_TYPES.CREATE_INCIDENT_RULE_STARTED });
     const payload = yield call(incidentRules.createIncidentRule, ruleInfo);
     yield put({ type: ACTION_TYPES.CREATE_INCIDENT_RULE, payload });
-    success('respond.entities.actionMessages.saveSuccess');
+    success('configure.incidentRules.actionMessages.createSuccess');
     onSuccess();
   } catch (e) {
     yield put({ type: ACTION_TYPES.CREATE_INCIDENT_RULE_FAILED });
-    failure('respond.entities.actionMessages.saveFailure');
+    failure('configure.incidentRules.actionMessages.createFailure');
   }
 }
 

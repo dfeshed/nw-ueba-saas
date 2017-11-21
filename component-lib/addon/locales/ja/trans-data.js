@@ -459,13 +459,20 @@ export default {
   configure: {
     liveContent: 'ja_Live Content',
     esaRules: 'ja_ESA Rules',
-    incidentRules: 'ja_Incident Rules',
+    incidentRulesTitle: 'ja_Incident Rules',
     subscriptions: 'ja_Subscriptions',
-    customFeeds: 'ja_Custom Feeds'
-  },
-  respond: {
-    confirm: 'ja_Are you sure you want to do this?',
-    aggregationRules: {
+    customFeeds: 'ja_Custom Feeds',
+    incidentRules: {
+      confirm: 'ja_Are you sure you want to do this?',
+      assignee: {
+        none: 'ja_(Unassigned)'
+      },
+      priority: {
+        LOW: 'ja_Low',
+        MEDIUM: 'ja_Medium',
+        HIGH: 'ja_High',
+        CRITICAL: 'ja_Critical'
+      },
       action: 'ja_Action',
       actionMessage: 'ja_Choose the action taken if the rule matches an alert',
       error: 'ja_There was a problem loading alert rules',
@@ -555,10 +562,22 @@ export default {
         hasMissingConditionInfo: 'ja_One or more conditions is missing some information'
       },
       actionMessages: {
-        deleteRuleConfirmation: 'ja_Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.'
+        deleteRuleConfirmation: 'ja_Are you sure you want to delete this rule? Once applied, this deletion cannot be reversed.',
+        reorderSuccess: 'ja_You successfully changed the order of the rules',
+        reorderFailure: 'ja_There was a problem changing the order of the rules',
+        cloneSuccess: 'ja_You successfully cloned the selected rule',
+        cloneFailure: 'ja_There was a problem cloning the selected rule',
+        createSuccess: 'ja_You successfully created a new rule',
+        createFailure: 'ja_There was a problem creating the new rule',
+        deleteSuccess: 'ja_You successfully deleted the selected rule',
+        deleteFailure: 'ja_There was a problem deleting the selected rule',
+        saveSuccess: 'ja_The changes to the rule were successfully saved',
+        saveFailure: 'ja_There was a problem saving the changes to the rule'
       },
       missingRequiredInfo: 'ja_There is required information missing from the aggregation rule'
-    },
+    }
+  },
+  respond: {
     title: 'ja_Respond',
     common: {
       yes: 'ja_Yes',
@@ -566,7 +585,6 @@ export default {
       true: 'ja_Yes',
       false: 'ja_No'
     },
-    configure: 'ja_Configure',
     none: 'ja_None',
     select: 'ja_Select',
     close: 'ja_Close',
@@ -598,7 +616,6 @@ export default {
       incidents: 'ja_Incidents',
       remediationTasks: 'ja_Tasks',
       alerts: 'ja_Alerts',
-      incidentRules: 'ja_Incident Rules',
       actionMessages: {
         updateSuccess: 'ja_Your change was successful',
         updateFailure: 'ja_There was a problem updating the field for this record',
