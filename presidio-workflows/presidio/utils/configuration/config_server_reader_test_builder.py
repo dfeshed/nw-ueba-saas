@@ -22,7 +22,13 @@ class ConfigServerConfigurationReaderTestBuilder():
                                 "remote_debug_enabled": False,
                                 "remote_debug_suspend": False,
                                 "jmx_enabled": False,
-                            }
+                            },
+                        "retry_args":{
+                            "retries": 3,
+                            "retry_delay": 0,
+                            "retry_exponential_backoff": True,
+                            "max_retry_delay": 300
+                        }
                     }
                 }
             }
