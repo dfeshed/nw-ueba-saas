@@ -19,8 +19,6 @@ const InitiateModal = Component.extend({
 
   eventId: 'initiate-scan',
 
-  scanType: 'QUICK_SCAN',
-
   selectedHostList: null,
 
   /**
@@ -35,7 +33,7 @@ const InitiateModal = Component.extend({
     handleInitiateScan() {
       // Invoking the api to start the scans
       const agentIds = _.map(this.get('selectedHostList'), 'id');
-      Machines.startScanRequest({ agentIds, scanCommandType: this.get('scanType') })
+      Machines.startScanRequest(agentIds)
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.initiateScan.success');
         }).catch(({ meta: message }) => {

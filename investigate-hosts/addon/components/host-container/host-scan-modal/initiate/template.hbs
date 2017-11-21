@@ -9,35 +9,11 @@
           message=(t 'investigateHosts.hosts.initiateScan.modal.infoMessage')}}
       </label>
     {{/if}}
-
-    <label class="rsa-form-label rsa-initiate-scan-modal__description">
-      {{t 'investigateHosts.hosts.initiateScan.modal.description'}}
-    </label>
-
     <div class="rsa-initiate-scan-modal__scan-option">
-      <label class="rsa-form-radio-label {{if (eq 'QUICK_SCAN' scanType) 'checked'}}">
-        {{radio-button
-          value="QUICK_SCAN"
-          groupValue=scanType}}
-        {{t 'investigateHosts.hosts.initiateScan.modal.quickScan.label'}}
-      </label>
       <p>
         {{t 'investigateHosts.hosts.initiateScan.modal.quickScan.description'}}
       </p>
     </div>
-
-    <div class="rsa-initiate-scan-modal__scan-option">
-      <label class="rsa-form-radio-label {{if (eq 'FULL_SCAN' scanType) 'checked'}}">
-        {{radio-button
-          value="FULL_SCAN"
-          groupValue=scanType}}
-        {{t 'investigateHosts.hosts.initiateScan.modal.fullScan.label'}}
-      </label>
-      <p>
-        {{t 'investigateHosts.hosts.initiateScan.modal.fullScan.description'}}
-      </p>
-    </div>
-
     <div class="rsa-btn-group align-right rsa-m-md">
       {{#rsa-form-button style='primary' class= "rsa-m-r-md" click=(action 'handleInitiateScan')}}
         {{t 'investigateHosts.hosts.button.initiateScan'}}

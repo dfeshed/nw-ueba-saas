@@ -22,7 +22,7 @@ const ActionBar = Component.extend({
 
     handleCancelScan() {
       const agentIds = _.map(this.get('selectedHostList'), 'id');
-      Machines.stopScanRequest({ agentIds, scanType: 'CANCEL_SCAN' })
+      Machines.stopScanRequest(agentIds)
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.cancelScan.success');
         }).catch(({ meta: message }) => {

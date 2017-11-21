@@ -112,15 +112,15 @@ const getAllSchemas = () => {
    * Executes a websocket call to start the request scan for selected hosts
    *
    * @method startScanRequest
-   * @param data {Object} of agentIds and scan type
+   * @param data {Object} of agentIds
    * @public
    * @returns {Promise}
    */
-const startScanRequest = (data) => {
+const startScanRequest = (agentIds) => {
   return promiseRequest({
     method: 'commandScan',
     modelName: 'agent',
-    query: { data }
+    query: { data: { agentIds, scanCommandType: 'QUICK_SCAN' } }
   });
 };
 
@@ -128,15 +128,15 @@ const startScanRequest = (data) => {
    * Executes a websocket call to cancel the request scan for selected hosts
    *
    * @method stopScanRequest
-   * @param data {Object} of agentIds and scanType
+   * @param agentIds {Object} of agentIds
    * @public
    * @returns {Promise}
    */
-const stopScanRequest = (data) => {
+const stopScanRequest = (agentIds) => {
   return promiseRequest({
     method: 'stopScan',
     modelName: 'agent',
-    query: { data }
+    query: { data: { agentIds, scanCommandType: 'CANCEL_SCAN' } }
   });
 };
 

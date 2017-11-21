@@ -2406,11 +2406,7 @@ export default {
           infoMessage: 'Some of the selected hosts are already being scanned, so a new scan will not be started for them.',
           quickScan: {
             label: 'Quick Scan (Default)',
-            description: 'Scans all executable modules loaded in memory. Approximately takes less than 10 minutes.'
-          },
-          fullScan: {
-            label: 'Full Disk Scan',
-            description: 'Select this option to investigate a machine that is infected. This scans all files on the system disk. Approximately takes more than 15 minutes.'
+            description: 'Performs a quick scan of all executable modules loaded in memory. Takes approximately 10 minutes.'
           }
         },
         success: 'Scan initiated successfully',
