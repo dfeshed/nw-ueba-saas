@@ -472,7 +472,8 @@ export default Component.extend(contextMenuMixin, {
           return;
         }
         const filterLength = this.get('filter').length;
-        this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus()[0].setSelectionRange(filterLength, filterLength);
+        const fragment = this.$().closest('.rsa-query-meta').find('.rsa-query-fragment').eq(this.get('filterIndex'));
+        fragment.find('input').focus()[0].setSelectionRange(filterLength, filterLength);
         select.actions.open();
       });
     },
