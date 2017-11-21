@@ -47,6 +47,24 @@ const App = Application.extend({
         }
       }
     },
+    configure: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus'
+        ],
+        externalRoutes: {
+          protected: 'protected'
+        }
+      }
+    },
     investigateFiles: {
       dependencies: {
         services: [

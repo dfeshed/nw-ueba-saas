@@ -15,6 +15,9 @@
 /* Imports all styles from respond engine */
 @import 'respond/manifest';
 
+/* Imports all styles from configure engine */
+@import 'configure/manifest';
+
 /* Imports all styles from settings addon */
 @import 'preferences/manifest';
 

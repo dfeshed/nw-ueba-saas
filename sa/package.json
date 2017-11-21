@@ -81,6 +81,7 @@
       "../investigate-hosts",
       "../investigate-files",
       "../respond",
+      "../configure",
       "../recon",
       "../packager",
       "../context",

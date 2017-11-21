@@ -29,6 +29,7 @@ Router.map(function() {
     this.route('monitor');
     this.route('packager');
     this.mount('respond');
+    this.mount('configure');
     this.route('investigate', function() {
       this.mount('investigate-events', { path: 'events' });
       this.mount('investigate-hosts', { path: 'hosts' });

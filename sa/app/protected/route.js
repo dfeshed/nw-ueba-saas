@@ -201,6 +201,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   _checkAccessAndTransition(key, transitionName) {
     if ( // known transition into ember with perms
+      (transitionName && transitionName.includes('configure') && this.get('accessControl.hasRespondConfigureAccess')) ||
       (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
       (transitionName && transitionName.includes('packager')) ||
       (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
