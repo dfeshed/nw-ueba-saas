@@ -1,0 +1,13 @@
+
+/*
+  Stretches an element's size to fill its positioned parent.
+  Typically called without args, in which case it fills the parent completely.
+  Args can be provided if caller wishes to leave some margins inside the parent.
+*/
+@mixin rsa-fill-abs($top:0, $right:0, $bottom:0, $left:0) {
+  position: absolute;
+  top: $top;
+  bottom: $bottom;
+  left: $left;
+  right: $right;
+}

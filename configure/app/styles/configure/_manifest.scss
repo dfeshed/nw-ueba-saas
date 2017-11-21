@@ -1,0 +1,30 @@
+$respondBackgroundColor: background-color(custom, respond);
+$navbarHeight: 50px;
+@import "mixins";
+@import "respond/manifest";
+
+.configure-engine {
+  /* Common background for all sub-routes. */
+  background-color:$respondBackgroundColor;
+
+  > .rsa-nav-tab-group {
+    height: $navbarHeight;
+    background-color: background-color(primary, darker);
+    > .rsa-nav-tab {
+      margin: 0 rsa-whitespace();
+    }
+  }
+
+  .error-page .bottom-links {
+    display: none;
+  }
+
+  .transaction-in-progress .transaction-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
+    }
+  }
+}

@@ -1,0 +1,75 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 40px;
+
+.rsa-application-modal.respond-confirmation-dialog footer {
+  display: none;
+}
+
+.rsa-application-modal-content.respond-confirmation-dialog {
+  width: 33%;
+  height: 33%;
+  max-height: 300px;
+  min-height: 150px;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
+    min-height: 100px;
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+
+    p {
+      padding: rsa-whitespace();
+      line-height: 1.5rem;
+    }
+
+    ul {
+      padding: 0 rsa-whitespace();
+      display: table;
+      li {
+        display: table-row;
+        line-height: 1.5rem;
+        .label {
+          font-style: italic;
+          display: table-cell;
+        }
+        .value {
+          display: table-cell;
+          font-style: italic;
+          font-weight: bold;
+          padding-left: rsa-whitespace()
+        }
+      }
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, nearly-transparent);
+
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}
+
+// Increase the dimensions of the confirmation modal on smaller screens
+@media screen and (max-width: 1536px){
+  .rsa-application-modal-content.respond-confirmation-dialog {
+    width: 50%;
+    height: 50%;
+    max-height: 300px;
+  }
+}

@@ -1,0 +1,113 @@
+$ruleBuilderControlsFontSize: 0.8rem;
+
+// Rule Builder
+.rsa-rule-builder {
+  width: 100%;
+  min-width: 745px;
+  height: 100%;
+  font-size: $ruleBuilderControlsFontSize;
+
+  header {
+    padding: rsa-whitespace();
+    @include border-bottom(1px, solid, primary);
+    .rule-builder-toolbar {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .rsa-rule-condition-group {
+    padding: rsa-whitespace();
+    min-height: 50px;
+    height: auto;
+
+    .group-controls {
+      min-width: 600px;
+      height: 33px;
+      .rsa-form-button {
+        font-size: $ruleBuilderControlsFontSize;
+      }
+    }
+
+    .rsa-form-button-wrapper {
+      padding-bottom: rsa-whitespace();
+    }
+
+    .group-operator {
+      display: inline-block;
+      max-width: 150px;
+      vertical-align: middle;
+      margin-right: rsa-whitespace();
+    }
+
+    .add-condition {
+      max-width: 125px;
+    }
+
+    .remove-group {
+      align-items: flex-end;
+    }
+  }
+
+  .rsa-rule-condition {
+    min-width: 600px;
+    position: relative;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, darker);
+    @include border(1px, solid, primary, darker);
+    border-radius: 4px;
+    margin-top: rsa-whitespace(least);
+
+    .condition-controls {
+      display: inline-block;
+      width: 100%;
+    }
+
+    .condition-control {
+      width: 33%;
+      display: inline-block;
+      vertical-align: bottom;
+
+      .rsa-form-label {
+        @include rsa-font(header, small);
+        text-transform: uppercase;
+        vertical-align: text-top;
+        color: text-color(primary, light);
+      }
+
+      .ember-power-select-trigger {
+        min-height: 33px;
+        .ember-power-select-selected-item {
+          vertical-align: text-top;
+        }
+      }
+    }
+
+    .delete-condition {
+      position: absolute;
+      top: rsa-whitespace(least);
+      right: rsa-whitespace(least);
+      display: inline-block;
+      cursor: pointer;
+      vertical-align: top;
+      i {
+        font-size: 11px;
+      }
+    }
+  }
+
+  &.is-invalid {
+    footer {
+      height: auto;
+      padding: rsa-whitespace(less);
+      border-top: 1px solid border-color(accentOne);
+
+      > ul {
+        margin-left: rsa-whitespace(more);
+        > li {
+          list-style-type: disc;
+          padding: rsa-whitespace(less);
+        }
+      }
+    }
+  }
+}

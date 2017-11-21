@@ -1,0 +1,43 @@
+<section class="rules-toolbar__btns">
+  {{#if accessControl.respondCanManageAlertRules}}
+    <div class="action-control create-rule-button">
+      {{#link-to 'respond.incident-rule-create'}}
+        {{#rsa-form-button}}
+          {{t 'respond.aggregationRules.createRule'}}
+        {{/rsa-form-button}}
+      {{/link-to}}
+    </div>
+    <div class="action-control clone-rule-button">
+      {{#rsa-form-button
+        isDisabled=(not hasSelectedRule)
+        defaultAction='clone'}}
+        {{t 'respond.aggregationRules.cloneRule'}}
+      {{/rsa-form-button}}
+    </div>
+    <div class="action-control delete-rule-button">
+      {{#rsa-form-button
+        style='danger'
+        isDisabled=(not hasSelectedRule)
+        defaultAction='delete'}}
+        {{t 'respond.aggregationRules.deleteRule'}}
+      {{/rsa-form-button}}
+    </div>
+  {{/if}}
+</section>
+{{#if showConfirmationDialog}}
+  {{#rsa-application-modal eventId='delete-rule' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+    <div class='modal-content'>
+      <p>{{t 'respond.aggregationRules.actionMessages.deleteRuleConfirmation'}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='danger' class='confirm-button' defaultAction='confirm'}}
+          {{t 'forms.ok'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

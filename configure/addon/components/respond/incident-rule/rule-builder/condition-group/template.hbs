@@ -1,0 +1,38 @@
+<hbox class="group-controls">
+  <box class="group-operator">
+    {{#power-select
+      options=groupOperators
+      selected=selectedGroupOperator
+      searchEnabled=false
+      onchange=(action 'updateGroupOperator') as |groupOperator|}}
+      {{ t (concat 'respond.aggregationRules.ruleBuilder.groupOperators.' groupOperator)}}
+    {{/power-select}}
+  </box>
+  <box class="add-condition">
+    {{#rsa-form-button
+      isDisabled=hasInvalidConditions
+      defaultAction='addCondition'}}
+      {{t 'respond.aggregationRules.ruleBuilder.addCondition'}}
+    {{/rsa-form-button}}
+  </box>
+  {{! The root grouping of condidtions cannot be removed }}
+  <box class="remove-group">
+    {{#if (not isRootGroup)}}
+      {{#rsa-form-button
+        defaultAction='removeGroup'}}
+        {{t 'respond.aggregationRules.ruleBuilder.removeConditionGroup'}}
+      {{/rsa-form-button}}
+    {{/if}}
+  </box>
+</hbox>
+{{#each-in conditions as |id condition|}}
+  {{#if (eq condition.groupId info.id)}}
+    {{respond/incident-rule/rule-builder/condition info=condition}}
+  {{/if}}
+{{/each-in}}
+
+{{#each-in conditionGroups as |id group|}}
+  {{#if (eq group.groupId info.id)}}
+    {{respond/incident-rule/rule-builder/condition-group info=group}}
+  {{/if}}
+{{/each-in}}

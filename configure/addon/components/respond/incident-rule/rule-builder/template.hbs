@@ -1,0 +1,25 @@
+<header>
+  <hbox class="rule-builder-toolbar">
+    {{#rsa-form-button
+      defaultAction='addGroup'}}
+      {{t 'respond.aggregationRules.ruleBuilder.addConditionGroup'}}
+    {{/rsa-form-button}}
+  </hbox>
+</header>
+<section class="condition-groups">
+  {{#if rootGroup}}
+    {{respond/incident-rule/rule-builder/condition-group info=rootGroup isRootGroup=true}}
+  {{/if}}
+</section>
+<footer>
+  {{#if isInvalid}}
+    <ul>
+      {{#if hasGroupsWithoutConditions}}
+        <li>{{t 'respond.aggregationRules.ruleBuilder.hasGroupsWithoutConditions'}}</li>
+      {{/if}}
+      {{#if hasMissingConditionInfo}}
+        <li>{{t 'respond.aggregationRules.ruleBuilder.hasMissingConditionInfo'}}</li>
+      {{/if}}
+    </ul>
+  {{/if}}
+</footer>

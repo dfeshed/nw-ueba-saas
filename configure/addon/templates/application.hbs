@@ -1,0 +1,20 @@
+<page class="configure-engine {{routePath}}">
+  <div class="rsa-nav-tab-group">
+    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/search')}}
+      <div class="label">{{t 'configure.liveContent'}}</div>
+    {{/rsa-nav-tab}}
+    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/alerting/configure')}}
+      <div class="label">{{t 'configure.esaRules'}}</div>
+    {{/rsa-nav-tab}}
+    {{#rsa-nav-tab  align='left' isActive=true}}
+      <div class="label">{{t 'configure.incidentRules'}}</div>
+    {{/rsa-nav-tab}}
+    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/manage')}}
+      <div class="label">{{t 'configure.subscriptions'}}</div>
+    {{/rsa-nav-tab}}
+    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/feeds')}}
+      <div class="label">{{t 'configure.customFeeds'}}</div>
+    {{/rsa-nav-tab}}
+  </div>
+  {{outlet}}
+</page>
