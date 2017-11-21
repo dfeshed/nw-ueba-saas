@@ -219,8 +219,12 @@ function uriEncodeEventQuery(queryAttrs) {
 function uriEncodeMetaFilterConditions(conditions = []) {
   return conditions
     .map((condition) => {
-      if (condition.meta && condition.operator && condition.value) {
-        return encodeURIComponent(`${condition.meta} ${condition.operator} ${condition.value}`);
+      if (condition.operator === 'exists' || condition.operator === '!exists') {
+        return encodeURIComponent(`${condition.meta} ${condition.operator}`);
+      } else {
+        if (condition.meta && condition.operator && condition.value) {
+          return encodeURIComponent(`${condition.meta} ${condition.operator} ${condition.value}`);
+        }
       }
     })
     .join('/');

@@ -40,6 +40,12 @@ test('it renders with proper class when typing', function(assert) {
   assert.equal($el.length, 1, 'Expected root DOM element.');
 });
 
+test('it renders with proper class when isExpensive', function(assert) {
+  this.render(hbs`{{query-filter-fragment isExpensive=true}}`);
+  const $el = this.$('.rsa-query-fragment.is-expensive');
+  assert.equal($el.length, 1, 'Expected root DOM element.');
+});
+
 test('it is selectable', function(assert) {
   this.render(hbs`{{query-filter-fragment}}`);
   const $fragment = this.$('.rsa-query-fragment');

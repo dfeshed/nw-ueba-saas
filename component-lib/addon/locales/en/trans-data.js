@@ -123,7 +123,8 @@ export default {
     edit: 'Edit this filter',
     placeholder: 'Enter a Meta Key and Value (optional)',
     querySelected: 'Query with selected filters',
-    querySelectedNewTab: 'Query with selected filters in a new tab'
+    querySelectedNewTab: 'Query with selected filters in a new tab',
+    expensive: 'Performing this operation could be add a considerable amount of time.'
   },
 
   ipConnections: {

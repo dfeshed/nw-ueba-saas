@@ -6,23 +6,40 @@
     options=options
     selected=filter
     defaultHighlighted=null
-    dropdownClass="rsa-query-fragment-dropdown"
+    dropdownClass=(if isExpensive "rsa-query-fragment-dropdown is-expensive" "rsa-query-fragment-dropdown")
     search=(action "lookup")
     onfocus=(action 'onfocus')
     onblur=(action 'onblur')
     onkeydown=(action 'parseInput')
     onchange=(action 'updateFilter') as |option|}}
+
+    {{#if (eq type 'operator')}}
+      {{rsa-icon name="report-problem-triangle"
+        style="lined"
+        class=(if option.isExpensive "is-expensive expensive-operator-indicator" "expensive-operator-indicator")
+        title=(t 'queryBuilder.expensive')
+      }}
+    {{/if}}
+
     {{#if option.metaName}}
       {{option.metaName}}
       {{#if option.displayName}}
         ({{option.displayName}})
       {{/if}}
     {{else}}
-      {{option}}
+      {{option.displayName}}
     {{/if}}
   {{/power-select-typeahead}}
 {{else}}
   <div class="meta" {{action 'toggleSelect'}}>
+    {{#if isExpensive}}
+      {{rsa-icon name="report-problem-triangle"
+        style="lined"
+        class="expensive-operator-indicator"
+        title=(t 'queryBuilder.expensive')
+      }}
+    {{/if}}
+
     {{filter}}
   </div>
 

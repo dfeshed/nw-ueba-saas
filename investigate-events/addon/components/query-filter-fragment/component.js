@@ -31,13 +31,14 @@ const resetFilter = (filter) => {
 };
 
 export default Component.extend(contextMenuMixin, {
+
   i18n: service(),
 
   layout,
 
   classNames: ['rsa-query-fragment'],
 
-  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing'],
+  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing', 'isExpensive'],
 
   type: 'meta',
 
@@ -55,6 +56,8 @@ export default Component.extend(contextMenuMixin, {
 
   metaFormat: null,
 
+  isExpensive: false,
+
   @equal('type', 'meta') onMeta: false,
   @equal('type', 'operator') onOperator: false,
   @equal('type', 'value') onValue: false,
@@ -66,34 +69,28 @@ export default Component.extend(contextMenuMixin, {
   @and('withMeta', 'withOperator', 'withValue') completed: false,
   @not('withMeta', 'withOperator', 'withValue') empty: false,
 
-  @computed('metaFormat')
-  operatorOptions(metaFormat) {
-    const allOperators = [
-      '=',
-      '!=',
-      '<',
-      '<=',
-      '>',
-      '>=',
-      'begins',
-      'ends',
-      'contains',
-      'regex'
-    ];
+  @computed('metaFormat', 'metaIndex')
+  operatorOptions(metaFormat, metaIndex) {
+    const efficientIndex = metaIndex === 'value';
+    const eq = { displayName: '=', isExpensive: !efficientIndex };
+    const notEq = { displayName: '!=', isExpensive: !efficientIndex };
+    const lt = { displayName: '<', isExpensive: !efficientIndex };
+    const lte = { displayName: '<=', isExpensive: !efficientIndex };
+    const gt = { displayName: '>', isExpensive: !efficientIndex };
+    const gte = { displayName: '>=', isExpensive: !efficientIndex };
+    const exists = { displayName: 'exists', isExpensive: false };
+    const notExists = { displayName: '!exists', isExpensive: false };
+    const contains = { displayName: 'contains', isExpensive: !efficientIndex };
+    const begins = { displayName: 'begins', isExpensive: !efficientIndex };
+    const ends = { displayName: 'ends', isExpensive: !efficientIndex };
+    const regex = { displayName: 'regex', isExpensive: !efficientIndex };
 
-    if (metaFormat != 'Text') {
-      return allOperators.slice(0, 6);
+    if (metaFormat === 'Text') {
+      return [ eq, notEq, exists, notExists, contains, begins, ends, regex ];
     } else if (metaFormat === 'IPv4' || metaFormat === 'IPv6') {
-      return [
-        '=',
-        '!=',
-        'begins',
-        'ends',
-        'contains',
-        'regex'
-      ];
+      return [ eq, notEq, exists, notExists ];
     } else {
-      return allOperators;
+      return [ eq, notEq, lt, lte, gt, gte, exists, notExists ];
     }
   },
 
@@ -131,7 +128,11 @@ export default Component.extend(contextMenuMixin, {
   @computed('meta', 'withMeta', 'operator', 'withOperator', 'value', 'withValue', 'empty', 'completed')
   filter(meta, withMeta, operator, withOperator, value, withValue, empty, completed) {
     if (completed) {
-      return `${meta} ${operator} ${value}`;
+      if (operator === 'exists' || operator === '!exists') {
+        return `${meta} ${operator}`;
+      } else {
+        return `${meta} ${operator} ${value}`;
+      }
     } else if (empty) {
       return '';
     } else if (withMeta && withOperator && !withValue) {
@@ -201,14 +202,6 @@ export default Component.extend(contextMenuMixin, {
     onfocus(select) {
       this.setKeyboardPriority(1);
 
-      this.get('filterList').forEach((filter) => {
-        if (!filter.get('meta') || !filter.get('operator') || !filter.get('value')) {
-          if (filter != this.get('filterRecord') && filter != this.get('filterList.lastObject')) {
-            this.get('filterList').removeObject(filter);
-          }
-        }
-      });
-
       this.$('input').prop('type', 'text').prop('spellchek', false);
       select.actions.open();
     },
@@ -216,6 +209,9 @@ export default Component.extend(contextMenuMixin, {
     // User takes action via keyboard
     parseInput(select, event) {
       run.next(() => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
         const input = this.$('input');
         const {
           filter, filterRecord, filterList, type, filterIndex, empty, meta, operator, value, completed, withMeta, withOperator, withValue
@@ -269,6 +265,9 @@ export default Component.extend(contextMenuMixin, {
               this.set('editActive', false);
 
               return run.next(() => {
+                if (this.isDestroyed || this.isDestroying) {
+                  return;
+                }
                 this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
               });
             }
@@ -279,6 +278,9 @@ export default Component.extend(contextMenuMixin, {
               select.actions.select(select.results[0]);
 
               run.next(() => {
+                if (this.isDestroyed || this.isDestroying) {
+                  return;
+                }
                 if (type === 'meta') {
                   this.set('type', 'operator');
                 } else if (type === 'operator') {
@@ -292,12 +294,16 @@ export default Component.extend(contextMenuMixin, {
                     return result.metaName === select.searchText.toLowerCase();
                   } else {
                     const valueToMatch = select.searchText.slice(filter.length, select.searchText.length);
-                    return result === valueToMatch;
+                    return result.displayName === valueToMatch;
                   }
                 });
 
                 if (!isEmpty(match)) {
                   select.actions.select(match);
+
+                  if (type === 'operator') {
+                    select.actions.close();
+                  }
                 }
               }
             }
@@ -316,10 +322,20 @@ export default Component.extend(contextMenuMixin, {
           }
 
           if (event.code === 'Enter') {
+            if (isEmpty(input.val())) {
+              select.actions.close();
+              input.blur();
+            }
+
             if (type === 'value') {
               if (completed || select.searchText.length > filter.length) {
                 const currentFilter = meta.length + operator.length + 2;
-                const valueToSet = select.searchText.slice(currentFilter, select.searchText.length);
+                let valueToSet = select.searchText.slice(currentFilter, select.searchText.length);
+
+                if (this.get('metaFormat') === 'Text') {
+                  valueToSet = `"${valueToSet.replace(/['"]/g, '')}"`;
+                }
+
                 this.set('value', valueToSet);
                 this.set('editActive', false);
 
@@ -401,7 +417,7 @@ export default Component.extend(contextMenuMixin, {
         if (type === 'meta') {
           return option.metaName.indexOf(searchTerm) !== -1 || option.displayName.indexOf(searchTerm) !== -1;
         } else {
-          return option.indexOf(searchTerm) !== -1;
+          return option.displayName.indexOf(searchTerm) !== -1;
         }
       });
     },
@@ -412,15 +428,37 @@ export default Component.extend(contextMenuMixin, {
         return select.actions.open();
       }
 
-      const { type, completed } = this.getProperties('completed', 'type');
+      const { type, completed, filterRecord, filterList } = this.getProperties('completed', 'type', 'filterRecord', 'filterList');
 
       if (type === 'meta') {
+        const keyIndexType = selection.flags & '0xF';
+        const keyIndexes = ['none', 'key', 'value'];
+
         this.set('meta', selection.metaName);
+        this.set('metaIndex', keyIndexes[keyIndexType]);
         this.set('metaFormat', selection.format);
         this.set('type', 'operator');
       } else if (type === 'operator') {
-        this.set('operator', selection);
-        this.set('type', 'value');
+        this.set('isExpensive', selection.isExpensive);
+        this.set('operator', selection.displayName);
+
+        if (selection.displayName === 'exists' || selection.displayName === '!exists') {
+          this.set('value', '_STUB_VALUE_');
+          this.set('editActive', false);
+
+          if (filterRecord === filterList.get('lastObject')) {
+            insertEmptyFilter(filterList, filterList.get('length') + 1);
+          }
+
+          run.next(() => {
+            if (this.isDestroyed || this.isDestroying) {
+              return;
+            }
+            this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
+          });
+        } else {
+          this.set('type', 'value');
+        }
       }
 
       if (completed) {
@@ -430,6 +468,11 @@ export default Component.extend(contextMenuMixin, {
       }
 
       run.next(() => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
+        const filterLength = this.get('filter').length;
+        this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus()[0].setSelectionRange(filterLength, filterLength);
         select.actions.open();
       });
     },
@@ -438,6 +481,9 @@ export default Component.extend(contextMenuMixin, {
       this.toggleProperty('editActive');
 
       run.next(() => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
         this.$('input').prop('type', 'text').prop('spellchek', false).focus();
       });
     },

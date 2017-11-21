@@ -144,6 +144,9 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
         }
 
         run.next(() => {
+          if (this.isDestroyed || this.isDestroying) {
+            return;
+          }
           this.$('.rsa-query-fragment.edit-active').first().find('input').focus();
         });
       } else {
@@ -178,6 +181,9 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
         insertEmptyFilter(filters, selectedIndex + 1);
 
         run.next(() => {
+          if (this.isDestroyed || this.isDestroying) {
+            return;
+          }
           this.$('.rsa-query-fragment.edit-active').first().find('input').focus();
         });
       } else {
@@ -252,6 +258,9 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       firstSelected.set('editActive', true);
 
       run.next(() => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
         this.$('input').first().focus();
       });
     }
@@ -318,6 +327,9 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
     insertFilter(index) {
       insertEmptyFilter(this.get('filters'), index);
       run.next(() => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
         this.$('.rsa-query-fragment').eq(index).find('input').focus();
       });
 

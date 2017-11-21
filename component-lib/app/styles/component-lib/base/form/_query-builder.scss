@@ -1,12 +1,35 @@
 .rsa-query-fragment-dropdown {
   max-width: 17.5rem;
   min-width: 27.5rem;
+
+  li {
+    position: relative;
+  }
+}
+
+.rsa-icon.expensive-operator-indicator {
+  display: inline-flex;
+  align-self: center;
+  margin-right: rsa-whitespace(less);
+  color: transparent;
 }
 
 .ember-power-select-typeahead-dropdown {
   margin-top: 4px;
   border-color: border-color(neutral, dark)!important;
   @include rsa-font(body, small);
+
+  .rsa-icon.expensive-operator-indicator {
+    &.is-expensive {
+      color: text-color(primary, lightest);
+    }
+  }
+
+  &.is-expensive {
+    .rsa-icon.expensive-operator-indicator {
+      color: text-color(primary, lightest);
+    }
+  }
 }
 
 .rsa-query-meta {
@@ -36,20 +59,13 @@
 
   > .controls {
     white-space: nowrap;
-    position: absolute;
     display: none;
-    top: -5px;
-    bottom: -1px;
-    right: -1px;
-    justify-content: center;
+    justify-content: flex-end;
     align-content: center;
-    padding: 0 rsa-whitespace(less);
 
     i {
-      padding: rsa-whitespace(least) rsa-whitespace(less);
+      padding: rsa-whitespace(less) rsa-whitespace();
       color: text-color(primary, lightest);
-      align-self: center;
-
 
       &:hover {
         cursor: pointer;
@@ -62,10 +78,6 @@
     .controls {
       display: flex;
     }
-  }
-
-  &.queryable {
-    padding-right: 3rem;
   }
 
   input,
@@ -83,6 +95,10 @@
     border-radius: rsa-whitespace(least);
     @include border(1px, solid, primary);
     color: text-color(primary, lightest);
+
+    .rsa-icon.expensive-operator-indicator {
+      color: text-color(primary, lightest);
+    }
 
     &.empty {
       max-width: 1.25rem;
