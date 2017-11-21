@@ -105,7 +105,7 @@ public class PresidioSystemMetricsFactory {
             }
             result2.add(createSystemMetric(PROCESSORS, runtime.availableProcessors()));
         } catch (Exception ex) {
-            logger.info("Error when trying to collect defoult metrics.", ex);
+            logger.info("Error when trying to collect metric.", ex);
         }
     }
 

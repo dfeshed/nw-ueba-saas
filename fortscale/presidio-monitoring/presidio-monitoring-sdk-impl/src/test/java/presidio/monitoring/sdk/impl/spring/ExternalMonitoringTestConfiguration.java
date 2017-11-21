@@ -12,9 +12,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
@@ -47,7 +46,7 @@ public class ExternalMonitoringTestConfiguration {
     }
 
     public MetricsExporter metricsExporter() {
-        return new MetricsExporterElasticImpl(presidioMetricEndPoint(), metricExportService(), taskScheduler());
+        return new MetricsExporterElasticImpl(presidioMetricBucket(), metricExportService(), taskScheduler());
     }
 
 
@@ -60,13 +59,13 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()));
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricBucket()));
     }
 
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(presidioSystemMetrics(), applicationName);
+    public PresidioMetricBucket presidioMetricBucket() {
+        return new PresidioMetricBucket(presidioSystemMetrics(), applicationName);
     }
 
 
@@ -75,8 +74,4 @@ public class ExternalMonitoringTestConfiguration {
         return new PresidioSystemMetricsFactory("");
     }
 
-    @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory("");
-    }
 }

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
@@ -39,8 +39,8 @@ public class OutputProcessorTestConfiguration {
     }
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory(applicationName), applicationName);
+    public PresidioMetricBucket presidioMetricEndPoint() {
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), applicationName);
     }
 
     @Bean

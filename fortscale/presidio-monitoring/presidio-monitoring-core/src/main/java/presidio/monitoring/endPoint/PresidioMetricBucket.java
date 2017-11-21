@@ -10,13 +10,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class PresidioMetricEndPoint {
+public class PresidioMetricBucket {
 
     private String applicationName;
     private Map<String, Metric> applicationMetrics;
     private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
 
-    public PresidioMetricEndPoint(PresidioSystemMetricsFactory presidioSystemMetricsFactory, String applicationName) {
+    public PresidioMetricBucket(PresidioSystemMetricsFactory presidioSystemMetricsFactory, String applicationName) {
         this.applicationName = applicationName;
         this.presidioSystemMetricsFactory = presidioSystemMetricsFactory;
         this.applicationMetrics = new HashMap<>();
