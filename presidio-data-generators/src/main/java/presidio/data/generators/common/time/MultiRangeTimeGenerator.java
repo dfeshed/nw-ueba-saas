@@ -1,11 +1,13 @@
 package presidio.data.generators.common.time;
 
+import org.springframework.util.Assert;
 import presidio.data.generators.common.GeneratorException;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,10 +21,10 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
     private final Instant startInstant;
     private final Instant endInstant;
     private List<ActivityRange> activityRanges;
-    private final Duration defaultInterval;
 
     private Instant nextInstant;
-    private int currentRangeIdx = 0;
+    private ActivityRangeIterator activityRangeIterator;
+    private int acivityRangesIndex;
 
 
     /**
@@ -42,24 +44,49 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
                     "startInstant = %s, endInstant = %s.", startInstant.toString(), endInstant.toString()));
         }
 
-        if (defaultInterval.isNegative()) {
-            throw new IllegalArgumentException(String.format("interval " +
-                    "can't be negative. interval = %s.", defaultInterval.toString()));
+        if (defaultInterval != null && (defaultInterval.isNegative() || defaultInterval.isZero())) {
+            throw new IllegalArgumentException(String.format("interval should be positive. interval = %s.",
+                    defaultInterval.toString()));
         }
+
+        Assert.notNull(activityRanges, "activity ranges may not be null");
+
+        Assert.isTrue(defaultInterval != null || !activityRanges.isEmpty(), "defaultInterval may not be null since the activityRanges is empty.");
 
         this.startInstant = startInstant;
         this.endInstant = endInstant;
-        this.defaultInterval = defaultInterval;
 
-        this.activityRanges = activityRanges;
-        this.activityRanges.sort(Comparator.comparing(o -> o.startNanoOfADay));
-        // TODO: verify that time ranges do not overlap
 
-        if (defaultInterval.isZero()) {
-            this.nextInstant = startInstant.truncatedTo(ChronoUnit.DAYS).plus(this.activityRanges.get(0).duration);
-        } else {
-            this.nextInstant = startInstant;
+        //verify and build/set activityRanges
+        if(!activityRanges.isEmpty()) {
+            activityRanges.sort(Comparator.comparing(o -> o.startNanoOfADay));
+            // verify that time ranges do not overlap
+            ActivityRange prevActivityRange = null;
+            for (ActivityRange curActivityRange: activityRanges){
+                if(prevActivityRange!=null){
+                    Assert.isTrue(prevActivityRange.endNanoOfADay < curActivityRange.startNanoOfADay,
+                            "Activity Ranges overlap");
+                }
+            }
         }
+        if(defaultInterval == null){
+            this.activityRanges = activityRanges;
+        } else{
+            this.activityRanges = new ArrayList<>();
+            long curNanoOfAday = 0;
+            for(ActivityRange activityRange: activityRanges){
+                if (curNanoOfAday < activityRange.startNanoOfADay){
+                    this.activityRanges.add(new ActivityRange(LocalTime.ofNanoOfDay(curNanoOfAday), LocalTime.ofNanoOfDay(activityRange.startNanoOfADay), defaultInterval));
+                }
+                this.activityRanges.add(activityRange);
+                curNanoOfAday = activityRange.endNanoOfADay;
+            }
+            if (curNanoOfAday < LocalTime.MAX.toNanoOfDay()){
+                this.activityRanges.add(new ActivityRange(LocalTime.ofNanoOfDay(curNanoOfAday), LocalTime.MAX, defaultInterval));
+            }
+        }
+
+        reset();
     }
 
     @Override
@@ -72,24 +99,24 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
 
         if (hasNext()) {
             Instant returnedInstant = nextInstant;
-            Duration activityRangeInterval = defaultInterval;
-
-            for (int rangeIdx = currentRangeIdx; rangeIdx < activityRanges.size(); rangeIdx++) {
-                ActivityRange currentRange = activityRanges.get(rangeIdx);
-                Instant rangeStart = nextInstant.truncatedTo(ChronoUnit.DAYS).plus(currentRange.startNanoOfADay,ChronoUnit.NANOS);
-                Instant rangeEnd = nextInstant.truncatedTo(ChronoUnit.DAYS).plus(currentRange.endNanoOfADay,ChronoUnit.NANOS);
-
-                if ((nextInstant.isAfter(rangeStart) || nextInstant.equals(rangeStart)) && nextInstant.isBefore(rangeEnd))
-                {
-                    activityRangeInterval = currentRange.duration;
-                    currentRangeIdx = rangeIdx;
-                    break;
-                }
-            }
-            nextInstant = nextInstant.plus(activityRangeInterval);
+            updateNextInstant();
             return returnedInstant;
         } else {
             throw new NoSuchElementException("There are no more instants.");
+        }
+    }
+
+    private void updateNextInstant() {
+        if (activityRangeIterator.hasNext()) {
+            nextInstant = activityRangeIterator.getNext();
+        } else {
+            acivityRangesIndex++;
+            if (acivityRangesIndex >= activityRanges.size()) {
+                acivityRangesIndex = 0;
+                nextInstant = nextInstant.truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS);
+            }
+            activityRangeIterator = new ActivityRangeIterator(activityRanges.get(acivityRangesIndex), nextInstant);
+            nextInstant = activityRangeIterator.getNext();
         }
     }
 
@@ -106,14 +133,29 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
 
     @Override
     public void reset() {
-        nextInstant = startInstant;
+        // initialize nextInstant, activityRangeIterator and acivityRangesIndex
+        for (acivityRangesIndex = 0; acivityRangesIndex < activityRanges.size(); acivityRangesIndex++){
+            ActivityRange activityRange = activityRanges.get(acivityRangesIndex);
+            if(!activityRange.isInstantAfterRange(startInstant)){
+                break;
+            }
+        }
+        if(acivityRangesIndex < activityRanges.size()){
+            activityRangeIterator = new ActivityRangeIterator(activityRanges.get(acivityRangesIndex), startInstant);
+        } else{
+            //advance to the next day.
+            acivityRangesIndex = 0;
+            activityRangeIterator = new ActivityRangeIterator(activityRanges.get(acivityRangesIndex),
+                    startInstant.truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS));
+        }
+        nextInstant = activityRangeIterator.getNext();
     }
 
     public static class ActivityRange {
 
-        long startNanoOfADay;
-        long endNanoOfADay;
-        Duration duration;
+        private long startNanoOfADay;
+        private long endNanoOfADay;
+        private Duration duration;
 
         public ActivityRange(LocalTime start, LocalTime end, Duration duration ) {
 
@@ -125,6 +167,60 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
                 throw new IllegalArgumentException(String.format("interval " +
                         "must be positive. interval = %s.", duration));
             }
+        }
+
+        public boolean isInstantAfterRange(Instant instant){
+            Instant rangeEnd = getRangeEnd(instant);
+
+            return (instant.isAfter(rangeEnd) || instant.equals(rangeEnd));
+        }
+
+        public boolean isInstantBeforeRange(Instant instant){
+            Instant rangeStart = getRangeStart(instant);
+
+            return (instant.isBefore(rangeStart));
+        }
+
+        public Instant getRangeStart(Instant instant){
+            return instant.truncatedTo(ChronoUnit.DAYS).plus(startNanoOfADay,ChronoUnit.NANOS);
+        }
+
+        public Instant getRangeEnd(Instant instant){
+            return instant.truncatedTo(ChronoUnit.DAYS).plus(endNanoOfADay,ChronoUnit.NANOS);
+        }
+    }
+
+    public static class ActivityRangeIterator{
+        private Instant nextInstant;
+        private Instant endInstant;
+        private Duration interval;
+
+        public ActivityRangeIterator(ActivityRange activityRange, Instant instant){
+            if(activityRange.isInstantBeforeRange(instant)){
+                nextInstant = activityRange.getRangeStart(instant);
+                endInstant = activityRange.getRangeEnd(instant);
+            } else if(activityRange.isInstantAfterRange(instant)){
+                instant = instant.truncatedTo(ChronoUnit.DAYS).plus(1, ChronoUnit.DAYS);
+                nextInstant = activityRange.getRangeStart(instant);
+                endInstant = activityRange.getRangeEnd(instant);
+            } else {
+                nextInstant = instant;
+                endInstant = activityRange.getRangeEnd(instant);
+            }
+            this.interval = activityRange.duration;
+        }
+
+        public boolean hasNext(){
+            return nextInstant != null;
+        }
+
+        public Instant getNext(){
+            Instant ret = nextInstant;
+            nextInstant = nextInstant.plus(interval);
+            if(!nextInstant.isBefore(endInstant)){
+                nextInstant = null;
+            }
+            return ret;
         }
     }
 }
