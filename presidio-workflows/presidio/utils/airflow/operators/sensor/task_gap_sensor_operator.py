@@ -30,7 +30,7 @@ class TaskGapSensorOperator(BaseSensorOperator):
             execution_delta,
             *args, **kwargs):
         super(TaskGapSensorOperator, self).__init__(
-            retries=4,
+            retries=99999,
             retry_exponential_backoff=True,
             max_retry_delay=300,
             retry_delay=5,
