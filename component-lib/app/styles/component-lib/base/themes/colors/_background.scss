@@ -67,8 +67,12 @@ $background-colors: (
 
   custom: (
     respond:  var(--background-color-respond-specific),
-    nav:      var(--background-color-nav-specific),
     byteCell: var(--background-color-byte-cell)
+  ),
+
+  navigation: (
+    menu:      var(--background-color-nav-menu),
+    menuHover: var(--background-color-nav-menu-hover)
   )
 
 );
@@ -77,4 +81,8 @@ $background-colors: (
   $colorVar: map-get(map-get($background-colors, $colorName), $modifier);
   $opacityVar: opacity-value($opacity);
   @return rgbx($colorVar, $opacityVar);
+}
+
+@function background-image() {
+  @return var(--background-image);
 }

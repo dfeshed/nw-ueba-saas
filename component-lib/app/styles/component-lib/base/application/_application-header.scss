@@ -9,16 +9,16 @@
     padding: 0 rsa-whitespace();
     @include rsa-font(navigation, large);
     text-decoration: none;
-    color: $applicationHeaderLinkColor;
+    color: text-color(navigation, link);
     line-height: $applicationHeaderHeight;
     vertical-align: bottom;
 
     &:hover {
-      color: $applicationHeaderLinkHoverColor;
+      color: text-color(navigation, linkHover);
     }
 
     &.active {
-      color: $applicationHeaderLinkActiveColor;
+      color: text-color(navigation, linkActive);
 
       &::after {
         content: '';
@@ -44,8 +44,14 @@
     top: 0;
     line-height: $applicationHeaderHeight;
 
+    .global-contextual-help.is-icon-only {
+      .rsa-form-button {
+        color: text-color(navigation, linkLighter);
+      }
+    }
+
     .rsa-form-button-wrapper {
-      border-left: 1px solid border-color(primary, dark);
+      border-left: 1px solid border-color(navigation, menu);
       border-bottom: rsa-whitespace(least) solid transparent;
       text-align: center;
       height: $applicationHeaderHeight;
@@ -64,8 +70,8 @@
         border-bottom: rsa-whitespace(least) solid border-color(secondary);
 
         .rsa-form-button {
-          background: background-color(neutral, dark);
-          color: text-color(primary, lightest);
+          background: background-color(navigation, menu);
+          color: text-color(navigation, linkLighter);
         }
       }
 
@@ -76,15 +82,15 @@
 
       .rsa-form-button {
         border-width: 0;
-        color: text-color(primary, lighter);
+        color: text-color(navigation, linkLighter);
 
         .expand {
           left: 0;
         }
 
         &:hover {
-          background: background-color(neutral, dark);
-          color: text-color(primary, lightest);
+          background: background-color(navigation, menuHover);
+          color: text-color(navigation, linkHover);
         }
       }
     }
@@ -106,7 +112,7 @@
       background-image: linear-gradient(180deg, #BE3A34, #81312F);
 
       .rsa-logo__letter {
-        fill: text-color(neutral);
+        fill: text-color(navigation, logo);
       }
 
     }

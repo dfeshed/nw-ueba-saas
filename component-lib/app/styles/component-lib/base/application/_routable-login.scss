@@ -1,6 +1,6 @@
 .rsa-login {
   color: $applicationLoginTypeColor;
-  background-image: url('images/NW-Background-Blur.jpg');
+  background-image: background-image();
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: fixed;
@@ -60,6 +60,10 @@
     padding: rsa-whitespace(more);
     background: $applicationLoginBackgroundColor;
     @include border(1px, solid, primary, darker);
+
+    .rsa-form-label {
+      color: text-color(primary, lighter);
+    }
 
     &.has-error {
       @include border(1px, solid, accentOne);

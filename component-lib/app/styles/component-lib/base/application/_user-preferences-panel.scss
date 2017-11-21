@@ -5,7 +5,7 @@
   right: 0;
   width: 0;
   bottom: 0;
-  background-color: background-color(primary, darker);
+  background-color: background-color(navigation, menuHover);
   border-top: 1px solid border-color(secondary);
   overflow: hidden;
   @include rsa-layer(panels);
@@ -23,7 +23,7 @@
     min-width: calc(100vw / 4);
     padding: rsa-whitespace();
     box-sizing: border-box;
-    background-color: background-color(primary, darkest);
+    background-color: background-color(navigation, menu);
 
     .controls {
       right: rsa-whitespace(less);
@@ -36,11 +36,28 @@
     p {
       padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
       @include rsa-font(paragraph);
-      color: text-color(primary);
+      color: text-color(navigation, text);
     }
 
     hbox {
       padding: 0 rsa-whitespace() rsa-whitespace();
+
+      .rsa-form-radio-group-label {
+        color: text-color(navigation, link);
+      }
+
+      .rsa-form-radio-label {
+        color: text-color(navigation, linkLighter);
+      }
+
+      .power-select .label-text {
+        color: text-color(navigation, link);
+      }
+
+      .ember-power-select-trigger .ember-power-select-selected-item {
+        color: text-color(navigation, linkLighter);
+      }
+
     }
 
     .change-password {
@@ -65,7 +82,7 @@
   footer {
     min-width: calc(100vw / 4);
     border-top: 1px solid border-color(secondary);
-    background-color: background-color(primary, darkest);
+    background-color: background-color(navigation, menu);
     line-height: 4rem;
     position: absolute;
     bottom: 0;
@@ -79,7 +96,7 @@
     }
 
     p {
-      color: text-color(primary);
+      color: text-color(navigation, text);
     }
 
     a {

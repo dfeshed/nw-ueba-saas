@@ -114,7 +114,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     right: rsa-whitespace(less);
     @include rsa-font(paragraph, small);
     color: text-color(primary, lightest);
-    border-top: 1px solid border-color(primary, darkest);
+    border-top: 1px solid border-color(primary, dark);
 
     &:hover,
     &.is-selected,

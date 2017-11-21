@@ -22,7 +22,7 @@ $base-color: white;
   &__body {
     @include rsa-row(justify,fill);
     background-color: background-color(primary, dark, transparent);
-    color: $dark-fg-hover-color;
+    color: text-color(primary, lightest);
     font-size: 0.85rem;
     padding-bottom: 1.25rem;
     min-width: 43.71rem;

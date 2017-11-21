@@ -63,6 +63,11 @@ $border-colors: (
   neutral: (
     dark:     var(--border-color-neutral-dark),
     base:     var(--border-color-neutral-base),
+  ),
+
+  navigation: (
+    menu:         var(--border-color-nav-menu),
+    menuDarkest:  var(--border-color-nav-menu-darkest)
   )
 
 );

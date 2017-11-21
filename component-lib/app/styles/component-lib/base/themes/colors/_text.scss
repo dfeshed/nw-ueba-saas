@@ -63,6 +63,15 @@ $text-colors: (
   neutral: (
     dark:     var(--text-color-neutral-dark),
     base:     var(--text-color-neutral-base),
+  ),
+
+  navigation: (
+    text:        var(--text-color-nav-text),
+    link:        var(--text-color-nav-link),
+    linkActive:  var(--text-color-nav-link-active),
+    linkHover:   var(--text-color-nav-link-hover),
+    linkLighter: var(--text-color-nav-link-lighter),
+    logo:        var(--text-color-nav-logo)
   )
 
 );

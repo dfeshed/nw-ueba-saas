@@ -30,9 +30,19 @@
   --background-color-neutral-base: 0,0,0; //#000;
   --background-color-neutral-dark: 255,255,255; //#fff;
 
+  --background-image: url('images/lightbackground.jpg');
   --background-color-byte-cell: 247,160,138; //#f7a08a;
   --background-color-respond-specific: 255,255,255; //#fff;
-  --background-color-nav-specific: 22,22,22; //#161616;
+  --background-color-nav-menu: 22,22,22; //#161616;
+  --background-color-nav-menu-hover: 33,33,33; //#212121;
+  --text-color-nav-link: 189,189,189; //#BDBDBD;
+  --text-color-nav-link-active: 255,255,255; //#fff;
+  --text-color-nav-link-hover: 255,255,255; //#fff;
+  --text-color-nav-link-lighter: 238,238,238; //#EEEEEE;
+  --text-color-nav-text: 117,117,117; //#757575;
+  --text-color-nav-logo: 255,255,255; //#fff;
+  --border-color-nav-menu: 66,66,66; //#424242;
+  --border-color-nav-menu-darkest: 22,22,22; //#161616;
 
   --text-color-primary-darkest: 255,255,255; //#fff;
   --text-color-primary-darker: 246,246,246; //#f6f6f6;
