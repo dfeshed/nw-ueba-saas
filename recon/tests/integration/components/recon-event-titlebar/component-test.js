@@ -121,8 +121,8 @@ test('Toggle should call setPreferences with complete preferences object', funct
   this.get('preferences').getPreferences('investigate-events').then((data) => {
     this.render(hbs`{{recon-event-titlebar}}`);
     assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
-    data.userServicePreferences.eventsPreferences.isHeaderOpen = false;
-    data.userServicePreferences.eventsPreferences.isReconOpen = false;
+    data.eventAnalysisPreferences.isHeaderOpen = false;
+    data.eventAnalysisPreferences.isReconOpen = false;
     this.$('.rsa-icon-layout-6-filled').click();
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'setPreferences');

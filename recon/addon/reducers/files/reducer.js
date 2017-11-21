@@ -45,8 +45,8 @@ const filesReducer = handleActions({
     return filesInitialState.merge({ ..._fileExtractState(state), linkToFileAction });
   },
 
-  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload, payload: { userPreferences } }) => {
-    const isAutoDownloadFile = handlePreference(payload, userPreferences.autoDownloadExtractedFiles);
+  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload, payload: { eventAnalysisPreferences: { autoDownloadExtractedFiles } } }) => {
+    const isAutoDownloadFile = handlePreference(payload, autoDownloadExtractedFiles);
     return state.merge({ isAutoDownloadFile });
   },
 

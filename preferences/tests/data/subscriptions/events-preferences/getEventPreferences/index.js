@@ -4,25 +4,18 @@ export default {
   count: 0,
   message(/* frame */) {
     const data = {
-      userPreferences: {
+      queryTimeFormat: 'DB',
+      eventAnalysisPreferences: {
+        currentReconView: 'PACKET',
+        isHeaderOpen: true,
+        isMetaShown: true,
+        isReconExpanded: true,
+        isReconOpen: true,
+        isRequestShown: true,
+        isResponseShown: true,
         defaultLogFormat: 'LOG',
-        defaultLandingPage: '',
         defaultPacketFormat: 'PCAP',
-        queryTimeFormat: 'DB',
-        autoDownloadExtractedFiles: false
-      },
-      userServicePreferences: {
-        serviceId: 'TestServiceId',
-        collectionName: 'Test',
-        eventsPreferences: {
-          currentReconView: 'PACKET',
-          isHeaderOpen: true,
-          isMetaShown: true,
-          isReconExpanded: true,
-          isReconOpen: true,
-          isRequestShown: true,
-          isResponseShown: true
-        }
+        autoDownloadExtractedFiles: true
       }
     };
     return {

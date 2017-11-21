@@ -24,7 +24,7 @@ export default {
       'PACKET',
       'FILE'
     ],
-    field: 'userServicePreferences.eventsPreferences.currentReconView'
+    field: 'eventAnalysisPreferences.currentReconView'
   },
   {
     name: 'preferences.investigate-events.defaultLogFormat',
@@ -35,7 +35,7 @@ export default {
       'XML',
       'JSON'
     ],
-    field: 'userPreferences.defaultLogFormat'
+    field: 'eventAnalysisPreferences.defaultLogFormat'
   },
   {
     name: 'preferences.investigate-events.defaultPacketFormat',
@@ -46,7 +46,7 @@ export default {
       'PAYLOAD1',
       'PAYLOAD2'
     ],
-    field: 'userPreferences.defaultPacketFormat'
+    field: 'eventAnalysisPreferences.defaultPacketFormat'
   },
   {
     name: 'preferences.investigate-events.queryTimeFormat',
@@ -55,32 +55,26 @@ export default {
       'DB',
       'WALL'
     ],
-    field: 'userPreferences.queryTimeFormat'
+    field: 'queryTimeFormat'
   },
   {
     name: 'preferences.investigate-events.autoDownloadExtractedFiles',
     type: 'checkbox',
-    field: 'userPreferences.autoDownloadExtractedFiles'
+    field: 'eventAnalysisPreferences.autoDownloadExtractedFiles'
   }],
   defaultPreferences: {
-    userPreferences: {
+    queryTimeFormat: 'DB',
+    eventAnalysisPreferences: {
+      currentReconView: 'TEXT',
+      isHeaderOpen: true,
+      isMetaShown: true,
+      isReconExpanded: true,
+      isReconOpen: true,
+      isRequestShown: true,
+      isResponseShown: true,
       defaultLogFormat: 'LOG',
       defaultPacketFormat: 'PCAP',
-      queryTimeFormat: 'DB',
       autoDownloadExtractedFiles: true
-    },
-    userServicePreferences: {
-      serviceId: 'TestServiceId',
-      collectionName: 'Test',
-      eventsPreferences: {
-        currentReconView: 'TEXT',
-        isHeaderOpen: true,
-        isMetaShown: true,
-        isReconExpanded: true,
-        isReconOpen: true,
-        isRequestShown: true,
-        isResponseShown: true
-      }
     }
   }
 };

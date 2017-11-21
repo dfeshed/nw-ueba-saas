@@ -25,21 +25,18 @@ const summaryData = {
 };
 
 const initiatePreferences = {
-  userPreferences: {
+  queryTimeFormat: 'DB',
+  eventAnalysisPreferences: {
+    currentReconView: 'PACKET',
+    isHeaderOpen: true,
+    isMetaShown: true,
+    isReconExpanded: true,
+    isReconOpen: true,
+    isRequestShown: true,
+    isResponseShown: true,
     defaultLogFormat: 'LOG',
     defaultPacketFormat: 'PCAP',
     autoDownloadExtractedFiles: true
-  },
-  userServicePreferences: {
-    eventsPreferences: {
-      currentReconView: 'PACKET',
-      isHeaderOpen: true,
-      isMetaShown: true,
-      isReconExpanded: true,
-      isReconOpen: false,
-      isRequestShown: true,
-      isResponseShown: true
-    }
   }
 };
 

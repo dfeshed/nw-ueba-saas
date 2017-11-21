@@ -106,10 +106,9 @@ const _initializeServices = (dispatch, getState) => {
  * the reconSize on the bases of isReconExpanded field
  * @private
  */
-const _getPreferences = (dispatch, getState) => {
-  const { serviceId } = getState().investigate.queryNode;
-  prefService.getPreferences('investigate-events', serviceId).then((data) => {
-    const { isReconExpanded } = data.userServicePreferences.eventsPreferences;
+const _getPreferences = (dispatch) => {
+  prefService.getPreferences('investigate-events').then((data) => {
+    const { isReconExpanded } = data.eventAnalysisPreferences;
     const reconSize = isReconExpanded ? RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
     dispatch({
       type: ACTION_TYPES.SET_RECON_PANEL_SIZE,

@@ -389,8 +389,7 @@ const _determineReconView = (meta, size) => {
     */
     if (!isPreferencesInitializedOnce || !forcedView) {
       isPreferencesInitializedOnce = true;
-      const { endpointId } = getState().recon.data;
-      prefService.getPreferences('investigate-events', endpointId).then((data) => {
+      prefService.getPreferences('investigate-events').then((data) => {
         if (data) {
           dispatch({
             type: ACTION_TYPES.INITIATE_PREFERENCES,

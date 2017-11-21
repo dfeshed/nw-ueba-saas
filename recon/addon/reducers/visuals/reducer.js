@@ -39,15 +39,14 @@ const visuals = handleActions({
     return state.set('currentReconView', newView);
   },
 
-  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload: { userPreferences, userServicePreferences: { eventsPreferences } } }) => {
-    const isMetaShown = handlePreference(eventsPreferences, eventsPreferences.isMetaShown);
-    const isHeaderOpen = handlePreference(eventsPreferences, eventsPreferences.isHeaderOpen);
-    const isReconExpanded = handlePreference(eventsPreferences, eventsPreferences.isReconExpanded);
-    const isRequestShown = handlePreference(eventsPreferences, eventsPreferences.isRequestShown);
-    const isResponseShown = handlePreference(eventsPreferences, eventsPreferences.isResponseShown);
-    const defaultReconView = RECON_VIEW_TYPES_BY_NAME[eventsPreferences.currentReconView];
-    const { defaultLogFormat } = userPreferences;
-    const { defaultPacketFormat } = userPreferences;
+  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+    const isMetaShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isMetaShown);
+    const isHeaderOpen = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isHeaderOpen);
+    const isReconExpanded = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isReconExpanded);
+    const isRequestShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isRequestShown);
+    const isResponseShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isResponseShown);
+    const defaultReconView = RECON_VIEW_TYPES_BY_NAME[eventAnalysisPreferences.currentReconView];
+    const { defaultLogFormat, defaultPacketFormat } = eventAnalysisPreferences;
     return state.merge({ isMetaShown, isHeaderOpen, isReconExpanded, isRequestShown, isResponseShown, defaultReconView, defaultLogFormat, defaultPacketFormat });
   },
 

@@ -18,7 +18,7 @@ test('it can get preferences for given preference type', function(assert) {
   assert.ok(service);
   const done = assert.async();
   service.getPreferences('investigate-events').then((response) => {
-    assert.equal(response.userServicePreferences.eventsPreferences.currentReconView, 'PACKET', 'Expected to return defaultAnalysisView as Packet.');
+    assert.equal(response.eventAnalysisPreferences.currentReconView, 'PACKET', 'Expected to return defaultAnalysisView as packet.');
     done();
   });
 });
@@ -31,8 +31,8 @@ test('it should be able to set preferences for given type', function(assert) {
   const service = this.subject();
   assert.ok(service);
   const done = assert.async();
-  service.setPreferences('investigate-events', 'serviceId', { userServicePreferences: { eventsPreferences: { currentReconView: 'FILE' } } }).then((response) => {
-    assert.equal(response.userServicePreferences.eventsPreferences.currentReconView, 'FILE', 'Expected to return defaultAnalysisView as File.');
+  service.setPreferences('investigate-events', 'serviceId', { eventAnalysisPreferences: { currentReconView: 'FILE' } }).then((response) => {
+    assert.equal(response.eventAnalysisPreferences.currentReconView, 'FILE', 'Expected to return defaultAnalysisView as text.');
     done();
   });
 });

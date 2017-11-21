@@ -8,7 +8,6 @@ const _typeCode = createSelector(
   (currentReconView) => currentReconView ? currentReconView.code : null
 );
 const visuals = (state) => state.recon.visuals;
-const serviceId = (state) => state.recon.data.endpointId;
 
 export const isRequestShown = (recon) => recon.visuals.isRequestShown;
 
@@ -20,10 +19,10 @@ export const allDataHidden = createSelector(
 );
 
 export const getReconPreferences = createSelector(
-  [visuals, serviceId],
-  (visuals, serviceId) => {
+  [visuals],
+  (visuals) => {
     const filterVal = visuals .without('defaultReconView', 'currentReconView', 'defaultLogFormat', 'defaultPacketFormat');
-    return { 'userServicePreferences': { serviceId, 'eventsPreferences': filterVal } };
+    return { 'eventAnalysisPreferences': filterVal };
   }
 );
 

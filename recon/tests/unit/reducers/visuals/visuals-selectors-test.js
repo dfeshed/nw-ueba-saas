@@ -158,6 +158,6 @@ test('getReconPreferences', function(assert) {
       }
     }
   }));
-  assert.deepEqual(result, { userServicePreferences: { serviceId: '1234',
-    eventsPreferences: { isHeaderOpen: true, isMetaShown: true, isReconExpanded: true, isReconOpen: false, isRequestShown: true, isResponseShown: true } } });
+  assert.deepEqual(result, {
+    eventAnalysisPreferences: { isHeaderOpen: true, isMetaShown: true, isReconExpanded: true, isReconOpen: false, isRequestShown: true, isResponseShown: true } });
 });

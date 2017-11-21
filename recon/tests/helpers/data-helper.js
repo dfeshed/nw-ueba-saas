@@ -72,13 +72,13 @@ class DataHelper {
   }
 
   setDownloadFormatToXml() {
-    initiatePreferences.userPreferences.defaultLogFormat = 'XML';
+    initiatePreferences.eventAnalysisPreferences.defaultLogFormat = 'XML';
     this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
     return this;
   }
 
   setDownloadFormatToPayload() {
-    initiatePreferences.userPreferences.defaultPacketFormat = 'PAYLOAD';
+    initiatePreferences.eventAnalysisPreferences.defaultPacketFormat = 'PAYLOAD';
     this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
     return this;
   }
@@ -169,7 +169,7 @@ class DataHelper {
   }
 
   setAutoDownloadPreference(value) {
-    initiatePreferences.userPreferences.autoDownloadExtractedFiles = value;
+    initiatePreferences.eventAnalysisPreferences.autoDownloadExtractedFiles = value;
     this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
     return this;
   }

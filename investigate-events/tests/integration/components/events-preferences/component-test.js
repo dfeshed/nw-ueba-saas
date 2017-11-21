@@ -14,9 +14,9 @@ moduleForComponent('events-preferences', 'Integration | Component | events prefe
 });
 
 
-test('it should not show preferences panel trigger if service is not selected', function(assert) {
+test('it should show preferences panel trigger even if service is not selected', function(assert) {
   this.render(hbs`{{events-preferences}}`);
-  assert.equal(this.$('.rsa-preferences-panel-trigger').length, 0);
+  assert.equal(this.$('.rsa-preferences-panel-trigger').length, 1);
 });
 
 test('it should shows preferences panel trigger after service selection', function(assert) {
