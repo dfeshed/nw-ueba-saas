@@ -15,8 +15,8 @@ import java.time.Instant;
 /**
  * Created by maria_dorohin on 8/30/17.
  */
-@Document(collection = "management_ttl")
-@CompoundIndexes(@CompoundIndex(name="managementTtlCompoundIndex", def = "{'applicationName':1, 'storeName':1, 'collectionName':1}", unique = true))
+@Document(collection = "management_store_metadata")
+@CompoundIndexes(@CompoundIndex(name="managementStoreMetadataCompoundIndex", def = "{'applicationName':1, 'storeName':1, 'collectionName':1}", unique = true))
 public class StoreMetadata {
     public static final String APPLICATION_NAME_FIELD = "applicationName";
 

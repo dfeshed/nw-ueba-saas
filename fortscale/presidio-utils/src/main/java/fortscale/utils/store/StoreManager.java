@@ -55,12 +55,12 @@ public class StoreManager {
      * @param collectionName collection name
      */
     public void register(String storeName, String collectionName) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName);
+        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null);
     }
 
 
     /**
-     * Register StoreMetadata -  storeName, collectionName, ttl and cleanup.
+     * Register StoreMetadata -  storeName, collectionName, ttl and cleanup interval.
      *
      * @param storeName       store name
      * @param collectionName  collection name
@@ -72,7 +72,7 @@ public class StoreManager {
     }
 
     /**
-     * Register StoreMetadata - storeName and collectionName with default ttl and default cleanup.
+     * Register StoreMetadata - storeName and collectionName with default ttl and default cleanup interval.
      *
      * @param storeName      store name
      * @param collectionName collection name
