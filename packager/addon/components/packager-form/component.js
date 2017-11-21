@@ -117,7 +117,8 @@ const formComponent = Component.extend({
       errorClass: null,
       className: 'rsa-form-label power-select',
       protocolErrorClass: null,
-      protocolClassName: 'rsa-form-label power-select'
+      protocolClassName: 'rsa-form-label power-select',
+      selectedProtocol: null
     });
   },
 
@@ -133,9 +134,10 @@ const formComponent = Component.extend({
       if (!this.get('isLogCollectionEnabled')) {
         // only package data need to be send when windows log collection is not enable
         this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
-      } else if (!this.validateMandatoryFields()) {
         this.resetProperties();
+      } else if (!this.validateMandatoryFields()) {
         this.send('setConfig', this.get('configData'), false);
+        this.resetProperties();
       }
     },
 
@@ -145,9 +147,9 @@ const formComponent = Component.extend({
         this.set('configData.logCollectionConfig.heartbeatFrequency', this.get('selectedFrequency'));
       }
       if (!this.validateMandatoryFields()) {
-        this.resetProperties();
         // only log config data need to be send on click of this button.
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
+        this.resetProperties();
       }
     },
 
@@ -180,10 +182,29 @@ const formComponent = Component.extend({
         try {
           let fileContent = '';
           let formContent = {};
+          const listOfDest = [];
           fileContent = e.target.result;
           formContent = JSON.parse(fileContent.substring(0, fileContent.indexOf('}') + 1));
           this.set('configData.logCollectionConfig', formContent);
-          this.get('flashMessages').success(this.get('i18n').t('packager.upload.success'));
+          this.set('selectedProtocol', formContent.protocol);
+          if (!(this.get('listOfService').some((l) => formContent.primaryDestination === l.id))) {
+            listOfDest.push(formContent.primaryDestination);
+            this.set('primaryDestination', '');
+          } else {
+            this.set('primaryDestination', formContent.primaryDestination);
+          }
+          if (!(this.get('listOfService').some((l) => formContent.secondaryDestination === l.id))) {
+            listOfDest.push(formContent.secondaryDestination);
+            this.set('secondaryDestination', '');
+          } else {
+            this.set('secondaryDestination', formContent.secondaryDestination);
+          }
+          if (!isEmpty(listOfDest)) {
+            const dest = this.get('i18n').t('packager.upload.warning', { id: listOfDest.join(',') });
+            this.get('flashMessages').warning(`${this.get('i18n').t('packager.upload.success')} ${dest}`);
+          } else {
+            this.get('flashMessages').success(this.get('i18n').t('packager.upload.success'));
+          }
         } catch (err) {
           this.get('flashMessages').warning(this.get('i18n').t('packager.upload.failure'));
         } finally {
@@ -192,7 +213,6 @@ const formComponent = Component.extend({
       };
       reader.readAsText(ev.target.files[0]);
     }
-
   }
 
 });

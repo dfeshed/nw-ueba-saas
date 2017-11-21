@@ -1631,7 +1631,8 @@ export default {
     displayName: 'Display Name',
     upload: {
       success: 'Configuration file loaded successfully.',
-      failure: 'Unable to upload Configuration file.'
+      failure: 'Unable to upload Configuration file.',
+      warning: ' However, The Log Decoder/Virtual Log Collector with {{id}} does not exist. Please select from the available choices.'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.'
@@ -1643,7 +1644,7 @@ export default {
     configurationName: '*Configuration Name',
     primaryLogDecoder: '*Primary Log Decoder/Log collector',
     secondaryLogDecoder: 'Secondary Log Decoder/Log Collector',
-    protocol: 'Protocol',
+    protocol: '*Protocol',
     channels: 'Channel filters',
     eventId: 'event id to include/exclude (?)',
     heartbeatLogs: 'Send Heartbeat logs',

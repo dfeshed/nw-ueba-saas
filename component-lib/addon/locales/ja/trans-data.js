@@ -1630,7 +1630,8 @@ export default {
     displayName: 'ja_Display Name',
     upload: {
       success: 'ja_Configuration file loaded successfully.',
-      failure: 'ja_Unable to upload Configuration file.'
+      failure: 'ja_Unable to upload Configuration file.',
+      warning: ' ja_However, The Log Decoder/Virtual Log Collector with {{id}} does not exist. Please select from the available choices.'
     },
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.'
@@ -1642,7 +1643,7 @@ export default {
     configurationName: '*ja_Configuration Name',
     primaryLogDecoder: '*ja_Primary Log Decoder/Log collector',
     secondaryLogDecoder: 'ja_Secondary Log Decoder/Log Collector',
-    protocol: 'ja_Protocol',
+    protocol: '*ja_Protocol',
     channels: 'ja_Channel filters',
     eventId: 'ja_event id to include/exclude (?)',
     heartbeatLogs: 'ja_Send Heartbeat logs',
