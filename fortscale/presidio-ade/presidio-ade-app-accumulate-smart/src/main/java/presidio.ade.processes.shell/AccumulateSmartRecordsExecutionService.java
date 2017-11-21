@@ -3,7 +3,7 @@ package presidio.ade.processes.shell;
 import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;

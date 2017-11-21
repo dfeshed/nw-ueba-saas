@@ -4,7 +4,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.store.StoreManager;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

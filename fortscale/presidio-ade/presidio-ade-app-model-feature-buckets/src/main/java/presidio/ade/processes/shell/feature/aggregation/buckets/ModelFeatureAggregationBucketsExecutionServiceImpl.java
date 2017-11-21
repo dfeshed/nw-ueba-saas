@@ -6,7 +6,7 @@ import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.time.Instant;
@@ -51,5 +51,10 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
 	@Override
 	public void cleanAll(Schema schema) throws Exception {
 		// TODO: Implement
+	}
+
+	@Override
+	public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+
 	}
 }

@@ -1,6 +1,6 @@
 package presidio.ade.domain.store.enriched;
 
-import fortscale.utils.ttl.StoreManagerAware;
+import fortscale.utils.store.StoreManagerAware;
 
 /**
  * StoreManagerAware enriched data CRUD operations.

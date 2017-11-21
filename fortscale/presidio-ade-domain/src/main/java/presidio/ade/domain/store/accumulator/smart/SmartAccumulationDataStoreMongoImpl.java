@@ -2,8 +2,8 @@ package presidio.ade.domain.store.accumulator.smart;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
-import fortscale.utils.ttl.StoreManager;
-import fortscale.utils.ttl.StoreManagerAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;

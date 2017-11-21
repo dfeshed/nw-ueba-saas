@@ -2,8 +2,8 @@ package presidio.ade.smart.config;
 
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
-import fortscale.utils.ttl.StoreManager;
-import fortscale.utils.ttl.StoreManagerConfig;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

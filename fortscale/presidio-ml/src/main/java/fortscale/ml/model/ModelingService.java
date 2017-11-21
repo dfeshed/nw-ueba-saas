@@ -3,7 +3,7 @@ package fortscale.ml.model;
 import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.store.StoreManager;
 import org.springframework.core.io.Resource;
 
 import java.time.Instant;

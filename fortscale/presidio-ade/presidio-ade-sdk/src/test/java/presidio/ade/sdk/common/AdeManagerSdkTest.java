@@ -108,8 +108,8 @@ public class AdeManagerSdkTest {
         Instant startInstant = systemDateService.getInstant();
         Instant endInstant = systemDateService.getInstant().plus(4, ChronoUnit.HOURS);
         EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource", startInstant, endInstant);
-        List<MockedEnrichedRecord> generate = dataGenerator.generate(metaData);
-        adeManagerSdk.storeEnrichedRecords(metaData, generate);
+        List<MockedEnrichedRecord> records = dataGenerator.generate(metaData);
+        adeManagerSdk.storeEnrichedRecords(metaData, records);
 
         Instant removeFrom = startInstant.plus(Duration.ofHours(1));
         Instant removeTo = removeFrom.plus(Duration.ofHours(1));
@@ -120,11 +120,10 @@ public class AdeManagerSdkTest {
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
 
         insertedRecords.forEach(insertedRecord -> {
-
-            Assert.assertTrue(insertedRecord.getStartInstant().isAfter(removeTo) ||
-                    insertedRecord.getStartInstant().equals(removeTo) ||
-                    insertedRecord.getStartInstant().isBefore(removeFrom));
-
+            Instant start = insertedRecord.getStartInstant();
+            Assert.assertTrue(start.isAfter(removeTo) ||
+                    start.equals(removeTo) ||
+                    start.isBefore(removeFrom));
         });
     }
 

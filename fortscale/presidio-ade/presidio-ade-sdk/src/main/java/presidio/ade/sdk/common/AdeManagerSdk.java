@@ -7,7 +7,7 @@ import presidio.ade.sdk.historical_runs.HistoricalRunsManagerSdk;
 import presidio.ade.sdk.online_run.OnlineRunManagerSdk;
 import presidio.ade.sdk.scored_enriched_records.ScoredEnrichedRecordsManagerSdk;
 import presidio.ade.sdk.smart_records.SmartRecordsManagerSdk;
-import presidio.ade.sdk.ttl.StoreManagerSdk;
+import presidio.ade.sdk.store.StoreManagerSdk;
 
 import java.util.Set;
 

@@ -1,8 +1,8 @@
-package fortscale.utils.ttl;
+package fortscale.utils.store;
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
-import fortscale.utils.ttl.record.StoreData;
+import fortscale.utils.store.record.StoreMetadata;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,18 +85,18 @@ public class StoreManagerTest {
      * 2. defined ttl and cleanup interval values
      */
     public void AssertTtlData(int numOfTtlDataRecords, Duration ttl, Duration cleanupInterval) {
-        String collectionName = StoreData.class.getAnnotation(Document.class).collection();
-        List<StoreData> storeDataList = mongoTemplate.findAll(StoreData.class, collectionName);
+        String collectionName = StoreMetadata.class.getAnnotation(Document.class).collection();
+        List<StoreMetadata> storeMetadataList = mongoTemplate.findAll(StoreMetadata.class, collectionName);
 
-        Assert.assertTrue(storeDataList.size() == numOfTtlDataRecords);
-        for (StoreData storeData : storeDataList) {
-            if (storeData.getCollectionName().equals(COLLECTION_NAME_TEST)) {
-                Assert.assertTrue(storeData.getTtlDuration().equals(ttl));
-                Assert.assertTrue(storeData.getCleanupInterval().equals(cleanupInterval));
+        Assert.assertTrue(storeMetadataList.size() == numOfTtlDataRecords);
+        for (StoreMetadata storeMetadata : storeMetadataList) {
+            if (storeMetadata.getCollectionName().equals(COLLECTION_NAME_TEST)) {
+                Assert.assertTrue(storeMetadata.getTtlDuration().equals(ttl));
+                Assert.assertTrue(storeMetadata.getCleanupInterval().equals(cleanupInterval));
 
-            } else if (storeData.getCollectionName().equals(COLLECTION_NAME_DEFAULT_TTL_TEST)) {
-                Assert.assertTrue(storeData.getTtlDuration().equals(defaultTtl));
-                Assert.assertTrue(storeData.getCleanupInterval().equals(defaultCleanupInterval));
+            } else if (storeMetadata.getCollectionName().equals(COLLECTION_NAME_DEFAULT_TTL_TEST)) {
+                Assert.assertTrue(storeMetadata.getTtlDuration().equals(defaultTtl));
+                Assert.assertTrue(storeMetadata.getCleanupInterval().equals(defaultCleanupInterval));
             }
         }
     }

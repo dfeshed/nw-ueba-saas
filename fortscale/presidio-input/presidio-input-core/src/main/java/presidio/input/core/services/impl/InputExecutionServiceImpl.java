@@ -51,4 +51,9 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         presidioInputPersistencyService.clean(schema, startDate, endDate);
         logger.info("Finished enrich processing .");
     }
+
+    @Override
+    public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+
+    }
 }

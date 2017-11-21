@@ -3,8 +3,8 @@ package presidio.ade.processes.shell.config;
 
 import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.accumulator.smart.SmartAccumulationsCacheConfig;
-import fortscale.utils.ttl.StoreManager;
-import fortscale.utils.ttl.StoreManagerConfig;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

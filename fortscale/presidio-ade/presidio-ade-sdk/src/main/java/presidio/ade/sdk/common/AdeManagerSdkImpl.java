@@ -8,7 +8,7 @@ import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.StoreManager;
+import fortscale.utils.store.StoreManager;
 import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.smart.MultipleSmartCollectionsPaginationService;

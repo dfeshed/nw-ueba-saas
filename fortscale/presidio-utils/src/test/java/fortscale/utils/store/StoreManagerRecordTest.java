@@ -1,4 +1,4 @@
-package fortscale.utils.ttl;
+package fortscale.utils.store;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
