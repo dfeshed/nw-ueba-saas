@@ -1,6 +1,7 @@
 package fortscale.utils.store;
 
 import fortscale.utils.store.record.StoreMetadata;
+import java.util.Objects;
 
 import java.time.Duration;
 import java.util.*;
@@ -44,7 +45,7 @@ public class AppSpecificStoreMetadataStore {
             StoreMetadata storeMetadata = storeNameToStoreMetadata.get(collectionName);
             if (storeMetadata != null) {
                 //update exist storeMetadata if ttl or cleanupInterval changed
-                if (!isPropertiesEqual(storeMetadata, ttl, cleanupInterval)) {
+                if (!Objects.equals(storeMetadata.getTtlDuration(), ttl) || !Objects.equals(storeMetadata.getCleanupInterval(), cleanupInterval)) {
                     storeMetadata.setTtlDuration(ttl);
                     storeMetadata.setCleanupInterval(cleanupInterval);
                     storeMetadataRepository.save(storeMetadata);
@@ -59,28 +60,6 @@ public class AppSpecificStoreMetadataStore {
             //create new record if store is not exist in the Map.
             createNewStoreData(storeName, collectionName, ttl, cleanupInterval);
         }
-    }
-
-    /**
-     * is ttl and cleanupInterval equals to storeMetadata properties, include null values.
-     *
-     * @param storeMetadata   storeMetadata
-     * @param ttl             ttl
-     * @param cleanupInterval cleanupInterval
-     * @return is ttl and cleanupInterval equals to storeMetadata properties
-     */
-    public boolean isPropertiesEqual(StoreMetadata storeMetadata, Duration ttl, Duration cleanupInterval) {
-        if (ttl != null && cleanupInterval != null && storeMetadata.getTtlDuration() != null && storeMetadata.getCleanupInterval() != null) {
-            if (!storeMetadata.getTtlDuration().equals(ttl) || !storeMetadata.getCleanupInterval().equals(cleanupInterval)) {
-                return false;
-            }
-        } else {
-            if (storeMetadata.getTtlDuration() != ttl || storeMetadata.getCleanupInterval() != cleanupInterval) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
 
