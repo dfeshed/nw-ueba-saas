@@ -15,7 +15,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 
 public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDataStore, StoreManagerAware {
@@ -110,7 +109,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
     @Override
     public void remove(String collectionName, Instant start, Instant end){
         Query query = new Query()
-                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 }

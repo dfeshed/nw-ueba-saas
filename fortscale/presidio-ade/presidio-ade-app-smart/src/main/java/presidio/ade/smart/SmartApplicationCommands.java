@@ -44,7 +44,7 @@ public class SmartApplicationCommands implements CommandMarker {
 		smartService.process(smartRecordConfName, new TimeRange(startDate, endDate));
 	}
 
-	@CliCommand(value = "cleanup", help = "cleanup events with specified time range, schema and fixed duration")
+	@CliCommand(value = "cleanup", help = "cleanup events with specified time range, smart configuration")
 	public void cleanup(
 			@CliOption(
 					key = CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME,

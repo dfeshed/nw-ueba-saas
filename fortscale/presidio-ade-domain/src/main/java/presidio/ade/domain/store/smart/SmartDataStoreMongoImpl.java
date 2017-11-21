@@ -19,7 +19,6 @@ import java.util.*;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
  * A mongo based implementation for the {@link SmartDataStore}.
@@ -96,7 +95,7 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, StoreManagerAwar
     @Override
     public void remove(String collectionName, Instant start, Instant end){
         Query query = new Query()
-                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 }

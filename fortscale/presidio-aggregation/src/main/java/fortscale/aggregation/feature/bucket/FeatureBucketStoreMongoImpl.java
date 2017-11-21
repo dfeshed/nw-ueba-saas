@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
  * A Mongo based {@link FeatureBucketStore}.
