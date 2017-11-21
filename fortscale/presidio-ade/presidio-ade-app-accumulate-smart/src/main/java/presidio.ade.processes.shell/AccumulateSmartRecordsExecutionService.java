@@ -1,6 +1,7 @@
 package presidio.ade.processes.shell;
 
 import fortscale.accumulator.smart.SmartAccumulationsCache;
+import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
@@ -41,6 +42,10 @@ public class AccumulateSmartRecordsExecutionService {
 
     public void clean(String configurationName, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
+    }
+
+    public void cleanup(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
+        storeManager.cleanupCollections(startDate, endDate);
     }
 }
 

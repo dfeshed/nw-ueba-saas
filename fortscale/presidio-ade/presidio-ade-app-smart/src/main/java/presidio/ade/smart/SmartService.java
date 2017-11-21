@@ -1,5 +1,6 @@
 package presidio.ade.smart;
 
+import fortscale.common.general.Schema;
 import fortscale.smart.SmartRecordAggregator;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -14,6 +15,7 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataStore;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
 
@@ -100,5 +102,9 @@ public class SmartService {
 		}
 
 		storeManager.cleanupCollections(timeRange.getStart());
+	}
+
+	public void cleanup(String smartRecordConfName, TimeRange timeRange) throws Exception {
+		storeManager.cleanupCollections(timeRange.getStart(), timeRange.getEnd());
 	}
 }

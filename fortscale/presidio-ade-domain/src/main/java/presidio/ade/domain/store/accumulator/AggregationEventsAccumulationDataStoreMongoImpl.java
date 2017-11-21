@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 
 public class AggregationEventsAccumulationDataStoreMongoImpl implements AggregationEventsAccumulationDataStore, StoreManagerAware {
@@ -117,7 +118,8 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
 
     @Override
     public void remove(String collectionName, Instant start, Instant end){
-
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
+        mongoTemplate.remove(query, collectionName);
     }
-
 }

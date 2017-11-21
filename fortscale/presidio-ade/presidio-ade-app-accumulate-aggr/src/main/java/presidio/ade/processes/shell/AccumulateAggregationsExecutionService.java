@@ -56,5 +56,9 @@ public class AccumulateAggregationsExecutionService {
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
+
+    public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
+        storeManager.cleanupCollections(startDate, endDate);
+    }
 }
 

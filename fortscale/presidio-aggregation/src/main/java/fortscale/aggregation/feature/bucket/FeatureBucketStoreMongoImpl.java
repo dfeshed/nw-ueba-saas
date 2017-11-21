@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
  * A Mongo based {@link FeatureBucketStore}.
@@ -114,7 +115,8 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 
 	@Override
 	public void remove(String collectionName, Instant start, Instant end){
-
+		Query query = new Query()
+				.addCriteria(where(FeatureBucket.START_TIME_FIELD).gte(start).lt(end));
+		mongoTemplate.remove(query, collectionName);
 	}
-
 }

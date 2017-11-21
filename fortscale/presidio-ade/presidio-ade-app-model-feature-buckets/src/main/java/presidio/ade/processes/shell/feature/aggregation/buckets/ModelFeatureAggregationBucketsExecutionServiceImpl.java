@@ -55,6 +55,6 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
 
 	@Override
 	public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
-
+		storeManager.cleanupCollections(startDate, endDate);
 	}
 }
