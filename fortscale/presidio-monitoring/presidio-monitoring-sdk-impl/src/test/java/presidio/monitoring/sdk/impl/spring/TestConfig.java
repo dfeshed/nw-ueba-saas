@@ -1,4 +1,4 @@
-package presidio.monitoring.spring;
+package presidio.monitoring.sdk.impl.spring;
 
 
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
@@ -18,7 +18,8 @@ public class TestConfig {
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-        properties.put("spring.application.name", "test");
+        properties.put("monitoring.fixed.rate", 60000);
+        properties.put("spring.autoconfigure.exclude", "org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

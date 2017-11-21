@@ -4,15 +4,16 @@ package presidio.monitoring.endPoint;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.StringUtils;
 import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import static presidio.monitoring.DefaultPublicMetricsNames.*;
 
@@ -29,26 +30,44 @@ public class PresidioSystemMetricsFactory {
     private Runtime runtime;
     private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
     private ThreadMXBean threadMxBean;
-    private Set<String> tags;
+    private Map<MetricEnums.MetricTagKeysEnum, String> tags;
 
     public PresidioSystemMetricsFactory(String applicationName) {
-        tags = new HashSet<>();
-        tags.add(applicationName);
+        tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
         runtime = Runtime.getRuntime();
         garbageCollectorMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
         threadMxBean = ManagementFactory.getThreadMXBean();
     }
 
     private Metric createMemoryMetric(String name, long value) {
-        return new Metric(name, value, tags, MEMORY, false);
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, value);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MEMORY);
+        return new Metric.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
     }
 
     private Metric createSystemMetric(String name, long value) {
-        return new Metric(name, value, tags, SYSTEM, false);
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, value);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, SYSTEM);
+        return new Metric.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
     }
 
     private Metric createThreadsMetric(String name, long value) {
-        return new Metric(name, value, tags, THREADS, false);
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.COUNT, value);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, THREADS);
+        return new Metric.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
     }
 
     public List<Metric> metrics() {
@@ -86,7 +105,7 @@ public class PresidioSystemMetricsFactory {
             }
             result2.add(createSystemMetric(PROCESSORS, runtime.availableProcessors()));
         } catch (Exception ex) {
-            logger.info("Error when trying to collect defoult metrics.", ex);
+            logger.info("Error when trying to collect metric.", ex);
         }
     }
 
@@ -119,7 +138,7 @@ public class PresidioSystemMetricsFactory {
         }
     }
 
-    public void addTag(String tag) {
-        this.tags.add(tag);
+    public void addTag(MetricEnums.MetricTagKeysEnum tagKey, String tagValue) {
+        this.tags.put(tagKey, tagValue);
     }
 }

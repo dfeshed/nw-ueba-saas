@@ -13,9 +13,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
@@ -59,23 +58,19 @@ public class ExternalMonitoringConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()), presidioMetricFactory());
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()));
     }
 
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(presidioSystemMetrics());
+    public PresidioMetricBucket presidioMetricEndPoint() {
+        return new PresidioMetricBucket(presidioSystemMetrics(), "");
     }
-
 
     @Bean
     public PresidioSystemMetricsFactory presidioSystemMetrics() {
         return new PresidioSystemMetricsFactory("");
     }
 
-    @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory("");
-    }
+
 }

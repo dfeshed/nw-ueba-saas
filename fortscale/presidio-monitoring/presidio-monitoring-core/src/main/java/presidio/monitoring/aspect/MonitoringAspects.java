@@ -1,19 +1,23 @@
 package presidio.monitoring.aspect;
 
 
-import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
-import presidio.monitoring.factory.PresidioMetricFactory;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
+import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 
 @Aspect
@@ -27,17 +31,15 @@ public class MonitoringAspects {
     private final String RUN_TIME = ".RunTime";
     private final String NUMBER_OF_FAILED_VALIDATION = ".NumberOfFailedValidation";
     private final String NUMBER_OF_FILTERED_EVENTS = ".NumberOfFilteredEvents";
-    private final String UNIT_TYPE_LONG = "long";
 
-    private PresidioMetricEndPoint presidioMetricEndPoint;
-    private PresidioMetricFactory presidioMetricFactory;
+
+    private PresidioMetricBucket presidioMetricBucket;
 
     public MonitoringAspects() {
     }
 
-    public void setMetrics(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricFactory presidioMetricFactory) {
-        this.presidioMetricEndPoint = presidioMetricEndPoint;
-        this.presidioMetricFactory = presidioMetricFactory;
+    public void setMetrics(PresidioMetricBucket presidioMetricBucket) {
+        this.presidioMetricBucket = presidioMetricBucket;
     }
 
     /**
@@ -52,7 +54,11 @@ public class MonitoringAspects {
     @Before("@annotation(presidio.monitoring.aspect.annotations.Start)")
     public void start(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + START;
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, UNIT_TYPE_LONG));
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metric).
+                setMetricValue(1).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                build());
         logger.info("Metric {} increment with annotation Start. ", metric);
     }
 
@@ -68,7 +74,11 @@ public class MonitoringAspects {
     @After("@annotation(presidio.monitoring.aspect.annotations.End)")
     public void end(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + END;
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, UNIT_TYPE_LONG));
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metric).
+                setMetricValue(1).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                build());
         logger.debug("Metric {} increment with annotation End. ", metric);
     }
 
@@ -84,7 +94,11 @@ public class MonitoringAspects {
     @AfterThrowing("@annotation(presidio.monitoring.aspect.annotations.ExceptionThrown)")
     public void exceptionThrown(JoinPoint joinPoint) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + EXCEPTION_THROWN;
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, UNIT_TYPE_LONG));
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metric).
+                setMetricValue(1).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                build());
         logger.debug("Metric {} increment with annotation exceptionThrown. ", metric);
     }
 
@@ -104,7 +118,13 @@ public class MonitoringAspects {
         joinPoint.proceed();
         long endTime = System.nanoTime();
         long time = Long.divideUnsigned(endTime - startTime, 1000000000);
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, time, UNIT_TYPE_LONG));
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, time);
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metricName).
+                setMetricMultipleValues(map).
+                setMetricUnit(MetricEnums.MetricUnitType.DATE).
+                build());
         logger.debug("Metric {} run time is {} milli seconds. ", metricName, time);
     }
 
@@ -125,9 +145,14 @@ public class MonitoringAspects {
         Object returnVal = joinPoint.proceed();
         List result = (List) returnVal;
         int numberOfFilteredEvents = numberOfEventsEntered - result.size();
-        Set tags = new HashSet();
-        tags.add(schema);
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, numberOfFilteredEvents, tags, UNIT_TYPE_LONG));
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema);
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metricName).
+                setMetricValue(numberOfFilteredEvents).
+                setMetricTags(tags).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                build());
         logger.debug("Metric {} add {} events filtered. ", metricName, numberOfFilteredEvents);
         return returnVal;
     }
@@ -145,12 +170,15 @@ public class MonitoringAspects {
     public void numberOfFailedValidation(ProceedingJoinPoint joinPoint) throws Throwable {
         String metricName = joinPoint.getSignature().toShortString() + NUMBER_OF_FAILED_VALIDATION;
         int numberOfFailedValidationDocuments = ((List<? extends Serializable>) joinPoint.proceed()).size();
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metricName, numberOfFailedValidationDocuments, UNIT_TYPE_LONG));
-
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metricName).
+                setMetricValue(numberOfFailedValidationDocuments).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                build());
         logger.debug("Metric {} got {} failed validations. ", metricName, numberOfFailedValidationDocuments);
     }
 
-
+//Example
     /**
      * This method provides us counting of a method invocation that process a data source .
      * The annotation Before lets us perform custom behavior before a method invocation.
@@ -160,14 +188,19 @@ public class MonitoringAspects {
      * @param schema    - enum of a type date source.
      * @throws Throwable - any exceptin that can be thrown from the execution of the method.
      */
-
+/*
     @Before("@annotation(presidio.monitoring.aspect.annotations.DataSourceProcess) && args(schema,..)")
     public void dataSourceProcess(JoinPoint joinPoint, Schema schema) throws Throwable {
         String metric = joinPoint.getSignature().toShortString() + schema.getName();
-        Set tags = new HashSet();
-        tags.add(schema.getName());
-        presidioMetricEndPoint.addMetric(presidioMetricFactory.creatingPresidioMetric(metric, 1, tags, UNIT_TYPE_LONG));
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();
+        tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA, schema.getName());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName(metric).
+                setMetricValue(1).
+                setMetricTags(tags).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                build());
         logger.debug("Metric {} increment with annotation DataSourceProcess. ", metric);
     }
-
+*/
 }
