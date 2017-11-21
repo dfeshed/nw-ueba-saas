@@ -26,4 +26,22 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
         logger.debug("Ended Exporting metrics to elastic");
     }
 
+    @Override
+    public void manualExportMetrics(MetricBucketEnum metricBucketEnum) {
+        logger.debug("Manual exporting metrics to elastic");
+        switch (metricBucketEnum) {
+            case APPLICATION:
+                presidioMetricPersistencyService.save(getApplicationMetricsForExport());
+                break;
+            case SYSTEM:
+                presidioMetricPersistencyService.save(getSystemMetricsForExport());
+                break;
+            case ALL:
+                presidioMetricPersistencyService.save(getMetricsForExport(false));
+                break;
+            default:
+                logger.info("Bad metricBucketEnum was given");
+        }
+        logger.debug("Ended Exporting metrics to elastic");
+    }
 }

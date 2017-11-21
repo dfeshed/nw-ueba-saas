@@ -26,11 +26,23 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
     }
 
     public List<MetricDocument> getMetricsForExport(boolean isLastExport) {
-        logger.debug("Getting metrics from end point.");
+        logger.debug("Getting metrics from metric bucket.");
         return presidioMetricBucket.getAllMetrics(isLastExport);
     }
 
+    public List<MetricDocument> getApplicationMetricsForExport() {
+        logger.debug("Getting all application metrics from metric bucket.");
+        return presidioMetricBucket.getApplicationMetrics();
+    }
+
+    public List<MetricDocument> getSystemMetricsForExport() {
+        logger.debug("Getting all system metrics from metric bucket.");
+        return presidioMetricBucket.getSystemMetrics();
+    }
+
     public abstract void export();
+
+    public abstract void manualExportMetrics(MetricBucketEnum metricBucketEnum);
 
     public void flush() {
         logger.debug("Closing application and exporting metrics last time.");
@@ -46,4 +58,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         scheduler.shutdown();
     }
 
+    public enum MetricBucketEnum {
+        APPLICATION, SYSTEM, ALL;
+    }
 }

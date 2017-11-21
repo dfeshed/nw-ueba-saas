@@ -64,6 +64,20 @@ public class PresidioMetricBucket {
         return allMetrics;
     }
 
+    public List<MetricDocument> getApplicationMetrics() {
+        List<MetricDocument> allMetrics = new LinkedList<>();
+        applicationMetrics.forEach((s, metric) -> {
+            if (!metric.isReportOneTime()) {
+                allMetrics.add(buildPresidioMetric(metric));
+            }
+        });
+        return allMetrics;
+    }
+
+    public List<MetricDocument> getSystemMetrics() {
+        return buildPresidioMetricsFromSystemMetrics(presidioSystemMetricsFactory.metrics());
+    }
+
     private List<MetricDocument> buildPresidioMetricsFromSystemMetrics(List<Metric> systemMetrics) {
         List<MetricDocument> allSystemMetrics = new LinkedList<>();
         systemMetrics.forEach(metric -> {
