@@ -4,26 +4,27 @@ import org.springframework.util.ObjectUtils;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
+import presidio.monitoring.services.MetricConventionApplyer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.ChronoField;
+import java.util.*;
 
 public class PresidioMetricBucket {
 
-    private String applicationName;
     private Map<String, Metric> applicationMetrics;
     private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
+    private MetricConventionApplyer metricConventionApplyer;
 
-    public PresidioMetricBucket(PresidioSystemMetricsFactory presidioSystemMetricsFactory, String applicationName) {
-        this.applicationName = applicationName;
+    public PresidioMetricBucket(PresidioSystemMetricsFactory presidioSystemMetricsFactory, MetricConventionApplyer metricConventionApplyer) {
         this.presidioSystemMetricsFactory = presidioSystemMetricsFactory;
+        this.metricConventionApplyer = metricConventionApplyer;
         this.applicationMetrics = new HashMap<>();
     }
 
     public void addMetric(Metric metric) {
-        metric.addTag(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+
+        metricConventionApplyer.apply(metric);
+
         if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
             aggregateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
         }
@@ -87,10 +88,10 @@ public class PresidioMetricBucket {
     }
 
     private MetricDocument buildPresidioMetric(Metric metric) {
-        return new MetricDocument(metric.getName(), metric.getValue(), metric.getTime(), metric.getTags(), metric.getLogicTime());
-    }
-
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
+        return new MetricDocument(metric.getName(),
+                metric.getValue(),
+                new Date(metric.getTime().getLong(ChronoField.MILLI_OF_SECOND)),
+                metric.getTags(),
+                metric.getLogicTime() != null ? new Date(metric.getLogicTime().getLong(ChronoField.MILLI_OF_SECOND)) : null);
     }
 }

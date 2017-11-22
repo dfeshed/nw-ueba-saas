@@ -12,11 +12,13 @@ import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.generator.MetricGeneratorService;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
 @Import({ElasticsearchTestConfig.class, TestConfig.class})
-public class MetricGenerateServiceTestConfig {
+public class MetricPersistencyServiceTestConfig {
 
     @Bean
     public MetricGeneratorService metricGeneratorService() {
@@ -27,6 +29,11 @@ public class MetricGenerateServiceTestConfig {
     public MetricRepository metricRepository;
 
     @Bean
+    public MetricConventionApplyer metricNameTransformer() {
+        return new PresidioMetricConventionApplyer();
+    }
+
+    @Bean
     public PresidioMetricPersistencyService metricExportService() {
         return new PresidioMetricPersistencyServiceImpl(metricRepository);
     }
@@ -35,7 +42,7 @@ public class MetricGenerateServiceTestConfig {
 
     @Bean
     public PresidioMetricBucket presidioMetricBucket() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), applicationName);
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
     }
 
 

@@ -1,4 +1,4 @@
-package presidio.monitoring;
+package presidio.monitoring.services;
 
 
 import org.junit.After;
@@ -10,12 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.generator.MetricGeneratorService;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
-import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
+import presidio.monitoring.spring.MetricPersistencyServiceTestConfig;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -23,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = MetricGenerateServiceTestConfig.class)
+@ContextConfiguration(classes = MetricPersistencyServiceTestConfig.class)
 public class MetricPersistencyServiceTest {
 
     @Autowired
@@ -35,16 +33,13 @@ public class MetricPersistencyServiceTest {
     @Autowired
     public MetricRepository metricRepository;
 
-    @Autowired
-    public PresidioMetricBucket presidioMetricBucket;
-
     @After
     public void deleteTestData() {
         metricRepository.delete(metricRepository.findAll());
     }
 
     @Test
-    public void createTestMetrics() {
+    public void testSaveMetrics() {
         Instant from = Instant.now().minusMillis(1000000);
         Instant to = Instant.now().minusMillis(1000);
         List<Number> values = new LinkedList();
@@ -62,33 +57,5 @@ public class MetricPersistencyServiceTest {
         Assert.assertFalse(metric.getValue().isEmpty());
         Assert.assertEquals("test", metric.getName());
         Assert.assertEquals(100, metricRepository.count());
-    }
-
-    @Test
-    public void addingMetricToMetricBucketTest() {
-        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
-                setMetricName("test1").
-                setMetricValue(1).
-                build());
-        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
-                setMetricName("test1").
-                setMetricValue(1).
-                build());
-        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
-                setMetricName("test2").
-                setMetricValue(1).
-                build());
-        List<MetricDocument> metricList = presidioMetricBucket.getApplicationMetrics();
-        metricList.size();
-        Assert.assertEquals(2, metricList.size());
-        metricList.forEach(metric -> {
-            if (metric.getName().equals("test1")) {
-                Assert.assertEquals(2, metric.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE));
-            }
-        });
-        metricList = presidioMetricBucket.getSystemMetrics();
-        Assert.assertEquals(21, metricList.size());
-
-
     }
 }

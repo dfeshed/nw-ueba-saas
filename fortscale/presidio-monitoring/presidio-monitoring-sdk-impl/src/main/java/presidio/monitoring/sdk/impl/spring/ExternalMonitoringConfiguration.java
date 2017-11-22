@@ -18,6 +18,8 @@ import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
@@ -61,10 +63,14 @@ public class ExternalMonitoringConfiguration {
         return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()));
     }
 
+    @Bean
+    public MetricConventionApplyer metricNameTransformer() {
+        return new PresidioMetricConventionApplyer();
+    }
 
     @Bean
     public PresidioMetricBucket presidioMetricEndPoint() {
-        return new PresidioMetricBucket(presidioSystemMetrics(), "");
+        return new PresidioMetricBucket(presidioSystemMetrics(), metricNameTransformer());
     }
 
     @Bean

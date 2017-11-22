@@ -40,6 +40,7 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
+        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
@@ -50,6 +51,7 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
+        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
@@ -60,6 +62,7 @@ public class PresidioSystemMetricsFactory {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.COUNT, value);
         tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
+        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
@@ -90,16 +93,16 @@ public class PresidioSystemMetricsFactory {
         metricsForExport.add(createMemoryMetric(NONHEAP, nonHeapMemoryUsage.getMax(), MetricEnums.MetricUnitType.B));
     }
 
-    private void addManagementMetrics(List<Metric> result2) {
+    private void addManagementMetrics(List<Metric> metricsForExport) {
         try {
-            result2.add(createSystemMetric(UPTIME, ManagementFactory.getRuntimeMXBean().getUptime(), MetricEnums.MetricUnitType.MILLI_SECOND));
-            result2.add(createSystemMetric(SYSTEMLOAD_AVERAGE, ((Double) ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()).longValue(), MetricEnums.MetricUnitType.NUMBER));
+            metricsForExport.add(createSystemMetric(UPTIME, ManagementFactory.getRuntimeMXBean().getUptime(), MetricEnums.MetricUnitType.MILLI_SECOND));
+            metricsForExport.add(createSystemMetric(SYSTEMLOAD_AVERAGE, ((Double) ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()).longValue(), MetricEnums.MetricUnitType.NUMBER));
             for (GarbageCollectorMXBean garbageCollectorMXBean : garbageCollectorMxBeans) {
                 String name = beautifyGcName(garbageCollectorMXBean.getName());
-                result2.add(createSystemMetric("gc." + name + ".count", garbageCollectorMXBean.getCollectionCount(), MetricEnums.MetricUnitType.NUMBER));
-                result2.add(createSystemMetric("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime(), MetricEnums.MetricUnitType.NUMBER));
+                metricsForExport.add(createSystemMetric("gc." + name + ".count", garbageCollectorMXBean.getCollectionCount(), MetricEnums.MetricUnitType.NUMBER));
+                metricsForExport.add(createSystemMetric("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime(), MetricEnums.MetricUnitType.NUMBER));
             }
-            result2.add(createSystemMetric(PROCESSORS, runtime.availableProcessors(), MetricEnums.MetricUnitType.MILLI_SECOND));
+            metricsForExport.add(createSystemMetric(PROCESSORS, runtime.availableProcessors(), MetricEnums.MetricUnitType.MILLI_SECOND));
         } catch (Exception ex) {
             logger.info("Error when trying to collect metric.", ex);
         }

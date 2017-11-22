@@ -39,7 +39,6 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
             throw new Exception(errorMessage);
         }
         presidioSystemMetricsFactory.addTag(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
-        presidioMetricBucket.setApplicationName(applicationName);
         return presidioExternalMonitoringServiceBean;
     }
 

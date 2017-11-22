@@ -25,6 +25,8 @@ import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 
 import java.util.Properties;
@@ -73,8 +75,13 @@ public class FortscaleInputCoreApplicationTest {
         }
 
         @Bean
+        public MetricConventionApplyer metricNameTransformer() {
+            return new PresidioMetricConventionApplyer();
+        }
+
+        @Bean
         public PresidioMetricBucket presidioMetricEndPoint() {
-            return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), applicationName);
+            return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
         }
 
         @Bean

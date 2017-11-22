@@ -13,6 +13,8 @@ import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -39,8 +41,13 @@ public class OutputProcessorTestConfiguration {
     }
 
     @Bean
+    public MetricConventionApplyer metricNameTransformer() {
+        return new PresidioMetricConventionApplyer();
+    }
+
+    @Bean
     public PresidioMetricBucket presidioMetricEndPoint() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), applicationName);
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
     }
 
     @Bean
