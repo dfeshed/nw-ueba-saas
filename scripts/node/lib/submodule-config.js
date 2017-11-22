@@ -13,7 +13,8 @@ const ALL_SUBMODULES = [
   'style-guide',
   'context',
   'preferences',
-  'test-helpers'
+  'test-helpers',
+  'hosts-scan-configure'
 ];
 
 // A configuration that lists each submodule with
@@ -31,7 +32,8 @@ const saModuleDependants = {
     'respond',
     'configure',
     'context',
-    'preferences'
+    'preferences',
+    'hosts-scan-configure'
   ],
   docs: [], // lol
   'mock-server': [
@@ -43,7 +45,8 @@ const saModuleDependants = {
     'packager',
     'respond',
     'configure',
-    'context'
+    'context',
+    'hosts-scan-configure'
   ],
   'investigate-events': ['sa'],
   'investigate-hosts': ['sa'],
@@ -67,7 +70,8 @@ const saModuleDependants = {
     'configure',
     'sa',
     'style-guide',
-    'context'
+    'context',
+    'hosts-scan-configure'
   ],
   'style-guide': [], // style-guide is an end state app, nothing depends on it
   context: [
@@ -78,7 +82,8 @@ const saModuleDependants = {
     'sa',
     'investigate-events'
   ],
-  'test-helpers': []
+  'test-helpers': [],
+  'hosts-scan-configure': ['sa']
 };
 
 module.exports = {

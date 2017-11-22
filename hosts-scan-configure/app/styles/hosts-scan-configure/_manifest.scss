@@ -1,0 +1,36 @@
+@import "recurrence-interval";
+
+.hosts-scan-configure-container {
+  padding: rsa-whitespace(more) 0 0 rsa-whitespace(most);
+
+  .noUi-target {
+    border: none;
+    margin: 2rem 1rem 2rem 0;
+  }
+}
+
+.schedule-form__content-title {
+  color: text-color(primary, lightest);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.schedule-form__content-fields {
+  padding: rsa-whitespace(more) 0 0 0
+}
+
+.rsa-form-label {
+  @include rsa-font(header, small);
+}
+
+.cpu-throttling, .schedule-time {
+  padding: rsa-whitespace(more) 0 0 0
+}
+
+.schedule-time, .cpu-throttling {
+  width: 20%;
+}
+
+.cpu-throttling {
+  width: 30%;
+}

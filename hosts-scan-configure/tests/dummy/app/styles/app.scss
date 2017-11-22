@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside hosts-scan-configure */
+@import 'component-lib/manifest';
+
+/* Pulling in local hosts-scan-configure styles */
+@import 'hosts-scan-configure/manifest';
+
+html, body {
+  height: 100%;
+}
+
+body {
+  color: text-color(primary, light);
+  margin: 0;
+}
+
+page {
+  min-height: 100vh;
+}

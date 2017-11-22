@@ -2527,5 +2527,40 @@ export default {
         size: 'ja_Size'
       }
     }
+  },
+  hostsScanConfigure: {
+    title: 'ja_Scan Schedule',
+    save: 'js_Save',
+    enable: 'ja_Enable',
+    recurrenceInterval: {
+      title: 'ja_Recurrence Interval',
+      options: {
+        daily: 'ja_Daily',
+        weekly: 'ja_Weekly',
+        monthly: 'ja_Monthly'
+      },
+      every: 'ja_Every',
+      on: 'ja_On',
+      intervalText: {
+        DAYS: 'ja_day(s)',
+        WEEKS: 'ja_week(s)',
+        MONTHS: 'ja_month(s)'
+      },
+      week: {
+        monday: 'ja_M',
+        tuesday: 'ja_T',
+        wednesday: 'ja_W',
+        thursday: 'ja_T',
+        friday: 'ja_F',
+        saturday: 'ja_S',
+        sunday: 'ja_S'
+      }
+    },
+    startTime: 'ja_Start Time',
+    cpuThrottling: {
+      title: 'ja_Agent CPU Throttling',
+      cpuMax: 'ja_CPU Max',
+      vmMax: 'ja_VM Max'
+    }
   }
 };

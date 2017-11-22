@@ -1,0 +1,18 @@
+<label class="rsa-form-input">
+  <h4 class='rsa-form-label'>{{t 'hostsScanConfigure.startTime'}}</h4>
+  {{rsa-icon name="calendar-timeout" style='lined' class='datetime-picker-icon'}}
+  {{ember-flatpickr
+    enableTime=true
+    noCalendar=true
+    enableSeconds=true
+    time_24hr=time24HR
+    dateFormat=convertedTimeFormat
+    onChange=(action 'onTimeChange')
+    allowInput=true
+    minuteIncrement=1
+    locale=locale
+    defaultHour=12
+    defaultMinute=0
+    value=startTime
+  }}
+</label>

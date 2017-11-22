@@ -1,0 +1,29 @@
+{{#if isFetchingSchedule}}
+  <centered>
+    {{rsa-loader size="larger"}}
+  </centered>
+{{else}}
+  <vbox class='schedule-form__content'>
+    <div class='schedule-form__content-title'>
+      {{t 'hostsScanConfigure.title'}}
+    </div>
+    <div class="schedule-form__content-fields">
+      <div>
+        {{#x-toggle
+          showLabels=true
+          onLabel=(t 'hostsScanConfigure.enable')
+          value=(readonly enabled)
+          onToggle=(action 'toggleEnable')  as |toggle|}}
+          {{toggle.switch}}
+          {{toggle.onLabel value=(readonly (not enabled))}}
+        {{/x-toggle}}
+      </div>
+      {{recurrence-interval}}
+      {{schedule-time}}
+      {{cpu-throttling}}
+    </div>
+    <div class='button-holder'>
+      {{#rsa-form-button style='primary' isDisabled=isDisabled defaultAction='saveConfig'}}{{t 'hostsScanConfigure.save'}}{{/rsa-form-button}}
+    </div>
+  </vbox>
+{{/if}}

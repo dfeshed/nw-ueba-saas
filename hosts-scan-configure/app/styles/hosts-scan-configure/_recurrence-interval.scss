@@ -1,0 +1,28 @@
+.recurrence-interval {
+
+  padding: rsa-whitespace(more) 0 0 0;
+
+  .ember-power-select-trigger {
+    width: 3.5rem;
+  }
+  .text {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    width: 2.5rem;
+    text-align: right;
+  }
+  .rsa-form-radio-label {
+    line-height: 1rem;
+  }
+}
+
+.recurrence-run-interval__list {
+  padding-right: 1rem;
+}
+
+.recurrence-run-interval {
+  padding-top: rsa-whitespace();
+}
+
+.radio-buttons {
+  padding-top: rsa-whitespace();
+}

@@ -2527,5 +2527,40 @@ export default {
         size: 'Size'
       }
     }
+  },
+  hostsScanConfigure: {
+    title: 'Scan Schedule',
+    save: 'Save',
+    enable: 'Enable',
+    recurrenceInterval: {
+      title: 'Recurrence Interval',
+      options: {
+        daily: 'Daily',
+        weekly: 'Weekly',
+        monthly: 'Monthly'
+      },
+      every: 'Every',
+      on: 'On',
+      intervalText: {
+        DAYS: 'day(s)',
+        WEEKS: 'week(s)',
+        MONTHS: 'month(s)'
+      },
+      week: {
+        monday: 'M',
+        tuesday: 'T',
+        wednesday: 'W',
+        thursday: 'T',
+        friday: 'F',
+        saturday: 'S',
+        sunday: 'S'
+      }
+    },
+    startTime: 'Start Time',
+    cpuThrottling: {
+      title: 'Agent CPU Throttling',
+      cpuMax: 'CPU Max',
+      vmMax: 'VM Max'
+    }
   }
 };

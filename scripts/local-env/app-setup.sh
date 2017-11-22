@@ -46,6 +46,7 @@ yarn link
 
 prepareApp component-lib
 prepareApp streaming-data
+prepareApp hosts-scan-configure
 prepareApp packager
 prepareApp recon
 prepareApp style-guide

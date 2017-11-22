@@ -196,6 +196,7 @@ buildEmberApp recon false true
 buildEmberApp context false true
 buildEmberApp preferences false true
 buildEmberApp test-helpers false false
+buildEmberApp hosts-scan-configure false true
 buildEmberApp style-guide true
 buildEmberApp investigate-events false true
 buildEmberApp investigate-hosts false true

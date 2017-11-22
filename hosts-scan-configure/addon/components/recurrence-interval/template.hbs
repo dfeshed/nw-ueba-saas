@@ -1,0 +1,40 @@
+<vbox class='rsa-form-radio-group'>
+  <h4 class='rsa-form-radio-group-label'>{{t radioButtonConfig.label}}</h4>
+  <hbox class="radio-buttons">
+    {{#each radioButtonConfig.items as |item|}}
+      <label class="rsa-form-radio-label {{if (eq item.name schedule.recurrenceIntervalUnit) 'checked'}}">
+        {{radio-button
+          radioClass='recurrence-type'
+          value=item.name
+          changed=(action 'updateScheduleProperty' 'recurrenceIntervalUnit' item.name)
+          groupValue=schedule.recurrenceIntervalUnit}}
+        {{t item.label}}
+      </label>
+    {{/each}}
+  </hbox>
+</vbox>
+<hbox class='recurrence-run-interval'>
+  <span class='text'>{{t 'hostsScanConfigure.recurrenceInterval.every'}}</span>
+  <div class="recurrence-run-interval__list">
+    <label class="rsa-form-label power-select">
+      {{#power-select
+        triggerClass="inline"
+        options=runIntervalConfig.options
+        selected=schedule.recurrenceInterval
+        onchange=(action 'updateScheduleProperty' 'recurrenceInterval') as |selectedDays|}}
+        {{selectedDays}}
+      {{/power-select}}
+    </label>
+  </div>
+  <span class='text'>{{t runIntervalConfig.runLabel}}</span>
+</hbox>
+{{#if isWeeklyInterval}}
+  <hbox class='recurrence-run-interval__week-options'>
+    <div class='text'>{{t 'hostsScanConfigure.recurrenceInterval.on'}}</div>
+    {{#each weekOptions as |option|}}
+      {{#rsa-form-button class='week-button' click=(action 'selectWeek' option.index) isPrimary=option.isActive }}
+        {{t option.label}}
+      {{/rsa-form-button}}
+    {{/each}}
+  </hbox>
+{{/if}}
