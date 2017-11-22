@@ -41,13 +41,13 @@ public class OutputProcessorTestConfiguration {
     }
 
     @Bean
-    public MetricConventionApplyer metricNameTransformer() {
+    public MetricConventionApplyer metricConventionApplyer() {
         return new PresidioMetricConventionApplyer();
     }
 
     @Bean
     public PresidioMetricBucket presidioMetricEndPoint() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricConventionApplyer());
     }
 
     @Bean

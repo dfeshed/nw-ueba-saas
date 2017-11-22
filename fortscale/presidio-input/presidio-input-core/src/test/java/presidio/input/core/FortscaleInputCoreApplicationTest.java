@@ -42,9 +42,6 @@ public class FortscaleInputCoreApplicationTest {
     @Autowired
     private PresidioExecutionService processService;
 
-    @Autowired
-    private MetricCollectingService metricCollectingService;
-
     @Test
     public void contextLoads() throws Exception {
         Assert.assertTrue(processService instanceof InputExecutionServiceImpl);
@@ -75,13 +72,13 @@ public class FortscaleInputCoreApplicationTest {
         }
 
         @Bean
-        public MetricConventionApplyer metricNameTransformer() {
+        public MetricConventionApplyer metricConventionApplyer() {
             return new PresidioMetricConventionApplyer();
         }
 
         @Bean
         public PresidioMetricBucket presidioMetricEndPoint() {
-            return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
+            return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricConventionApplyer());
         }
 
         @Bean

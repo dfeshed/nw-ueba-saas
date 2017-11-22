@@ -64,13 +64,13 @@ public class ExternalMonitoringConfiguration {
     }
 
     @Bean
-    public MetricConventionApplyer metricNameTransformer() {
+    public MetricConventionApplyer metricConventionApplyer() {
         return new PresidioMetricConventionApplyer();
     }
 
     @Bean
     public PresidioMetricBucket presidioMetricEndPoint() {
-        return new PresidioMetricBucket(presidioSystemMetrics(), metricNameTransformer());
+        return new PresidioMetricBucket(presidioSystemMetrics(), metricConventionApplyer());
     }
 
     @Bean
