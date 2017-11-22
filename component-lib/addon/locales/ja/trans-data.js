@@ -307,6 +307,7 @@ export default {
       endpointIoc: 'ja_Endpoint IOC Lookup',
       applyDrill: 'ja_Apply Drill in New Tab',
       applyNEDrill: 'ja_Apply !EQUALS Drill in New Tab',
+      refocus: 'ja_Refocus Investigation in New Tab',
       external: {
         google: 'ja_Google',
         virustotal: 'ja_VirusTotal PDNS',

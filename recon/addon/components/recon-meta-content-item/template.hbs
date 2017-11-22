@@ -7,7 +7,10 @@
       displayMilliseconds=false
       timestamp=value}}
   {{else}}
-    {{#rsa-context-menu contextItems=(build-context-menu) contextSelection=contextSelection}}
+    {{#rsa-context-menu
+      contextItems=contextMenuItems
+      contextSelection=contextSelection
+      contextDetails=queryInputs}}
       {{value}}
     {{/rsa-context-menu}}
   {{/if}}

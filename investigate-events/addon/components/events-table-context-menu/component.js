@@ -2,11 +2,16 @@ import RsaContextMenu from 'component-lib/components/rsa-context-menu/component'
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 
-const stateToComputed = ({ investigate: { queryNode: { serviceId, startTime, endTime } } }) => ({
-  endpointId: serviceId,
-  startTime,
-  endTime
-});
+const stateToComputed = (state) => {
+  const { investigate: { queryNode: { serviceId, startTime, endTime, metaFilter }, dictionaries } } = state;
+  return {
+    endpointId: serviceId,
+    startTime,
+    endTime,
+    queryConditions: metaFilter.conditions,
+    language: dictionaries.language
+  };
+};
 
 /*
  * Since the events table is a special custom table which has html tags with meta and value injected from the javascript
@@ -19,7 +24,16 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   metaValue: null,
 
   @computed('metaName', 'metaValue', 'endpointId')
-  contextSelection: (metaName, metaValue, endpointId) => ({ metaName, metaValue, endpointId }),
+  contextSelection: (metaName, metaValue) => ({ metaName, metaValue }),
+
+  @computed('endpointId', 'startTime', 'endTime', 'queryConditions', 'language')
+  contextDetails: (endpointId, startTime, endTime, queryConditions, language) => ({
+    endpointId,
+    startTime,
+    endTime,
+    queryConditions,
+    language
+  }),
 
   contextMenu({ target: { attributes } }) {
     const metaName = attributes.getNamedItem('metaname');

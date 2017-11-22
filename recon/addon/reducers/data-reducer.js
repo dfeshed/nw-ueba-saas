@@ -10,16 +10,15 @@ const dataInitialState = Immutable.from({
   contentError: null, // handler for content related errors
   contentLoading: false,
   isStandalone: false,
-  startTime: -1,
-  endTime: -1,
-  apiFatalErrorCode: 0 // handler for shutting down recon and displaying error
+  apiFatalErrorCode: 0, // handler for shutting down recon and displaying error
+  contextMenuConfig: null
 });
 
 const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);
 
 const data = handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId, isStandalone, startTime, endTime } }) => {
-    return dataInitialState.merge({ endpointId, eventId, isStandalone, startTime, endTime });
+  [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId, isStandalone, contextMenuItems, queryInputs } }) => {
+    return dataInitialState.merge({ endpointId, eventId, isStandalone, contextMenuItems, queryInputs });
   },
 
   // Generic content handling

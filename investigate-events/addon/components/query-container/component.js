@@ -14,6 +14,7 @@ import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   defaultMetaGroup: defaultMetaGroup(state),
@@ -45,6 +46,17 @@ const QueryContainerComponent = Component.extend({
   init() {
     this._super(...arguments);
     this.set('eventColumnGroups', EventColumnGroups.create());
+  },
+
+  @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter.conditions', 'queryNode.serviceId', 'language')
+  queryInputs(startTime, endTime, queryConditions, endpointId, language) {
+    return {
+      startTime,
+      endTime,
+      queryConditions,
+      endpointId,
+      language
+    };
   }
 });
 

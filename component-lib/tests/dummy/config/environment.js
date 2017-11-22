@@ -17,6 +17,15 @@ module.exports = function(environment) {
         Date: false
       }
     },
+    timezones: [{
+      'displayLabel': 'UTC (GMT+00:00)',
+      'offset': 'GMT+00:00',
+      'zoneId': 'UTC'
+    }],
+    moment: {
+      includeLocales: ['en', 'ja'],
+      includeTimezone: 'subset'
+    },
 
     APP: {
       // Here you can pass flags/options to your application instance

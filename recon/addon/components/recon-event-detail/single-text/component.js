@@ -5,7 +5,7 @@ import { later, scheduleOnce, next } from 'ember-runloop';
 import SelectionTooltip from './selection-tooltip-mixin';
 import { retrieveTranslatedData } from './util';
 import layout from './template';
-import copyToClipboard from 'recon/utils/copy-to-clipboard';
+import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
 
 const HIDE_CONTENT_CHARACTER_COUNT = 3000;
 const SHOW_TRUNCATED_AMOUNT = 2000;
