@@ -22,21 +22,22 @@ public class PresidioMetricConventionApplyer implements MetricConventionApplyer 
     private static final String METRIC_NAME_SEPARATOR = ".";
     private static final String SYSTEM_METRIC_PREFIX = "system";
     private String applicationName;
+    private String pid;
 
     @Override
     public void apply(Metric metric) {
         applyMetricNameConvention(metric);
         applyAutoTagging(metric);
-
     }
 
     public PresidioMetricConventionApplyer(String applicationName) {
         this.applicationName = applicationName;
+        this.pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
     }
 
     private void applyMetricNameConvention(Metric metric) {
-        String origName = metric.getName();
-        if (StringUtils.isEmpty(origName)) {
+        String originalName = metric.getName();
+        if (StringUtils.isEmpty(originalName)) {
             logger.error("metric name cannot be empty");
             return;
         }
@@ -51,7 +52,7 @@ public class PresidioMetricConventionApplyer implements MetricConventionApplyer 
             }
         }
 
-        transformedName.append(origName);
+        transformedName.append(originalName);
 
         metric.setName(transformedName.toString());
         return;
@@ -59,7 +60,7 @@ public class PresidioMetricConventionApplyer implements MetricConventionApplyer 
 
     private void applyAutoTagging(Metric metric) {
         Map<MetricEnums.MetricTagKeysEnum, String> metricTags = metric.getTags();
-        metricTags.put(MetricEnums.MetricTagKeysEnum.PID, ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+        metricTags.put(MetricEnums.MetricTagKeysEnum.PID, pid);
         metricTags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
     }
 }

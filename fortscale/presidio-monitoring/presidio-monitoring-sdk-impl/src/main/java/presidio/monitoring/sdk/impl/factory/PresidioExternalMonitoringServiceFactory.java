@@ -4,7 +4,6 @@ package presidio.monitoring.sdk.impl.factory;
 import fortscale.utils.logging.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
@@ -26,13 +25,7 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         }
-        final PresidioMetricBucket presidioMetricBucket = context.getBean(PresidioMetricBucket.class);
         final PresidioSystemMetricsFactory presidioSystemMetricsFactory = context.getBean(PresidioSystemMetricsFactory.class);
-        if (presidioMetricBucket == null) {
-            final String errorMessage = "Failed to create PresidioMetricEndPoint. Couldn't get PresidioMetricEndPoint";
-            logger.error(errorMessage);
-            throw new Exception(errorMessage);
-        }
         if (presidioSystemMetricsFactory == null) {
             final String errorMessage = "Failed to create PresidioSystemMetricsFactory. Couldn't get PresidioSystemMetricsFactory";
             logger.error(errorMessage);

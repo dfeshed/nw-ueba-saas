@@ -7,7 +7,11 @@ import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;
 
 import java.time.temporal.ChronoField;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class PresidioMetricBucket {
 
@@ -22,16 +26,14 @@ public class PresidioMetricBucket {
     }
 
     public void addMetric(Metric metric) {
-
         metricConventionApplyer.apply(metric);
-
         if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
-            aggregateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
+            accumulateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
         }
         applicationMetrics.put(metric.getName(), metric);
     }
 
-    private void aggregateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
+    private void accumulateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
         Map<MetricEnums.MetricValues, Number> metricValues = metric.getValue();
         for (Map.Entry<MetricEnums.MetricValues, Number> entry : metricValues.entrySet()) {
             if (value.get(entry.getKey()) != null) {
