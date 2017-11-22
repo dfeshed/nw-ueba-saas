@@ -1,7 +1,13 @@
 package presidio.webapp.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatchException;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.rest.jsonpatch.JsonPatch;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -28,12 +34,14 @@ public class RestUserServiceImpl implements RestUserService {
     private final UserPersistencyService userPersistencyService;
     private final int pageNumber;
     private final int pageSize;
+    private ObjectMapper objectMapper;
 
     public RestUserServiceImpl(RestAlertService restAlertService, UserPersistencyService userPersistencyService, int pageSize, int pageNumber) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.restAlertService = restAlertService;
         this.userPersistencyService = userPersistencyService;
+        objectMapper = ObjectMapperProvider.defaultJsonObjectMapper();
     }
 
     @Override
@@ -133,6 +141,47 @@ public class RestUserServiceImpl implements RestUserService {
         return restAlertService.getAlertsByUserId(userId, false);
     }
 
+    @Override
+    public User updateUser(String userId, JsonPatch updateRequest) {
+
+        presidio.output.domain.records.users.User userById = userPersistencyService.findUserById(userId);
+        JsonNode userJsonNode = objectMapper.valueToTree(userById);
+
+        JsonNode patchedJson;
+        try {
+            patchedJson = updateRequest.apply(userJsonNode);
+            userById = objectMapper.treeToValue(patchedJson, presidio.output.domain.records.users.User.class);
+            userPersistencyService.save(userById);
+        } catch (JsonPatchException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return createResult(userById, null);
+    }
+
+    @Override
+    public UsersWrapper updateUsers(UserQuery userQuery, JsonPatch jsonPatch) {
+        Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
+
+        List<presidio.output.domain.records.users.User> updatedUsers = new ArrayList<>();
+        users.getContent().forEach(user -> {
+            JsonNode jsonUser = objectMapper.valueToTree(user);
+            try {
+                JsonNode updatedNode = jsonPatch.apply(jsonUser);
+                presidio.output.domain.records.users.User updatedUser = objectMapper.treeToValue(updatedNode, presidio.output.domain.records.users.User.class);
+                updatedUsers.add(updatedUser);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (JsonPatchException e) {
+                e.printStackTrace();
+            }
+        });
+
+        userPersistencyService.save(updatedUsers);
+        return createUsersWrapper(updatedUsers, users.getNumberOfElements(), users.getNumber(), null);
+    }
+
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
         presidio.output.domain.records.users.UserQuery.UserQueryBuilder builder = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder();
         if (CollectionUtils.isNotEmpty(userQuery.getAlertClassifications())) {
@@ -197,6 +246,4 @@ public class RestUserServiceImpl implements RestUserService {
     private presidio.webapp.model.UserQueryEnums.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
         return presidio.webapp.model.UserQueryEnums.UserSeverity.valueOf(userSeverity.name());
     }
-
-
 }

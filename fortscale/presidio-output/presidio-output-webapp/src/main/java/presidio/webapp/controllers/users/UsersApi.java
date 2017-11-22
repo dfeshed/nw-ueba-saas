@@ -1,13 +1,12 @@
 package presidio.webapp.controllers.users;
 
 
+import fortscale.utils.rest.jsonpatch.JsonPatch;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import presidio.webapp.model.*;
-
-import java.util.List;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
 
@@ -59,9 +58,21 @@ public interface UsersApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<User> updateUser(@ApiParam(value = "Exact match to user name", required = true) @RequestBody List<Patch> patch) {
+    default ResponseEntity<User> updateUser(@ApiParam(value = "Exact match to user name", required = true) @PathVariable("userId") String userId, @RequestBody JsonPatch jsonPatch) {
         // do some magic!
         return new ResponseEntity<User>(HttpStatus.OK);
     }
 
+
+    @ApiOperation(value = "Use this endpoint to update users by filter", notes = "Users endpoint", response = UsersWrapper.class, tags = {"users",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "List of updated users", response = UsersWrapper.class)})
+    @RequestMapping(value = "/users",
+            produces = "application/json",
+            consumes = "application/json",
+            method = RequestMethod.PATCH)
+    default ResponseEntity<UsersWrapper> updateUsers(@ApiParam(value = "object that hold all the parameters for getting specific users") UserQuery userQuery, @RequestBody JsonPatch jsonPatch) {
+        // do some magic!
+        return new ResponseEntity<UsersWrapper>(HttpStatus.OK);
+    }
 }

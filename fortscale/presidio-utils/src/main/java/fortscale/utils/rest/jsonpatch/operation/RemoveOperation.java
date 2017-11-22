@@ -59,7 +59,7 @@ public final class RemoveOperation
         final JsonNode ret = node.deepCopy();
         final JsonNode parentNode = path.parent().get(ret);
 
-        if (path.path(node).isMissingNode() && parentNode.isArray()) {
+        if (path.path(node).isMissingNode() && !parentNode.isArray()) {
             throw new JsonPatchException(BUNDLE.getMessage(
                     "jsonPatch.noSuchPath"));
         }

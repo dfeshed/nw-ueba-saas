@@ -1,19 +1,20 @@
 package presidio.webapp.controllers.users;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.rest.jsonpatch.JsonPatch;
+import fortscale.utils.rest.jsonpatch.JsonPatchOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.Patch;
 import presidio.webapp.model.User;
+import presidio.webapp.model.UserQuery;
 import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.service.RestUserService;
-
-import java.util.List;
 
 @Controller
 public class UsersApiController implements UsersApi {
@@ -64,7 +65,24 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<User> updateUser(List<Patch> patch) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<User> updateUser(@ApiParam(name = "userId", value = "The UUID of the user to return", required = true) @PathVariable String userId, @RequestBody JsonPatch jsonPatch) {
+        if (checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(restUserService.updateUser(userId, jsonPatch), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<UsersWrapper> updateUsers(UserQuery userQuery, @RequestBody JsonPatch jsonPatch) {
+
+        if (checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(restUserService.updateUsers(userQuery, jsonPatch), HttpStatus.OK);
+    }
+
+    private boolean checkValidUpdateRequest(@RequestBody JsonPatch jsonPatch) {
+        for (JsonPatchOperation jsonPatchOperation : jsonPatch.getOperations()) {
+            if (!jsonPatchOperation.getPath().toString().contains("tags")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
