@@ -15,7 +15,6 @@ import java.util.UUID;
 import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;
 import static presidio.monitoring.records.MetricDocument.TYPE;
 
-
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
 public final class MetricDocument {
 

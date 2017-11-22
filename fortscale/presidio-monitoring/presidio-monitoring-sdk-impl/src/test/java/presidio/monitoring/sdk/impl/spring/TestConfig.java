@@ -19,7 +19,7 @@ public class TestConfig {
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         properties.put("monitoring.fixed.rate", 60000);
-        properties.put("spring.autoconfigure.exclude", "org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration");
+        properties.put("spring.application.name", "test");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
