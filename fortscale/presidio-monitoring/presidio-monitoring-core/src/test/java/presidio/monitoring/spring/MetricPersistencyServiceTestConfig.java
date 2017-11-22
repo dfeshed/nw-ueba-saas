@@ -30,7 +30,7 @@ public class MetricPersistencyServiceTestConfig {
     public MetricRepository metricRepository;
 
     @Bean
-    public MetricConventionApplyer metricNameTransformer() {
+    public MetricConventionApplyer metricConventionApplyer() {
         return new PresidioMetricConventionApplyer(applicationName);
     }
 
@@ -44,7 +44,7 @@ public class MetricPersistencyServiceTestConfig {
 
     @Bean
     public PresidioMetricBucket presidioMetricBucket() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricConventionApplyer());
     }
 
 

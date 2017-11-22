@@ -15,13 +15,13 @@ public class MetricBucketTestConfig {
     private final String APPLICATION_NAME = "metric-generator-test";
 
     @Bean
-    public MetricConventionApplyer metricNameTransformer() {
+    public MetricConventionApplyer metricConventionApplyer() {
         return new PresidioMetricConventionApplyer(APPLICATION_NAME);
     }
 
     @Bean
     public PresidioMetricBucket presidioMetricBucket() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(APPLICATION_NAME), metricNameTransformer());
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(APPLICATION_NAME), metricConventionApplyer());
     }
 
 
