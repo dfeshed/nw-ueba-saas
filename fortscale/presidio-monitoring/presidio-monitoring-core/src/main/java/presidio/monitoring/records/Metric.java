@@ -4,6 +4,7 @@ package presidio.monitoring.records;
 import org.apache.commons.collections.MapUtils;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
+import java.lang.management.ManagementFactory;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -156,6 +157,7 @@ public class Metric {
             if (this.metricUnit == null) {
                 this.metricUnit = MetricEnums.MetricUnitType.NUMBER;
             }
+            metricTags.put(MetricEnums.MetricTagKeysEnum.PID, ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
             metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit.toString());
             return new Metric(metricName, metricValues, date, metricTags, metricReportOnce);
         }
