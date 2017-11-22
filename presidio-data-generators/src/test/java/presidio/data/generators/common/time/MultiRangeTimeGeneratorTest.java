@@ -13,6 +13,82 @@ import java.util.List;
 
 public class MultiRangeTimeGeneratorTest {
 
+    @Test(expected = IllegalArgumentException.class)
+    public void test_start_is_equal_to_end(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant,Collections.emptyList(), Duration.ofHours(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_end_is_before_start(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant.minus(1,ChronoUnit.DAYS),Collections.emptyList(), Duration.ofHours(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_default_interval_should_not_be_negative1(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),Collections.emptyList(), Duration.ofHours(-1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_default_interval_should_not_be_negative2(){
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(1,0), LocalTime.of(2,0), Duration.ofSeconds(600)));
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),rangesList, Duration.ofHours(-1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_default_interval_should_not_be_zero1(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),Collections.emptyList(), Duration.ofHours(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_default_interval_should_not_be_zero2(){
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(1,0), LocalTime.of(2,0), Duration.ofSeconds(600)));
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),rangesList, Duration.ofHours(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_both_default_interval_and_activity_ranges_empty(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),Collections.emptyList(), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_activity_ranges_should_not_overlap1(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(1,0), LocalTime.of(2,0), Duration.ofSeconds(600)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(2,0), LocalTime.of(7,0), Duration.ofMinutes(15)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(6,0), LocalTime.of(16,0), Duration.ofHours(2)));
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),rangesList, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_activity_ranges_should_not_overlap2(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(1,0), LocalTime.of(2,0), Duration.ofSeconds(600)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(2,0), LocalTime.of(17,0), Duration.ofMinutes(15)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(6,0), LocalTime.of(16,0), Duration.ofHours(2)));
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),rangesList, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_activity_ranges_should_not_overlap3(){
+        Instant startInstant = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        List<MultiRangeTimeGenerator.ActivityRange> rangesList = new ArrayList<>();
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(1,0), LocalTime.of(2,0), Duration.ofSeconds(600)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(0,50), LocalTime.of(17,0), Duration.ofMinutes(15)));
+        rangesList.add(new MultiRangeTimeGenerator.ActivityRange(LocalTime.of(6,0), LocalTime.of(16,0), Duration.ofHours(2)));
+        new MultiRangeTimeGenerator(startInstant,startInstant.plus(1,ChronoUnit.DAYS),rangesList, null);
+    }
+
     @Test
     public void test_generator_with_both_activity_range_list_and_default_interval() throws GeneratorException {
 

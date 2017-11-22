@@ -1,5 +1,6 @@
 package presidio.data.generators.common.time;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 import presidio.data.generators.common.GeneratorException;
 
@@ -7,10 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * This {@link ITimeGenerator} returns {@link Instant}s from
@@ -39,17 +37,14 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
 
         // validate provided parameters: start/end time pairs can't overlap
         // duration for each start/end time pair should be positive
-        if (!startInstant.isBefore(endInstant)) {
-            throw new IllegalArgumentException(String.format("startInstant must be before endInstant. " +
-                    "startInstant = %s, endInstant = %s.", startInstant.toString(), endInstant.toString()));
-        }
+        Assert.isTrue(startInstant.isBefore(endInstant), String.format("startInstant must be before endInstant. startInstant = %s, endInstant = %s.", startInstant, endInstant));
 
-        if (defaultInterval != null && (defaultInterval.isNegative() || defaultInterval.isZero())) {
-            throw new IllegalArgumentException(String.format("interval should be positive. interval = %s.",
-                    defaultInterval.toString()));
-        }
+        Assert.isTrue(defaultInterval == null || (!defaultInterval.isNegative() && !defaultInterval.isZero()),
+                String.format("interval should be positive. interval = %s.", defaultInterval));
 
-        Assert.notNull(activityRanges, "activity ranges may not be null");
+        if(activityRanges == null){
+            activityRanges = Collections.emptyList();
+        }
 
         Assert.isTrue(defaultInterval != null || !activityRanges.isEmpty(), "defaultInterval may not be null since the activityRanges is empty.");
 
@@ -64,9 +59,10 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
             ActivityRange prevActivityRange = null;
             for (ActivityRange curActivityRange: activityRanges){
                 if(prevActivityRange!=null){
-                    Assert.isTrue(prevActivityRange.endNanoOfADay < curActivityRange.startNanoOfADay,
-                            "Activity Ranges overlap");
+                    Assert.isTrue(prevActivityRange.endNanoOfADay <= curActivityRange.startNanoOfADay,
+                            String.format("Activity Ranges overlap. ranges: %s", activityRanges));
                 }
+                prevActivityRange = curActivityRange;
             }
         }
         if(defaultInterval == null){
@@ -187,6 +183,11 @@ public class MultiRangeTimeGenerator implements ITimeGenerator {
 
         public Instant getRangeEnd(Instant instant){
             return instant.truncatedTo(ChronoUnit.DAYS).plus(endNanoOfADay,ChronoUnit.NANOS);
+        }
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
         }
     }
 
