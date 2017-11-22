@@ -4,23 +4,22 @@ import fortscale.aggregation.feature.bucket.FeatureBucketReader;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConfService;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.store.StoreManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReaderConfig;
-import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStoreConfig;
-import presidio.ade.domain.store.enriched.TtlServiceAwareEnrichedDataStore;
+import presidio.ade.domain.store.enriched.StoreManagerAwareEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStoreMongoConfig;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartDataReaderConfig;
 import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventsConfServiceConfig;
 import presidio.ade.sdk.smart_records.SmartRecordConfServiceConfig;
-import presidio.ade.sdk.ttl.TtlServiceConfig;
+import presidio.ade.sdk.store.StoreManagerConfig;
 
 /**
  * @author Barak Schuster
@@ -34,7 +33,7 @@ import presidio.ade.sdk.ttl.TtlServiceConfig;
         FeatureBucketStoreMongoConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
         SmartRecordConfServiceConfig.class,
-        TtlServiceConfig.class
+        StoreManagerConfig.class
 })
 public class AdeManagerSdkConfig {
     @Autowired
@@ -56,21 +55,21 @@ public class AdeManagerSdkConfig {
     private SmartRecordConfService smartRecordConfService;
 
     @Autowired
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     @Autowired
-    private TtlServiceAwareEnrichedDataStore ttlServiceAwareEnrichedDataStore;
+    private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
 
     @Bean
     public AdeManagerSdk adeManagerSdk() {
         return new AdeManagerSdkImpl(
-                ttlServiceAwareEnrichedDataStore,
+                storeManagerAwareEnrichedDataStore,
                 smartDataReader,
                 scoredEnrichedDataStore,
                 aggregatedFeatureEventsConfService,
                 featureBucketReader,
                 aggregationEventsAccumulationDataReader,
                 smartRecordConfService,
-                ttlService);
+                storeManager);
     }
 }

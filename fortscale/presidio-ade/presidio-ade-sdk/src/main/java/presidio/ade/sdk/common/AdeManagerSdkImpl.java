@@ -8,7 +8,7 @@ import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.store.StoreManager;
 import org.springframework.data.util.Pair;
 import org.springframework.util.Assert;
 import presidio.ade.domain.pagination.smart.MultipleSmartCollectionsPaginationService;
@@ -19,7 +19,7 @@ import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
-import presidio.ade.domain.store.enriched.TtlServiceAwareEnrichedDataStore;
+import presidio.ade.domain.store.enriched.StoreManagerAwareEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toMap;
  * @author Barak Schuster
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
-    private TtlServiceAwareEnrichedDataStore ttlServiceAwareEnrichedDataStore;
+    private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
     private SmartDataReader smartDataReader;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
@@ -49,26 +49,26 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     private SmartRecordConfService smartRecordConfService;
     private Map<String, List<String>> aggregationNameToAdeEventTypeMap;
     private Map<String, String> aggregationNameToFeatureBucketConfName;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public AdeManagerSdkImpl(
-            TtlServiceAwareEnrichedDataStore ttlServiceAwareEnrichedDataStore,
+            StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore,
             SmartDataReader smartDataReader,
             ScoredEnrichedDataStore scoredEnrichedDataStore,
             AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
             FeatureBucketReader featureBucketReader,
             AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader,
             SmartRecordConfService smartRecordConfService,
-            TtlService ttlService) {
+            StoreManager storeManager) {
 
-        this.ttlServiceAwareEnrichedDataStore = ttlServiceAwareEnrichedDataStore;
+        this.storeManagerAwareEnrichedDataStore = storeManagerAwareEnrichedDataStore;
         this.smartDataReader = smartDataReader;
         this.scoredEnrichedDataStore = scoredEnrichedDataStore;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.featureBucketReader = featureBucketReader;
         this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
         this.smartRecordConfService = smartRecordConfService;
-        this.ttlService = ttlService;
+        this.storeManager = storeManager;
     }
 
     @Override
@@ -191,7 +191,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records) {
-        ttlServiceAwareEnrichedDataStore.store(metadata, records);
+        storeManagerAwareEnrichedDataStore.store(metadata, records);
     }
 
     @Override
@@ -273,7 +273,13 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval) {
-        String storeName = ttlServiceAwareEnrichedDataStore.getStoreName();
-        ttlService.cleanupCollections(storeName, until, enrichedTtl, enrichedCleanupInterval);
+        String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
+        storeManager.cleanupCollections(storeName, until, enrichedTtl, enrichedCleanupInterval);
+    }
+
+    @Override
+    public void cleanupEnrichedData(TimeRange timeRange) {
+        String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
+        storeManager.cleanupCollections(storeName, timeRange);
     }
 }
