@@ -1,9 +1,9 @@
 import logging
 
-from airflow.operators.sensors import BaseSensorOperator
-from airflow.utils.state import State
-from airflow import settings
 from airflow.models import DagRun
+from airflow.operators.sensors import BaseSensorOperator
+from airflow.utils.db import provide_session
+from airflow.utils.state import State
 
 
 class TaskGapSensorOperator(BaseSensorOperator):
@@ -29,7 +29,14 @@ class TaskGapSensorOperator(BaseSensorOperator):
             external_task_id,
             execution_delta,
             *args, **kwargs):
-        super(TaskGapSensorOperator, self).__init__(*args, **kwargs)
+        super(TaskGapSensorOperator, self).__init__(
+            retries=99999,
+            retry_exponential_backoff=True,
+            max_retry_delay=300,
+            retry_delay=5,
+            *args,
+            **kwargs
+        )
 
         self._execution_delta = execution_delta
         self._external_dag_id = external_dag_id
@@ -43,18 +50,17 @@ class TaskGapSensorOperator(BaseSensorOperator):
 
         @return: bool - whether there are tasks to wait for.
         '''
-        session = settings.Session()
-        is_finished_wait_for_gapped_task = self._is_finished_wait_for_gapped_task(context,session)
+        is_finished_wait_for_gapped_task = self._is_finished_wait_for_gapped_task(context)
 
         return is_finished_wait_for_gapped_task
 
-    def _is_finished_wait_for_gapped_task(self, context, session):
+    def _is_finished_wait_for_gapped_task(self, context):
         '''
 
         @return: bool - whether there are tasks to wait for.
         '''
         if (self._gapped_root_dag_run == None):
-            self._init_gapped_root_dag_run(context['execution_date'], session)
+            self._init_gapped_root_dag_run(context['execution_date'])
             if (self._gapped_root_dag_run == None):
                 # The start time of the external gapped dag run is more recent than the needed gap.
                 # so there is nothing to sense here.
@@ -66,17 +72,16 @@ class TaskGapSensorOperator(BaseSensorOperator):
             '{self._external_task_id} on '
             '{self._gapped_root_dag_run.execution_date} ... '.format(**locals()))
 
-        self._gapped_root_dag_run.refresh_from_db(session=session)
+        self._gapped_root_dag_run.refresh_from_db()
         is_finished_wait_for_gapped_task = True
         root_state = self._gapped_root_dag_run.get_state()
         if (root_state == State.RUNNING):
             is_finished_wait_for_gapped_task = False
-            self._refresh_gapped_dag_run(session)
+            self._refresh_gapped_dag_run()
             if (self._gapped_dag_run != None):
                 gapped_dag_run_state = self._gapped_dag_run.get_state()
                 if (gapped_dag_run_state in State.unfinished()):
-                    external_task_instance = self._gapped_dag_run.get_task_instance(task_id=self._external_task_id,
-                                                                                    session=session)
+                    external_task_instance = self._gapped_dag_run.get_task_instance(task_id=self._external_task_id)
                     if (external_task_instance == None):
                         logging.info(
                             'Still poking since the dag run has not finished and the gapped task instance still have not started: '
@@ -122,7 +127,8 @@ class TaskGapSensorOperator(BaseSensorOperator):
 
         return is_finished_wait_for_gapped_task
 
-    def _init_gapped_root_dag_run(self, execution_date, session):
+    @provide_session
+    def _init_gapped_root_dag_run(self, execution_date, session=None):
         execution_date_lt = execution_date - self._execution_delta
 
         self._gapped_root_dag_run = session.query(DagRun).filter(
@@ -132,14 +138,15 @@ class TaskGapSensorOperator(BaseSensorOperator):
             DagRun.execution_date.desc()
         ).first()
 
-    def _refresh_gapped_dag_run(self, session):
-        if(self._gapped_dag_run == None):
+    @provide_session
+    def _refresh_gapped_dag_run(self, session=None):
+        if (self._gapped_dag_run == None):
             self._gapped_dag_run = session.query(DagRun).filter(
                 DagRun.dag_id == self._external_dag_id,
                 DagRun.execution_date == self._gapped_root_dag_run.execution_date,
             ).first()
         else:
-            self._gapped_dag_run.refresh_from_db(session=session)
+            self._gapped_dag_run.refresh_from_db()
 
     def get_external_dag_id(self):
         return self._external_dag_id

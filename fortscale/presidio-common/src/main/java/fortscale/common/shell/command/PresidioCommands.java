@@ -41,6 +41,24 @@ public class PresidioCommands implements CommandMarker {
            executionService.run(schema, startTime, endTime, fixedDuration);
     }
 
+    @CliCommand(value = "cleanup", help = "cleanup events with specified time range, schema and fixed duration")
+    public void cleanup(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, help = "events schema")
+            final Schema schema,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than or equal specified start time will be deleted")
+            final Instant startTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be deleted")
+            final Instant endTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by")
+            final Double fixedDuration
+
+    ) throws Exception {
+        executionService.cleanup(schema, startTime, endTime, fixedDuration);
+    }
+
     @CliCommand(value = "clean", help = "clean application data for specified time range and data source")
     public void clean(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema")

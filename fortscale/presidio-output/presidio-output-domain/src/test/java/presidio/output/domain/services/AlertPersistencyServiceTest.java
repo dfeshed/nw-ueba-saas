@@ -1,5 +1,6 @@
 package presidio.output.domain.services;
 
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
@@ -7,14 +8,15 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
@@ -45,8 +47,7 @@ import static presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import static presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class})
-@ActiveProfiles("useEmbeddedElastic")
+@ContextConfiguration(classes = {presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
 public class AlertPersistencyServiceTest {
 
     @Autowired
@@ -496,7 +497,7 @@ public class AlertPersistencyServiceTest {
         alert5.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
         Alert alert6 = new Alert("userId6", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D);
         alert6.setFeedback(AlertEnums.AlertFeedback.NONE);
-        alertPersistencyService.save(Arrays.asList(alert1,alert2,alert3,alert4,alert5,alert6));
+        alertPersistencyService.save(Arrays.asList(alert1, alert2, alert3, alert4, alert5, alert6));
 
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
@@ -831,8 +832,7 @@ public class AlertPersistencyServiceTest {
     public void testUpdateFeedbackAlertIdNull() {
         try {
             alertPersistencyService.updateAlertFeedback(null, AlertEnums.AlertFeedback.NOT_RISK);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Assert.fail("exception was thrown while trying to update alert with id null");
         }
     }
@@ -841,8 +841,7 @@ public class AlertPersistencyServiceTest {
     public void testUpdateFeedbackWithNullFeedbackValue() {
         try {
             alertPersistencyService.updateAlertFeedback("alertId", null);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             Assert.fail("exception was thrown while trying to update alert with id null");
         }
     }

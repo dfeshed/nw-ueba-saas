@@ -1,6 +1,7 @@
 package presidio.ade.smart;
 
 import fortscale.common.general.CommonStrings;
+import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
@@ -41,5 +42,26 @@ public class SmartApplicationCommands implements CommandMarker {
 			) final Instant endDate
 	) throws Exception {
 		smartService.process(smartRecordConfName, new TimeRange(startDate, endDate));
+	}
+
+	@CliCommand(value = "cleanup", help = "cleanup events with specified time range, smart configuration")
+	public void cleanup(
+			@CliOption(
+					key = CommonStrings.COMMAND_LINE_SMART_RECORD_CONF_NAME_FIELD_NAME,
+					help = "The name of the smart record configuration."
+			) final String smartRecordConfName,
+
+			@CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME},
+					mandatory = true,
+					help = "events with (logical) time greater than or equal specified start time will be deleted")
+			final Instant startDate,
+
+			@CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME},
+					mandatory = true,
+					help = "events with (logical) time smaller than specified end time will be deleted")
+			final Instant endDate
+
+	) throws Exception {
+		smartService.cleanup(smartRecordConfName, new TimeRange(startDate, endDate));
 	}
 }

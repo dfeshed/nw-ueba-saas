@@ -246,20 +246,25 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
-        List restAlerts;
-        if (alerts.getTotalElements() > 0) {
-            restAlerts = new ArrayList();
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-            return userIdsToAlerts(restAlerts, (List) userIds);
-        }
-        return null;
+    public Map<String, List<Alert>> getAlertsByUsersIds(Collection<String> userIds) {
+
+        Map<String, List<Alert>> alertsByUserIds = new HashMap<>();
+
+        PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
+        userIds.forEach(id -> {
+            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = elasticAlertService.findByUserId(id, pageRequest);
+            alertsByUserIds.put(id, convertToRestAlerts(alertsByUserId));
+        });
+
+        return alertsByUserIds;
+    }
+
+    private List<Alert> convertToRestAlerts(Page<presidio.output.domain.records.alerts.Alert> alertsByUserId) {
+        List<Alert> restAlerts = new ArrayList<>();
+        alertsByUserId.forEach(alert -> {
+            restAlerts.add(createRestAlert(alert));
+        });
+        return restAlerts;
     }
 
     @Override
@@ -395,6 +400,10 @@ public class RestAlertServiceImpl implements RestAlertService {
         restEvent.setSchema(indicatorEvent.getSchema().name());
         restEvent.setTime(BigDecimal.valueOf(TimeUnit.SECONDS.convert(indicatorEvent.getEventTime().getTime(), TimeUnit.MILLISECONDS)));
         restEvent.putAll(indicatorEvent.getFeatures());
+        if (MapUtils.isNotEmpty(indicatorEvent.getScores())) {
+            restEvent.setScores(indicatorEvent.getScores());
+            restEvent.put("scores",indicatorEvent.getScores());
+        }
         return restEvent;
     }
 

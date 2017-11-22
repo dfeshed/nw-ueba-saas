@@ -11,6 +11,8 @@ public interface PresidioExecutionService {
 
     void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception;
 
+    void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception;
+
     void clean(Schema schema, Instant startDate, Instant endDate) throws Exception;
 
     void cleanAll(Schema schema) throws Exception;

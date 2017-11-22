@@ -5,14 +5,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.enriched.EnrichedRecord;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
-import presidio.input.core.services.converters.ade.DlpFileConverter;
 import presidio.input.core.services.converters.output.AuthenticationInputToOutputConverter;
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.sdk.api.domain.DlpFileDataDocument;
-import presidio.sdk.api.domain.DlpFileEnrichedDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 

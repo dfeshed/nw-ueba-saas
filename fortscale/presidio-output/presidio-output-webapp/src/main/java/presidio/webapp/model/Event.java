@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,9 @@ public class Event extends HashMap<String, Object>  {
 
   @JsonProperty("time")
   private BigDecimal time = null;
+
+  @JsonProperty("scores")
+  private Map<String, Double> scores;
 
   public Event id(String id) {
     this.id = id;
@@ -78,6 +82,15 @@ public class Event extends HashMap<String, Object>  {
     this.time = time;
   }
 
+
+  @ApiModelProperty(required = false, value = "")
+  public Map<String, Double> getScores() {
+    return scores;
+  }
+
+  public void setScores(Map<String, Double> scores) {
+    this.scores = scores;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {

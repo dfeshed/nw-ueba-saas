@@ -40,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
-@ActiveProfiles("useEmbeddedElastic")
 public class AlertApiControllerModuleTest {
 
     private static final String ALERTS_URI = "/alerts";
@@ -204,7 +203,7 @@ public class AlertApiControllerModuleTest {
         // get actual response
         MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI)
                 .param("sortFieldNames", String.valueOf(AlertQueryEnums.AlertQuerySortFieldName.FEEDBACK.name()))
-                .param("sortDirection", String.valueOf(Sort.Direction.ASC.name())))
+                .param("sortDirection", String.valueOf(Sort.Direction.ASC)))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
