@@ -8,7 +8,8 @@ export default {
         'viewAppliances',
         'searchLiveResources',
         'accessInvestigationModule',
-        'respond-server.*'
+        'respond-server.*',
+        'investigate-server.*'
       ]
     };
   }
