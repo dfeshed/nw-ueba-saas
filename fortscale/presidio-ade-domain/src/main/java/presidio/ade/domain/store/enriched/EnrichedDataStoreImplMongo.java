@@ -6,7 +6,7 @@ import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.store.StoreManager;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -30,15 +30,16 @@ import java.util.Set;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
-public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataStore {
+public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataAdeToCollectionNameTranslator translator;
     private final AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -52,7 +53,7 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
         logger.info("storing by recordsMetadata={}", recordsMetadata);
         String collectionName = translator.toCollectionName(recordsMetadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        ttlService.save(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName);
     }
 
     @Override
@@ -201,14 +202,21 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
     }
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end) {
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 

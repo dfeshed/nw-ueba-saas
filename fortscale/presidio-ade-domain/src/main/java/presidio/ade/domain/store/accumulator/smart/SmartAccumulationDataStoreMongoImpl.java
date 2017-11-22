@@ -2,8 +2,8 @@ package presidio.ade.domain.store.accumulator.smart;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
-public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDataStore, TtlServiceAware {
+public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDataStore, StoreManagerAware {
     private static final Logger logger = Logger.getLogger(SmartAccumulationDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final SmartAccumulatedDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public SmartAccumulationDataStoreMongoImpl(MongoTemplate mongoTemplate, SmartAccumulatedDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -37,7 +37,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        ttlService.save(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName);
     }
 
     /**
@@ -95,14 +95,21 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
 
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 }

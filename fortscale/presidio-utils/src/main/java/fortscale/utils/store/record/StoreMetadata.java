@@ -1,4 +1,4 @@
-package fortscale.utils.ttl.record;
+package fortscale.utils.store.record;
 
 
 import org.springframework.data.annotation.CreatedDate;
@@ -15,9 +15,9 @@ import java.time.Instant;
 /**
  * Created by maria_dorohin on 8/30/17.
  */
-@Document(collection = "management_ttl")
-@CompoundIndexes(@CompoundIndex(name="managementTtlCompoundIndex", def = "{'applicationName':1, 'storeName':1, 'collectionName':1}", unique = true))
-public class TtlData {
+@Document(collection = "management_store_metadata")
+@CompoundIndexes(@CompoundIndex(name="managementStoreMetadataCompoundIndex", def = "{'applicationName':1, 'storeName':1, 'collectionName':1}", unique = true))
+public class StoreMetadata {
     public static final String APPLICATION_NAME_FIELD = "applicationName";
 
     @Id
@@ -38,7 +38,7 @@ public class TtlData {
     private Duration cleanupInterval;
 
 
-    public TtlData(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval){
+    public StoreMetadata(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval){
         this.applicationName = applicationName;
         this.storeName = storeName;
         this.collectionName = collectionName;

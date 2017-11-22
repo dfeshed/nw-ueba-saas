@@ -2,8 +2,8 @@ package presidio.ade.domain.store.smart;
 
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -25,12 +25,12 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  *
  * @author Lior Govrin
  */
-public class SmartDataStoreMongoImpl implements SmartDataStore, TtlServiceAware {
+public class SmartDataStoreMongoImpl implements SmartDataStore, StoreManagerAware {
 
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private final SmartDataToCollectionNameTranslator translator;
     private final MongoTemplate mongoTemplate;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public SmartDataStoreMongoImpl(MongoDbBulkOpUtil mongoDbBulkOpUtil, SmartDataToCollectionNameTranslator translator, MongoTemplate mongoTemplate) {
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
@@ -42,7 +42,7 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, TtlServiceAware 
     public void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords) {
         String collectionName = translator.toCollectionName(smartRecordConfName);
         mongoDbBulkOpUtil.insertUnordered(new ArrayList<>(smartRecords), collectionName);
-        ttlService.save(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName);
     }
 
     @Override
@@ -81,14 +81,21 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, TtlServiceAware 
     }
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 }

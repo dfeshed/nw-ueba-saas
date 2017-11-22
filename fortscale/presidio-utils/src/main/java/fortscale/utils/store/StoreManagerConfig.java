@@ -1,6 +1,5 @@
-package fortscale.utils.ttl;
+package fortscale.utils.store;
 
-import fortscale.utils.ttl.store.TtlDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,24 +13,24 @@ import java.util.Collection;
  * Created by maria_dorohin on 8/31/17.
  */
 @Configuration
-@EnableMongoRepositories(basePackageClasses = fortscale.utils.ttl.store.TtlDataRepository.class)
-public class TtlServiceConfig {
+@EnableMongoRepositories(basePackageClasses = StoreMetadataRepository.class)
+public class StoreManagerConfig {
 
     @Value("${spring.application.name}")
     private String appName;
     @Autowired
-    private Collection<TtlServiceAware> ttlServiceAwares;
+    private Collection<StoreManagerAware> storeManagerAwares;
     @Value("#{T(java.time.Duration).parse('${presidio.default.ttl.duration}')}")
     private Duration defaultTtl;
     @Value("#{T(java.time.Duration).parse('${presidio.default.cleanup.interval}')}")
     private Duration defaultCleanupInterval;
     @Autowired
-    private TtlDataRepository ttlDataRepository;
+    private StoreMetadataRepository storeMetadataRepository;
     @Value("${presidio.execute.ttl.cleanup:true}")
     private Boolean executeTtlCleanup;
 
     @Bean
-    public TtlService ttlService(){
-        return new TtlService(appName, ttlServiceAwares, defaultTtl, defaultCleanupInterval, ttlDataRepository, executeTtlCleanup);
+    public StoreManager storeManager(){
+        return new StoreManager(appName, storeManagerAwares, defaultTtl, defaultCleanupInterval, storeMetadataRepository, executeTtlCleanup);
     }
 }
