@@ -12,7 +12,7 @@ export default DataTableBodyRow.extend(SortableItemMixin, {
   layout,
   @alias('item') model: null, // used by ember-sortable
   @alias('table.sortableGroup') group: null, // used by ember-sortable
-  handle: '.drag-handle', // used by ember-sortable
+  handle: '.rsa-data-table-body-cell', // used by ember-sortable
   /**
    * Tracks which item is currently selected / highlighted by the user
    * @property isSelected

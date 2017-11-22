@@ -23,7 +23,7 @@
         {{/if}}
       {{/rsa-data-table/header}}
 
-      {{#if (eq rulesStatus 'wait')}}
+      {{#if (or (eq rulesStatus 'wait') isTransactionUnderway)}}
         <centered>
           {{rsa-loader size='larger'}}
         </centered>
@@ -68,9 +68,5 @@
 </div>
 {{! Overlay to prevent interactions during transactions }}
 {{#if isTransactionUnderway}}
-  <div class="transaction-overlay">
-    <centered>
-      {{rsa-loader size="large"}}
-    </centered>
-  </div>
+  <div class="transaction-overlay"></div>
 {{/if}}
