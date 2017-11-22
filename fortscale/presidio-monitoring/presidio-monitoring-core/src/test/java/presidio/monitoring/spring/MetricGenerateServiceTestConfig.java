@@ -9,6 +9,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
+import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.generator.MetricGeneratorService;
 
 @Configuration
@@ -27,6 +29,13 @@ public class MetricGenerateServiceTestConfig {
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
         return new PresidioMetricPersistencyServiceImpl(metricRepository);
+    }
+
+    private String applicationName = "metricGeneratorTest";
+
+    @Bean
+    public PresidioMetricBucket presidioMetricBucket() {
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), applicationName);
     }
 
 

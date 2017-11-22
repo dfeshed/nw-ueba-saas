@@ -10,9 +10,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.generator.MetricGeneratorService;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
 
 import java.time.Instant;
@@ -32,6 +34,9 @@ public class MetricPersistencyServiceTest {
 
     @Autowired
     public MetricRepository metricRepository;
+
+    @Autowired
+    public PresidioMetricBucket presidioMetricBucket;
 
     @After
     public void deleteTestData() {
@@ -56,8 +61,34 @@ public class MetricPersistencyServiceTest {
         MetricDocument metric = metricRepository.findAll().iterator().next();
         Assert.assertFalse(metric.getValue().isEmpty());
         Assert.assertEquals("test", metric.getName());
-
         Assert.assertEquals(100, metricRepository.count());
+    }
+
+    @Test
+    public void addingMetricToMetricBucketTest() {
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("test1").
+                setMetricValue(1).
+                build());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("test1").
+                setMetricValue(1).
+                build());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("test2").
+                setMetricValue(1).
+                build());
+        List<MetricDocument> metricList = presidioMetricBucket.getApplicationMetrics();
+        metricList.size();
+        Assert.assertEquals(2, metricList.size());
+        metricList.forEach(metric -> {
+            if (metric.getName().equals("test1")) {
+                Assert.assertEquals(2, metric.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE));
+            }
+        });
+        metricList = presidioMetricBucket.getSystemMetrics();
+        Assert.assertEquals(21, metricList.size());
+
 
     }
 }

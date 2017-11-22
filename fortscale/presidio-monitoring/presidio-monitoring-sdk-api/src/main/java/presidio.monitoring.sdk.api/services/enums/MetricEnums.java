@@ -46,7 +46,7 @@ public class MetricEnums {
     }
 
     public enum MetricUnitType {
-        NUMBER("number"), KB("kilo_byte"), MB("mega_byte"), GB("giga_byte"), MILLI_SECOND("milli_second"), SECOND("second"), DATE("date");
+        NUMBER("number"), B("byte"), KB("kilo_byte"), MB("mega_byte"), GB("giga_byte"), MILLI_SECOND("milli_second"), SECOND("second"), DATE("date");
 
         private String value;
 
