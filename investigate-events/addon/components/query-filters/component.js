@@ -50,9 +50,6 @@ const highlightFilter = (modifier, filters, focusInput, focusIndex, cursorPositi
 const blurEdit = (filters, focusInput, focusIndex, modifier) => {
   focusInput.blur();
   filters.objectAt(focusIndex + modifier).set('selected', true);
-  if (filters.get('length') != (focusIndex + 1)) {
-    filters.removeAt(focusIndex);
-  }
 };
 
 const stateToComputed = (state) => ({
@@ -100,11 +97,13 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
   queryable(filters, filtersLength, processedPreloadedFilters, processedPreloadedFiltersLength) {
     let queryable = false;
 
-    if (processedPreloadedFiltersLength === 0 && (filtersLength - 1) === 0) {
+    if (isEmpty(filters) || (processedPreloadedFiltersLength === 0 && (filtersLength - 1) === 0)) {
       return queryable;
     }
 
-    if (processedPreloadedFiltersLength && processedPreloadedFiltersLength === (filtersLength - 1)) {
+    filters = filters.filterBy('editActive', false);
+    if (processedPreloadedFiltersLength && processedPreloadedFiltersLength === filters.get('length')) {
+
       processedPreloadedFilters.forEach((filter, i) => {
         const filterAStr = `${filter.get('meta')} ${filter.get('operator')} ${filter.get('value')}`;
         const filterB = filters.objectAt(i);
@@ -170,8 +169,8 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
 
     if (isEmpty(this.get('filters'))) {
       return;
-    } else if (focusInput.length && !withSelected && isEmpty(focusInput.val()) && filters.objectAt(focusIndex + 1)) {
-      return blurEdit(filters, focusInput, focusIndex, 1);
+    } else if (focusInput.length && !withSelected && isEmpty(focusInput.val()) && filters.objectAt(focusIndex)) {
+      return blurEdit(filters, focusInput, focusIndex, 0);
     } else if (!withEditActive && this.get('filters.length')) {
       const isLast = filters.get('length') === (selectedIndex + 2);
       if (isLast) {

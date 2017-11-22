@@ -185,7 +185,7 @@ export default Component.extend(contextMenuMixin, {
 
   didInsertElement() {
     this._super(...arguments);
-    this.$('input').prop('type', 'text').prop('spellchek', false);
+    this.$('input').prop('type', 'text').prop('spellcheck', false);
   },
 
   actions: {
@@ -197,12 +197,20 @@ export default Component.extend(contextMenuMixin, {
 
     onblur() {
       this.setKeyboardPriority(0);
+
+      let list = this.get('filterList');
+      list = list.without(list.get('lastObject'));
+      list = list.without(list.get('filterRecord'));
+
+      const toDelete = list.filterBy('editActive', true);
+      this.deleteFilter(toDelete);
     },
 
     onfocus(select) {
       this.setKeyboardPriority(1);
 
-      this.$('input').prop('type', 'text').prop('spellchek', false);
+      this.get('filterList').setEach('selected', false);
+      this.$('input').prop('type', 'text').prop('spellcheck', false);
       select.actions.open();
     },
 
@@ -485,7 +493,7 @@ export default Component.extend(contextMenuMixin, {
         if (this.isDestroyed || this.isDestroying) {
           return;
         }
-        this.$('input').prop('type', 'text').prop('spellchek', false).focus();
+        this.$('input').prop('type', 'text').prop('spellcheck', false).focus();
       });
     },
 
