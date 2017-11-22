@@ -1,5 +1,4 @@
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
-import FilterQuery from 'configure/utils/filter-query';
 
 export default {
   /**
@@ -10,11 +9,18 @@ export default {
    * @returns {Promise}
    */
   getAllUsers() {
-    const query = FilterQuery.create().addSortBy('name', false);
     return promiseRequest({
       method: 'findAll',
       modelName: 'users',
-      query: query.toJSON()
+      query: {
+        filter: [],
+        sort: [
+          {
+            'descending': false,
+            'field': 'name'
+          }
+        ]
+      }
     });
   },
 
@@ -26,11 +32,23 @@ export default {
    * @returns {Promise}
    */
   getAllEnabledUsers() {
-    const query = FilterQuery.create().addSortBy('name', false).addFilter('status', 'enabled');
     return promiseRequest({
       method: 'findAll',
       modelName: 'users',
-      query: query.toJSON()
+      query: {
+        filter: [
+          {
+            'field': 'status',
+            'value': 'enabled'
+          }
+        ],
+        sort: [
+          {
+            'descending': false,
+            'field': 'name'
+          }
+        ]
+      }
     });
   }
 };

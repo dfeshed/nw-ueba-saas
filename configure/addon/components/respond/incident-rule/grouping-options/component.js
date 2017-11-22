@@ -2,7 +2,11 @@ import Component from '@ember/component';
 import { TIME_UNITS as timeWindowOptions, createDuration } from 'configure/utils/date/duration';
 import computed from 'ember-computed-decorators';
 import {
+  updateRule
+} from 'configure/actions/creators/respond/incident-rule-creators';
+import {
   getVisited,
+  getFields as getGroupByFields,
   getSelectedGroupByFields,
   hasInvalidGroupByFields,
   getTimeWindowValue,
@@ -27,6 +31,7 @@ import { inject } from '@ember/service';
 const stateToComputed = (state) => {
   return {
     visited: getVisited(state),
+    fields: getGroupByFields(state),
     incidentCreationOptions: getIncidentCreationOptions(state),
     incidentScoringOptions: getIncidentScoringOptions(state),
     selectedGroupByFields: getSelectedGroupByFields(state),
@@ -44,6 +49,17 @@ const stateToComputed = (state) => {
   };
 };
 
+const dispatchToActions = function(dispatch) {
+  return {
+    // update the rule information using fully qualified field name (e.g., 'ruleInfo.incidentScoringOptions.type')
+    update(field, value) {
+      if (field && value !== undefined) {
+        dispatch(updateRule(field, value));
+      }
+    }
+  };
+};
+
 const IncidentRuleGroupingOptions = Component.extend(Confirmable, {
   classNames: ['incident-rule-grouping-options'],
   i18n: inject(),
@@ -58,39 +74,39 @@ const IncidentRuleGroupingOptions = Component.extend(Confirmable, {
 
   actions: {
     handleGroupByChange(value) {
-      this.get('update')('ruleInfo.groupByFields', value.map((field) => field.groupByField || field.value));
+      this.send('update', 'ruleInfo.groupByFields', value.map((field) => field.groupByField || field.value));
     },
     handleTimeWindowUnitChange(value) {
       const duration = createDuration(this.get('timeWindowValue'), value);
-      this.get('update')('ruleInfo.timeWindow', duration);
+      this.send('update', 'ruleInfo.timeWindow', duration);
     },
     handleTimeWindowValueChange(value) {
       const duration = createDuration(value, this.get('timeWindowUnit'));
-      this.get('update')('ruleInfo.timeWindow', duration);
+      this.send('update', 'ruleInfo.timeWindow', duration);
     },
     handleIncidentTitleChange(value) {
-      this.get('update')('ruleInfo.incidentCreationOptions.ruleTitle', value);
+      this.send('update', 'ruleInfo.incidentCreationOptions.ruleTitle', value);
     },
     handleIncidentSummaryChange(value) {
-      this.get('update')('ruleInfo.incidentCreationOptions.ruleSummary', value);
+      this.send('update', 'ruleInfo.incidentCreationOptions.ruleSummary', value);
     },
     handleCategoriesChange(value) {
-      this.get('update')('ruleInfo.incidentCreationOptions.categories', value);
+      this.send('update', 'ruleInfo.incidentCreationOptions.categories', value);
     },
     handleAssigneeChange({ id, name, emailAddress }) {
       const assignee = id === null ? null : { id, name, emailAddress };
-      this.get('update')('ruleInfo.incidentCreationOptions.assignee', assignee);
+      this.send('update', 'ruleInfo.incidentCreationOptions.assignee', assignee);
     },
     handlePriorityScoringChange(value) {
-      this.get('update')('ruleInfo.incidentScoringOptions.type', value);
+      this.send('update', 'ruleInfo.incidentScoringOptions.type', value);
     },
     handlePriorityScoreChange(field, value) {
-      this.get('update')(field, parseInt(value, 10));
+      this.send('update', field, parseInt(value, 10));
     },
     update() {
-      this.get('update')(...arguments);
+      this.send('update', ...arguments);
     }
   }
 });
 
-export default connect(stateToComputed)(IncidentRuleGroupingOptions);
+export default connect(stateToComputed, dispatchToActions)(IncidentRuleGroupingOptions);

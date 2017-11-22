@@ -93,11 +93,7 @@
       </div>
     </div>
     {{#if (eq ruleInfo.action 'GROUP_INTO_INCIDENT')}}
-      {{respond/incident-rule/grouping-options
-        ruleInfo=ruleInfo
-        fields=fields
-        update=(action 'update')
-      }}
+      {{respond/incident-rule/grouping-options}}
     {{/if}}
   </section>
   <footer>

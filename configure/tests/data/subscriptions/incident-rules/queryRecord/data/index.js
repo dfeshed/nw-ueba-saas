@@ -14,14 +14,24 @@ export default {
   'action': 'GROUP_INTO_INCIDENT',
   'incidentCreationOptions': {
     'assignee': {
-      id: 'test'
+      'id': '3',
+      'name': 'Stanley Nellie',
+      'email': null,
+      'description': 'person2@test.com',
+      'type': null,
+      'accountId': null,
+      'disabled': false
     },
-    'categories': [],
+    'categories': [{
+      'id': '58c690184d5aff1637200187',
+      'parent': 'Environmental',
+      'name': 'Deterioration'
+    }],
     'ruleTitle': '${ruleName} for ${groupByValue1}',
-    'ruleSummary': ''
+    'ruleSummary': 'Summary'
   },
   'incidentScoringOptions': { 'type': 'average' },
-  'priorityScale': { 'LOW': 1, 'HIGH': 50, 'CRITICAL': 90, 'MEDIUM': 20 },
+  'priorityScale': { 'LOW': 5, 'HIGH': 55, 'CRITICAL': 95, 'MEDIUM': 25 },
   'notificationOptions': {},
   'lastMatched': null,
   'alertsMatchedCount': 0,
