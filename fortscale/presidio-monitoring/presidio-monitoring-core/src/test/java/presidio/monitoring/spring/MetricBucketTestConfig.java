@@ -1,17 +1,10 @@
 package presidio.monitoring.spring;
 
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import presidio.monitoring.elastic.repositories.MetricRepository;
-import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.generator.MetricGeneratorService;
 import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
 
@@ -19,16 +12,16 @@ import presidio.monitoring.services.PresidioMetricConventionApplyer;
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
 public class MetricBucketTestConfig {
 
-    private String applicationName = "metricGeneratorTest";
+    private final String APPLICATION_NAME = "metric-generator-test";
 
     @Bean
     public MetricConventionApplyer metricNameTransformer() {
-        return new PresidioMetricConventionApplyer();
+        return new PresidioMetricConventionApplyer(APPLICATION_NAME);
     }
 
     @Bean
     public PresidioMetricBucket presidioMetricBucket() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(APPLICATION_NAME), metricNameTransformer());
     }
 
 

@@ -1,22 +1,17 @@
 package presidio.monitoring.services;
 
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
-import presidio.monitoring.spring.MetricBucketTestConfig;
-import presidio.monitoring.spring.MetricPersistencyServiceTestConfig;
 import presidio.monitoring.spring.TestConfig;
 
 import java.util.List;
@@ -30,7 +25,7 @@ public class MetricBucketTest {
     private String applicationName;
 
     private PresidioSystemMetricsFactory systemMetricFactory = new PresidioSystemMetricsFactory(applicationName);
-    private MetricConventionApplyer metricConventionApplyer = new PresidioMetricConventionApplyer();
+    private MetricConventionApplyer metricConventionApplyer = new PresidioMetricConventionApplyer(applicationName);
     public PresidioMetricBucket presidioMetricBucket = new PresidioMetricBucket(systemMetricFactory, metricConventionApplyer);
 
     @Test

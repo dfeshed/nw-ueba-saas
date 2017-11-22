@@ -105,6 +105,9 @@ public class Metric {
 
         public Metric.MetricBuilder setMetricUnit(MetricEnums.MetricUnitType metricUnit) {
             this.metricUnit = metricUnit;
+            if (MapUtils.isEmpty(this.metricTags)) {
+                this.metricTags = new HashMap<>();
+            }
             metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit.toString());
             return this;
         }
@@ -143,9 +146,7 @@ public class Metric {
             if (!metricTags.containsKey(MetricEnums.MetricTagKeysEnum.UNIT)) {
                 metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, MetricEnums.MetricUnitType.NUMBER.toString());
             }
-
-            Metric metric = new Metric(this);
-            return metric;
+            return new Metric(this);
         }
     }
 

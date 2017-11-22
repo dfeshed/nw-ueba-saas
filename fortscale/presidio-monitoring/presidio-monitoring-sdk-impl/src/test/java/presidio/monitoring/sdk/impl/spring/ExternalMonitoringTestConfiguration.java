@@ -32,7 +32,7 @@ public class ExternalMonitoringTestConfiguration {
     public static final int AWAIT_TERMINATION_SECONDS = 120;
 
 
-    private String applicationName = "External-monitoring";
+    private final String APPLICATION_NAME = "External-monitoring";
 
     @Autowired
     public MetricRepository metricRepository;
@@ -66,7 +66,7 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public MetricConventionApplyer metricNameTransformer() {
-        return new PresidioMetricConventionApplyer();
+        return new PresidioMetricConventionApplyer(APPLICATION_NAME);
     }
 
 
@@ -78,7 +78,7 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioSystemMetricsFactory presidioSystemMetrics() {
-        return new PresidioSystemMetricsFactory("");
+        return new PresidioSystemMetricsFactory(APPLICATION_NAME);
     }
 
 }

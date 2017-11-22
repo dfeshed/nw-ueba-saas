@@ -33,7 +33,7 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
         BootShimConfig.class})
 public class OutputProcessorTestConfiguration {
 
-    private String applicationName = "output-core";
+    private final String APPLICATION_NAME = "output-core";
 
     @Bean
     public MetricCollectingService metricCollectingService() {
@@ -42,12 +42,12 @@ public class OutputProcessorTestConfiguration {
 
     @Bean
     public MetricConventionApplyer metricNameTransformer() {
-        return new PresidioMetricConventionApplyer();
+        return new PresidioMetricConventionApplyer(APPLICATION_NAME);
     }
 
     @Bean
     public PresidioMetricBucket presidioMetricEndPoint() {
-        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricNameTransformer());
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(APPLICATION_NAME), metricNameTransformer());
     }
 
     @Bean

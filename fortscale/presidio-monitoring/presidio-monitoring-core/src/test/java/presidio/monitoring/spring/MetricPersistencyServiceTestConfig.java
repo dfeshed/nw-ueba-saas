@@ -2,6 +2,7 @@ package presidio.monitoring.spring;
 
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,7 +31,7 @@ public class MetricPersistencyServiceTestConfig {
 
     @Bean
     public MetricConventionApplyer metricNameTransformer() {
-        return new PresidioMetricConventionApplyer();
+        return new PresidioMetricConventionApplyer(applicationName);
     }
 
     @Bean
@@ -38,7 +39,8 @@ public class MetricPersistencyServiceTestConfig {
         return new PresidioMetricPersistencyServiceImpl(metricRepository);
     }
 
-    private String applicationName = "metricGeneratorTest";
+    @Value("${spring.application.name}")
+    private String applicationName;
 
     @Bean
     public PresidioMetricBucket presidioMetricBucket() {

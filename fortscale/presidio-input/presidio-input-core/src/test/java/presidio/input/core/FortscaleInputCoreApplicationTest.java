@@ -76,7 +76,7 @@ public class FortscaleInputCoreApplicationTest {
 
         @Bean
         public MetricConventionApplyer metricNameTransformer() {
-            return new PresidioMetricConventionApplyer();
+            return new PresidioMetricConventionApplyer(applicationName);
         }
 
         @Bean
