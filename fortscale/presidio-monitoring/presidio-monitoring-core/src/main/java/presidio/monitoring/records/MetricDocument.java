@@ -6,8 +6,10 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldIndex;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;

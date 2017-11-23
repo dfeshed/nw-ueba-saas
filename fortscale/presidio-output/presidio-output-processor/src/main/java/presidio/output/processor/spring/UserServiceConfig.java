@@ -31,25 +31,6 @@ public class UserServiceConfig {
 
     @Value("${alert.affect.duration.days:1000}")
     private int alertEffectiveDurationInDays;
-//
-//    @Value("${user.severities.percent.threshold.critical:95}")
-//    private int percentThresholdCritical;
-//
-//    @Value("${user.severities.percent.threshold.high:80}")
-//    private int percentThresholdHigh;
-//
-//    @Value("${user.severities.percent.threshold.medium:70}")
-//    private int percentThresholdMedium;
-
-
-//    @Value("${user.score.alert.contribution.low:5}")
-//    double alertContributionLow;
-//    @Value("${user.score.alert.contribution.medium:10}")
-//    double alertContributionMedium;
-//    @Value("${user.score.alert.contribution.high:15}")
-//    double alertContributionHigh;
-//    @Value("${user.score.alert.contribution.critical:20}")
-//    double alertContributionCritical;
 
     @Autowired
     private EventPersistencyService eventPersistencyService;

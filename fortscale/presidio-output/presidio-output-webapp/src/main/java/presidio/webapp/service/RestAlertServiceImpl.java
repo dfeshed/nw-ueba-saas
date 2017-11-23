@@ -253,7 +253,7 @@ public class RestAlertServiceImpl implements RestAlertService {
 
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         userIds.forEach(id -> {
-            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = elasticAlertService.findByUserId(id, pageRequest);
+            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = alertPersistencyService.findByUserId(id, pageRequest);
             alertsByUserIds.put(id, convertToRestAlerts(alertsByUserId));
         });
 
@@ -317,7 +317,6 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
         List<presidio.webapp.model.Event> restEvents = new ArrayList<presidio.webapp.model.Event>();
-        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
         //TODO: fix sort
         //Sort sort = RestUtils.parseSortField(eventQuery.getSort());
         int pageNumber = eventQuery.getPageNumber() != null ? eventQuery.getPageNumber() : 0;
