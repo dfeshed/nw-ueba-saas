@@ -19,7 +19,7 @@ import static presidio.monitoring.records.MetricDocument.TYPE;
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
 public final class MetricDocument {
 
-
+    AlertPersistencyServiceImpl
     public static final String METRIC_INDEX_NAME = "presidio-monitoring";
     public static final String TYPE = "metric";
 

@@ -149,17 +149,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         }
 
 
-//        //calculating user score contribution
-//        Double userScoreContribution;
-//        if(feedback.equals(AlertEnums.AlertFeedback.NOT_RISK)) {
-//            userScoreContribution = 0D;
-//        }
-
-
         //building update request-
         IndexRequest indexRequest = new IndexRequest();
         indexRequest.source(Alert.FEEDBACK, feedback);
-//                .source(Alert.CONTRIBUTION_TO_USER_SCORE_FIELD_NAME, 30); //TODO
         UpdateQuery updateQuery = new UpdateQueryBuilder()
                 .withId(alertId)
                 .withClass(Alert.class)
