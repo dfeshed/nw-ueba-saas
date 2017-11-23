@@ -15,7 +15,6 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
-import presidio.webapp.spring.OutputWebappConfigurationTest;
 import presidio.webapp.spring.RestServiceTestConfig;
 
 import java.sql.Date;
