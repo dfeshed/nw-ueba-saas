@@ -1620,7 +1620,8 @@ export default {
     testLog: 'Send Test Log',
     placeholder: 'Make a selection',
     searchPlaceholder: 'Type to filter options',
-    emptyName: 'Configuration name is empty'
+    emptyName: 'Configuration name is empty',
+    specialCharacter: 'Configuration name contains special charatcer.'
   },
   investigateFiles: {
     title: 'Files',

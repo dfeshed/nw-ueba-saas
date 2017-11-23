@@ -25,6 +25,7 @@ const dispatchToActions = {
   resetForm
 };
 
+const REGEX = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
 const formComponent = Component.extend({
   layout,
@@ -36,6 +37,7 @@ const formComponent = Component.extend({
   isError: false,
   protocolOptions: ['UDP', 'TCP', 'TLS'],
   className: 'rsa-form-label power-select',
+  protocolClassName: 'rsa-form-label power-select',
   isGenerateLogDisabled: true,
   isLogCollectionEnabled: false,
   primaryDestination: '',
@@ -82,14 +84,23 @@ const formComponent = Component.extend({
   },
 
   validateMandatoryFields() {
-    if (isEmpty(this.get('configData.logCollectionConfig.configName'))) {
+    const configName = this.get('configData.logCollectionConfig.configName');
+    if (isEmpty(configName)) {
       this.setProperties({
         isError: true,
         errorMessage: this.get('i18n').t('packager.emptyName')
       });
       return true;
     }
-    if (!isEmpty(this.get('configData.logCollectionConfig.primaryDestination')) && isEmpty(this.get('selectedPrimaryDestination'))) {
+    if (REGEX.test(configName)) {
+      this.setProperties({
+        isError: true,
+        errorMessage: this.get('i18n').t('packager.specialCharacter')
+      });
+      return true;
+    }
+    if (!isEmpty(this.get('configData.logCollectionConfig.primaryDestination')) &&
+      isEmpty(this.get('selectedPrimaryDestination'))) {
       this.setProperties({
         errorClass: 'is-error',
         className: 'rsa-form-label is-error power-select'
@@ -148,6 +159,7 @@ const formComponent = Component.extend({
     enableLogCollection() {
       this.toggleProperty('isGenerateLogDisabled');
       this.toggleProperty('isLogCollectionEnabled');
+      this.set('configData.logCollectionConfig.enabled', this.get('isLogCollectionEnabled'));
     },
 
     toggleProperty(property) {

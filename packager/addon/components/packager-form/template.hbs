@@ -190,10 +190,10 @@
       </div>
 
       <div class="field">
-        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.TestLogOnLoad 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.testLogOnLoad 'checked'}}">
           {{rsa-form-checkbox
-            checked=configData.logCollectionConfig.TestLogOnLoad
-            change=(action 'toggleProperty' "configData.logCollectionConfig.TestLogOnLoad")}}
+            checked=configData.logCollectionConfig.testLogOnLoad
+            change=(action 'toggleProperty' "configData.logCollectionConfig.testLogOnLoad")}}
           {{t 'packager.testLog'}}
         </label>
       </div>

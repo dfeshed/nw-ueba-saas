@@ -1619,7 +1619,8 @@ export default {
     testLog: 'ja_Send Test Log',
     placeholder: 'ja_Make a selection',
     searchPlaceholder: 'ja_Type to filter options',
-    emptyName: 'ja_Configuration name is empty'
+    emptyName: 'ja_Configuration name is empty',
+    specialCharacter: 'ja_Configuration name contains special charatcer.'
   },
   investigateFiles: {
     title: 'ja_Files',
