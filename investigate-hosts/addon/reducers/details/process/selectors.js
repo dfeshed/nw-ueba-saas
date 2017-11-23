@@ -1,7 +1,6 @@
 import reselect from 'reselect';
 import { convertTreeToList } from './util';
 import { getValues } from 'investigate-hosts/reducers/details/selector-utils';
-
 import _ from 'lodash';
 
 const { createSelector } = reselect;

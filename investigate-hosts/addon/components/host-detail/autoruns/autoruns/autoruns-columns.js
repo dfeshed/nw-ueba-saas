@@ -1,3 +1,5 @@
+import { generateColumns } from 'investigate-hosts/util/util';
+
 const defaultColumns = [
   {
     field: 'fileName',
@@ -31,15 +33,6 @@ let columnsConfig = {
   ]
 };
 
-const _generateColumns = function(columns) {
-  for (const key in columns) {
-    if (columns.hasOwnProperty(key)) {
-      columns[key] = [...defaultColumns, ...columns[key]];
-    }
-  }
-  return columns;
-};
-
-columnsConfig = _generateColumns(columnsConfig);
+columnsConfig = generateColumns(columnsConfig, defaultColumns);
 
 export default columnsConfig;

@@ -1,13 +1,9 @@
-const columnsConfig = [
+import { generateColumns } from 'investigate-hosts/util/util';
+
+const defaultColumns = [
   {
     field: 'fileName',
     title: 'File Name'
-  },
-  {
-    field: 'timeCreated',
-    title: 'FILE CREATION TIME',
-    width: '10%',
-    format: 'DATE'
   },
   {
     field: 'signature',
@@ -28,5 +24,27 @@ const columnsConfig = [
     disableSort: true
   }
 ];
+
+const machineOsBasedConfig = {
+  mac: [
+    {
+      field: 'timeCreated',
+      title: 'FILE CREATION TIME',
+      width: '10%',
+      format: 'DATE'
+    }
+  ],
+  windows: [
+    {
+      field: 'timeCreated',
+      title: 'FILE CREATION TIME',
+      width: '10%',
+      format: 'DATE'
+    }
+  ],
+  linux: []
+};
+
+const columnsConfig = generateColumns(machineOsBasedConfig, defaultColumns);
 
 export default columnsConfig;

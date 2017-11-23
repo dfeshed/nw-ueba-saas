@@ -1,3 +1,5 @@
+import { generateColumns } from 'investigate-hosts/util/util';
+
 let columnsConfig = {
   linux: [
     {
@@ -27,6 +29,12 @@ let columnsConfig = {
       'dataType': 'STRING',
       'format': 'SIGNATURE',
       'disableSort': true
+    },
+    {
+      'field': 'timeCreated',
+      'label': 'investigateHosts.files.fields.timeCreated',
+      'format': 'DATE',
+      'width': 115
     }
   ],
   mac: [
@@ -37,6 +45,12 @@ let columnsConfig = {
       'dataType': 'STRING',
       'format': 'SIGNATURE',
       'disableSort': true
+    },
+    {
+      'field': 'timeCreated',
+      'label': 'investigateHosts.files.fields.timeCreated',
+      'format': 'DATE',
+      'width': 115
     }
   ]
 };
@@ -64,27 +78,12 @@ const defaultColumns = [
     'width': 65
   },
   {
-    'field': 'timeCreated',
-    'label': 'investigateHosts.files.fields.timeCreated',
-    'format': 'DATE',
-    'width': 115
-  },
-  {
     'field': 'path',
     'label': 'investigateHosts.files.fields.path',
     'width': 315
   }
 ];
 
-const _generateColumns = function(columns) {
-  for (const key in columns) {
-    if (columns.hasOwnProperty(key)) {
-      columns[key] = [...defaultColumns, ...columns[key]];
-    }
-  }
-  return columns;
-};
-
-columnsConfig = _generateColumns(columnsConfig);
+columnsConfig = generateColumns(columnsConfig, defaultColumns);
 
 export default columnsConfig;

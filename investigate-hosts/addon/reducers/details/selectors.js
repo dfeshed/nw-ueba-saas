@@ -7,3 +7,11 @@ export const hasScanTime = createSelector(
   (snapShots) => snapShots && !!snapShots.length
 );
 
+const _machineOsType = (state) => {
+  if (state.endpoint.overview.hostDetails) {
+    return state.endpoint.overview.hostDetails.machine.machineOsType;
+  }
+  return 'windows';
+};
+
+export const getColumnsConfig = (state, config) => config[_machineOsType(state)];

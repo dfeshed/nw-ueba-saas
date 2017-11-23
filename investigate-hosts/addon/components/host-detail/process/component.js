@@ -1,16 +1,18 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import SUMMARY_ITEMS from './summary-item-config';
-import { getProcessData, isNavigatedFromExplore } from 'investigate-hosts/reducers/details/process/selectors';
 import CONFIG from './process-property-config';
+import { getProcessData, isNavigatedFromExplore } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView } from 'investigate-hosts/actions/data-creators/process';
+import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import summaryItems from './summary-item-config';
 
 const stateToComputed = (state) => ({
   isTreeView: state.endpoint.visuals.isTreeView,
   animation: state.endpoint.detailsInput.animation,
   process: getProcessData(state),
-  isNavigatedFromExplore: isNavigatedFromExplore(state)
+  isNavigatedFromExplore: isNavigatedFromExplore(state),
+  summaryConfig: getColumnsConfig(state, summaryItems)
 });
 
 const dispatchToActions = {
@@ -22,8 +24,6 @@ const Container = Component.extend({
   tagName: 'hbox',
 
   classNames: 'host-process-info host-process-wrapper',
-
-  summaryConfig: SUMMARY_ITEMS,
 
   propertyConfig: CONFIG,
 

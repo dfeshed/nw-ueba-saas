@@ -1,5 +1,7 @@
 // Process view header configuration
-export default [
+import { generateColumns } from 'investigate-hosts/util/util';
+
+const defaultSummaryConfig = [
   {
     label: 'investigateHosts.process.processName',
     field: 'fileName'
@@ -21,11 +23,6 @@ export default [
     field: 'process.hostCount'
   },
   {
-    label: 'investigateHosts.process.creationTime',
-    field: 'process.createTime',
-    format: 'DATE'
-  },
-  {
     label: 'investigateHosts.process.hashlookup',
     field: 'hashlookup'
   },
@@ -44,3 +41,21 @@ export default [
     cssClass: 'col-xs-12 col-md-12'
   }
 ];
+
+const machineOsBasedSummaryConfig = {
+  mac: [{
+    label: 'investigateHosts.process.creationTime',
+    field: 'process.createTime',
+    format: 'DATE'
+  }],
+  windows: [{
+    label: 'investigateHosts.process.creationTime',
+    field: 'process.createTime',
+    format: 'DATE'
+  }],
+  linux: []
+};
+
+const summaryItems = generateColumns(machineOsBasedSummaryConfig, defaultSummaryConfig);
+
+export default summaryItems;

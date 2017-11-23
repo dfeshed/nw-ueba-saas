@@ -1,11 +1,10 @@
 import Component from 'ember-component';
-import columnsConfig from './host-files-columns';
 import { connect } from 'ember-redux';
 import PROPERTY_CONFIG from 'investigate-hosts/components/host-detail/base-property-config';
 import { filesWithEnrichedData, fileProperty, fileCount } from 'investigate-hosts/reducers/details/files/selectors';
 import { getHostFiles, sortBy, setSelectedFile } from 'investigate-hosts/actions/data-creators/files';
-import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
-import computed from 'ember-computed-decorators';
+import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import columnsConfig from './host-files-columns';
 
 const stateToComputed = (state) => ({
   status: state.endpoint.hostFiles.filesLoadingStatus,
@@ -13,8 +12,8 @@ const stateToComputed = (state) => ({
   totalItems: state.endpoint.hostFiles.totalItems,
   files: filesWithEnrichedData(state),
   fileProperty: fileProperty(state),
-  machineOsType: machineOsType(state),
-  fileCount: fileCount(state)
+  fileCount: fileCount(state),
+  columnsConfig: getColumnsConfig(state, columnsConfig)
 });
 
 const dispatchToActions = {
@@ -30,11 +29,6 @@ const Files = Component.extend({
   classNames: ['host-files'],
 
   filePropertyConfig: PROPERTY_CONFIG,
-
-  @computed('machineOsType')
-  columnsConfig(machineOsType) {
-    return columnsConfig[machineOsType];
-  },
 
   actions: {
     /**

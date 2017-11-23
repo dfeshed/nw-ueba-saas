@@ -1,20 +1,19 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import columnsConfig from './autoruns-columns';
-import propertyConfig from './autoruns-property-config';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/autoruns';
+import propertyConfig from './autoruns-property-config';
 import { isDataLoading, autoruns, selectedAutorunFileProperties } from 'investigate-hosts/reducers/details/autorun/selectors';
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
-import computed from 'ember-computed-decorators';
+import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import columnsConfig from './autoruns-columns';
 
-const stateToComputed = (state) => {
-  return {
-    autoruns: autoruns(state),
-    status: isDataLoading(state),
-    machineOsType: machineOsType(state),
-    fileProperties: selectedAutorunFileProperties(state)
-  };
-};
+const stateToComputed = (state) => ({
+  autoruns: autoruns(state),
+  status: isDataLoading(state),
+  machineOsType: machineOsType(state),
+  fileProperties: selectedAutorunFileProperties(state),
+  columnsConfig: getColumnsConfig(state, columnsConfig)
+});
 
 const dispatchToActions = {
   setSelectedRow
@@ -23,13 +22,8 @@ const dispatchToActions = {
 const Autoruns = Component.extend({
 
   tagName: '',
+  propertyConfig
 
-  propertyConfig,
-
-  @computed('machineOsType')
-  columnsConfig(machineOsType) {
-    return columnsConfig[machineOsType];
-  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(Autoruns);
