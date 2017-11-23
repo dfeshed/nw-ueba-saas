@@ -35,7 +35,6 @@ const formComponent = Component.extend({
   errorClass: null,
   isError: false,
   protocolOptions: ['UDP', 'TCP', 'TLS'],
-  heartbeatFrequency: ['1 Hour', '6 Hours', '12 Hours', '24 Hours'],
   className: 'rsa-form-label power-select',
   isGenerateLogDisabled: true,
   isLogCollectionEnabled: false,
@@ -48,9 +47,6 @@ const formComponent = Component.extend({
 
   @alias('configData.packageConfig.forceOverwrite')
   forceOverwrite: false,
-
-  @alias('configData.logCollectionConfig.enableHeartbeat')
-  enableHeartFrequency: false,
 
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
@@ -142,10 +138,6 @@ const formComponent = Component.extend({
     },
 
     generateLogConfig() {
-      const logConfig = this.get('configData.logCollectionConfig');
-      if (logConfig.enableHeartbeat && isEmpty(logConfig.heartbeatFrequency)) {
-        this.set('configData.logCollectionConfig.heartbeatFrequency', this.get('selectedFrequency'));
-      }
       if (!this.validateMandatoryFields()) {
         // only log config data need to be send on click of this button.
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');

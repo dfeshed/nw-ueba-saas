@@ -28,22 +28,18 @@
             }
         }
         .fileContainer {
-            margin-top: 1rem;
+            margin-top: 1.3rem;
+            [type=file] {
+                display: none;
+            }
         }
-        .uploadConfig {
-            overflow: hidden;
-            position: relative;
+        .custom-file-upload {
+            display: inline-block;
+            cursor: pointer;
             padding: rsa-whitespace(less) rsa-whitespace();
             border: 1px solid $formInputBorderColor;
         }
-        .uploadConfig [type=file] {
-            display: block;
-            position: absolute;
-            opacity: 0;
-            right: 0;
-            top: 0;
-            cursor: pointer;
-        }
+
         .load-error-message {
             position: fixed;
             top: 5%;

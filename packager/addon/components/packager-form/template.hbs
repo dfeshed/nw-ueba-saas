@@ -123,10 +123,10 @@
           {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=errorMessage}}
         </div>
         <div class="col-xs-6 field fileContainer">
-          <label class="uploadConfig">
+          <label for="file-upload" class="custom-file-upload">
             {{t 'packager.loadExistingLogConfig'}}
-            <input type='file' onchange={{action 'uploadConfig'}} accept='.json' value='C:\Fakepath'>
           </label>
+          <input id="file-upload" type='file' onchange={{action 'uploadConfig'}} accept='.nwelcfg' value='C:\Fakepath'>
         </div>
       </hbox>
 
@@ -190,36 +190,10 @@
       </div>
 
       <div class="field">
-        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.enableHeartbeat 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.TestLogOnLoad 'checked'}}">
           {{rsa-form-checkbox
-            checked=configData.logCollectionConfig.enableHeartbeat
-            change=(action 'toggleProperty' "configData.logCollectionConfig.enableHeartbeat")}}
-          {{t 'packager.heartbeatLogs'}}
-        </label>
-        {{#if enableHeartFrequency}}
-          <div class="col-xs-5 field">
-            <label class="rsa-form-label power-select">
-              <div class="label-text">
-                {{t 'packager.heartbeatFrequency'}}
-              </div>
-              {{#power-select
-                placeholder=(t 'packager.placeholder')
-                options=heartbeatFrequency
-                selected=selectedFrequency
-                searchPlaceholder=(t 'packager.searchPlaceholder')
-                onchange=(action 'setSelect' 'heartbeatFrequency' 'selectedFrequency') as |option|}}
-                {{option}}
-              {{/power-select}}
-            </label>
-          </div>
-        {{/if}}
-      </div>
-
-      <div class="field">
-        <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.enableTestLog 'checked'}}">
-          {{rsa-form-checkbox
-            checked=configData.logCollectionConfig.enableTestLog
-            change=(action 'toggleProperty' "configData.logCollectionConfig.enableTestLog")}}
+            checked=configData.logCollectionConfig.TestLogOnLoad
+            change=(action 'toggleProperty' "configData.logCollectionConfig.TestLogOnLoad")}}
           {{t 'packager.testLog'}}
         </label>
       </div>
