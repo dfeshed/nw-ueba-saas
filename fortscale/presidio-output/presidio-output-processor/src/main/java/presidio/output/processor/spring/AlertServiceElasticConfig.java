@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.processor.services.alert.AlertClassificationService;
-import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
-import presidio.output.processor.services.user.UserScoreService;
 
 @Configuration
 @Import({
@@ -23,7 +22,7 @@ import presidio.output.processor.services.user.UserScoreService;
 })
 public class AlertServiceElasticConfig {
     @Autowired
-    private AlertEnumsSeverityService alertEnumsSeverityService;
+    private AlertSeverityService alertEnumsSeverityService;
 
     @Autowired
     private AlertClassificationService alertClassificationService;
@@ -35,7 +34,7 @@ public class AlertServiceElasticConfig {
     private SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
 
     @Autowired
-    private UserScoreService userScoreService;
+    private AlertSeverityService alertSeverityService;
 
     @Bean
     public AlertService alertService() {
@@ -43,7 +42,7 @@ public class AlertServiceElasticConfig {
                 alertPersistencyService,
                 alertEnumsSeverityService,
                 alertClassificationService,
-                userScoreService,
+                alertSeverityService,
                 supportingInformationGeneratorFactory
         );
     }

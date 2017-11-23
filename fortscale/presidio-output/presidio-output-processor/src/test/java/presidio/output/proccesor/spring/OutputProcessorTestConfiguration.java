@@ -1,7 +1,6 @@
 package presidio.output.proccesor.spring;
 
 import fortscale.utils.shell.BootShimConfig;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

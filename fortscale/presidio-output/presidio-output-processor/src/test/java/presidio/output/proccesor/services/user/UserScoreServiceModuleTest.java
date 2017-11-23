@@ -12,13 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.commons.services.alert.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
@@ -57,6 +58,9 @@ public class UserScoreServiceModuleTest {
 
     @Autowired
     public Client client;
+
+    @Autowired
+    private AlertSeverityService alertSeverityService;
 
     @Autowired
     private UserScoreService userScoreService;
@@ -223,17 +227,9 @@ public class UserScoreServiceModuleTest {
         userScoreService = new UserScoreServiceImpl(
                 userPersistencyService,
                 alertPersistencyService,
+                alertSeverityService,
                 500,
-                DAYS_COUNT + 10,
-                75,
-                50,
-                25,
-                20,
-                15,
-                10,
-                5
-
-        );
+                DAYS_COUNT + 10);
 
 
         List<User> userList = new ArrayList<>();
