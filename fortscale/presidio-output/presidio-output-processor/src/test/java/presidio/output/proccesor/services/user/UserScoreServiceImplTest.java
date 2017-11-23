@@ -29,9 +29,9 @@ import java.util.List;
 
 public class UserScoreServiceImplTest {
 
-    public static final int PERCENT_THRESHOLD_CRITICAL = 95;
-    public static final int PERCENT_THRESHOLD_HIGH = 80;
-    public static final int PERCENT_THRESHOLD_MEDIUM = 70;
+    public static final int PERCENT_THRESHOLD_CRITICAL = 75;
+    public static final int PERCENT_THRESHOLD_HIGH = 50;
+    public static final int PERCENT_THRESHOLD_MEDIUM = 25;
     public static final int CRITICAL_SCORE = 95;
     public static final int HIGH_SCORE = 90;
     public static final int MEDIUM_SCORE = 80;
@@ -39,16 +39,15 @@ public class UserScoreServiceImplTest {
     public static final int ALERT_CONTRIBUTION_HIGH = 25;
     public static final int ALERT_CONTRIBUTION_MEDIUM = 20;
     public static final int ALERT_CONTRIBUTION_LOW = 10;
-    public static final int ALERT_EFFECTIVE_DURATION_IN_DAYS = 90;
 
     private UserScoreServiceImpl userScoreService;
     private UserPersistencyService mockPresistency;
-    private AlertSeverityService aertSeverityService;
+    private AlertSeverityService alertSeverityService;
 
     @Before
     public void setup() {
         mockPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
-        aertSeverityService = new AlertEnumsSeverityService(CRITICAL_SCORE,
+        alertSeverityService = new AlertEnumsSeverityService(CRITICAL_SCORE,
                 HIGH_SCORE,
                 MEDIUM_SCORE,
                 ALERT_CONTRIBUTION_CRITICAL,
@@ -59,7 +58,7 @@ public class UserScoreServiceImplTest {
                 PERCENT_THRESHOLD_HIGH,
                 PERCENT_THRESHOLD_MEDIUM);
 
-        userScoreService = new UserScoreServiceImpl(mockPresistency, null, aertSeverityService, 1000, 90);
+        userScoreService = new UserScoreServiceImpl(mockPresistency, null, alertSeverityService, 1000, 90);
     }
 
     @Test
@@ -72,7 +71,7 @@ public class UserScoreServiceImplTest {
         }
 
 //        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
-        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = aertSeverityService.getSeveritiesMap(d);
+        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = alertSeverityService.getSeveritiesMap(d);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(100D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(249999D));
@@ -130,7 +129,7 @@ public class UserScoreServiceImplTest {
         d[19] = 2000;
 
 //        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
-        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = aertSeverityService.getSeveritiesMap(d);
+        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = alertSeverityService.getSeveritiesMap(d);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(100D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(300D));
