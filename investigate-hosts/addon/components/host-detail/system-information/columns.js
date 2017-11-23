@@ -101,7 +101,42 @@ const columns = {
       {
         field: 'windowsPatch',
         title: 'investigateHosts.systemInformation.patches',
+        width: '50%'
+      }
+    ]
+  },
+  'SECURITY_PRODUCTS': {
+    field: 'securityProducts',
+    columns: [
+      {
+        field: 'displayName',
+        title: 'investigateHosts.systemInformation.securityProducts.displayName',
         width: '20%'
+      },
+      {
+        field: 'companyName',
+        title: 'investigateHosts.systemInformation.securityProducts.companyName',
+        width: '20%'
+      },
+      {
+        field: 'instance',
+        title: 'investigateHosts.systemInformation.securityProducts.instance',
+        width: '20%'
+      },
+      {
+        field: 'features',
+        title: 'investigateHosts.systemInformation.securityProducts.features',
+        width: '20%'
+      },
+      {
+        field: 'type',
+        title: 'investigateHosts.systemInformation.securityProducts.type',
+        width: '15%'
+      },
+      {
+        field: 'version',
+        title: 'investigateHosts.systemInformation.securityProducts.version',
+        width: '10%'
       }
     ]
   }

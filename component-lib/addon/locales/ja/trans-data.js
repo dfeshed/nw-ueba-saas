@@ -1882,7 +1882,15 @@ export default {
       commandNote: 'ja_Note: Most recent commands are on the top',
       filterUser: 'ja_Type to filter user',
       filterBy: 'ja_Filter By User',
-      patches: 'ja_Patches'
+      patches: 'ja_Patches',
+      securityProducts: {
+        type: 'ja_Type',
+        instance: 'ja_Instance',
+        displayName: 'ja_Display Name',
+        companyName: 'ja_Company Name',
+        version: 'ja_Version',
+        features: 'ja_Features'
+      }
     },
     process: {
       title: 'ja_Process',

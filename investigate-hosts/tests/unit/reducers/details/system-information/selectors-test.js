@@ -7,8 +7,8 @@ module('Unit | Selectors | systemInformation');
 import {
   getHostFileEntries,
   getMountedPaths,
-  getWindowsPatches
-} from 'investigate-hosts/reducers/details/system-information/selectors';
+  getWindowsPatches,
+  getSecurityProducts } from 'investigate-hosts/reducers/details/system-information/selectors';
 
 test('getHostFileEntries', function(assert) {
   const result = getHostFileEntries(Immutable.from({ endpoint: { overview: { hostDetails } } }));
@@ -25,5 +25,10 @@ test('getMountedPaths', function(assert) {
 test('getWindowsPatches', function(assert) {
   const result = getWindowsPatches(Immutable.from({ endpoint: { overview: { hostDetails } } }));
   assert.equal(result.length, 6);
+});
+
+test('getSecurityProducts', function(assert) {
+  const result = getSecurityProducts(Immutable.from({ endpoint: { overview: { hostDetails } } }));
+  assert.equal(result.length, 2);
 });
 

@@ -9,7 +9,8 @@ import {
   getNetworkShares,
   getBashHistories,
   machineOsType,
-  getWindowsPatches } from 'investigate-hosts/reducers/details/system-information/selectors';
+  getWindowsPatches,
+  getSecurityProducts } from 'investigate-hosts/reducers/details/system-information/selectors';
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
@@ -18,7 +19,8 @@ const stateToComputed = (state) => ({
   networkShares: getNetworkShares(state),
   bashHistories: getBashHistories(state),
   machineOsType: machineOsType(state),
-  windowsPatches: getWindowsPatches(state)
+  windowsPatches: getWindowsPatches(state),
+  securityProducts: getSecurityProducts(state)
 });
 
 const SystemInformation = Component.extend({

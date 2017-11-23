@@ -180,7 +180,21 @@ export const hostDetails = {
       'options': 'rw,relatime',
       'remotePath': 'binfmt_misc'
     }],
-    systemPatches: ['KB974405', '982861', 'KB2670838', 'KB2830477', 'KB2592687', 'KB2393802']
+    systemPatches: ['KB974405', '982861', 'KB2670838', 'KB2830477', 'KB2592687', 'KB2393802'],
+    securityProducts: [{
+      type: 'antiVirus',
+      instance: 'D68DDC3A-831F-4FAE-9E44-DA132C1ACF46',
+      displayName: 'Windows Defender',
+      companyName: '',
+      version: ''
+    },
+    {
+      type: 'antiSpyware',
+      instance: 'D68DDC3A-831F-4FAE-9E44-DA132C1ACF46',
+      displayName: 'Windows Defender',
+      companyName: '',
+      version: ''
+    }]
   },
   'machineIdentity': {
     'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',

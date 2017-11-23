@@ -81,3 +81,13 @@ export const getWindowsPatches = createSelector(
     return [];
   }
 );
+
+export const getSecurityProducts = createSelector(
+  [ _machineData ],
+  (_machineData) => {
+    if (_machineData) {
+      return _machineData.securityProducts;
+    }
+    return [];
+  }
+);

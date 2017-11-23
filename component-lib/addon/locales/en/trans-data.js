@@ -1910,7 +1910,15 @@ export default {
       commandNote: 'Note: Most recent commands are on the top',
       filterUser: 'Type to filter user',
       filterBy: 'Filter By User',
-      patches: 'Patches'
+      patches: 'Patches',
+      securityProducts: {
+        type: 'Type',
+        instance: 'Instance',
+        displayName: 'Display Name',
+        companyName: 'CompanyName',
+        version: 'Version',
+        features: 'Features'
+      }
     },
     hosts: {
       title: 'Hosts',
