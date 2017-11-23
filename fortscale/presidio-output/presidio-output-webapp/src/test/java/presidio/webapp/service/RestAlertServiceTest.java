@@ -16,6 +16,7 @@ import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
 import presidio.webapp.spring.OutputWebappConfigurationTest;
+import presidio.webapp.spring.RestServiceTestConfig;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = OutputWebappConfigurationTest.class)
+@ContextConfiguration(classes = RestServiceTestConfig.class)
 public class RestAlertServiceTest {
 
     @Autowired

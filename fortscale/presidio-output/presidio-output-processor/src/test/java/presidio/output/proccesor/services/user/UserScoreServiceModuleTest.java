@@ -1,15 +1,16 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.commons.services.alert.AlertEnums;
@@ -40,8 +41,7 @@ import java.util.List;
 
 @Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, MongodbTestConfig.class})
-@ActiveProfiles("useEmbeddedElastic")
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class})
 public class UserScoreServiceModuleTest {
 
     @Autowired
@@ -64,9 +64,6 @@ public class UserScoreServiceModuleTest {
 
     @Autowired
     private UserScoreService userScoreService;
-
-    @Autowired
-    protected EmbeddedElasticsearchInitialiser embeddedElasticsearchInitialiser;
 
     @After
     public void cleanTestData() {

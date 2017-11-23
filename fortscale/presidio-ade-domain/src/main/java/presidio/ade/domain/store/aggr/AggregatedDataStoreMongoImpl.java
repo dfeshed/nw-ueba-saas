@@ -4,8 +4,8 @@ import com.mongodb.DBCollection;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,19 +23,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static presidio.ade.domain.record.AdeRecord.START_INSTANT_FIELD;
 
 /**
  * @author Barak Schuster
  * @author Lior Govrin
  */
-public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, TtlServiceAware {
+public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreManagerAware {
     private static final String NULL_AGGREGATED_RECORD_PAGINATION_SERVICE = "pagination service must be set in order to read data in pages";
 
     private final MongoTemplate mongoTemplate;
     private final AggrDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private AggregatedRecordPaginationService aggregatedRecordPaginationService;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public AggregatedDataStoreMongoImpl(MongoTemplate mongoTemplate, AggrDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -89,7 +90,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, TtlSer
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(featureName, aggregatedFeatureType);
             String collectionName = translator.toCollectionName(metadata);
             mongoDbBulkOpUtil.insertUnordered(aggregationRecords, collectionName);
-            ttlService.save(getStoreName(), collectionName);
+            storeManager.registerWithTtl(getStoreName(), collectionName);
         });
     }
 
@@ -169,14 +170,21 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, TtlSer
 
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 

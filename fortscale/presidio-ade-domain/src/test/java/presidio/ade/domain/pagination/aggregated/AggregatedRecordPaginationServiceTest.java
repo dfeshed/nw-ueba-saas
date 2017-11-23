@@ -5,7 +5,7 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.store.StoreManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class AggregatedRecordPaginationServiceTest {
 
     @Before
     public void setup() {
-        ((AggregatedDataStoreMongoImpl)aggregatedDataStore).setTtlService(mock(TtlService.class));
+        ((AggregatedDataStoreMongoImpl)aggregatedDataStore).setStoreManager(mock(StoreManager.class));
         aggregatedDataPaginationParamSet = new HashSet<>();
         paginationService = new AggregatedRecordPaginationService(10, aggregatedDataStore);
         startInstant = Instant.EPOCH.plus(Duration.ofDays(1));

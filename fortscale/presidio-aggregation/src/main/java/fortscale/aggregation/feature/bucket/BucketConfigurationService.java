@@ -24,6 +24,7 @@ public class BucketConfigurationService extends AslConfigurationService {
 
 	private Map<String, FeatureBucketConf> bucketConfs = new HashMap<>();
 	private Map<String, List<FeatureBucketConf>> adeEventTypeToListOfBucketConfs = new HashMap<>();
+	private Map<FeatureBucketConfCacheKey,List<FeatureBucketConf>> featureBucketConfsCache = new HashMap<>();
 
 	private String bucketConfJsonFilePath;
 	private String bucketConfJsonOverridingFilesPath;
@@ -91,16 +92,29 @@ public class BucketConfigurationService extends AslConfigurationService {
 		if (adeRecordReader == null) return null;
 		String adeEventType = adeRecordReader.getAdeEventType();
 		if (StringUtils.isEmpty(adeEventType)) return null;
-		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
-		Assert.notNull(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
 
-		featureBucketConfs = featureBucketConfs.stream()
-				.filter(featureBucketConf ->
-						featureBucketConf.getStrategyName().equals(strategyName) &&
-						featureBucketConf.getContextFieldNames().equals(contextFieldNames))
-				.collect(Collectors.toList());
+		List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(strategyName, contextFieldNames, adeEventType);
 
 		return featureBucketConfs;
+	}
+
+	public List<FeatureBucketConf> getFeatureBucketConfs(String strategyName, List<String> contextFieldNames, String adeEventType) {
+		FeatureBucketConfCacheKey featureBucketConfCacheKey = new FeatureBucketConfCacheKey(strategyName,contextFieldNames,adeEventType);
+		List<FeatureBucketConf> cachedFeatureBucketConfs = featureBucketConfsCache.get(featureBucketConfCacheKey);
+		if(cachedFeatureBucketConfs  == null)
+		{
+			List<FeatureBucketConf> featureBucketConfs = getFeatureBucketConfs(adeEventType);
+			Assert.notNull(featureBucketConfs, String.format("no feature bucket conf is defined for adeEventType=%s", adeEventType));
+
+			cachedFeatureBucketConfs = featureBucketConfs.stream()
+					.filter(featureBucketConf ->
+							featureBucketConf.getStrategyName().equals(strategyName) &&
+									featureBucketConf.getContextFieldNames().equals(contextFieldNames))
+					.collect(Collectors.toList());
+			featureBucketConfsCache.put(featureBucketConfCacheKey,cachedFeatureBucketConfs);
+		}
+
+		return cachedFeatureBucketConfs;
 	}
 
 	public List<FeatureBucketConf> getFeatureBucketConfs(String adeEventType) {
@@ -137,6 +151,39 @@ public class BucketConfigurationService extends AslConfigurationService {
 			List<FeatureBucketConf> listOfBucketConfs = adeEventTypeToListOfBucketConfs
 					.computeIfAbsent(adeEventType, key -> new ArrayList<>());
 			listOfBucketConfs.add(bucketConf);
+		}
+	}
+
+	class FeatureBucketConfCacheKey
+	{
+		private String strategyName;
+		private String contextFieldNames;
+		private String adeEventType;
+
+		public FeatureBucketConfCacheKey(String strategyName, List<String> contextFieldNames, String adeEventType) {
+			this.strategyName = strategyName;
+			this.contextFieldNames = StringUtils.join(contextFieldNames);
+			this.adeEventType = adeEventType;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof FeatureBucketConfCacheKey)) return false;
+
+			FeatureBucketConfCacheKey that = (FeatureBucketConfCacheKey) o;
+
+			if (!strategyName.equals(that.strategyName)) return false;
+			if (!contextFieldNames.equals(that.contextFieldNames)) return false;
+			return adeEventType.equals(that.adeEventType);
+		}
+
+		@Override
+		public int hashCode() {
+			int result = strategyName.hashCode();
+			result = 31 * result + contextFieldNames.hashCode();
+			result = 31 * result + adeEventType.hashCode();
+			return result;
 		}
 	}
 }

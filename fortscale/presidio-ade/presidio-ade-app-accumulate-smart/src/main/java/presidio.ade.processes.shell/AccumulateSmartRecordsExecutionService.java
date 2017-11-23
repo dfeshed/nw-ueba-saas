@@ -3,7 +3,7 @@ package presidio.ade.processes.shell;
 import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;
@@ -16,17 +16,17 @@ public class AccumulateSmartRecordsExecutionService {
     private final SmartAccumulationDataStore smartAccumulationDataStore;
     private int pageSize;
     private int maxGroupSize;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public AccumulateSmartRecordsExecutionService(int pageSize, int maxGroupSize, SmartDataReader smartDataReader, SmartAccumulationDataStore smartAccumulationDataStore,
-                                                  SmartAccumulationsCache smartAccumulationsCache, TtlService ttlService) {
+                                                  SmartAccumulationsCache smartAccumulationsCache, StoreManager storeManager) {
 
         this.smartAccumulationsCache = smartAccumulationsCache;
         this.smartDataReader = smartDataReader;
         this.smartAccumulationDataStore = smartAccumulationDataStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
-        this.ttlService = ttlService;
+        this.storeManager = storeManager;
     }
 
     public void run(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
@@ -36,11 +36,15 @@ public class AccumulateSmartRecordsExecutionService {
         TimeRange timeRange = new TimeRange(startDate, endDate);
         accumulateSmartRecordsService.execute(timeRange, configurationName);
 
-        ttlService.cleanupCollections(startDate);
+        storeManager.cleanupCollections(startDate);
     }
 
     public void clean(String configurationName, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
+    }
+
+    public void cleanup(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
+        storeManager.cleanupCollections(startDate, endDate);
     }
 }
 
