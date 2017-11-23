@@ -188,7 +188,7 @@ test('title renders', function(assert) {
 });
 
 test('all views enabled for network sessions', function(assert) {
-  assert.expect(3);
+  assert.expect(5);
   new DataHelper(this.get('redux'))
     .setViewToPacket()
     .initializeData({ meta: [['medium', 1]] });
@@ -198,6 +198,8 @@ test('all views enabled for network sessions', function(assert) {
     assert.ok($('.ember-power-select-option:contains("Packet View")').attr('aria-disabled') !== 'true', 'Packet View is enabled');
     assert.ok($('.ember-power-select-option:contains("File View")').attr('aria-disabled') !== 'true', 'File View is enabled');
     assert.ok($('.ember-power-select-option:contains("Text View")').attr('aria-disabled') !== 'true', 'Text View is enabled');
+    assert.ok($('.ember-power-select-option:contains("Eamil View")').attr('aria-disabled') !== 'true', 'Email View is enabled');
+    assert.ok($('.ember-power-select-option:contains("Web View")').attr('aria-disabled') !== 'true', 'Web View is enabled');
   });
 });
 
@@ -268,5 +270,24 @@ test('it renders packet view when preference set to packet', function(assert) {
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     assert.equal(redux.getState().recon.visuals.defaultReconView.name, 'PACKET');
+  });
+});
+
+/*
+ * Click on Web or Email view opens classic reconstruction view in a new browser tab
+ * and does not change the content of the current tab
+*/
+test('Click on Web/Email tab opens classic reconstruction view in a new browser tab', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData()
+    .setViewToText();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-nav-tab').length, 5);
+  assert.equal(redux.getState().recon.visuals.currentReconView.name, 'TEXT');
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-nav-tab')[3].textContent.trim(), 'Email');
+    assert.equal(this.$('.rsa-nav-tab')[4].textContent.trim(), 'Web');
+    this.$('.rsa-nav-tab')[3].click();
+    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'TEXT');
   });
 });

@@ -31,6 +31,16 @@ const RECON_VIEW_TYPES = [{
   name: 'FILE',
   component: 'recon-event-detail/files',
   dataKey: 'files.files'
+}, {
+  code: 4,
+  id: 'mail',
+  name: 'MAIL',
+  isClassicReconView: true
+}, {
+  code: 5,
+  id: 'web',
+  name: 'WEB',
+  isClassicReconView: true
 }];
 
 const RECON_VIEW_TYPES_BY_NAME = {};

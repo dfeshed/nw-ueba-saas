@@ -157,7 +157,9 @@ export default {
       views: {
         text: 'Text Analysis',
         packet: 'Packet Analysis',
-        file: 'File Analysis'
+        file: 'File Analysis',
+        web: 'Web',
+        mail: 'Email'
       }
     },
     meta: {

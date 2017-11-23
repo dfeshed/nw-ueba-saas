@@ -249,6 +249,15 @@ const changePacketsPerPage = (packetsPerPage) => {
  */
 const setNewReconView = (newView) => {
   return (dispatch, getState) => {
+    // Open web/email view of classic NW events reconstruction page in a new browser tab
+    // without changing any content in current tab.
+    if (newView.isClassicReconView) {
+      const state = getState().recon.data;
+      const path = `/investigation/${state.endpointId}/navigate/event/${newView.name}/${state.eventId}`;
+      window.open(path, '_blank');
+      return;
+    }
+
     // first dispatch the new view
     dispatch({
       type: ACTION_TYPES.CHANGE_RECON_VIEW,
