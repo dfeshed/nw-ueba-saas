@@ -311,6 +311,7 @@ export default {
       applyDrill: 'Apply Drill in New Tab',
       applyNEDrill: 'Apply !EQUALS Drill in New Tab',
       refocus: 'Refocus Investigation in New Tab',
+      hostslookup: 'Hosts Lookup',
       external: {
         google: 'Google',
         virustotal: 'VirusTotal PDNS',

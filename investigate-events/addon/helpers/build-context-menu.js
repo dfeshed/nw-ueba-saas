@@ -39,6 +39,12 @@ export function _buildInvestigateUrl(selected, queryOperator, contextDetails, di
   return `/investigation/endpointid/${endpointId}/navigate/query/${query}/date/${formattedStartDate}/${formattedEndDate}`;
 }
 
+export function _buildHostsUrl(selected, contextDetails) {
+  const metaFormatMap = _prepareMetaFormatMap(contextDetails.language);
+  const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: '=' }], metaFormatMap);
+  return `/investigate/hosts?query=${encodeURIComponent(query)}`;
+}
+
 const _getTranslated = function(i18nKey) {
   // i18n.t() returns a SafeString object. Later, when this is converted to immutable before storing in redux, the
   // SafeString object is converted to Immutable object causing the toString() to be overriden. This results in
@@ -84,6 +90,12 @@ export function buildContextMenu() {
       label: _getTranslated('recon.contextmenu.applyNEDrill'),
       action(selection, contextDetails) {
         _openUrl(_buildInvestigateUrl(selection[0], '!=', contextDetails));
+      }
+    },
+    {
+      label: _getTranslated('recon.contextmenu.hostslookup'),
+      action(selection, contextDetails) {
+        _openUrl(_buildHostsUrl(selection[0], contextDetails));
       }
     },
     {

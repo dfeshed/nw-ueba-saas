@@ -310,6 +310,7 @@ export default {
       applyDrill: 'ja_Apply Drill in New Tab',
       applyNEDrill: 'ja_Apply !EQUALS Drill in New Tab',
       refocus: 'ja_Refocus Investigation in New Tab',
+      hostslookup: 'ja_Hosts Lookup',
       external: {
         google: 'ja_Google',
         virustotal: 'ja_VirusTotal PDNS',
