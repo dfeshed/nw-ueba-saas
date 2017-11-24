@@ -4,8 +4,7 @@ $filter-panel-width: 250px;
 .host-container {
   .filter-zone {
     @include border-right(1px, solid, primary, darker);
-    max-width: 20%;
-    min-width: $filter-panel-width;
+    max-width: $filter-panel-width;
     overflow: auto;
     overflow-x: hidden;
     opacity: 1;

@@ -1,4 +1,4 @@
-<span class="filter-list__item-label" {{action applyFilter filter on='click'}}>
+<span class="filter-list__item-label ellipsis" title="{{filter.name}}" {{action applyFilter filter on='click'}}>
   {{filter.name}}
 </span>
 {{#unless filter.systemFilter}}

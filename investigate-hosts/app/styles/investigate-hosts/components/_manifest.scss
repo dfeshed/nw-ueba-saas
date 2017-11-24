@@ -8,6 +8,13 @@
 @import "host-title-bar/manifest";
 @import "host-list/content-filter/manifest";
 
+//Common classes
+.ellipsis{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display:block;
+}
 .host-detail {
   &__no-snapshots {
     @include rsa-font(bold);
