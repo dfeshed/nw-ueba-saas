@@ -136,7 +136,7 @@ const ContentFilter = Component.extend({
     },
 
     saveFilter() {
-      let isFieldsEmpty = true;
+      let isFieldsEmpty = false;
       const {
         saveFilterName,
         expressionList,
@@ -147,8 +147,8 @@ const ContentFilter = Component.extend({
       };
       for (const schema of expressionList) {
         const { propertyValues } = schema;
-        if (propertyValues) {
-          isFieldsEmpty = false;
+        if (!propertyValues) {
+          isFieldsEmpty = true;
           break;
         }
       }
