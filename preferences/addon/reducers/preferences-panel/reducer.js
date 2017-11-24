@@ -35,7 +35,6 @@ const preferenceReducer = handleActions({
 
   [ACTION_TYPES.SAVE_PREFERENCES]: (state, action) => {
     return handle(state, action, {
-      start: (state) => state.set('preferences', null),
       failure: (state) => state.merge({ ...state }),
       success: (state) => state.merge({ ...state, preferences: action.payload })
     });

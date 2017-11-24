@@ -6,8 +6,10 @@
   right: 0;
   bottom: 0;
   background-color: background-color(primary, darker);
-  border-top: 1px solid border-color(secondary);
+  border-top: 0.2rem solid border-color(secondary);
+  border-bottom: 0.3rem solid border-color(secondary);
   overflow: hidden;
+  white-space: nowrap;
   @include rsa-layer(panels);
 
   &.is-expanded {

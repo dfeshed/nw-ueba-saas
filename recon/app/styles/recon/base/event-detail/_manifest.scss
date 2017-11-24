@@ -34,7 +34,7 @@
 
   .is-sticky {
     border-top: none;
-    z-index: 1000;
+    @include rsa-layer(panels);
   }
 
   .scroll-box {

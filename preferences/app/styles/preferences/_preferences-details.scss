@@ -1,6 +1,11 @@
 .rsa-preferences {
   &-field-content {
     margin: rsa-whitespace();
+
+    .rsa-form-radio-group-label {
+      margin-bottom: rsa-whitespace();
+    }
+
   }
   &-loader-position{
     margin-top: 50%;
