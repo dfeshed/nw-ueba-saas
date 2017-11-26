@@ -1,5 +1,6 @@
 package presidio.webapp.service;
 
+import presidio.webapp.model.AlertQueryEnums;
 import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.model.EventsWrapper;
 import presidio.webapp.model.IndicatorsWrapper;
@@ -23,4 +24,6 @@ public interface RestAlertService {
     IndicatorsWrapper getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery);
 
     EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, presidio.webapp.model.EventQuery eventQuery);
+
+    void updateAlertFeedback(String alertId, AlertQueryEnums.AlertFeedback feedback);
 }

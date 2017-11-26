@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -13,24 +12,27 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:monitoring.properties")
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
-@Import({ElasticsearchTestConfig.class})
+@Import({ElasticsearchTestConfig.class, TestConfig.class})
 public class ExternalMonitoringTestConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
+
+
+    private final String APPLICATION_NAME = "External-monitoring";
 
     @Autowired
     public MetricRepository metricRepository;
@@ -46,7 +48,7 @@ public class ExternalMonitoringTestConfiguration {
     }
 
     public MetricsExporter metricsExporter() {
-        return new MetricsExporterElasticImpl(presidioMetricEndPoint(), metricExportService(), taskScheduler());
+        return new MetricsExporterElasticImpl(presidioMetricBucket(), metricExportService(), taskScheduler());
     }
 
 
@@ -59,23 +61,24 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()), presidioMetricFactory());
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricBucket()));
+    }
+
+    @Bean
+    public MetricConventionApplyer metricConventionApplyer() {
+        return new PresidioMetricConventionApplyer(APPLICATION_NAME);
     }
 
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(presidioSystemMetrics());
+    public PresidioMetricBucket presidioMetricBucket() {
+        return new PresidioMetricBucket(presidioSystemMetrics(), metricConventionApplyer());
     }
 
 
     @Bean
     public PresidioSystemMetricsFactory presidioSystemMetrics() {
-        return new PresidioSystemMetricsFactory("");
+        return new PresidioSystemMetricsFactory(APPLICATION_NAME);
     }
 
-    @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory("");
-    }
 }

@@ -9,9 +9,9 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
+import presidio.output.commons.services.alert.UserSeverity;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.ElasticsearchQueryBuilder;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;

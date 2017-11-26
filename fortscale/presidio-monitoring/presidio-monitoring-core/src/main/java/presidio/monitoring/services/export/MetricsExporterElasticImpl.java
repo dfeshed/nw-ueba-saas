@@ -5,7 +5,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 
 
 public class MetricsExporterElasticImpl extends MetricsExporter {
@@ -14,8 +14,8 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
 
     private PresidioMetricPersistencyService presidioMetricPersistencyService;
 
-    public MetricsExporterElasticImpl(PresidioMetricEndPoint presidioMetricEndPoint, PresidioMetricPersistencyService presidioMetricPersistencyService, ThreadPoolTaskScheduler scheduler) {
-        super(presidioMetricEndPoint, scheduler);
+    public MetricsExporterElasticImpl(PresidioMetricBucket presidioMetricBucket, PresidioMetricPersistencyService presidioMetricPersistencyService, ThreadPoolTaskScheduler scheduler) {
+        super(presidioMetricBucket, scheduler);
         this.presidioMetricPersistencyService = presidioMetricPersistencyService;
     }
 
@@ -26,4 +26,22 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
         logger.debug("Ended Exporting metrics to elastic");
     }
 
+    @Override
+    public void manualExportMetrics(MetricBucketEnum metricBucketEnum) {
+        logger.debug("Manual exporting metrics to elastic");
+        switch (metricBucketEnum) {
+            case APPLICATION:
+                presidioMetricPersistencyService.save(getApplicationMetricsForExport());
+                break;
+            case SYSTEM:
+                presidioMetricPersistencyService.save(getSystemMetricsForExport());
+                break;
+            case ALL:
+                presidioMetricPersistencyService.save(getMetricsForExport(false));
+                break;
+            default:
+                logger.info("Bad metricBucketEnum was given");
+        }
+        logger.debug("Ended Exporting metrics to elastic");
+    }
 }

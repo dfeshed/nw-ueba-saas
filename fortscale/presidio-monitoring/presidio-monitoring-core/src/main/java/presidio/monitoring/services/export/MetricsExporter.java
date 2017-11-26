@@ -5,7 +5,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.records.MetricDocument;
 
 import java.util.List;
@@ -14,23 +14,35 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
 
     private final Logger logger = Logger.getLogger(MetricsExporter.class);
 
-    private PresidioMetricEndPoint presidioMetricEndPoint;
+    private PresidioMetricBucket presidioMetricBucket;
     private ThreadPoolTaskScheduler scheduler;
     protected boolean lastExport;
 
 
-    MetricsExporter(PresidioMetricEndPoint presidioMetricEndPoint, ThreadPoolTaskScheduler scheduler) {
-        this.presidioMetricEndPoint = presidioMetricEndPoint;
+    MetricsExporter(PresidioMetricBucket presidioMetricBucket, ThreadPoolTaskScheduler scheduler) {
+        this.presidioMetricBucket = presidioMetricBucket;
         this.scheduler = scheduler;
         this.lastExport = false;
     }
 
     public List<MetricDocument> getMetricsForExport(boolean isLastExport) {
-        logger.debug("Getting metrics from end point.");
-        return presidioMetricEndPoint.getAllMetrics(isLastExport);
+        logger.debug("Getting metrics from metric bucket.");
+        return presidioMetricBucket.getAllMetrics(isLastExport);
+    }
+
+    public List<MetricDocument> getApplicationMetricsForExport() {
+        logger.debug("Getting all application metrics from metric bucket.");
+        return presidioMetricBucket.getApplicationMetrics();
+    }
+
+    public List<MetricDocument> getSystemMetricsForExport() {
+        logger.debug("Getting all system metrics from metric bucket.");
+        return presidioMetricBucket.getSystemMetrics();
     }
 
     public abstract void export();
+
+    public abstract void manualExportMetrics(MetricBucketEnum metricBucketEnum);
 
     public void flush() {
         logger.debug("Closing application and exporting metrics last time.");
@@ -46,4 +58,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         scheduler.shutdown();
     }
 
+    public enum MetricBucketEnum {
+        APPLICATION, SYSTEM, ALL;
+    }
 }

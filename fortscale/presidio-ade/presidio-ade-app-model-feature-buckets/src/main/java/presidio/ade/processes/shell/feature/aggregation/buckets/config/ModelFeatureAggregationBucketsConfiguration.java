@@ -5,8 +5,8 @@ import fortscale.aggregation.feature.bucket.FeatureBucketStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketStoreMongoConfig;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceConfig;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ import presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggr
         EnrichedDataStoreConfig.class,
         InMemoryFeatureBucketAggregatorConfig.class,
         FeatureBucketStoreMongoConfig.class,
-        TtlServiceConfig.class,
+        StoreManagerConfig.class,
 })
 public class ModelFeatureAggregationBucketsConfiguration {
 
@@ -44,11 +44,11 @@ public class ModelFeatureAggregationBucketsConfiguration {
     @Autowired
     private FeatureBucketStore featureBucketStore;
     @Autowired
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ModelFeatureAggregationBucketsExecutionServiceImpl(
-                bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, ttlService, pageSize, maxGroupSize);
+                bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, storeManager, pageSize, maxGroupSize);
     }
 }

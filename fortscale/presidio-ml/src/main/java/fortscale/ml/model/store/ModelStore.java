@@ -5,15 +5,14 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.util.StreamUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,12 +23,12 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class ModelStore implements TtlServiceAware {
+public class ModelStore implements StoreManagerAware {
     private static final Logger logger = Logger.getLogger(ModelStore.class);
     private static final String COLLECTION_NAME_PREFIX = "model_";
 
     private MongoTemplate mongoTemplate;
-    private TtlService ttlService;
+    private StoreManager storeManager;
     private Duration ttlOldestAllowedModel;
     private int modelAggregationPaginationSize;
     private int modelQueryPaginationSize;
@@ -62,7 +61,7 @@ public class ModelStore implements TtlServiceAware {
     public void save(ModelConf modelConf, ModelDAO modelDao) {
         String collectionName = getCollectionName(modelConf);
         mongoTemplate.insert(modelDao, collectionName);
-        ttlService.save(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName);
     }
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
@@ -108,8 +107,8 @@ public class ModelStore implements TtlServiceAware {
 
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
@@ -119,6 +118,11 @@ public class ModelStore implements TtlServiceAware {
         removeOldestModels(collectionName, until);
 
         removeContextIdOldModels(collectionName, until);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+
     }
 
 
