@@ -5,7 +5,6 @@ import org.apache.commons.collections.MapUtils;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,30 +12,18 @@ public class Metric {
 
     private String name;
     private Map<MetricEnums.MetricValues, Number> value;
-    private Date time;
-    private Date logicTime;
+    private Instant time;
+    private Instant logicTime;
     private Map<MetricEnums.MetricTagKeysEnum, String> tags;
     private boolean reportOneTime;
 
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, Date logicTime, Map<MetricEnums.MetricTagKeysEnum, String> tags, boolean reportOneTime) {
-        this.name = name;
-        this.value = value;
-        this.time = new Date();
-        this.logicTime = logicTime;
-        this.tags = tags;
-        this.reportOneTime = reportOneTime;
-    }
-
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, boolean reportOneTime) {
-        this(name, value, null, tags, reportOneTime);
-    }
-
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value, boolean reportOneTime) {
-        this(name, value, new HashMap<>(), reportOneTime);
-    }
-
-    public Metric(String name, Map<MetricEnums.MetricValues, Number> value) {
-        this(name, value, false);
+    public Metric(MetricBuilder metricBuilder) {
+        this.name = metricBuilder.metricName;
+        this.value = metricBuilder.metricValues;
+        this.time = Instant.now();
+        this.logicTime = metricBuilder.metricLogicTime;
+        this.tags = metricBuilder.metricTags;
+        this.reportOneTime = metricBuilder.metricReportOnce;
     }
 
     public void setName(String name) {
@@ -51,7 +38,7 @@ public class Metric {
         this.value.put(name, value);
     }
 
-    public void setTime(Date time) {
+    public void setTime(Instant time) {
         this.time = time;
     }
 
@@ -79,7 +66,7 @@ public class Metric {
         return value;
     }
 
-    public Date getTime() {
+    public Instant getTime() {
         return time;
     }
 
@@ -91,11 +78,11 @@ public class Metric {
         return reportOneTime;
     }
 
-    public Date getLogicTime() {
+    public Instant getLogicTime() {
         return logicTime;
     }
 
-    public void setLogicTime(Date logicTime) {
+    public void setLogicTime(Instant logicTime) {
         this.logicTime = logicTime;
     }
 
@@ -118,6 +105,10 @@ public class Metric {
 
         public Metric.MetricBuilder setMetricUnit(MetricEnums.MetricUnitType metricUnit) {
             this.metricUnit = metricUnit;
+            if (MapUtils.isEmpty(this.metricTags)) {
+                this.metricTags = new HashMap<>();
+            }
+            metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit.toString());
             return this;
         }
 
@@ -149,16 +140,14 @@ public class Metric {
         }
 
         public Metric build() {
-            Date date = null;
             if (MapUtils.isEmpty(this.metricTags)) {
                 this.metricTags = new HashMap<>();
             }
-            if (this.metricUnit == null) {
-                this.metricUnit = MetricEnums.MetricUnitType.NUMBER;
+            if (!metricTags.containsKey(MetricEnums.MetricTagKeysEnum.UNIT)) {
+                metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, MetricEnums.MetricUnitType.NUMBER.toString());
             }
-            metricTags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnit.toString());
-            return new Metric(metricName, metricValues, date, metricTags, metricReportOnce);
+            return new Metric(this);
         }
-
     }
+
 }

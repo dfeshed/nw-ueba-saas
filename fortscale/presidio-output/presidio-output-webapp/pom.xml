@@ -29,6 +29,11 @@
     <dependencies>
         <dependency>
             <groupId>fortscale</groupId>
+            <artifactId>presidio-output-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
             <artifactId>presidio-output-domain</artifactId>
             <version>${project.version}</version>
             <exclusions>

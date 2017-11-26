@@ -21,7 +21,7 @@ import presidio.output.processor.services.user.UserService;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, UserServiceConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class})
+@Import({MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class})
 public class OutputProcessorConfiguration {
 
     @Autowired
