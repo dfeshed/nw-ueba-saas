@@ -81,7 +81,9 @@ public class ManagerServiceImpl implements ManagerService {
             if (Duration.between(firstRunningDag.getStartInstant(), firstTimeRange.getStart()).compareTo(buildingBaselineDuration) < 0) {
                 statusEnum = PipelineState.StatusEnum.BUILDING_BASELINE;
             }
-            statusEnum = PipelineState.StatusEnum.RUNNING;
+            else {
+                statusEnum = PipelineState.StatusEnum.RUNNING;
+            }
         }
 
         return statusEnum;
