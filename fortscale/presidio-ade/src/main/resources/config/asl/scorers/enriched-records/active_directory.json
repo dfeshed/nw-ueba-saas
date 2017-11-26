@@ -56,6 +56,40 @@
               }
             },
             {
+              "type": "list-conditional-scorer",
+              "name": "operationType.userIdObjectChange.activeDirectory.score",
+              "conditional-field": "operationTypeCategories",
+              "conditional-value": "OBJECT_CHANGES_OPERATION",
+              "scorer": {
+                "type": "max-scorer-container",
+                "name": "operationType.userIdObjectChange.activeDirectory.score",
+                "scorers": [
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userIdObjectChange.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userIdObjectChange.activeDirectory"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  },
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userId.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userId.activeDirectory"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  }
+                ]
+              }
+            },
+            {
               "type": "boolean-conditional-scorer",
               "name": "adminPasswordChanged.userId.activeDirectory.score",
               "conditional-field": "isUserAdmin",

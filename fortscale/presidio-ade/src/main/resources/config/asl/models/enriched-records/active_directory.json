@@ -42,6 +42,26 @@
       }
     },
     {
+      "name" : "operationType.userIdObjectChange.activeDirectory",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily"
+      },
+      "retriever" : {
+        "type" : "categorical_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily",
+        "featureName" : "operationTypeHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
       "name" : "operationType.userId.activeDirectory",
       "selector" : {
         "type" : "feature_bucket_context_selector",

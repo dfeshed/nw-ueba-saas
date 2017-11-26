@@ -232,6 +232,19 @@ indicators:
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
+- id: sumOfHighestOperationTypeScoresUserIdObjectChangeActiveDirectoryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_object_change_operation
+  adeEventType: scored_enriched.active_directory.operationType.userIdObjectChange.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationType
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: abnormal_ad_changes
+
 - id: numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_senesitive_group_membership_events

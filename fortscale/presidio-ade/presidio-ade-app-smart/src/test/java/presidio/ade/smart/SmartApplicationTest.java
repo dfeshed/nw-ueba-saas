@@ -55,7 +55,7 @@ public class SmartApplicationTest extends BaseAppTest {
     private IMapGenerator aggregatedFeatureToScoreGenerator;
     private IMapGenerator aggregatedFeatureToValueGenerator;
     private static final double avgFeatureValueForLowAnomaliesUser = 0.5;
-    private static final int numOfFeaturesInGroups = 6;
+    private static final int numOfFeaturesInGroups = 5;
     public static final String EXECUTION_COMMAND = "process --smart_record_conf_name %s --start_date %s --end_date %s";
     @Autowired
     private AggregatedDataStore aggregatedDataStore;
@@ -193,13 +193,20 @@ public class SmartApplicationTest extends BaseAppTest {
         executeAndAssertCommandSuccess(command);
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        Double expectedScore = smartRecords.get(0).getScore();
-        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
-        Assert.assertTrue(expectedScore > 0);
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
-
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+
+        List<SmartRecord> smartRecordsWith9Indicators = smartRecords.stream().filter(smartRecord -> smartRecord.getAggregationRecords().size()==9).collect(Collectors.toList());
+        Double expectedScore1 = smartRecordsWith9Indicators.get(0).getScore();
+        Double expectedSmartValue1 = smartRecordsWith9Indicators.get(0).getSmartValue();
+        Assert.assertTrue(expectedScore1 > 0);
+        Assert.assertTrue(smartRecordsWith9Indicators.stream().allMatch(smart -> smart.getScore().equals(expectedScore1) && smart.getSmartValue() == expectedSmartValue1));
+
+        List<SmartRecord> smartRecordsWith8Indicators = smartRecords.stream().filter(smartRecord -> smartRecord.getAggregationRecords().size()!=9).collect(Collectors.toList());
+        Double expectedScore2 = smartRecordsWith8Indicators.get(0).getScore();
+        Double expectedSmartValue2 = smartRecordsWith8Indicators.get(0).getSmartValue();
+        Assert.assertTrue(expectedScore2 > 0);
+        Assert.assertTrue(smartRecordsWith8Indicators.stream().allMatch(smart -> smart.getScore().equals(expectedScore2) && smart.getSmartValue() == expectedSmartValue2));
+
     }
 
 
@@ -357,17 +364,24 @@ public class SmartApplicationTest extends BaseAppTest {
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
 
-        Double expectedScore = smartRecords.get(0).getScore();
-        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
-        Assert.assertTrue(expectedScore > 0);
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
-
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * (durationOfProcess - (2 * numOfDaysToReduce)));
 
         Instant smartRecordStart = smartRecords.stream().min(Comparator.comparing(SmartRecord::getStartInstant)).get().getStartInstant();
         Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
         Assert.assertTrue(start.equals(smartRecordStart));
         Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
+
+        List<SmartRecord> smartRecordsWith9Indicators = smartRecords.stream().filter(smartRecord -> smartRecord.getAggregationRecords().size()==9).collect(Collectors.toList());
+        Double expectedScore1 = smartRecordsWith9Indicators.get(0).getScore();
+        Double expectedSmartValue1 = smartRecordsWith9Indicators.get(0).getSmartValue();
+        Assert.assertTrue(expectedScore1 > 0);
+        Assert.assertTrue(smartRecordsWith9Indicators.stream().allMatch(smart -> smart.getScore().equals(expectedScore1) && smart.getSmartValue() == expectedSmartValue1));
+
+        List<SmartRecord> smartRecordsWith8Indicators = smartRecords.stream().filter(smartRecord -> smartRecord.getAggregationRecords().size()!=9).collect(Collectors.toList());
+        Double expectedScore2 = smartRecordsWith8Indicators.get(0).getScore();
+        Double expectedSmartValue2 = smartRecordsWith8Indicators.get(0).getSmartValue();
+        Assert.assertTrue(expectedScore2 > 0);
+        Assert.assertTrue(smartRecordsWith8Indicators.stream().allMatch(smart -> smart.getScore().equals(expectedScore2) && smart.getSmartValue() == expectedSmartValue2));
     }
 
 
@@ -717,7 +731,9 @@ public class SmartApplicationTest extends BaseAppTest {
         for (int i = 0; i < numOfFeaturesInGroups; i++) {
             List<String> featuresWithDiffWeight = new ArrayList<>();
             for (List<String> features : weightToFeaturesSortedMap.values()) {
-                featuresWithDiffWeight.add(features.get(i));
+                if(i < features.size()) {
+                    featuresWithDiffWeight.add(features.get(i));
+                }
             }
             featuresWithDiffWeightList.add(featuresWithDiffWeight);
         }
