@@ -11,6 +11,7 @@ from airflow.utils.file import TemporaryDirectory
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.string_service import is_blank
+from datetime import timedelta 
 
 RETRY_ARGS_CONF_KEY = "retry_args"
 
@@ -71,9 +72,11 @@ class SpringBootJarOperator(BashOperator):
             retry_callback = SpringBootJarOperator.handle_retry
         kwargs['params']['retry_command'] = self.get_retry_command()
 
-        super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'] ,retry_delay=retry_args['retry_delay'],
+        super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
+                                                    retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
                                                     retry_exponential_backoff=retry_args['retry_exponential_backoff'],
-                                                    max_retry_delay=retry_args['max_retry_delay'],
+                                                    max_retry_delay=timedelta(
+                                                        seconds=int(retry_args['max_retry_delay'])),
                                                     bash_command=bash_command, on_retry_callback=retry_callback,
                                                     *args, **kwargs)
 

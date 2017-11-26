@@ -100,6 +100,7 @@
         <junitparams.version>1.0.2</junitparams.version>
         <jsonassert.version>1.2.3</jsonassert.version>
         <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
+        <commons.math3.version>3.1.1</commons.math3.version>
         <fongo.version>2.1.0</fongo.version>
         <quartz.version>2.2.1</quartz.version>
         <perf4j.version>0.9.16</perf4j.version>
@@ -213,6 +214,11 @@
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm-commons</artifactId>
                 <version>${asm-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-math3</artifactId>
+                <version>${commons.math3.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.fakemongo</groupId>
