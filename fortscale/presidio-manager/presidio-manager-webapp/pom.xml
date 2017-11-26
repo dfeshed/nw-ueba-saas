@@ -240,7 +240,9 @@
                             <swaggerFileName>presidio-manager-swagger</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
                             <modelSubstitute>/override.map</modelSubstitute>
-                            <modelConverters>fortscale.utils.swagger.DateTimeModelConverter</modelConverters>
+                            <modelConverters>
+                                <modelConverter>fortscale.utils.swagger.DateTimeModelConverter</modelConverter>
+                            </modelConverters>
                             <securityDefinitions>
                                 <securityDefinition>
                                     <name>basicAuth</name>
