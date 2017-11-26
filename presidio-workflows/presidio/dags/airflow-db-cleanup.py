@@ -17,7 +17,6 @@ airflow trigger_dag --conf '{"maxDBEntryAgeInDays":30}' airflow-db-cleanup
 """
 
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")  # airflow-db-cleanup
-START_DATE = datetime.now() - timedelta(minutes=1)
 
 config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 dag_configs = config_reader.read(conf_key='dags.dags_configs')
