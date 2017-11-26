@@ -13,6 +13,7 @@ A maintenance workflow that you can deploy into Airflow to periodically clean ou
 airflow trigger_dag --conf '{"maxDBEntryAgeInDays":30}' airflow-db-cleanup
 --conf options:
     maxDBEntryAgeInDays:<INT> - Optional
+    taken from: https://github.com/teamclairvoyant/airflow-maintenance-dags/blob/master/db-cleanup/airflow-db-cleanup.py
 """
 
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")  # airflow-db-cleanup
