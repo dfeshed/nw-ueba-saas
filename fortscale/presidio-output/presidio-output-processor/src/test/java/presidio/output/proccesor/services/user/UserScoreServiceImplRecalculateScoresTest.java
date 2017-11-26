@@ -11,8 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
@@ -31,6 +33,12 @@ import java.util.*;
 
 public class UserScoreServiceImplRecalculateScoresTest {
 
+    public static final int PERCENT_THRESHOLD_CRITICAL = 95;
+    public static final int PERCENT_THRESHOLD_HIGH = 80;
+    public static final int PERCENT_THRESHOLD_MEDIUM = 70;
+    public static final int CRITICAL_SCORE = 95;
+    public static final int HIGH_SCORE = 90;
+    public static final int MEDIUM_SCORE = 80;
     public static final int ALERT_CONTRIBUTION_CRITICAL = 30;
     public static final int ALERT_CONTRIBUTION_HIGH = 25;
     public static final int ALERT_CONTRIBUTION_MEDIUM = 20;
@@ -39,26 +47,32 @@ public class UserScoreServiceImplRecalculateScoresTest {
     private UserScoreServiceImpl userScoreService;
     private UserPersistencyService mockUserPresistency;
     private AlertPersistencyService mockAlertPresistency;
+    private AlertSeverityService mockAlertSeverityService;
 
     private Page<Alert> emptyAlertPage;
 
 
     @Before
     public void setup() {
+        mockAlertSeverityService = new AlertEnumsSeverityService(
+                CRITICAL_SCORE,
+                HIGH_SCORE,
+                MEDIUM_SCORE,
+                ALERT_CONTRIBUTION_CRITICAL,
+                ALERT_CONTRIBUTION_HIGH,
+                ALERT_CONTRIBUTION_MEDIUM,
+                ALERT_CONTRIBUTION_LOW,
+                PERCENT_THRESHOLD_CRITICAL,
+                PERCENT_THRESHOLD_HIGH,
+                PERCENT_THRESHOLD_MEDIUM);
         mockUserPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
         mockAlertPresistency = Mockito.mock(AlertPersistencyService.class);
 
         userScoreService = new UserScoreServiceImpl(mockUserPresistency,
                 mockAlertPresistency,
+                mockAlertSeverityService,
                 1000,
-                ALERT_EFFECTIVE_DURATION_IN_DAYS,
-                75,
-                50,
-                25,
-                ALERT_CONTRIBUTION_CRITICAL,
-                ALERT_CONTRIBUTION_HIGH,
-                ALERT_CONTRIBUTION_MEDIUM,
-                ALERT_CONTRIBUTION_LOW);
+                ALERT_EFFECTIVE_DURATION_IN_DAYS);
 
 
         emptyAlertPage = new PageImpl<Alert>(Collections.emptyList());
