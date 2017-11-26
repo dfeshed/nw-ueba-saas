@@ -262,7 +262,7 @@
                             </info>
                             <host>presidio-domain</host>
                             <basePath> </basePath>
-                            <swaggerDirectory>./target/generated-docs/swagger</swaggerDirectory>
+                            <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
                             <swaggerFileName>presidio-output-swagger</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
                             <securityDefinitions>
@@ -296,7 +296,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>./target/generated-docs/swagger/presidio-output-swagger.yaml</inputSpec>
+                            <inputSpec>${basedir}/target/extra-resources/swagger/presidio-output-swagger.yaml</inputSpec>
                             <language>java</language>
                             <library>jersey2</library>
                             <modelPackage>presidio.output.client.model</modelPackage>
@@ -337,6 +337,27 @@
                             <arguments>
                                 <argument>${project.version}</argument>
                             </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../../target/extra-resources/swagger</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/extra-resources/swagger</directory>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>

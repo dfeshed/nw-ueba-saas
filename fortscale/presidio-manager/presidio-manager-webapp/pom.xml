@@ -16,16 +16,8 @@
 
     <properties>
         <tomcat.web.scope>provided</tomcat.web.scope>
+        <exec-maven-plugin>1.2.1</exec-maven-plugin>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>bootwar</id>
-            <properties>
-                <tomcat.web.scope>compile</tomcat.web.scope>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -142,6 +134,37 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.bat</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.sh</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>bootwar</id>
+            <properties>
+                <tomcat.web.scope>compile</tomcat.web.scope>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>presidio-manager</finalName>
         <plugins>
@@ -190,7 +213,7 @@
                 <configuration>
                     <apiSources>
                         <apiSource>
-                            <swaggerApiReader>presidio.webapp.swagger.PresidioSwaggerReader</swaggerApiReader>
+                            <swaggerApiReader>fortscale.utils.swagger.PresidioSwaggerReader</swaggerApiReader>
                             <springmvc>true</springmvc>
                             <locations>
                                 <location>presidio.webapp.controller</location>
@@ -213,11 +236,11 @@
 
                             <host>presidio-domain</host>
                             <basePath> </basePath>
-                            <swaggerDirectory>./target/generated-docs/swagger</swaggerDirectory>
+                            <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
                             <swaggerFileName>presidio-manager-swagger</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
                             <modelSubstitute>/override.map</modelSubstitute>
-                            <modelConverters>presidio.webapp.swagger.DateTimeModelConverter</modelConverters>
+                            <modelConverters>fortscale.utils.swagger.DateTimeModelConverter</modelConverters>
                             <securityDefinitions>
                                 <securityDefinition>
                                     <name>basicAuth</name>
@@ -237,7 +260,84 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>2.2.3</version>
+                <executions>
+                    <execution>
+                        <id>auto-generate-REST-client</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${basedir}/target/extra-resources/swagger/presidio-manager-swagger.yaml</inputSpec>
+                            <language>java</language>
+                            <library>jersey2</library>
+                            <modelPackage>presidio.output.client.model</modelPackage>
+                            <apiPackage>presidio.output.client.api</apiPackage>
+                            <invokerPackage>presidio.output.client.client</invokerPackage>
+                            <configOptions>
+                                <groupId>fortscale</groupId>
+                                <artifactId>presidio-output-generated-client</artifactId>
+                                <artifactVersion>${project.version}</artifactVersion>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>compile-client</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/compile-client${script.extension}</executable>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-client</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/deploy-client${script.extension}</executable>
+                            <arguments>
+                                <argument>${project.version}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../../target/extra-resources/swagger</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/extra-resources/swagger</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

@@ -1,11 +1,10 @@
-package presidio.webapp.swagger;
+package fortscale.utils.swagger;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.converter.ModelConverter;
 import io.swagger.converter.ModelConverterContext;
 import io.swagger.jackson.AbstractModelConverter;
-import io.swagger.models.Model;
 import io.swagger.models.properties.AbstractProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.util.Json;
