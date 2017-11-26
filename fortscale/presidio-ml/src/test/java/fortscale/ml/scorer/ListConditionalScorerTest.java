@@ -36,6 +36,48 @@ public class ListConditionalScorerTest {
     }
 
     @Test
+    public void testGettingScoreWhenListContainsBothValues(){
+        String conditionalField = "context.operationTypeCategories";
+        String conditionalFileActionValue = "FILE_ACTION";
+        String conditionalFilePermissionValue = "FILE_PERMISSION";
+        double expectedScore = 98;
+        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField,
+                conditionalFileActionValue + ListConditionalScorer.CONDITIONAL_VALUE_CHAR_SPLIT + conditionalFilePermissionValue);
+        AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
+        List<String> fieldValues = new ArrayList<>();
+        fieldValues.add("someCategoryValue");
+        fieldValues.add(conditionalFileActionValue);
+        fieldValues.add("justAnotherCategoryValue");
+        fieldValues.add(conditionalFilePermissionValue);
+        fieldValues.add("yetAnotherCategoryValue");
+        when(adeRecordReader.get(conditionalField, List.class)).thenReturn(fieldValues);
+
+        FeatureScore featureScore = conditionalScorer.calculateScore(adeRecordReader);
+        Assert.assertNotNull(featureScore);
+        Assert.assertEquals(expectedScore, featureScore.getScore(),0.0);
+    }
+
+    @Test
+    public void testGettingScoreWhenListDoesNotContainBothValues(){
+        String conditionalField = "context.operationTypeCategories";
+        String conditionalFileActionValue = "FILE_ACTION";
+        String conditionalFilePermissionValue = "FILE_PERMISSION";
+        double expectedScore = 98;
+        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField,
+                conditionalFileActionValue + ListConditionalScorer.CONDITIONAL_VALUE_CHAR_SPLIT + conditionalFilePermissionValue);
+        AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
+        List<String> fieldValues = new ArrayList<>();
+        fieldValues.add("someCategoryValue");
+        fieldValues.add(conditionalFileActionValue);
+        fieldValues.add("justAnotherCategoryValue");
+        fieldValues.add("yetAnotherCategoryValue");
+        when(adeRecordReader.get(conditionalField, List.class)).thenReturn(fieldValues);
+
+        FeatureScore featureScore = conditionalScorer.calculateScore(adeRecordReader);
+        Assert.assertNull(featureScore);
+    }
+
+    @Test
     public void testGettingNoFeatureScoreWhenListDoesNotContainValue(){
         String conditionalField = "context.operationTypeCategories";
         String conditionalValue = "FILE_ACTION";
