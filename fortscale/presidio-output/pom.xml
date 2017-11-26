@@ -15,6 +15,7 @@
 	<packaging>pom</packaging>
 	
 	<modules>
+		<module>presidio-output-commons</module>
 		<module>presidio-output-domain</module>
 		<module>presidio-output-processor</module>
 		<module>presidio-output-webapp</module>

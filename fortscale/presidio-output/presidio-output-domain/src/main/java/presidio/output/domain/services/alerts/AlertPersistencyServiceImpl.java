@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
@@ -146,6 +147,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
             logger.error("Failed to update alert- alert id or feedback cannot be null");
             return;
         }
+
+
         //building update request-
         IndexRequest indexRequest = new IndexRequest();
         indexRequest.source(Alert.FEEDBACK, feedback);

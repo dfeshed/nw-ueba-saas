@@ -13,6 +13,7 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.sdk.common.AdeManagerSdk;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
