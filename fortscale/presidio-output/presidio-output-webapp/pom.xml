@@ -248,6 +248,7 @@
                                 <description>This is a sample spec for presidio output REST API</description>
                             </info>
                             <swaggerDirectory>generated/swagger/client</swaggerDirectory>
+                            <modelSubstitute>/override.map</modelSubstitute>
                             <outputFormats>yaml</outputFormats>
                         </apiSource>
                     </apiSources>
