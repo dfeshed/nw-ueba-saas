@@ -33,23 +33,6 @@
       }
     },
     {
-      "name": "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly",
-      "type": "F",
-      "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "operationTypeResultHistogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_histogram_key_value_func",
-        "key": "SUCCESS"
-      }
-    },
-    {
       "name": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly",
       "type": "F",
       "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
@@ -76,6 +59,23 @@
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "securitySensitiveOperationResultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "objectChangesOperationResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "objectChangesOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

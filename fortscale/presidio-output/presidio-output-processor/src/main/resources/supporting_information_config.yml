@@ -262,9 +262,9 @@ indicators:
     type: hourly_aggregations
   classification: mass_changes_to_groups
 
-- id: numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_successful_AD_operations
+  name: high_number_of_successful_object_change_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:

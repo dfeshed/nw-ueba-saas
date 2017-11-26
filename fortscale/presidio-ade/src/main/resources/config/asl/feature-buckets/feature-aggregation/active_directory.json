@@ -96,6 +96,33 @@
           }
         }
       ]
+    },
+    {
+      "name": "objectChangesOperationResultHistogramUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "objectChangesOperationResultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('OBJECT_CHANGES_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
     }
   ]
 }

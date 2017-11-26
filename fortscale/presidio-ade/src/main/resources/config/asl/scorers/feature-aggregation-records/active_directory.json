@@ -83,14 +83,14 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly",
+      "ade-event-type": "aggr_event.numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.scorer",
+          "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
             "type": "score-exponential-mapper",
-            "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.mapper",
+            "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
@@ -98,13 +98,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly.base_scorer",
+              "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly.base_scorer",
               "model": {
-                "name": "numberOfSuccessfulOperationType.userId.activeDirectory.hourly"
+                "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulOperationType.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSuccessfulObjectChangeOperation.userId.prior.global.activeDirectory.hourly"
                 }
               ],
               "global-influence": 20,
