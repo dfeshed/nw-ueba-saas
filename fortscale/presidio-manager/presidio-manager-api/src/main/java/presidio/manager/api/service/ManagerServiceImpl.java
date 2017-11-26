@@ -18,6 +18,7 @@ public class ManagerServiceImpl implements ManagerService {
     private final String managerDagIdPrefix;
     private final AirflowApiClient airflowApiClient;
     private final Duration buildingBaselineDuration;
+    private volatile PipelineState.StatusEnum statusEnum;
 
     /**
      * C'tor
@@ -29,6 +30,8 @@ public class ManagerServiceImpl implements ManagerService {
         this.managerDagIdPrefix = managerDagIdPrefix;
         this.airflowApiClient = airflowApiClient;
         this.buildingBaselineDuration = buildingBaselineDuration;
+        // stopped is a viable response only on system startup - before system is configured
+        this.statusEnum = PipelineState.StatusEnum.STOPPED;
     }
 
     /**
@@ -65,26 +68,25 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public PipelineState.StatusEnum getStatus() {
         Map<String, DagExecutionStatus> response = airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(DagState.RUNNING, managerDagIdPrefix);
-        if(response==null)
-        {
-            return PipelineState.StatusEnum.STOPPED;
-        }
-        if(response.isEmpty())
-        {
-            return PipelineState.StatusEnum.STOPPED;
-        }
-        TimeRange firstTimeRange = response.values().stream().map(DagExecutionStatus::getExecutionDates).flatMap(Collection::stream).min(TimeRange::compareTimeRange).get();
-        // it's almost like assuming that there is only one dag. not error prune, but simple enough for the moment
-        DagExecutionStatus firstRunningDag = response.values().stream().min(Comparator.comparing(DagExecutionStatus::getStartInstant)).get();
-        // todo: add another if clause in order to decide cleaning status
+
+        // stopped is a viable response only on system startup
+        if (response!=null && !response.isEmpty()) {
+            TimeRange firstTimeRange = response.values().stream().map(DagExecutionStatus::getExecutionDates).flatMap(Collection::stream).min(TimeRange::compareTimeRange).get();
+            // it's almost like assuming that there is only one dag. not error prune, but simple enough for the moment
+            DagExecutionStatus firstRunningDag = response.values().stream().min(Comparator.comparing(DagExecutionStatus::getStartInstant)).get();
+            // todo: add another if clause in order to decide cleaning status
 
 
-        // todo: this logic should be given by ade manager sdk
-        if(Duration.between(firstRunningDag.getStartInstant(),firstTimeRange.getStart()).compareTo(buildingBaselineDuration)<0)
-        {
-            return PipelineState.StatusEnum.BUILDING_BASELINE;
+            // todo: this logic should be given by ade manager sdk
+            if (Duration.between(firstRunningDag.getStartInstant(), firstTimeRange.getStart()).compareTo(buildingBaselineDuration) < 0) {
+                statusEnum = PipelineState.StatusEnum.BUILDING_BASELINE;
+            }
+            else {
+                statusEnum = PipelineState.StatusEnum.RUNNING;
+            }
         }
-        return PipelineState.StatusEnum.RUNNING;
+
+        return statusEnum;
     }
 
     @Override
