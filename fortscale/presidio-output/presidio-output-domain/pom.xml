@@ -82,7 +82,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-output-commons</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
