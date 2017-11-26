@@ -23,19 +23,36 @@
             },
             {
               "type": "list-conditional-scorer",
-              "name": "userId.securitySensitive.activeDirectory.score",
+              "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "SECURITY_SENSITIVE_OPERATION",
+              "conditional-value": "SECURITY_SENSITIVE_OPERATION,GROUP_MEMBERSHIP",
               "scorer": {
-                "type": "category-rarity-model-scorer",
-                "name": "userId.securitySensitive.activeDirectory.score",
-                "model": {
-                  "name": "userId.securitySensitive.activeDirectory"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15,
-                "number-of-partitions-to-influence-enough": 10,
-                "use-certainty-to-calculate-score": true
+                "type": "max-scorer-container",
+                "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
+                "scorers": [
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userIdSecuritySensitive.activeDirectory"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  },
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userId.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userId.activeDirectory"
+                    },
+                    "max-rare-count": 5,
+                    "max-num-of-rare-features": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  }
+                ]
               }
             },
             {

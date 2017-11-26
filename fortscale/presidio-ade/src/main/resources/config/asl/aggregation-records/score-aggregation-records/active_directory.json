@@ -18,9 +18,9 @@
       }
     },
     {
-      "name": "sumOfHighestOperationTypeScoresUserIdSecuritySensitiveActiveDirectoryHourly",
+      "name": "sumOfHighestOperationTypeScoresUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
       "type": "P",
-      "bucketConfName": "operationTypeToHighestScoreMapUserIdSecuritySensitiveActiveDirectoryHourly",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,

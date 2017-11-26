@@ -25,13 +25,13 @@
       ]
     },
     {
-      "name": "operationTypeToHighestScoreMapUserIdSecuritySensitiveActiveDirectoryHourly",
+      "name": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score"
+        "scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [

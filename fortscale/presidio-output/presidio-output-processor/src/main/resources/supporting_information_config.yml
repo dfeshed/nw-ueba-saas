@@ -219,16 +219,13 @@ indicators:
     featureName: startInstantHistogram
   classification: non_standard_hours
 
-- id: sumOfHighestOperationTypeScoresUserIdSecuritySensitiveActiveDirectoryHourly
+- id: sumOfHighestOperationTypeScoresUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly
   type: SCORE_AGGREGATION
-  name: abnormal_sensitive_operation
-  adeEventType: scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score
+  name: abnormal_group_membership_sensitive_operation
+  adeEventType: scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
-    anomalyFilters:
-      fieldName: operationTypeCategories
-      fieldValue: SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
