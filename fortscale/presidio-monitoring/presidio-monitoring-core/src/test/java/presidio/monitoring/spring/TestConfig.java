@@ -18,7 +18,7 @@ public class TestConfig {
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-        properties.put("spring.application.name", "test");
+        properties.put("spring.application.name", "metricGeneratorTest");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
