@@ -49,7 +49,7 @@
     {{/if}}
 
     {{#if accessControl.hasConfigAccess}}
-      <a href="{{accessControl.configUrl}}" class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
+      <a href="{{accessControl.configUrl}}" class="rsa-header-nav-configure js-test-nav-configure-link {{if isConfigureRoute 'active'}}">{{t "config.title"}}</a>
     {{/if}}
 
     {{#if accessControl.hasAdminAccess}}

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import computed from 'ember-computed';
+import computed from 'ember-computed-decorators';
 import Controller from 'ember-controller';
 import service from 'ember-service/inject';
 
@@ -15,15 +15,24 @@ export default Controller.extend({
 
   accessControl: service(),
 
-  authenticatedAndPageFound: computed('session.isAuthenticated', 'currentPath', function() {
-    const path = this.get('currentPath');
+  @computed('session.isAuthenticated', 'currentPath')
+  authenticatedAndPageFound(isAuthenticated, path) {
 
-    if (!this.get('session.isAuthenticated') || path === 'not-found' || path === 'internal-error') {
+    if (!isAuthenticated || path === 'not-found' || path === 'internal-error') {
       return false;
     } else {
       return true;
     }
-  }),
+  },
+
+  // The Configure nav tab currently points to a series of Classic pages and is not a {{link-to}}, which means
+  // that it will not appear active when the user is in the Configure engine in Ember. For now we'll check if the
+  // path points to the configure engine so that we can ensure the tab is active on those pages. When the Classic
+  // pages have been emberified, we can remove this check and replace with the standard link-to.
+  @computed('currentPath')
+  isConfigureRoute(path) {
+    return path.indexOf('protected.configure.') === 0;
+  },
 
   _updateBodyClass(themeName) {
     $('body').removeClass((index, bodyClasses) => {
