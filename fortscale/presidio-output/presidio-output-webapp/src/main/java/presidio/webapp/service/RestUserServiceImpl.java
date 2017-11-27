@@ -1,10 +1,8 @@
 package presidio.webapp.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatchException;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.rest.jsonpatch.JsonPatch;
@@ -143,21 +141,22 @@ public class RestUserServiceImpl implements RestUserService {
 
     @Override
     public User updateUser(String userId, JsonPatch updateRequest) {
-
         presidio.output.domain.records.users.User userById = userPersistencyService.findUserById(userId);
-        JsonNode userJsonNode = objectMapper.valueToTree(userById);
+        userById = patchUser(updateRequest, userById);
+        userPersistencyService.save(userById);
+        return createResult(userById, null);
+    }
 
+    private presidio.output.domain.records.users.User patchUser(JsonPatch updateRequest, presidio.output.domain.records.users.User userById) {
         JsonNode patchedJson;
         try {
+            JsonNode userJsonNode = objectMapper.valueToTree(userById);
             patchedJson = updateRequest.apply(userJsonNode);
             userById = objectMapper.treeToValue(patchedJson, presidio.output.domain.records.users.User.class);
-            userPersistencyService.save(userById);
-        } catch (JsonPatchException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error parsing or processing  the user object to or from json", e);
         }
-        return createResult(userById, null);
+        return userById;
     }
 
     @Override
@@ -166,16 +165,7 @@ public class RestUserServiceImpl implements RestUserService {
 
         List<presidio.output.domain.records.users.User> updatedUsers = new ArrayList<>();
         users.getContent().forEach(user -> {
-            JsonNode jsonUser = objectMapper.valueToTree(user);
-            try {
-                JsonNode updatedNode = jsonPatch.apply(jsonUser);
-                presidio.output.domain.records.users.User updatedUser = objectMapper.treeToValue(updatedNode, presidio.output.domain.records.users.User.class);
-                updatedUsers.add(updatedUser);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } catch (JsonPatchException e) {
-                e.printStackTrace();
-            }
+            updatedUsers.add(patchUser(jsonPatch, user));
         });
 
         userPersistencyService.save(updatedUsers);

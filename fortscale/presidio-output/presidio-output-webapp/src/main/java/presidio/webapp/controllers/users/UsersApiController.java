@@ -66,23 +66,23 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public ResponseEntity<User> updateUser(@ApiParam(name = "userId", value = "The UUID of the user to return", required = true) @PathVariable String userId, @RequestBody JsonPatch jsonPatch) {
-        if (checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (!checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(restUserService.updateUser(userId, jsonPatch), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<UsersWrapper> updateUsers(UserQuery userQuery, @RequestBody JsonPatch jsonPatch) {
 
-        if (checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (!checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(restUserService.updateUsers(userQuery, jsonPatch), HttpStatus.OK);
     }
 
     private boolean checkValidUpdateRequest(@RequestBody JsonPatch jsonPatch) {
         for (JsonPatchOperation jsonPatchOperation : jsonPatch.getOperations()) {
             if (!jsonPatchOperation.getPath().toString().contains("tags")) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
