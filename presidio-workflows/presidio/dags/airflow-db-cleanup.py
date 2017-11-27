@@ -33,12 +33,12 @@ ALERT_EMAIL_ADDRESSES = []              # List of email address to send email al
 DEFAULT_MAX_DB_ENTRY_AGE_IN_DAYS = 30   # Length to retain the log files if not already provided in the conf. If this is set to 30, the job will remove those files that are 30 days old or older.
 ENABLE_DELETE = True                    # Whether the job should delete the db entries or not. Included if you want to temporarily avoid deleting the db entries.
 DATABASE_OBJECTS = [                    # List of all the objects that will be deleted. Comment out the DB objects you want to skip.
-    {"airflow_db_model": DagRun, "age_check_column": DagRun.execution_date},
-    {"airflow_db_model": TaskInstance, "age_check_column": TaskInstance.execution_date},
+    {"airflow_db_model": DagRun, "age_check_column": DagRun.start_date},
+    {"airflow_db_model": TaskInstance, "age_check_column": TaskInstance.start_date},
     {"airflow_db_model": Log, "age_check_column": Log.dttm},
-    {"airflow_db_model": XCom, "age_check_column": XCom.execution_date},
+    {"airflow_db_model": XCom, "age_check_column": XCom.timestamp},
     {"airflow_db_model": BaseJob, "age_check_column": BaseJob.latest_heartbeat},
-    {"airflow_db_model": SlaMiss, "age_check_column": SlaMiss.execution_date},
+    {"airflow_db_model": SlaMiss, "age_check_column": SlaMiss.timestamp},
 ]
 
 session = settings.Session()
