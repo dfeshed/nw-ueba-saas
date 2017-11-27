@@ -29,7 +29,7 @@ export default Component.extend({
 
   @computed('isSortDescending')
   iconName(isSortDescending) {
-    return isSortDescending ? 'arrow-down-12' : 'arrow-up-12';
+    return isSortDescending ? 'arrow-down-7' : 'arrow-up-7';
   },
 
   click() {

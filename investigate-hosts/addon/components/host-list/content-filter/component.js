@@ -136,7 +136,6 @@ const ContentFilter = Component.extend({
     },
 
     saveFilter() {
-      let isFieldsEmpty = false;
       const {
         saveFilterName,
         expressionList,
@@ -145,14 +144,8 @@ const ContentFilter = Component.extend({
         name: saveFilterName,
         description: ''
       };
-      for (const schema of expressionList) {
-        const { propertyValues } = schema;
-        if (!propertyValues) {
-          isFieldsEmpty = true;
-          break;
-        }
-      }
-      if (isFieldsEmpty) {
+      //  checking if any of the added filter fields are empty.
+      if (expressionList.some((item) => !item.propertyValues)) {
         this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateHosts.hosts.customFilter.save.filterFieldEmptyMessage'));
         return;
       }

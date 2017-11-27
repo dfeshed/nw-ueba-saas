@@ -37,7 +37,7 @@ page.investigate-files-engine {
     cursor: pointer;
     font-weight: 700;
     color: text-color(primary);
-    line-height: 30px;
+    line-height: 27px;
     &.is-active {
       color: white;
       transition: color 0.5s ease;
@@ -51,6 +51,8 @@ page.investigate-files-engine {
 
   .filter-list__item-label {
     padding-left: rsa-whitespace();
+    width: 150px;
+    display: inline-block;
   }
 
   .toolbar-zone {
