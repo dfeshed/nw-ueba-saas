@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +18,7 @@ import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
+import presidio.webapp.model.configuration.Configuration;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
@@ -114,13 +116,13 @@ public class ConfigurationApiController implements ConfigurationApi {
         }
     }
 
-    public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
+    public ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody Configuration configuration) {
+        JsonNode body = ObjectMapperProvider.getInstance().getDefaultObjectMapper().valueToTree(configuration);
         return updatedConfiguration(body);
     }
 
     private ResponseEntity<ConfigurationResponse> updatedConfiguration(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body) {
         ConfigurationResponse configurationResponse = new ConfigurationResponse();
-
         ValidationResults validationResults = configurationManagerService.validateConfiguration(configurationManagerService.presidioManagerConfigurationFactory(body));
         if (!validationResults.isValid()) {
             configurationResponse.setMessage("error message");

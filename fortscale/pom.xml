@@ -168,6 +168,7 @@
         <json-patch.version>1.9</json-patch.version>
         <javax.el-version>3.0.0</javax.el-version>
         <mongodb-driver-async.version>3.4.2</mongodb-driver-async.version>
+        <swagger-maven-plugin.version>3.1.5</swagger-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -499,6 +500,11 @@
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.el</artifactId>
                 <version>${javax.el-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>${swagger-maven-plugin.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

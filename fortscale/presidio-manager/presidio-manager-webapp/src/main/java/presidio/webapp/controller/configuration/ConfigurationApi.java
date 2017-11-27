@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import presidio.webapp.model.configuration.Configuration;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.model.configuration.SecuredConfiguration;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-07T07:15:37.402Z")
 
-@Api(value = "configuration", description = "the configuration API")
+@Api(value = "Configuration", description = "Configure server, licenses and execution methods")
 public interface ConfigurationApi {
 
     @ApiOperation(value = "Returns the current configuration", notes = "Note: For security reason password would not be shown", response = SecuredConfiguration.class, responseContainer = "List", authorizations = {
@@ -40,7 +41,7 @@ public interface ConfigurationApi {
     @RequestMapping(value = "/configuration/keytabFile",
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "file detail") @RequestPart("keytabFile") MultipartFile keytabFile);
+    ResponseEntity<Void> configurationKeytabFilePost(@ApiParam(value = "The file to upload") @RequestPart("keytabFile") MultipartFile keytabFile);
 
 
     @ApiOperation(value = "Use this method to update the configuration", notes = "", response = SecuredConfiguration.class, authorizations = {
@@ -64,6 +65,6 @@ public interface ConfigurationApi {
         @ApiResponse(code = 422, message = "Unprocessable Entity, The configuration is invalid", response = Void.class) })
     @RequestMapping(value = "/configuration",
         method = RequestMethod.PUT)
-    ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody JsonNode body);
+    ResponseEntity<ConfigurationResponse> configurationPut(@ApiParam(value = "Presidio Configuration", required = true) @RequestBody Configuration body);
 
 }

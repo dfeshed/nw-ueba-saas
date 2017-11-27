@@ -6,7 +6,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.sdk.impl.spring.ExternalMonitoringConfiguration;
 
 import java.io.Closeable;
@@ -31,7 +30,7 @@ public class PresidioExternalMonitoringServiceFactory implements Closeable {
             logger.error(errorMessage);
             throw new Exception(errorMessage);
         }
-        presidioSystemMetricsFactory.addTag(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        presidioSystemMetricsFactory.setApplicationName(applicationName);
         return presidioExternalMonitoringServiceBean;
     }
 
