@@ -1,43 +1,25 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
-import Immutable from 'seamless-immutable';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { selectChoose, clickTrigger } from '../../../../helpers/ember-power-select';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import $ from 'jquery';
 
-const packets = {
-  pageNumber: 1,
-  packetsPageSize: 100
-};
-
-const data = {
-  eventId: 5
-};
-
-const header = {
-  headerItems: [{}], headerLoading: false
-};
-
-const visuals = {
-  currentReconView: {
-    code: 1,
-    id: 'packet',
-    name: 'PACKET',
-    component: 'recon-event-detail/packets',
-    dataKey: 'packets.packets'
-  }
-};
-
 let setState;
+
+const setupState = (packetCountValue) => {
+  new ReduxDataHelper(setState)
+    .isPacketView()
+    .packetTotal(packetCountValue)
+    .build();
+};
 
 moduleForComponent('data-pagination', 'Integration | Component | Packet Pagination', {
   integration: true,
   beforeEach() {
-    initialize(this);
     setState = (state) => {
-      const fullState = { recon: { ...state } };
-      applyPatch(Immutable.from(fullState));
+      applyPatch(state);
       this.inject.service('redux');
     };
   },
@@ -48,18 +30,7 @@ moduleForComponent('data-pagination', 'Integration | Component | Packet Paginati
 
 test('testing packet pagination basic controls', function(assert) {
   assert.expect(6);
-  setState({
-    packets: {
-      ...packets,
-      packetsPageSize: 100
-    },
-    header: {
-      ...header,
-      headerItems: [{ name: 'packetCount', key: '', type: 'UInt64', value: 410, id: 'packetCount' }]
-    },
-    data
-  });
-
+  setupState(410);
   this.render(hbs`{{recon-pager/data-pagination}}`);
 
   assert.equal(this.$('.data-pagination').length, 1, 'Pagination controls expected');
@@ -68,49 +39,22 @@ test('testing packet pagination basic controls', function(assert) {
   assert.equal(this.$('.page-previous-button').hasClass('is-disabled'), true, 'Page previous should be disabled');
   assert.equal(this.$('.page-next-button').hasClass('is-disabled'), false, 'Page next should not be disabled');
   assert.equal(this.$('.page-last-button').hasClass('is-disabled'), false, 'Page last should not be disabled');
-
 });
 
 test('testing change in number of packets per page', function(assert) {
   assert.expect(2);
-  setState({
-    packets: {
-      ...packets,
-      packetsPageSize: 100
-    },
-    header: {
-      ...header,
-      headerItems: [{ name: 'packetCount', key: '', type: 'UInt64', value: 410, id: 'packetCount' }]
-    },
-    data,
-    visuals
-  });
-
+  setupState(410);
   this.render(hbs`{{recon-pager/data-pagination}}`);
 
   assert.equal(this.$('.ember-power-select-trigger').text().trim(), '100');
   clickTrigger('.power-select-dropdown');
   selectChoose('.power-select-dropdown', '300');
   assert.equal(this.$('.last-page').text(), 2, 'Last Page Number should be changed');
-
 });
 
 test('testing jump to specific page', function(assert) {
-
   assert.expect(9);
-  setState({
-    packets: {
-      ...packets,
-      packetsPageSize: 100
-    },
-    header: {
-      ...header,
-      headerItems: [{ name: 'packetCount', key: '', type: 'UInt64', value: 210, id: 'packetCount' }]
-    },
-    data,
-    visuals
-  });
-
+  setupState(210);
 
   this.render(hbs`{{recon-pager/data-pagination}}`);
   assert.equal(this.$('.page-first-button').hasClass('is-disabled'), true, 'Page first should be disabled');
@@ -131,18 +75,7 @@ test('testing jump to specific page', function(assert) {
 
 test('testing packet pagination navigation buttons', function(assert) {
   assert.expect(8);
-  setState({
-    packets: {
-      ...packets,
-      packetsPageSize: 100
-    },
-    header: {
-      ...header,
-      headerItems: [{ name: 'packetCount', key: '', type: 'UInt64', value: 410, id: 'packetCount' }]
-    },
-    data,
-    visuals
-  });
+  setupState(410);
 
   this.render(hbs`{{recon-pager/data-pagination}}`);
 
@@ -157,5 +90,4 @@ test('testing packet pagination navigation buttons', function(assert) {
   assert.equal(this.$('.page-previous-button').hasClass('is-disabled'), false, 'Page previous should not be disabled');
   assert.equal(this.$('.page-next-button').hasClass('is-disabled'), false, 'Page next should not be disabled');
   assert.equal(this.$('.page-last-button').hasClass('is-disabled'), false, 'Page last should not be disabled');
-
 });
