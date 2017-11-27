@@ -12,7 +12,7 @@ import java.util.List;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T02:53:18.177Z")
 
-@Api(value = "alerts", description = "the alerts API")
+@Api(value = "alerts")
 public interface AlertsApi {
 
     @ApiOperation(value = "Use this endpoint to get details about single alert", notes = "Alerts endpoint", response = Alert.class, tags={ "alerts", })

@@ -9,7 +9,7 @@ import presidio.webapp.model.UpgradeState;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-07T07:15:37.402Z")
 
-@Api(value = "control", description = "the control API")
+@Api(value = "Control", description = "Control the product (start and stop the application, upgrade etc.) ")
 public interface ControlApi {
 
     @ApiOperation(value = "Deploys upgrade file", notes = "", response = Void.class, authorizations = {

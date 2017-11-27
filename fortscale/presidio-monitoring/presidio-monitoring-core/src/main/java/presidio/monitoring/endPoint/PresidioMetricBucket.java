@@ -6,7 +6,6 @@ import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;
 
-import java.time.temporal.ChronoField;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -92,8 +91,8 @@ public class PresidioMetricBucket {
     private MetricDocument buildPresidioMetric(Metric metric) {
         return new MetricDocument(metric.getName(),
                 metric.getValue(),
-                new Date(metric.getTime().getLong(ChronoField.MILLI_OF_SECOND)),
+                Date.from(metric.getTime()),
                 metric.getTags(),
-                metric.getLogicTime() != null ? new Date(metric.getLogicTime().getLong(ChronoField.MILLI_OF_SECOND)) : null);
+                metric.getLogicTime() != null ? Date.from(metric.getLogicTime()) : null);
     }
 }

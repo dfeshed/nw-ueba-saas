@@ -10,7 +10,7 @@ import presidio.webapp.model.*;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T15:25:30.236Z")
 
-@Api(value = "users", description = "the users API")
+@Api(value = "users")
 public interface UsersApi {
 
     @ApiOperation(value = "Use this endpoint to get the alerts of a single user", notes = "Users endpoint", response = AlertsWrapper.class, tags = {"users",})
