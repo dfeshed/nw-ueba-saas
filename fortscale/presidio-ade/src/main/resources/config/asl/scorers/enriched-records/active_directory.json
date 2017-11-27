@@ -28,7 +28,7 @@
               "conditional-value": "SECURITY_SENSITIVE_OPERATION,GROUP_MEMBERSHIP",
               "scorer": {
                 "type": "max-scorer-container",
-                "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
+                "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
                 "scorers": [
                   {
                     "type": "category-rarity-model-scorer",
@@ -59,7 +59,7 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdObjectChange.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "OBJECT_CHANGES_OPERATION",
+              "conditional-value": "OBJECT_CHANGE_OPERATION",
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdObjectChange.activeDirectory.score",

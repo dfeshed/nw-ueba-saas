@@ -285,14 +285,14 @@ indicators:
   classification: abnormal_ad_changes
 
 
-- id: numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_successful_security_sensitive_operations
+  name: high_number_of_successful_user_change_security_sensitive_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: SECURITY_SENSITIVE_OPERATION
+    anomalyValue: USER_CHANGE_OPERATION,SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
       fieldName: result
       fieldValue: SUCCESS

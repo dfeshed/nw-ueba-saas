@@ -50,15 +50,15 @@
       }
     },
     {
-      "name": "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "securitySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "userChangeSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "securitySensitiveOperationResultHistogram"
+          "userChangeSecuritySensitiveOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -69,13 +69,13 @@
     {
       "name": "numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "objectChangesOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "objectChangeOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "objectChangesOperationResultHistogram"
+          "objectChangeOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
