@@ -122,8 +122,8 @@ export default Component.extend({
   },
 
   @readOnly
-    @alias('appVersion.version')
-  version: null,
+    @alias('appVersion.marketingVersion')
+  marketingVersion: null,
 
   authenticate() {
     // Update status to that UI can indicate that a login is in progress.
