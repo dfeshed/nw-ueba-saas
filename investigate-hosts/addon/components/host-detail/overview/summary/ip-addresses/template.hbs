@@ -1,6 +1,8 @@
-<span class='host-content__ip-details__icon'>
-  {{rsa-icon style='lined' size='large' name='globe-3'}}
-</span>
-<vbox xs='11'>
-  {{ipAddress}}
-</vbox>
+{{#each networkInterfaces as |ip|}}
+  <span class='host-content__ip-details__icon'>
+    {{rsa-icon style='lined' size='large' name='globe-3'}}
+  </span>
+  <vbox xs='11'>
+    {{ip}}
+  </vbox>
+{{/each}}

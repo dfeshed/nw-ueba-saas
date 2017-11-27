@@ -20,16 +20,11 @@ export const processHost = createSelector(
     if (hostDetails) {
       const { machine } = hostDetails;
       if (machine) {
-        const { networkInterfaces, users, securityConfigurations } = machine;
-        const ipList = networkInterfaces ? networkInterfaces.filter((ele) => (ele.ipv4 || ele.ipv6) && ele.ipv4 !== '127.0.0.1') : [];
-        const ipAddresses = ipList.map((ip) => {
-          return `${ip.ipv4 || ''} / ${ip.ipv6 || ''} | MAC Address: ${ip.macAddress || ''}`;
-        });
+        const { users, securityConfigurations } = machine;
         const loggedInUsers = users || [];
         const securityConfig = securityConfigurations || [];
         return {
           ...machine,
-          ipAddresses,
           loggedInUsers,
           securityConfig
         };
@@ -96,6 +91,29 @@ export const downloadLink = createSelector(
   (downloadId) => {
     if (downloadId) {
       return `${location.origin}/endpoint/files/download/${downloadId}`;
+    }
+  }
+);
+
+export const getNetworkInterfaces = createSelector(
+  _hostDetails,
+  (hostDetails) => {
+    if (hostDetails) {
+      const { machine } = hostDetails;
+      if (machine) {
+        const networkInterfaces = machine.networkInterfaces || [];
+        const validNetworkInterfaceList = networkInterfaces.filter((networkInterface) => (networkInterface.ipv4.length === 1 && networkInterface.ipv4[0] !== '127.0.0.1') || networkInterface.ipv4.length > 1);
+        const validIPList = validNetworkInterfaceList.map((networkInterface) => ({
+          ...networkInterface,
+          ipv4: networkInterface.ipv4.filter((ip) => ip !== '127.0.0.1'),
+          ipv6: networkInterface.ipv6.filter((ip) => ip !== '::1')
+        }));
+        return validIPList.map(
+          (ip) => `${ip.ipv4 || ''} / ${ip.ipv6 || ''} | MAC Address: ${ip.macAddress || ''}`
+        );
+      }
+    } else {
+      return [];
     }
   }
 );

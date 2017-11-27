@@ -33,9 +33,9 @@ export default Component.extend({
       }
     };
     const updateSecurityConfig = securityConfig[osType].map((sc) => {
-      const isExists = !!config.find((c) => c.includes(sc.keyword));
-      const label = isExists ? sc.label.red : sc.label.green;
-      return { ...sc, label };
+      const disabled = config.some((c) => c.includes(sc.keyword));
+      const label = disabled ? sc.label.red : sc.label.green;
+      return { ...sc, label, disabled };
     });
 
     return updateSecurityConfig.sort(compareFunction);

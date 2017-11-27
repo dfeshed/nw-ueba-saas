@@ -1,9 +1,7 @@
 {{#rsa-content-accordion animate=true class='host-content__title'
                          label=(t 'investigateHosts.hosts.summary.body.ipAddresses'
-                         count=machine.ipAddresses.length)}}
-  {{#each machine.ipAddresses as |ip|}}
-    {{host-detail/overview/summary/ip-addresses ipAddress=ip}}
-  {{/each}}
+                         count=networkInterfaces.length)}}
+  {{host-detail/overview/summary/ip-addresses}}
 {{/rsa-content-accordion}}
 {{#rsa-content-accordion animate=true class='host-content__title'
                          label=(t 'investigateHosts.hosts.summary.body.loggedUsers'

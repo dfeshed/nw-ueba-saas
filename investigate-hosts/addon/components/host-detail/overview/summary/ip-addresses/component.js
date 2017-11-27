@@ -1,13 +1,16 @@
 import Component from 'ember-component';
+import { connect } from 'ember-redux';
+import { getNetworkInterfaces } from 'investigate-hosts/reducers/details/overview/selectors';
 
-export default Component.extend({
+const stateToComputed = (state) => ({
+  networkInterfaces: getNetworkInterfaces(state)
+});
+
+const IpAddresses = Component.extend({
 
   tagName: 'hbox',
 
-  classNames: 'host-ip-addresses host-content__ip-details col-xs-12',
-  /**
-   * ipadress for display
-   * @public
-   */
-  ipAddress: null
+  classNames: 'host-ip-addresses host-content__ip-details col-xs-12'
 });
+
+export default connect(stateToComputed)(IpAddresses);
