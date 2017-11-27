@@ -2,6 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.CategoryRarityModel;
+import fortscale.ml.model.SMARTMaxValuesModel;
 import fortscale.ml.model.SMARTValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
+import java.util.Collections;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SMARTValuesModelScorerTest {
@@ -62,6 +64,9 @@ public class SMARTValuesModelScorerTest {
                 false,
                 baseScorerConf,
                 globalInfluence,
+                10,
+                5,
+                5,
                 scorerFactoryService, eventModelsCacheService);
     }
 
@@ -89,13 +94,15 @@ public class SMARTValuesModelScorerTest {
     public void shouldFailToScoreIfGivenWrongAdditionalModel() throws Exception {
         Instant modelEndTime = Instant.now();
         SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
-        scorer.calculateScore(new SMARTValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
+        scorer.calculateScore(new SMARTMaxValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 
     @Test
     public void shouldGiveScoreWhenEverythingIsOk() throws Exception {
         Instant modelEndTime = Instant.now();
         SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
-        scorer.calculateScore(new SMARTValuesModel(), new SMARTValuesPriorModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
+        SMARTMaxValuesModel smartMaxValuesModel = new SMARTMaxValuesModel();
+        smartMaxValuesModel.init(Collections.emptyMap(),0, modelEndTime);
+        scorer.calculateScore(smartMaxValuesModel, new SMARTValuesPriorModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 }

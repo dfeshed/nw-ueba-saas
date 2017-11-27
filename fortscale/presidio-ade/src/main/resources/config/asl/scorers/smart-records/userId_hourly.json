@@ -21,7 +21,11 @@
               "name": "smart.global.weights.userId.hourly"
             }
           },
-          "global-influence": 20
+          "global-influence": 5,
+          "max-user-influence": 10,
+          "num-of-partition-user-influence": 5,
+          "min-num-of-user-values": 5
+
         }
       ]
     }

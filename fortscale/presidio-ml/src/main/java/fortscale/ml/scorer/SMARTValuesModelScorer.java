@@ -2,12 +2,10 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.PartitionedDataModel;
-import fortscale.ml.model.SMARTValuesModel;
-import fortscale.ml.model.SMARTValuesPriorModel;
+import fortscale.ml.model.*;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
+import fortscale.ml.scorer.algorithms.SMARTMaxValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ModelScorerConf;
@@ -21,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SMARTValuesModelScorer extends AbstractScorer {
-    private SMARTValuesModelScorerAlgorithm algorithm;
+    private SMARTMaxValuesModelScorerAlgorithm algorithm;
     protected SmartWeightsModelScorer smartWeightsModelScorer;
     private String modelName;
     private String globalModelName;
@@ -38,6 +36,9 @@ public class SMARTValuesModelScorer extends AbstractScorer {
                                   boolean isUseCertaintyToCalculateScore,
                                   IScorerConf baseScorerConf,
                                   int globalInfluence,
+                                  int maxUserInfluence,
+                                  int numOfPartitionUserInfluence,
+                                  int minNumOfUserValues,
                                   FactoryService<Scorer> factoryService,
                                   EventModelsCacheService eventModelsCacheService) {
 
@@ -63,7 +64,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         this.modelName = modelName;
         this.globalModelName = globalModelName;
 
-        algorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
+        algorithm = new SMARTMaxValuesModelScorerAlgorithm(globalInfluence, maxUserInfluence, numOfPartitionUserInfluence, minNumOfUserValues);
     }
 
     protected List<ModelDAO> getMainModel(AdeRecordReader adeRecordReader) {
@@ -82,7 +83,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     public FeatureScore calculateScore(AdeRecordReader adeRecordReader){
         List<ModelDAO> mainModelDAOs = getMainModel(adeRecordReader);
         List<ModelDAO> globalModelDAOs = getGlobalModel(adeRecordReader);
-        SMARTValuesModel mainModel = null;
+        SMARTMaxValuesModel mainModel = null;
         Model globalModel = null;
         Instant weightModelEndTime = null;
 
@@ -94,7 +95,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
             Instant smartValuePriorWightsModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
             boolean foundMatchingModels = false;
             for (ModelDAO mainModelDAO : mainModelDAOs) {
-                SMARTValuesModel mainModelDAOModel = (SMARTValuesModel) mainModelDAO.getModel();
+                SMARTMaxValuesModel mainModelDAOModel = (SMARTMaxValuesModel) mainModelDAO.getModel();
                 if (mainModelDAOModel == null) {
                     continue;
                 }
@@ -151,7 +152,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     private FeatureScore calculateScore(double baseScore,
                                           Model model,
                                           Model globalModel) {
-        if (!(model instanceof SMARTValuesModel)) {
+        if (!(model instanceof SMARTMaxValuesModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".calculateScore expects to get a model of type " + SMARTValuesModel.class.getSimpleName());
         }
@@ -163,7 +164,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
 
         return new FeatureScore(getName(), algorithm.calculateScore(
                 baseScore,
-                (SMARTValuesModel) model,
+                (SMARTMaxValuesModel) model,
                 (SMARTValuesPriorModel) globalModel
         ));
     }

@@ -43,6 +43,9 @@ public class SMARTValuesModelScorerFactory extends AbstractServiceAutowiringFact
                 scorerConf.isUseCertaintyToCalculateScore(),
                 scorerConf.getBaseScorerConf(),
                 scorerConf.getGlobalInfluence(),
+                scorerConf.getMaxUserInfluence(),
+                scorerConf.getNumOfPartitionUserInfluence(),
+                scorerConf.getMinNumOfUserValues(),
                 factoryService,
                 eventModelsCacheService);
     }

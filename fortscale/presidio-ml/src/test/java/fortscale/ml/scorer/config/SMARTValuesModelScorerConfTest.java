@@ -11,21 +11,21 @@ import java.util.Collections;
 @RunWith(JUnit4.class)
 public class SMARTValuesModelScorerConfTest {
     public void shouldSuccessfullyCreateWhenAllParamsAreValid() {
-        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), new ModelInfo("name"), Mockito.mock(IScorerConf.class), 0);
+        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), new ModelInfo("name"), Mockito.mock(IScorerConf.class), 0, 10, 5, 5);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenAdditionalModelInfo() {
-        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), null, Mockito.mock(IScorerConf.class), 0);
+        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), null, Mockito.mock(IScorerConf.class), 0, 10, 5, 5);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenNegativeGlobalInfluence() {
-        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), new ModelInfo("name"), Mockito.mock(IScorerConf.class), -1);
+        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), new ModelInfo("name"), Mockito.mock(IScorerConf.class), -1, 10, 5, 5);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenNullAsBaseScorerConf() {
-        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), new ModelInfo("name"), null, 0);
+        new SMARTValuesModelScorerConf("name", new ModelInfo("name"), new ModelInfo("name"), null, 0, 10, 5, 5);
     }
 }
