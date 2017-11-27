@@ -80,7 +80,7 @@ public class MachineEntity {
     }
 
     public String getDomainFQDN() {
-        return (domainFQDN == null)?"":domainFQDN;
+        return (domainFQDN == null)?"presidio.domain.crop":domainFQDN;
     }
 
     public void setDomainFQDN(String domainFQDN) {
