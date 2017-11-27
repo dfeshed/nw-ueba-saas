@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
-import { isFetchingSchedule, isEnabled } from 'hosts-scan-configure/reducers/schedule/selectors';
+import { isFetchingSchedule, isEnabled } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
 import { updateScheduleProperty, saveScheduleConfig } from 'hosts-scan-configure/actions/data-creators';
 import computed from 'ember-computed-decorators';
 
@@ -21,7 +21,7 @@ const FLASH_MESSAGE_TYPES = {
 const stateToComputed = (state) => ({
   isFetchingSchedule: isFetchingSchedule(state),
   enabled: isEnabled(state),
-  config: state.schedule.config
+  config: state.hostsScan.config
 });
 
 const dispatchToActions = {
@@ -85,7 +85,7 @@ const Form = Component.extend({
       this.toggleProperty('isDirty');
       const callBackOptions = {
         onSuccess: () => {
-          this.showFlashMessage(FLASH_MESSAGE_TYPES.SUCCESS, 'endpoint.common.saveSuccess');
+          this.showFlashMessage(FLASH_MESSAGE_TYPES.SUCCESS, 'hostsScanConfigure.saveSuccess');
         },
         onFailure: () => {
           this.showErrorMessage(FLASH_MESSAGE_TYPES.ERROR, 'ERROR');

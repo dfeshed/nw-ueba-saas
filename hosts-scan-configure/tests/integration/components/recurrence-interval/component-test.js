@@ -9,7 +9,7 @@ moduleForComponent('recurrence-interval', 'Integration | Component | recurrence 
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
     const initState = Immutable.from({
-      schedule: {
+      hostsScan: {
         config: {
           'name': 'default',
           'id': 1,
@@ -40,7 +40,7 @@ moduleForComponent('recurrence-interval', 'Integration | Component | recurrence 
   }
 });
 
-test('raghs should render recurrence interval fields', function(assert) {
+test('should render recurrence interval fields', function(assert) {
   this.render(hbs`{{recurrence-interval}}`);
   assert.equal(this.$('.recurrence-interval').length, 1, 'expected to have root element in DOM');
 });

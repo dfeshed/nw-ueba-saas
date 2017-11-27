@@ -85,7 +85,8 @@
       "../recon",
       "../packager",
       "../context",
-      "../preferences"
+      "../preferences",
+      "../hosts-scan-configure"
     ]
   },
   "engines": {

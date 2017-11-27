@@ -28,3 +28,8 @@ $navbarHeight: 50px;
     }
   }
 }
+.iframed-into-classic {
+  .rsa-nav-tab-group {
+    display: none;
+  }
+}

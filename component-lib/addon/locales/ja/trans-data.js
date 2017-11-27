@@ -2545,6 +2545,7 @@ export default {
     title: 'ja_Scan Schedule',
     save: 'js_Save',
     enable: 'ja_Enable',
+    saveSuccess: 'ja_Saved successfully',
     recurrenceInterval: {
       title: 'ja_Recurrence Interval',
       options: {

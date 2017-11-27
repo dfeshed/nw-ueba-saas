@@ -79,7 +79,8 @@
     "paths": [
       "../component-lib",
       "../streaming-data",
-      "../context"
+      "../context",
+      "../hosts-scan-configure"
     ]
   },
   "private": true

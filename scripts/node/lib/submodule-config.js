@@ -83,7 +83,7 @@ const saModuleDependants = {
     'investigate-events'
   ],
   'test-helpers': [],
-  'hosts-scan-configure': ['sa']
+  'hosts-scan-configure': ['sa', 'configure']
 };
 
 module.exports = {

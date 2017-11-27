@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import Immutable from 'seamless-immutable';
 const initState = Immutable.from({
-  schedule: {
+  hostsScan: {
     config: {
       'name': 'default',
       'id': 1,
@@ -45,7 +45,7 @@ test('should render the schedule scan form', function(assert) {
 
 test('should show loading indicator when fetching the schedule config', function(assert) {
   const state = Immutable.from({
-    schedule: {
+    hostsScan: {
       config: {
 
       },

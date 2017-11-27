@@ -6,6 +6,9 @@
 /* Pulling in local respond styles */
 @import "configure/manifest";
 
+/* Pulling in hosts scan configure styles */
+@import "hosts-scan-configure/manifest";
+
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.configure-engine-dummy {
   color: text-color(primary, light);

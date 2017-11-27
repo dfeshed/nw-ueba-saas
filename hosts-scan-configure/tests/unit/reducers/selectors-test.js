@@ -5,18 +5,18 @@ import {
   isFetchingSchedule,
   weekOptions,
   runIntervalConfig
-} from 'hosts-scan-configure/reducers/schedule/selectors';
+} from 'hosts-scan-configure/reducers/hosts-scan/selectors';
 
 module('Unit | selectors | schedule');
 
 test('isFetchingSchedule', function(assert) {
   assert.expect(2);
-  const state = Immutable.from({ schedule: {
+  const state = Immutable.from({ hostsScan: {
     fetchScheduleStatus: 'wait'
   } });
   const tests = {
     wait: isFetchingSchedule(state),
-    completed: isFetchingSchedule(Immutable.from({ schedule: { fetchScheduleStatus: 'completed' } }))
+    completed: isFetchingSchedule(Immutable.from({ hostsScan: { fetchScheduleStatus: 'completed' } }))
   };
   assert.equal(tests.wait, true, 'isFetchingSchedule should return true when status is wait');
   assert.equal(tests.completed, false, 'isFetchingSchedule should return false when status is completed');
@@ -27,7 +27,7 @@ test('weekOptions', function(assert) {
   assert.expect(1);
   const schedule = Immutable.from(
     {
-      schedule: {
+      hostsScan: {
         config: {
           scheduleConfig: {
             scheduleOptions: {
@@ -55,7 +55,7 @@ test('runIntervalConfig', function(assert) {
   assert.expect(1);
   const schedule = Immutable.from(
     {
-      schedule: {
+      hostsScan: {
         config: {
           scheduleConfig: {
             scheduleOptions: {

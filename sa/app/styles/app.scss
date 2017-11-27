@@ -30,5 +30,7 @@
 /* Import packager styles */
 @import 'packager/manifest';
 
+@import "hosts-scan-configure/manifest";
+
 /* Imports styles specific for this sa app. */
 @import 'sa/manifest';

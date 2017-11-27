@@ -8,7 +8,7 @@ moduleForComponent('schedule-time', 'Integration | Component | schedule time', {
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
     const initState = Immutable.from({
-      schedule: {
+      hostsScan: {
         config: {
           'name': 'default',
           'id': 1,

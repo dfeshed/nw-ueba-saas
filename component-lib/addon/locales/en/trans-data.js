@@ -2545,6 +2545,7 @@ export default {
     title: 'Scan Schedule',
     save: 'Save',
     enable: 'Enable',
+    saveSuccess: 'Saved successfully',
     recurrenceInterval: {
       title: 'Recurrence Interval',
       options: {

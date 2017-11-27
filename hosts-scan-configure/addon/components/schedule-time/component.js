@@ -5,7 +5,7 @@ import computed, { equal } from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
 import { connect } from 'ember-redux';
 import { updateScheduleProperty } from 'hosts-scan-configure/actions/data-creators';
-import { startTime } from 'hosts-scan-configure/reducers/schedule/selectors';
+import { startTime } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
 
 const stateToComputed = (state) => ({
   startTime: startTime(state)

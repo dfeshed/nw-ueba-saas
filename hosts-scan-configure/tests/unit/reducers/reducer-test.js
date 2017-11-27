@@ -2,7 +2,7 @@ import { test, module } from 'qunit';
 import Immutable from 'seamless-immutable';
 import { LIFECYCLE } from 'redux-pack';
 import ACTION_TYPES from 'hosts-scan-configure/actions/types';
-import reducer from 'hosts-scan-configure/reducers/schedule/reducer';
+import reducer from 'hosts-scan-configure/reducers/hosts-scan/reducer';
 import makePackAction from '../../helpers/make-pack-action';
 
 module('Unit | Reducers | Schedule');

@@ -1,4 +1,4 @@
-<h4 class='rsa-form-label'>{{t 'hostsScanConfigure.cpuThrottling.cpuMax'}}</h4>
+<h4 class='text'>{{t 'hostsScanConfigure.cpuThrottling.cpuMax'}}</h4>
 {{range-slider
   start=[cpuOptions.cpuMax]
   min=5
@@ -6,7 +6,7 @@
   connect=false
   on-change=(action 'updateScheduleProperty' 'cpuMax')}}
 
-<h4 class='rsa-form-label'>{{t 'hostsScanConfigure.cpuThrottling.vmMax'}}</h4>
+<h4 class='text'>{{t 'hostsScanConfigure.cpuThrottling.vmMax'}}</h4>
 {{range-slider
   start=[cpuOptions.cpuMaxVm]
   step=1
