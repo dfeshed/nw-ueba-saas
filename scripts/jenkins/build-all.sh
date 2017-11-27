@@ -83,6 +83,10 @@ echo "*** BEGIN FILES CHANGED"
 echo $files | tr " " "\n"
 echo "*** END FILES CHANGED"
 
+
+# Should we try building Docker images?
+DOCKER=${DOCKER:-false}
+
 if [ -z ${EXTENT+x} ]
 then
   fail "Please export EXTENT variable:"
@@ -113,6 +117,10 @@ then
   then
     #### Build RPM if running full or rpm build
     . $scriptDir/rpm.sh
+    ### If selected, build Docker imaages and push ro DTR
+    if [ "${DOCKER}" == "true" ]; then
+      . $scriptDir/build-docker-image.sh
+    fi
   fi
 
   if [ "$EXTENT" == "FULL" ]
