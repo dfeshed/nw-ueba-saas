@@ -1,25 +1,28 @@
-import { moduleForComponent, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import engineResolver from '../../../helpers/engine-resolver';
 
-moduleForComponent('host-table-footer', 'Integration | Component | endpoint table footer', {
-  integration: true
+moduleForComponent('host-table-footer', 'Integration | Component | host table footer', {
+  integration: true,
+  resolver: engineResolver('investigate-hosts'),
+  beforeEach() {
+    this.registry.injection('component', 'i18n', 'service:i18n');
+  }
 });
 
-skip('it renders', function(assert) {
+test('Should show count of hosts displayed out of total hosts', function(assert) {
+  const hostCount = 4;
+  const hostItems = ['Harp', 'WIN10x64', 'WIN8x64', 'server.local', 'CentOS'];
+  this.set('hostCount', hostCount);
+  this.set('hostItemsLength', hostItems.length);
+  this.set('label', 'hosts');
+  this.render(hbs`{{host-table-footer total=hostItemsLength index=hostCount label=label}}`);
+  const expected = `${hostCount} of ${hostItems.length} hosts`;
+  assert.equal(this.$('div.file-info').text().trim(), expected, 'When count of hosts displayed is less than total hosts length');
 
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
-  this.render(hbs`{{host-table-footer}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#host-table-footer}}
-      template block text
-    {{/host-table-footer}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+  const hostItems2 = ['Harp', 'WIN10x64', 'WIN8x64', 'server.local'];
+  this.set('hostItems2Length', hostItems2.length);
+  this.render(hbs`{{host-table-footer total=hostItems2Length index=hostCount label=label}}`);
+  const expected2 = `${hostCount} of ${hostItems2.length} hosts`;
+  assert.equal(this.$('div.file-info').text().trim(), expected2, 'When count of hosts displayed is equal to total hosts length');
 });
