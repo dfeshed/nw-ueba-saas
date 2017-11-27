@@ -158,7 +158,7 @@ test('The updateItem() reducer sets the "isTransactionUnderway" property to true
 test('The updateItem() reducer updates the items and focusedItem properties', function(assert) {
   const item = { id: 'INC-123', priority: 'LOW' };
   const updatedItem = { id: 'INC-123', priority: 'CRITICAL' };
-  const payload = { request: { entityIds: ['INC-123'], updates: { priority: 'CRITICAL' } } };
+  const payload = { data: [updatedItem] };
   const initState = {
     ...initialState,
     items: [item],

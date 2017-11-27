@@ -6,7 +6,6 @@ import { load, persist } from './util/local-storage';
 import fixNormalizedEvents from './util/events';
 import { toggle } from 'respond/utils/immut/array';
 import { isEmberArray } from 'ember-array/utils';
-import { _extractEntityIdsAndUpdates } from '../../reducers/respond/util/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::respond::incident';
 
@@ -107,12 +106,11 @@ const persistIncidentState = (callback) => {
 const _handleUpdates = (action) => {
   return (state) => {
     const { payload } = action;
-    const { id, info } = state;
-    const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+    // The payload can come in as an array (when multiple requests are being settled) or as an object (normal promise response)
+    // To make things easier, we normalize an object payload into the format of the array payload
+    const [{ value: { data } }] = !isEmberArray(payload) ? [{ value: { ...payload } }] : payload;
 
-    const updatedIncidentInfo = entityIds.includes(id) ? { ...info, ...updates } : info;
-
-    return state.set('info', updatedIncidentInfo);
+    return state.set('info', data[0]);
   };
 };
 
@@ -317,11 +315,23 @@ const incident = reduxActions.handleActions({
       failure: (s) => s,
       success: (s) => {
         const { payload } = action;
-        const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+        // const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
+
+        const normalizedPayload = !isEmberArray(payload) ? [{ value: { ...payload } }] : payload;
+
+        // The array of entities that have been updated reduced to a single array
+        const updateData = normalizedPayload.reduce((updatedEntities, { value: { data } }) => {
+          return updatedEntities.concat(data);
+        }, []);
 
         const updatedEntities = state.tasks.map((entity) => {
-          return entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
+          // Find the updated entity from the list of updated objects, or use the current entity if not updated
+          return updateData.findBy('id', entity.id) || entity;
         });
+
+        // const updatedEntities = state.tasks.map((entity) => {
+        //   return entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
+        // });
         return s.set('tasks', updatedEntities);
       }
     });
