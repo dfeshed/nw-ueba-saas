@@ -63,13 +63,13 @@ export default {
     },
     {
       'name': 'source',
-      'key': '',
+      'key': 'ip.src : port.src',
       'type': 'Text',
-      'value': '10.4.61.43'
+      'value': '10.4.61.43 : 7777'
     },
     {
       'name': 'destination',
-      'key': '',
+      'key': 'ip.dst',
       'type': 'Text',
       'value': '10.4.61.53'
     },

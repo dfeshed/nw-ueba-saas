@@ -11,7 +11,8 @@ const dataInitialState = Immutable.from({
   contentLoading: false,
   isStandalone: false,
   apiFatalErrorCode: 0, // handler for shutting down recon and displaying error
-  contextMenuConfig: null
+  contextMenuItems: [],
+  queryInputs: null
 });
 
 const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);

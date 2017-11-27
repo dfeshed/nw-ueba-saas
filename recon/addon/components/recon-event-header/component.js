@@ -5,10 +5,13 @@ import computed from 'ember-computed-decorators';
 import { RECON_DISPLAYED_HEADER, HAS_TOOLTIP } from 'recon/utils/recon-event-header';
 import layout from './template';
 
-const stateToComputed = ({ recon: { visuals, header } }) => ({
+const stateToComputed = ({ recon: { visuals, header, data, dictionaries } }) => ({
   isHeaderOpen: visuals.isHeaderOpen,
   headerItems: header.headerItems,
-  headerError: header.headerError
+  headerError: header.headerError,
+  contextMenuItems: data.contextMenuItems,
+  queryInputs: data.queryInputs,
+  language: dictionaries.language
 });
 
 const EventHeaderComponent = Component.extend({
@@ -26,6 +29,7 @@ const EventHeaderComponent = Component.extend({
           name: item.name,
           value: item.value,
           type: item.type,
+          key: item.key,
           so,
           hasTooltip: HAS_TOOLTIP.includes(item.name)
         });

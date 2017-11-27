@@ -1,6 +1,7 @@
 import EmberContextMenu from 'ember-context-menu/components/context-menu';
 import computed from 'ember-computed-decorators';
 import { calculateContextMenuOffset } from 'component-lib/utils/context-menu-utils';
+import { htmlSafe } from 'ember-string';
 
 /**
  * This component extends the context-menu component from ember-context-menu and fixes the problem of the menu panel
@@ -13,6 +14,6 @@ export default EmberContextMenu.extend({
   position: (xPos, yPos, screenHeight, itemCount) => {
     const offset = calculateContextMenuOffset(itemCount, screenHeight, yPos);
     const adjustedYPos = (offset < 0) ? (yPos + offset) : yPos;
-    return `left: ${xPos}px; top: ${adjustedYPos}px;`;
+    return htmlSafe(`left: ${xPos}px; top: ${adjustedYPos}px;`);
   }
 });

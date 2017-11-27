@@ -17,6 +17,15 @@
       {{rsa-content-datetime timestamp=asInteger}}
     {{else if isByteSize}}
       {{value}} {{t 'memsize.B'}}
+    {{else if hasKey}}
+      {{#each metaValuePairs as |metaValuePair|}}
+        {{#rsa-context-menu
+          contextItems=contextMenuItems
+          contextSelection=metaValuePair
+          contextDetails=contextMenuData}}
+          {{metaValuePair.displayValue}}
+        {{/rsa-context-menu}}
+      {{/each}}
     {{else}}
       {{value}}
     {{/if}}

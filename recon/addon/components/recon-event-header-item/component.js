@@ -1,7 +1,12 @@
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
-
+import {
+  isNetworkAddress,
+  getIpAddressMetaValue,
+  getPortMetaValue
+} from 'recon/utils/network-addr-utils';
+import { isEmpty } from 'ember-utils';
 import layout from './template';
 
 const DATE_DATATYPE = 'TimeT';
@@ -24,6 +29,29 @@ export default Component.extend({
   isByteSize: (name, type) => {
     return type === NUMBER_DATATYPE && (name === 'payloadSize' || name === 'packetSize');
   },
+
+  @computed('key')
+  hasKey: (key) => !isEmpty(key),
+
+  // Returns an array of objects, each object containing metaName and metaValue. The size of the array would usually be
+  // one, except for network addresses, for which the first element would be the IP address, followed by port.
+  @computed('key', 'value', 'name')
+  metaValuePairs(key, value, name) {
+    let metaValuePairs = null;
+    if (isNetworkAddress(name)) {
+      metaValuePairs = [getIpAddressMetaValue(key, value)];
+      const portMetaValuePair = getPortMetaValue(key, value);
+      if (portMetaValuePair) {
+        metaValuePairs.push(portMetaValuePair);
+      }
+    } else {
+      metaValuePairs = [{ metaName: key, metaValue: value, displayValue: value }];
+    }
+    return metaValuePairs;
+  },
+
+  @computed('queryInputs', 'language')
+  contextMenuData: (queryInputs, language) => ({ ...queryInputs, language }),
 
   @computed('value')
   asInteger: (dateString) => parseInt(dateString, 10),

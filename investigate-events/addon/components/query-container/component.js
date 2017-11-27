@@ -48,14 +48,13 @@ const QueryContainerComponent = Component.extend({
     this.set('eventColumnGroups', EventColumnGroups.create());
   },
 
-  @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter.conditions', 'queryNode.serviceId', 'language')
-  queryInputs(startTime, endTime, queryConditions, endpointId, language) {
+  @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter.conditions', 'queryNode.serviceId')
+  queryInputs(startTime, endTime, queryConditions, endpointId) {
     return {
       startTime,
       endTime,
       queryConditions,
-      endpointId,
-      language
+      endpointId
     };
   }
 });

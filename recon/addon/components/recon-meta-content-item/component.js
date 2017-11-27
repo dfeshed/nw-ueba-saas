@@ -4,11 +4,6 @@ import computed, { alias, bool } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { highlightMeta } from 'recon/actions/interaction-creators';
 
-const stateToComputed = ({ recon: { data: { contextMenuItems, queryInputs } } }) => ({
-  contextMenuItems,
-  queryInputs
-});
-
 const dispatchToActions = {
   highlightMeta
 };
@@ -136,6 +131,14 @@ const MetaContentItem = Component.extend({
   @computed('name', 'value')
   contextSelection: (metaName, metaValue) => ({ metaName, metaValue }),
 
+  @computed('queryInputs', 'language')
+  contextMenuData(queryInputs, language) {
+    return {
+      ...queryInputs,
+      language
+    };
+  },
+
   actions: {
     /**
      * Select/deselect meta when binoculars are clicked
@@ -156,4 +159,4 @@ const MetaContentItem = Component.extend({
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(MetaContentItem);
+export default connect(null, dispatchToActions)(MetaContentItem);

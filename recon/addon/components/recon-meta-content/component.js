@@ -7,14 +7,17 @@ import {
 } from 'recon/reducers/text/selectors';
 import layout from './template';
 
-const stateToComputed = ({ recon, recon: { meta, text } }) => ({
+const stateToComputed = ({ recon, recon: { meta, text, data, dictionaries } }) => ({
   eventHasPayload: eventHasPayload(recon),
   isTextView: isTextView(recon),
   meta: meta.meta,
   metaError: meta.metaError,
   metaLoading: meta.metaLoading,
   metaToHighlight: text.metaToHighlight,
-  metaHighlightCount: metaHighlightCount(recon)
+  metaHighlightCount: metaHighlightCount(recon),
+  contextMenuItems: data.contextMenuItems,
+  queryInputs: data.queryInputs,
+  language: dictionaries.language
 });
 
 const MetaContentComponent = Component.extend({
