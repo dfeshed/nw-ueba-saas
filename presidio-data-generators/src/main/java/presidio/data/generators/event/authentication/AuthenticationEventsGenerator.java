@@ -38,6 +38,7 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     private IStringGenerator resultGenerator;
     private IStringGenerator resultCodeGenerator;
     private IAuthenticationDescriptionGenerator authenticationDescriptionGenerator;
+    private IStringGenerator siteGenerator;
 
     public AuthenticationEventsGenerator() throws GeneratorException {
         setFieldDefaultGenerators();
@@ -65,6 +66,7 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
+        siteGenerator = new RandomStringGenerator();
     }
 
     @Override
@@ -85,7 +87,8 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
                 getResultGenerator().getNext(),
                 getResultCodeGenerator().getNext(),
                 getObjectDN(user.getUsername(), srcMachine.getMachineDomainDN()),
-                getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername())
+                getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername()),
+                getSiteGenerator().getNext()
         );
         authenticationDescriptionGenerator.updateFileDescription(ev);
         return ev;
@@ -141,6 +144,15 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
 
     public IStringGenerator getResultGenerator() {
         return resultGenerator;
+    }
+
+
+    public void setSiteGenerator(IStringGenerator siteGenerator) {
+        this.siteGenerator = siteGenerator;
+    }
+
+    public IStringGenerator getSiteGenerator() {
+        return siteGenerator;
     }
 
     public void setResultGenerator(IStringGenerator resultGenerator) {
