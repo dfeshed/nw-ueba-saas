@@ -1,16 +1,17 @@
 package presidio.output.processor.services.user;
 
 import fortscale.utils.logging.Logger;
-import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.commons.services.alert.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
@@ -28,15 +29,9 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private UserPersistencyService userPersistencyService;
 
-    private int percentThresholdCritical;
-
-    private int percentThresholdHigh;
-
-    private int percentThresholdMedium;
-
-    private Map<AlertEnums.AlertSeverity, Double> alertSeverityToScoreContribution;
-
     private AlertPersistencyService alertPersistencyService;
+
+    private AlertSeverityService alertSeverityService;
 
     private int defaultAlertsBatchSize;
 
@@ -44,70 +39,34 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
+                                AlertSeverityService alertSeverityService,
                                 int defaultAlertsBatchSize,
-                                int defaultUsersBatchSize,
-                                int percentThresholdCritical,
-                                int percentThresholdHigh,
-                                int percentThresholdMedium,
-                                double alertContributionCritical,
-                                double alertContributionHigh,
-                                double alertContributionMedium,
-                                double alertContributionLow) {
+                                int defaultUsersBatchSize) {
         this.userPersistencyService = userPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
+        this.alertSeverityService = alertSeverityService;
 
         this.defaultAlertsBatchSize = defaultAlertsBatchSize;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
-
-        this.percentThresholdCritical = percentThresholdCritical;
-        this.percentThresholdHigh = percentThresholdHigh;
-        this.percentThresholdMedium = percentThresholdMedium;
-
-        alertSeverityToScoreContribution = new TreeMap<>();
-        alertSeverityToScoreContribution.put(AlertEnums.AlertSeverity.CRITICAL, alertContributionCritical);
-        alertSeverityToScoreContribution.put(AlertEnums.AlertSeverity.HIGH, alertContributionHigh);
-        alertSeverityToScoreContribution.put(AlertEnums.AlertSeverity.MEDIUM, alertContributionMedium);
-        alertSeverityToScoreContribution.put(AlertEnums.AlertSeverity.LOW, alertContributionLow);
-
-
     }
 
     @Override
     public void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user) {
-        double userScoreContribution = this.alertSeverityToScoreContribution.get(alertSeverity);
+        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(alertSeverity);
         double userScore = user.getScore();
         userScore += userScoreContribution;
         user.setScore(userScore);
     }
 
-    /**
-     * Calculate severities map
-     *
-     * @param userScores
-     * @return map from score to severity
-     */
-    private UserScoreToSeverity getSeveritiesMap(double[] userScores) {
-        Percentile p = new Percentile();
-
-        p.setData(userScores);
-
-        double ceilScoreForLowSeverity = p.evaluate(percentThresholdMedium); //The maximum score that user score still considered low
-        double ceilScoreForMediumSeverity = p.evaluate(percentThresholdHigh);//The maximum score that user score still considered medium
-        double ceilScoreForHighSeverity = p.evaluate(percentThresholdCritical); //The maximum score that user score still considered high
-
-        UserScoreToSeverity userScoreToSeverity = new UserScoreToSeverity(ceilScoreForLowSeverity, ceilScoreForMediumSeverity, ceilScoreForHighSeverity);
-
-
-        return userScoreToSeverity;
-
-    }
-
-
     @Override
     public void updateSeverities() {
         final double[] scores = getScoresArray();
-        final UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(defaultUsersBatchSize).sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
+        final AlertEnumsSeverityService.UserScoreToSeverity severitiesMap = alertSeverityService.getSeveritiesMap(scores);
+        UserQuery.UserQueryBuilder userQueryBuilder =
+                new UserQuery.UserQueryBuilder()
+                        .pageNumber(0)
+                        .pageSize(defaultUsersBatchSize)
+                        .sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
         Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
         while (page != null && page.hasContent()) {
@@ -188,7 +147,7 @@ public class UserScoreServiceImpl implements UserScoreService {
                     alertsPage.getContent().forEach(alert -> {
                         String userId = alert.getUserId();
                         AlertEnums.AlertSeverity severity = alert.getSeverity();
-                        double userScoreContribution = this.alertSeverityToScoreContribution.get(severity);
+                        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(severity);
                         if (aggregatedUserScore.containsKey(userId)) {
                             UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
                             usersAlertData.incrementUserScore(userScoreContribution);
@@ -205,11 +164,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         return aggregatedUserScore;
     }
 
-    @Override
-    public Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity) {
-        return this.alertSeverityToScoreContribution.get(severity);
-    }
-
     private List<LocalDateTime> getListOfLastXdays(int days) {
         LocalDate endDate = LocalDate.now();
         LocalDate startTime = endDate.minusDays(days);
@@ -223,19 +177,19 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
         final double[] scores = getScoresArray();
-        final UserScoreToSeverity severitiesMap = getSeveritiesMap(scores);
+        final AlertEnumsSeverityService.UserScoreToSeverity severitiesMap = alertSeverityService.getSeveritiesMap(scores);
         updateSeveritiesForUsersList(severitiesMap, users, persistChanges);
 
     }
 
-    private void updateSeveritiesForUsersList(UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
+    private void updateSeveritiesForUsersList(AlertEnumsSeverityService.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
         List<User> updatedUsers = new ArrayList<>();
         if (users == null) {
             return;
         }
         users.forEach(user -> {
             double userScore = user.getScore();
-            UserSeverity newUserSeverity = severitiesMap.getSeverity(userScore);
+            UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
 
             log.debug("Updating user severity for userId: " + user.getUserId());
             if (!newUserSeverity.equals(user.getSeverity())) {
@@ -311,31 +265,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
 
         return scores;
-    }
-
-
-    public static class UserScoreToSeverity {
-        private double ceilScoreForLowSeverity;
-        private double ceilScoreForMediumSeverity;
-        private double ceilScoreForHighSeverity;
-
-        public UserScoreToSeverity(double ceilScoreForLowSeverity, double ceilScoreForMediumSeverity, double ceilScoreForHighSeverity) {
-            this.ceilScoreForLowSeverity = ceilScoreForLowSeverity;
-            this.ceilScoreForMediumSeverity = ceilScoreForMediumSeverity;
-            this.ceilScoreForHighSeverity = ceilScoreForHighSeverity;
-        }
-
-        public UserSeverity getSeverity(double score) {
-            if (score <= ceilScoreForLowSeverity) {
-                return UserSeverity.LOW;
-            } else if (score <= ceilScoreForMediumSeverity) {
-                return UserSeverity.MEDIUM;
-            } else if (score <= ceilScoreForHighSeverity) {
-                return UserSeverity.HIGH;
-            } else {
-                return UserSeverity.CRITICAL;
-            }
-        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;

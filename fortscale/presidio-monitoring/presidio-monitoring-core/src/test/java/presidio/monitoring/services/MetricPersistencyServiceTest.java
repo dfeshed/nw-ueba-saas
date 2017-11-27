@@ -1,4 +1,4 @@
-package presidio.monitoring;
+package presidio.monitoring.services;
 
 
 import org.junit.After;
@@ -13,7 +13,7 @@ import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.generator.MetricGeneratorService;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
-import presidio.monitoring.spring.MetricGenerateServiceTestConfig;
+import presidio.monitoring.spring.MetricPersistencyServiceTestConfig;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = MetricGenerateServiceTestConfig.class)
+@ContextConfiguration(classes = MetricPersistencyServiceTestConfig.class)
 public class MetricPersistencyServiceTest {
 
     @Autowired
@@ -39,7 +39,7 @@ public class MetricPersistencyServiceTest {
     }
 
     @Test
-    public void createTestMetrics() {
+    public void testSaveMetrics() {
         Instant from = Instant.now().minusMillis(1000000);
         Instant to = Instant.now().minusMillis(1000);
         List<Number> values = new LinkedList();
@@ -56,8 +56,6 @@ public class MetricPersistencyServiceTest {
         MetricDocument metric = metricRepository.findAll().iterator().next();
         Assert.assertFalse(metric.getValue().isEmpty());
         Assert.assertEquals("test", metric.getName());
-
         Assert.assertEquals(100, metricRepository.count());
-
     }
 }

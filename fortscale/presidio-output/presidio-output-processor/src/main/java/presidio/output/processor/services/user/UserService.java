@@ -1,6 +1,6 @@
 package presidio.output.processor.services.user;
 
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
