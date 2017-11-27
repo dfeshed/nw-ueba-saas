@@ -3,7 +3,7 @@ package presidio.ade.smart;
 import com.google.common.collect.Lists;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.SMARTValuesModel;
+import fortscale.ml.model.SMARTMaxValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -523,7 +523,7 @@ public class SmartApplicationTest extends BaseAppTest {
                     List<AdeAggregationRecord> adeAggregationRecords = s.getAggregationRecords();
                     Assert.assertTrue(adeAggregationRecords.size() == 1);
                     return adeAggregationRecords.get(0).getFeatureName().equals(featureName);
-                }).map(s -> s).collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
                 for (SmartRecord smart : filteredSmartsByFeature) {
                     if (weightToScore.containsKey(weight)) {
@@ -608,14 +608,26 @@ public class SmartApplicationTest extends BaseAppTest {
      * @param weightToFeaturesSortedMap weight to features sorted map.
      */
     private void createLowAnomaliesUserSmartValuesModel(Instant end, String contextId, TreeMap<Double, List<String>> weightToFeaturesSortedMap) {
-        long numOfZeroValues = 300L;
-        long numOfPositiveValues = 60L;
+        int numOfZeroValues = 50;
+        int numOfPositiveValues = 5;
         Double minWeight = Collections.min(weightToFeaturesSortedMap.keySet());
         double avgSmartValue = avgFeatureValueForLowAnomaliesUser * minWeight;
-        double sumOfValues = avgSmartValue * numOfPositiveValues;
-        SMARTValuesModel smartValuesModel = new SMARTValuesModel();
-        smartValuesModel.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 30, end);
-        ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartValuesModel, end.minus(Duration.ofDays(90)), end);
+
+        Map<Long, Double> startInstantToMaxSmartValue = new HashMap<>();
+        Duration duration = Duration.ofDays(1);
+        Instant startInstant = end.minus(duration);
+        for (int i = 0; i < numOfPositiveValues; i++) {
+            startInstantToMaxSmartValue.put(startInstant.getEpochSecond(), avgSmartValue);
+            startInstant = startInstant.minus(duration);
+        }
+        for (int i = 0; i < numOfZeroValues; i++) {
+            startInstantToMaxSmartValue.put(startInstant.getEpochSecond(), 0.0);
+            startInstant = startInstant.minus(duration);
+        }
+
+        SMARTMaxValuesModel smartMaxValuesModel = new SMARTMaxValuesModel();
+        smartMaxValuesModel.init(startInstantToMaxSmartValue, startInstantToMaxSmartValue.size(), end);
+        ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartMaxValuesModel, end.minus(Duration.ofDays(90)), end);
         mongoTemplate.insert(modelDao, "model_smart.userId.hourly");
     }
 
@@ -717,7 +729,9 @@ public class SmartApplicationTest extends BaseAppTest {
         for (int i = 0; i < numOfFeaturesInGroups; i++) {
             List<String> featuresWithDiffWeight = new ArrayList<>();
             for (List<String> features : weightToFeaturesSortedMap.values()) {
-                featuresWithDiffWeight.add(features.get(i));
+                if(i < features.size()) {
+                    featuresWithDiffWeight.add(features.get(i));
+                }
             }
             featuresWithDiffWeightList.add(featuresWithDiffWeight);
         }
