@@ -42,13 +42,14 @@
     }
 
     .context-menu__item {
+      padding: rsa-whitespace(less);
       &--parent {
-        padding-left: rsa-whitespace(more);
+        padding-right: rsa-whitespace(more);
         &:after {
           font-family: 'nw-icon-library-all-1';
-          content: $rsa-icon-arrow-left-12-filled;
-          right: initial;
-          left: rsa-whitespace(least);
+          content: $rsa-icon-arrow-right-12-filled;
+          left: initial;
+          right: rsa-whitespace(least);
         }
       }
     }
