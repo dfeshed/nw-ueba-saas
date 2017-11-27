@@ -1,14 +1,16 @@
 import Ember from 'ember';
 import moment from 'moment';
 
+
 const {
   Helper
 } = Ember;
 
 export function getField(params) {
 
+
   let result;
-  const [object, column] = params;
+  const [object, column, timezone, dateFormat, timeFormat ] = params;
   const { dataType, displayFormat } = column;
   const keys = column.get('field').split('.');
 
@@ -18,8 +20,9 @@ export function getField(params) {
       val = value;
     } else if (dataType === 'DATE') {
       const date = moment(value);
-      const dateForm = date.format('YYYY-MM-DD');
-      const timeForm = date.format('HH:mm:ss');
+      const selectedZoneId = timezone._selected.zoneId;
+      const dateForm = date.tz(selectedZoneId).format(dateFormat._selected.format);
+      const timeForm = date.tz(selectedZoneId).format(timeFormat._selected.format);
       val = `${ dateForm } ${ timeForm }`;
       val = val.includes('Invalid') ? '' : val;
     } else if (displayFormat === 'HEX') {

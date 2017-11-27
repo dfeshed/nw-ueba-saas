@@ -22,6 +22,7 @@ let columnsConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
+      format: 'DATE',
       width: '10%'
     }
   ],
