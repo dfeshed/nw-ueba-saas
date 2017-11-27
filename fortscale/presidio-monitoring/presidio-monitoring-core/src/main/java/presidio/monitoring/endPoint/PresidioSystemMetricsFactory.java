@@ -26,21 +26,19 @@ public class PresidioSystemMetricsFactory {
     private Runtime runtime;
     private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
     private ThreadMXBean threadMxBean;
-    private Map<MetricEnums.MetricTagKeysEnum, String> tags;
+    private String applicationName;
 
     public PresidioSystemMetricsFactory(String applicationName) {
-        tags = new HashMap<>();
-        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        this.applicationName = applicationName;
         runtime = Runtime.getRuntime();
         garbageCollectorMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
         threadMxBean = ManagementFactory.getThreadMXBean();
     }
 
     private Metric createMemoryMetric(String name, long value, MetricEnums.MetricUnitType metricUnitType) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(metricUnitType);
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.COUNT, value);
-        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
-        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
@@ -48,10 +46,9 @@ public class PresidioSystemMetricsFactory {
     }
 
     private Metric createSystemMetric(String name, long value, MetricEnums.MetricUnitType metricUnitType) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(metricUnitType);
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.COUNT, value);
-        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
-        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
@@ -59,14 +56,21 @@ public class PresidioSystemMetricsFactory {
     }
 
     private Metric createThreadsMetric(String name, long value, MetricEnums.MetricUnitType metricUnitType) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(metricUnitType);
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.COUNT, value);
-        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
-        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
+        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();
+    }
+
+    private Map<MetricEnums.MetricTagKeysEnum, String> createTagsForMetric(MetricEnums.MetricUnitType metricUnitType) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, metricUnitType.toString());
+        tags.put(MetricEnums.MetricTagKeysEnum.IS_SYSTEM_METRIC, Boolean.TRUE.toString());
+        return tags;
     }
 
     public List<Metric> metrics() {
@@ -132,12 +136,12 @@ public class PresidioSystemMetricsFactory {
         try {
             return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
         } catch (Throwable ex) {
-            logger.info("Error when trying to collect defoult metrics.", ex);
+            logger.info("Error when trying to collect default metrics.", ex);
             return 0;
         }
     }
 
-    public void addTag(MetricEnums.MetricTagKeysEnum tagKey, String tagValue) {
-        this.tags.put(tagKey, tagValue);
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 }
