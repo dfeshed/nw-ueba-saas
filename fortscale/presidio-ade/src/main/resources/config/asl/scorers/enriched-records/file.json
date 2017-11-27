@@ -61,30 +61,45 @@
               "conditional-field": "operationTypeCategories",
               "conditional-value": "FILE_ACTION",
               "scorer": {
-                "type": "max-scorer-container",
+                "type": "field-value-score-reducer",
                 "name": "operationType.userIdFileAction.file.score",
-                "scorers": [
-                  {
-                    "type": "category-rarity-model-scorer",
-                    "name": "operationType.userIdFileAction.file.scorer",
-                    "model": {
-                      "name": "operationType.userIdFileAction.file"
+                "base-scorer": {
+                  "type": "max-scorer-container",
+                  "name": "operationType.userIdFileAction.file.score",
+                  "scorers": [
+                    {
+                      "type": "category-rarity-model-scorer",
+                      "name": "operationType.userIdFileAction.file.scorer",
+                      "model": {
+                        "name": "operationType.userIdFileAction.file"
+                      },
+                      "max-rare-count": 5,
+                      "max-num-of-rare-features": 15,
+                      "number-of-partitions-to-influence-enough": 10,
+                      "use-certainty-to-calculate-score": true
                     },
-                    "max-rare-count": 5,
-                    "max-num-of-rare-features": 15,
-                    "number-of-partitions-to-influence-enough": 10,
-                    "use-certainty-to-calculate-score": true
-                  },
+                    {
+                      "type": "category-rarity-model-scorer",
+                      "name": "operationType.userId.file.scorer",
+                      "model": {
+                        "name": "operationType.userId.file"
+                      },
+                      "max-rare-count": 5,
+                      "max-num-of-rare-features": 15,
+                      "number-of-partitions-to-influence-enough": 10,
+                      "use-certainty-to-calculate-score": true
+                    }
+                  ]
+                },
+                "limiters": [
                   {
-                    "type": "category-rarity-model-scorer",
-                    "name": "operationType.userId.file.scorer",
-                    "model": {
-                      "name": "operationType.userId.file"
-                    },
-                    "max-rare-count": 5,
-                    "max-num-of-rare-features": 15,
-                    "number-of-partitions-to-influence-enough": 10,
-                    "use-certainty-to-calculate-score": true
+                    "fieldName": "operationType",
+                    "valueToMaxScoreMap": {
+                      "FOLDER_CREATED": 0,
+                      "FILE_CREATED": 0,
+                      "FOLDER_OPENED": 0,
+                      "FILE_OPENED": 0
+                    }
                   }
                 ]
               }
