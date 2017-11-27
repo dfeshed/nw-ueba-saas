@@ -54,6 +54,25 @@
         "includeValues": true,
         "minScoreToInclude": 1
       }
+    },
+    {
+      "name": "sumOfHighestSiteScoresUserIdAuthenticationHourly",
+      "type": "P",
+      "bucketConfName": "siteToHighestScoreMapUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "siteToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
     }
   ]
 }

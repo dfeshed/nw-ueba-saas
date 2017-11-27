@@ -173,6 +173,30 @@
           }
         }
       ]
+    },
+    {
+      "name": "siteHistogramUserIdAuthenticationHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSiteHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "site"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
