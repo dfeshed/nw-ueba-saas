@@ -14,7 +14,7 @@ export default {
         complete: true
       },
       data: [{
-        sessionID: '',
+        sessionId: '1234',
         time: 1472585869119,
         metas: [
           [ 'service', randInt(20, 80) ],
@@ -42,5 +42,3 @@ export default {
     };
   }
 };
-
-
