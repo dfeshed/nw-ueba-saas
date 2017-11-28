@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import layout from './template';
 import service from 'ember-service/inject';
-import computed, { equal } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
 import { connect } from 'ember-redux';
 import { updateScheduleProperty } from 'hosts-scan-configure/actions/data-creators';
@@ -31,16 +31,9 @@ const ScheduleTime = Component.extend({
 
   classNames: 'schedule-time',
 
-  @equal('timeFormat.selected.key', 'HR24') time24HR: null,
-
   @computed('i18n.locale')
   locale: (locale) => {
     return locale.split('-')[0];
-  },
-
-  @computed('time24HR')
-  convertedTimeFormat: (time24HR) => {
-    return time24HR ? 'H:i:S' : 'h:i:S K';
   },
 
   actions: {
