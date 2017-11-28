@@ -33,12 +33,9 @@ public class SMARTMaxValuesModelBuilder implements IModelBuilder {
         startInstantToSmartValues.forEach((instant, smartValue) -> {
             Instant floorStartInstant = TimeService.floorTime(instant, partitionsResolutionInSeconds);
 
-            if (!startInstantToMaxSmartValue.containsKey(floorStartInstant.getEpochSecond())) {
+            Double curSmartValue = startInstantToMaxSmartValue.get(floorStartInstant.getEpochSecond());
+            if(curSmartValue==null || smartValue > curSmartValue){
                 startInstantToMaxSmartValue.put(floorStartInstant.getEpochSecond(), smartValue);
-            } else {
-                if (smartValue > startInstantToMaxSmartValue.get(floorStartInstant.getEpochSecond())) {
-                    startInstantToMaxSmartValue.put(floorStartInstant.getEpochSecond(), smartValue);
-                }
             }
         });
 
