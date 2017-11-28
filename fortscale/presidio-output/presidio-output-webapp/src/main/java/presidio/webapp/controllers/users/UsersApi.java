@@ -71,7 +71,7 @@ public interface UsersApi {
             produces = "application/json",
             consumes = "application/json",
             method = RequestMethod.PATCH)
-    default ResponseEntity<UsersWrapper> updateUsers(@ApiParam(value = "object that hold all the parameters for getting specific users") UserQuery userQuery, @RequestBody JsonPatch jsonPatch) {
+    default ResponseEntity<UsersWrapper> updateUsers(@ApiParam(value = "object that hold all the parameters for getting specific users") @RequestBody UserPatchBody userPatchBody) {
         // do some magic!
         return new ResponseEntity<UsersWrapper>(HttpStatus.OK);
     }

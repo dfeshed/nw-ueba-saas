@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import presidio.webapp.model.AlertsWrapper;
 import presidio.webapp.model.User;
-import presidio.webapp.model.UserQuery;
+import presidio.webapp.model.UserPatchBody;
 import presidio.webapp.model.UsersWrapper;
 import presidio.webapp.service.RestUserService;
 
@@ -71,13 +71,13 @@ public class UsersApiController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<UsersWrapper> updateUsers(UserQuery userQuery, @RequestBody JsonPatch jsonPatch) {
+    public ResponseEntity<UsersWrapper> updateUsers(@RequestBody UserPatchBody userPatchBody) {
 
-        if (!checkValidUpdateRequest(jsonPatch)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(restUserService.updateUsers(userQuery, jsonPatch), HttpStatus.OK);
+        if (!checkValidUpdateRequest(userPatchBody.getJsonPatch())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(restUserService.updateUsers(userPatchBody.getUserQuery(), userPatchBody.getJsonPatch()), HttpStatus.OK);
     }
 
-    private boolean checkValidUpdateRequest(@RequestBody JsonPatch jsonPatch) {
+    private boolean checkValidUpdateRequest(JsonPatch jsonPatch) {
         for (JsonPatchOperation jsonPatchOperation : jsonPatch.getOperations()) {
             if (!jsonPatchOperation.getPath().toString().contains("tags")) {
                 return false;
