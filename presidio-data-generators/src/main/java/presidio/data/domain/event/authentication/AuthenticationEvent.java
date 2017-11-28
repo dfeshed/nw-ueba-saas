@@ -26,7 +26,7 @@ public class AuthenticationEvent extends Event implements Serializable {
     private String objectCanonical;
     private String site;
 
-    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String site) {
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
         this.eventId = eventId;
         this.eventTime = eventTime;
         this.dataSource = dataSource;
@@ -35,9 +35,23 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.operationTypeCategories = operationTypeCategories;
         this.srcMachineEntity = srcMachineEntity;
         this.dstMachineEntity = dstMachineEntity;
-        this.site = site;
         this.result = result;
         this.resultCode = resultCode;
+    }
+
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical) {
+        this.eventId = eventId;
+        this.eventTime = eventTime;
+        this.dataSource = dataSource;
+        this.user = user;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.srcMachineEntity = srcMachineEntity;
+        this.dstMachineEntity = dstMachineEntity;
+        this.result = result;
+        this.resultCode = resultCode;
+        this.objectDN = objectDN;
+        this.objectCanonical = objectCanonical;
     }
 
     public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical, String site) {
@@ -49,11 +63,11 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.operationTypeCategories = operationTypeCategories;
         this.srcMachineEntity = srcMachineEntity;
         this.dstMachineEntity = dstMachineEntity;
-        this.site = site;
         this.result = result;
         this.resultCode = resultCode;
         this.objectDN = objectDN;
         this.objectCanonical = objectCanonical;
+        this.site = site;
     }
 
     public static long getSerialVersionUID() {
