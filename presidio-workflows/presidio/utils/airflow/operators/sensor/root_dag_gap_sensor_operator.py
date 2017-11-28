@@ -4,6 +4,7 @@ from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
+from datetime import timedelta
 
 
 class RootDagGapSensorOperator(BaseSensorOperator):
@@ -27,8 +28,8 @@ class RootDagGapSensorOperator(BaseSensorOperator):
         super(RootDagGapSensorOperator, self).__init__(
             retries=99999,
             retry_exponential_backoff=True,
-            max_retry_delay=300,
-            retry_delay=5,
+            max_retry_delay=timedelta(seconds=300),
+            retry_delay=timedelta(seconds=5),
             *args,
             **kwargs
         )
