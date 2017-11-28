@@ -108,7 +108,6 @@ const ContentFilter = Component.extend({
     },
 
     saveFilter() {
-      let areFieldsEmpty = true;
       const {
         filterSelected,
         saveFilterName,
@@ -119,14 +118,9 @@ const ContentFilter = Component.extend({
         id: filterSelected.id,
         description: filterSelected.description
       };
-      for (const schema of expressionList) {
-        const { propertyValues } = schema;
-        if (propertyValues) {
-          areFieldsEmpty = false;
-          break;
-        }
-      }
-      if (areFieldsEmpty) {
+
+      //  checking if any of the added filter fields are empty.
+      if (expressionList.some((item) => !item.propertyValues)) {
         this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage'));
         return;
       }
