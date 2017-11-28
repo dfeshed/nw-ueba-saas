@@ -1665,7 +1665,7 @@ export default {
           emptyMessage: 'Name field is empty.',
           nameExistsMessage: 'A saved search with the same name.',
           success: 'Search query saved successfully.',
-          filterFieldEmptyMessage: 'Filter fields are empty',
+          filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
           invalidInput: 'Please enter a valid name (Only \'-\' and \'_\' special characters are allowed.)'
         },
         delete: {
@@ -2371,7 +2371,7 @@ export default {
           emptyMessage: 'Name field is empty.',
           nameExistsMessage: 'A saved search with the same name.',
           success: 'Search query saved successfully. Date/time is not saved.',
-          filterFieldEmptyMessage: 'Filter fields are empty',
+          filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
           invalidInput: 'Only \'-\' and \'_\' special characters are allowed.'
         },
         update: {

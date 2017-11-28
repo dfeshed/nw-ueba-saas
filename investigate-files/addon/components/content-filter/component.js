@@ -127,7 +127,7 @@ const ContentFilter = Component.extend({
         }
       }
       if (areFieldsEmpty) {
-        this.get('flashMessage').showFlashMessage('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage');
+        this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage'));
         return;
       }
       if (!hasError) {

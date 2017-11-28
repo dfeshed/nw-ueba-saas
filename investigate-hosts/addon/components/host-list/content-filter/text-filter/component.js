@@ -115,16 +115,14 @@ const TextFilter = Component.extend(FilterMixin, {
     onUpdate() {
       const {
         config: { propertyName },
+        restrictionType,
         value
-      } = this.getProperties('config', 'value');
-
-      let restrictionType = this.get('restrictionType');
+      } = this.getProperties('config', 'restrictionType', 'value');
 
       const propertyValues = value && !isEmpty(value) ? preparePropertyValues(value) : null;
-      if (propertyValues.length > 1) {
-        restrictionType = 'IN';
-      }
-      this.send('updateFilter', { restrictionType, propertyName, propertyValues });
+      const restrictionTypeUpdated = (Array.isArray(propertyValues) && (propertyValues.length > 1)) ? 'IN' : restrictionType;
+
+      this.send('updateFilter', { restrictionType: restrictionTypeUpdated, propertyName, propertyValues });
     }
   }
 });
