@@ -203,6 +203,10 @@
             <groupId>com.github.fge</groupId>
             <artifactId>json-patch</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

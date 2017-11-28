@@ -1,6 +1,7 @@
 package presidio.webapp.spring;
 
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
+import fortscale.utils.rest.HttpMethodOverrideHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -68,6 +69,12 @@ public class OutputWebappConfiguration {
         TomcatEmbeddedServletContainerFactory factory =
                 new TomcatEmbeddedServletContainerFactory();
         return factory;
+    }
+
+    @Bean
+    public HttpMethodOverrideHeaderFilter overrideHeaderFilter() {
+        HttpMethodOverrideHeaderFilter filter = new HttpMethodOverrideHeaderFilter();
+        return filter;
     }
 
 }
