@@ -63,7 +63,7 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
         }
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
-        ModelDAO weightsModelDAO = getModelDAO(endTimeInstant);
+        ModelDAO weightsModelDAO = getWeightsModelDao(endTimeInstant);
         Instant weightsModelEndTime = weightsModelDAO.getEndTime();
         SmartWeightsModel smartWeightsModel = (SmartWeightsModel) weightsModelDAO.getModel();
 
@@ -86,7 +86,7 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
         return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData, clusterConfs);
     }
 
-    private ModelDAO getModelDAO(Instant endTimeInstant) {
+    private ModelDAO getWeightsModelDao(Instant endTimeInstant) {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
         ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
         return latestBeforeEventTimeAfterOldestAllowedModelDao;

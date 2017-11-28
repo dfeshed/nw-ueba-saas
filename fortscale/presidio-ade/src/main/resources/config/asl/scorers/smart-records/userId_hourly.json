@@ -4,7 +4,7 @@
       "ade-event-type": "smart_userId_hourly",
       "scorers": [
         {
-          "type": "smart-values-model-scorer",
+          "type": "smart-max-values-model-scorer",
           "name": "smart.userId.hourly.scorer",
           "model": {
             "name": "smart.userId.hourly"

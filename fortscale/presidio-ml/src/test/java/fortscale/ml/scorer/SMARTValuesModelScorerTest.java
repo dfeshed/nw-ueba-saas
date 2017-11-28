@@ -64,9 +64,6 @@ public class SMARTValuesModelScorerTest {
                 false,
                 baseScorerConf,
                 globalInfluence,
-                10,
-                5,
-                5,
                 scorerFactoryService, eventModelsCacheService);
     }
 

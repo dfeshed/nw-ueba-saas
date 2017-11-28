@@ -17,16 +17,12 @@ public class SMARTMaxValuesModelScorerAlgorithm {
     private int minNumOfUserValues;
 
     public SMARTMaxValuesModelScorerAlgorithm(int globalInfluence, int maxUserInfluence, int numOfPartitionUserInfluence, int minNumOfUserValues) {
-        assertGlobalInfluence(globalInfluence);
         this.globalInfluence = globalInfluence;
         this.maxUserInfluence = maxUserInfluence;
         this.numOfPartitionUserInfluence = numOfPartitionUserInfluence;
         this.minNumOfUserValues = minNumOfUserValues;
     }
 
-    public static void assertGlobalInfluence(int globalInfluence) {
-        Assert.isTrue(globalInfluence >= 0, String.format("globalInfluence must be >= 0: %d", globalInfluence));
-    }
 
     /**
      *
@@ -51,14 +47,21 @@ public class SMARTMaxValuesModelScorerAlgorithm {
             return 0;
         }
 
-        double userInfluence = Math.min(maxUserInfluence, Math.ceil(model.getNumOfPartitions() / numOfPartitionUserInfluence));
+        double userInfluence = Math.min(maxUserInfluence, Math.ceil((double) model.getNumOfPartitions() / numOfPartitionUserInfluence));
 
         Map<Long, Double> startInstantToMaxSmartValues = model.getStartInstantToMaxSmartValue();
-        Double sumOfMaxValues = startInstantToMaxSmartValues.values().stream().sorted(Comparator.reverseOrder()).limit((long) userInfluence).mapToDouble(d->d).sum();
-        double probOfNewValueGreaterThanValue = probOfNewValueGreaterThanValue(startInstantToMaxSmartValues, sumOfMaxValues, value, userInfluence);
-        double probOfNewValueGreaterThanValueWithPrior = probOfNewValueGreaterThanValueWithPrior(sumOfMaxValues, priorModel.getPrior(), value, userInfluence);
+        Double sumOfMaxValues = startInstantToMaxSmartValues.values().stream().sorted(Comparator.reverseOrder()).limit((long) userInfluence).mapToDouble(d -> d).sum();
 
-        return 100 * (1 - Math.max(probOfNewValueGreaterThanValue, probOfNewValueGreaterThanValueWithPrior));
+        double sumOfMaxValuesWithoutPrior = calcSumOfMaxValueWithoutPrior(startInstantToMaxSmartValues, sumOfMaxValues, userInfluence);
+        double probOfNewValueGreaterThanValue = sumOfMaxValuesWithoutPrior > 0 ? Math.pow(sumOfMaxValuesWithoutPrior / (value + sumOfMaxValuesWithoutPrior), Math.max(userInfluence, minNumOfUserValues)) : 0;
+
+        if (globalInfluence >= 5) {
+            double sumOfValuesWithPrior = sumOfMaxValues + globalInfluence * priorModel.getPrior();
+            double probOfNewValueGreaterThanValueWithPrior = sumOfValuesWithPrior > 0 ? Math.pow(sumOfValuesWithPrior / (value + sumOfValuesWithPrior), userInfluence + globalInfluence) : 0;
+            return 100 * (1 - Math.max(probOfNewValueGreaterThanValue, probOfNewValueGreaterThanValueWithPrior));
+        }
+
+        return 100 * (1 - probOfNewValueGreaterThanValue);
     }
 
     /**
@@ -66,38 +69,17 @@ public class SMARTMaxValuesModelScorerAlgorithm {
      *
      * @param startInstantToSmartValues startInstantToSmartValues map
      * @param sumOfMaxValues sumOfMaxValues
-     * @param value new value
      * @param numOfValues numOfValues
-     * @return probability that new value greater than values
+     * @return sum of max values
      */
-    private double probOfNewValueGreaterThanValue(Map<Long, Double> startInstantToSmartValues, double sumOfMaxValues, double value, double numOfValues) {
+    private double calcSumOfMaxValueWithoutPrior(Map<Long, Double> startInstantToSmartValues, double sumOfMaxValues, double numOfValues) {
 
         if (minNumOfUserValues > numOfValues && !startInstantToSmartValues.isEmpty()) {
             Double maxSmartValue = Collections.max(startInstantToSmartValues.values());
             sumOfMaxValues += maxSmartValue * (minNumOfUserValues - numOfValues);
-            numOfValues = minNumOfUserValues;
         }
 
-        return sumOfMaxValues > 0 ? Math.pow(sumOfMaxValues / (value + sumOfMaxValues), numOfValues) : 0;
-    }
-
-    /**
-     *
-     * @param sumOfMaxValues sumOfMaxValues
-     * @param prior prior
-     * @param value new value
-     * @param numOfValues numOfValues
-     * @return probability that new value greater than values, considering prior value
-     */
-    private double probOfNewValueGreaterThanValueWithPrior(double sumOfMaxValues, double prior, double value, double numOfValues) {
-
-        double sumOfValuesWithPrior = sumOfMaxValues + globalInfluence * prior;
-        if (sumOfValuesWithPrior == 0) {
-            return 100;
-        }
-
-        return Math.pow(sumOfValuesWithPrior / (value + sumOfValuesWithPrior),
-                numOfValues + globalInfluence);
+        return sumOfMaxValues;
     }
 
 }

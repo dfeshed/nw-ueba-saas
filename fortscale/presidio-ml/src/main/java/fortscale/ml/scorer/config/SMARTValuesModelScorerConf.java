@@ -17,12 +17,6 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
 
     @JsonProperty("global-influence")
     private int globalInfluence;
-    @JsonProperty("max-user-influence")
-    private int maxUserInfluence;
-    @JsonProperty("num-of-partition-user-influence")
-    private int numOfPartitionUserInfluence;
-    @JsonProperty("min-num-of-user-values")
-    private int minNumOfUserValues;
     @JsonProperty("base-scorer")
     private IScorerConf baseScorerConf;
 
@@ -42,10 +36,7 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
                                       @JsonProperty("model") ModelInfo modelInfo,
                                       @JsonProperty("global-model") ModelInfo globalModelInfo,
                                       @JsonProperty("base-scorer") IScorerConf baseScorerConf,
-                                      @JsonProperty("global-influence") Integer globalInfluence,
-                                      @JsonProperty("max-user-influence") Integer maxUserInfluence,
-                                      @JsonProperty("num-of-partition-user-influence") Integer numOfPartitionUserInfluence,
-                                      @JsonProperty("min-num-of-user-values") Integer minNumOfUserValues
+                                      @JsonProperty("global-influence") Integer globalInfluence
                                       ) {
         super(name);
         Assert.notNull(modelInfo, "model conf should not be null");
@@ -58,9 +49,6 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
         this.globalModelInfo = globalModelInfo;
         this.baseScorerConf = baseScorerConf;
         this.globalInfluence = globalInfluence;
-        this.maxUserInfluence = maxUserInfluence;
-        this.numOfPartitionUserInfluence = numOfPartitionUserInfluence;
-        this.minNumOfUserValues = minNumOfUserValues;
     }
 
     public void setEnoughNumOfPartitionsToInfluence(int enoughNumOfPartitionsToInfluence) {
@@ -105,18 +93,6 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
 
     public IScorerConf getBaseScorerConf() {
         return baseScorerConf;
-    }
-
-    public int getMaxUserInfluence() {
-        return maxUserInfluence;
-    }
-
-    public int getNumOfPartitionUserInfluence() {
-        return numOfPartitionUserInfluence;
-    }
-
-    public int getMinNumOfUserValues() {
-        return minNumOfUserValues;
     }
 
     @Override
