@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -55,7 +56,7 @@ public class SmartApplicationTest extends BaseAppTest {
     private IMapGenerator aggregatedFeatureToScoreGenerator;
     private IMapGenerator aggregatedFeatureToValueGenerator;
     private static final double avgFeatureValueForLowAnomaliesUser = 0.5;
-    private static final int numOfFeaturesInGroups = 6;
+    private static final int numOfFeaturesInGroups = 5;
     public static final String EXECUTION_COMMAND = "process --smart_record_conf_name %s --start_date %s --end_date %s";
     @Autowired
     private AggregatedDataStore aggregatedDataStore;
@@ -194,12 +195,16 @@ public class SmartApplicationTest extends BaseAppTest {
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
 
-        Double expectedScore = smartRecords.get(0).getScore();
-        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
-        Assert.assertTrue(expectedScore > 0);
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
-
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+
+        Map<Integer, List<SmartRecord>> aggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getAggregationRecords().size()));
+        aggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+            Double expectedScore = smartRecordList.get(0).getScore();
+            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+            Assert.assertTrue(expectedScore > 0);
+            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+        });
+
     }
 
 
@@ -357,17 +362,21 @@ public class SmartApplicationTest extends BaseAppTest {
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
 
-        Double expectedScore = smartRecords.get(0).getScore();
-        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
-        Assert.assertTrue(expectedScore > 0);
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
-
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * (durationOfProcess - (2 * numOfDaysToReduce)));
 
         Instant smartRecordStart = smartRecords.stream().min(Comparator.comparing(SmartRecord::getStartInstant)).get().getStartInstant();
         Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
         Assert.assertTrue(start.equals(smartRecordStart));
         Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
+
+        Map<Integer, List<SmartRecord>> aggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getAggregationRecords().size()));
+        aggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+            Double expectedScore = smartRecordList.get(0).getScore();
+            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+            Assert.assertTrue(expectedScore > 0);
+            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+        });
+
     }
 
 
@@ -717,7 +726,9 @@ public class SmartApplicationTest extends BaseAppTest {
         for (int i = 0; i < numOfFeaturesInGroups; i++) {
             List<String> featuresWithDiffWeight = new ArrayList<>();
             for (List<String> features : weightToFeaturesSortedMap.values()) {
-                featuresWithDiffWeight.add(features.get(i));
+                if(i < features.size()) {
+                    featuresWithDiffWeight.add(features.get(i));
+                }
             }
             featuresWithDiffWeightList.add(featuresWithDiffWeight);
         }
