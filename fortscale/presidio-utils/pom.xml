@@ -197,7 +197,7 @@
         <dependency>
             <groupId>com.github.fge</groupId>
             <artifactId>jackson-coreutils</artifactId>
-            <version>1.8</version>
+            <version>${jackson-coreutils.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.fge</groupId>
