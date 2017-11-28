@@ -17,7 +17,7 @@ import java.time.Duration;
 
 
 @Component
-public class AccumulatedSmartValueDataRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
+public class AccumulatedContextSmartValueRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
 
     @Autowired
     private SmartAccumulationDataReader accumulationDataReader;

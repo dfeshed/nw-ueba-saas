@@ -45,8 +45,7 @@ public class SMARTMaxValuesModelScorerConf extends AbstractScorerConf{
                                          @JsonProperty("global-influence") Integer globalInfluence,
                                          @JsonProperty("max-user-influence") Integer maxUserInfluence,
                                          @JsonProperty("num-of-partition-user-influence") Integer numOfPartitionUserInfluence,
-                                         @JsonProperty("min-num-of-user-values") Integer minNumOfUserValues
-                                      ) {
+                                         @JsonProperty("min-num-of-user-values") Integer minNumOfUserValues) {
         super(name);
         Assert.notNull(modelInfo, "model conf should not be null");
         Assert.notNull(globalModelInfo, "global model conf should not be null");
