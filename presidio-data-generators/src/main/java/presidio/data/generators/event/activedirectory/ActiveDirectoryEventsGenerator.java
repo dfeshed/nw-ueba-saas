@@ -19,6 +19,7 @@ import presidio.data.generators.event.OPERATION_RESULT;
 import presidio.data.generators.machine.IMachineGenerator;
 import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
+import presidio.data.generators.user.NullUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
 import presidio.data.generators.user.SingleUserGenerator;
 
@@ -61,7 +62,7 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         resultCodeGenerator = new RandomStringGenerator();
         objectNameGenerator = new DefaultObjectNameGenerator();
         activeDirectoryDescriptionGenerator = new ActiveDirectoryDescriptionGenerator();
-        initiatorUserGenerator = new SingleUserGenerator("initiator_user", "initiator_user_id", "initiator_user@initiator.com");
+        initiatorUserGenerator = new NullUserGenerator();
     }
 
     @Override
