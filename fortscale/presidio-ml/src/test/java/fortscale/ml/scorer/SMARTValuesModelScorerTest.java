@@ -91,7 +91,7 @@ public class SMARTValuesModelScorerTest {
     public void shouldFailToScoreIfGivenWrongAdditionalModel() throws Exception {
         Instant modelEndTime = Instant.now();
         SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
-        scorer.calculateScore(new SMARTMaxValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
+        scorer.calculateScore(new SMARTValuesModel(), new CategoryRarityModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 
     @Test
