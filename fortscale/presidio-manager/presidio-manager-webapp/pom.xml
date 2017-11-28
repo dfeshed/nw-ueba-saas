@@ -277,12 +277,13 @@
                             <inputSpec>${basedir}/target/extra-resources/swagger/presidio-manager-swagger.yaml</inputSpec>
                             <language>java</language>
                             <library>jersey2</library>
-                            <modelPackage>presidio.output.client.model</modelPackage>
-                            <apiPackage>presidio.output.client.api</apiPackage>
-                            <invokerPackage>presidio.output.client.client</invokerPackage>
+                            <modelPackage>presidio.manager.client.model</modelPackage>
+                            <apiPackage>presidio.manager.client.api</apiPackage>
+                            <invokerPackage>presidio.manager.client.client</invokerPackage>
+                            <addCompileSourceRoot>false</addCompileSourceRoot>
                             <configOptions>
                                 <groupId>fortscale</groupId>
-                                <artifactId>presidio-output-generated-client</artifactId>
+                                <artifactId>presidio-manager-generated-client</artifactId>
                                 <artifactVersion>${project.version}</artifactVersion>
                             </configOptions>
                         </configuration>
