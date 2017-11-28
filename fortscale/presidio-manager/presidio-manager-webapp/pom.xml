@@ -280,6 +280,7 @@
                             <modelPackage>presidio.manager.client.model</modelPackage>
                             <apiPackage>presidio.manager.client.api</apiPackage>
                             <invokerPackage>presidio.manager.client.client</invokerPackage>
+                            <addCompileSourceRoot>false</addCompileSourceRoot>
                             <configOptions>
                                 <groupId>fortscale</groupId>
                                 <artifactId>presidio-manager-generated-client</artifactId>
