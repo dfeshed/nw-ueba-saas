@@ -19,12 +19,7 @@ import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by shays on 17/05/2017.
@@ -41,9 +36,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final int smartPageSize;
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
-    private final String NUMBER_OF_ALERTS_METRIC_NAME = "number.of.alerts.created";
-    private final String ALERT_WITH_SEVERITY_METRIC_NAME = "alert.created.with.severity.";
-    private final String LAST_SMART_TIME_METRIC_NAME = "last.smart.time.in.output";
+    private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
+    private final String ALERT_WITH_SEVERITY_METRIC_PREFIX = "alert_created_with_severity.";
+    private final String LAST_SMART_TIME_METRIC_NAME = "last_smart_time";
     private static final String ADE_SMART_USER_ID = "userId";
     private final String USER_GOT_SMART = "userGotSmart";
 
@@ -111,7 +106,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_NAME + alertEntity.getSeverity().name()).
+                    metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_PREFIX + alertEntity.getSeverity().name()).
                             setMetricValue(1).
                             setMetricTags(tags).
                             setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
