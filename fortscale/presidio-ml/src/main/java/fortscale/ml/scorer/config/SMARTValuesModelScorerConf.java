@@ -36,8 +36,7 @@ public class SMARTValuesModelScorerConf extends AbstractScorerConf{
                                       @JsonProperty("model") ModelInfo modelInfo,
                                       @JsonProperty("global-model") ModelInfo globalModelInfo,
                                       @JsonProperty("base-scorer") IScorerConf baseScorerConf,
-                                      @JsonProperty("global-influence") Integer globalInfluence
-                                      ) {
+                                      @JsonProperty("global-influence") Integer globalInfluence) {
         super(name);
         Assert.notNull(modelInfo, "model conf should not be null");
         Assert.notNull(globalModelInfo, "global model conf should not be null");
