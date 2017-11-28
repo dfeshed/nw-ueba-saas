@@ -1,6 +1,7 @@
 import * as ACTION_TYPES from './types';
 import { getServiceSummary } from './data-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
+import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
 import moment from 'moment';
 
 export const setMetaPanelSize = (size) => {
@@ -44,20 +45,16 @@ export const setQueryParamsForTests = (params) => ({
 export const setQueryTimeRange = ({ id, value, unit }) => {
   return (dispatch, getState) => {
     const state = getState();
-    // TODO placeholder for the preference setting
-    // Setting for the preferred time option (browser time vs collection time)
-    // Default option is the collection (db) time
-    const useBrowserTime = false;
-    let endTime, startTime;
     // Get the database start/end times. If they are 0, then use browser time
     // For startTime, set time to 1970 if DB time was 0.
     const dbEndTime = getDbEndTime(state) || moment().unix();
     const dbStartTime = getDbStartTime(state) || moment(0).unix();
+    let endTime, startTime;
 
-    if (useBrowserTime) {
-      endTime = moment().endOf('minute');
-    } else {
+    if (useDatabaseTime(state)) {
       endTime = moment(dbEndTime * 1000).endOf('minute');
+    } else {
+      endTime = moment().endOf('minute');
     }
 
     if (value) {

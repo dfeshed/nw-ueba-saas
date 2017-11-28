@@ -108,11 +108,15 @@ const _initializeServices = (dispatch, getState) => {
  */
 const _getPreferences = (dispatch) => {
   prefService.getPreferences('investigate-events').then((data) => {
-    const { isReconExpanded } = data.eventAnalysisPreferences;
-    const reconSize = isReconExpanded ? RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
+    const {
+      eventAnalysisPreferences = {},
+      queryTimeFormat
+    } = data;
+    const reconSize = eventAnalysisPreferences.isReconExpanded ?
+      RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
     dispatch({
-      type: ACTION_TYPES.SET_RECON_PANEL_SIZE,
-      payload: reconSize
+      type: ACTION_TYPES.SET_PREFERENCES,
+      payload: { reconSize, queryTimeFormat }
     });
   });
 };
@@ -122,9 +126,9 @@ const _getPreferences = (dispatch) => {
  * `sessionId` are set. If they are, then state is probably "dirty", so we'll
  * reset it to a default state.
  * @return {function} A Redux thunk
- * @public
+ * @private
  */
-export const initializeQuery = () => {
+export const _initializeQuery = () => {
   return (dispatch, getState) => {
     const { serviceId, sessionId } = getState().investigate.queryNode;
     if (serviceId || sessionId) {
@@ -219,6 +223,20 @@ export const initializeInvestigate = (params) => {
       // Get first batch of results
       dispatch(eventsGetFirst());
     });
+  };
+};
+
+/**
+ * Kick off a series of events to initialize the index page of Investigate
+ * Events.
+ * @return {function} A Redux thunk
+ * @public
+ */
+export const initializeIndexRoute = () => {
+  return (dispatch, getState) => {
+    _getPreferences(dispatch);
+    _initializeServices(dispatch, getState);
+    _initializeQuery(dispatch, getState);
   };
 };
 

@@ -3,9 +3,13 @@ import {
   hasMetaFilters,
   queryParams,
   selectedTimeRange,
-  selectedTimeRangeId
+  selectedTimeRangeId,
+  useDatabaseTime
 } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { defaultTimeRangeId } from 'investigate-events/constants/time-ranges';
+import {
+  DATABASE_TIME,
+  DEFAULT_TIME_RANGE_ID
+} from 'investigate-events/constants/time-ranges';
 
 module('Unit | Selectors | queryNode');
 
@@ -61,7 +65,7 @@ test('use default time range if not set', function(assert) {
   };
   const selectedTimeRange = selectedTimeRangeId(state);
 
-  assert.equal(selectedTimeRange, defaultTimeRangeId, `set to ${defaultTimeRangeId}`);
+  assert.equal(selectedTimeRange, DEFAULT_TIME_RANGE_ID, `set to ${DEFAULT_TIME_RANGE_ID}`);
 });
 
 test('retrieve correct time range with single range', function(assert) {
@@ -125,7 +129,7 @@ test('retrieve correct default time range object', function(assert) {
   const range = selectedTimeRange(state);
 
   assert.equal(typeof(range), 'object', 'range is of type "object"');
-  assert.equal(range.id, defaultTimeRangeId, `default object ${defaultTimeRangeId} was returned`);
+  assert.equal(range.id, DEFAULT_TIME_RANGE_ID, `default object ${DEFAULT_TIME_RANGE_ID} was returned`);
 });
 
 test('retrieve correct specified time range object', function(assert) {
@@ -144,4 +148,26 @@ test('retrieve correct specified time range object', function(assert) {
 
   assert.equal(typeof(range), 'object', 'range is of type "object"');
   assert.equal(range.id, id, `object for ${id} was returned`);
+});
+
+test('using database time is specified correctly', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        queryTimeFormat: DATABASE_TIME
+      }
+    }
+  };
+  assert.ok(useDatabaseTime(state), 'time range not specified to use database');
+});
+
+test('not using database time is specified correctly', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        queryTimeFormat: 'foo'
+      }
+    }
+  };
+  assert.notOk(useDatabaseTime(state), 'time range specified to use database');
 });

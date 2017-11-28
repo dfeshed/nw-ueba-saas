@@ -12,12 +12,17 @@ const _initialState = Immutable.from({
   },
   previouslySelectedTimeRanges: {},
   queryString: '',
+  queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0
 });
 
 export default handleActions({
+  [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
+    return state.set('queryTimeFormat', payload.queryTimeFormat);
+  },
+
   [ACTION_TYPES.SET_QUERY_FILTER_META]: (state, { payload }) => {
     return Immutable.setIn(state, ['metaFilter', 'conditions'], payload);
   },

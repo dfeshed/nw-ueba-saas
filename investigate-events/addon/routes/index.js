@@ -2,22 +2,17 @@ import Route from 'ember-route';
 import service from 'ember-service/inject';
 
 import {
-  initializeQuery,
-  initializeServices
+  initializeIndexRoute
 } from 'investigate-events/actions/data-creators';
 
 import { setQueryFilterMeta } from 'investigate-events/actions/interaction-creators';
 import { uriEncodeEventQuery, uriEncodeMetaFilterConditions } from 'investigate-events/actions/helpers/query-utils';
 
 export default Route.extend({
-  accessControl: service(),
   redux: service(),
 
-  beforeModel() {
-    // Get services
-    this.get('redux').dispatch(initializeServices());
-    // Initialize the query state
-    this.get('redux').dispatch(initializeQuery());
+  model() {
+    this.get('redux').dispatch(initializeIndexRoute());
   },
 
   actions: {

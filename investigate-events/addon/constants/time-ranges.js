@@ -1,4 +1,5 @@
-export const defaultTimeRangeId = 'LAST_24_HOURS';
+export const DEFAULT_TIME_RANGE_ID = 'LAST_24_HOURS';
+export const DATABASE_TIME = 'DB';
 
 export default [
   { id: 'LAST_5_MINUTES', name: 'Last 5 Minutes', value: 5, unit: 'minutes' },
