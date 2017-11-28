@@ -307,6 +307,7 @@
                             <modelPackage>presidio.output.client.model</modelPackage>
                             <apiPackage>presidio.output.client.api</apiPackage>
                             <invokerPackage>presidio.output.client.client</invokerPackage>
+                            <addCompileSourceRoot>false</addCompileSourceRoot>
                             <configOptions>
                                 <groupId>fortscale</groupId>
                                 <artifactId>presidio-output-generated-client</artifactId>
