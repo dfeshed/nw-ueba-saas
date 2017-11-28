@@ -66,7 +66,8 @@ const Condition = Component.extend({
     handleConditionFieldChange(field) {
       this.send('updateCondition', {
         property: field.value,
-        operator: null
+        operator: this.get('operators')[0],
+        value: null
       });
     },
     handleConditionOperatorChange(operator) {

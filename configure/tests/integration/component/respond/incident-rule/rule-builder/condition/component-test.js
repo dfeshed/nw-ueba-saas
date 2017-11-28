@@ -72,6 +72,9 @@ test('Changing the field dispatches an updateCondition action creator', function
   selectChoose('.field', 'Alert Type');
   return wait().then(() => {
     assert.ok(actionSpy.calledOnce, 'The updateCondition action was called once');
+    assert.equal(actionSpy.args[0][0], 0, 'The first argument is the condition id of zero');
+    assert.deepEqual(actionSpy.args[0][1], { property: 'alert.type', operator: '=', value: null },
+      'The second argument is an object with the alert type property, a default operator, and a null value');
     actionSpy.restore();
   });
 });

@@ -52,6 +52,7 @@
       color: $formInputLabelColor;
       @include rsa-font(header, small);
       text-transform: uppercase;
+      line-height: 1rem;
     }
     &.description {
       .rsa-form-textarea textarea {
@@ -71,12 +72,18 @@
         }
       }
     }
+    &.time-window .rsa-form-input input {
+      line-height: 2rem;
+    }
     &.group-by-fields, &.time-window, &.incident-categories, &.incident-assignee {
       width: 480px;
     }
     &.group-by-fields .input-error {
-      padding: rsa-whitespace() 0;
+      padding: 0;
       line-height: 20px;
+      text-transform: uppercase;
+      font-size: .85rem;
+      color: text-color(primary, lightest);
     }
     &.incident-title, &.incident-summary {
       width: 700px;
@@ -118,21 +125,28 @@
           display: inline-block;
           vertical-align: middle;
         }
+        .color-code {
+          display: inline-block;
+          height: 21px;
+          width: 6px;
+          border-radius: 4px;
+          vertical-align: middle;
+          &.critical {
+            background-color: background-color(accentOne)
+          }
+          &.high {
+            background-color: background-color(accentThree);
+          }
+          &.medium {
+            background-color: background-color(accentFour);
+          }
+          &.low {
+            background-color: background-color(accentTwo);
+          }
+        }
         .rsa-form-input {
           width: 50px;
           display: inline-block;
-          input.critical {
-            background-color: background-color(accentOne);
-          }
-          input.high {
-            background-color: background-color(accentThree);
-          }
-          input.medium {
-            background-color: background-color(accentFour);
-          }
-          input.low {
-            background-color: background-color(accentTwo);
-          }
         }
         .priority-score-error {
           color: text-color(accentOne, dark);

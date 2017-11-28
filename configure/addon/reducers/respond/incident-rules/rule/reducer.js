@@ -34,6 +34,7 @@ const reducer = reduxActions.handleActions({
     const normalizedConditions = ruleNormalizer.emptyConditions();
     return state.merge({
       ruleInfo: {
+        action: 'GROUP_INTO_INCIDENT',
         incidentCreationOptions: {
           ruleTitle: '${ruleName} for ${groupByValue1}',
           categories: []

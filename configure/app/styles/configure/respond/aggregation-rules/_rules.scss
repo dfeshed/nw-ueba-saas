@@ -51,8 +51,8 @@ $dragPadHighlightedColor: background-color(primary, lighter);
       .drag-handle {
         display: inline-block;
         cursor: move;
-        height: 100%;
-        width: 100%;
+        height: 21px;
+        width: 15px;
         &::before {
           display: block;
           content: '';

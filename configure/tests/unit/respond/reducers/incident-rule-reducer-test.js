@@ -254,6 +254,7 @@ test('With NEW_INCIDENT_RULE, the ruleInfo and associated state is reset to defa
   const expectedEndState = {
     ...initialState,
     ruleInfo: {
+      action: 'GROUP_INTO_INCIDENT',
       incidentCreationOptions: {
         ruleTitle: '${ruleName} for ${groupByValue1}',
         categories: []
