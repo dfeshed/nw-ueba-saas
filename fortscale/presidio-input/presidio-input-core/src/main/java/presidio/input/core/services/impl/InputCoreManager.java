@@ -28,8 +28,8 @@ public class InputCoreManager {
     private static final Logger logger = Logger.getLogger(InputCoreManager.class);
 
     private final int DEFAULT_PAGE_SIZE = 1000;
-    private final String LAST_EVENT_TIME_PROCESSED_METRIC_NAME = "last.event.time.processed";
-    private final String TOTAL_EVENTS_PROCESSED_METRIC_NAME = "total.events.processed";
+    private final String LAST_EVENT_TIME_PROCESSED_METRIC_NAME = "last_event_time_processed";
+    private final String TOTAL_EVENTS_PROCESSED_METRIC_NAME = "total_events_processed";
 
     private final PresidioInputPersistencyService persistencyService;
     private final AdeDataService adeDataService;
