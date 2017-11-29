@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { StreamCache, promiseRequest, streamRequest, Socket } from './data-access';
+import { StreamCache, promiseRequest, streamRequest, Socket, ping } from './data-access';
 
 const {
   Service,
@@ -57,6 +57,10 @@ export default Service.extend({
   streamRequest(opts) {
     const routeName = this._currentRouteName();
     streamRequest(opts, routeName);
+  },
+
+  ping(modelName) {
+    return ping(modelName);
   },
 
   /*

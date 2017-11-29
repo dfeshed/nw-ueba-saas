@@ -183,3 +183,31 @@ test('promiseRequest return null if environment config not present', function(as
 
   assert.equal(output, null, 'promiseRequest returns null when no config present');
 });
+
+test('ping resolves to success', function(assert) {
+  const done = assert.async();
+  assert.expect(1);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router });
+  requestService.ping('test-ping').then(() => {
+    assert.ok(true, 'should return the socket information');
+    done();
+  });
+
+});
+
+test('ping resolves to failure', function(assert) {
+  const done = assert.async();
+  assert.expect(1);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router });
+  requestService.ping('test-ping/_fail')
+    .then(function () {
+      assert.ok(false, 'ping should not have succeeded');
+      done();
+    })
+    .catch(function() {
+      assert.ok(true, 'ping should fail');
+      done();
+  });
+});

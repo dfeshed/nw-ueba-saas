@@ -5,12 +5,19 @@
 // is set to any of a number of possible ports
 // so need to get from 'process.env'
 const mockPort = process.env.MOCK_PORT || 9999;
-const socketUrl = `http://localhost:${mockPort}/socket/`;
+const socketUrl = `http://localhost:${mockPort}/socket`;
+const socketUrlPingFail = `http://localhost:${mockPort}/socket/fail`;
 
 module.exports = function(/* environment, appConfig */) {
   const ENV = {
     // Used for tests run right out of streaming-data addon
     socketRoutes: {
+      'test-ping': {
+        socketUrl
+      },
+      'test-ping/_fail': {
+        socketUrl: socketUrlPingFail
+      },
       test: {
         socketUrl,
         'promise/_1': {

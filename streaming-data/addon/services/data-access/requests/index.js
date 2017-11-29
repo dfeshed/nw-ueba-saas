@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import { StreamCache } from '../streams';
 import Socket from '../sockets';
+import $ from 'jquery';
+import config from 'ember-get-config';
 
 const {
   assert,
@@ -164,7 +166,48 @@ const promiseRequest = ({
   });
 };
 
+/**
+ * API for ping to an endpoint. Ping is to test whether endpoint exists or it has access or testing the health of server
+ *
+ * Input to the ping api is socket configuration model name. Need to add ping socket configuration in environment.js.
+ * After finding the socket url (endpoint url) ping will make the ajax call to endpoint and returns the promise to the
+ * api consumer. If the endpoint is running and heath is ok then promise will resolve to success else promise will be rejected
+ *
+ * Promise will be rejected for all the error status (like 403, 404, 500 etc)
+ *
+ * @param modelName for health check of the endpoint
+ * @returns {RSVP.Promise}
+ * @public
+ */
+const ping = (modelName) => {
+
+  assert('Cannot call ping without modelName', modelName);
+
+  const url = _findPingUrl(modelName);
+  return new RSVP.Promise((resolve, reject) => {
+    $.ajax({ url, cache: false })
+      .done(() => {
+        resolve();
+      })
+      .fail(() => {
+        reject();
+      });
+  });
+};
+
+/**
+ * Returns the url for the socket info endpoint, which is used here as a health check against the service to ensure
+ * that it is running and available.
+ * @method _findPingUrl
+ * @private
+ */
+const _findPingUrl = (modelName) => {
+  const pingConfig = (config.socketRoutes || {})[modelName];
+  return `${pingConfig.socketUrl}/info`;
+};
+
 export {
   promiseRequest,
-  streamRequest
+  streamRequest,
+  ping
 };
