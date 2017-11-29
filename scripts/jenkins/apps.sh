@@ -12,8 +12,7 @@ fi
 
 function doTestApp {
   local _need="false"
-
-  if [ "${TEST}" == "true" ] && [[ $submodulesToTest =~ "|$1|" ]]
+  if [[ $submodulesToTest =~ "|$1|" ]]
   then
     _need="true"
   fi
@@ -97,28 +96,29 @@ function buildEmberApp {
     else
       runEmberTestNoMockServer $1
     fi
-  fi
-  # 'ember build' when running full build
-  if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
-  then
-    # do not build apps that do not need `ember build`` run
-    if [ "$2" = true ]
-    then
-      runEmberBuild $1
-    fi
-  fi
 
-  success "$1 is good!"
-
-  if [[ "$1" == "style-guide" ]]
-  then
-    #### Deploy style guide to host if running full build
+    # 'ember build' when running full build
     if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
     then
-      rm -rf /mnt/libhq-SA/SAStyle/production/*
-      # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/
-      cp -r dist/* /mnt/libhq-SA/SAStyle/production/
-      success "Hosted style guide has been updated"
+      # do not build apps that do not need `ember build`` run
+      if [ "$2" = true ]
+      then
+        runEmberBuild $1
+      fi
+    fi
+
+    success "$1 is good!"
+
+    if [[ "$1" == "style-guide" ]]
+    then
+      #### Deploy style guide to host if running full build
+      if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+      then
+        rm -rf /mnt/libhq-SA/SAStyle/production/*
+        # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/
+        cp -r dist/* /mnt/libhq-SA/SAStyle/production/
+        success "Hosted style guide has been updated"
+      fi
     fi
   fi
 
