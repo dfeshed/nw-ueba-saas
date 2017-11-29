@@ -45,7 +45,7 @@ test('weekOptions', function(assert) {
   const expected = {
     'index': 0,
     'isActive': true,
-    'label': 'hostsScanConfigure.recurrenceInterval.week.monday'
+    'label': 'hostsScanConfigure.recurrenceInterval.week.sunday'
   };
   assert.deepEqual(result[0], expected, 'should add label and isActive');
 });
