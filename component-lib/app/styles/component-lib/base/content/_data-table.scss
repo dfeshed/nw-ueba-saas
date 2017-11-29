@@ -133,7 +133,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     &.is-selected,
     &.is-selected:hover {
       .rsa-data-table-body-cell {
-        color: text-color(primary, lighter)!important;
         background-color: background-color(secondary, base, somewhat-opaque);
       }
     }

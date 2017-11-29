@@ -1,6 +1,6 @@
 .recon-pager {
   @include rsa-font(body, small);
-  color: text-color(primary);
+  color: text-color(primary, lighter);
   @include border-top(1px, solid, primary, dark);
   background-color: background-color(primary, darkest, translucent);
   position: absolute;
@@ -38,8 +38,8 @@
     -webkit-justify-content: flex-end;
     justify-content: flex-end;
     align-items: center;
-  
-    .data-pagination {      
+
+    .data-pagination {
       display: flex;
       align-items: center;
       margin-left: rsa-whitespace(less);
@@ -54,13 +54,13 @@
           color: text-color(primary, dark);
           cursor: default;
         }
-      }  
+      }
       //jump to specific page text box
       .page-text-box {
         display: flex;
         align-items: center;
         color: text-color(primary, lightest);
-         
+
         .input-page-number {
           margin-left: rsa-whitespace(less);
           margin-top: .1rem;

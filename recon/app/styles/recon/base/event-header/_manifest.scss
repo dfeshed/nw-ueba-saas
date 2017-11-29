@@ -96,7 +96,7 @@
 
     .header-toggle,
     .header-button {
-      color: text-color(primary);
+      color: text-color(primary, light);
       cursor: pointer;
       margin: 0 rsa-whitespace(least);
       padding: rsa-whitespace(less) rsa-whitespace(least);
