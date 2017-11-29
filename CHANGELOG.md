@@ -1,4 +1,4 @@
-# [7.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/7.4.0)
+# [7.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.4.0)
 ## Features
 * [ASOC-657](https://bedfordjira.na.rsa.net/browse/ASOC-657):&emsp;Support additional truncate options on application rules in UI rule editor
 * [ASOC-45197](https://bedfordjira.na.rsa.net/browse/ASOC-45197):&emsp;Remove majority of recon page when user modifies URL to event restricted by query prefix
