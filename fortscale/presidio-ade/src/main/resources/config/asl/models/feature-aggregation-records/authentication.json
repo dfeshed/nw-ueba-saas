@@ -223,6 +223,38 @@
         "distanceBetweenSegmentCenters": 1,
         "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
+    },
+    {
+      "name": "numberOfDistinctSite.userId.authentication.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctSiteUserIdAuthenticationHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSiteUserIdAuthenticationHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctSite.userId.prior.global.authentication.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctSite.userId.authentication.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 3,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
     }
   ]
 }

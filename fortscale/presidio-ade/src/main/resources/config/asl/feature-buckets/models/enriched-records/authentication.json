@@ -125,6 +125,54 @@
           }
         }
       ]
+    },
+    {
+      "name": "siteHistogramUserIdAuthenticationDaily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "siteHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "site"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramSiteAuthenticationDaily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "site"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }

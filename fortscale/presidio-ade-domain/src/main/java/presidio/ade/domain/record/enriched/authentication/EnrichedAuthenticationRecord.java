@@ -22,6 +22,7 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
     public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
     public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
+    public static final String SITE = "site";
 
     @Field(USER_ID_FIELD)
     private String userId;
@@ -35,6 +36,8 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     private String dstMachineNameRegexCluster;
     @Field(DST_MACHINE_DOMAIN)
     private String dstMachineDomain;
+    @Field(SITE)
+    private String site;
 
     /**
      * C'tor.
@@ -96,6 +99,14 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setDstMachineDomain(String dstMachineDomain) {
         this.dstMachineDomain = dstMachineDomain;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
     }
 
     @Transient
