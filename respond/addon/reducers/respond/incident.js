@@ -118,6 +118,7 @@ const incident = reduxActions.handleActions({
 
   [ACTION_TYPES.INITIALIZE_INCIDENT]: (state, { payload }) => {
     return state.merge({
+      ...initialState,
       // reset state for a new incident id, even if it matches the old incident id,
       // because we don't want to reuse info, we want to reload it in case it may have changed on server
       id: payload,

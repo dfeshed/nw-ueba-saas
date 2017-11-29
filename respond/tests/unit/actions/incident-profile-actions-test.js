@@ -47,3 +47,73 @@ test('When FETCH_INCIDENT_DETAILS succeeds, the info obj and infoStatus update a
   assert.deepEqual(endState, expectedEndState);
 });
 
+
+test('With INITIALIZE_INCIDENT, the incident state is updated as expected', function(assert) {
+  const initState = {
+    id: 'INC-123',
+    info: {
+      name: 'Testing 123'
+    },
+    storyline: [{ id: 'x' }],
+    storylineEvents: [{ id: 'y' }],
+    viewMode: 'storyline',
+    inspectorWidth: 500,
+    hideViz: true,
+    isShowingTasksAndJournal: true,
+    tasksJournalMode: 'search',
+    defaultSearchTimeFrameName: 'ALL_DATA',
+    defaultSearchEntityType: 'DOMAIN',
+    addRelatedIndicatorsStatus: 'success',
+    infoStatus: 'success',
+    stopStorylineStream: () => {},
+    searchEntity: {},
+    searchStatus: 'complete',
+    searchResults: [{}],
+    searchTimeFrameName: 'ALL_DATA',
+    selection: {
+      type: 'storyPoint',
+      ids: ['12345']
+    },
+    storylineEventsStatus: 'complete',
+    storylineStatus: 'complete',
+    tasks: [{}],
+    tasksStatus: 'wait'
+  };
+
+  const expectedEndState = {
+    id: 'INC-321',
+    info: null,
+    storyline: null,
+    storylineEvents: null,
+    storylineEventsStatus: null,
+    viewMode: 'storyline',
+    inspectorWidth: 500,
+    hideViz: true,
+    isShowingTasksAndJournal: true,
+    tasksJournalMode: 'search',
+    defaultSearchTimeFrameName: 'ALL_DATA',
+    defaultSearchEntityType: 'DOMAIN',
+    addRelatedIndicatorsStatus: null,
+    infoStatus: null,
+    stopStorylineStream: null,
+    searchEntity: null,
+    searchStatus: null,
+    searchResults: null,
+    searchTimeFrameName: null,
+    selection: {
+      type: '',
+      ids: []
+    },
+    storylineStatus: null,
+    tasks: [],
+    tasksStatus: null
+  };
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INCIDENT,
+    payload: 'INC-321'
+  };
+  const endState = incidentReducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState, 'incident state should be reset to defaults except for inspectorWidth,' +
+    'hideViz, viewMode, isShowingTasksAndJournal, tasksJournalMode, defaultSearchTimeFrameName, defaultSearchEntityType');
+});
