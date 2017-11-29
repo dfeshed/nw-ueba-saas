@@ -24,6 +24,7 @@ public class AuthenticationEvent extends Event implements Serializable {
     private String authenticationDescription;
     private String objectDN;
     private String objectCanonical;
+    private String site;
 
     public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
         this.eventId = eventId;
@@ -51,6 +52,22 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.resultCode = resultCode;
         this.objectDN = objectDN;
         this.objectCanonical = objectCanonical;
+    }
+
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical, String site) {
+        this.eventId = eventId;
+        this.eventTime = eventTime;
+        this.dataSource = dataSource;
+        this.user = user;
+        this.operationType = operationType;
+        this.operationTypeCategories = operationTypeCategories;
+        this.srcMachineEntity = srcMachineEntity;
+        this.dstMachineEntity = dstMachineEntity;
+        this.result = result;
+        this.resultCode = resultCode;
+        this.objectDN = objectDN;
+        this.objectCanonical = objectCanonical;
+        this.site = site;
     }
 
     public static long getSerialVersionUID() {
@@ -159,6 +176,14 @@ public class AuthenticationEvent extends Event implements Serializable {
 
     public void setObjectCanonical(String objectCanonical) {
         this.objectCanonical = objectCanonical;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
     }
 
     @Override
