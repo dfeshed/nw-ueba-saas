@@ -32,7 +32,6 @@ import {
 } from './fetch';
 import { packetTotal } from 'recon/reducers/header/selectors';
 
-const prefService = lookup('service:preferences');
 let isPreferencesInitializedOnce = false;
 
 /**
@@ -398,6 +397,7 @@ const _determineReconView = (meta, size) => {
     */
     if (!isPreferencesInitializedOnce || !forcedView) {
       isPreferencesInitializedOnce = true;
+      const prefService = lookup('service:preferences');
       prefService.getPreferences('investigate-events').then((data) => {
         if (data) {
           dispatch({

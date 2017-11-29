@@ -37,10 +37,32 @@ export default class DataHelper {
     return state.asMutable();
   }
 
+  // Data
+
+  isStandalone(setTo) {
+    _set(this.state, 'data.isStandalone', setTo);
+    return this;
+  }
+
   // META
 
   meta(meta) {
     _set(this.state, 'meta.meta', meta);
+    return this;
+  }
+
+  isLogEvent() {
+    this.meta([['medium', 32]]);
+    return this;
+  }
+
+  isNetworkEvent() {
+    this.meta([['medium', 1]]);
+    return this;
+  }
+
+  isEndpointEvent() {
+    this.meta([['nwe.callback_id', 'foo']]);
     return this;
   }
 
@@ -58,6 +80,36 @@ export default class DataHelper {
 
   // VISUALS
 
+  isMetaShown(setTo) {
+    _set(this.state, 'visuals.isMetaShown', setTo);
+    return this;
+  }
+
+  isHeaderOpen(setTo) {
+    _set(this.state, 'visuals.isHeaderOpen', setTo);
+    return this;
+  }
+
+  isReconExpanded(setTo) {
+    _set(this.state, 'visuals.isReconExpanded', setTo);
+    return this;
+  }
+
+  isReconOpen(val) {
+    _set(this.state, 'visuals.isReconOpen', val);
+    return this;
+  }
+
+  isRequestShown(val) {
+    _set(this.state, 'visuals.isRequestShown', val);
+    return this;
+  }
+
+  isResponseShown(val) {
+    _set(this.state, 'visuals.isResponseShown', val);
+    return this;
+  }
+
   _onView(view) {
     _set(this.state, 'visuals.currentReconView', view);
   }
@@ -69,6 +121,11 @@ export default class DataHelper {
 
   isPacketView() {
     this._onView(RECON_VIEW_TYPES_BY_NAME.PACKET);
+    return this;
+  }
+
+  isFileView() {
+    this._onView(RECON_VIEW_TYPES_BY_NAME.FILE);
     return this;
   }
 }

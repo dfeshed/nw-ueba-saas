@@ -12,7 +12,6 @@ import {
 } from 'recon/actions/visual-creators';
 import { toggleMetaData, setNewReconView } from 'recon/actions/data-creators';
 import { isLogEvent, isEndpointEvent } from 'recon/reducers/meta/selectors';
-import { lacksPackets } from 'recon/reducers/visuals/selectors';
 
 const stateToComputed = ({ recon, recon: { visuals } }) => ({
   currentReconView: visuals.currentReconView,
@@ -23,7 +22,6 @@ const stateToComputed = ({ recon, recon: { visuals } }) => ({
   isReconExpanded: visuals.isReconExpanded,
   isLogEvent: isLogEvent(recon),
   isEndpointEvent: isEndpointEvent(recon),
-  lacksPackets: lacksPackets(recon),
   isStandalone: recon.data.isStandalone
 });
 

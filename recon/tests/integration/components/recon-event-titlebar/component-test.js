@@ -2,196 +2,91 @@ import wait from 'ember-test-helpers/wait';
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger } from '../../../helpers/ember-power-select';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import sinon from 'sinon';
+
+import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
+import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import { patchSocket } from '../../../helpers/patch-socket';
 import startApp from '../../../helpers/start-app';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import * as VisualCreators from 'recon/actions/visual-creators';
+import * as DataCreators from 'recon/actions/data-creators';
+
+const { $ } = Ember;
 
 const application = startApp();
 initialize(application);
-const { $ } = Ember;
 
-import DataHelper from '../../../helpers/data-helper';
+let setState;
 
-let redux;
 moduleForComponent('recon-event-titlebar', 'Integration | Component | recon event titlebar', {
   integration: true,
   beforeEach() {
-    this.inject.service('redux');
-    this.inject.service('preferences');
-    redux = this.get('redux');
+    setState = (state) => {
+      applyPatch(state);
+      this.inject.service('redux');
+    };
+  },
+  afterEach() {
+    revertPatch();
   }
 });
 
-test('no index or total shows just label for recon type', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  this.render(hbs`{{recon-event-titlebar }}`);
-  assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
-});
+// recon view
 
-test('clicking close executes action', function(assert) {
-  new DataHelper(this.get('redux'))
-    .setViewToText();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isReconOpen, false);
-  this.$('.rsa-icon-close-filled').click();
-  assert.equal(redux.getState().recon.visuals.isReconOpen, false);
-});
-
-test('clicking shrink executes action', function(assert) {
-  new DataHelper(this.get('redux'))
-    .setViewToFile();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isReconExpanded, true);
-  this.$('.rsa-icon-shrink-diagonal-2-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isReconExpanded, false);
-  });
-});
-
-test('clicking shrink, then grow, executes multiple actions', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToFile();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  this.$('.rsa-icon-shrink-diagonal-2-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isReconExpanded, false);
-    this.$('.rsa-icon-expand-diagonal-4-filled').click();
-    return wait().then(() => {
-      assert.equal(redux.getState().recon.visuals.isReconExpanded, true);
-    });
-  });
-});
-
-test('calls action when reconstruction view is changed', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  this.render(hbs`{{recon-event-titlebar }}`);
-  clickTrigger();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.currentReconView.code, 3);
-  });
-});
-
-test('clicking header toggle executes action', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
-  this.$('.rsa-icon-layout-6-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isHeaderOpen, false);
-  });
-});
-
-/*
- *checks if serviceCall for getPreferences is happening successfully
- * checks if whatever the get call returns is set to the state and used succesfully
-*/
-test('Recon should initialize with default preferences set by user', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  patchSocket((method, modelName) => {
-    assert.equal(method, 'getPreferences');
-    assert.equal(modelName, 'investigate-events-preferences');
-  });
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
-  this.$('.rsa-icon-layout-6-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isHeaderOpen, false);
-  });
-});
-
-/*
- *checks if serviceCall for setPreferences is happening successfully
- * checks if whatever the user sets, same is given to setPreferences
-*/
-test('Toggle should call setPreferences with complete preferences object', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  const done = assert.async(1);
-  this.get('preferences').getPreferences('investigate-events').then((data) => {
-    this.render(hbs`{{recon-event-titlebar}}`);
-    assert.equal(redux.getState().recon.visuals.isHeaderOpen, true);
-    data.eventAnalysisPreferences.isHeaderOpen = false;
-    data.eventAnalysisPreferences.isReconOpen = false;
-    this.$('.rsa-icon-layout-6-filled').click();
-    patchSocket((method, modelName, query) => {
-      assert.equal(method, 'setPreferences');
-      assert.equal(modelName, 'investigate-events-preferences');
-      assert.deepEqual(query, {
-        data
-      });
-    });
-    done();
-    return wait().then(() => {
-      assert.equal(redux.getState().recon.visuals.isHeaderOpen, false);
-    });
-  });
-});
-
-
-test('clicking meta toggle executes actions', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isMetaShown, true);
-  this.$('.rsa-icon-layout-2-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isMetaShown, false);
-  });
-});
-
-test('clicking request toggle executes actions', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-     .setViewToText();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isRequestShown, true);
-  this.$('.rsa-icon-arrow-circle-right-2-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isRequestShown, false);
-  });
-});
-
-test('clicking response toggle executes actions', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(redux.getState().recon.visuals.isResponseShown, true);
-  this.$('.rsa-icon-arrow-circle-left-2-filled').click();
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.isResponseShown, false);
-  });
-});
-
-const initializeData = { total: 555, index: 25, meta: [['medium', 1]] };
-
-test('title renders', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
+test('renders log event label and no view selection for log events', function(assert) {
+  new ReduxDataHelper(setState).isLogEvent().build();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis');
+    assert.equal(this.$('.event-title').text().trim(), 'Log Event Details', 'Title is correct text');
+    assert.equal(this.$('.ember-power-select-trigger').length, 0, 'there is not a power select rendered');
   });
+});
+
+test('renders endpoint event label and no view selection for endpoint events', function(assert) {
+  new ReduxDataHelper(setState).isEndpointEvent().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.event-title').text().trim(), 'Endpoint Event Details', 'Title is correct text');
+    assert.equal(this.$('.ember-power-select-trigger').length, 0, 'there is not a power select rendered');
+  });
+});
+
+test('renders network event label and view selection for network events', function(assert) {
+  new ReduxDataHelper(setState).isPacketView().isNetworkEvent().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.event-title').text().trim(), 'Network Event Details', 'Title is correct text');
+    assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Packet Analysis', 'power select is populated with correct default');
+  });
+});
+
+// Stubbing outside the test otherwise tests get confused and jump back and forth
+// between failing and passing, probably due to some load order consideration
+sinon.stub(DataCreators, 'setNewReconView');
+
+test('when reconstruction view is action is called', function(assert) {
+  new ReduxDataHelper(setState).isTextView().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.ember-power-select-trigger').text().trim(), 'Text Analysis', 'power select is populated with correct default');
+  clickTrigger('.heading-select');
+  selectChoose('.heading-select', 'File');
+  assert.equal(DataCreators.setNewReconView.calledOnce, true, 'action is called');
+  assert.equal(DataCreators.setNewReconView.args[0][0].name, 'FILE', 'right recon view is provided');
+  DataCreators.setNewReconView.reset();
+
+  clickTrigger('.heading-select');
+  selectChoose('.heading-select', 'Packet');
+  assert.equal(DataCreators.setNewReconView.calledOnce, true, 'action is called');
+  assert.equal(DataCreators.setNewReconView.args[0][0].name, 'PACKET', 'right recon view is provided');
+
+  DataCreators.setNewReconView.restore();
 });
 
 test('all views enabled for network sessions', function(assert) {
   assert.expect(5);
-  new DataHelper(this.get('redux'))
-    .setViewToPacket()
-    .initializeData({ meta: [['medium', 1]] });
+  new ReduxDataHelper(setState).isPacketView().isNetworkEvent().build();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
     clickTrigger();
@@ -203,91 +98,256 @@ test('all views enabled for network sessions', function(assert) {
   });
 });
 
-test('just text view exists for log events', function(assert) {
-  assert.expect(1);
-  new DataHelper(this.get('redux'))
-    .initializeData({ meta: [['medium', 32]] })
-    .setViewToText();
+test('Click on Web/Email tab does not change the tab', function(assert) {
+  new ReduxDataHelper(setState).isTextView().build();
   this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Text Analysis');
+  assert.equal(this.$('.rsa-nav-tab')[3].textContent.trim(), 'Email');
+  this.$('.rsa-nav-tab')[3].click();
   return wait().then(() => {
-    assert.equal(this.$('.event-title').text().trim(), 'Log Event Details');
+    assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Text Analysis');
   });
 });
 
-test('request/response toggles enabled for packets', function(assert) {
-  assert.expect(2);
-  new DataHelper(this.get('redux'))
-    .setViewToPacket()
-    .initializeData({ meta: [['medium', 32]] });
-  // set to packets by default
+
+// header toggle
+
+test('header toggle renders properly when active', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isHeaderOpen(true).build();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.toggle-request').hasClass('disabled'), false, 'Request toggle enabled for packets');
-    assert.equal(this.$('.toggle-response').hasClass('disabled'), false, 'Response toggle enabled for packets');
+    assert.equal(this.$('.rsa-icon-layout-6-filled').length, 1, 'icon is displayed');
+    assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 1, 'icon is active');
   });
 });
 
-test('request/response insure that request, response, Top/Bottom and Side by Side are not generated for logs', function(assert) {
-  assert.expect(6);
-  new DataHelper(this.get('redux'))
-    .setViewToText()
-    .initializeData({ meta: [['medium', 32]] });
+test('header toggle renders properly when inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isHeaderOpen(false).build();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.rsa-icon-layout-6-filled').length, true, 'Show/Hide Header button should exist for log');
-    assert.equal(this.$('.toggle-request').length, false, 'Request button does not exist for log');
-    assert.equal(this.$('.toggle-response').length, false, 'Response button does not exist for log');
-    assert.equal(this.$('.rsa-icon-view-agenda-filled').length, false, 'Top/Bottom View button does not exist for log');
-    assert.equal(this.$('.rsa-icon-layout-4-filled').length, false, 'Side by Side View button does not exist for log');
-    assert.equal(this.$('.toggle-meta').length, true, 'Show/Hide Meta button should exist for log');
+    assert.equal(this.$('.rsa-icon-layout-6-filled').length, 1, 'icon is displayed');
+    assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 0, 'icon is not active');
   });
 });
 
-test('it renders packet view when set to text', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(initializeData)
-    .setViewToText();
+test('clicking header toggles header icon being active', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isHeaderOpen(true).build();
   this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 1, 'icon is active to stat');
+  this.$('.rsa-icon-layout-6-filled').click();
   return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'TEXT');
+    assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 0, 'icon toggles to inactive after toggle');
   });
 });
 
-test('it renders packet view when set to packet', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData()
-    .setViewToPacket();
+// TODO, move this to a integration/unit test on the action creator, just call the function with a new settting
+// and verify the setting gets sent
+test('isHeaderOpen toggle should result in call to setPreferences with new setting for flag', function(assert) {
+  assert.expect(5);
+  const done = assert.async();
+  new ReduxDataHelper(setState).isTextView().isHeaderOpen(true).build();
+
   this.render(hbs`{{recon-event-titlebar}}`);
-  return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'PACKET');
+  assert.equal(this.$('.rsa-icon-layout-6-filled').length, 1, 'icon is displayed');
+  assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 1, 'icon is active');
+  this.$('.rsa-icon-layout-6-filled.active').click();
+  patchSocket((method, modelName, query) => {
+    assert.equal(method, 'setPreferences');
+    assert.equal(modelName, 'investigate-events-preferences');
+    assert.equal(query.data.eventAnalysisPreferences.isHeaderOpen, false,
+      'preference call is made with preference set to false');
+    done();
   });
 });
 
-test('it renders packet view when preference set to packet', function(assert) {
-  new DataHelper(this.get('redux'))
-    .setViewToText()
-    .initializeData();
+// request/response toggle
+
+test('log events do not render request/response toggles', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isLogEvent().build();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(redux.getState().recon.visuals.defaultReconView.name, 'PACKET');
+    assert.equal(this.$('.toggle-request').length, 0, 'request toggle should be missing');
+    assert.equal(this.$('.toggle-response').length, 0, 'response toggle should be missing');
   });
 });
 
-/*
- * Click on Web or Email view opens classic reconstruction view in a new browser tab
- * and does not change the content of the current tab
-*/
-test('Click on Web/Email tab opens classic reconstruction view in a new browser tab', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData()
-    .setViewToText();
+test('endpoint events do not render request/response toggles', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isEndpointEvent().build();
   this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(this.$('.rsa-nav-tab').length, 5);
-  assert.equal(redux.getState().recon.visuals.currentReconView.name, 'TEXT');
   return wait().then(() => {
-    assert.equal(this.$('.rsa-nav-tab')[3].textContent.trim(), 'Email');
-    assert.equal(this.$('.rsa-nav-tab')[4].textContent.trim(), 'Web');
-    this.$('.rsa-nav-tab')[3].click();
-    assert.equal(redux.getState().recon.visuals.currentReconView.name, 'TEXT');
+    assert.equal(this.$('.toggle-request').length, 0, 'request toggle should be missing');
+    assert.equal(this.$('.toggle-response').length, 0, 'response toggle should be missing');
+  });
+});
+
+test('network events render request/response button', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isNetworkEvent().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-request').length, 1, 'request toggle should be present');
+    assert.equal(this.$('.toggle-response').length, 1, 'response toggle should be present');
+  });
+});
+
+// request toggle
+
+test('request toggle renders properly when active', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isRequestShown(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-request').length, 1, 'icon is displayed');
+    assert.equal(this.$('.toggle-request.active').length, 1, 'icon is active');
+  });
+});
+
+test('request toggle renders properly when inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isRequestShown(false).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-request').length, 1, 'icon is displayed');
+    assert.equal(this.$('.toggle-request.active').length, 0, 'icon is not active');
+  });
+});
+
+test('clicking toggle request toggles icon to inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isRequestShown(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.toggle-request.active').length, 1, 'icon is active to start');
+  this.$('.toggle-request').click();
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-request.active').length, 0, 'icon flips to inactive after toggle');
+  });
+});
+
+// response toggle
+
+test('response toggle renders properly when active', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isResponseShown(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-response').length, 1, 'icon is displayed');
+    assert.equal(this.$('.toggle-response.active').length, 1, 'icon is active');
+  });
+});
+
+test('response toggle renders properly when inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isResponseShown(false).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-response').length, 1, 'icon is displayed');
+    assert.equal(this.$('.toggle-response.active').length, 0, 'icon is not active');
+  });
+});
+
+test('clicking toggle response toggles icon to inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isResponseShown(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.toggle-response.active').length, 1, 'icon is active to start');
+  this.$('.toggle-response').click();
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-response.active').length, 0, 'icon flips to inactive after toggle');
+  });
+});
+
+// meta toggle
+
+test('meta toggle renders properly when active', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isMetaShown(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-meta').length, 1, 'icon is displayed');
+    assert.equal(this.$('.toggle-meta.active').length, 1, 'icon is active');
+  });
+});
+
+test('meta toggle renders properly when inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isMetaShown(false).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-meta').length, 1, 'icon is displayed');
+    assert.equal(this.$('.toggle-meta.active').length, 0, 'icon is not active');
+  });
+});
+
+test('clicking meta toggle toggles icon to inactive', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isMetaShown(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.toggle-meta.active').length, 1, 'icon is active to start');
+  this.$('.toggle-meta').click();
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-meta.active').length, 0, 'icon flips to inactive after toggle');
+  });
+});
+
+// standalone mode
+
+test('shrink and close icons do not show in standalone mode', function(assert) {
+  new ReduxDataHelper(setState).isFileView().isStandalone(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 0, 'icon is not visible');
+    assert.equal(this.$('.rsa-icon-expand-diagonal-4-filled').length, 0, 'icon is not visible');
+    assert.equal(this.$('.rsa-icon-close-filled').length, 0, 'icon is not visible');
+  });
+});
+
+test('shrink and close icons show when not in standalone mode', function(assert) {
+  new ReduxDataHelper(setState)
+    .isFileView()
+    .isStandalone(false)
+    .isReconExpanded(true)
+    .isReconOpen(true)
+    .build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 1, 'icon is visible');
+    assert.equal(this.$('.rsa-icon-close-filled').length, 1, 'icon is visible');
+  });
+});
+
+// shrink/expand button
+
+test('shrink toggle renders proper expanded state', function(assert) {
+  new ReduxDataHelper(setState).isFileView().isReconExpanded(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 1, 'icon is visible');
+    assert.equal(this.$('.rsa-icon-expand-diagonal-4-filled').length, 0, 'icon is not visible');
+  });
+});
+
+test('shrink toggle renders proper shrunk state', function(assert) {
+  new ReduxDataHelper(setState).isFileView().isReconExpanded(false).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 0, 'icon is not visible');
+    assert.equal(this.$('.rsa-icon-expand-diagonal-4-filled').length, 1, 'icon is visible');
+  });
+});
+
+test('clicking shrink executes action', function(assert) {
+  new ReduxDataHelper(setState).isFileView().isReconExpanded(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 1, 'icon is visible');
+  this.$('.rsa-icon-shrink-diagonal-2-filled').click();
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-icon-shrink-diagonal-2-filled').length, 0, 'icon is not visible');
+    assert.equal(this.$('.rsa-icon-expand-diagonal-4-filled').length, 1, 'icon is visible');
+  });
+});
+
+// close button
+
+// Stubbing outside the test otherwise tests get confused and jump back and forth
+// between failing and passing, probably due to some load order consideration
+sinon.stub(VisualCreators, 'closeRecon');
+
+test('clicking close executes action', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isReconOpen(true).build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    this.$('.rsa-icon-close-filled').click();
+    assert.equal(VisualCreators.closeRecon.callCount, 1, 'close recon action creator called one time');
+    VisualCreators.closeRecon.restore();
   });
 });
