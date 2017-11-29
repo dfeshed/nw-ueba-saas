@@ -89,7 +89,7 @@
                         <groupname>presidio</groupname>
                         <sources>
                             <source>
-                                <location>${project.parent.build.directory}/../presidio-output-domain/src/main/resources/elasticsearch/mappings</location>
+                                <location>${project.parent.build.directory}/../presidio-output/presidio-output-domain/src/main/resources/elasticsearch/mappings</location>
                             </source>
                         </sources>
                     </mapping>
