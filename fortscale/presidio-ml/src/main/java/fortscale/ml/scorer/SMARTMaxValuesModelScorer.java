@@ -5,7 +5,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.*;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
-import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
+import fortscale.ml.scorer.algorithms.SMARTMaxValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ModelScorerConf;
 import fortscale.utils.factory.FactoryService;
@@ -17,8 +17,8 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-public class SMARTValuesModelScorer extends AbstractScorer {
-    private SMARTValuesModelScorerAlgorithm algorithm;
+public class SMARTMaxValuesModelScorer extends AbstractScorer {
+    private SMARTMaxValuesModelScorerAlgorithm algorithm;
     protected SmartWeightsModelScorer smartWeightsModelScorer;
     private String modelName;
     private String globalModelName;
@@ -27,16 +27,19 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
     protected final EventModelsCacheService eventModelsCacheService;
 
-    public SMARTValuesModelScorer(String scorerName,
-                                  String modelName,
-                                  String globalModelName,
-                                  int minNumOfPartitionsToInfluence,
-                                  int enoughNumOfPartitionsToInfluence,
-                                  boolean isUseCertaintyToCalculateScore,
-                                  IScorerConf baseScorerConf,
-                                  int globalInfluence,
-                                  FactoryService<Scorer> factoryService,
-                                  EventModelsCacheService eventModelsCacheService) {
+    public SMARTMaxValuesModelScorer(String scorerName,
+                                     String modelName,
+                                     String globalModelName,
+                                     int minNumOfPartitionsToInfluence,
+                                     int enoughNumOfPartitionsToInfluence,
+                                     boolean isUseCertaintyToCalculateScore,
+                                     IScorerConf baseScorerConf,
+                                     int globalInfluence,
+                                     int maxUserInfluence,
+                                     int numOfPartitionUserInfluence,
+                                     int minNumOfUserValues,
+                                     FactoryService<Scorer> factoryService,
+                                     EventModelsCacheService eventModelsCacheService) {
 
         super(scorerName);
         Assert.hasText(modelName, "model name must be provided and cannot be empty or blank.");
@@ -45,12 +48,11 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         Assert.notNull(baseScorerConf, "base scorer should not be null");
         Assert.notNull(factoryService, "factory service should not be null");
         Scorer tmp = factoryService.getProduct(baseScorerConf);
-        Assert.isTrue(tmp instanceof SmartWeightsModelScorer, "SMARTValuesModelScorer expecting to get configuration of SmartWeightsModelScorer");
+        Assert.isTrue(tmp instanceof SmartWeightsModelScorer, "SMARTMaxValuesModelScorer expecting to get configuration of SmartWeightsModelScorer");
         smartWeightsModelScorer = (SmartWeightsModelScorer) tmp;
 
         assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
         assertEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
-
 
         setMinNumOfPartitionsToInfluence(minNumOfPartitionsToInfluence);
         setEnoughNumOfPartitionsToInfluence(enoughNumOfPartitionsToInfluence);
@@ -60,7 +62,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
         this.modelName = modelName;
         this.globalModelName = globalModelName;
 
-        algorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
+        algorithm = new SMARTMaxValuesModelScorerAlgorithm(globalInfluence, maxUserInfluence, numOfPartitionUserInfluence, minNumOfUserValues);
     }
 
     protected List<ModelDAO> getMainModel(AdeRecordReader adeRecordReader) {
@@ -79,7 +81,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     public FeatureScore calculateScore(AdeRecordReader adeRecordReader){
         List<ModelDAO> mainModelDAOs = getMainModel(adeRecordReader);
         List<ModelDAO> globalModelDAOs = getGlobalModel(adeRecordReader);
-        SMARTValuesModel mainModel = null;
+        SMARTMaxValuesModel mainModel = null;
         Model globalModel = null;
         Instant weightModelEndTime = null;
 
@@ -91,7 +93,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
             Instant smartValuePriorWightsModelEndTime = smartValuesPriorModel.getWeightsModelEndTime();
             boolean foundMatchingModels = false;
             for (ModelDAO mainModelDAO : mainModelDAOs) {
-                SMARTValuesModel mainModelDAOModel = (SMARTValuesModel) mainModelDAO.getModel();
+                SMARTMaxValuesModel mainModelDAOModel = (SMARTMaxValuesModel) mainModelDAO.getModel();
                 if (mainModelDAOModel == null) {
                     continue;
                 }
@@ -148,9 +150,9 @@ public class SMARTValuesModelScorer extends AbstractScorer {
     private FeatureScore calculateScore(double baseScore,
                                           Model model,
                                           Model globalModel) {
-        if (!(model instanceof SMARTValuesModel)) {
+        if (!(model instanceof SMARTMaxValuesModel)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
-                    ".calculateScore expects to get a model of type " + SMARTValuesModel.class.getSimpleName());
+                    ".calculateScore expects to get a model of type " + SMARTMaxValuesModel.class.getSimpleName());
         }
 
         if (!(globalModel instanceof SMARTValuesPriorModel)) {
@@ -160,7 +162,7 @@ public class SMARTValuesModelScorer extends AbstractScorer {
 
         return new FeatureScore(getName(), algorithm.calculateScore(
                 baseScore,
-                (SMARTValuesModel) model,
+                (SMARTMaxValuesModel) model,
                 (SMARTValuesPriorModel) globalModel
         ));
     }
@@ -196,18 +198,18 @@ public class SMARTValuesModelScorer extends AbstractScorer {
                 "enoughNumOfPartitionsToInfluence (%d) must be >=1", enoughNumOfPartitionsToInfluence));
     }
 
-    public SMARTValuesModelScorer setMinNumOfPartitionsToInfluence(int minNumOfPartitionsToInfluence) {
+    public SMARTMaxValuesModelScorer setMinNumOfPartitionsToInfluence(int minNumOfPartitionsToInfluence) {
         assertMinNumOfPartitionsToInfluenceValue(minNumOfPartitionsToInfluence);
         this.minNumOfPartitionsToInfluence = minNumOfPartitionsToInfluence;
         return this;
     }
 
-    public SMARTValuesModelScorer setEnoughNumOfPartitionsToInfluence(int enoughNumOfPartitionsToInfluence) {
+    public SMARTMaxValuesModelScorer setEnoughNumOfPartitionsToInfluence(int enoughNumOfPartitionsToInfluence) {
         this.enoughNumOfPartitionsToInfluence = Math.max(enoughNumOfPartitionsToInfluence, minNumOfPartitionsToInfluence);
         return this;
     }
 
-    public SMARTValuesModelScorer setUseCertaintyToCalculateScore(boolean useCertaintyToCalculateScore) {
+    public SMARTMaxValuesModelScorer setUseCertaintyToCalculateScore(boolean useCertaintyToCalculateScore) {
         isUseCertaintyToCalculateScore = useCertaintyToCalculateScore;
         return this;
     }
