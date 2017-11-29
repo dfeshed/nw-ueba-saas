@@ -80,6 +80,33 @@
                 },
                 "reduction-weight": 0.5
               }
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "site.userId.authentication.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "site.userId.authentication.score",
+                "model": {
+                  "name": "site.userId.authentication"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.site.authentication.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.site.authentication.score",
+                  "model": {
+                    "name": "userId.site.authentication"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
             }
           ]
         }
