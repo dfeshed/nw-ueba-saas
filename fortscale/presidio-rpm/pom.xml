@@ -82,6 +82,18 @@
                 <needarch>true</needarch>
                 <mappings>
                     <mapping>
+                        <!-- El extensions mapping-->
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>${rpm-maven-plugin.deployment_target_directory}/el-extensions</directory>
+                        <username>presidio</username>
+                        <groupname>presidio</groupname>
+                        <sources>
+                            <source>
+                                <location>${project.parent.build.directory}/../presidio-output-domain/src/main/resources/elasticsearch/mappings</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
                         <!-- package presidio workflows library-->
                         <directoryIncluded>false</directoryIncluded>
                         <directory>${rpm-maven-plugin.workflows_packages_directory}</directory>
