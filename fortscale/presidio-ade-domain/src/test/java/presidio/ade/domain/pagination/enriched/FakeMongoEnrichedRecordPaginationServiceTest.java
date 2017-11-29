@@ -73,7 +73,7 @@ public class FakeMongoEnrichedRecordPaginationServiceTest {
 
         //create store
         EnrichedDataAdeToCollectionNameTranslator translator = new EnrichedDataAdeToCollectionNameTranslator();
-        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil);
+        enrichedDataStoreImplMongo = new EnrichedDataStoreImplMongo(mongoTemplate, translator, this.adeEventTypeToAdeEnrichedRecordClassResolver, mongoDbBulkOpUtil, 1);
 
         //create pagination service
         EnrichedRecordPaginationService paginationService =
