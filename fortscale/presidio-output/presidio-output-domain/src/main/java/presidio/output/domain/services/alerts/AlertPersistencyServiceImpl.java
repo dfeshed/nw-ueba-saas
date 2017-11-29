@@ -1,15 +1,18 @@
 package presidio.output.domain.services.alerts;
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.IndicatorSummary;
+import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -21,6 +24,8 @@ import java.util.List;
 @Service
 public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
+    Logger logger = Logger.getLogger(AlertPersistencyServiceImpl.class);
+
     @Autowired
     private AlertRepository alertRepository;
 
@@ -29,6 +34,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Autowired
     private IndicatorEventRepository indicatorEventRepository;
+
+    @Autowired
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     public Alert save(Alert alert) {
         alert.updateFieldsBeforeSave();
@@ -131,6 +139,26 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     @Override
     public Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest) {
         return indicatorEventRepository.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
+    }
+
+    @Override
+    public void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback) {
+        if(alertId == null || feedback == null) {
+            logger.error("Failed to update alert- alert id or feedback cannot be null");
+            return;
+        }
+
+
+        //building update request-
+        IndexRequest indexRequest = new IndexRequest();
+        indexRequest.source(Alert.FEEDBACK, feedback);
+        UpdateQuery updateQuery = new UpdateQueryBuilder()
+                .withId(alertId)
+                .withClass(Alert.class)
+                .withIndexRequest(indexRequest)
+                .build();
+
+        UpdateResponse updateResponse = elasticsearchTemplate.update(updateQuery);
     }
 
 

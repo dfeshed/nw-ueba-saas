@@ -76,7 +76,7 @@ public interface AirflowApiClient {
      *
      * @param state desired dags state
      * @param dagIdPrefix prefix to filter dag id's by
-     * @return {@link this#getDagExecutionDatesByState} only filtered by {@param dagIdPrefix}
+     * @return {@link this#getDagExecutionDatesByState} only filtered by {@param dagIdPrefix} my return an empty response if scheduler has not started executing from task queue
      *
      */
     default Map<String, DagExecutionStatus> getDagExecutionDatesByStateAndDagIdPrefix(DagState state, String dagIdPrefix) {

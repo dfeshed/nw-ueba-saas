@@ -5,13 +5,12 @@ import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
-import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -30,14 +29,14 @@ import static presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord.START_
 /**
  * Created by YaronDL on 6/13/2017.
  */
-public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore, TtlServiceAware {
+public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore, StoreManagerAware {
 
     private static final Logger logger = Logger.getLogger(ScoredEnrichedDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final AdeScoredEnrichedRecordToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public ScoredEnrichedDataStoreMongoImpl(MongoTemplate mongoTemplate, AdeScoredEnrichedRecordToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -62,7 +61,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
             List<AdeScoredEnrichedRecord> batchToSave = entry.getValue();
             String collectionName = entry.getKey();
             mongoDbBulkOpUtil.insertUnordered(batchToSave,collectionName);
-            ttlService.save(getStoreName(), collectionName);
+            storeManager.registerWithTtl(getStoreName(), collectionName);
         }
     }
 
@@ -107,14 +106,21 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     }
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 

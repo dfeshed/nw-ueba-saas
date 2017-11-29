@@ -2,6 +2,7 @@ package webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.json.ObjectMapperProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.webapp.controller.configuration.ConfigurationApiController;
+import presidio.webapp.model.configuration.Configuration;
 import presidio.webapp.model.configuration.ConfigurationResponse;
 import presidio.webapp.service.ConfigurationManagerService;
 
@@ -45,7 +47,7 @@ public class ConfigurationApiControllerTest {
     public void putConfigurationInvalidConfiguration() throws IOException {
         ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
         JsonNode jsonBody = mapper.readTree(from);
 
@@ -57,7 +59,8 @@ public class ConfigurationApiControllerTest {
                 "msg");
         ValidationResults validationResult = new ValidationResults(error);
         when(configurationProcessingManager.validateConfiguration(conf)).thenReturn(validationResult);
-        ResponseEntity<ConfigurationResponse> response = controller.configurationPut(jsonBody);
+        Configuration configuration = mapper.readValue(from, Configuration.class);
+        ResponseEntity<ConfigurationResponse> response = controller.configurationPut(configuration);
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.BAD_REQUEST), "response HttpStatus should be BAD_REQUEST");
         Assert.isTrue(response.getBody().getError().size() == 1, "response error list size should be 1");
     }
@@ -67,7 +70,7 @@ public class ConfigurationApiControllerTest {
     public void putConfigurationConfiguration() throws IOException {
         ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
 
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
         JsonNode jsonBody = mapper.readTree(from);
 
@@ -76,7 +79,8 @@ public class ConfigurationApiControllerTest {
         when(configurationProcessingManager.validateConfiguration(conf)).thenReturn(validationResult);
         when(configurationProcessingManager.applyConfiguration()).thenReturn(true);
 
-        ResponseEntity<ConfigurationResponse> response = controller.configurationPut(jsonBody);
+        Configuration configuration = mapper.readValue(from, Configuration.class);
+        ResponseEntity<ConfigurationResponse> response = controller.configurationPut(configuration);
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.CREATED), "response HttpStatus should be CREATED");
         Assert.isTrue(response.getBody().getError().isEmpty(), "response error list should be empty");
     }

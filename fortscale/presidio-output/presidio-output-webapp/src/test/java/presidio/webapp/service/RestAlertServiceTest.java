@@ -1,33 +1,32 @@
 package presidio.webapp.service;
 
+import com.google.common.collect.ImmutableMap;
+import fortscale.common.general.Schema;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.AlertQuery;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.spring.OutputWebappConfigurationTest;
+import presidio.webapp.model.*;
+import presidio.webapp.spring.RestServiceTestConfig;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = OutputWebappConfigurationTest.class)
+@ContextConfiguration(classes = RestServiceTestConfig.class)
 public class RestAlertServiceTest {
 
     @Autowired
@@ -96,10 +95,75 @@ public class RestAlertServiceTest {
         Assert.assertEquals(0, alertsWrapper.getAlerts().size());
     }
 
+    @Test
+    public void getEvent() {
+        List<IndicatorEvent> resultList = new ArrayList<>();
+        IndicatorEvent indicatorEvent = createEvent();
+        resultList.add(indicatorEvent);
+        Page<IndicatorEvent> page = new PageImpl<>(resultList);
+        when(alertPersistencyService.findIndicatorEventsByIndicatorId(anyObject(), anyObject())).thenReturn(page);
+
+        EventQuery eventQuery = new EventQuery();
+        EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId("indicatorId",eventQuery);
+        Assert.assertEquals(1, eventsWrapper.getEvents().size());
+        Event event = eventsWrapper.getEvents().get(0);
+        Assert.assertEquals(indicatorEvent.getEventTime().toInstant().getEpochSecond(), event.getTime().longValue());
+        Assert.assertEquals(1,event.getScores().size());
+        Assert.assertEquals(indicatorEvent.getFeatures().size(),event.keySet().size());
+
+    }
+
+    @Test
+    public void getEventWithoutScore() {
+        List<IndicatorEvent> resultList = new ArrayList<>();
+        IndicatorEvent event = createEvent();
+        event.setScores(null);
+        resultList.add(event);
+        Page<IndicatorEvent> page = new PageImpl<>(resultList);
+        when(alertPersistencyService.findIndicatorEventsByIndicatorId(anyObject(), anyObject())).thenReturn(page);
+
+        EventQuery eventQuery = new EventQuery();
+        EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId("indicatorId",eventQuery);
+        Assert.assertEquals(1, eventsWrapper.getEvents().size());
+        Assert.assertEquals(null,eventsWrapper.getEvents().get(0).getScores());
+
+    }
+
     private Alert createAlert() {
         List<String> classifications = new ArrayList<>(Arrays.asList("Mass Changes to Critical Enterprise Groups"));
         return new Alert("userId", "smartId", classifications, "username",
                 Date.from(Instant.parse("2017-01-01T00:00:00Z")), Date.from(Instant.parse("2017-01-01T11:00:00Z")),
                 10, 10, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null,0D);
+    }
+
+    private IndicatorEvent createEvent() {
+        IndicatorEvent event = new IndicatorEvent();
+        event.setIndicatorId("indicatorId");
+        event.setEventTime(Date.from(Instant.parse("2017-01-01T11:00:00Z")));
+        event.setSchema(Schema.FILE);
+        Map<String, Object> features = new HashMap<String, Object>();
+        features.put("id", "59fda03eb77dbd60bb1bef1a");
+        features.put("eventDate", Instant.parse("2017-01-01T11:00:00Z"));
+        features.put("eventId", "0x000000440001745200000220");
+        features.put("userId", "S-1-5-21-636461855-2365528612-2953867313-96946");
+        features.put("userName", "userName");
+        features.put("userDisplayName", "userDisplayName");
+        features.put("dataSource", "File System");
+        features.put("operationType", "FOLDER_CREATED");
+        features.put("operationTypeCategories", new String[] {"FILE_ACTION"});
+        features.put("result", "SUCCESS");
+        features.put("resultCode", null);
+        features.put("scores", "");
+        Map<String, String> additionalInfo = new HashMap<String, String>();
+        additionalInfo.put("originIPv4","10.154.12.165");
+        additionalInfo.put("description", "New folder c:tmp created on PRODAAA.");
+        additionalInfo.put("oSVersion", "Windows Server 2012 R2 Standard");
+        additionalInfo.put("isUserAdmin", "false");
+        additionalInfo.put("operationType", "FOLDER_CREATED");
+        features.put("additionalInfo", additionalInfo);
+        event.setFeatures(features);
+        Map<String, Double> scores = ImmutableMap.of("operationType",59d);
+        event.setScores(scores);
+        return event;
     }
 }

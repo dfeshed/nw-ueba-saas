@@ -1,12 +1,19 @@
 import logging
+from subprocess import Popen, STDOUT, PIPE
+from tempfile import gettempdir, NamedTemporaryFile
 
 import os
+from airflow.exceptions import AirflowException
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.utils.file import TemporaryDirectory
 
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.string_service import is_blank
+from datetime import timedelta 
+
+RETRY_ARGS_CONF_KEY = "retry_args"
 
 JVM_ARGS_CONF_KEY = "jvm_args"
 
@@ -49,34 +56,72 @@ class SpringBootJarOperator(BashOperator):
         logging.debug("creating operator %s" % str(self.__class__ ))
         self.task_id = kwargs['task_id']
         logging.debug("task %s" % str(kwargs['task_id']))
-
+        self.final_conf_path=""
         self._calc_jvm_args(jvm_args)
         self.java_args = java_args
         self.validate_mandatory_fields()
         self.merged_args = self.merge_args()
         self.command = command
         bash_command = self.get_bash_command()
-        super(SpringBootJarOperator, self).__init__(bash_command=bash_command, *args, **kwargs)
+
+        # add retry callback
+        retry_args = self._calc_retry_args()
+        if 'retry_callback' in kwargs:
+            retry_callback = kwargs['retry_callback']
+        else:
+            retry_callback = SpringBootJarOperator.handle_retry
+        kwargs['params']['retry_command'] = self.get_retry_command()
+
+        super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
+                                                    retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
+                                                    retry_exponential_backoff=retry_args['retry_exponential_backoff'],
+                                                    max_retry_delay=timedelta(
+                                                        seconds=int(retry_args['max_retry_delay'])),
+                                                    bash_command=bash_command, on_retry_callback=retry_callback,
+                                                    *args, **kwargs)
+
+    def _calc_retry_args(self):
+        retry_args={}
+        if self.task_id:
+            # read task jvm args
+            retry_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_retry_args_task_instance_conf_key_prefix())
+        if not retry_args:
+            # read operator jvm args
+            logging.debug((
+                "did not found task retry configuration for task_id=%s. settling for operator=%s configuration" % (
+                    self.task_id, self.__class__.__name__)))
+            retry_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_retry_args_operator_conf_key_prefix())
+        if not retry_args:
+            # read default jvm args
+            logging.debug((
+                "did not found operator retry configuration for operator=%s. settling for default configuration" % (
+                    self.__class__.__name__)))
+            retry_args = SpringBootJarOperator.conf_reader.read(
+                conf_key=self.get_default_retry_args_conf_key())
+        return retry_args
 
     def _calc_jvm_args(self, jvm_args):
 
         if not jvm_args:
             if self.task_id:
                 # read task jvm args
-                self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_jvm_args_task_instance_conf_key_prefix())
+                self.final_conf_path = self.get_jvm_args_task_instance_conf_key_prefix()
+                self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key= self.final_conf_path)
             if not self.jvm_args:
                 # read operator jvm args
                 logging.debug((
                              "did not found task configuration for task_id=%s. settling for operator=%s configuration" % (
                              self.task_id, self.__class__.__name__)))
-                self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_jvm_args_operator_conf_key_prefix())
+                self.final_conf_path = self.get_jvm_args_operator_conf_key_prefix()
+                self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.final_conf_path)
             if not self.jvm_args:
                 # read default jvm args
                 logging.debug((
                     "did not found operator configuration for operator=%s. settling for default configuration" % (
                          self.__class__.__name__)))
+                self.final_conf_path = self.get_default_jvm_args_conf_key()
                 self.jvm_args = SpringBootJarOperator.conf_reader.read(
-                    conf_key=self.get_default_jvm_args_conf_key())
+                        conf_key=self.final_conf_path)
 
         else:
             self.jvm_args = jvm_args
@@ -133,7 +178,7 @@ class SpringBootJarOperator(BashOperator):
 
         self.jmx(bash_command)
 
-        self.jar_path(bash_command)
+        self.jar_path(bash_command,self.command)
 
         self.extra_args(bash_command)
 
@@ -202,7 +247,7 @@ class SpringBootJarOperator(BashOperator):
         if not is_blank(extra_args):
             bash_command.extend(extra_args.split(' '))
 
-    def jar_path(self, bash_command):
+    def jar_path(self, bash_command,command):
         """
         
         Validate that main_class, jar_path or class_path exist in merged_args, 
@@ -232,7 +277,7 @@ class SpringBootJarOperator(BashOperator):
 
         if not is_blank(self.java_args):
             java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
-            bash_command.append(self.command)
+            bash_command.append(command)
             bash_command.append(java_args)
 
     def jmx(self, bash_command):
@@ -360,4 +405,67 @@ class SpringBootJarOperator(BashOperator):
         return "%s.tasks_instances" % (DAGS_CONF_KEY)
 
     def get_jvm_args_task_instance_conf_key_prefix(self):
-        return "%s.%s.jvm_args" % (self.get_task_instance_conf_key_prefix(), self.task_id)
+        return "%s.%s.%s" % (self.get_task_instance_conf_key_prefix(), self.task_id, JVM_ARGS_CONF_KEY)
+
+    def get_default_retry_args_conf_key(self):
+        return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY,RETRY_ARGS_CONF_KEY)
+
+    def get_retry_args_operator_conf_key_prefix(self):
+        return "%s.%s" % (self.get_operator_conf_key_prefix(), RETRY_ARGS_CONF_KEY)
+
+    def get_retry_args_task_instance_conf_key_prefix(self):
+        return "%s.%s.%s" % (self.get_task_instance_conf_key_prefix(), self.task_id, RETRY_ARGS_CONF_KEY)
+
+    def get_retry_command(self):
+        bash_command = []
+        self.java_path(bash_command)
+
+        self.jvm_memory_allocation(bash_command)
+
+        self.extra_jvm(bash_command)
+
+        self.timezone(bash_command)
+
+        self.spring_profile(bash_command)
+
+        self.logback(bash_command)
+
+        self.jar_path(bash_command=bash_command,command="cleanup")
+
+        bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
+
+        return ' '.join(bash_command)
+
+    @staticmethod
+    def handle_retry(context):
+        logging.info("executing default retry handler")
+        if 'retry_command' in context['params']:
+            bash_command = context['params']['retry_command']
+            logging.info("tmp dir root location: \n" + gettempdir())
+            task_instance_key_str = context['task_instance_key_str']
+            with TemporaryDirectory(prefix='airflowtmp') as tmp_dir:
+                with NamedTemporaryFile(dir=tmp_dir, prefix=("retry_%s" % task_instance_key_str)) as f:
+                    f.write(bash_command)
+                    f.flush()
+                    fname = f.name
+                    script_location = tmp_dir + "/" + fname
+                    logging.info("Temporary script "
+                                 "location :{0}".format(script_location))
+                    logging.info("Running retry command: " + bash_command)
+                    sp = Popen(
+                        ['bash', fname],
+                        stdout=PIPE, stderr=STDOUT,
+                        cwd=tmp_dir,
+                        preexec_fn=os.setsid)
+
+                    logging.info("Retry command output:")
+                    line = ''
+                    for line in iter(sp.stdout.readline, b''):
+                        line = line.decode("UTF-8").strip()
+                        logging.info(line)
+                    sp.wait()
+                    logging.info("Retry command exited with "
+                                 "return code {0}".format(sp.returncode))
+
+                    if sp.returncode:
+                        raise AirflowException("Retry bash command failed")

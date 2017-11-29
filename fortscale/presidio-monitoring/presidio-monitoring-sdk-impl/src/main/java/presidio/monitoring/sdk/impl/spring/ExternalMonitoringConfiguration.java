@@ -1,70 +1,46 @@
 package presidio.monitoring.sdk.impl.spring;
 
-import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceImpl;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 
-import java.net.InetAddress;
 
 @Configuration
 @EnableScheduling
 @PropertySource("classpath:monitoring.properties")
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
+@Import({ElasticsearchConfig.class})
 public class ExternalMonitoringConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;
-
-
-    @Value("${elasticsearch.host}")
-    private String EsHost;
-
-    @Value("${elasticsearch.port}")
-    private int EsPort;
-
-    @Value("${elasticsearch.clustername}")
-    private String EsClusterName;
+    private final String EMPTY_APPLICATION_NAME = "";
 
     @Autowired
     public MetricRepository metricRepository;
-
-    public Client client() throws Exception {
-        Settings esSettings = Settings.builder().put("cluster.name", EsClusterName).build();
-        return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
-    }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
-    @Bean
-    public ElasticsearchOperations elasticsearchTemplate() throws Exception {
-        return new PresidioElasticsearchTemplate(client());
-    }
-
 
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
@@ -85,23 +61,23 @@ public class ExternalMonitoringConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()), presidioMetricFactory());
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricEndPoint()));
     }
-
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(presidioSystemMetrics());
+    public MetricConventionApplyer metricConventionApplyer() {
+        return new PresidioMetricConventionApplyer(EMPTY_APPLICATION_NAME);
     }
 
+    @Bean
+    public PresidioMetricBucket presidioMetricEndPoint() {
+        return new PresidioMetricBucket(presidioSystemMetrics(), metricConventionApplyer());
+    }
 
     @Bean
     public PresidioSystemMetricsFactory presidioSystemMetrics() {
-        return new PresidioSystemMetricsFactory("");
+        return new PresidioSystemMetricsFactory(EMPTY_APPLICATION_NAME);
     }
 
-    @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory("");
-    }
+
 }

@@ -5,16 +5,14 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.util.StreamUtils;
-import org.springframework.util.CollectionUtils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -25,19 +23,21 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class ModelStore implements TtlServiceAware {
+public class ModelStore implements StoreManagerAware {
     private static final Logger logger = Logger.getLogger(ModelStore.class);
     private static final String COLLECTION_NAME_PREFIX = "model_";
 
     private MongoTemplate mongoTemplate;
-    private TtlService ttlService;
+    private StoreManager storeManager;
     private Duration ttlOldestAllowedModel;
-    private int modelPaginationSize;
+    private int modelAggregationPaginationSize;
+    private int modelQueryPaginationSize;
 
-    public ModelStore(MongoTemplate mongoTemplate, Duration ttlOldestAllowedModel, int modelPaginationSize) {
+    public ModelStore(MongoTemplate mongoTemplate, Duration ttlOldestAllowedModel, int modelAggregationPaginationSize, int modelQueryPaginationSize) {
         this.mongoTemplate = mongoTemplate;
         this.ttlOldestAllowedModel = ttlOldestAllowedModel;
-        this.modelPaginationSize = modelPaginationSize;
+        this.modelAggregationPaginationSize = modelAggregationPaginationSize;
+        this.modelQueryPaginationSize = modelQueryPaginationSize;
     }
 
     /**
@@ -61,22 +61,29 @@ public class ModelStore implements TtlServiceAware {
     public void save(ModelConf modelConf, ModelDAO modelDao) {
         String collectionName = getCollectionName(modelConf);
         mongoTemplate.insert(modelDao, collectionName);
-        ttlService.save(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName);
     }
 
-    public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
-        String modelDaosGroupName = "modelDaos";
-        Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(Date.from(eventEpochtime))),
-                Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).push(Aggregation.ROOT).as(modelDaosGroupName));
+    public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
         String collectionName = getCollectionName(modelConf);
-        AggregationResults<DBObject> results = mongoTemplate.aggregate(aggregation, collectionName, DBObject.class);
-        return StreamUtils.createStreamFromIterator(results.iterator())
-                .map(modelDaoDbObjects -> {
-                    ModelDAO[] modelDaos = mongoTemplate.getConverter().read(ModelDAO[].class, (DBObject) modelDaoDbObjects.get(modelDaosGroupName));
-                    return Arrays.stream(modelDaos).max(Comparator.comparing(ModelDAO::getEndTime)).get();
-                })
-                .collect(Collectors.toList());
+        List<ModelDAO> queryResults = null;
+        Map<String, ModelDAO> contextIdToModelDaoMap = new HashMap<>();
+        int pageIndex = 0;
+        Date latestEndDate = Date.from(eventEpochtime);
+        do{
+            Query query = new Query()
+                    .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lte(latestEndDate))
+                    .with(new Sort(Direction.ASC, ModelDAO.END_TIME_FIELD))
+                    .skip(pageIndex*modelQueryPaginationSize)
+                    .limit(modelQueryPaginationSize);
+            queryResults = mongoTemplate.find(query, ModelDAO.class, collectionName);
+            for(ModelDAO modelDAO: queryResults){
+                //the models are ordered by time so we don't have to check if the map contains a model with larger time.
+                contextIdToModelDaoMap.put(modelDAO.getContextId(), modelDAO);
+            }
+            pageIndex++;
+        } while(queryResults != null && queryResults.size() == modelQueryPaginationSize);
+        return contextIdToModelDaoMap.values();
     }
 
     public List<ModelDAO> getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(
@@ -100,8 +107,8 @@ public class ModelStore implements TtlServiceAware {
 
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
@@ -111,6 +118,11 @@ public class ModelStore implements TtlServiceAware {
         removeOldestModels(collectionName, until);
 
         removeContextIdOldModels(collectionName, until);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+
     }
 
 
@@ -136,7 +148,7 @@ public class ModelStore implements TtlServiceAware {
         } catch (MongoException ex) {
             AggregationResults<DBObject> aggrResult;
 
-            long limit = modelPaginationSize;
+            long limit = modelAggregationPaginationSize;
             long skip = 0;
             do {
                 Aggregation agg = newAggregation(
@@ -147,7 +159,7 @@ public class ModelStore implements TtlServiceAware {
                         Aggregation.skip(skip),
                         Aggregation.limit(limit)
                 );
-                skip = skip + modelPaginationSize;
+                skip = skip + modelAggregationPaginationSize;
                 aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
                 removeContextIdsModels(collectionName, until, aggrResult);
             } while (!aggrResult.getMappedResults().isEmpty());

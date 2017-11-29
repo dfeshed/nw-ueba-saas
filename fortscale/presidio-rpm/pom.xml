@@ -200,6 +200,9 @@
                         <!-- post installation commands: -->
                         ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
 
+                        <!-- It takes 15 seconds for the config server to initialize -->
+                        sleep 20
+
                         <!--changing ownership of project main folder -->
                         #echo "Changing ownership of /project main repository"
                         chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}

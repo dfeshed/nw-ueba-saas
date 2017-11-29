@@ -7,13 +7,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -49,13 +48,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedAuthentications.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfFailedAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -91,13 +89,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -133,13 +130,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -175,13 +171,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineId.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfDistinctDstMachineId.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -217,13 +212,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -259,13 +253,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly.scorer",
           "base-scorer": {
-            "type": "score-mapper",
+            "type": "score-exponential-mapper",
             "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "mapping": {
-                "95.0": 0,
-                "100.0": 100
-              }
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",

@@ -28,8 +28,7 @@ public class EmbeddedElasticsearchInitialiser {
 
     private EmbeddedElastic embeddedElastic = null;
 
-    @PostConstruct
-    public void setupEmbeddedElasticsearch() {
+    public void start() {
         if(embeddedElastic != null) {
             logger.debug("embedded elasticsearch already started, skipping startup");
             return;
@@ -38,21 +37,19 @@ public class EmbeddedElasticsearchInitialiser {
         try {
             embeddedElastic = EmbeddedElastic.builder()
                     .withElasticVersion(EL_TEST_VERSION)
-                    .withStartTimeout(2, TimeUnit.MINUTES)
+                    .withStartTimeout(1, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
                     .withCleanInstallationDirectoryOnStop(true)
                     .build()
                     .start();
         } catch (Exception e) {
-//            stopEmbeddedElasticsearch();
             embeddedElastic = null;
             Assert.fail("Failed to start elasticsearch");
         }
     }
 
-    @PreDestroy
-    public void stopEmbeddedElasticsearch() {
+    public void stop() {
         logger.debug("stopping embedded elasticsearch");
         embeddedElastic.stop();
 

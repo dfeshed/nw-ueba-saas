@@ -4,18 +4,20 @@ package presidio.output.proccesor.services.alert;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.test.mongodb.FongoTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -32,20 +34,19 @@ import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTransla
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
+import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.alert.AlertEnumsSeverityService;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.commons.services.alert.UserSeverity;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
-import presidio.output.processor.services.alert.AlertEnumsSeverityService;
 import presidio.output.processor.services.alert.AlertServiceImpl;
-import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
@@ -63,7 +64,8 @@ import static org.mockito.Matchers.eq;
  * Created by efratn on 24/07/2017.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, AlertEnumsConfig.class, TestConfig.class, FongoTestConfig.class})
+@ContextConfiguration(classes = {AlertServiceElasticConfig.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AlertServiceTest {
 
     @MockBean

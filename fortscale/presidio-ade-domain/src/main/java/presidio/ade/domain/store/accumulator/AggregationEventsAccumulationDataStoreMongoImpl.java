@@ -3,8 +3,8 @@ package presidio.ade.domain.store.accumulator;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceAware;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerAware;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
-public class AggregationEventsAccumulationDataStoreMongoImpl implements AggregationEventsAccumulationDataStore, TtlServiceAware {
+public class AggregationEventsAccumulationDataStoreMongoImpl implements AggregationEventsAccumulationDataStore, StoreManagerAware {
     private static final Logger logger = Logger.getLogger(AggregationEventsAccumulationDataStoreMongoImpl.class);
 
     private final MongoTemplate mongoTemplate;
     private final AccumulatedDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     public AggregationEventsAccumulationDataStoreMongoImpl(MongoTemplate mongoTemplate, AccumulatedDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
         this.mongoTemplate = mongoTemplate;
@@ -48,7 +48,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
                     String collectionName = getCollectionName(metadata);
                     List<AccumulatedAggregationFeatureRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoDbBulkOpUtil.insertUnordered(aggrRecords, collectionName);
-                    ttlService.save(getStoreName(), collectionName);
+                    storeManager.registerWithTtl(getStoreName(), collectionName);
                 }
         );
     }
@@ -104,8 +104,8 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     }
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
@@ -115,4 +115,10 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
         mongoTemplate.remove(query, collectionName);
     }
 
+    @Override
+    public void remove(String collectionName, Instant start, Instant end){
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
+        mongoTemplate.remove(query, collectionName);
+    }
 }
