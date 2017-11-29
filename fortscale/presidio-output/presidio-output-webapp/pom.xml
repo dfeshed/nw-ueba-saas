@@ -269,7 +269,7 @@
                             <basePath> </basePath>
                             <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
                             <swaggerFileName>presidio-output-swagger</swaggerFileName>
-                            <modelSubstitute>/override.map</modelSubstitute>
+                            <modelSubstitute>/output-override.map</modelSubstitute>
                             <outputFormats>yaml</outputFormats>
                             <securityDefinitions>
                                 <securityDefinition>
