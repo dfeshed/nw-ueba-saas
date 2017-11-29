@@ -436,11 +436,15 @@ class SpringBootJarOperator(BashOperator):
 
         return ' '.join(bash_command)
 
-    @staticmethod
-    def handle_retry(context):
+    def get_additional_java_args(self, context):
+        return {}
+
+    def handle_retry(self, context):
         logging.info("executing default retry handler")
         if 'retry_command' in context['params']:
-            bash_command = context['params']['retry_command']
+            additional_java_args = self.calc_additional_java_args(context)
+            self.java_args.update(additional_java_args)
+            bash_command = self.get_retry_command()
             logging.info("tmp dir root location: \n" + gettempdir())
             task_instance_key_str = context['task_instance_key_str']
             with TemporaryDirectory(prefix='airflowtmp') as tmp_dir:

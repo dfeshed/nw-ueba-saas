@@ -50,6 +50,12 @@ class ModelOperator(SpringBootJarOperator):
 
         :raise InvalidExecutionDateError - Raise error if the execution_date is not the last interval of fixed duration.
         """
+        java_args = self.get_additional_java_args(self, context)
+
+        super(ModelOperator, self).update_java_args(java_args)
+        super(ModelOperator, self).execute(context)
+
+    def get_additional_java_args(self, context):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
 
@@ -57,8 +63,7 @@ class ModelOperator(SpringBootJarOperator):
         java_args = {
             'end_date': convert_to_utc(end_date)
         }
-        super(ModelOperator, self).update_java_args(java_args)
-        super(ModelOperator, self).execute(context)
+        return java_args
 
     @abstractmethod
     def get_task_id(self):
