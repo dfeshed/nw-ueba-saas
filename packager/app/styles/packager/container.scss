@@ -11,45 +11,9 @@ $content-card-color: #bdbdbd;
     height: 0;
     display: none;
   }
+  overflow-x: auto;
+  overflow-y: auto;
 }
-.packager-information {
-  .rsa-content-card {
-    border-radius: $card-radius;
-    width: 100%;
-    color: $content-card-color;
-  }
-  &__header {
-    position: relative;
-    border-bottom: 1px solid border-color(primary,darkest);
-    font-style: normal;
-    font-size: 1.28rem;
-    font-weight: 100;
-    padding: rsa-whitespace();
-  }
-  &__content {
-    li {
-      padding: rsa-whitespace() rsa-whitespace(less);
-    }
-    padding: 0 rsa-whitespace();
-    &__steps {
-      padding-bottom: rsa-whitespace(most);
-      &__outerList {
-        list-style-type: decimal;
-        padding-left: rsa-whitespace();
-      }
-      &__innerList {
-        padding-left: rsa-whitespace();
-      }
-      &__innerList li {
-        list-style-type: disc;
-      }
-    }
-    &__caution{
-      color: darkorange;
-    }
-  }
-}
-
 // Temp solution to integrate packager into SA
 .iframed-into-classic {
   .rsa-application-header {

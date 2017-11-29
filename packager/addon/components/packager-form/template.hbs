@@ -35,7 +35,6 @@
   <div class="field col-xs-7">
     {{rsa-form-datetime
       label=(t 'packager.autoUninstall')
-      dateFormat='MM/DD/YYYY HH:mm'
       showTime=true
       timeLabel=(t 'Time')
       incrementMinuteBy=5
@@ -72,16 +71,6 @@
   <div class="field">
     <div class="col-xs-12">
       {{rsa-form-input label=(t 'packager.description') value=configData.packageConfig.description}}
-    </div>
-  </div>
-  <div class="field">
-    <div class="col-xs-12">
-      {{rsa-form-textarea label=(t 'packager.proxyServers') value=configData.packageConfig.proxyServers}}
-    </div>
-  </div>
-  <div class="field">
-    <div class="col-xs-12">
-      {{rsa-form-textarea label=(t 'packager.exceptions') value=configData.packageConfig.exceptions}}
     </div>
   </div>
 </div>

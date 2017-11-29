@@ -2,7 +2,7 @@ import reselect from 'reselect';
 import _ from 'lodash';
 const { createSelector } = reselect;
 
-const weeks = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
+const weeks = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 // Key is type
 const COUNTER = {
   'DAYS': [1, 2, 3, 4, 5, 6, 10, 15, 20],

@@ -1,1 +1,0 @@
-export { default } from 'packager/components/packager-info/component';

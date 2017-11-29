@@ -25,8 +25,8 @@ const dispatchToActions = {
 
 const Container = Component.extend({
   layout,
-  tagName: 'vbox',
-  classNames: 'packager-container rsa-application-layout-panel-content scroll-box',
+  tagName: 'box',
+  classNames: 'packager-container rsa-application-layout-panel-content input-content',
 
   // download link for packager
   @computed('downloadLink')

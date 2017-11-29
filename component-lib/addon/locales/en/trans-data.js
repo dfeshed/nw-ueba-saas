@@ -1572,16 +1572,6 @@ export default {
     }
   },
   packager: {
-    howToInstall: 'How to install ?',
-    installStep1: 'Unzip the packager.zip file. It includes the following:',
-    installStep1a: 'Agents folder  – Contains executables for Linux (.rpm), Windows (.exe), and Mac (.pkg).',
-    installStep1b: 'Config folder – Contains configuration file to generate the certificate to communicate between the NWE server and the client.',
-    installStep1c: 'AgentPackager.exe file.',
-    installStep2: 'Run the AgentPackager.exe file.',
-    installStep3: 'Enter the password for the certificate. This creates a nwe-agent.exe file in the root folder.',
-    installStep4: 'Run the nwe-agent.exe file to complete the installation.',
-    installCaution: 'Warning:',
-    installCautionText: 'When updating a client, Netwitness Endpoint Service Name should be same as in the old client.',
     packagerTitle: 'Packager',
     serviceName: 'Service Name',
     server: '*Server',

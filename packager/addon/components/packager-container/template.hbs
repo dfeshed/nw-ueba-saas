@@ -6,23 +6,15 @@
   {{#if error}}
     {{rsa-panel-message message=errorMessage}}
   {{else}}
-    <hbox class="packager-container__body">
-      <box xs="3">
-        {{packager-info}}
-      </box>
-      <hbox xs="9" class="packager-content">
-        <vbox class="input-content scroll-box">
-          <div class="input-content__header">
-            {{#rsa-content-section-header}}
-              {{t 'packager.packagerTitle'}}
-            {{/rsa-content-section-header}}
-          </div>
-          <div class="input-content__fields col-xs-7">
-            {{packager-form}}
-          </div>
-        </vbox>
-      </hbox>
-    </hbox>
+    <div class="input-content__header">
+      {{#rsa-content-section-header}}
+        {{t 'packager.packagerTitle'}}
+      {{/rsa-content-section-header}}
+    </div>
+    <div class="input-content__fields col-xs-7">
+      {{packager-form}}
+    </div>
+
     <iframe src="{{iframeSrc}}" class="export-files-iframe"></iframe>
   {{/if}}
 {{/if}}
