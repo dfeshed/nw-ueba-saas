@@ -25,7 +25,6 @@
           "max-user-influence": 10,
           "num-of-partition-user-influence": 5,
           "min-num-of-user-values": 5
-
         }
       ]
     }
