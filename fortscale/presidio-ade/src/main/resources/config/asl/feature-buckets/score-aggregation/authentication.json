@@ -77,7 +77,33 @@
           }
         }
       ]
+    },
+    {
+      "name": "siteToHighestScoreMapUserIdAuthenticationHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.authentication.site.userId.authentication.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "siteToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.site"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
     }
-
   ]
 }
