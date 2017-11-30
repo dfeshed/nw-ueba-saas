@@ -239,7 +239,7 @@
                             <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
                             <swaggerFileName>presidio-manager-swagger</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
-                            <modelSubstitute>/override.map</modelSubstitute>
+                            <modelSubstitute>/manager-override.map</modelSubstitute>
                             <modelConverters>
                                 <modelConverter>fortscale.utils.swagger.DateTimeModelConverter</modelConverter>
                             </modelConverters>
