@@ -1680,7 +1680,7 @@ broccoli-static-compiler@^0.1.4:
     broccoli-writer "^0.1.1"
     mkdirp "^0.3.5"
 
-broccoli-stew@^1.2.0, broccoli-stew@^1.3.2, broccoli-stew@^1.3.3, broccoli-stew@^1.4.0, broccoli-stew@^1.4.2, broccoli-stew@^1.5.0:
+broccoli-stew@^1.2.0, broccoli-stew@^1.3.2, broccoli-stew@^1.3.3, broccoli-stew@^1.4.0, broccoli-stew@^1.5.0:
   version "1.5.0"
   resolved "https://registry.npmjs.org/broccoli-stew/-/broccoli-stew-1.5.0.tgz#d7af8c18511dce510e49d308a62e5977f461883c"
   dependencies:
@@ -3069,15 +3069,6 @@ ember-cli-htmlbars-inline-precompile@^1.0.0:
     heimdalljs-logger "^0.1.7"
     silent-error "^1.1.0"
 
-ember-cli-htmlbars@*, ember-cli-htmlbars@^2.0.1, ember-cli-htmlbars@^2.0.2, ember-cli-htmlbars@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-2.0.3.tgz#e116e1500dba12f29c94b05b9ec90f52cb8bb042"
-  dependencies:
-    broccoli-persistent-filter "^1.0.3"
-    hash-for-dep "^1.0.2"
-    json-stable-stringify "^1.0.0"
-    strip-bom "^3.0.0"
-
 ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.1, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3, ember-cli-htmlbars@^1.1.1:
   version "1.3.4"
   resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.3.4.tgz#461289724b34af372a6a0c4b6635819156963353"
@@ -3087,6 +3078,15 @@ ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.1, ember-cli-htmlbars@^1.0.10
     hash-for-dep "^1.0.2"
     json-stable-stringify "^1.0.0"
     strip-bom "^2.0.0"
+
+ember-cli-htmlbars@^2.0.1, ember-cli-htmlbars@^2.0.2, ember-cli-htmlbars@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-2.0.3.tgz#e116e1500dba12f29c94b05b9ec90f52cb8bb042"
+  dependencies:
+    broccoli-persistent-filter "^1.0.3"
+    hash-for-dep "^1.0.2"
+    json-stable-stringify "^1.0.0"
+    strip-bom "^3.0.0"
 
 ember-cli-import-polyfill@^0.2.0:
   version "0.2.0"
@@ -3901,12 +3901,12 @@ ember-string-ishtmlsafe-polyfill@1.0.1:
   dependencies:
     ember-cli-babel "^5.1.6"
 
-ember-symbol-observable@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/ember-symbol-observable/-/ember-symbol-observable-1.0.0.tgz#d24073a92c3993d7083b27a9fd210ce9d00ccd62"
+ember-symbol-observable@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/ember-symbol-observable/-/ember-symbol-observable-1.0.1.tgz#70ea5209ff171c474765457ee8cd7c385c23f67a"
   dependencies:
     broccoli-merge-trees "^2.0.0"
-    broccoli-stew "^1.4.2"
+    broccoli-replace "^0.12.0"
     ember-cli-babel "^6.1.0"
     symbol-observable "^1.0.4"
 
