@@ -105,8 +105,8 @@ export const getNetworkInterfaces = createSelector(
         const validNetworkInterfaceList = networkInterfaces.filter((networkInterface) => (networkInterface.ipv4.length === 1 && networkInterface.ipv4[0] !== '127.0.0.1') || networkInterface.ipv4.length > 1);
         const validIPList = validNetworkInterfaceList.map((networkInterface) => ({
           ...networkInterface,
-          ipv4: networkInterface.ipv4.filter((ip) => ip !== '127.0.0.1'),
-          ipv6: networkInterface.ipv6.filter((ip) => ip !== '::1')
+          ipv4: networkInterface.ipv4 ? networkInterface.ipv4.filter((ip) => ip !== '127.0.0.1') : [],
+          ipv6: networkInterface.ipv6 ? networkInterface.ipv6.filter((ip) => ip !== '::1') : []
         }));
         return validIPList.map(
           (ip) => `${ip.ipv4 || ''} / ${ip.ipv6 || ''} | MAC Address: ${ip.macAddress || ''}`
