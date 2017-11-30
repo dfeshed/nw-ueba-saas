@@ -17,9 +17,17 @@ const setPackagerConfig = (model) => {
     }
   });
 };
+const getListOfDevices = () => {
+  return promiseRequest({
+    method: 'getServices',
+    modelName: 'packager',
+    query: {}
+  });
+};
 
 
 export {
   getPackagerConfig,
-  setPackagerConfig
+  setPackagerConfig,
+  getListOfDevices
 };

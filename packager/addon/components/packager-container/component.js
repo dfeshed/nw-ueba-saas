@@ -5,7 +5,8 @@ import { isEmpty } from 'ember-utils';
 import Component from 'ember-component';
 
 import {
-  getConfig
+  getConfig,
+  getDevices
 } from '../../actions/data-creators';
 
 
@@ -19,7 +20,8 @@ const stateToComputed = ({ packager }) => ({
   error: packager.error
 });
 const dispatchToActions = {
-  getConfig
+  getConfig,
+  getDevices
 };
 
 
@@ -47,6 +49,7 @@ const Container = Component.extend({
   init() {
     this._super(...arguments);
     this.send('getConfig');
+    this.send('getDevices');
   }
 
 });

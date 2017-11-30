@@ -6,6 +6,7 @@ import moment from 'moment';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 import _ from 'lodash';
+import { listOfServices } from '../../reducers/selectors';
 
 import {
   setConfig,
@@ -13,11 +14,13 @@ import {
 } from '../../actions/data-creators';
 
 
-const stateToComputed = ({ packager }) => ({
+const stateToComputed = (state) => ({
   // Already saved agent information
-  configData: _.cloneDeep(packager.defaultPackagerConfig),
+  configData: _.cloneDeep(state.packager.defaultPackagerConfig),
   // Flag to indicate config is currently updating or not
-  isUpdating: packager.updating
+  isUpdating: state.packager.updating,
+  // fetching decoder and concentrator
+  listOfService: listOfServices(state)
 });
 
 const dispatchToActions = {
@@ -53,19 +56,6 @@ const formComponent = Component.extend({
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
     return isEmpty(server) || isEmpty(port) || isUpdating;
-  },
-
-  @computed('configData.listOfService')
-  listOfService(list) {
-    const services = [];
-    for (let i = 0; i < list.length; i++) {
-      const service = {};
-      const key = Object.keys(list[i]);
-      service.id = key.toString();
-      service.value = Object.values(list[i][key]).toString().replace(/,/g, ' ');
-      services.push(service);
-    }
-    return services;
   },
 
   @computed('listOfService', 'configData.logCollectionConfig.primaryDestination')

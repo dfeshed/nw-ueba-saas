@@ -9,16 +9,14 @@
  * @public
  */
 
-import Ember from 'ember';
-
+import { debug } from '@ember/debug';
 
 import * as ACTION_TYPES from './types';
 import {
   getPackagerConfig,
-  setPackagerConfig
+  setPackagerConfig,
+  getListOfDevices
 } from './fetch';
-
-const { Logger } = Ember;
 
 const downloadURL = '/rsa/nwe/management/packager/download';
 const downloadURLLogConfig = 'rsa/nwe/management/logconfig/download';
@@ -35,7 +33,7 @@ const getConfig = () => {
       type: ACTION_TYPES.GET_INFO,
       promise: getPackagerConfig(),
       meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.GET_INFO, response),
+        onSuccess: (response) => debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`),
         onFailure: (response) => _handleFilesError(response)
       }
     });
@@ -55,7 +53,7 @@ const setConfig = (configData, configType) => {
       promise: setPackagerConfig(configData),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.GET_INFO, response);
+          debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
           if (response.data.id) {
             let url = `${downloadURL}?id=${response.data.id}`;
             if (configType === 'LOG_CONFIG') {
@@ -70,6 +68,20 @@ const setConfig = (configData, configType) => {
   };
 };
 
+/**
+ * Action creator for fetching list of devices available.
+ * @method getServices
+ * @public
+ * @returns {Object}
+ */
+const getDevices = () => ({
+  type: ACTION_TYPES.GET_DEVICES,
+  promise: getListOfDevices(),
+  meta: {
+    onSuccess: (response) => debug(`${ACTION_TYPES.GET_DEVICES} ${JSON.stringify(response)}`),
+    onFailure: (response) => _handleFilesError(response)
+  }
+});
 
 /**
  * Generic handler for errors
@@ -91,5 +103,6 @@ const resetForm = () => ({ type: ACTION_TYPES.RESET_FORM });
 export {
   setConfig,
   getConfig,
+  getDevices,
   resetForm
 };

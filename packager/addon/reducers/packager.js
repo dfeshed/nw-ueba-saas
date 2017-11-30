@@ -9,7 +9,8 @@ const initialState = Immutable.from({
   error: null,
   loading: false,
   downloadLink: null,
-  updating: false
+  updating: false,
+  devices: {}
 });
 
 const packagerReducer = handleActions({
@@ -26,6 +27,13 @@ const packagerReducer = handleActions({
     return handle(state, action, {
       start: () => state.merge({ updating: true, error: false, downloadLink: null }),
       finish: (s) => s.set('updating', false),
+      failure: (s) => s.set('error', true)
+    });
+  },
+
+  [ACTION_TYPES.GET_DEVICES]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('devices', action.payload.data),
       failure: (s) => s.set('error', true)
     });
   },

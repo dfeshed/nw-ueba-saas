@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from 'packager/actions/types';
-import { config } from '../data/data';
+import { config, devices } from '../data/data';
 
 const { run, RSVP } = Ember;
 
@@ -28,6 +28,14 @@ class DataHelper {
     _dispatchActionWithPromisePayload(
       this.redux,
       ACTION_TYPES.GET_INFO,
+      { code: 0, data }
+    );
+  }
+  getDevices(data = devices) {
+
+    _dispatchActionWithPromisePayload(
+      this.redux,
+      ACTION_TYPES.GET_DEVICES,
       { code: 0, data }
     );
   }

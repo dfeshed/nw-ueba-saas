@@ -12,7 +12,8 @@ const initialState = Immutable.from({
   error: null,
   loading: false,
   downloadLink: null,
-  updating: false
+  updating: false,
+  devices: {}
 });
 
 test('should return the initial state', function(assert) {

@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/endpoint/management/packageconfig/save',
-  requestDestination: '/ws/endpoint/management/packageconfig/save',
+  subscriptionDestination: '/user/queue/endpoint/packager/set',
+  requestDestination: '/ws/endpoint/packager/set',
   message(/* frame */) {
     const now = Number(new Date());
     const link = `/data/agent.zip?datetime=${now}`;
