@@ -2,7 +2,7 @@ import { Machines } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
 import { isEmpty } from 'ember-utils';
-import { setAppliedHostFilter, resetDetailsInputAndContent } from 'investigate-hosts/actions/ui-state-creators';
+import { setAppliedHostFilter, resetDetailsInputAndContent, resetHostDownloadLink } from 'investigate-hosts/actions/ui-state-creators';
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
@@ -225,6 +225,7 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
     if (machineId && !isEmpty(machineId)) {
       dispatch(initializeAgentDetails({ agentId: machineId }, true));
       dispatch(changeDetailTab(tabName));
+      dispatch(resetHostDownloadLink());
     } else {
       // Resetting the details data and input data
       dispatch(resetDetailsInputAndContent());

@@ -148,7 +148,9 @@ const hosts = reduxActions.handleActions({
     return handle(state, action, {
       success: (s) => s.set('hostList', [])
     });
-  }
+  },
+
+  [ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK]: (state) => state.set('hostExportLinkId', null)
 
 }, initialState);
 

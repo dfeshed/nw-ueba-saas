@@ -42,6 +42,8 @@ const resetDetailsInputAndContent = () => {
   };
 };
 
+const resetHostDownloadLink = () => ({ type: ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK });
+
 export {
   toggleCustomFilter,
   toggleMachineSelected,
@@ -57,5 +59,6 @@ export {
   toggleCancelScanModal,
   toggleShowOnlyWithValues,
   toggleDeleteHostsModal,
-  resetDetailsInputAndContent
+  resetDetailsInputAndContent,
+  resetHostDownloadLink
 };

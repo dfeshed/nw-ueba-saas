@@ -205,3 +205,11 @@ test('The FETCH_NEXT_MACHINES will set the paged response to state', function(as
   assert.equal(newEndState.loadMoreHostStatus, '');
   assert.equal(newEndState.hostList.length, 4);
 });
+
+test('The RESET_HOST_DOWNLOAD_LINK action reset the HOST download link', function(assert) {
+  const previous = Immutable.from({
+    hostExportLinkId: '1awsseeeq'
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK });
+  assert.equal(result.hostExportLinkId, null);
+});
