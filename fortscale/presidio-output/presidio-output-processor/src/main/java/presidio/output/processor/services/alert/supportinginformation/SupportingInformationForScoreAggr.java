@@ -97,19 +97,19 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
-        Map<String, Object> features = new HashMap<String, Object>();
+        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
         String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
         if (StringUtils.isNoneEmpty(anomalyValue, anomalyField)) {
             Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
-            features.put(anomalyField, featureValue);
+            features.add(Pair.of(anomalyField, featureValue));
         }
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
             Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.put(fieldName, featureValue);
+            features.add(Pair.of(fieldName, featureValue));
         }
 
         List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit);
@@ -185,13 +185,13 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         }
 
         // get distinct values of all the scored events
-        Map<String, Object> features = new HashMap<String, Object>();
+        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
             Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.put(anomalyFiltersConfig.getFieldName(), featureValue);
+            features.add(Pair.of(anomalyFiltersConfig.getFieldName(), featureValue));
         }
         List<Object> featureValues =
                 scoredEventService.findDistinctScoredFeatureValue(indicatorConfig.getSchema(),
