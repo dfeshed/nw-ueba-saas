@@ -1629,6 +1629,10 @@ export default {
     message: {
       noResultsMessage: 'No matching files were found'
     },
+    errorPage: {
+      serviceDown: 'Endpoint Server is offline',
+      serviceDownDescription: 'The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+    },
     footer: '{{count}} of {{total}} {{label}}',
     filter: {
       filters: 'Filters',

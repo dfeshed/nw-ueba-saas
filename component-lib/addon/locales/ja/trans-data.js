@@ -1628,6 +1628,10 @@ export default {
     message: {
       noResultsMessage: 'ja_No matching files were found'
     },
+    errorPage: {
+      serviceDown: 'Endpoint Server is offline',
+      serviceDownDescription: 'The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+    },
     footer: 'ja_{{count}} of {{total}} {{label}}',
     filter: {
       filters: 'ja_Filters',
