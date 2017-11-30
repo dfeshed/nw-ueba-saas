@@ -41,12 +41,12 @@ class FixedDurationJarOperator(SpringBootJarOperator):
            
         :raise InvalidExecutionDateError - Raise error if the execution_date is not the last interval of fixed duration.
         """
-        java_args = self.get_additional_java_args(context)
+        java_args = self.add_java_args(context)
 
         super(FixedDurationJarOperator, self).update_java_args(java_args)
         super(FixedDurationJarOperator, self).execute(context)
 
-    def get_additional_java_args(self, context):
+    def add_java_args(self, context):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
         if not is_execution_date_valid(execution_date, self.fixed_duration_strategy,

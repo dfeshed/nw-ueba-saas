@@ -69,7 +69,7 @@ class SpringBootJarOperator(BashOperator):
         if 'retry_callback' in kwargs:
             retry_callback = kwargs['retry_callback']
         else:
-            retry_callback = SpringBootJarOperator.handle_retry
+            retry_callback = self.handle_retry
         kwargs['params']['retry_command'] = self.get_retry_command()
 
         super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
@@ -436,15 +436,20 @@ class SpringBootJarOperator(BashOperator):
 
         return ' '.join(bash_command)
 
-    def get_additional_java_args(self, context):
+    def add_java_args(self, context):
         return {}
+
+    def update_retry_command(self, context):
+        self.add_java_args(context)
+        additional_java_args = self.add_java_args(context)
+        self.java_args.update(additional_java_args)
+        context['params']['retry_command'] = self.get_retry_command()
 
     def handle_retry(self, context):
         logging.info("executing default retry handler")
+        self.update_retry_command(context)
         if 'retry_command' in context['params']:
-            additional_java_args = self.calc_additional_java_args(context)
-            self.java_args.update(additional_java_args)
-            bash_command = self.get_retry_command()
+            bash_command = context['params']['retry_command']
             logging.info("tmp dir root location: \n" + gettempdir())
             task_instance_key_str = context['task_instance_key_str']
             with TemporaryDirectory(prefix='airflowtmp') as tmp_dir:
