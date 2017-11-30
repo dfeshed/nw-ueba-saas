@@ -29,7 +29,7 @@ test('it provides the correct options', function(assert) {
   });
   assert.ok(options.includes('/respond'));
   assert.ok(options.includes('/unified'));
-  assert.ok(options.includes('/investigation'));
+  assert.ok(options.includes('/investigate'));
   assert.ok(options.includes(service.get('accessControl.adminUrl')));
   assert.ok(options.includes(service.get('accessControl.configUrl')));
   // TODO: uncomment when we ship the new investigate landing page

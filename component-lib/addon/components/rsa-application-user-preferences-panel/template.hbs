@@ -102,6 +102,25 @@
     </vbox>
   </hbox>
 
+  {{#if investigatePage.hasInvestigateAccess}}
+    <hbox>
+      <vbox xs="12">
+        <label class="rsa-form-label power-select js-test-default-investigate-page-select">
+          <div class="label-text">
+            {{t 'userPreferences.defaultInvestigatePage.label'}}
+          </div>
+          {{#power-select
+            options=investigatePage.options
+            selected=investigatePage.selected
+            searchEnabled=false
+            onchange=(action 'setDefaultInvestigatePage') as |option|}}
+            {{t (concat 'userPreferences.defaultInvestigatePage.' option.label)}}
+          {{/power-select}}
+        </label>
+      </vbox>
+    </hbox>
+  {{/if}}
+
   <hbox>
     <vbox xs="12">
       {{rsa-theme-preferences class="rsa-form-radio-group time-format-radio-group"}}

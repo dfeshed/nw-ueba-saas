@@ -24,6 +24,7 @@ export default Component.extend(csrfToken, {
   eventBus: service(),
   dateFormat: service(),
   landingPage: service(),
+  investigatePage: service(),
   layoutService: service('layout'),
   moment: service(),
   request: service(),
@@ -59,6 +60,10 @@ export default Component.extend(csrfToken, {
       if (isEmpty(this.get('landingPage.selected'))) {
         this.set('landingPage.selected', this.get('landingPage.options').findBy('key', config.landingPageDefault));
       }
+
+      if (isEmpty(this.get('investigatePage.selected'))) {
+        this.set('investigatePage.selected', this.get('investigatePage.options').findBy('key', config.investigatePageDefault));
+      }
     });
   },
 
@@ -87,6 +92,10 @@ export default Component.extend(csrfToken, {
 
     setDefaultLandingPage(selection) {
       this.get('landingPage').setDefaultLandingPage(selection);
+    },
+
+    setDefaultInvestigatePage(selection) {
+      this.get('investigatePage').setDefaultInvestigatePage(selection);
     },
 
     setTimezone(selection) {

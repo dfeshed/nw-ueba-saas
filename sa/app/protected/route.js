@@ -29,6 +29,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   accessControl: service(),
   dateFormat: service(),
   landingPage: service(),
+  investigatePage: service(),
   session: service(),
   timeFormat: service(),
   timezone: service(),
@@ -132,7 +133,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
           dateFormat,
           timeFormat,
           timeZone,
-          defaultComponentUrl
+          defaultComponentUrl,
+          defaultInvestigatePage
         } = response.data;
 
         if (userLocale && config.i18n.includedLocales.length > 1) {
@@ -152,6 +154,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
         if (defaultComponentUrl) {
           this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
+        }
+
+        if (defaultInvestigatePage) {
+          this.get('investigatePage').setDefaultInvestigatePage(defaultInvestigatePage);
         }
 
         resolve();

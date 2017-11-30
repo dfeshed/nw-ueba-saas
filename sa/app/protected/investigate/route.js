@@ -5,6 +5,7 @@ import RSVP from 'rsvp';
 export default Route.extend({
 
   accessControl: service(),
+  investigatePage: service(),
 
   beforeModel() {
     return new RSVP.Promise((resolve) => {
@@ -13,7 +14,9 @@ export default Route.extend({
         resolve(this.transitionTo('protected'));
       } else {
         if (!this.get('accessControl.hasInvestigateEmberAccess')) {
-          return window.location.href = this.get('accessControl.investigateUrl');
+          // In case of user having only access to classic we are routing only to the investigate tab which are having classic access.
+          const selectedPage = this.get('investigatePage.selected');
+          return window.location.href = selectedPage.isClassic ? selectedPage.route : this.get('accessControl.investigateUrl');
         } else {
           resolve();
         }
@@ -23,7 +26,14 @@ export default Route.extend({
 
   afterModel(model, transition) {
     if (transition.targetName === 'protected.investigate.index') {
-      this.transitionTo('protected.investigate.investigate-events');
+      // Route to default user selected default page for investigate
+      const selectedPage = this.get('investigatePage.selected');
+      if (selectedPage) {
+        selectedPage.isClassic ? window.location.href = selectedPage.route :
+        this.transitionTo(selectedPage.route);
+      } else {
+        this.transitionTo('protected.investigate.investigate-events');
+      }
     }
   },
 

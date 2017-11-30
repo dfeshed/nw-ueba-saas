@@ -31,16 +31,10 @@ export default Service.extend({
     }
 
     if (hasInvestigateAccess) {
-      // TODO: add this option back when we want to enable the new investigate to clients
-
-      // options.pushObject({
-      //   key: '/investigate',
-      //   label: 'userPreferences.defaultLandingPage.investigate'
-      // });
-
+      // Enabled the routing through the new investigate page
       options.pushObject({
-        key: '/investigation',
-        label: 'userPreferences.defaultLandingPage.investigateClassic'
+        key: '/investigate',
+        label: 'userPreferences.defaultLandingPage.investigate'
       });
     }
 

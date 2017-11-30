@@ -13,7 +13,8 @@ export default {
         'timeZone': 'UTC',
         'spacingType': 'LOOSE',
         'themeType': 'DARK',
-        'notificationEnabled': true
+        'notificationEnabled': true,
+        'defaultInvestigatePage': '/eventanalysis'
       }
     };
   }

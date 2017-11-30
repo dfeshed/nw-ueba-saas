@@ -82,6 +82,7 @@ export default {
     timeZone: 'ja_Time Zone',
     dateFormatError: 'ja_There was an error attempting to save your Date Format selection. Please try again. If this issue persists, please contact your system admin.',
     landingPageError: 'ja_There was an error attempting to save your Default Landing Page selection. Please try again. If this issue persists, please contact your system admin.',
+    defaultInvestigatePageError: 'ja_There was an error attempting to save your Default Investigate Page selection. Please try again. If this issue persists, please contact your system admin.',
     timeFormatError: 'ja_There was an error attempting to save your Time Format selection. Please try again. If this issue persists, please contact your system admin.',
     timezoneError: 'ja_There was an error attempting to save your Time Zone selection. Please try again. If this issue persists, please contact your system admin.',
     dateFormat: {
@@ -110,6 +111,15 @@ export default {
       live: 'ja_Configure',
       respond: 'ja_Respond',
       admin: 'ja_Admin'
+    },
+    defaultInvestigatePage: {
+      label: 'ja_Default Investigate Page',
+      events: 'ja_Events',
+      eventAnalysis: 'ja_Event Analysis',
+      malware: 'ja_Malware Analysis',
+      navigate: 'ja_Navigate',
+      hosts: 'ja_Hosts',
+      files: 'ja_Files'
     }
   },
   queryBuilder: {

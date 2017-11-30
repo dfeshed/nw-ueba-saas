@@ -11,7 +11,7 @@ moduleForAcceptance('Acceptance | preference panel', {
 });
 
 test('Iteration: verify all options are available in components', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
   visit('/monitor');
   click('.user-preferences-trigger');
 
@@ -42,6 +42,14 @@ test('Iteration: verify all options are available in components', function(asser
       assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
           .map(trimText).get(),
           ['Respond', 'Investigate', 'Monitor', 'Configure', 'Admin'], 'Default Landing Page');
+    });
+
+    // // iterate default investigate page landing options.
+    click('.rsa-application-user-preferences-panel .js-test-default-investigate-page-select .ember-power-select-trigger');
+    andThen(() => {
+      assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
+          .map(trimText).get(),
+          ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Malware Analysis'], 'Default Investigation Landing Page');
     });
 
     assert.equal(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio-label.HR24').length, 1);
