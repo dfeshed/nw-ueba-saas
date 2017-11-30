@@ -477,6 +477,18 @@ limitations under the License.
                     <groupId>org.elasticsearch.client</groupId>
                     <artifactId>transport</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.kongchen</groupId>
+                    <artifactId>swagger-maven-plugin</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.fge</groupId>
+                    <artifactId>jackson-coreutils</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.fge</groupId>
+                    <artifactId>json-patch</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
