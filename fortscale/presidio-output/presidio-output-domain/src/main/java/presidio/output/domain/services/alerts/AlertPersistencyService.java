@@ -20,6 +20,8 @@ public interface AlertPersistencyService {
 
     Iterable<Alert> findAll();
 
+    Iterable<Alert> findAll(List<String> ids);
+
     Page<Alert> findByUserName(String userName, PageRequest pageRequest);
 
     Page<Alert> findByUserId(String userId, PageRequest pageRequest);

@@ -92,6 +92,11 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
+    public Iterable<Alert> findAll(List<String> ids) {
+        return alertRepository.findAll(ids);
+    }
+
+    @Override
     public Page<Alert> findByUserName(String userName, PageRequest pageRequest) {
         return alertRepository.findByUserName(userName, pageRequest);
     }

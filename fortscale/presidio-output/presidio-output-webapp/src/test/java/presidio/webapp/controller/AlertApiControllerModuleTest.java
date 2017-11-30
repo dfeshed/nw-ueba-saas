@@ -25,16 +25,14 @@ import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQueryEnums;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.EventsWrapper;
+import presidio.webapp.model.*;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -45,6 +43,7 @@ public class AlertApiControllerModuleTest {
     private static final String ALERTS_URI = "/alerts";
     private static final String ALERT_BY_ID_URI = "/alerts/{alertId}";
     private static final String EVENTS_BY_INDICATOR_ID_URI = "/alerts/{alertId}/indicators/{indicatorId}/events";
+    private static final String UPDATE_ALERT_FEEDBACK_URI = "/alerts/updateFeedback";
 
     private MockMvc alertsApiMVC;
 
@@ -365,6 +364,35 @@ public class AlertApiControllerModuleTest {
             events.add(event);
         }
         return events;
+    }
 
+    @Test
+    public void testUpdateAlertFeedback() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alertRepository.save(alert);
+
+        UpdateFeedbackRequest requestBody = new UpdateFeedbackRequest();
+        requestBody.setAlertFeedback(AlertQueryEnums.AlertFeedback.RISK);
+        requestBody.setAlertIds(Arrays.asList(alert.getId()));
+
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(requestBody);
+
+        // get actual response not paged
+        MvcResult mvcResult = alertsApiMVC.perform(post(UPDATE_ALERT_FEEDBACK_URI)
+                .contentType("application/json")
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
+        Assert.assertEquals(alert.getContributionToUserScore(), updatedAlert.getContributionToUserScore(), 0.01);
+        Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
+        Assert.assertEquals(AlertEnums.AlertFeedback.RISK, updatedAlert.getFeedback());
+
+        //TODO- test that user severity was updated
     }
 }

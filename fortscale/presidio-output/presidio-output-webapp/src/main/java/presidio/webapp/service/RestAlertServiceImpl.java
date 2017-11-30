@@ -331,12 +331,17 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public void updateAlertFeedback(String alertId, AlertQueryEnums.AlertFeedback feedback) {
-        presidio.output.domain.records.alerts.Alert alert = alertPersistencyService.findOne(alertId);
+    public void updateAlertFeedback(List<String> alertIds, AlertQueryEnums.AlertFeedback feedback) {
+        Iterable<presidio.output.domain.records.alerts.Alert> alerts = alertPersistencyService.findAll(alertIds);
 
+        Set<User> usersToBeUpdated = new HashSet<>();
+        alerts.forEach(alert->{
+            alert.setFeedback(AlertEnums.AlertFeedback.valueOf(feedback.toString()));
+            alert.getUserId();
+        });
 
+        alertPersistencyService.save((List<presidio.output.domain.records.alerts.Alert>) alerts);
 
-        alertPersistencyService.updateAlertFeedback(alertId, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
 
     }
 
