@@ -194,6 +194,7 @@ public class SmartApplicationTest extends BaseAppTest {
         executeAndAssertCommandSuccess(command);
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
 
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
 
@@ -204,7 +205,6 @@ public class SmartApplicationTest extends BaseAppTest {
             Assert.assertTrue(expectedScore > 0);
             Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
         });
-
     }
 
 
@@ -376,7 +376,6 @@ public class SmartApplicationTest extends BaseAppTest {
             Assert.assertTrue(expectedScore > 0);
             Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
         });
-
     }
 
 
