@@ -1,7 +1,11 @@
 package presidio.webapp.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.rest.jsonpatch.JsonPatch;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -28,12 +32,14 @@ public class RestUserServiceImpl implements RestUserService {
     private final UserPersistencyService userPersistencyService;
     private final int pageNumber;
     private final int pageSize;
+    private ObjectMapper objectMapper;
 
     public RestUserServiceImpl(RestAlertService restAlertService, UserPersistencyService userPersistencyService, int pageSize, int pageNumber) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.restAlertService = restAlertService;
         this.userPersistencyService = userPersistencyService;
+        objectMapper = ObjectMapperProvider.defaultJsonObjectMapper();
     }
 
     @Override
@@ -133,6 +139,39 @@ public class RestUserServiceImpl implements RestUserService {
         return restAlertService.getAlertsByUserId(userId, false);
     }
 
+    @Override
+    public User updateUser(String userId, JsonPatch updateRequest) {
+        presidio.output.domain.records.users.User userById = userPersistencyService.findUserById(userId);
+        userById = patchUser(updateRequest, userById);
+        userPersistencyService.save(userById);
+        return createResult(userById, null);
+    }
+
+    private presidio.output.domain.records.users.User patchUser(JsonPatch updateRequest, presidio.output.domain.records.users.User userById) {
+        JsonNode patchedJson;
+        try {
+            JsonNode userJsonNode = objectMapper.valueToTree(userById);
+            patchedJson = updateRequest.apply(userJsonNode);
+            userById = objectMapper.treeToValue(patchedJson, presidio.output.domain.records.users.User.class);
+        } catch (Exception e) {
+            logger.error("Error parsing or processing  the user object to or from json", e);
+        }
+        return userById;
+    }
+
+    @Override
+    public UsersWrapper updateUsers(UserQuery userQuery, JsonPatch jsonPatch) {
+        Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
+
+        List<presidio.output.domain.records.users.User> updatedUsers = new ArrayList<>();
+        users.getContent().forEach(user -> {
+            updatedUsers.add(patchUser(jsonPatch, user));
+        });
+
+        userPersistencyService.save(updatedUsers);
+        return createUsersWrapper(updatedUsers, users.getNumberOfElements(), users.getNumber(), null);
+    }
+
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
         presidio.output.domain.records.users.UserQuery.UserQueryBuilder builder = new presidio.output.domain.records.users.UserQuery.UserQueryBuilder();
         if (CollectionUtils.isNotEmpty(userQuery.getAlertClassifications())) {
@@ -197,6 +236,4 @@ public class RestUserServiceImpl implements RestUserService {
     private presidio.webapp.model.UserQueryEnums.UserSeverity convertUserSeverity(UserSeverity userSeverity) {
         return presidio.webapp.model.UserQueryEnums.UserSeverity.valueOf(userSeverity.name());
     }
-
-
 }
