@@ -21,6 +21,14 @@ public class DataConfiguration {
     @JsonProperty("startTime")
     private Instant startTime = null;
 
+    public DataConfiguration() {
+    }
+
+    public DataConfiguration(List<SchemasEnum> schemas, Instant startTime) {
+        this.schemas = schemas;
+        this.startTime = startTime;
+    }
+
     public DataConfiguration schemas(List<SchemasEnum> schemas) {
         this.schemas = schemas;
         return this;
@@ -104,6 +112,8 @@ public class DataConfiguration {
         }
         return o.toString().replace("\n", "\n    ");
     }
+
+
 
 }
 

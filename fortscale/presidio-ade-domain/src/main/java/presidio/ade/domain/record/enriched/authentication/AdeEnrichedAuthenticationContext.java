@@ -12,6 +12,7 @@ public class AdeEnrichedAuthenticationContext extends BaseEnrichedContext {
     private String srcMachineNameRegexCluster;
     private String dstMachineId;
     private String srcMachineId;
+    private String site;
 
     public AdeEnrichedAuthenticationContext() {
         super();
@@ -26,6 +27,7 @@ public class AdeEnrichedAuthenticationContext extends BaseEnrichedContext {
         this.dstMachineNameRegexCluster = enrichedAuthenticationRecord.getDstMachineNameRegexCluster();
         this.srcMachineNameRegexCluster = enrichedAuthenticationRecord.getSrcMachineNameRegexCluster();
         this.srcMachineId = enrichedAuthenticationRecord.getSrcMachineId();
+        this.site = enrichedAuthenticationRecord.getSite();
     }
 
     public String getUserId() {
@@ -82,5 +84,13 @@ public class AdeEnrichedAuthenticationContext extends BaseEnrichedContext {
 
     public void setSrcMachineId(String srcMachineId) {
         this.srcMachineId = srcMachineId;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
     }
 }

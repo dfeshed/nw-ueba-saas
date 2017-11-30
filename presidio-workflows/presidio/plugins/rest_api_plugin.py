@@ -1,3 +1,8 @@
+from tempfile import NamedTemporaryFile
+
+from airflow.utils.file import TemporaryDirectory
+from airflow.utils.state import State
+
 __author__ = 'robertsanders'
 __version__ = "1.0.4"
 # taken from https://github.com/teamclairvoyant/airflow-rest-api-plugin
@@ -5,8 +10,9 @@ from airflow.models import DagBag, DagModel, DagRun
 from airflow.plugins_manager import AirflowPlugin
 from airflow import configuration
 from airflow.www.app import csrf
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from flask_admin import BaseView, expose
+from zipfile import ZipFile, ZIP_DEFLATED
 
 from datetime import datetime
 import airflow
@@ -567,6 +573,13 @@ apis_metadata = [
             {"name": "dag_id", "description": "The id of the dag", "form_input_type": "text", "required": False},
             {"name": "state", "description": "The state of the dag", "form_input_type": "text", "required": True}
         ]
+    },
+    {
+        "name": "failed_tasks_logs",
+        "description": "returns a zip file containing all failed tasks logs",
+        "airflow_version": "None - Custom API",
+        "http_method": "GET",
+        "arguments": []
     }
 ]
 
@@ -752,6 +765,8 @@ class REST_API(BaseView):
             final_response = self.refresh_dag(base_response)
         elif api == "dag_execution_dates_for_state":
             final_response = self.dag_execution_dates_for_state(base_response)
+        elif api == 'failed_tasks_logs':
+            return self.failed_tasks_logs()
         else:
             final_response = self.execute_cli(base_response, api_metadata)
 
@@ -1074,6 +1089,34 @@ class REST_API(BaseView):
         all_dags = dagbag.dags
         non_subdags_dags = {k: v for k, v in all_dags.iteritems() if v.is_subdag == False}
         return non_subdags_dags
+
+    def failed_tasks_logs(self):
+        """
+
+        :return: a zip file containing a the log files of all task instances that has failed status
+        """
+        try:
+            dag_runs = DagRun.find(state=State.FAILED)
+
+            with TemporaryDirectory(prefix='airflowtmplog') as tmp_dir:
+                with NamedTemporaryFile(prefix='airflow_error_logs_', dir=tmp_dir, suffix=".zip") as temp_file:
+                    with ZipFile(temp_file, 'w') as temp_zip_file:
+                        for dag_run in dag_runs:
+                            task_instances = dag_run.get_task_instances(state=State.FAILED)
+                            for task_instance in task_instances:
+                                # ignore ".log" suffix
+                                log_path = task_instance.log_filepath[:-4]
+                                if os.path.exists(log_path):
+                                    temp_zip_file.write(log_path, log_path, ZIP_DEFLATED)
+                    temp_file.seek(0)
+
+                    return Response(temp_file.read(),
+                                    mimetype='application/x-zip-compressed',
+                                    headers={'Content-Disposition': 'attachment;filename=%s' % temp_zip_file.filename})
+        except Exception as e:
+            logging.error("an error occured while trying to extract failed task logs")
+            logging.exception(e)
+            raise e
 
 
 # Creating View to be used by Plugin

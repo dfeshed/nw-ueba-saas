@@ -100,6 +100,46 @@
         "entriesToSaveInModel" : 100000,
         "partitionsResolutionInSeconds": 86400
       }
+    },
+    {
+      "name" : "site.userId.authentication",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "siteHistogramUserIdAuthenticationDaily"
+      },
+      "retriever" : {
+        "type" : "categorical_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "siteHistogramUserIdAuthenticationDaily",
+        "featureName" : "siteHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name" : "userId.site.authentication",
+      "selector" : {
+        "type" : "feature_bucket_context_selector",
+        "featureBucketConfName" : "userIdHistogramSiteAuthenticationDaily"
+      },
+      "retriever" : {
+        "type" : "categorical_feature_value_retriever",
+        "timeRangeInSeconds" : 7776000,
+        "functions" : [ ],
+        "featureBucketConfName" : "userIdHistogramSiteAuthenticationDaily",
+        "featureName" : "userIdHistogram"
+      },
+      "builder" : {
+        "type" : "category_rarity_model_builder",
+        "numOfBuckets" : 30,
+        "entriesToSaveInModel" : 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
     }
   ]
 }

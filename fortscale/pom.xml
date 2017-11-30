@@ -168,6 +168,8 @@
         <json-patch.version>1.9</json-patch.version>
         <javax.el-version>3.0.0</javax.el-version>
         <mongodb-driver-async.version>3.4.2</mongodb-driver-async.version>
+        <swagger-maven-plugin.version>3.1.5</swagger-maven-plugin.version>
+        <jackson-coreutils.version>1.8</jackson-coreutils.version>
     </properties>
 
     <dependencyManagement>
@@ -500,6 +502,11 @@
                 <artifactId>javax.el</artifactId>
                 <version>${javax.el-version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>${swagger-maven-plugin.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -725,7 +732,7 @@
             <name>mirror.fortscale.dom-snapshots</name>
             <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
         </snapshotRepository>
-         <repository>
+        <repository>
             <id>mirror.fortscale.dom</id>
             <name>mirror.fortscale.dom-snapshots</name>
             <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>

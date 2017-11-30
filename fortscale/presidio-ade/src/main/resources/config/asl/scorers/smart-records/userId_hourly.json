@@ -4,7 +4,7 @@
       "ade-event-type": "smart_userId_hourly",
       "scorers": [
         {
-          "type": "smart-values-model-scorer",
+          "type": "smart-max-values-model-scorer",
           "name": "smart.userId.hourly.scorer",
           "model": {
             "name": "smart.userId.hourly"
@@ -21,7 +21,10 @@
               "name": "smart.global.weights.userId.hourly"
             }
           },
-          "global-influence": 20
+          "global-influence": 5,
+          "max-user-influence": 10,
+          "num-of-partition-user-influence": 5,
+          "min-num-of-user-values": 5
         }
       ]
     }
