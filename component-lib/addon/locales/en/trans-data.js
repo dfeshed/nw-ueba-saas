@@ -589,7 +589,7 @@ export default {
         saveSuccess: 'The changes to the rule were successfully saved',
         saveFailure: 'There was a problem saving the changes to the rule'
       },
-      missingRequiredInfo: 'There is required information missing from the aggregation rule'
+      missingRequiredInfo: 'There is required information missing from the incident rule'
     }
   },
   respond: {

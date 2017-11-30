@@ -92,7 +92,7 @@ export const getTimeWindowValue = createSelector(
 
 export const hasInvalidTimeValue = createSelector(
   [getRuleInfo, getTimeWindowUnit, getTimeWindowValue],
-  (ruleInfo, unit, value) => (ruleInfo.action !== 'SUPPRESS_ALERT' && (!value || value < 1 || value > 100 || (unit === 'DAY' && value > 25)))
+  (ruleInfo, unit, value) => (ruleInfo.action !== 'SUPPRESS_ALERT' && (!value || value < 1 || value > 100 || (unit === 'DAY' && value > 24)))
 );
 
 export const getSelectedGroupByFields = createSelector(

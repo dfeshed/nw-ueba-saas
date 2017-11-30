@@ -28,10 +28,6 @@ $ruleBuilderControlsFontSize: 0.8rem;
       }
     }
 
-    .rsa-form-button-wrapper {
-      padding-bottom: rsa-whitespace();
-    }
-
     .group-operator {
       display: inline-block;
       max-width: 150px;
@@ -91,6 +87,9 @@ $ruleBuilderControlsFontSize: 0.8rem;
       vertical-align: top;
       i {
         font-size: 11px;
+      }
+      .rsa-form-button-wrapper .rsa-form-button {
+        padding: 0;
       }
     }
   }

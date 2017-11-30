@@ -588,7 +588,7 @@ export default {
         saveSuccess: 'ja_The changes to the rule were successfully saved',
         saveFailure: 'ja_There was a problem saving the changes to the rule'
       },
-      missingRequiredInfo: 'ja_There is required information missing from the aggregation rule'
+      missingRequiredInfo: 'ja_There is required information missing from the incident rule'
     }
   },
   respond: {

@@ -33,6 +33,7 @@ const reducer = reduxActions.handleActions({
   [ACTION_TYPES.NEW_INCIDENT_RULE]: (state) => {
     const normalizedConditions = ruleNormalizer.emptyConditions();
     return state.merge({
+      visited: [],
       ruleInfo: {
         action: 'GROUP_INTO_INCIDENT',
         incidentCreationOptions: {
@@ -48,6 +49,7 @@ const reducer = reduxActions.handleActions({
         incidentScoringOptions: {
           type: 'average'
         },
+        timeWindow: '1h',
         notificationOptions: {}
       },
       conditionGroups: normalizedConditions && normalizedConditions.groups,

@@ -69,7 +69,7 @@ const IncidentRuleGroupingOptions = Component.extend(Confirmable, {
   @computed('timeWindowUnit')
   maxTimeWindowValue(timeWindowUnit) {
     // There is a maximu of 25 days allowed for the time window, otherwise a maximum of 100 hours/minutes
-    return timeWindowUnit === 'DAY' ? 25 : 100;
+    return timeWindowUnit === 'DAY' ? 24 : 100;
   },
 
   actions: {

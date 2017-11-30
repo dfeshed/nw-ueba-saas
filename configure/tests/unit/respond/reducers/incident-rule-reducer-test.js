@@ -268,6 +268,7 @@ test('With NEW_INCIDENT_RULE, the ruleInfo and associated state is reset to defa
       incidentScoringOptions: {
         type: 'average'
       },
+      timeWindow: '1h',
       notificationOptions: {}
     },
     conditionGroups: baseConditionGroups,
