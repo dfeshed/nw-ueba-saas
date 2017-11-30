@@ -14,9 +14,12 @@ import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.source.AbstractEventDrivenSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFactory;
 
 import java.nio.charset.Charset;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.apache.flume.CommonStrings.END_DATE;
@@ -30,17 +33,27 @@ import static org.apache.flume.CommonStrings.START_DATE;
  */
 public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
 
+    public static final String NUMBER_OF_EVENTS_IN_PAGES = "number.of.events.in.pages";
+    public static final String NUMBER_OF_PROCESSED_PAGES = "number.of.processed.pages";
+    public static final String NUMBER_OF_PROCESSED_EVENTS = "number.of.processed.events";
+    public static final String AMOUNT = "amount";
+    public static final String NUMBER_OF_DONE_MESSAGES_SENT = "number.of.done.messages.sent";
+    public static final String NUMBER_OF_FILTERED_PAGES = "number.of.filtered.pages";
+
     private static Logger logger = LoggerFactory.getLogger(AbstractPresidioSource.class);
 
 
     /* This field indicates whether the agent is supposed to shut-down after the source is done (or in other words - is this a batch run?) */
     protected boolean isBatch;
-    protected String applicationName;
+    private String applicationName;
     protected int batchSize;
     protected SourceFetcher sourceFetcher;
     protected Instant startDate;
     protected Instant endDate;
-    protected static ObjectMapper mapper;
+
+    private static PresidioExternalMonitoringService presidioExternalMonitoringService;
+    private PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory;
+    private static ObjectMapper mapper;
 
     static {
         mapper = new ObjectMapper();
@@ -56,10 +69,18 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
     @Override
     public void start() {
         super.start();
-        if (isBatch) {
-            sendDoneControlMessage();
-            setLifecycleState(LifecycleState.DONE);
-            logger.info("Source {} is done. Starting source-is-done flow", getName());
+        try {
+            presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.
+                    createPresidioExternalMonitoringService(getApplicationName());
+            if (isBatch) {
+                sendDoneControlMessage();
+                setLifecycleState(LifecycleState.DONE);
+                logger.info("Source {} is done. Starting source-is-done flow", getName());
+            }
+        } catch (Exception e) {
+            final String errorMessage = "Failed to start " + this.getClass().getSimpleName();
+            logger.error(errorMessage, e);
+            setLifecycleState(LifecycleState.ERROR);
         }
     }
 
@@ -78,10 +99,13 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
      */
     protected abstract void doPresidioConfigure(Context context) throws FlumeException;
 
-    protected void sendDoneControlMessage() {
+    private void sendDoneControlMessage() {
         final Event isDoneControlMessage = EventBuilder.withBody(new byte[0]);
         isDoneControlMessage.getHeaders().put(CommonStrings.IS_DONE, Boolean.TRUE.toString());
         logger.debug("Sending control message DONE");
+
+        presidioExternalMonitoringService.reportCustomMetricReportOnce(
+                NUMBER_OF_DONE_MESSAGES_SENT, 1, new HashSet<>(), AMOUNT, null);
         this.getChannelProcessor().processEvent(isDoneControlMessage);
     }
 
@@ -129,14 +153,16 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
 
     @Override
     protected void doStop() throws FlumeException {
-        //do nothing
+        presidioExternalMonitoringServiceFactory.close();
     }
 
     protected abstract List<AbstractDocument> doFetch(int pageNum);
 
 
-    protected void processEvent(AbstractDocument event) throws JsonProcessingException {
-//        sourceCounter.incrementEventAcceptedCount();
+    private void processEvent(AbstractDocument event) throws JsonProcessingException {
+        presidioExternalMonitoringService.reportCustomMetricReportOnce(
+                NUMBER_OF_PROCESSED_EVENTS, 1, new HashSet<>(), AMOUNT, null);
+
         final String eventAsString;
         eventAsString = mapper.writeValueAsString(event);
         final Event flumeEvent = EventBuilder.withBody(eventAsString, Charset.defaultCharset());
@@ -144,11 +170,18 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
         getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
     }
 
-    protected void processPage(List<AbstractDocument> pageEvents) throws Exception {
-//        sourceCounter.addToEventReceivedCount(pageEvents.size());
+    private void processPage(List<AbstractDocument> pageEvents) throws Exception {
+        presidioExternalMonitoringService.reportCustomMetricReportOnce(
+                NUMBER_OF_PROCESSED_PAGES, 1, new HashSet<>(), AMOUNT, null);
+        presidioExternalMonitoringService.reportCustomMetricReportOnce(
+                NUMBER_OF_EVENTS_IN_PAGES, pageEvents.size(), new HashSet<>(), AMOUNT, null);
+
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);
+
+            presidioExternalMonitoringService.reportCustomMetricReportOnce(
+                    NUMBER_OF_FILTERED_PAGES, 1, new HashSet<>(), AMOUNT, null);
             throw new Exception(errorMessage);
         } else {
             for (AbstractDocument pageEvent : pageEvents) {
@@ -158,7 +191,7 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
     }
 
 
-    protected boolean validateEvents(List<AbstractDocument> events) {
+    private boolean validateEvents(List<AbstractDocument> events) {
         return events != null; //todo
     }
 }

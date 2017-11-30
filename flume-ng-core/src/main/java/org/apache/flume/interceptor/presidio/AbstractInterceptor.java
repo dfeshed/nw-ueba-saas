@@ -6,8 +6,11 @@ import org.apache.flume.CommonStrings;
 import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.interceptor.Interceptor;
+import org.apache.flume.lifecycle.LifecycleState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFactory;
 
 import java.util.List;
 
@@ -15,6 +18,10 @@ public abstract class AbstractInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(AbstractInterceptor.class);
+    public static final String ADAPTER = "adapter";
+
+    private static PresidioExternalMonitoringService presidioExternalMonitoringService;
+    private PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory;
 
     @Override
     public List<Event> intercept(List<Event> events) {
@@ -50,7 +57,13 @@ public abstract class AbstractInterceptor implements Interceptor {
 
     @Override
     public void initialize() {
-
+        try {
+            presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.
+                    createPresidioExternalMonitoringService(ADAPTER);
+        } catch (Exception e) {
+            final String errorMessage = "Failed to start " + this.getClass().getSimpleName();
+            logger.error(errorMessage, e);
+        }
     }
 
     @Override
