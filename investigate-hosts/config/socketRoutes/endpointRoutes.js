@@ -6,6 +6,9 @@ module.exports = function(env) {
   const socketUrl = common.determineSocketUrl(env, '/endpoint/socket');
 
   return {
+    'endpoint-server-ping': {
+      socketUrl
+    },
     endpoint: {
       socketUrl,
       export: {

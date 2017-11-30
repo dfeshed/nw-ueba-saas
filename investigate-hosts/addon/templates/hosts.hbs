@@ -1,1 +1,7 @@
-{{host-container}}
+{{#if model.endpointServerOffline}}
+  {{error-page
+    errorDescription=(t 'investigateHosts.errorPage.serviceDownDescription')
+    title=(t 'investigateHosts.errorPage.serviceDown')}}
+{{else}}
+  {{host-container}}
+{{/if}}

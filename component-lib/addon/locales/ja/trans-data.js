@@ -1753,6 +1753,10 @@ export default {
       saveSuccess: 'ja_Saved successfully',
       emptyMessage: 'ja_No matching results'
     },
+    errorPage: {
+      serviceDown: 'js_Endpoint Server is offline',
+      serviceDownDescription: 'ja_The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
+    },
     property: {
       file: {
         companyName: 'ja_Company Name',

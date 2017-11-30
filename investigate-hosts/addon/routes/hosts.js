@@ -1,8 +1,9 @@
-import run from 'ember-runloop';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
-import service from 'ember-service/inject';
-import Route from 'ember-route';
+import { ping } from 'streaming-data/services/data-access/requests';
+import run from 'ember-runloop';
 
 export default Route.extend({
 
@@ -10,13 +11,9 @@ export default Route.extend({
 
   redux: service(),
 
+  contextualHelp: service(),
+
   queryParams: {
-    metaName: {
-      refreshModel: true
-    },
-    metaValue: {
-      refreshModel: true
-    },
     machineId: {
       refreshModel: true
     },
@@ -33,13 +30,16 @@ export default Route.extend({
   },
 
   model(params) {
-    const redux = this.get('redux');
-    // @workaround We want to fire data actions when model changes. That won't work in Safari & Firefox if you are
-    // transitioning from another route (e.g., `incidents`); only works if you are coming directly to this route from
-    // a url/bookmark. As a workaround, use `run.next` to let the route transition finish before firing redux actions.
-    run.next(() => {
-      redux.dispatch(initializeHostPage(params));
-    });
+    return ping('endpoint-server-ping')
+      .then(() => {
+        const redux = this.get('redux');
+        run.next(() => {
+          redux.dispatch(initializeHostPage(params));
+        });
+      })
+      .catch(function() {
+        return { endpointServerOffline: true };
+      });
   },
 
   resetController(controller, isExiting) {

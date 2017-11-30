@@ -109,7 +109,7 @@ const determineSocketUrl = function(environment, socketPath) {
       // is set to any of a number of possible ports
       // so need to get from 'process.env'
       const mockPort = process.env.MOCK_PORT || 9999;
-      socketUrl = `http://localhost:${mockPort}/socket/`;
+      socketUrl = `http://localhost:${mockPort}/socket`;
     } else {
 
       // Using microservice
