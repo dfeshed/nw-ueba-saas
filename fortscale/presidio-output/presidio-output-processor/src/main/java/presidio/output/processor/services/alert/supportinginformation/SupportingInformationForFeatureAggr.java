@@ -78,7 +78,10 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         if (indicatorConfig.getAnomalyDescriptior() != null &&
                 StringUtils.isNoneEmpty(indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
                         indicatorConfig.getAnomalyDescriptior().getAnomalyValue())) {
-            features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), indicatorConfig.getAnomalyDescriptior().getAnomalyValue()));
+            String[] values = StringUtils.split(indicatorConfig.getAnomalyDescriptior().getAnomalyValue(),",");
+            for (String value: values) {
+                features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), value));
+            }
         }
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
