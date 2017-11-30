@@ -1,7 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
-import $ from 'jquery';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles } from 'investigate-files/reducers/file-list/selectors';
@@ -45,16 +44,6 @@ const Files = Component.extend({
     applyCustomFilter(filter) {
       const { criteria: { expressionList } } = filter;
       this.send('addSystemFilter', expressionList);
-    }
-  },
-
-  // Work around to set row styles when scroll width is increased
-  didRender() {
-    this._super(...arguments);
-    const rsaDataTableBody = $('.rsa-data-table-body');
-    if (rsaDataTableBody.length !== 0) {
-      const dataTableTotalWidth = rsaDataTableBody[0].scrollWidth;
-      $('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
     }
   },
 
