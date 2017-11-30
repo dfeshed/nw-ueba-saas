@@ -2,13 +2,14 @@ import json
 import os
 import requests
 
-ELASTICSEARCH_PATH = '/home/presidio/elastisearch'
+ELASTICSEARCH_PATH = '/home/presidio/presidio-core/el-extensions'
 MACHINE_URL = 'http://localhost:9200/'
 URL_KIBANA = MACHINE_URL+'.kibana/index-pattern/'
-INDEX_PATTERN =ELASTICSEARCH_PATH + '/index-pattern'
-DASHBOARD = ELASTICSEARCH_PATH + '/dashboard'
-INDEXES = ELASTICSEARCH_PATH+ '/indexs'
+INDEX_PATTERN =ELASTICSEARCH_PATH + '/patterns'
+DASHBOARD = ELASTICSEARCH_PATH + '/dashboards'
+INDEXES = ELASTICSEARCH_PATH+ '/mappings'
 HEADERS={"Content-Type": "application/json"}
+MAPPINGS= "mappings"
 
 
 def elastic_put_request(folder , url):
@@ -16,9 +17,8 @@ def elastic_put_request(folder , url):
         name = indexJson.split(".")[0]
         with open(folder + '/' + indexJson) as json_data:
             index = json.load(json_data)
-            if "mapping" in name:
-                index = json.dumps({"mappings": index})
-                name = indexJson.split("_")[0]
+            if MAPPINGS in folder:
+                index = json.dumps({MAPPINGS: index})
             else:
                 index = json.dumps(index)
             requests.put(url + name, data=index, headers=HEADERS)
