@@ -1,13 +1,14 @@
 package presidio.webapp.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A JSONPatch document as defined by RFC 6902 (http://jsonpatch.com/)
@@ -20,11 +21,11 @@ public class PatchOperation {
      * The operation to be performed
      */
     public enum OpEnum {
-        ADD("add"),
-
-        REMOVE("remove"),
-
-        REPLACE("replace");
+        add("add"),
+        remove("remove"),
+        replace("replace"),
+        copy("copy"),
+        move("move");
 
         private String value;
 
@@ -65,6 +66,7 @@ public class PatchOperation {
 
     /**
      * The operation to be performed
+     *
      * @return op
      **/
     @ApiModelProperty(required = true, value = "The operation to be performed")
@@ -83,6 +85,7 @@ public class PatchOperation {
 
     /**
      * Get path
+     *
      * @return path
      **/
     @ApiModelProperty(required = true, value = "")
@@ -106,6 +109,7 @@ public class PatchOperation {
 
     /**
      * Get value
+     *
      * @return value
      **/
     @ApiModelProperty(value = "")

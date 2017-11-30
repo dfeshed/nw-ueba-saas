@@ -15,10 +15,10 @@ import fortscale.utils.rest.jsonpatch.operation.*;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "op")
 
 @JsonSubTypes({
-        @JsonSubTypes.Type(name = "ADD", value = AddOperation.class),
+        @JsonSubTypes.Type(name = "add", value = AddOperation.class),
         @JsonSubTypes.Type(name = "copy", value = CopyOperation.class),
         @JsonSubTypes.Type(name = "move", value = MoveOperation.class),
-        @JsonSubTypes.Type(name = "REMOVE", value = RemoveOperation.class),
+        @JsonSubTypes.Type(name = "remove", value = RemoveOperation.class),
         @JsonSubTypes.Type(name = "replace", value = ReplaceOperation.class)
 })
 
