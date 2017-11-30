@@ -201,9 +201,6 @@
       ],
       "FLUIDFS_FOLDER_AUDITING_CHANGED": [
         "FILE_PERMISSION_CHANGE"
-      ],
-      "FLUIDFS_FILE_CONTENTS_WRITTEN": [
-        "FILE_ACTION"
       ]
     },
     "AUTHENTICATION": {
