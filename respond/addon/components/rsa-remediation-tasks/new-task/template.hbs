@@ -43,7 +43,10 @@
     </div>
   </div>
 </section>
-<section class="controls">
-  {{#rsa-form-button class='cancel-task' defaultAction='handleCancel'}}{{t 'forms.cancel'}}{{/rsa-form-button}}
-  {{#rsa-form-button class='save-task' defaultAction='handleSubmit' isDisabled=(not isValid)}}{{t 'forms.save'}}{{/rsa-form-button}}
-</section>
+{{! hide the button controls once the task has been created }}
+{{#if (not isTaskCreated)}}
+  <section class="controls">
+    {{#rsa-form-button class='cancel-task' defaultAction='handleCancel'}}{{t 'forms.cancel'}}{{/rsa-form-button}}
+    {{#rsa-form-button class='save-task' defaultAction='handleSubmit' isDisabled=(not isValid)}}{{t 'forms.save'}}{{/rsa-form-button}}
+  </section>
+{{/if}}

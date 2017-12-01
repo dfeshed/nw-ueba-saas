@@ -52,3 +52,8 @@ export const getInspectorWidth = createSelector(
   incidentState,
   (incidentState) => incidentState.inspectorWidth
 );
+
+export const getTasksStatus = createSelector(
+  incidentState,
+  (incidentState) => incidentState.tasksStatus
+);

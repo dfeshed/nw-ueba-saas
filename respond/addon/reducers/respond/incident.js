@@ -51,6 +51,7 @@ let initialState = {
 
   tasks: [],
 
+  // can be 'wait', 'complete', 'creating'
   tasksStatus: null,
 
   isShowingTasksAndJournal: false,
@@ -284,9 +285,10 @@ const incident = reduxActions.handleActions({
 
   [ACTION_TYPES.CREATE_REMEDIATION_TASK]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s,
+      start: (s) => s.set('tasksStatus', 'creating'),
       failure: (s) => s,
-      success: (s) => s.set('tasks', [action.payload.data, ...s.tasks])
+      success: (s) => s.set('tasks', [action.payload.data, ...s.tasks]),
+      finish: (s) => s.set('tasksStatus', null)
     });
   },
 
@@ -316,8 +318,6 @@ const incident = reduxActions.handleActions({
       failure: (s) => s,
       success: (s) => {
         const { payload } = action;
-        // const { entityIds, updates } = _extractEntityIdsAndUpdates(payload);
-
         const normalizedPayload = !isEmberArray(payload) ? [{ value: { ...payload } }] : payload;
 
         // The array of entities that have been updated reduced to a single array
@@ -329,10 +329,6 @@ const incident = reduxActions.handleActions({
           // Find the updated entity from the list of updated objects, or use the current entity if not updated
           return updateData.findBy('id', entity.id) || entity;
         });
-
-        // const updatedEntities = state.tasks.map((entity) => {
-        //   return entityIds.includes(entity.id) ? { ...entity, ...updates } : entity;
-        // });
         return s.set('tasks', updatedEntities);
       }
     });

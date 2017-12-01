@@ -117,3 +117,52 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
   assert.deepEqual(endState, expectedEndState, 'incident state should be reset to defaults except for inspectorWidth,' +
     'hideViz, viewMode, isShowingTasksAndJournal, tasksJournalMode, defaultSearchTimeFrameName, defaultSearchEntityType');
 });
+
+test('When CREATE_REMEDIATION_TASK starts, the tasksStatus changes to "creating"', function(assert) {
+  const initState = {
+    tasks: [],
+    tasksStatus: null
+  };
+  const tasksStatus = 'creating';
+  const expectedEndState = {
+    tasks: [],
+    tasksStatus
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.CREATE_REMEDIATION_TASK });
+  const endState = incidentReducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('When CREATE_REMEDIATION_TASK completes, the tasksStatus changes to null, and tasks array is updated', function(assert) {
+  const initState = {
+    tasks: [],
+    tasksStatus: 'creating'
+  };
+  const tasksStatus = null;
+  const createdTask = { id: 'REM-1' };
+  const expectedEndState = {
+    tasks: [createdTask],
+    tasksStatus
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.CREATE_REMEDIATION_TASK,
+    payload: { data: createdTask }
+  });
+  const endState = incidentReducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});
+
+test('When CREATE_REMEDIATION_TASK fails, the tasksStatus changes to null', function(assert) {
+  const initState = {
+    tasks: [],
+    tasksStatus: 'creating'
+  };
+  const tasksStatus = null;
+  const expectedEndState = {
+    tasks: [],
+    tasksStatus
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.CREATE_REMEDIATION_TASK });
+  const endState = incidentReducer(Immutable.from(initState), action);
+  assert.deepEqual(endState, expectedEndState);
+});

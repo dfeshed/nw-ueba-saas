@@ -4,16 +4,13 @@ import { createItem } from 'respond/actions/creators/remediation-task-creators';
 import computed from 'ember-computed-decorators';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 import Notifications from 'respond/mixins/notifications';
+import { getPriorityTypes } from 'respond/selectors/dictionaries';
+import { getTasksStatus } from 'respond/selectors/incidents';
 
 const stateToComputed = (state) => {
-  const {
-    respond: {
-      dictionaries
-    }
-  } = state;
-
   return {
-    priorityTypes: dictionaries.priorityTypes
+    priorityTypes: getPriorityTypes(state),
+    tasksStatus: getTasksStatus(state)
   };
 };
 
@@ -22,6 +19,7 @@ const dispatchToActions = (dispatch) => {
     createTask(task) {
       dispatch(createItem(task, {
         onSuccess: () => {
+          this.set('isTaskCreated', true);
           this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess');
           this.get('onCreated')();
         },
@@ -33,7 +31,6 @@ const dispatchToActions = (dispatch) => {
 
 const NewRemediationTask = Component.extend(Notifications, {
   classNames: ['new-remediation-task'],
-
   incidentId: null,
   name: null,
   description: null,
@@ -42,9 +39,9 @@ const NewRemediationTask = Component.extend(Notifications, {
   cancelNewTask() {},
   submitNewTask() {},
 
-  @computed('name', 'priority')
-  isValid(name, priority) {
-    return name && priority;
+  @computed('name', 'priority', 'tasksStatus')
+  isValid(name, priority, tasksStatus) {
+    return name && priority && tasksStatus !== 'creating';
   },
   actions: {
     handlePriorityChange(priority) {
