@@ -1,74 +1,42 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+
+import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
+
 import engineResolverFor from '../../../helpers/engine-resolver';
 
+let setState;
+
 moduleForComponent('event-counter', 'Integration | Component | event counter', {
+  resolver: engineResolverFor('investigate-events'),
   integration: true,
-  resolver: engineResolverFor('investigate-events')
+  beforeEach() {
+    setState = (state) => {
+      applyPatch(state);
+      this.inject.service('redux');
+    };
+  },
+  afterEach() {
+    revertPatch();
+  }
 });
 
 test('it renders a given count', function(assert) {
-  this.render(hbs`{{event-counter count=55}}`);
+  new ReduxDataHelper(setState).eventCount(55).build();
+  this.render(hbs`{{event-counter}}`);
   assert.equal(this.$('.rsa-investigate-event-counter').length, 1, 'Expected root DOM element.');
-  assert.equal(this.$('.rsa-investigate-event-counter__count').text().trim(), '55', 'Expected count value to be displayed in DOM.');
+  assert.equal(this.$('.rsa-investigate-event-counter').text().trim(), '55', 'Expected count value to be displayed in DOM.');
 });
 
-test('it renders the appropriate DOM for a given threshold', function(assert) {
-  const count = 100;
-  this.setProperties({
-    count,
-    threshold: undefined
-  });
-  this.render(hbs`{{event-counter count=count threshold=threshold}}`);
+test('it does not show + if threshold is less than count', function(assert) {
+  new ReduxDataHelper(setState).eventCount(55).eventThreshold(100).build();
+  this.render(hbs`{{event-counter}}`);
   assert.equal(this.$('.rsa-investigate-event-counter__plus').length, 0, 'Expected to not find plus DOM element.');
+});
 
-  this.set('threshold', count - 1);
-  assert.equal(this.$('.rsa-investigate-event-counter__plus').length, 0, 'Expected to not find plus DOM element.');
-
-  this.set('threshold', count);
+test('it shows + icon if threshold is equal to count', function(assert) {
+  new ReduxDataHelper(setState).eventCount(100).eventThreshold(100).build();
+  this.render(hbs`{{event-counter}}`);
   assert.equal(this.$('.rsa-investigate-event-counter__plus').length, 1, 'Expected to find plus DOM element.');
 });
-
-test('it fires callbacks as expected', function(assert) {
-  assert.expect(6);
-
-  const goAction = (() => {
-    assert.ok(true, 'goAction was invoked.');
-  });
-  const stopAction = (() => {
-    assert.ok(true, 'stopAction was invoked.');
-  });
-  const retryAction = (() => {
-    assert.ok(true, 'retryAction was invoked.');
-  });
-  let $el;
-
-  this.setProperties({
-    value: 0,
-    goAction,
-    stopAction,
-    retryAction
-  });
-
-  this.render(hbs`{{event-counter count=count status=status goAction=goAction stopAction=stopAction retryAction=retryAction}}`);
-
-  // Set status to 'streaming' and test the stopAction callback.
-  this.set('status', 'streaming');
-  $el = this.$('.rsa-investigate-event-counter__stop');
-  assert.equal($el.length, 1, 'Expected stop DOM element.');
-  $el.trigger('click');
-
-  // Set status to 'idle' and test the goAction callback.
-  this.set('status', 'idle');
-  $el = this.$('.rsa-investigate-event-counter__go');
-  assert.equal($el.length, 1, 'Expected go DOM element.');
-  $el.trigger('click');
-
-  // Set status to 'error' and test the retryAction callback.
-  this.set('status', 'error');
-  $el = this.$('.rsa-investigate-event-counter__retry');
-  assert.equal($el.length, 1, 'Expected retry DOM element.');
-  $el.trigger('click');
-
-});
-

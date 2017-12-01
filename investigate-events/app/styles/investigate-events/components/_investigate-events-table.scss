@@ -12,17 +12,15 @@
       padding: rsa-whitespace();
       color: text-color(primary, lighter);
 
-      .rsa-investigate-events-table__sums {
-        .rsa-investigate-event-counter__count {
-          font-size: .85em;
-          &::before {
-            content: '(';
-            margin-right: -4px;
-          }
-          &::after {
-            content: ')';
-            margin-left: -4px;
-          }
+      .rsa-investigate-event-counter {
+        font-size: .85em;
+        &::before {
+          content: '(';
+          margin-right: -4px;
+        }
+        &::after {
+          content: ')';
+          margin-left: -4px;
         }
       }
     }

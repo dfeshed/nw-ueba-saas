@@ -1,23 +1,14 @@
 <hbox class="rsa-investigate-events-table__header">
   <h2>
     {{t "investigate.events.title"}}
-    {{#if totalCount}}
-      <span class="rsa-investigate-events-table__sums">
-        {{event-counter
-          class="rsa-investigate-events-table__sums-total"
-          count=totalCount
-          status=totalStatus
-          threshold=totalThreshold
-          retryAction=totalRetryAction}}
-      </span>
-    {{/if}}
+    {{event-counter}}
   </h2>
   <div class="events-table-control">
     {{rsa-icon
       disabled=(not isOpen)
       click=(route-action 'toggleReconSize')
-      name=toggleEventsClass
-      title=(t toggleEventsTitle)}}
+      name=toggleEvents.class
+      title=(t toggleEvents.title)}}
     {{rsa-icon
       disabled=(not isOpen)
       click=(route-action 'toggleSlaveFullScreen')

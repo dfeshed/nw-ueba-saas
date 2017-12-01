@@ -25,20 +25,16 @@ const EventsTable = Component.extend({
 
   // Passed along to counter.
   loadMoreAction: undefined,
-  stopAction: undefined,
-  retryAction: undefined,
   totalCount: undefined,
-  totalStatus: undefined,
-  totalThreshold: undefined,
-  totalRetryAction: undefined,
 
   @computed('reconSize')
-  toggleEventsClass: (size) => (size !== RECON_PANEL_SIZES.MAX) ?
-    'shrink-diagonal-2' : 'expand-diagonal-4',
-
-  @computed('reconSize')
-  toggleEventsTitle: (size) => (size !== RECON_PANEL_SIZES.MAX) ?
-    'investigate.events.shrink' : 'investigate.events.expand'
+  toggleEvents(size) {
+    const isSizeNotMax = size !== RECON_PANEL_SIZES.MAX;
+    return {
+      class: isSizeNotMax ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+      title: isSizeNotMax ? 'investigate.events.shrink' : 'investigate.events.expand'
+    };
+  }
 });
 
 export default connect(stateToComputed)(EventsTable);

@@ -45,12 +45,7 @@
           rowClickAction=(route-action 'selectEvent')
           loadMoreAction=(action 'eventsGetMore')
           loadLogsAction=(action 'eventsLogsGet')
-          stopAction=(route-action 'eventsStop' queryNode)
-          retryAction=(route-action 'eventsGetMore' queryNode)
           totalCount=eventCount.data
-          totalThreshold=eventCount.threshold
-          totalStatus=eventCount.status
-          totalRetryAction=(route-action 'eventCountGet' queryNode)
           isOpen=isReconOpen
         }}
       </section>
