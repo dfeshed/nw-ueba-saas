@@ -113,6 +113,10 @@
       }
     }
 
+    &.query-fragment-invalid {
+      border-color: border-color(accentOne);
+    }
+
     &:last-of-type {
       max-width: inherit;
       .invisible-edit-trigger {

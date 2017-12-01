@@ -5,7 +5,8 @@ moduleForComponent('query-filter-fragment', 'Unit | Component | query filter fra
   unit: true,
   needs: [
     'service:context-menu',
-    'service:i18n'
+    'service:i18n',
+    'service:redux'
   ],
   resolver: engineResolverFor('investigate-events')
 });

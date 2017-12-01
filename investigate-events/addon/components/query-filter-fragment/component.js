@@ -6,6 +6,8 @@ import { isEmpty } from 'ember-utils';
 import computed, { equal, notEmpty, and, not } from 'ember-computed-decorators';
 import contextMenuMixin from 'ember-context-menu';
 import service from 'ember-service/inject';
+import { validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
+import { connect } from 'ember-redux';
 
 const insertEmptyFilter = (list, index) => {
   const emptyFilter = EmberObject.create({
@@ -30,15 +32,18 @@ const resetFilter = (filter) => {
   });
 };
 
-export default Component.extend(contextMenuMixin, {
+const dispatchToActions = {
+  validateIndividualQuery
+};
 
+const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   i18n: service(),
 
   layout,
 
   classNames: ['rsa-query-fragment'],
 
-  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing', 'isExpensive'],
+  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing', 'isExpensive', 'queryFragmentInvalid'],
 
   type: 'meta',
 
@@ -57,6 +62,8 @@ export default Component.extend(contextMenuMixin, {
   metaFormat: null,
 
   isExpensive: false,
+
+  apiMetaMessage: null,
 
   @equal('type', 'meta') onMeta: false,
   @equal('type', 'operator') onOperator: false,
@@ -186,6 +193,13 @@ export default Component.extend(contextMenuMixin, {
   didInsertElement() {
     this._super(...arguments);
     this.$('input').prop('type', 'text').prop('spellcheck', false);
+  },
+
+  _validateComplete(isValid, apiMetaMessage) {
+    if (!isValid) {
+      this.set('queryFragmentInvalid', true);
+      this.set('apiMetaMessage', apiMetaMessage.message);
+    }
   },
 
   actions: {
@@ -347,6 +361,11 @@ export default Component.extend(contextMenuMixin, {
                 this.set('value', valueToSet);
                 this.set('editActive', false);
 
+                // set query validation properties to default if editing
+                this.set('queryFragmentInvalid', false);
+                this.set('apiMetaMessage', null);
+                this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
+
                 if (filterRecord === filterList.get('lastObject')) {
                   insertEmptyFilter(filterList, filterList.get('length'));
                 }
@@ -504,3 +523,5 @@ export default Component.extend(contextMenuMixin, {
   }
 
 });
+
+export default connect(null, dispatchToActions)(QueryFragmentComponent);

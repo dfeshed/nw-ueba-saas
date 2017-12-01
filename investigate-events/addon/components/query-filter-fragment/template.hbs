@@ -31,7 +31,7 @@
     {{/if}}
   {{/power-select-typeahead}}
 {{else}}
-  <div class="meta" {{action 'toggleSelect'}}>
+  <div class="meta" title={{apiMetaMessage}} {{action 'toggleSelect'}}>
     {{#if isExpensive}}
       {{rsa-icon name="report-problem-triangle"
         style="lined"

@@ -72,6 +72,13 @@ const investigateConfigGen = function(env) {
         requestDestination: '/ws/investigate/meta/values/stream',
         cancelDestination: '/ws/investigate/cancel'
       }
+    },
+    'core-query-validate': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/validate/query',
+        requestDestination: '/ws/investigate/validate/query'
+      }
     }
   };
 };
