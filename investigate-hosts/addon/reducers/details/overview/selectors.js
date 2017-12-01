@@ -102,7 +102,7 @@ export const getNetworkInterfaces = createSelector(
       const { machine } = hostDetails;
       if (machine) {
         const networkInterfaces = machine.networkInterfaces || [];
-        const validNetworkInterfaceList = networkInterfaces.filter((networkInterface) => (networkInterface.ipv4.length === 1 && networkInterface.ipv4[0] !== '127.0.0.1') || networkInterface.ipv4.length > 1);
+        const validNetworkInterfaceList = networkInterfaces.filter((networkInterface) => networkInterface.ipv4 && ((networkInterface.ipv4.length === 1 && networkInterface.ipv4[0] !== '127.0.0.1') || networkInterface.ipv4.length > 1));
         const validIPList = validNetworkInterfaceList.map((networkInterface) => ({
           ...networkInterface,
           ipv4: networkInterface.ipv4 ? networkInterface.ipv4.filter((ip) => ip !== '127.0.0.1') : [],

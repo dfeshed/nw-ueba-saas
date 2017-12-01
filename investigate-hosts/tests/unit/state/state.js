@@ -35,6 +35,12 @@ export const hostDetails = {
       'ipv6': ['::1'],
       'gateway': ['0.0.0.0'],
       'promiscuous': false
+    },
+    {
+      'name': 'ens33',
+      'macAddress': '00:50:56:01:2C:B5',
+      'gateway': ['10.40.12.1'],
+      'promiscuous': false
     }],
     'users': [{
       'name': 'root',

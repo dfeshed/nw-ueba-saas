@@ -8,9 +8,9 @@ const stateToComputed = (state) => ({
 
 const IpAddresses = Component.extend({
 
-  tagName: 'hbox',
+  tagName: 'div',
 
-  classNames: 'host-ip-addresses host-content__ip-details col-xs-12'
+  classNames: 'col-xs-12'
 });
 
 export default connect(stateToComputed)(IpAddresses);
