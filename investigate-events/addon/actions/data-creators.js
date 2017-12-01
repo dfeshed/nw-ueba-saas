@@ -11,7 +11,7 @@ import { setQueryTimeRange } from 'investigate-events/actions/interaction-creato
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { lookup } from 'ember-dependency-lookup';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
-import { INITIATE_PREFERENCES } from 'recon/actions/types';
+import { SET_PREFERENCES } from 'recon/actions/types';
 
 const { log } = console;
 const prefService = lookup('service:preferences');
@@ -21,6 +21,9 @@ const _showFutureFeatures = config.featureFlags.future;
 /**
  * Initializes the dictionaries (language and aliases). If we've already
  * retrieved the dictionaries for a specific service, we reuse that data.
+ * @param {function} dispatch
+ * @param {function} getState
+ * @return {RSVP.Promise}
  * @private
  */
 const _initializeDictionaries = (dispatch, getState) => {
@@ -76,6 +79,9 @@ const _initializeDictionaries = (dispatch, getState) => {
 /**
  * Initializes the list of services (aka endpoints). This list shouldn't really
  * change much, so we only retrieve it once.
+ * @param {function} dispatch
+ * @param {function} getState
+ * @return {RSVP.Promise}
  * @private
  */
 const _initializeServices = (dispatch, getState) => {
@@ -104,12 +110,15 @@ const _initializeServices = (dispatch, getState) => {
 /**
  * Getting the persisted setting from preferences service and resetting
  * the reconSize on the bases of isReconExpanded field
+ * @param {function} dispatch
+ * @return void
  * @private
  */
 const _getPreferences = (dispatch, modelName) => {
-  prefService.getPreferences(modelName).then((data) => {
+  return prefService.getPreferences(modelName).then((data) => {
     if (data) {
-      // Only if preferences is sent from api, set the preference state. Otherwise, initial state will be used.
+      // Only if preferences is sent from api, set the preference state.
+      // Otherwise, initial state will be used.
       const {
         eventAnalysisPreferences = {},
         queryTimeFormat
@@ -143,8 +152,7 @@ export const _initializeQuery = () => {
 /**
  * Redux thunk to get services. This is the same as `_initializeServices`, but
  * is not wrapped in a promise.
- * @param {function} dispatch
- * @param {function} getState
+ * @return {function} A Redux thunk
  * @public
  */
 export const initializeServices = () => {
@@ -165,8 +173,10 @@ export const initializeServices = () => {
 };
 
 /**
- * Get attribute summary for a selected service. Results include aggregation times that change
- * frequently. So we are not caching these results and instead making a server call everytime.
+ * Get attribute summary for a selected service. Results include aggregation
+ * times that change frequently. So we are not caching these results and instead
+ * making a server call everytime.
+ * @return {function} A Redux thunk
  * @public
  */
 export const getServiceSummary = () => {
@@ -196,7 +206,8 @@ export const getServiceSummary = () => {
  * needs to be:
  * 1. initialize dictionaries (language/aliases)
  * 2. dispatch actions to get other needed data
- * @param {*} queryParams
+ * @param {*} queryParams - Query params
+ * @return {function} A Redux thunk
  * @public
  */
 export const initializeInvestigate = (params) => {
@@ -207,24 +218,25 @@ export const initializeInvestigate = (params) => {
       reconSize: params.reconSize,
       ...parseEventQueryUri(params.filter)
     };
+    const { modelName } = getState().investigate.data.eventsPreferencesConfig;
     // Initialize all the things
     dispatch({
       type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
       payload: parsedQueryParams
     });
     // Get data
-    _getPreferences(dispatch, getState);
-    _initializeServices(dispatch, getState);
-    _initializeDictionaries(dispatch, getState)
-    .then(() => {
-      dispatch(getEventCount());
-      if (_showFutureFeatures) {
-        dispatch(getEventTimeline());
-        // TODO - Later on, we'll get meta values, but skip for now
-        // dispatch(metaGet());
-      }
-      // Get first batch of results
-      dispatch(eventsGetFirst());
+    _getPreferences(dispatch, modelName).then(() => {
+      _initializeServices(dispatch, getState);
+      _initializeDictionaries(dispatch, getState).then(() => {
+        dispatch(getEventCount());
+        if (_showFutureFeatures) {
+          dispatch(getEventTimeline());
+          // TODO - Later on, we'll get meta values, but skip for now
+          // dispatch(metaGet());
+        }
+        // Get first batch of results
+        dispatch(eventsGetFirst());
+      });
     });
   };
 };
@@ -237,20 +249,48 @@ export const initializeInvestigate = (params) => {
  */
 export const initializeIndexRoute = () => {
   return (dispatch, getState) => {
-    _getPreferences(dispatch, getState().investigate.data.eventsPreferencesConfig.modelName);
-    _initializeServices(dispatch, getState);
-    _initializeQuery(dispatch, getState);
+    const { modelName } = getState().investigate.data.eventsPreferencesConfig;
+    _getPreferences(dispatch, modelName).then(() => {
+      _initializeServices(dispatch, getState);
+      _initializeQuery(dispatch, getState);
+    });
   };
 };
 
 /**
- * This action is triggered when the preferences are updated for this module. This dispatches recon action to update
- * the preferences state in recon
- * TODO: This action creator would move to recon eventually when the preferences are split
- * @param preferences The preferences data
+ * This action is triggered when the preferences are updated for this module.
+ * This dispatches InvestigateEvents actions to update preference state.
+ * It also determines if the query range needs to be recalculated due to a
+ * change in the `queryTimeFormat` preference.
+ * @param {object} preferences - The preferences data
+ * @return {function} A Redux thunk
  * @public
  */
-export const reconPreferencesUpdated = (preferences) => ({
-  type: INITIATE_PREFERENCES,
+export const preferencesUpdated = (preferences) => {
+  return (dispatch, getState) => {
+    const currentTimeFormat = getState().investigate.queryNode.queryTimeFormat;
+    dispatch({
+      type: ACTION_TYPES.SET_PREFERENCES,
+      payload: preferences
+    });
+    if (preferences.queryTimeFormat !== currentTimeFormat) {
+      const range = selectedTimeRange(getState());
+      dispatch(setQueryTimeRange(range));
+    }
+    dispatch(_reconPreferenceUpdated(preferences));
+  };
+};
+
+/**
+ * This dispatches a Recon action to update preference state.
+ * TODO: This action creator would move to recon eventually when the preferences
+ * are split
+ * @see preferencesUpdated
+ * @param {object} preferences - The preferences data
+ * @return {object} An action object
+ * @private
+ */
+export const _reconPreferenceUpdated = (preferences) => ({
+  type: SET_PREFERENCES,
   payload: preferences
 });

@@ -24,7 +24,7 @@ const summaryData = {
   packetFields: summaryDataInput.packetFields
 };
 
-const initiatePreferences = {
+const preferences = {
   queryTimeFormat: 'DB',
   eventAnalysisPreferences: {
     currentReconView: 'TEXT',
@@ -47,5 +47,5 @@ export {
   files,
   packetDataWithSide,
   summaryData,
-  initiatePreferences
+  preferences
 };

@@ -401,7 +401,7 @@ const _determineReconView = (meta, size) => {
       prefService.getPreferences('investigate-events-preferences').then((data) => {
         if (data) {
           dispatch({
-            type: ACTION_TYPES.INITIATE_PREFERENCES,
+            type: ACTION_TYPES.SET_PREFERENCES,
             payload: data
           });
         }

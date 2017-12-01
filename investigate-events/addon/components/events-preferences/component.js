@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import {
   getServiceId
 } from 'investigate-events/reducers/investigate/services/selectors';
-import { reconPreferencesUpdated } from 'investigate-events/actions/data-creators';
+import { preferencesUpdated } from 'investigate-events/actions/data-creators';
 
 const stateToComputed = (state) => ({
   serviceId: getServiceId(state),
@@ -11,7 +11,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  reconPreferencesUpdated
+  preferencesUpdated
 };
 
 const EventsPreferencesComponent = Component.extend({

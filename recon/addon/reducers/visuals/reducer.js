@@ -39,7 +39,7 @@ const visuals = handleActions({
     return state.set('currentReconView', newView);
   },
 
-  [ACTION_TYPES.INITIATE_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+  [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const isMetaShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isMetaShown);
     const isHeaderOpen = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isHeaderOpen);
     const isReconExpanded = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isReconExpanded);

@@ -10,7 +10,7 @@ import {
   encodedTextData,
   packetDataWithSide,
   summaryData,
-  initiatePreferences
+  preferences
 } from './data';
 
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
@@ -38,7 +38,7 @@ const _dispatchInitializeData = (redux, inputs) => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
     redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
     redux.dispatch({ type: ACTION_TYPES.PACKETS_RECEIVE_PAGE, payload: packetDataWithSide });
-    redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
+    redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
   });
 };
 
@@ -72,14 +72,14 @@ class DataHelper {
   }
 
   setDownloadFormatToXml() {
-    initiatePreferences.eventAnalysisPreferences.defaultLogFormat = 'XML';
-    this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
+    preferences.eventAnalysisPreferences.defaultLogFormat = 'XML';
+    this.redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
     return this;
   }
 
   setDownloadFormatToPayload() {
-    initiatePreferences.eventAnalysisPreferences.defaultPacketFormat = 'PAYLOAD';
-    this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
+    preferences.eventAnalysisPreferences.defaultPacketFormat = 'PAYLOAD';
+    this.redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
     return this;
   }
 
@@ -169,8 +169,8 @@ class DataHelper {
   }
 
   setAutoDownloadPreference(value) {
-    initiatePreferences.eventAnalysisPreferences.autoDownloadExtractedFiles = value;
-    this.redux.dispatch({ type: ACTION_TYPES.INITIATE_PREFERENCES, payload: initiatePreferences });
+    preferences.eventAnalysisPreferences.autoDownloadExtractedFiles = value;
+    this.redux.dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
     return this;
   }
 

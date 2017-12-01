@@ -9,8 +9,14 @@ const _queryNode = (state) => state.investigate.queryNode;
 const _summaryData = (state) => state.investigate.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
 
-export const getDbEndTime = (state) => state.investigate.services.summaryData.endTime;
-export const getDbStartTime = (state) => state.investigate.services.summaryData.startTime;
+export const getDbEndTime = (state) => {
+  const { summaryData } = state.investigate.services;
+  return summaryData ? summaryData.endTime : null;
+};
+export const getDbStartTime = (state) => {
+  const { summaryData } = state.investigate.services;
+  return summaryData ? summaryData.startTime : null;
+};
 // SELECTOR FUNCTIONS
 export const getServiceId = (state) => state.investigate.queryNode.serviceId;
 
