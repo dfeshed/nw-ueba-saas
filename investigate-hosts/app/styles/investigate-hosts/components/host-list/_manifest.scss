@@ -61,8 +61,11 @@ $filter-panel-width: 250px;
     display: inline-block;
   }
 
-  .rsa-data-table-body-row{
-    width: fit-content;
+  .host-table{
+    .rsa-data-table-body-row{
+      width: fit-content;
+      min-width: 98%
+    }
   }
 }
 

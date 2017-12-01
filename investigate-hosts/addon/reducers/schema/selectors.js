@@ -15,7 +15,7 @@ const COLUMN_WIDTH = {
 
 const CHECKBOX_COLUMN = Immutable.from([{
   dataType: 'checkbox',
-  width: '2%',
+  width: '22',
   class: 'rsa-form-row-checkbox',
   componentClass: 'rsa-form-checkbox',
   visible: true,
