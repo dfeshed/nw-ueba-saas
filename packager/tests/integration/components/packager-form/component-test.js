@@ -21,7 +21,8 @@ const testData = {
     'port': 443
   },
   'logCollectionConfig': {
-    'configName': 'test'
+    'configName': 'test',
+    'primaryDestination': '10.40.7.53'
   }
 };
 const testDevices = [{

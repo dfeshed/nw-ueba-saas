@@ -89,8 +89,7 @@ const formComponent = Component.extend({
       });
       return true;
     }
-    if (!isEmpty(this.get('configData.logCollectionConfig.primaryDestination')) &&
-      isEmpty(this.get('selectedPrimaryDestination'))) {
+    if (isEmpty(this.get('configData.logCollectionConfig.primaryDestination'))) {
       this.setProperties({
         errorClass: 'is-error',
         className: 'rsa-form-label is-error power-select'
