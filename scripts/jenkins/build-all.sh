@@ -46,9 +46,13 @@ set +x
 # For builds that specify a branch, it finds all files changed
 # in every commit that is a part of the PR branch.
 
+# Is Master build?
+IS_MASTER_BUILD=false
+
 if [[ ("$GIT_BRANCH" == "origin/master") ]]
 then
   # This block is for master builds
+  IS_MASTER_BUILD=true
   firstCommit=$GIT_PREVIOUS_SUCCESSFUL_COMMIT
   lastCommit=$GIT_COMMIT
 elif [ -z ${ghprbPullId+x} ] # if no ghprbPullId
@@ -83,9 +87,14 @@ echo "*** BEGIN FILES CHANGED"
 echo $files | tr " " "\n"
 echo "*** END FILES CHANGED"
 
+export IS_MASTER_BUILD
+echo "Is this a master build ${IS_MASTER_BUILD}"
+# Should we try building Docker images and run e2e test?
+export RUN_E2E_TEST=${RUN_E2E_TEST:-true}
+export RUN_UNIT_TESTS=${RUN_UNIT_TESTS:-true}
 
-# Should we try building Docker images?
-DOCKER=${DOCKER:-false}
+echo "Run e2e test - ${RUN_E2E_TEST}"
+echo "Run unit test - ${RUN_UNIT_TESTS}"
 
 if [ -z ${EXTENT+x} ]
 then
@@ -118,7 +127,7 @@ then
     #### Build RPM if running full or rpm build
     . $scriptDir/rpm.sh
     ### If selected, build Docker imaages and push ro DTR
-    if [ "${DOCKER}" == "true" ]; then
+    if [ "${RUN_E2E_TEST}" == "true" ]; then
       . $scriptDir/build-docker-image.sh
     fi
   fi

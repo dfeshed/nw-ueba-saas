@@ -133,7 +133,7 @@ function buildMockServer {
   unsetWebProxy
 
   # Run eslint/tests on mock-server code
-  local shouldTestApp=$(doTestApp mock-server)
+  local shouldTestApp=${RUN_UNIT_TESTS} && $(doTestApp mock-server)
   if [[ "$shouldTestApp" == "false" ]]
   then
     info "No reason to test mock-server, skipping it"
