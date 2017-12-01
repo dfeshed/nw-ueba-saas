@@ -82,7 +82,3 @@ $background-colors: (
   $opacityVar: opacity-value($opacity);
   @return rgbx($colorVar, $opacityVar);
 }
-
-@function background-image() {
-  @return var(--background-image);
-}
