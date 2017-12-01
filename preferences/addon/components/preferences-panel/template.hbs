@@ -1,7 +1,7 @@
-{{#if launchFor}}
+{{#if fieldPrefix}}
   {{#rsa-content-section-header label='Section Heading'}}
     {{title}}
-    {{t (concat "preferences." launchFor ".panelTitle")}}
+    {{t (concat fieldPrefix ".panelTitle")}}
     <div class="controls">
       {{#rsa-form-button
         isIconOnly=true title= (t 'context.header.help.title')

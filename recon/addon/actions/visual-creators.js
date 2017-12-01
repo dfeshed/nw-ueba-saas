@@ -46,7 +46,7 @@ const createToggleActionCreator = (type) => {
 const persistPreferences = (getState) => {
   const prefService = lookup('service:preferences');
   const { endpointId } = getState().recon.data;
-  prefService.setPreferences('investigate-events', endpointId, getReconPreferences(getState())).then(() => {
+  prefService.setPreferences('investigate-events-preferences', endpointId, getReconPreferences(getState())).then(() => {
     Logger.info('Successfully persisted Value');
   });
 };

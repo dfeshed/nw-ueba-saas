@@ -6,6 +6,7 @@ import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
+import CONFIG from './config';
 
 const valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
 const unknownMetaSize = (val) => valueNotInArray(Object.values(META_PANEL_SIZES), val);
@@ -14,7 +15,8 @@ const unknownReconSize = (val) => valueNotInArray(Object.values(RECON_PANEL_SIZE
 const _initialState = Immutable.from({
   isReconOpen: false,
   metaPanelSize: META_PANEL_SIZES.DEFAULT,
-  reconSize: RECON_PANEL_SIZES.MAX
+  reconSize: RECON_PANEL_SIZES.MAX,
+  eventsPreferencesConfig: CONFIG
 });
 
 export default handleActions({

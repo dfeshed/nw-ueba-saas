@@ -1,5 +1,5 @@
-{{#if preferencesConfig}}
-  {{#each preferencesConfig as |item index|}}
+{{#if preferencesSchema}}
+  {{#each preferencesSchema as |item index|}}
     <div class="rsa-preferences-field-content">
       {{#if (eq item.type 'dropdown')}}
         <label class="rsa-form-label power-select">
@@ -11,7 +11,7 @@
             selected=(get preferences item.field)
             searchEnabled=false
             onchange=(action 'saveNewPreferences' item.field) as |option|}}
-            {{t (concat 'preferences.' launchFor '.' option)}}
+            {{t (concat fieldPrefix '.' option)}}
           {{/power-select}}
         </label>
       {{else if (eq item.type 'checkbox')}}
@@ -30,10 +30,23 @@
               {{radio-button
                 value=option
                 changed=(action 'saveNewPreferences' item.field option) }}
-              {{t (concat 'preferences.' launchFor '.' option)}}
+              {{t (concat fieldPrefix '.' option)}}
             </label>
           {{/each}}
         </div>
+      {{else if (eq item.type 'multiSelect')}}
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t item.name}}
+          </div>
+          {{#power-select-multiple
+            options=item.options
+            selected=(get preferences item.field)
+            searchEnabled=false
+            onchange=(action 'saveNewPreferences' item.field) as |option|}}
+            {{t (concat fieldPrefix '.' option)}}
+          {{/power-select-multiple}}
+        </label>
       {{else if (eq item.type 'divider')}}
         <div class='rsa-preferences-divider'></div>
       {{/if}}

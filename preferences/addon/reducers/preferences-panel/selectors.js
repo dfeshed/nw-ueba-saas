@@ -1,30 +1,30 @@
 import reselect from 'reselect';
-import defaultConfig from 'preferences/config/index';
 
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
 const _preferences = (state) => state.preferences;
-const _launchFor = (state) => state.launchFor;
+const _preferencesConfiguration = (state) => state.preferencesConfig;
 
 export const getDbEndTime = (state) => state.investigate.services.summaryData.endTime;
 export const getDbStartTime = (state) => state.investigate.services.summaryData.startTime;
+
 // SELECTOR FUNCTIONS
-export const getPreferencesConfig = createSelector(
-  [_preferences, _launchFor],
-  (preferences, launchFor) => {
-    if (defaultConfig[launchFor] && preferences) {
-      return defaultConfig[launchFor].items;
+export const getPreferencesSchema = createSelector(
+  [_preferences, _preferencesConfiguration],
+  (preferences, preferencesConfiguration) => {
+    if (preferencesConfiguration && preferences) {
+      return preferencesConfiguration.items;
     }
     return null;
   }
 );
 
 export const getContextualHelp = createSelector(
-  [_launchFor],
-  (launchFor) => {
-    if (defaultConfig[launchFor]) {
-      return defaultConfig[launchFor].helpIds;
+  _preferencesConfiguration,
+  (preferencesConfiguration) => {
+    if (preferencesConfiguration) {
+      return preferencesConfiguration.helpIds;
     }
   }
 );

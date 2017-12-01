@@ -106,18 +106,21 @@ const _initializeServices = (dispatch, getState) => {
  * the reconSize on the bases of isReconExpanded field
  * @private
  */
-const _getPreferences = (dispatch) => {
-  prefService.getPreferences('investigate-events').then((data) => {
-    const {
-      eventAnalysisPreferences = {},
-      queryTimeFormat
-    } = data;
-    const reconSize = eventAnalysisPreferences.isReconExpanded ?
-      RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
-    dispatch({
-      type: ACTION_TYPES.SET_PREFERENCES,
-      payload: { reconSize, queryTimeFormat }
-    });
+const _getPreferences = (dispatch, modelName) => {
+  prefService.getPreferences(modelName).then((data) => {
+    if (data) {
+      // Only if preferences is sent from api, set the preference state. Otherwise, initial state will be used.
+      const {
+        eventAnalysisPreferences = {},
+        queryTimeFormat
+      } = data;
+      const reconSize = eventAnalysisPreferences.isReconExpanded ?
+        RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
+      dispatch({
+        type: ACTION_TYPES.SET_PREFERENCES,
+        payload: { reconSize, queryTimeFormat }
+      });
+    }
   });
 };
 
@@ -234,7 +237,7 @@ export const initializeInvestigate = (params) => {
  */
 export const initializeIndexRoute = () => {
   return (dispatch, getState) => {
-    _getPreferences(dispatch);
+    _getPreferences(dispatch, getState().investigate.data.eventsPreferencesConfig.modelName);
     _initializeServices(dispatch, getState);
     _initializeQuery(dispatch, getState);
   };

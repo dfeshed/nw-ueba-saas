@@ -1,10 +1,9 @@
 import * as ACTION_TYPES from './types';
 import { fetchPreferences, savePreferences } from 'preferences/actions/fetchPreferences';
-import defaultConfig from 'preferences/config/index';
 
-export const togglePreferencesPanel = (launchFor, additionalFilters) => ({
+export const togglePreferencesPanel = (additionalFilters, preferencesConfig) => ({
   type: ACTION_TYPES.TOGGLE_PREFERENCES_PANEL,
-  payload: { launchFor, additionalFilters }
+  payload: { additionalFilters, preferencesConfig }
 });
 
 export const updatePanelClicked = (state) => ({
@@ -22,25 +21,25 @@ export const resetPreferencesPanel = () => ({
 
 export const loadPreferences = () => {
   return (dispatch, getState) => {
-    const { launchFor, additionalFilters } = getState().preferences;
+    const { preferencesConfig } = getState().preferences;
     dispatch({
       type: ACTION_TYPES.LOAD_PREFERENCES,
-      promise: fetchPreferences(launchFor, additionalFilters)
+      promise: fetchPreferences(preferencesConfig.modelName, preferencesConfig.additionalFilters)
     });
   };
 };
 
 export const saveNewPreferences = (preferencesField, preferenceValue) => {
   return (dispatch, getState) => {
-    const { launchFor, preferences, additionalFilters } = getState().preferences;
+    const { preferencesConfig, preferences, additionalFilters } = getState().preferences;
     let preferencesToSave = preferences.setIn(preferencesField.split('.'), preferenceValue);
-    const addtionalFilterKey = defaultConfig[launchFor].additionalFilterKey;
+    const addtionalFilterKey = preferencesConfig.additionalFilterKey;
     if (addtionalFilterKey) {
       preferencesToSave = preferencesToSave.setIn(addtionalFilterKey.split('.'), additionalFilters);
     }
     dispatch({
       type: ACTION_TYPES.SAVE_PREFERENCES,
-      promise: savePreferences(launchFor, preferencesToSave)
+      promise: savePreferences(preferencesConfig.modelName, preferencesToSave)
     });
   };
 };

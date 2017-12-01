@@ -1,22 +1,24 @@
-import { moduleForComponent, test, skip } from 'ember-qunit';
+import { moduleForComponent, skip, test } from 'ember-qunit';
 import $ from 'jquery';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { clickTrigger } from '../../../helpers/ember-power-select';
+import preferencesConfig from '../../../data/config';
 
 moduleForComponent('preferences-panel', 'Integration | Component | Preferences Details', {
   integration: true,
   beforeEach() {
     this.inject.service('redux');
     this.registry.injection('component', 'i18n', 'service:i18n');
+    this.set('preferencesConfig', preferencesConfig);
     initialize(this);
     this.render(hbs `
       {{#rsa-application-content}}
         <grid responsive>
           <box class="col-xs-3">
             <aside>
-              {{preferences-panel-trigger launchFor="investigate-events" additionalFilters="ServiceID"}}
+              {{preferences-panel-trigger preferencesConfig=preferencesConfig}}
               <div class='testDiv'>
                 Panel Content
               </div>

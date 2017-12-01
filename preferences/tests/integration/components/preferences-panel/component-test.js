@@ -2,19 +2,21 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import preferencesConfig from '../../../data/config';
 
 moduleForComponent('preferences-panel', 'Integration | Component | Preferences Panel', {
   integration: true,
   beforeEach() {
     this.inject.service('redux');
     this.registry.injection('component', 'i18n', 'service:i18n');
+    this.set('preferencesConfig', preferencesConfig);
     initialize(this);
     this.render(hbs `
       {{#rsa-application-content}}
         <grid responsive>
           <box class="col-xs-3">
             <aside>
-              {{preferences-panel-trigger launchFor="investigate-events"}}
+              {{preferences-panel-trigger preferencesConfig=preferencesConfig}}              
               <div class='testDiv'>
                 Panel Content
               </div>

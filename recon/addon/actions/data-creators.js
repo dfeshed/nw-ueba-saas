@@ -398,7 +398,7 @@ const _determineReconView = (meta, size) => {
     if (!isPreferencesInitializedOnce || !forcedView) {
       isPreferencesInitializedOnce = true;
       const prefService = lookup('service:preferences');
-      prefService.getPreferences('investigate-events').then((data) => {
+      prefService.getPreferences('investigate-events-preferences').then((data) => {
         if (data) {
           dispatch({
             type: ACTION_TYPES.INITIATE_PREFERENCES,

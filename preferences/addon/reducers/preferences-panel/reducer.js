@@ -4,12 +4,23 @@ import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 
 const resetState = Immutable.from({
-  launchFor: null,
   isExpanded: false,
   additionalFilters: null,
   preferences: null,
-  isClicked: false
+  isClicked: false,
+  preferencesConfig: {}
 });
+
+const _handleLoadPreferences = (action) => {
+  return (state) => {
+    const { payload } = action;
+    const preferences = payload ? payload : state.preferencesConfig.defaultPreferences;
+    return state.merge({
+      ...state,
+      preferences
+    });
+  };
+};
 
 const initialState = Immutable.from(resetState);
 
@@ -17,7 +28,7 @@ const preferenceReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_PREFERENCES_PANEL]: (state, { payload }) => state.merge({
     ...state,
-    launchFor: payload,
+    preferencesConfig: { ...payload },
     isClicked: true,
     ...payload,
     isExpanded: !state.isExpanded
@@ -28,8 +39,7 @@ const preferenceReducer = handleActions({
   [ACTION_TYPES.LOAD_PREFERENCES]: (state, action) => {
     return handle(state, action, {
       start: (state) => state.set('preferences', null),
-      failure: (state) => state.merge({ ...state, preferences: action.payload }),
-      success: (state) => state.merge({ ...state, preferences: action.payload })
+      success: _handleLoadPreferences(action)
     });
   },
 

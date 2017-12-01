@@ -8,7 +8,7 @@ import service from 'ember-service/inject';
 
 const stateToComputed = ({ preferences }) => ({
   isExpanded: preferences.isExpanded,
-  launchFor: preferences.launchFor,
+  fieldPrefix: preferences.preferencesConfig.fieldPrefix,
   isClicked: preferences.isClicked,
   helpId: getContextualHelp(preferences)
 });

@@ -7,7 +7,7 @@ import { handleSetTo, handlePreference } from 'recon/reducers/util';
 
 const visualsInitialState = Immutable.from({
   defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis,
-  currentReconView: null,
+  currentReconView: 'TEXT',
   isHeaderOpen: true,
   isMetaShown: true,
   isReconExpanded: true,

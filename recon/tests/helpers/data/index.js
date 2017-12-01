@@ -27,7 +27,7 @@ const summaryData = {
 const initiatePreferences = {
   queryTimeFormat: 'DB',
   eventAnalysisPreferences: {
-    currentReconView: 'PACKET',
+    currentReconView: 'TEXT',
     isHeaderOpen: true,
     isMetaShown: true,
     isReconExpanded: true,

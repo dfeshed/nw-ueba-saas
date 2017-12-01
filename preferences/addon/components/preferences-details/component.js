@@ -2,12 +2,12 @@ import Component from 'ember-component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import { saveNewPreferences } from 'preferences/actions/interaction-creators';
-import { getPreferencesConfig } from 'preferences/reducers/preferences-panel/selectors';
+import { getPreferencesSchema } from 'preferences/reducers/preferences-panel/selectors';
 
 const stateToComputed = ({ preferences }) => ({
-  launchFor: preferences.launchFor,
   preferences: preferences.preferences,
-  preferencesConfig: getPreferencesConfig(preferences)
+  preferencesSchema: getPreferencesSchema(preferences),
+  fieldPrefix: preferences.preferencesConfig.fieldPrefix
 });
 
 const dispatchToActions = {

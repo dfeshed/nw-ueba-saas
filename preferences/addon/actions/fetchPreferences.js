@@ -1,37 +1,28 @@
 import rsvp from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
-import preferencesConfig from 'preferences/config/index';
-import _ from 'lodash';
 
 const request = lookup('service:request');
 
 const fetchPreferences = (preferenceFor, data) => {
   const requestPayload = {
-    modelName: preferencesConfig[preferenceFor].modelName,
+    modelName: preferenceFor,
     method: 'getPreferences',
     query: {
       data
     }
   };
   return new rsvp.Promise(function(resolve) {
-    const { defaultPreferences } = preferencesConfig[preferenceFor];
     request.promiseRequest(requestPayload).then(({ data }) => {
-      if (data === null) {
-        resolve(defaultPreferences);
-      } else {
-        // Need to merge with default preferences. Server can send partial preferences.
-        data = _.merge(defaultPreferences, data);
-        resolve(data);
-      }
+      resolve(data);
     }).catch(() => {
-      resolve(defaultPreferences);
+      resolve(null);
     });
   });
 };
 
 const savePreferences = (preferenceFor, preferences) => {
   const requestPayload = {
-    modelName: preferencesConfig[preferenceFor].modelName,
+    modelName: preferenceFor,
     method: 'setPreferences',
     query: {
       data: preferences

@@ -5,11 +5,10 @@ import {
 } from 'investigate-events/reducers/investigate/services/selectors';
 import { reconPreferencesUpdated } from 'investigate-events/actions/data-creators';
 
-const stateToComputed = (state) => {
-  return {
-    serviceId: getServiceId(state)
-  };
-};
+const stateToComputed = (state) => ({
+  serviceId: getServiceId(state),
+  eventsPreferenceConfig: state.investigate.data.eventsPreferencesConfig
+});
 
 const dispatchToActions = {
   reconPreferencesUpdated
