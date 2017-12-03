@@ -226,6 +226,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
+    anomalyValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -239,6 +240,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
+    anomalyValue: OBJECT_CHANGES
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdActiveDirectoryDaily
@@ -278,8 +280,11 @@ indicators:
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: result
-    anomalyValue: SUCCESS
+    anomalyField: operationTypeCategories
+    anomalyValue: OBJECT_CHANGES
+    anomalyFilters:
+       fieldName: result
+       fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
