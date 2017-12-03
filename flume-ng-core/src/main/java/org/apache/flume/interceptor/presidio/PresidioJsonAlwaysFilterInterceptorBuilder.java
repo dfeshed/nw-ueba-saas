@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 /**
  * Builder which builds new instance of the JsonFilterInterceptor where the predicate always return true (always filter)
  */
-public class PresidioJsonBasicFilterInterceptorBuilder extends AbstractPresidioJsonFilterInterceptorBuilder {
+public class PresidioJsonAlwaysFilterInterceptorBuilder extends AbstractPresidioJsonFilterInterceptorBuilder {
 
 
     @Override
