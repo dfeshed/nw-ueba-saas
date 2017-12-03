@@ -2,8 +2,7 @@
   "mapping": {
     "ACTIVE_DIRECTORY": {
       "OWNER_CHANGED_ON_GROUP_OBJECT": [
-        "GROUP_MEMBERSHIP",
-        "OBJECT_CHANGES"
+        "GROUP_MEMBERSHIP"
       ],
       "NESTED_MEMBER_REMOVED_FROM_GROUP": [
         "GROUP_MEMBERSHIP",
