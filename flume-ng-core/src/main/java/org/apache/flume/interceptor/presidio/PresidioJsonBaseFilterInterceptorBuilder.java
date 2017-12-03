@@ -1,9 +1,13 @@
 package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import fortscale.utils.logging.Logger;
 
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
+
+import static org.apache.flume.interceptor.presidio.AbstractPresidioJsonInterceptor.EMPTY_STRING;
 
 public class PresidioJsonBaseFilterInterceptorBuilder extends AbstractPresidioJsonFilterInterceptorBuilder {
 
@@ -11,14 +15,30 @@ public class PresidioJsonBaseFilterInterceptorBuilder extends AbstractPresidioJs
     protected static final String FIELD_MARKER = "|field|";
 
     @Override
-    protected Predicate<String> createPredicate(String predicateString, String predicatesParamsDelim) {
+    protected BiPredicate<JsonObject, String> createPredicate(String fieldName, String predicateString, String predicatesParamsDelim) {
         final String[] split = predicateString.split(predicatesParamsDelim);
-        Preconditions.checkArgument(split.length == 3, PREDICATES_CONF_NAME + " is invalid. One of the predicates doesn't have enough parameters. Needs 3 params, has " + split.length);
-        return currFieldValue -> {
-            final String[] split1 = currFieldValue.split(predicatesParamsDelim);
-            final FilterOp op = FilterOp.createOp(split1[1]);
-            final String toCompare = split1[2];
-            return op.evaluate(currFieldValue, toCompare);
+        Preconditions.checkArgument(split.length == 2, PREDICATES_CONF_NAME + " is invalid. One of the predicates doesn't have enough parameters. Needs 2 params, has " + split.length);
+        return new BiPredicate<JsonObject, String>() {
+            @Override
+            public boolean test(JsonObject jsonObject, String currFieldValue) {
+                final FilterOp op = FilterOp.createOp(split[0]);
+                String toCompareTo = split[1];
+                if (toCompareTo.startsWith(FIELD_MARKER)) { //if we want to compare
+                    final String toCompareFieldName = toCompareTo.substring(FIELD_MARKER.length());
+                    JsonElement jsonElement = jsonObject.get(toCompareFieldName);
+                    if (jsonElement == null || jsonElement.isJsonNull()) {
+                        logger.debug("PresidioJsonBaseFilterInterceptorBuilder is comparing to an empty field %s", toCompareFieldName);
+                        toCompareTo = "";
+                    } else {
+                        toCompareTo = jsonElement.getAsString();
+                    }
+                } else {
+                    if (toCompareTo.equals(EMPTY_STRING)) {
+                        toCompareTo = "";
+                    }
+                }
+                return op.evaluate(currFieldValue, toCompareTo);
+            }
         };
     }
 
@@ -36,10 +56,28 @@ public class PresidioJsonBaseFilterInterceptorBuilder extends AbstractPresidioJs
                 return !EQUALS.evaluate(currFieldValue, rightSide);
             }
         },
+        EQUALS_IGNORE_CASE {
+            @Override
+            public boolean evaluate(String currFieldValue, String rightSide) {
+                return currFieldValue.equalsIgnoreCase(rightSide);
+            }
+        },
         CONTAINS {
             @Override
             public boolean evaluate(String currFieldValue, String rightSide) {
                 return currFieldValue.contains(rightSide);
+            }
+        },
+        STARTS_WITH {
+            @Override
+            public boolean evaluate(String currFieldValue, String rightSide) {
+                return currFieldValue.startsWith(rightSide);
+            }
+        },
+        ENDS_WITH {
+            @Override
+            public boolean evaluate(String currFieldValue, String rightSide) {
+                return currFieldValue.endsWith(rightSide);
             }
         };
 

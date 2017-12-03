@@ -32,6 +32,7 @@ public enum InterceptorType {
     JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
     JSON_DUPLICATOR(JsonFieldDuplicatorInterceptor.Builder.class),
     JSON_ALWAYS_FILTER(PresidioJsonAlwaysFilterInterceptorBuilder.class),
+    JSON_BASE_FILTER(PresidioJsonBaseFilterInterceptorBuilder.class),
     JSON_FIELD_JOINER(JsonFieldJoinerInterceptor.Builder.class),
     JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class),
     JSON_MAP_CREATOR(JsonMapCreatorInterceptor.Builder.class),

@@ -27,10 +27,6 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInter
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
-
-    private static final String EMPTY_STRING = "EMPTY_STRING";
-
-
     private final List<FieldValueReplacement> replacements;
     private final boolean removeEscapeChars;
 

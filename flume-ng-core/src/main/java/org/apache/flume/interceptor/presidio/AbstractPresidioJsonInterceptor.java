@@ -21,6 +21,9 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor {
     private static final Logger logger = LoggerFactory
             .getLogger(AbstractPresidioJsonInterceptor.class);
 
+    protected static final String EMPTY_STRING = "EMPTY_STRING";
+
+
     protected String applicationName;
 
     @Override

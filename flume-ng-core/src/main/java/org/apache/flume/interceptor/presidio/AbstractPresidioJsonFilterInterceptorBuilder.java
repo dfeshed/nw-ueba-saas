@@ -1,13 +1,14 @@
 package org.apache.flume.interceptor.presidio;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends AbstractPresidioInterceptorBuilder {
 
@@ -22,7 +23,7 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
     protected static final String DEFAULT_PREDICATES_VALUE = "DEFAULT_PREDICATES_VALUE";
 
     protected List<String> fields;
-    protected List<Predicate<String>> predicates;
+    protected List<BiPredicate<JsonObject, String>> predicates;
 
     @Override
     public void doConfigure(Context context) {
@@ -49,21 +50,21 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
 
     }
 
-    protected List<Predicate<String>> readPredicatesConfiguration(String[] predicatesArray, String predicatesParamsDelim, int numOfFields) {
-        List<Predicate<String>> ans = new ArrayList<>();
-        Predicate<String> currPredicate;
+    protected List<BiPredicate<JsonObject, String>> readPredicatesConfiguration(String[] predicatesArray, String predicatesParamsDelim, int numOfFields) {
+        List<BiPredicate<JsonObject, String>> ans = new ArrayList<>();
+        BiPredicate<JsonObject, String> currPredicate;
         for (int i = 0; i < predicatesArray.length; i++) {
             final String predicateString = predicatesArray[i];
             Preconditions.checkArgument(StringUtils.isNotEmpty(predicateString), "%s(index=%s) can not be empty. %s=%s.", PREDICATES_CONF_NAME, i, PREDICATES_CONF_NAME, predicatesArray);
-            currPredicate = createPredicate(predicateString, predicatesParamsDelim);
+            currPredicate = createPredicate(fields.get(i), predicateString, predicatesParamsDelim);
             ans.add(currPredicate);
         }
-        Preconditions.checkArgument(numOfFields == predicates.size(), "The configurations: %s and %s must have the same number of elements", FIELDS_CONF_NAME, PREDICATES_CONF_NAME);
+        Preconditions.checkArgument(numOfFields == ans.size(), "The configurations: %s and %s must have the same number of elements", FIELDS_CONF_NAME, PREDICATES_CONF_NAME);
         return ans;
     }
 
 
-    protected abstract Predicate<String> createPredicate(String predicateString, String predicatesParamsDelim);
+    protected abstract BiPredicate<JsonObject, String> createPredicate(String fieldName, String predicateString, String predicatesParamsDelim);
 
     @Override
     public AbstractPresidioJsonInterceptor doBuild() {

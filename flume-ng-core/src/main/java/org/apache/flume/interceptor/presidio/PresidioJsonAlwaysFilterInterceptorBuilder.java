@@ -1,8 +1,10 @@
 package org.apache.flume.interceptor.presidio;
 
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 
 /**
@@ -12,19 +14,19 @@ public class PresidioJsonAlwaysFilterInterceptorBuilder extends AbstractPresidio
 
 
     @Override
-    protected List<Predicate<String>> readPredicatesConfiguration(String[] predicatesArray, String predicatesParamsDelim, int numOfFields) {
+    protected List<BiPredicate<JsonObject, String>> readPredicatesConfiguration(String[] predicatesArray, String predicatesParamsDelim, int numOfFields) {
 
-        List<Predicate<String>> ans = new ArrayList<>();
+        List<BiPredicate<JsonObject, String>> ans = new ArrayList<>();
         for (int i = 0; i < numOfFields; i++) {
-            ans.add(createPredicate("", predicatesParamsDelim)); // it doesn't matter what string we input
+            ans.add(createPredicate(fields.get(i), "", predicatesParamsDelim)); // it doesn't matter what string we input
         }
 
         return ans;
     }
 
     @Override
-    protected Predicate<String> createPredicate(String predicateString, String predicatesDelim) {
-        return s -> true;
+    protected BiPredicate<JsonObject, String> createPredicate(String string, String predicateString, String predicatesDelim) {
+        return (jsonObject, s) -> true;
     }
 
 }
