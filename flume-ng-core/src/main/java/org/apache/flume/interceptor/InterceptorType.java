@@ -31,7 +31,7 @@ public enum InterceptorType {
     SEARCH_REPLACE(org.apache.flume.interceptor.SearchAndReplaceInterceptor.Builder.class),
     JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
     JSON_DUPLICATOR(JsonFieldDuplicatorInterceptor.Builder.class),
-    JSON_FILTER(JsonFilterInterceptor.Builder.class),
+    JSON_BASIC_FILTER(PresidioJsonBasicFilterInterceptorBuilder.class),
     JSON_FIELD_JOINER(JsonFieldJoinerInterceptor.Builder.class),
     JSON_FIELD_VALUE_REPLACER(JsonFieldValueReplacerInterceptor.Builder.class),
     JSON_MAP_CREATOR(JsonMapCreatorInterceptor.Builder.class),
@@ -42,7 +42,7 @@ public enum InterceptorType {
 
     private final Class<? extends Interceptor.Builder> builderClass;
 
-    private InterceptorType(Class<? extends Interceptor.Builder> builderClass) {
+    InterceptorType(Class<? extends Interceptor.Builder> builderClass) {
         this.builderClass = builderClass;
     }
 

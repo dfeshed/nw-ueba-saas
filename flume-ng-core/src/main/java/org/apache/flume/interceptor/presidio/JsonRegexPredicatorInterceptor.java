@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  * This interceptor is used to indicate whether a field's value matches a regex.
  * Returns the same JSON with additional predicate.
  */
-public class JsonRegexPredicatorInterceptor extends AbstractPresidioInterceptor {
+public class JsonRegexPredicatorInterceptor extends AbstractPresidioJsonInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(JsonRegexPredicatorInterceptor.class);
 
     private final List<String> valueFields;
@@ -141,7 +141,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractPresidioInterceptor 
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             logger.info("Creating JsonRegexPredicatorInterceptor: {}={}, {}={}, {}={}",
                     VALUE_FIELDS_CONF_NAME, valueFields, PREDICATOR_FIELDS_CONF_NAME, predicatorFields,
                     REGEX_CONF_NAME, regexList);

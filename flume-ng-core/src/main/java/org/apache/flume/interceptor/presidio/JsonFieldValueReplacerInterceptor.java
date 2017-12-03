@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
  * removeEscapeChars = true (default = false) will remove escape characters that java properties added before ':' and '=' chars. use if the regex-es you use contain  ':' or '='
  */
-public class JsonFieldValueReplacerInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
@@ -184,7 +184,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioIntercept
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             final JsonFieldValueReplacerInterceptor jsonFieldValueReplacerInterceptor = new JsonFieldValueReplacerInterceptor(replacements, removeEscapeChars);
             logger.info("Creating JsonFieldValueReplacerInterceptor: {}", jsonFieldValueReplacerInterceptor);
             return jsonFieldValueReplacerInterceptor;

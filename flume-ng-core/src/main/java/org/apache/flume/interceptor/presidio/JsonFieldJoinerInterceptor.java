@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * This interceptor is used to join 2 fields in the received JSON (append and put in a single field).
  * Returns the same JSON with the new field {@link #targetField}, and with/without filtering the {@link #baseField} and {@link #toAppendField} fields according to {@link #removeBaseField} and {@link #removeToAppendField}
  */
-public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldJoinerInterceptor extends AbstractPresidioJsonInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFieldJoinerInterceptor.class);
 
@@ -147,7 +147,7 @@ public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             final JsonFieldJoinerInterceptor jsonFieldJoinerInterceptor = new JsonFieldJoinerInterceptor(baseField, toAppendField,
                     targetField, filterOnMissingBaseField, filterOnMissingToAppendField, removeBaseField, removeToAppendField);
             logger.info("Creating JsonFieldJoinerInterceptor: {}", jsonFieldJoinerInterceptor);
