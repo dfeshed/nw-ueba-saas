@@ -166,7 +166,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         int numOfSmarts = 50;
         double score = 60.0;
         int scoreInterval = 0;
-        int probability = 24;
+        int probability = 30;
         int probabilityInterval = 2;
         int daysBackFrom = 30;
         int daysBackTo = 1;
