@@ -7,7 +7,12 @@
       ],
       "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
-      "excludedAggregationRecords": [],
+      "excludedAggregationRecords": [
+        "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly"
+      ],
       "defaultWeight": 0.5
     }
   ]

@@ -10,6 +10,7 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
+import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeRange;
@@ -39,7 +40,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -66,6 +66,8 @@ public class SmartApplicationTest extends BaseAppTest {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
     private ModelsCacheService modelsCacheService;
+    @Autowired
+    private SmartRecordConfService smartRecordConfService;
 
     @Override
     protected String getContextTestExecutionCommand() {
@@ -663,7 +665,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Split features into groups, where each group has same weight.
      */
     private TreeMap<Double, List<String>> createFeaturesGroups() {
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = getIncludedAggregatedFeatureEventConfs();
         Double weight = 0.1;
         Double decreasedValueOfWeight = 0.005;
 
@@ -689,7 +691,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Map contains all features, where only one has score/value = 100.
      */
     private void createSingleHighValueAggregatedFeatureGenerators() {
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = getIncludedAggregatedFeatureEventConfs();
 
         Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToValue = aggregatedFeatureEventConfList.stream().collect(Collectors.toMap(aggregatedFeature -> aggregatedFeature, aggregatedFeature -> 0.0));
 
@@ -737,7 +739,7 @@ public class SmartApplicationTest extends BaseAppTest {
         for (int i = 0; i < numOfFeaturesInGroups; i++) {
             List<String> featuresWithDiffWeight = new ArrayList<>();
             for (List<String> features : weightToFeaturesSortedMap.values()) {
-                if(i < features.size()) {
+                if (i < features.size()) {
                     featuresWithDiffWeight.add(features.get(i));
                 }
             }
@@ -766,6 +768,13 @@ public class SmartApplicationTest extends BaseAppTest {
 
         aggregatedFeatureToScoreGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToScoreList);
         aggregatedFeatureToValueGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToValueList);
+    }
+
+    private List<AggregatedFeatureEventConf> getIncludedAggregatedFeatureEventConfs() {
+        List<String> excludedAggregationRecords = smartRecordConfService.getSmartRecordConf("userId_hourly").getExcludedAggregationRecords();
+        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream()
+                .filter(aggregatedFeatureEventConf -> !excludedAggregationRecords.contains(aggregatedFeatureEventConf.getName()))
+                .collect(Collectors.toList());
     }
 
     @Configuration
