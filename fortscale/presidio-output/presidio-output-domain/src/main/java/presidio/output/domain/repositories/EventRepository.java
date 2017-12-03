@@ -1,6 +1,7 @@
 package presidio.output.domain.repositories;
 
 import fortscale.utils.time.TimeRange;
+import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface EventRepository {
      */
     void saveEvents(String collectionName, List<? extends EnrichedEvent> events) throws Exception;
 
-    List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features, int limitEvents) throws Exception;
+    List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception;
 
     EnrichedEvent findLatestEventForUser(String userId);
 }

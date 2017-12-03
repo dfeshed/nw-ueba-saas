@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, Map<String, Object> features, int limitEvents) throws Exception {
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD)
                         .is(userId))
@@ -47,11 +48,10 @@ public class EventMongoRepositoryImpl implements EventRepository {
                         .lt(timeRange.getEnd()));
 
         List<Criteria> criterias = new ArrayList<>();
-        features.forEach((k, v) -> {
-
+        features.forEach((feature) -> {
             criterias.add(new Criteria().orOperator(
-                    Criteria.where(k).is(v), // for single object
-                    Criteria.where(k).in(v)) // for array
+                    Criteria.where(feature.getFirst()).is(feature.getSecond()), // for single object
+                    Criteria.where(feature.getFirst()).in(feature.getSecond())) // for array
             );
 
         });
