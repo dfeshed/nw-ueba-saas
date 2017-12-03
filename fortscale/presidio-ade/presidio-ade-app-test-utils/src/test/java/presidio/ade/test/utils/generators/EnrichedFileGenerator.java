@@ -71,7 +71,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
         fileActionEventGenerator.setUserGenerator(userGenerator);
         ArrayList<String> fileActionCategories = new ArrayList<>();
         fileActionCategories.add("FILE_ACTION");
-        String actionOperationName = "FOLDER_OPENED";
+        String actionOperationName = "FOLDER_RENAMED";
         OperationType fileActionOperationType = new OperationType(actionOperationName, fileActionCategories);
         FixedOperationTypeGenerator fileOpTypeActionCategoriesGenerator = new FixedOperationTypeGenerator(fileActionOperationType);
         fileOperationActionGenerator.setOperationTypeGenerator(fileOpTypeActionCategoriesGenerator);

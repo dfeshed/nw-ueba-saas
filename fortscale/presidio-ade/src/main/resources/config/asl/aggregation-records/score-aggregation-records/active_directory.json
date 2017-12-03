@@ -18,9 +18,26 @@
       }
     },
     {
-      "name": "sumOfHighestOperationTypeScoresUserIdSecuritySensitiveActiveDirectoryHourly",
+      "name": "sumOfHighestOperationTypeScoresUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
       "type": "P",
-      "bucketConfName": "operationTypeToHighestScoreMapUserIdSecuritySensitiveActiveDirectoryHourly",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": " ",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "operationTypeToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestOperationTypeScoresUserIdObjectChangeActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdObjectChangeActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
