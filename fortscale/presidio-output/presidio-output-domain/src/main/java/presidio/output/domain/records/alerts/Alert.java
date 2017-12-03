@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE, type = Alert.ALERT_TYPE)
-@Mapping(mappingPath = "elasticsearch/mappings/alerts-mappings.json")
+@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-alert.json")
 @Setting(settingPath = "elasticsearch/mappings/settings.json")
 public class Alert extends AbstractElasticDocument {
 
