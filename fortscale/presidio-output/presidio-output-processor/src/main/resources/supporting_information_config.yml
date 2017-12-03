@@ -252,10 +252,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: SECURITY_SENSITIVE_OPERATION
-    anomalyFilters:
-        fieldName: operationTypeCategories
-        fieldValue: GROUP_MEMBERSHIP
+    anomalyValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: hourly_aggregations
   classification: mass_changes_to_critical_enterprise_groups
