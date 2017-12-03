@@ -500,6 +500,7 @@ indicators:
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
     featureName: srcMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_host
+  transformer: abnormalSourceMachineTransformer
 
 - id: sumOfHighestDstMachineNameRegexClusterScoresUserIdInteractiveRemoteAuthenticationHourly
   type: SCORE_AGGREGATION
