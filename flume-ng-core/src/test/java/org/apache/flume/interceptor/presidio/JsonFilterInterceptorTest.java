@@ -22,7 +22,7 @@ public class JsonFilterInterceptorTest {
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         builder = InterceptorBuilderFactory.newInstance(
-                InterceptorType.JSON_BASIC_FILTER.toString());
+                InterceptorType.JSON_ALWAYS_FILTER.toString());
     }
 
     @Test
