@@ -393,7 +393,6 @@
         "FILE_PERMISSION_CHANGE"
       ],
       "FOLDER_OPENED": [
-        "FILE_ACTION",
         "TRIVIAL_FILE_OPERATION"
       ],
       "FOLDER_MOVED": [
@@ -403,7 +402,6 @@
         "FILE_ACTION"
       ],
       "FOLDER_CREATED": [
-        "FILE_ACTION",
         "TRIVIAL_FILE_OPERATION"
       ],
       "FOLDER_CLASSIFICATION_CHANGED": [
@@ -422,7 +420,6 @@
         "FILE_PERMISSION_CHANGE"
       ],
       "FILE_OPENED": [
-        "FILE_ACTION",
         "TRIVIAL_FILE_OPERATION"
       ],
       "FILE_MOVED": [
@@ -432,7 +429,6 @@
         "FILE_ACTION"
       ],
       "FILE_CREATED": [
-        "FILE_ACTION",
         "TRIVIAL_FILE_OPERATION"
       ],
       "FILE_CLASSIFICATION_CHANGED": [
