@@ -14,9 +14,11 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
     private static final Logger logger = Logger.getLogger(AbstractPresidioJsonFilterInterceptorBuilder.class);
 
     protected static final String FIELDS_CONF_NAME = "fields";
-    protected static final String PREDICATES_CONF_NAME = "predicates";
     protected static final String DELIMITER_CONF_NAME = "delimiter";
+    protected static final String PREDICATES_CONF_NAME = "predicates";
+    protected static final String PREDICATES_PARAMS_DELIMITER_CONF_NAME = "predicatesParamsDelimiter"; //this is not the delimiter for the list of predicates! This is the delim for the parameters of a single predicate
     protected static final String DEFAULT_DELIMITER_VALUE = ",";
+    protected static final String DEFAULT_PREDICATES_PRAMS_DELIMITER_VALUE = "#";
     protected static final String DEFAULT_PREDICATES_VALUE = "DEFAULT_PREDICATES_VALUE";
 
     protected List<String> fields;
@@ -25,6 +27,7 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
     @Override
     public void doConfigure(Context context) {
         String delim = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
+        String predicatesParamsDelim = context.getString(PREDICATES_PARAMS_DELIMITER_CONF_NAME, DEFAULT_PREDICATES_PRAMS_DELIMITER_VALUE);
 
         String fieldsArrayAsString = context.getString(FIELDS_CONF_NAME);
         Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsArrayAsString), FIELDS_CONF_NAME + " can not be empty.");
@@ -41,18 +44,18 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
         String predicatesArrayAsString = context.getString(PREDICATES_CONF_NAME, DEFAULT_PREDICATES_VALUE);
         Preconditions.checkArgument(StringUtils.isNotEmpty(predicatesArrayAsString), PREDICATES_CONF_NAME + " can not be empty.");
         final String[] predicatesArray = predicatesArrayAsString.split(delim);
-        predicates = readPredicatesConfiguration(predicatesArray, fields.size());
+        predicates = readPredicatesConfiguration(predicatesArray, predicatesParamsDelim, fields.size());
 
 
     }
 
-    protected List<Predicate<String>> readPredicatesConfiguration(String[] predicatesArray, int numOfFields) {
+    protected List<Predicate<String>> readPredicatesConfiguration(String[] predicatesArray, String predicatesParamsDelim, int numOfFields) {
         List<Predicate<String>> ans = new ArrayList<>();
         Predicate<String> currPredicate;
         for (int i = 0; i < predicatesArray.length; i++) {
             final String predicateString = predicatesArray[i];
             Preconditions.checkArgument(StringUtils.isNotEmpty(predicateString), "%s(index=%s) can not be empty. %s=%s.", PREDICATES_CONF_NAME, i, PREDICATES_CONF_NAME, predicatesArray);
-            currPredicate = createPredicate(predicateString);
+            currPredicate = createPredicate(predicateString, predicatesParamsDelim);
             ans.add(currPredicate);
         }
         Preconditions.checkArgument(numOfFields == predicates.size(), "The configurations: %s and %s must have the same number of elements", FIELDS_CONF_NAME, PREDICATES_CONF_NAME);
@@ -60,7 +63,7 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
     }
 
 
-    protected abstract Predicate<String> createPredicate(String predicateString);
+    protected abstract Predicate<String> createPredicate(String predicateString, String predicatesParamsDelim);
 
     @Override
     public AbstractPresidioJsonInterceptor doBuild() {

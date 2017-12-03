@@ -12,18 +12,18 @@ public class PresidioJsonAlwaysFilterInterceptorBuilder extends AbstractPresidio
 
 
     @Override
-    protected List<Predicate<String>> readPredicatesConfiguration(String[] predicatesArray, int numOfFields) {
+    protected List<Predicate<String>> readPredicatesConfiguration(String[] predicatesArray, String predicatesParamsDelim, int numOfFields) {
 
         List<Predicate<String>> ans = new ArrayList<>();
         for (int i = 0; i < numOfFields; i++) {
-            ans.add(createPredicate("")); // it doesn't matter what string we input
+            ans.add(createPredicate("", predicatesParamsDelim)); // it doesn't matter what string we input
         }
 
         return ans;
     }
 
     @Override
-    protected Predicate<String> createPredicate(String predicateString) {
+    protected Predicate<String> createPredicate(String predicateString, String predicatesDelim) {
         return s -> true;
     }
 
