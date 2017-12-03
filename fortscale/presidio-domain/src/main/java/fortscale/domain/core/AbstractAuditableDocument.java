@@ -74,4 +74,7 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
         return dateTime;
     }
 
+    public void setDateTime(Instant dateTime) {
+        this.dateTime = dateTime;
+    }
 }
