@@ -225,8 +225,10 @@ indicators:
   adeEventType: scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: operationTypeCategories
-    anomalyValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
+    anomalyField: operationType
+    anomalyFilters:
+      fieldName: operationTypeCategories
+      fieldValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -239,8 +241,10 @@ indicators:
   adeEventType: scored_enriched.active_directory.operationType.userIdObjectChange.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: operationTypeCategories
-    anomalyValue: OBJECT_CHANGES
+    anomalyField: operationType
+    anomalyFilters:
+      fieldName: operationTypeCategories
+      fieldValue: OBJECT_CHANGES
   historicalData:
     type: count_aggregations
     featureBucketConfName: objectChangeOperationResultHistogramUserIdActiveDirectoryHourly
