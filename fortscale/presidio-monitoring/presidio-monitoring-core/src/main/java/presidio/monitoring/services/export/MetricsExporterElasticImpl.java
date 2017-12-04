@@ -26,6 +26,16 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
         logger.debug("Ended Exporting metrics to elastic");
     }
 
+
+    /**
+     * manualExportMetrics will export system , application or all depends on the value of metricBucketEnum.
+     * if metricBucketEnum = APPLICATION , we will export all application metrics even if they are report once,
+     * application metric bucket will be empty after this.
+     * if metricBucketEnum = SYSTEM , we will export system metrics updated to this time.
+     * if metricBucketEnum = ALL , we will export system metrics updated to this time
+     * and we will export application metrics that are not report only once.
+     * @param metricBucketEnum can be or APPLICATION , SYSTEM or ALL
+     */
     @Override
     public void manualExportMetrics(MetricBucketEnum metricBucketEnum) {
         logger.debug("Manual exporting metrics to elastic");

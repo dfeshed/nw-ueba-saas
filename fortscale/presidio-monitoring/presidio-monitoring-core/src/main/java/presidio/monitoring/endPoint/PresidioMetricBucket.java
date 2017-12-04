@@ -62,7 +62,7 @@ public class PresidioMetricBucket {
                 allMetrics.add(buildPresidioMetric(metric));
             }
         });
-        allMetrics.addAll(buildPresidioMetricsFromSystemMetrics(presidioSystemMetricsFactory.metrics()));
+        allMetrics.addAll(getSystemMetrics());
         return allMetrics;
     }
 
@@ -73,6 +73,7 @@ public class PresidioMetricBucket {
                 allMetrics.add(buildPresidioMetric(metric));
             }
         });
+        applicationMetrics = new HashMap<>();
         return allMetrics;
     }
 
