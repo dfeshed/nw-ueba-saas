@@ -21,6 +21,24 @@ export const handleSetTo = (payload, stateVal) => {
   return hasSetTo ? payload.setTo : !stateVal;
 };
 
-export const handlePreference = (payload, isShown) => {
-  return payload && typeof isShown === 'boolean' ? isShown : true;
+/*
+ * Takes in obj with preferences in it, and key for preference in object
+ * and determines if the desired preference is present in obj, if not,
+ * returns the current value for the preference. Takes care to handle
+ * boolean preferences correctly.
+ */
+export const handlePreference = (obj, key, state) => {
+  const current = state[key];
+
+  if (!obj) {
+    return current;
+  }
+
+  const value = obj[key];
+  const isBoolean = typeof value === 'boolean';
+  if (!isBoolean && !value) {
+    return current;
+  }
+
+  return value;
 };

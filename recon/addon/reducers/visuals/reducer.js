@@ -40,14 +40,27 @@ const visuals = handleActions({
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
-    const isMetaShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isMetaShown);
-    const isHeaderOpen = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isHeaderOpen);
-    const isReconExpanded = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isReconExpanded);
-    const isRequestShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isRequestShown);
-    const isResponseShown = handlePreference(eventAnalysisPreferences, eventAnalysisPreferences.isResponseShown);
-    const defaultReconView = RECON_VIEW_TYPES_BY_NAME[eventAnalysisPreferences.currentReconView];
-    const { defaultLogFormat, defaultPacketFormat } = eventAnalysisPreferences;
-    return state.merge({ isMetaShown, isHeaderOpen, isReconExpanded, isRequestShown, isResponseShown, defaultReconView, defaultLogFormat, defaultPacketFormat });
+    const isMetaShown = handlePreference(eventAnalysisPreferences, 'isMetaShown', state);
+    const isHeaderOpen = handlePreference(eventAnalysisPreferences, 'isHeaderOpen', state);
+    const isReconExpanded = handlePreference(eventAnalysisPreferences, 'isReconExpanded', state);
+    const isRequestShown = handlePreference(eventAnalysisPreferences, 'isRequestShown', state);
+    const isResponseShown = handlePreference(eventAnalysisPreferences, 'isResponseShown', state);
+    const defaultLogFormat = handlePreference(eventAnalysisPreferences, 'defaultLogFormat', state);
+    const defaultPacketFormat = handlePreference(eventAnalysisPreferences, 'defaultPacketFormat', state);
+    const reconView = handlePreference(eventAnalysisPreferences, 'currentReconView', state);
+
+    const defaultReconView = RECON_VIEW_TYPES_BY_NAME[reconView];
+
+    return state.merge({
+      isMetaShown,
+      isHeaderOpen,
+      isReconExpanded,
+      isRequestShown,
+      isResponseShown,
+      defaultReconView,
+      defaultLogFormat,
+      defaultPacketFormat
+    });
   },
 
   [ACTION_TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => {
