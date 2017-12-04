@@ -33,6 +33,11 @@
       color: rgba(250,250,250, 1);
     }
 
+    .rsa-application-loading.rsa-loader .rsa-loader__wheel {
+      border-color: rgba(33,33,33, 1);
+      border-top-color: rgba(3,169,244, 1);
+    }
+
     .warning {
       padding: rsa-whitespace();
       background-color: rgba(22,22,22, 1);
