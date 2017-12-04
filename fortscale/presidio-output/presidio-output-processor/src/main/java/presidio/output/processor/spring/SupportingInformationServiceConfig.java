@@ -71,7 +71,7 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     }
 
     @Bean
-    public ServiceLocatorFactoryBean albForSupportingInformationTransformerFactory() {
+    public ServiceLocatorFactoryBean serviceLocatorFactoryBeanForSupportingInformationTransformerFactory() {
         ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
         factoryBean.setServiceLocatorInterface(SupportingInformationTransformerFactory.class);
         return factoryBean;
