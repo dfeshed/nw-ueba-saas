@@ -15,6 +15,7 @@ const App = Application.extend({
         services: [
           '-document',
           'dateFormat',
+          'access-control',
           'timeFormat',
           'timezone',
           'i18n',

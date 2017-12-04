@@ -69,6 +69,7 @@ const App = Application.extend({
       dependencies: {
         services: [
           '-document',
+          'access-control',
           'dateFormat',
           'timeFormat',
           'timezone',
@@ -87,6 +88,7 @@ const App = Application.extend({
       dependencies: {
         services: [
           '-document',
+          'access-control',
           'dateFormat',
           'timeFormat',
           'timezone',

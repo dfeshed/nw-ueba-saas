@@ -107,6 +107,12 @@ export default Service.extend({
     return this._hasPermission(roles, 'respond-server.journal.manage');
   },
 
+  @computed('roles.[]')
+  hasInvestigateHostsAccess(roles) {
+    // this permission is same for both hosts and files
+    return this._hasPermission(roles, 'endpoint-server.machine.read');
+  },
+
   // End respond access permissions
 
   @computed('hasInvestigateAccess', 'hasInvestigateEmberAccess', 'hasInvestigateClassicAccess')

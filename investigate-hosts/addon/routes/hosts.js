@@ -11,6 +11,8 @@ export default Route.extend({
 
   redux: service(),
 
+  accessControl: service(),
+
   contextualHelp: service(),
 
   queryParams: {
@@ -27,6 +29,12 @@ export default Route.extend({
 
   title() {
     return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('investigateHosts.title') });
+  },
+
+  beforeModel() {
+    if (!this.get('accessControl.hasInvestigateHostsAccess')) {
+      window.location = '/investigate'; // Redirecting to parent route
+    }
   },
 
   model(params) {

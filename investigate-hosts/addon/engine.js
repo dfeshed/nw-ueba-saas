@@ -11,6 +11,7 @@ const Eng = Engine.extend({
   dependencies: {
     services: [
       '-document',
+      'access-control',
       'dateFormat',
       'timeFormat',
       'timezone',
