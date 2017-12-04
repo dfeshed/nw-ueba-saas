@@ -6,13 +6,11 @@ import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.activedirectoryop.ActiveDirectoryOperationGenerator;
 import presidio.data.generators.activedirectoryop.IActiveDirectoryOperationGenerator;
-import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
-import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.event.OPERATION_RESULT;
@@ -21,7 +19,6 @@ import presidio.data.generators.machine.SimpleMachineGenerator;
 import presidio.data.generators.user.IUserGenerator;
 import presidio.data.generators.user.NullUserGenerator;
 import presidio.data.generators.user.RandomAdminUserPercentageGenerator;
-import presidio.data.generators.user.SingleUserGenerator;
 
 import java.time.Instant;
 
@@ -55,7 +52,6 @@ public class ActiveDirectoryEventsGenerator extends AbstractEventGenerator {
         eventIdGenerator = new EntityEventIDFixedPrefixGenerator(userGenerator.getNext().getUsername()); // giving any string as entity name in this default generator
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Active Directory"});                                // "DefaultDS"
         activeDirOperationGenerator = new ActiveDirectoryOperationGenerator();
-
         srcMachineGenerator = new SimpleMachineGenerator();
         dstMachineGenerator = new SimpleMachineGenerator();
         resultGenerator = new OperationResultPercentageGenerator();

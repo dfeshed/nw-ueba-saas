@@ -10,9 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by YaronDL on 8/7/2017.
- */
 public class CyclicOperationTypeGenerator extends CyclicValuesGenerator<OperationType> implements IOperationTypeGenerator {
 
     public CyclicOperationTypeGenerator(OperationType[] operationTypes){

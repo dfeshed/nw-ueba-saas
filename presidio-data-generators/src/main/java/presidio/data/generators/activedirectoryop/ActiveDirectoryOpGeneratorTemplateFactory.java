@@ -69,6 +69,4 @@ public class ActiveDirectoryOpGeneratorTemplateFactory {
 
         return generator;
     }
-
-
 }

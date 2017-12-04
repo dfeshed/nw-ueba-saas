@@ -9,7 +9,6 @@ import presidio.data.generators.FixedDataSourceGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
-import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.fileentity.FileSystemEntityGenerator;

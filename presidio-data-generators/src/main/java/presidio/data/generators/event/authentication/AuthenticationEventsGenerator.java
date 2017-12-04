@@ -4,15 +4,13 @@ import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
-import presidio.data.generators.authenticationop.AuthenticationOpTypeCategoriesGenerator;
-import presidio.data.generators.authenticationop.AuthenticationTypeCyclicGenerator;
+import presidio.data.generators.authenticationop.AuthenticationOperationGenerator;
+import presidio.data.generators.authenticationop.IAuthenticationOperationGenerator;
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
-import presidio.data.generators.common.IStringListGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
-import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
 import presidio.data.generators.event.EntityEventIDFixedPrefixGenerator;
 import presidio.data.generators.machine.FixedMachineGenerator;
@@ -27,12 +25,9 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     private IStringGenerator eventIDGenerator;
     private IStringGenerator dataSourceGenerator;
     private IUserGenerator userGenerator;
-
-    private IStringGenerator operationTypeGenerator;
-    private IStringListGenerator operationTypeCategoriesGenerator;
+    private IAuthenticationOperationGenerator authenticationOperationGenerator;
 
     private IMachineGenerator srcMachineGenerator;
-
     private IMachineGenerator dstMachineGenerator;
 
     private IStringGenerator resultGenerator;
@@ -52,17 +47,11 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomUserGenerator();
         User user = userGenerator.getNext();
-
         eventIDGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"Logon Activity"});
-
-        operationTypeGenerator = new AuthenticationTypeCyclicGenerator();
-        operationTypeCategoriesGenerator = new AuthenticationOpTypeCategoriesGenerator();
-
+        authenticationOperationGenerator = new AuthenticationOperationGenerator();
         srcMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_SRC");
-
         dstMachineGenerator = new FixedMachineGenerator(user.getUserId()+ "_DST");
-
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
@@ -80,8 +69,7 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
                 eventTime,
                 getDataSourceGenerator().getNext(),
                 getUserGenerator().getNext(),
-                getOperationTypeGenerator().getNext(),
-                getOperationTypeCategoriesGenerator().getNext(),
+                getAuthenticationOperationGenerator().getNext(),
                 srcMachine,
                 getDstMachineGenerator().getNext(),
                 getResultGenerator().getNext(),
@@ -102,12 +90,12 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         this.dataSourceGenerator = dataSourceGenerator;
     }
 
-    public IStringGenerator getOperationTypeGenerator() {
-        return operationTypeGenerator;
+    public IAuthenticationOperationGenerator getAuthenticationOperationGenerator() {
+        return authenticationOperationGenerator;
     }
 
-    public void setOperationTypeGenerator(IStringGenerator operationTypeGenerator) {
-        this.operationTypeGenerator = operationTypeGenerator;
+    public void setAuthenticationOperationGenerator(IAuthenticationOperationGenerator authenticationOperationGenerator) {
+        this.authenticationOperationGenerator = authenticationOperationGenerator;
     }
 
     public IStringGenerator getEventIDGenerator() {
@@ -167,14 +155,6 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         this.resultCodeGenerator = resultCodeGenerator;
     }
 
-    public IStringListGenerator getOperationTypeCategoriesGenerator() {
-        return operationTypeCategoriesGenerator;
-    }
-
-    public void setOperationTypeCategoriesGenerator(IStringListGenerator operationTypeCategoriesGenerator) {
-        this.operationTypeCategoriesGenerator = operationTypeCategoriesGenerator;
-    }
-
     public IAuthenticationDescriptionGenerator getAuthenticationDescriptionGenerator() {
         return authenticationDescriptionGenerator;
     }
@@ -190,6 +170,4 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     private String getObjectCanonical(String domainFQDN, String userName) {
         return domainFQDN + "/Users/" + userName;
     }
-
-
 }

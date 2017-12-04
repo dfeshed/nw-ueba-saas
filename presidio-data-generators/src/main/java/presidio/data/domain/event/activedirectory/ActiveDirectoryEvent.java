@@ -15,7 +15,6 @@ public class ActiveDirectoryEvent extends Event implements Serializable {
     private ActiveDirectoryOperation operation;
     private User user;
     private String dataSource;
-
     private MachineEntity srcMachineEntity;
     private MachineEntity dstMachineEntity;
     private String result;
