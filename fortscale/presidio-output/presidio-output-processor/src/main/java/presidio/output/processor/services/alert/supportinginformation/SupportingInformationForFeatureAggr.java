@@ -8,6 +8,7 @@ import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
@@ -73,18 +74,21 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
-        Map<String, Object> features = new HashMap<String, Object>();
+        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
         if (indicatorConfig.getAnomalyDescriptior() != null &&
                 StringUtils.isNoneEmpty(indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
                         indicatorConfig.getAnomalyDescriptior().getAnomalyValue())) {
-            features.put(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), indicatorConfig.getAnomalyDescriptior().getAnomalyValue());
+            String[] values = StringUtils.split(indicatorConfig.getAnomalyDescriptior().getAnomalyValue(),",");
+            for (String value: values) {
+                features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), value));
+            }
         }
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
             Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.put(fieldName, featureValue);
+            features.add(Pair.of(fieldName, featureValue));
         }
 
         List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);

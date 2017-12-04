@@ -3,6 +3,7 @@ package presidio.output.domain.services.event;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeRange;
+import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public interface EventPersistencyService {
      * @param eventsLimit
      * @return
      */
-    List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, Map<String, Object> features, int eventsLimit);
+    List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
 
     EnrichedEvent findLatestEventForUser(String userId);
 

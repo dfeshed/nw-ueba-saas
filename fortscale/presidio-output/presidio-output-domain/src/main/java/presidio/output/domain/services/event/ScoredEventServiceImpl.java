@@ -25,7 +25,7 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
     @Override
-    public List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, Map<String, Object> featuresFilters, int eventsLimit) {
+    public List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit) {
 
         List<? extends EnrichedEvent> events = eventPersistencyService.findEvents(schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, eventsLimit);
 
@@ -46,7 +46,7 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
 
-    public List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, Map<String, Object> featuresFilters, int eventsLimit) {
+    public List<ScoredEnrichedEvent> findEventsAndScores(Schema schema, String adeEventType, String userId, TimeRange timeRange, List<Pair<String, Object>> featuresFilters, int eventsLimit) {
 
         List<ScoredEnrichedEvent> scoredEnrichedEvents = new ArrayList<ScoredEnrichedEvent>();
 

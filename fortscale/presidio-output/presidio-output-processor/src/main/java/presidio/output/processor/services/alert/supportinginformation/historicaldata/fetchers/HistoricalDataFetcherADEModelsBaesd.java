@@ -146,18 +146,31 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
         });
 
         List<String> contextTypes = Collections.singletonList(CommonStrings.CONTEXT_USERID);
-        PageIterator<EnrichedRecord> pageIterator = getEnrichedRecordPageIterator(contextValue, schema, inMemoryTimeRange);
-        FeatureBucketStrategyData featureBucketStrategyData =
-                new FeatureBucketStrategyData(FixedDurationStrategy.DAILY.toStrategyName(),
-                                              FixedDurationStrategy.DAILY.toStrategyName(),
-                                              inMemoryTimeRange);
-        List<FeatureBucket> featureBucketsInMemory = inMemoryFeatureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
-        if (CollectionUtils.isNotEmpty(featureBucketsInMemory)) {
+
+        Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
+        Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd(), FixedDurationStrategy.DAILY.toDuration());
+        TimeRange flooredTimeRange = new TimeRange(start,end);
+        List<TimeRange> dayPartitions = FixedDurationStrategyUtils.splitTimeRangeByStrategy(flooredTimeRange, FixedDurationStrategy.DAILY);
+        dayPartitions.add(new TimeRange(end, inMemoryTimeRange.getEnd())); //add last partial day
+
+        List<FeatureBucket> featureBucketsInMemory = new ArrayList<FeatureBucket>();
+
+        // go over days in the range
+        for (TimeRange dayPartition : dayPartitions) {
+
+            PageIterator<EnrichedRecord> pageIterator = getEnrichedRecordPageIterator(contextValue, schema, dayPartition);
+            FeatureBucketStrategyData featureBucketStrategyData =
+                    new FeatureBucketStrategyData(FixedDurationStrategy.DAILY.toStrategyName(),
+                            FixedDurationStrategy.DAILY.toStrategyName(),
+                            dayPartition);
+            featureBucketsInMemory.addAll(inMemoryFeatureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData));
+            if (CollectionUtils.isNotEmpty(featureBucketsInMemory)) {
                 //TODO: check how to run featureBuckets on single feature only
                 // filter only feature buckets with the given feature bucket conf
                 featureBucketsInMemory = featureBucketsInMemory.stream()
-                                        .filter(f ->  f.getFeatureBucketConfName().equals(featureBucketConfName))
-                                        .collect(Collectors.toList());
+                        .filter(f -> f.getFeatureBucketConfName().equals(featureBucketConfName))
+                        .collect(Collectors.toList());
+            }
         }
         return featureBucketsInMemory;
     }

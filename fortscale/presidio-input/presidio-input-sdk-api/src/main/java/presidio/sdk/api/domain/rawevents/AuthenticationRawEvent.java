@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 @Document
-@FieldsMustHaveDifferentValues(fieldNames = {"srcMachineId", "dstMachineId"}, canBothBeEmpty = "false")
 public class AuthenticationRawEvent extends AbstractInputDocument {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";

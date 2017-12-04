@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class WeightsModelBuilderConf implements IModelBuilderConf {
     public static final String WEIGHTS_MODEL_BUILDER = "weights_model_builder";
-    private static final int DEFAULT_NUM_OF_SIMULATIONS = 100;
+    public static final int DEFAULT_NUM_OF_SIMULATIONS = 300;
 
     private String smartRecordConfName;
     private int numOfSimulations;

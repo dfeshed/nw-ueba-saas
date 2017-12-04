@@ -4,6 +4,7 @@ import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.util.Pair;
 import org.springframework.util.ClassUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventRepository;
@@ -48,7 +49,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, Map<String, Object> features, int eventsLimit)  {
+    public List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit)  {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         List<? extends EnrichedEvent> events;
         try {
