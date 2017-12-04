@@ -1,13 +1,16 @@
 import Component from 'ember-component';
+import { connect } from 'ember-redux';
+import { processHost } from 'investigate-hosts/reducers/details/overview/selectors';
 
-export default Component.extend({
-
-  tagName: 'hbox',
-
-  classNames: 'col-xs-12 host-logged-in-users rsa-b-b-1 host-content__user-details',
-  /**
-   * Logged in user information
-   * @public
-   */
-  user: null
+const stateToComputed = (state) => ({
+  machine: processHost(state)
 });
+
+const LoggedInUsers = Component.extend({
+
+  tagName: 'vbox',
+
+  classNames: 'col-xs-12'
+});
+
+export default connect(stateToComputed)(LoggedInUsers);

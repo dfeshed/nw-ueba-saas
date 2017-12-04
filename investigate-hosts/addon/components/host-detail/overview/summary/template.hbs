@@ -6,9 +6,7 @@
 {{#rsa-content-accordion animate=true class='host-content__title'
                          label=(t 'investigateHosts.hosts.summary.body.loggedUsers'
                          count=machine.loggedInUsers.length)}}
-  {{#each machine.loggedInUsers as |user|}}
-    {{host-detail/overview/summary/logged-in-users user=user}}
-  {{/each}}
+  {{host-detail/overview/summary/logged-in-users}}
 {{/rsa-content-accordion}}
 {{#if (not-eq machine.machineOsType 'linux')}}
   {{#rsa-content-accordion animate=true class='host-content__title'
