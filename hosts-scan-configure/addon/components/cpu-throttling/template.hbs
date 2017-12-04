@@ -1,6 +1,7 @@
 <h4 class='text'>{{t 'hostsScanConfigure.cpuThrottling.cpuMax'}}</h4>
 {{range-slider
   start=[cpuOptions.cpuMax]
+  format=format
   min=5
   step=1
   connect=false
@@ -9,6 +10,7 @@
 <h4 class='text'>{{t 'hostsScanConfigure.cpuThrottling.vmMax'}}</h4>
 {{range-slider
   start=[cpuOptions.cpuMaxVm]
+  format=format
   step=1
   connect=false
   on-change=(action 'updateScheduleProperty' 'cpuMaxVm')}}

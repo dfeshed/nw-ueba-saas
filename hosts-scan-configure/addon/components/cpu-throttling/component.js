@@ -18,7 +18,15 @@ const CPU_OPTIONS = Component.extend({
 
   tagName: 'box',
 
-  classNames: 'cpu-throttling'
+  classNames: 'cpu-throttling',
+  format: {
+    to(value) {
+      return Math.round(value);
+    },
+    from(value) {
+      return value;
+    }
+  }
 
 });
 

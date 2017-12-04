@@ -12,5 +12,14 @@ export default RangeSlider.extend({
   connect: true,
   min: 0,
   max: 100,
-  tooltips: true
+  tooltips: true,
+
+  format: {
+    to(value) {
+      return value;
+    },
+    from(value) {
+      return value;
+    }
+  }
 });
