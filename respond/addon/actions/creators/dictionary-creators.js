@@ -1,11 +1,5 @@
-import Ember from 'ember';
 import { dictionaries, users } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as ErrorHandlers from '../util/error-handlers';
-
-const {
-  Logger
-} = Ember;
 
 /**
  * Action creator for fetching all known "enabled" Users
@@ -16,11 +10,7 @@ const {
 const getAllEnabledUsers = () => {
   return {
     type: ACTION_TYPES.FETCH_ALL_ENABLED_USERS,
-    promise: users.getAllEnabledUsers(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALL_ENABLED_USERS, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'users')
-    }
+    promise: users.getAllEnabledUsers()
   };
 };
 
@@ -33,11 +23,7 @@ const getAllEnabledUsers = () => {
 const getAllUsers = () => {
   return {
     type: ACTION_TYPES.FETCH_ALL_USERS,
-    promise: users.getAllUsers(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALL_USERS, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'users')
-    }
+    promise: users.getAllUsers()
   };
 };
 
@@ -50,11 +36,7 @@ const getAllUsers = () => {
 const getAllPriorityTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_PRIORITY_TYPES,
-    promise: dictionaries.getAllPriorityTypes(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_PRIORITY_TYPES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'priority types')
-    }
+    promise: dictionaries.getAllPriorityTypes()
   };
 };
 
@@ -67,27 +49,19 @@ const getAllPriorityTypes = () => {
 const getAllStatusTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_STATUS_TYPES,
-    promise: dictionaries.getAllStatusTypes(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_STATUS_TYPES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'status types')
-    }
+    promise: dictionaries.getAllStatusTypes()
   };
 };
 
 /**
  * Action creator for fetching the list of categories available for incidents
  * @public
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllCategories = () => {
   return {
     type: ACTION_TYPES.FETCH_CATEGORY_TAGS,
-    promise: dictionaries.getAllCategories(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_CATEGORY_TAGS, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'category tags')
-    }
+    promise: dictionaries.getAllCategories()
   };
 };
 
@@ -95,16 +69,12 @@ const getAllCategories = () => {
  * Action creator for fetching all known remediation status types
  * @method getAllStatusTypes
  * @public
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllRemediationStatusTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_REMEDIATION_STATUS_TYPES,
-    promise: dictionaries.getAllRemediationStatusTypes(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_REMEDIATION_STATUS_TYPES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'remediation status types')
-    }
+    promise: dictionaries.getAllRemediationStatusTypes()
   };
 };
 
@@ -112,16 +82,12 @@ const getAllRemediationStatusTypes = () => {
  * Action creator for fetching all known remediation types
  * @method getAllRemediationTypes
  * @public
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllRemediationTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_REMEDIATION_TYPES,
-    promise: dictionaries.getAllRemediationTypes(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_REMEDIATION_TYPES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'remediation types')
-    }
+    promise: dictionaries.getAllRemediationTypes()
   };
 };
 
@@ -129,16 +95,12 @@ const getAllRemediationTypes = () => {
  * Action creator for fetching all known alert types
  * @method getAllAlertTypes
  * @public
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllAlertTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_ALERT_TYPES,
-    promise: dictionaries.getAllAlertTypes(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_TYPES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'alert types')
-    }
+    promise: dictionaries.getAllAlertTypes()
   };
 };
 
@@ -146,16 +108,12 @@ const getAllAlertTypes = () => {
  * Action creator for fetching all known alert sources
  * @method getAllAlertSources
  * @public
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllAlertSources = () => {
   return {
     type: ACTION_TYPES.FETCH_ALERT_SOURCES,
-    promise: dictionaries.getAllAlertSources(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_SOURCES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'alert sources')
-    }
+    promise: dictionaries.getAllAlertSources()
   };
 };
 
@@ -163,31 +121,23 @@ const getAllAlertSources = () => {
  * Action creator for fetching all unique alert rule names
  * @public
  * @method getAlertRuleNames
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllAlertNames = () => ({
   type: ACTION_TYPES.FETCH_ALERT_NAMES,
-  promise: dictionaries.getAllAlertNames(),
-  meta: {
-    onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_NAMES, response),
-    onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'alert rule names')
-  }
+  promise: dictionaries.getAllAlertNames()
 });
 
 /**
  * Action creator for fetching all known milestones
  * @method getAllMilestoneTypes
  * @public
- * @returns {Promise}
+ * @returns {Object}
  */
 const getAllMilestoneTypes = () => {
   return {
     type: ACTION_TYPES.FETCH_MILESTONE_TYPES,
-    promise: dictionaries.getAllMilestoneTypes(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_MILESTONE_TYPES, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'milestones')
-    }
+    promise: dictionaries.getAllMilestoneTypes()
   };
 };
 

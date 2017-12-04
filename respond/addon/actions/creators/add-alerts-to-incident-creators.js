@@ -1,9 +1,5 @@
 import { Incidents } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as errorHandlers from '../util/error-handlers';
-import Ember from 'ember';
-
-const { Logger } = Ember;
 
 /**
  * Adds a given list of indicators (alerts) to an incident with a given ID.
@@ -19,11 +15,9 @@ const addAlertsToIncident = (indicators, incidentId, callbacks) => {
       promise: Incidents.addAlertsToIncident(indicators, incidentId),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.ADD_RELATED_INDICATORS, response);
           callbacks.onSuccess(response);
         },
         onFailure: (response) => {
-          errorHandlers.handleContentUpdateError(response, `related indicators for incident ${incidentId}`);
           callbacks.onFailure(response);
         }
       }
@@ -49,9 +43,8 @@ const searchIncidents = () => {
         },
         onCompleted: () => dispatch({ type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_COMPLETED }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_RETRIEVE_BATCH, payload }),
-        onError: (response) => {
+        onError: () => {
           dispatch({ type: ACTION_TYPES.ALERTS_SEARCH_INCIDENTS_ERROR });
-          errorHandlers.handleContentRetrievalError(response, `incident search for ${incidentSearchText}`);
         }
       });
     } else { // otherwise, clear out the results

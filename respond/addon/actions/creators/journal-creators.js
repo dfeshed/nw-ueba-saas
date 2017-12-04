@@ -1,11 +1,5 @@
-import Ember from 'ember';
 import { journal } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as ErrorHandlers from '../util/error-handlers';
-
-const {
-  Logger
-} = Ember;
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -23,11 +17,9 @@ const createJournalEntry = (journalEntry, callbacks = callbacksDefault) => {
     promise: journal.createEntry(journalEntry),
     meta: {
       onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.CREATE_JOURNAL_ENTRY, response);
         callbacks.onSuccess(response);
       },
       onFailure: (response) => {
-        ErrorHandlers.handleContentCreationError(response, 'journal entry');
         callbacks.onFailure(response);
       }
     }
@@ -49,11 +41,9 @@ const deleteJournalEntry = (incidentId, journalId, callbacks = callbacksDefault)
     promise: journal.deleteEntry(incidentId, journalId),
     meta: {
       onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.DELETE_JOURNAL_ENTRY, response);
         callbacks.onSuccess(response);
       },
       onFailure: (response) => {
-        ErrorHandlers.handleContentDeletionError(response, 'journal entry');
         callbacks.onFailure(response);
       }
     }
@@ -77,11 +67,9 @@ const updateJournalEntry = (incidentId, journalId, journalMap, callbacks = callb
     promise: journal.updateEntry(incidentId, journalId, journalMap),
     meta: {
       onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.UPDATE_JOURNAL_ENTRY, response);
         callbacks.onSuccess(response);
       },
       onFailure: (response) => {
-        ErrorHandlers.handleContentUpdateError(response, 'journal entry');
         callbacks.onFailure(response);
       }
     }

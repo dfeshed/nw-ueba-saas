@@ -1,14 +1,8 @@
-import Ember from 'ember';
 import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as ErrorHandlers from '../util/error-handlers';
 import * as DictionaryCreators from './dictionary-creators';
 import { next } from 'ember-runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
-
-const {
-  Logger
-} = Ember;
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -25,11 +19,7 @@ const getItems = () => {
     // Fetch the total incident count for the current query
     dispatch({
       type: ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT,
-      promise: Incidents.getIncidentsCount(itemsFilters, { sortField, isSortDescending }),
-      meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT, response),
-        onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'incidents count')
-      }
+      promise: Incidents.getIncidentsCount(itemsFilters, { sortField, isSortDescending })
     });
 
     dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STARTED });
@@ -48,9 +38,8 @@ const getItems = () => {
         },
         onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_COMPLETED }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH, payload }),
-        onError: (response) => {
+        onError: () => {
           dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_ERROR });
-          ErrorHandlers.handleContentRetrievalError(response, 'incidents');
         }
       }
     );
@@ -75,11 +64,9 @@ const updateItem = (entityId, field, updatedValue, callbacks) => {
     promise: Incidents.updateIncident(entityId, field, updatedValue),
     meta: {
       onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.UPDATE_INCIDENT, response);
         callbacks.onSuccess(response);
       },
       onFailure: (response) => {
-        ErrorHandlers.handleContentUpdateError(response, `${entityId} ${field} to ${updatedValue}`);
         callbacks.onFailure(response);
       }
     }
@@ -95,14 +82,12 @@ const deleteItem = (entityId, callbacks = callbacksDefault) => {
       promise: Incidents.delete(entityId),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.DELETE_INCIDENT, response);
           callbacks.onSuccess(response);
           if (reloadItems) {
             dispatch(getItems());
           }
         },
         onFailure: (response) => {
-          ErrorHandlers.handleContentDeletionError(response, 'incident');
           callbacks.onFailure(response);
         }
       }
@@ -143,7 +128,8 @@ const updateFilter = (filters) => {
  * An action creator for updating the sort-by information used in fetching incidents
  * @public
  * @method sortBy Object { id: [field name (string) to sort by], isDescending: [boolean] }
- * @param sort
+ * @param sortField
+ * @param isSortDescending
  * @returns {function(*)}
  */
 const sortBy = (sortField, isSortDescending) => {
@@ -188,11 +174,7 @@ const toggleSelectAll = () => ({ type: ACTION_TYPES.TOGGLE_SELECT_ALL_INCIDENTS 
 const getIncident = (incidentId) => {
   return {
     type: ACTION_TYPES.FETCH_INCIDENT_DETAILS,
-    promise: Incidents.getIncidentDetails(incidentId),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_INCIDENT_DETAILS, response),
-      onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, `incident ${incidentId} profile`)
-    }
+    promise: Incidents.getIncidentDetails(incidentId)
   };
 };
 
@@ -233,9 +215,8 @@ const getStoryline = (incidentId) => {
           }
           dispatch(getStorylineEvents(incidentId));
         },
-        onError: (response) => {
+        onError: () => {
           dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_ERROR });
-          ErrorHandlers.handleContentRetrievalError(response, `incident ${incidentId} storyline`);
         }
       }
     );
@@ -384,9 +365,8 @@ const startSearchRelatedIndicators = (entityType, entityId, timeFrameName) => {
         onResponse: (payload) => {
           dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_RETRIEVE_BATCH, payload });
         },
-        onError: (response) => {
+        onError: () => {
           dispatch({ type: ACTION_TYPES.SEARCH_RELATED_INDICATORS_ERROR });
-          ErrorHandlers.handleContentRetrievalError(response, `related indicators for ${entityId}`);
         }
       }
     );
@@ -421,11 +401,9 @@ const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => 
   promise: Incidents.addAlertsToIncident(indicatorIds, incidentId),
   meta: {
     onSuccess: (response) => {
-      Logger.debug(ACTION_TYPES.ADD_RELATED_INDICATORS, response);
       callbacks.onSuccess(response);
     },
     onFailure: (response) => {
-      ErrorHandlers.handleContentUpdateError(response, `related indicators for incident ${incidentId}`);
       callbacks.onFailure(response);
     }
   }

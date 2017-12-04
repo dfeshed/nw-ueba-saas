@@ -1,11 +1,5 @@
-import Ember from 'ember';
 import { RemediationTasks } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as ErrorHandlers from '../util/error-handlers';
-
-const {
-  Logger
-} = Ember;
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -22,20 +16,12 @@ const getItems = () => {
     // Fetch the total remediation task count for the current filter criteria
     dispatch({
       type: ACTION_TYPES.FETCH_REMEDIATION_TASKS_TOTAL_COUNT,
-      promise: RemediationTasks.getRemediationTaskCount(itemsFilters, { sortField, isSortDescending }),
-      meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_REMEDIATION_TASKS_TOTAL_COUNT, response),
-        onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'remediation tasks count')
-      }
+      promise: RemediationTasks.getRemediationTaskCount(itemsFilters, { sortField, isSortDescending })
     });
     // Fetch all of the remediation tasks that meet the current filter criteria
     dispatch({
       type: ACTION_TYPES.FETCH_REMEDIATION_TASKS,
-      promise: RemediationTasks.getRemediationTasks(itemsFilters, { sortField, isSortDescending }),
-      meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_REMEDIATION_TASKS, response),
-        onFailure: (response) => ErrorHandlers.handleContentRetrievalError(response, 'remediation tasks')
-      }
+      promise: RemediationTasks.getRemediationTasks(itemsFilters, { sortField, isSortDescending })
     });
   };
 };
@@ -58,11 +44,9 @@ const updateItem = (entityId, field, updatedValue, callbacks = callbacksDefault)
     promise: RemediationTasks.updateRemediationTask(entityId, field, updatedValue),
     meta: {
       onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.UPDATE_REMEDIATION_TASK, response);
         callbacks.onSuccess(response);
       },
       onFailure: (response) => {
-        ErrorHandlers.handleContentUpdateError(response, `${entityId} ${field} to ${updatedValue}`);
         callbacks.onFailure(response);
       }
     }
@@ -85,14 +69,12 @@ const deleteItem = (entityId, callbacks = callbacksDefault) => {
       promise: RemediationTasks.deleteRemediationTask(entityId),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.DELETE_REMEDIATION_TASK, response);
           callbacks.onSuccess(response);
           if (reloadItems) {
             dispatch(getItems());
           }
         },
         onFailure: (response) => {
-          ErrorHandlers.handleContentDeletionError(response, 'remediation task');
           callbacks.onFailure(response);
         }
       }
@@ -133,11 +115,9 @@ const createItem = (task, callbacks = callbacksDefault) => {
     promise: RemediationTasks.createRemediationTask(task),
     meta: {
       onSuccess: (response) => {
-        Logger.debug(ACTION_TYPES.CREATE_REMEDIATION_TASK, response);
         callbacks.onSuccess(response);
       },
       onFailure: (response) => {
-        ErrorHandlers.handleContentCreationError(response, 'create remediation task');
         callbacks.onFailure(response);
       }
     }
@@ -147,11 +127,7 @@ const createItem = (task, callbacks = callbacksDefault) => {
 const getRemediationTasksForIncident = (incidentId) => {
   return {
     type: ACTION_TYPES.FETCH_REMEDIATION_TASKS_FOR_INCIDENT,
-    promise: RemediationTasks.getRemediationTasksForIncident(incidentId),
-    meta: {
-      onSuccess: (response) => (Logger.debug(ACTION_TYPES.FETCH_REMEDIATION_TASKS_FOR_INCIDENT, response)),
-      onFailure: (response) => (ErrorHandlers.handleContentRetrievalError(response, 'remediation task for incident'))
-    }
+    promise: RemediationTasks.getRemediationTasksForIncident(incidentId)
   };
 };
 

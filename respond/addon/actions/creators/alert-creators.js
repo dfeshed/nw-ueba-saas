@@ -1,10 +1,7 @@
 import { alerts } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as errorHandlers from '../util/error-handlers';
 import { next } from 'ember-runloop';
-import Ember from 'ember';
 
-const { Logger } = Ember;
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 /**
@@ -19,11 +16,7 @@ const getItems = () => {
     // Fetch the total incident count for the current query
     dispatch({
       type: ACTION_TYPES.FETCH_ALERTS_TOTAL_COUNT,
-      promise: alerts.getAlertsCount(itemsFilters, { sortField, isSortDescending }),
-      meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERTS_TOTAL_COUNT, response),
-        onFailure: (response) => errorHandlers.handleContentRetrievalError(response, 'incidents count')
-      }
+      promise: alerts.getAlertsCount(itemsFilters, { sortField, isSortDescending })
     });
 
     dispatch({ type: ACTION_TYPES.FETCH_ALERTS_STARTED });
@@ -42,9 +35,8 @@ const getItems = () => {
         },
         onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_ALERTS_COMPLETED }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_ALERTS_RETRIEVE_BATCH, payload }),
-        onError: (response) => {
+        onError: () => {
           dispatch({ type: ACTION_TYPES.FETCH_ALERTS_ERROR });
-          errorHandlers.handleContentRetrievalError(response, 'alerts');
         }
       }
     );
@@ -58,11 +50,7 @@ const getItems = () => {
  */
 const getOriginalAlert = (entityId) => ({
   type: ACTION_TYPES.FETCH_ORIGINAL_ALERT,
-  promise: alerts.getOriginalAlert(entityId),
-  meta: {
-    onSuccess: (response) => (Logger.debug(ACTION_TYPES.FETCH_ORIGINAL_ALERT, response)),
-    onFailure: (response) => (errorHandlers.handleContentRetrievalError(response, 'original alert'))
-  }
+  promise: alerts.getOriginalAlert(entityId)
 });
 
 /**
@@ -81,14 +69,12 @@ const deleteItem = (entityId, callbacks = callbacksDefault) => {
       promise: alerts.delete(entityId),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.DELETE_ALERT, response);
           callbacks.onSuccess(response);
           if (reloadItems) {
             dispatch(getItems());
           }
         },
         onFailure: (response) => {
-          errorHandlers.handleContentDeletionError(response, 'alert');
           callbacks.onFailure(response);
         }
       }
@@ -216,9 +202,8 @@ const getAlert = (alertId) => {
         },
         onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_COMPLETED }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_RETRIEVE_BATCH, payload }),
-        onError: (response) => {
+        onError: () => {
           dispatch({ type: ACTION_TYPES.FETCH_ALERT_DETAILS_ERROR });
-          errorHandlers.handleContentRetrievalError(response, `alert ${alertId} profile`);
         }
       }
     );
@@ -232,11 +217,7 @@ const getAlert = (alertId) => {
  */
 const getAlertEvents = (alertId) => ({
   type: ACTION_TYPES.FETCH_ALERT_EVENTS,
-  promise: alerts.getAlertEvents(alertId),
-  meta: {
-    onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_ALERT_EVENTS, response),
-    onFailure: (response) => errorHandlers.handleContentRetrievalError(response, `alert ${alertId} events`)
-  }
+  promise: alerts.getAlertEvents(alertId)
 });
 
 const resizeAlertInspector = (width) => ({ type: ACTION_TYPES.RESIZE_ALERT_INSPECTOR, payload: width });
