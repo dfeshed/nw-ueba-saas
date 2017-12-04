@@ -226,6 +226,9 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
+    anomalyFilters:
+      fieldName: operationTypeCategories
+      fieldValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
@@ -239,9 +242,12 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
+    anomalyFilters:
+      fieldName: operationTypeCategories
+      fieldValue: OBJECT_CHANGES
   historicalData:
     type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdActiveDirectoryDaily
+    featureBucketConfName: operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
@@ -275,8 +281,11 @@ indicators:
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: result
-    anomalyValue: SUCCESS
+    anomalyField: operationTypeCategories
+    anomalyValue: OBJECT_CHANGES
+    anomalyFilters:
+       fieldName: result
+       fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
@@ -500,6 +509,7 @@ indicators:
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
     featureName: srcMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_host
+  transformer: abnormalSourceMachineTransformer
 
 - id: sumOfHighestDstMachineNameRegexClusterScoresUserIdInteractiveRemoteAuthenticationHourly
   type: SCORE_AGGREGATION
@@ -539,7 +549,7 @@ indicators:
     anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations
-  classification: multiple_failed_logons
+  classification: brute_force_authentication
 
 - id: numberOfDistinctDstMachineDomainUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -607,7 +617,7 @@ classificationPriority:
 - classificationName: elevated_privileges_granted
   priority: 3
 
-- classificationName: multiple_failed_logons
+- classificationName: brute_force_authentication
   priority: 4
 
 - classificationName: user_logins_to_multiple_domains
