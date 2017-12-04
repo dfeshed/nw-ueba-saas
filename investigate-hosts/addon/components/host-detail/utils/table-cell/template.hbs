@@ -5,7 +5,7 @@
 {{else if (eq column.format 'SIZE')}}
   {{rsa-content-memsize size=(get item column.field)}}
 {{else if (eq column.format 'DECIMAL')}}
-  {{rsa-round-decimal value=column.field}}
+  {{rsa-round-decimal value=(get item column.field)}}
 {{else if (eq column.format 'SIGNATURE')}}
   {{signature-text (get item column.field) (get item column.signer)}}
 {{else}}
