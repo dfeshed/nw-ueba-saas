@@ -1,80 +1,85 @@
-<div class="form-fields">
-  <div class="server-input-group rsa-form-radio-group">
-    <div class="field">
-      <hbox xs="12">
-        <div class="col-xs-5 host-ip-js">
-          {{rsa-form-input label=(t 'packager.server') value=configData.packageConfig.server}}
-        </div>
-        <div class="col-xs-4 host-port-js">
-          {{rsa-form-input label=(t 'packager.port') value=configData.packageConfig.port}}
-        </div>
-      </hbox>
-    </div>
-  </div>
-  <div class="field rsa-form-radio-group">
-    <h4 class='rsa-form-radio-group-label'>{{t 'packager.certificateValidation'}}</h4>
-    <label class="rsa-form-radio-label {{if (eq 'none' configData.packageConfig.certificateValidation) 'checked'}}">
-      {{radio-button
-        value='none'
-        groupValue=configData.packageConfig.certificateValidation}}
-      {{t 'packager.none'}}
-    </label>
-    <label class="rsa-form-radio-label {{if (eq 'fullchain' configData.packageConfig.certificateValidation) 'checked'}}">
-      {{radio-button
-        value='fullchain'
-        groupValue=configData.packageConfig.certificateValidation}}
-      {{t 'packager.fullChain'}}
-    </label>
-    <label class="rsa-form-radio-label {{if (eq 'thumbprint' configData.packageConfig.certificateValidation) 'checked'}}">
-      {{radio-button
-        value='thumbprint'
-        groupValue=configData.packageConfig.certificateValidation}}
-      {{t 'packager.thumbprint'}}
-    </label>
-  </div>
-  <div class="field col-xs-7">
-    {{rsa-form-datetime
-      label=(t 'packager.autoUninstall')
-      showTime=true
-      timeLabel=(t 'Time')
-      incrementMinuteBy=5
-      width=100
-      minDate=minDate
-      value=(readonly configData.packageConfig.autoUninstall)
-      yearRange="currentYear, 2050"
-      onChange=(action (mut configData.packageConfig.autoUninstall))
-    }}
-  </div>
-  <div class="field force-overwrite">
-    {{#x-toggle
-      showLabels=true
-      onLabel=(t 'packager.forceOverwrite')
-      value=(readonly configData.packageConfig.forceOverwrite)
-      onToggle=(action (mut configData.packageConfig.forceOverwrite)) as |toggle|}}
-      {{toggle.switch}}
-      {{toggle.onLabel value=(not configData.packageConfig.forceOverwrite)}}
-    {{/x-toggle}}
-  </div>
-
-  <div class="server-input-group rsa-form-radio-group">
-    <div class="field">
-      <hbox xs="12">
-        <div class="col-xs-5 service-name-js">
-          {{rsa-form-input label=(t 'packager.serviceName') value=configData.packageConfig.serviceName}}
-        </div>
-        <div class="col-xs-5 display-name-js">
-          {{rsa-form-input label=(t 'packager.displayName') value=configData.packageConfig.displayName}}
-        </div>
-      </hbox>
-    </div>
-  </div>
+<div class="server-input-group">
   <div class="field">
-    <div class="col-xs-12">
-      {{rsa-form-input label=(t 'packager.description') value=configData.packageConfig.description}}
-    </div>
+    <hbox xs="12">
+      <div class="col-xs-5 host-ip-js">
+        {{rsa-form-input label=(t 'packager.server') value=configData.packageConfig.server}}
+      </div>
+      <div class="col-xs-4 host-port-js">
+        {{rsa-form-input label=(t 'packager.port') value=configData.packageConfig.port}}
+      </div>
+    </hbox>
   </div>
 </div>
-
+<div class="field rsa-form-radio-group">
+  <h4 class='rsa-form-radio-group-label'>{{t 'packager.certificateValidation'}}</h4>
+  <label class="rsa-form-radio-label {{if (eq 'none' configData.packageConfig.certificateValidation) 'checked'}}">
+    {{radio-button
+      value='none'
+      groupValue=configData.packageConfig.certificateValidation}}
+    {{t 'packager.none'}}
+  </label>
+  <label class="rsa-form-radio-label {{if (eq 'fullchain' configData.packageConfig.certificateValidation) 'checked'}}">
+    {{radio-button
+      value='fullchain'
+      groupValue=configData.packageConfig.certificateValidation}}
+    {{t 'packager.fullChain'}}
+  </label>
+  <label class="rsa-form-radio-label {{if (eq 'thumbprint' configData.packageConfig.certificateValidation) 'checked'}}">
+    {{radio-button
+      value='thumbprint'
+      groupValue=configData.packageConfig.certificateValidation}}
+    {{t 'packager.thumbprint'}}
+  </label>
+</div>
+<div class="server-input-group">
+  <div class="field">
+    <hbox xs="12">
+      <div class="col-xs-5">
+        {{rsa-form-input type="password" label=(t 'packager.certificatePassword') value=configData.packageConfig.password}}
+      </div>
+    </hbox>
+  </div>
+</div>
+<div class="field col-xs-5">
+  {{rsa-form-datetime
+    label=(t 'packager.autoUninstall')
+    showTime=true
+    timeLabel=(t 'Time')
+    incrementMinuteBy=5
+    width=100
+    minDate=minDate
+    value=(readonly configData.packageConfig.autoUninstall)
+    yearRange="currentYear, 2050"
+    onChange=(action (mut configData.packageConfig.autoUninstall))
+  }}
+</div>
+<div class="field force-overwrite">
+  {{#x-toggle
+    showLabels=true
+    onLabel=(t 'packager.forceOverwrite')
+    value=(readonly configData.packageConfig.forceOverwrite)
+    onToggle=(action (mut configData.packageConfig.forceOverwrite)) as |toggle|}}
+    {{toggle.switch}}
+    {{toggle.onLabel value=(not configData.packageConfig.forceOverwrite)}}
+  {{/x-toggle}}
+</div>
+<div class="server-input-group">
+  <div class="field">
+    <hbox xs="12">
+      <div class="col-xs-5 service-name-js">
+        {{rsa-form-input label=(t 'packager.serviceName') value=configData.packageConfig.serviceName}}
+      </div>
+      <div class="col-xs-5 display-name-js">
+        {{rsa-form-input label=(t 'packager.displayName') value=configData.packageConfig.displayName}}
+      </div>
+    </hbox>
+  </div>
+</div>
+<div class="field">
+  <div class="col-xs-10">
+    {{rsa-form-input label=(t 'packager.description') value=configData.packageConfig.description}}
+  </div>
+</div>
 <div class="windows-log-collection">
   {{#rsa-content-accordion label=(t 'packager.windowsLogCollectionCongfig')}}
     <div class="field">
