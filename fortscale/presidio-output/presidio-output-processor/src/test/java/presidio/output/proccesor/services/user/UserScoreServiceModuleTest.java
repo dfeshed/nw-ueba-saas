@@ -65,6 +65,9 @@ public class UserScoreServiceModuleTest {
     @Autowired
     private UserScoreService userScoreService;
 
+    @Autowired
+    private presidio.output.commons.services.user.UserScoreService userScoreServiceCommon;
+
     @After
     public void cleanTestData() {
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
@@ -225,6 +228,7 @@ public class UserScoreServiceModuleTest {
                 userPersistencyService,
                 alertPersistencyService,
                 alertSeverityService,
+                userScoreServiceCommon,
                 500,
                 DAYS_COUNT + 10);
 

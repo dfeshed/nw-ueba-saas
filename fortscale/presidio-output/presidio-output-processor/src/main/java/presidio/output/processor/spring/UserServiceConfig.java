@@ -42,13 +42,18 @@ public class UserServiceConfig {
     private AlertPersistencyService alertPersistencyService;
 
     @Bean
+    public presidio.output.commons.services.user.UserScoreService userScoreServiceCommon() {
+        return new presidio.output.commons.services.user.UserScoreServiceImpl();
+    }
+
+    @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchFile);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), userScoreServiceCommon(), alertEffectiveDurationInDays, defaultAlertsBatchFile);
     }
 
     @Bean
     public UserScoreService userScoreService(){
-        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, defaultUsersBatchFile,defaultAlertsBatchFile);
+        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, userScoreServiceCommon(), defaultUsersBatchFile,defaultAlertsBatchFile);
     }
 
 }

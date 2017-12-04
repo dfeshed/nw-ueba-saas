@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import presidio.output.commons.services.user.UserScoreServiceImpl;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -41,6 +42,7 @@ public class UserServiceImplTest {
     private UserPersistencyService mockUserPresistency;
     private EventPersistencyService mockEventPersistency;
     private UserScoreService mockUserScoreService;
+    private presidio.output.commons.services.user.UserScoreService userScoreServiceCommon;
 
     private Page<Alert> emptyAlertPage;
 
@@ -50,10 +52,12 @@ public class UserServiceImplTest {
         mockUserPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
         mockEventPersistency = Mockito.mock(EventPersistencyService.class);
         mockUserScoreService = Mockito.mock(UserScoreService.class);
+        userScoreServiceCommon = Mockito.mock(UserScoreServiceImpl.class);
 
         userService = new UserServiceImpl(mockEventPersistency,
                 mockUserPresistency,
                 mockUserScoreService,
+                userScoreServiceCommon,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS,
                 1000);
         emptyAlertPage = new PageImpl<Alert>(Collections.emptyList());
@@ -62,7 +66,6 @@ public class UserServiceImplTest {
 
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
-        String date = new Date().toString();
         List<User> usersWithOldScore = Arrays.asList(
                 new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
                 new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),

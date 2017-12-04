@@ -41,9 +41,6 @@ public class AlertEnumsConfig {
                 alertContributionCritical,
                 alertContributionHigh,
                 alertContributionMedium,
-                alertContributionLow,
-                percentThresholdCritical,
-                percentThresholdHigh,
-                percentThresholdMedium);
+                alertContributionLow);
     }
 }

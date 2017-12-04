@@ -45,6 +45,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
     public static final int ALERT_CONTRIBUTION_LOW = 10;
     public static final int ALERT_EFFECTIVE_DURATION_IN_DAYS = 90;
     private UserScoreServiceImpl userScoreService;
+    private presidio.output.commons.services.user.UserScoreServiceImpl userScoreServiceCommon;
     private UserPersistencyService mockUserPresistency;
     private AlertPersistencyService mockAlertPresistency;
     private AlertSeverityService mockAlertSeverityService;
@@ -61,16 +62,14 @@ public class UserScoreServiceImplRecalculateScoresTest {
                 ALERT_CONTRIBUTION_CRITICAL,
                 ALERT_CONTRIBUTION_HIGH,
                 ALERT_CONTRIBUTION_MEDIUM,
-                ALERT_CONTRIBUTION_LOW,
-                PERCENT_THRESHOLD_CRITICAL,
-                PERCENT_THRESHOLD_HIGH,
-                PERCENT_THRESHOLD_MEDIUM);
+                ALERT_CONTRIBUTION_LOW);
         mockUserPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
         mockAlertPresistency = Mockito.mock(AlertPersistencyService.class);
 
         userScoreService = new UserScoreServiceImpl(mockUserPresistency,
                 mockAlertPresistency,
                 mockAlertSeverityService,
+                userScoreServiceCommon,
                 1000,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS);
 
