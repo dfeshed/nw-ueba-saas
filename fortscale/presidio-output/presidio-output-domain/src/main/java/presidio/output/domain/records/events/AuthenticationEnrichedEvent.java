@@ -20,6 +20,10 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     public static final String DST_MACHINE_NAME_REGEX_CLUSTER = "dstMachineNameRegexCluster";
     public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
 
+    public AuthenticationEnrichedEvent(){
+        super();
+    }
+
     public AuthenticationEnrichedEvent(Instant createdDate, Instant eventDate, String eventId, String schema, String userId, String userName, String userDisplayName, String dataSource, String operationType, List<String> operationTypeCategories, EventResult result, String resultCode, Map<String, String> additionalInfo) {
         super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
     }
