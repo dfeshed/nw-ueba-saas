@@ -17,16 +17,8 @@ $applicationModalBorderColor: border-color(secondary);
 $applicationModalOverlayColor: background-color(primary, darkest, translucent);
 $applicationModalCloseLinkColor: text-color(primary, lightest);
 
-$applicationLoginTypeColor: text-color(primary, lighter);
 $applicationLoginWidth: 25rem;
-$applicationLoginBackgroundColor: background-color(primary, darkest, somewhat-opaque);
-$applicationLoginBorderColor: border-color(primary, darker);
-$applicationLoginErrorBorderColor: border-color(accentOne);
-$applicationLoginHeaderBackgroundColor: background-color(primary, darker);
 $applicationLoginHeaderLogoWidth: 3.5rem;
-$applicationLoginLinkColor: text-color(primary);
-$applicationLoginLinkHoverColor: text-color(primary, lighter);
-$applicationLoginVersionColor: text-color(primary, light);
 
 $applicationLoaderColor: text-color(primary, darker);
 $applicationLoaderColorAlt: text-color(secondary);

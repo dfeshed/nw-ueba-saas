@@ -1,5 +1,5 @@
 .rsa-login {
-  color: $applicationLoginTypeColor;
+  color: rgba(238,238,238, 1);
   background-image: url('images/NW-Background-Blur.jpg');
   background-repeat: no-repeat;
   background-position: center center;
@@ -19,23 +19,25 @@
 
   .eula-content {
     margin-bottom: rsa-whitespace(more);
-    @include border(1px, solid, primary);
+    border-color: rgba(117,117,117, 1);
+    border-width: 1px;
+    border-style: solid;
     height: 65vh;
     overflow: auto;
     width: 50vw;
     @include rsa-font(paragraph);
     font-weight: 300;
-    background: background-color(primary, darkest);
+    background: rgba(22,22,22, 1);
 
     div {
-      color: text-color(primary, lightest);
+      color: rgba(250,250,250, 1);
     }
 
     .warning {
       padding: rsa-whitespace();
-      background-color: background-color(primary, darkest);
+      background-color: rgba(22,22,22, 1);
       @include rsa-font(header);
-      color: text-color(accentOne);
+      color: rgba(236,34,39, 1);
       text-align: center;
     }
 
@@ -58,11 +60,13 @@
 
   .login-wrapper {
     padding: rsa-whitespace(more);
-    background: $applicationLoginBackgroundColor;
-    @include border(1px, solid, primary, darker);
+    background: rgba(22,22,22, .6);
+    border-color: rgba(33,33,33, 1);
+    border-width: 1px;
+    border-style: solid;
 
     .rsa-form-label {
-      color: text-color(primary, lighter);
+      color: rgba(238,238,238, 1);
     }
 
     &.has-error {
@@ -93,7 +97,7 @@
     height: 2rem;
     margin: calc(#{rsa-whitespace(more)} * -1);
     margin-bottom: rsa-whitespace(more);
-    background-color: $applicationLoginHeaderBackgroundColor;
+    background-color: rgba(33,33,33, 1);
     padding: rsa-whitespace(more) rsa-whitespace(more);
     position: relative;
 
@@ -103,7 +107,7 @@
       top: 0;
       padding: rsa-whitespace(more) rsa-whitespace(more);
       line-height: 2rem;
-      color: text-color(primary, light);
+      color: rgba(189,189,189, 1);
     }
 
     .rsa-logo {
@@ -125,7 +129,7 @@
         padding: rsa-whitespace(least);
         padding-left: rsa-whitespace(less);
         margin-left: rsa-whitespace(less);
-        border-left: 1px solid border-color(primary, lighter);
+        border-left: 1px solid rgba(238,238,238, 1);
         vertical-align: middle;
         @include rsa-font(header, large);
         white-space: nowrap;
@@ -135,8 +139,23 @@
   }
 
   form {
-    .rsa-form-input {
+    .rsa-form-input input {
+      color: rgba(250,250,250, 1);
       margin-bottom: rsa-whitespace();
+      border-bottom: 1px solid rgba(189,189,189, 1);
+    }
+    .rsa-form-button-wrapper.is-primary:not(.is-disabled):not(.is-icon-only):hover .rsa-form-button {
+      color: rgba(250,250,250, 1);
+    }
+    .rsa-form-button-wrapper.is-disabled:not(.is-icon-only) .rsa-form-button {
+      border-color: rgba(117,117,117, 1);
+      color: rgba(117,117,117, 1);
+    }
+    .rsa-form-button {
+      &:not(.is-disabled) {
+        border-color: rgba(250,250,250, 1);
+        color: rgba(250,250,250, 1);
+      }
     }
   }
 
@@ -167,7 +186,7 @@
       list-style: disc;
       @include rsa-font(paragraph, small);
       margin: 0 rsa-whitespace() rsa-whitespace();
-      color: text-color(primary, light);
+      color: rgba(189,189,189, 1);
     }
   }
 
@@ -184,11 +203,11 @@
 
     a {
       text-decoration: underline;
-      color: $applicationLoginLinkColor;
+      color: rgba(117,117,117, 1);
 
       &:hover {
         cursor: pointer;
-        color: $applicationLoginLinkHoverColor;
+        color: rgba(238,238,238, 1);
       }
     }
 
@@ -198,7 +217,7 @@
 
     .version {
       float: right;
-      color: $applicationLoginVersionColor;
+      color: rgba(189,189,189, 1);
     }
   }
 }
