@@ -10,6 +10,7 @@ import fortscale.ml.model.builder.smart_weights.WeightsModelBuilderConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.smart.record.conf.ClusterConf;
+import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -37,7 +38,9 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStoreConfig;
 import presidio.ade.modeling.config.ModelingServiceConfiguration;
 import presidio.ade.test.utils.generators.AccumulatedSmartsDailyGenerator;
-import presidio.data.generators.common.*;
+import presidio.data.generators.common.GeneratorException;
+import presidio.data.generators.common.IStringGenerator;
+import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 
@@ -66,7 +69,8 @@ public class ModelingServiceApplicationSmartModelsTest {
     private ModelingService modelingService;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-
+    @Autowired
+    private SmartRecordConfService smartRecordConfService;
     @Autowired
     private AslResourceFactory aslResourceFactory;
     @Value("${presidio.ade.modeling.smart.records.base.configuration.path}")
@@ -166,7 +170,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         int numOfSmarts = 50;
         double score = 60.0;
         int scoreInterval = 0;
-        int probability = 24;
+        int probability = 25;
         int probabilityInterval = 2;
         int daysBackFrom = 30;
         int daysBackTo = 1;
@@ -255,7 +259,7 @@ public class ModelingServiceApplicationSmartModelsTest {
     public void AssertDescendingWeightAvgBetweenGroups(LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap, Instant end) {
         Query query = new Query()
                 .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(end));
-        List<ModelDAO> weightModel = mongoTemplate.find(query ,ModelDAO.class, "model_smart.global.weights.userId.hourly");
+        List<ModelDAO> weightModel = mongoTemplate.find(query, ModelDAO.class, "model_smart.global.weights.userId.hourly");
 
         Double oneBeforeCurrentAvgWeight = 0.0;
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
@@ -279,10 +283,10 @@ public class ModelingServiceApplicationSmartModelsTest {
      * <p>
      * Assert that features in each group get same weight.
      */
-    public void AssertWeightsOfTwoGroups(List<String> highScoreFeaturesForOneDay, List<String> lowScoreFeaturesForRestDays,  Instant end) {
+    public void AssertWeightsOfTwoGroups(List<String> highScoreFeaturesForOneDay, List<String> lowScoreFeaturesForRestDays, Instant end) {
         Query query = new Query()
                 .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(end));
-        List<ModelDAO> weightModel = mongoTemplate.find(query ,ModelDAO.class, "model_smart.global.weights.userId.hourly");
+        List<ModelDAO> weightModel = mongoTemplate.find(query, ModelDAO.class, "model_smart.global.weights.userId.hourly");
 
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
@@ -389,7 +393,11 @@ public class ModelingServiceApplicationSmartModelsTest {
         }
 
         List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
-        return aggregatedFeatureEventConfList.stream().filter(a -> !zeroWeightFeatures.contains(a.getName())).collect(Collectors.toList());
+        List<String> excludedAggregationRecords = smartRecordConfService.getSmartRecordConf("userId_hourly").getExcludedAggregationRecords();
+        return aggregatedFeatureEventConfList.stream()
+                .filter(aggregatedFeatureEventConf -> !zeroWeightFeatures.contains(aggregatedFeatureEventConf.getName()))
+                .filter(aggregatedFeatureEventConf -> !excludedAggregationRecords.contains(aggregatedFeatureEventConf.getName()))
+                .collect(Collectors.toList());
     }
 
 

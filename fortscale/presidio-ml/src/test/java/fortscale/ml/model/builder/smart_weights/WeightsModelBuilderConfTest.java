@@ -38,6 +38,6 @@ public class WeightsModelBuilderConfTest {
     public void shouldUseProperDefaults() {
         WeightsModelBuilderConf model = new WeightsModelBuilderConf("smartRecordConfName", null, Collections.emptyList());
 
-        Assert.assertEquals(100, model.getNumOfSimulations());
+        Assert.assertEquals(WeightsModelBuilderConf.DEFAULT_NUM_OF_SIMULATIONS, model.getNumOfSimulations());
     }
 }
