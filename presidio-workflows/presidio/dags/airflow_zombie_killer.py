@@ -90,11 +90,11 @@ def finish_zombie_sub_dag_operator_instances():
             update_task_instance_state(running_sub_dag_operator_instance, dag_instance_state)
 
 
-now = datetime.now()
 airflow_zombie_killer = DAG(
     dag_id="airflow_zombie_killer",
-    schedule_interval=timedelta(hours=1),
-    start_date=datetime(year=now.year, month=now.month, day=now.day, hour=now.hour)
+    schedule_interval=timedelta(minutes=5),
+    start_date=datetime(year=2017, month=1, day=1),
+    catchup=False
 )
 
 zombie_dag_instance_killer = PythonOperator(
