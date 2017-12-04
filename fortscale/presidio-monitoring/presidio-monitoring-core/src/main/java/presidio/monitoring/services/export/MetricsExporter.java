@@ -32,7 +32,7 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
 
     public List<MetricDocument> getApplicationMetricsForExport() {
         logger.debug("Getting all application metrics from metric bucket.");
-        return presidioMetricBucket.getApplicationMetrics();
+        return presidioMetricBucket.getApplicationMetricsAndResetApplicationMetrics();
     }
 
     public List<MetricDocument> getSystemMetricsForExport() {

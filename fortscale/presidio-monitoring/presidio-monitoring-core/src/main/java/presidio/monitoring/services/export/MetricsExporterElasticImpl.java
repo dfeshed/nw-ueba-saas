@@ -12,6 +12,7 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
 
     private final Logger logger = Logger.getLogger(MetricsExporterElasticImpl.class);
 
+    private final boolean REPORT_ONCE = true;
     private PresidioMetricPersistencyService presidioMetricPersistencyService;
 
     public MetricsExporterElasticImpl(PresidioMetricBucket presidioMetricBucket, PresidioMetricPersistencyService presidioMetricPersistencyService, ThreadPoolTaskScheduler scheduler) {
@@ -32,8 +33,10 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
      * if metricBucketEnum = APPLICATION , we will export all application metrics even if they are report once,
      * application metric bucket will be empty after this.
      * if metricBucketEnum = SYSTEM , we will export system metrics updated to this time.
-     * if metricBucketEnum = ALL , we will export system metrics updated to this time
-     * and we will export application metrics that are not report only once.
+     * if metricBucketEnum = ALL , we will export system metrics updated to this time ,
+     * we will export all application metrics even if they are report once,
+     * application metric bucket will be empty after this.
+     *
      * @param metricBucketEnum can be or APPLICATION , SYSTEM or ALL
      */
     @Override
@@ -47,7 +50,7 @@ public class MetricsExporterElasticImpl extends MetricsExporter {
                 presidioMetricPersistencyService.save(getSystemMetricsForExport());
                 break;
             case ALL:
-                presidioMetricPersistencyService.save(getMetricsForExport(false));
+                presidioMetricPersistencyService.save(getMetricsForExport(REPORT_ONCE));
                 break;
             default:
                 logger.info("Bad metricBucketEnum was given");
