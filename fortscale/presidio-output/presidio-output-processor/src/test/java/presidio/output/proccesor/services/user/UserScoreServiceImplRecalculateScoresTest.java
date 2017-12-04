@@ -11,8 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -54,7 +54,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
     @Before
     public void setup() {
-        mockAlertSeverityService = new AlertEnumsSeverityService(
+        mockAlertSeverityService = new AlertSeverityServiceImpl(
                 CRITICAL_SCORE,
                 HIGH_SCORE,
                 MEDIUM_SCORE,

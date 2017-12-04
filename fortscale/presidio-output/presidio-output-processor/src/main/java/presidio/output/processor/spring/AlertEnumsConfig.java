@@ -3,7 +3,7 @@ package presidio.output.processor.spring;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.commons.services.alert.AlertSeverityService;
 
 
@@ -34,7 +34,7 @@ public class AlertEnumsConfig {
 
     @Bean
     public AlertSeverityService alertEnumsSeverityService() {
-        return new AlertEnumsSeverityService(
+        return new AlertSeverityServiceImpl(
                 criticalScore,
                 highScore,
                 midScore,

@@ -19,10 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.AlertEnums.*;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.AlertEnums.*;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.TestConfig;
@@ -103,7 +103,7 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         Alert alert =
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
         Date createAtDate = alert.getCreatedDate();
 
         alertPersistencyService.save(alert);
@@ -138,9 +138,9 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D));
         for (Alert alert : alertList) {
             alertPersistencyService.save(alert);
         }
@@ -212,7 +212,7 @@ public class AlertPersistencyServiceTest {
         AlertQuery alertQuery =
                 new AlertQuery.AlertQueryBuilder()
                         .filterByUserName(new ArrayList<>(Arrays.asList("normalized_username_ipusr3@somebigcompany.com")))
-                        .filterBySeverity(new ArrayList<>(Arrays.asList(AlertSeverity.HIGH.name())))
+                        .filterBySeverity(new ArrayList<>(Arrays.asList(AlertEnums.AlertSeverity.HIGH.name())))
                         .filterByStartDate(startDate.getTime())
                         .filterByEndDate(startDate.getTime() + 1)
                         .filterByClassification(classifications2)
@@ -592,9 +592,9 @@ public class AlertPersistencyServiceTest {
         buckets = severityAgg.getBuckets();
 
         assertEquals(buckets.size(), 3L);//3 buckets- a,b,c
-        assertEquals(severityAgg.getBucketByKey(AlertSeverity.LOW.name()).getDocCount(), 1L);
-        assertEquals(severityAgg.getBucketByKey(AlertSeverity.HIGH.name()).getDocCount(), 3L);
-        assertEquals(severityAgg.getBucketByKey(AlertSeverity.CRITICAL.name()).getDocCount(), 1L);
+        assertEquals(severityAgg.getBucketByKey(AlertEnums.AlertSeverity.LOW.name()).getDocCount(), 1L);
+        assertEquals(severityAgg.getBucketByKey(AlertEnums.AlertSeverity.HIGH.name()).getDocCount(), 3L);
+        assertEquals(severityAgg.getBucketByKey(AlertEnums.AlertSeverity.CRITICAL.name()).getDocCount(), 1L);
     }
 
     @Test

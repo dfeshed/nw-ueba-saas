@@ -2,7 +2,6 @@ package presidio.output.domain.services.alerts;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.*;
 
 import java.util.Collection;

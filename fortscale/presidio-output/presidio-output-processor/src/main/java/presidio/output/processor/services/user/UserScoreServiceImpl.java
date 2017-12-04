@@ -4,14 +4,13 @@ import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
@@ -33,6 +32,8 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private AlertSeverityService alertSeverityService;
 
+    private presidio.output.commons.services.user.UserScoreService userScoreService;
+
     private int defaultAlertsBatchSize;
 
     public int defaultUsersBatchSize;
@@ -40,28 +41,22 @@ public class UserScoreServiceImpl implements UserScoreService {
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
                                 AlertSeverityService alertSeverityService,
+                                presidio.output.commons.services.user.UserScoreService userScoreService,
                                 int defaultAlertsBatchSize,
                                 int defaultUsersBatchSize) {
         this.userPersistencyService = userPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
         this.alertSeverityService = alertSeverityService;
+        this.userScoreService = userScoreService;
 
         this.defaultAlertsBatchSize = defaultAlertsBatchSize;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
     }
 
     @Override
-    public void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user) {
-        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(alertSeverity);
-        double userScore = user.getScore();
-        userScore += userScoreContribution;
-        user.setScore(userScore);
-    }
-
-    @Override
     public void updateSeverities() {
         final double[] scores = getScoresArray();
-        final AlertEnumsSeverityService.UserScoreToSeverity severitiesMap = alertSeverityService.getSeveritiesMap(scores);
+        final presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severitiesMap = userScoreService.getSeveritiesMap(scores);
         UserQuery.UserQueryBuilder userQueryBuilder =
                 new UserQuery.UserQueryBuilder()
                         .pageNumber(0)
@@ -177,12 +172,12 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
         final double[] scores = getScoresArray();
-        final AlertEnumsSeverityService.UserScoreToSeverity severitiesMap = alertSeverityService.getSeveritiesMap(scores);
+        final presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severitiesMap = userScoreService.getSeveritiesMap(scores);
         updateSeveritiesForUsersList(severitiesMap, users, persistChanges);
 
     }
 
-    private void updateSeveritiesForUsersList(AlertEnumsSeverityService.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
+    private void updateSeveritiesForUsersList(presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
         List<User> updatedUsers = new ArrayList<>();
         if (users == null) {
             return;

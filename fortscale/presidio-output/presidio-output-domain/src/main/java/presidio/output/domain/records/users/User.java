@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
-import presidio.output.commons.services.alert.UserSeverity;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;

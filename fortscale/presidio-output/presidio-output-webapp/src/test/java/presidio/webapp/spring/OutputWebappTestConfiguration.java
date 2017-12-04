@@ -1,6 +1,5 @@
 package presidio.webapp.spring;
 
-import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -8,6 +7,8 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.output.commons.services.alert.FeedbackService;
+import presidio.output.commons.services.alert.FeedbackServiceImpl;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
@@ -32,8 +33,13 @@ public class OutputWebappTestConfiguration {
 
 
     @Bean
+    FeedbackService feedbackService() {
+        return new FeedbackServiceImpl();
+    }
+
+    @Bean
     RestAlertService restAlertService() {
-        return new RestAlertServiceImpl(alertService, pageNumberAlert, pageSizeAlert);
+        return new RestAlertServiceImpl(alertService, feedbackService(), pageNumberAlert, pageSizeAlert);
     }
 
     @Value("${default.page.size.for.rest.user}")

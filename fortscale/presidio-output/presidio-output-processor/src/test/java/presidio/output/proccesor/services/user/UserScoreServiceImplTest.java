@@ -11,11 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
@@ -40,6 +40,7 @@ public class UserScoreServiceImplTest {
     public static final int ALERT_CONTRIBUTION_MEDIUM = 20;
     public static final int ALERT_CONTRIBUTION_LOW = 10;
 
+    private presidio.output.commons.services.user.UserScoreServiceImpl userScoreServiceCommons;
     private UserScoreServiceImpl userScoreService;
     private UserPersistencyService mockPresistency;
     private AlertSeverityService alertSeverityService;
@@ -47,18 +48,15 @@ public class UserScoreServiceImplTest {
     @Before
     public void setup() {
         mockPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
-        alertSeverityService = new AlertEnumsSeverityService(CRITICAL_SCORE,
+        alertSeverityService = new AlertSeverityServiceImpl(CRITICAL_SCORE,
                 HIGH_SCORE,
                 MEDIUM_SCORE,
                 ALERT_CONTRIBUTION_CRITICAL,
                 ALERT_CONTRIBUTION_HIGH,
                 ALERT_CONTRIBUTION_MEDIUM,
-                ALERT_CONTRIBUTION_LOW,
-                PERCENT_THRESHOLD_CRITICAL,
-                PERCENT_THRESHOLD_HIGH,
-                PERCENT_THRESHOLD_MEDIUM);
+                ALERT_CONTRIBUTION_LOW);
 
-        userScoreService = new UserScoreServiceImpl(mockPresistency, null, alertSeverityService, 1000, 90);
+        userScoreService = new UserScoreServiceImpl(mockPresistency, null, alertSeverityService, userScoreServiceCommons, 1000, 90);
     }
 
     @Test
@@ -70,8 +68,8 @@ public class UserScoreServiceImplTest {
             d[i] = i;
         }
 
-//        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
-        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = alertSeverityService.getSeveritiesMap(d);
+//        AlertSeverityServiceImpl.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
+        presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severityTreeMap = userScoreServiceCommons.getSeveritiesMap(d);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(100D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(249999D));
@@ -128,8 +126,8 @@ public class UserScoreServiceImplTest {
         //1 instance with value 2000
         d[19] = 2000;
 
-//        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
-        AlertEnumsSeverityService.UserScoreToSeverity severityTreeMap = alertSeverityService.getSeveritiesMap(d);
+//        AlertSeverityServiceImpl.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
+        presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severityTreeMap = userScoreServiceCommons.getSeveritiesMap(d);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(100D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(300D));
@@ -207,7 +205,7 @@ public class UserScoreServiceImplTest {
         Page<User> page1 = new PageImpl(page, pageable1, 10);
 
 
-        AlertEnumsSeverityService.UserScoreToSeverity userScoreToSeverity = new AlertEnumsSeverityService.UserScoreToSeverity(20D, 40D, 80D);
+        presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity userScoreToSeverity = new presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity(20D, 40D, 80D);
         Whitebox.invokeMethod(userScoreService, "updateSeveritiesForUsersList", userScoreToSeverity, page1.getContent(), true);
 
 
