@@ -247,7 +247,7 @@ indicators:
       fieldValue: OBJECT_CHANGES
   historicalData:
     type: count_aggregations
-    featureBucketConfName: objectChangeOperationResultHistogramUserIdActiveDirectoryHourly
+    featureBucketConfName: operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
