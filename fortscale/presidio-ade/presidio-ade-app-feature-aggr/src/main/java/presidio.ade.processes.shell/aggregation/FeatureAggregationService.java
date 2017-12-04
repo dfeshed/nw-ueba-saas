@@ -67,7 +67,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
-            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords);
+            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
         }
     }

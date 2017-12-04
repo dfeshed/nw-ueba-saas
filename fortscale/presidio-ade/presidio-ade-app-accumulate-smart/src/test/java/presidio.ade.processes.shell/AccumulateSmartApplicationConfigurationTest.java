@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.processes.shell.config.AccumulateSmartConfiguration;
+import presidio.monitoring.spring.test.PresidioMonitoringTestConfig;
 
 import java.util.Properties;
 
 @Configuration
-@Import({MongodbTestConfig.class})
+@Import({MongodbTestConfig.class,PresidioMonitoringTestConfig.class})
 public class AccumulateSmartApplicationConfigurationTest extends AccumulateSmartConfiguration {
     @Bean
     public static TestPropertiesPlaceholderConfigurer accumulateSmartApplicationTestProperties() {

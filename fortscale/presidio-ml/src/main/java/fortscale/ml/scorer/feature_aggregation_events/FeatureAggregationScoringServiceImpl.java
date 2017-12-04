@@ -4,6 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeAggregationReader;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -30,7 +31,7 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
         this.scoredFeatureAggregatedRecordBuilder = scoredFeatureAggregatedRecordBuilder;
     }
 
-    public List<ScoredFeatureAggregationRecord>  scoreEvents(List<AdeAggregationRecord> featureAdeAggrRecords) {
+    public List<ScoredFeatureAggregationRecord>  scoreEvents(List<AdeAggregationRecord> featureAdeAggrRecords, TimeRange timeRange) {
         List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = new ArrayList<>();
 
         if (featureAdeAggrRecords.size() == 0) {
@@ -39,7 +40,7 @@ public class FeatureAggregationScoringServiceImpl implements FeatureAggregationS
 
         for (AdeAggregationRecord featureAdeAggrRecord : featureAdeAggrRecords) {
             AdeRecordReader adeRecordReader = (AdeAggregationReader) recordReaderFactoryService.getRecordReader(featureAdeAggrRecord);
-            List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader);
+            List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader, timeRange);
             scoredFeatureAggregatedRecordBuilder.fill(scoredFeatureAggregationRecords, featureAdeAggrRecord, featureScoreList);
         }
 

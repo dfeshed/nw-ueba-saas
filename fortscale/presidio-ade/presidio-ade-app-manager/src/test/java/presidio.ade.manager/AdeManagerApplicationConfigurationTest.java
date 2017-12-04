@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.manager.config.AdeManagerApplicationConfig;
+import presidio.monitoring.spring.test.PresidioMonitoringTestConfig;
 
 import java.util.Properties;
 
 
 @Configuration
-@Import({MongodbTestConfig.class})
+@Import({MongodbTestConfig.class,PresidioMonitoringTestConfig.class})
 public class AdeManagerApplicationConfigurationTest extends AdeManagerApplicationConfig {
     @Bean
     public static TestPropertiesPlaceholderConfigurer managerApplicationTestProperties() {

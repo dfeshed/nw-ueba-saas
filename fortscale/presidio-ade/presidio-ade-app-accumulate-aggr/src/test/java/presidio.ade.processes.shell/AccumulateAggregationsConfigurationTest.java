@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.processes.shell.config.AccumulateAggregationsConfiguration;
+import presidio.monitoring.spring.test.PresidioMonitoringTestConfig;
 
 import java.util.Properties;
 
 @Configuration
-@Import({MongodbTestConfig.class})
+@Import({MongodbTestConfig.class, PresidioMonitoringTestConfig.class})
 public class AccumulateAggregationsConfigurationTest extends AccumulateAggregationsConfiguration {
     @Bean
     public static TestPropertiesPlaceholderConfigurer accumulateAggregationsApplicationTestProperties() {

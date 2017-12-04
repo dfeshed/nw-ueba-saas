@@ -87,7 +87,7 @@ public class SmartService {
 							conf, strategy, partition, aggregationRecordsThreshold);
 					while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 					Collection<SmartRecord> records = aggregator.getSmartRecords();
-					smartScoringService.score(records);
+					smartScoringService.score(records,timeRange);
 					smartDataStore.storeSmartRecords(smartRecordConfName, records);
 				});
 			}

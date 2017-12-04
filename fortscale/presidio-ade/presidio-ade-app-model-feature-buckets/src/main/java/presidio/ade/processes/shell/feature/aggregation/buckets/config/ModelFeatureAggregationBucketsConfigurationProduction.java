@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Import;
  * Created by barak_schuster on 7/30/17.
  */
 @Configuration
-@Import(MongoConfig.class)
+@Import({MongoConfig.class})
 public class ModelFeatureAggregationBucketsConfigurationProduction extends ModelFeatureAggregationBucketsConfiguration{
 }

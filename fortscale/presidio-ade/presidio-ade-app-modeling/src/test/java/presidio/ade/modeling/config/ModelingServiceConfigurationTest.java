@@ -6,6 +6,7 @@ import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.spring.test.PresidioMonitoringTestConfig;
 
 import java.util.Properties;
 
@@ -13,7 +14,7 @@ import java.util.Properties;
  * @author Lior Govrin
  */
 @Configuration
-@Import({ModelingServiceConfiguration.class, MongodbTestConfig.class, BootShimConfig.class})
+@Import({ModelingServiceConfiguration.class, MongodbTestConfig.class, BootShimConfig.class,PresidioMonitoringTestConfig.class})
 public class ModelingServiceConfigurationTest {
 	@Bean
 	public static TestPropertiesPlaceholderConfigurer modelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
