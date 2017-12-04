@@ -14,16 +14,22 @@ public class SingleTimeGeneratorFactory implements ITimeGeneratorFactory{
     private int endHourOfDay;
     private int daysBackFrom;
     private int daysBackTo;
+    private int intervalInMinutes;
 
 
     public SingleTimeGeneratorFactory(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo){
+        this(startHourOfDay,endHourOfDay,daysBackFrom,daysBackTo,INTERVAL_DEFAULT);
+    }
+
+    public SingleTimeGeneratorFactory(int startHourOfDay, int endHourOfDay, int daysBackFrom, int daysBackTo,int intervalInMinutes){
         this.startHourOfDay = startHourOfDay;
         this.endHourOfDay = endHourOfDay;
         this.daysBackFrom = daysBackFrom;
         this.daysBackTo = daysBackTo;
+        this.intervalInMinutes = intervalInMinutes;
     }
 
     public MinutesIncrementTimeGenerator createTimeGenerator() throws GeneratorException {
-        return new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, MINUTE_DEFAULT), LocalTime.of(endHourOfDay, MINUTE_DEFAULT), INTERVAL_DEFAULT, daysBackFrom, daysBackTo);
+        return new MinutesIncrementTimeGenerator(LocalTime.of(startHourOfDay, MINUTE_DEFAULT), LocalTime.of(endHourOfDay, MINUTE_DEFAULT), this.intervalInMinutes, daysBackFrom, daysBackTo);
     }
 }
