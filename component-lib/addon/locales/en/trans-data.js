@@ -82,7 +82,7 @@ export default {
     timeZone: 'Time Zone',
     dateFormatError: 'There was an error attempting to save your Date Format selection. Please try again. If this issue persists, please contact your system admin.',
     landingPageError: 'There was an error attempting to save your Default Landing Page selection. Please try again. If this issue persists, please contact your system admin.',
-    defaultInvestigatePageError: 'There was an error attempting to save your Default Investigate Page selection. Please try again. If this issue persists, please contact your system admin.',
+    defaultInvestigatePageError: 'There was an error attempting to save your Default Investigate View selection. Please try again. If this issue persists, please contact your system admin.',
     timeFormatError: 'There was an error attempting to save your Time Format selection. Please try again. If this issue persists, please contact your system admin.',
     timezoneError: 'There was an error attempting to save your Time Zone selection. Please try again. If this issue persists, please contact your system admin.',
     dateFormat: {
@@ -113,7 +113,7 @@ export default {
       admin: 'Admin'
     },
     defaultInvestigatePage: {
-      label: 'Default Investigate Page',
+      label: 'Default Investigate View',
       events: 'Events',
       eventAnalysis: 'Event Analysis',
       malware: 'Malware Analysis',
