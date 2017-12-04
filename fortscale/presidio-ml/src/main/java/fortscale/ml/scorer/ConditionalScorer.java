@@ -1,20 +1,18 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.AdeRecordReader;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by YaronDL on 8/6/2017.
+ * @author Yaron DL
+ * @author Lior Govrin
  */
-abstract public class ConditionalScorer extends AbstractScorer{
-    private static final Logger logger = Logger.getLogger(ConditionalScorer.class);
-
+abstract public class ConditionalScorer extends AbstractScorer {
     private Scorer scorer;
-
 
     public ConditionalScorer(String name, Scorer scorer) {
         super(name);
@@ -23,19 +21,25 @@ abstract public class ConditionalScorer extends AbstractScorer{
     }
 
     @Override
-    public FeatureScore calculateScore(AdeRecordReader adeRecordReader){
+    public FeatureScore calculateScore(AdeRecordReader adeRecordReader) {
         FeatureScore featureScore = null;
-        if(isTrue(adeRecordReader)) {
-            featureScore = scorer.calculateScore(adeRecordReader);
+
+        if (isTrue(adeRecordReader)) {
+            FeatureScore baseFeatureScore = scorer.calculateScore(adeRecordReader);
+
+            if (baseFeatureScore != null) {
+                List<FeatureScore> featureScores = Collections.singletonList(baseFeatureScore);
+                featureScore = new FeatureScore(getName(), baseFeatureScore.getScore(), featureScores);
+            }
         }
+
         return featureScore;
     }
 
     /**
      * Check if conditionalValue exist in conditionalField according to conditionalValue type (e.g list, boolean)
-      * @param adeRecordReader
+     *
      * @return boolean
      */
     public abstract boolean isTrue(AdeRecordReader adeRecordReader);
-
 }
