@@ -16,7 +16,7 @@ public abstract class AbstractElasticDocument {
 
     @Id
     @Field(type = FieldType.String, store = true)
-    private String id;
+    protected String id;
 
     @Field(type = FieldType.Date, store = true)
     private Date createdDate;

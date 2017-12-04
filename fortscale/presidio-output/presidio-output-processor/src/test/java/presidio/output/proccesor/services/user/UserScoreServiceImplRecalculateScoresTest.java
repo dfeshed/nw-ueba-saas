@@ -33,9 +33,6 @@ import java.util.*;
 
 public class UserScoreServiceImplRecalculateScoresTest {
 
-    public static final int PERCENT_THRESHOLD_CRITICAL = 95;
-    public static final int PERCENT_THRESHOLD_HIGH = 80;
-    public static final int PERCENT_THRESHOLD_MEDIUM = 70;
     public static final int CRITICAL_SCORE = 95;
     public static final int HIGH_SCORE = 90;
     public static final int MEDIUM_SCORE = 80;

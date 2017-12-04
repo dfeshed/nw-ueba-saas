@@ -195,11 +195,11 @@ public class User extends AbstractElasticDocument {
 
         User user = (User) o;
 
-        return userId.equals(user.userId);
+        return id.equals(user.id);
     }
 
     @Override
     public int hashCode() {
-        return userId.hashCode();
+        return id.hashCode();
     }
 }

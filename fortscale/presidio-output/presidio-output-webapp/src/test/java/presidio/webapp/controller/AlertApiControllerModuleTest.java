@@ -21,7 +21,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.users.*;
+import presidio.output.domain.records.users.User;
 import presidio.output.domain.repositories.AlertRepository;
+import presidio.output.domain.repositories.UserRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.model.*;
@@ -54,6 +57,9 @@ public class AlertApiControllerModuleTest {
 
     @Autowired
     private AlertRepository alertRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AlertPersistencyServiceImpl alertPersistencyService;
@@ -366,32 +372,86 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void testUpdateAlertFeedback() throws Exception {
+    public void testUpdateAlertFeedback_NONE_to_RISK() throws Exception {
+        //save user in elastic
+        presidio.output.domain.records.users.User user = new User();
+        user.setScore(10);
+        user.setUserName("testUser");
+        user.setSeverity(UserSeverity.HIGH);
+        User savedUser = userRepository.save(user);
+
         //save alerts in elastic
         Date date = new Date();
-        presidio.output.domain.records.alerts.Alert alert = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedUser.getId(), "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
         alertRepository.save(alert);
 
+
+        //building the request-  update feedback from NONE to RISK
         UpdateFeedbackRequest requestBody = new UpdateFeedbackRequest();
         requestBody.setAlertFeedback(AlertQueryEnums.AlertFeedback.RISK);
         requestBody.setAlertIds(Arrays.asList(alert.getId()));
-
         ObjectMapper mapper = new ObjectMapper();
         String requestJson = mapper.writeValueAsString(requestBody);
 
-        // get actual response not paged
+        //trigger the actual API
         MvcResult mvcResult = alertsApiMVC.perform(post(UPDATE_ALERT_FEEDBACK_URI)
                 .contentType("application/json")
                 .content(requestJson))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        //feedback NONE -> RISK : alert score and contribution shouldn't be changed and same for user score
         presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
         Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
         Assert.assertEquals(alert.getContributionToUserScore(), updatedAlert.getContributionToUserScore(), 0.01);
         Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
         Assert.assertEquals(AlertEnums.AlertFeedback.RISK, updatedAlert.getFeedback());
 
-        //TODO- test that user severity was updated
+        User updatedUser = userRepository.findOne(savedUser.getId());
+        Assert.assertEquals(savedUser.getScore(), updatedUser.getScore(), 0.01);
+        Assert.assertEquals(savedUser.getSeverity(), updatedUser.getSeverity());
+    }
+
+    @Test
+    public void testUpdateAlertFeedback_RISK_to_NOT_RISK() throws Exception {
+        //save user in elastic
+        presidio.output.domain.records.users.User user = new User();
+        user.setScore(10);
+        user.setUserName("testUser");
+        user.setSeverity(UserSeverity.HIGH);
+        User savedUser = userRepository.save(user);
+
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedUser.getId(), "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert.setFeedback(AlertEnums.AlertFeedback.RISK);
+        alert.setContributionToUserScore(10D);
+        alertRepository.save(alert);
+
+
+        //building the request-  update feedback from NONE to RISK
+        UpdateFeedbackRequest requestBody = new UpdateFeedbackRequest();
+        requestBody.setAlertFeedback(AlertQueryEnums.AlertFeedback.NOT_RISK);
+        requestBody.setAlertIds(Arrays.asList(alert.getId()));
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(requestBody);
+
+        //trigger the actual API
+        MvcResult mvcResult = alertsApiMVC.perform(post(UPDATE_ALERT_FEEDBACK_URI)
+                .contentType("application/json")
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //feedback RISK -> NOT_RISK: alert score and contribution should be updated and also the user score
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
+        Assert.assertEquals(0, updatedAlert.getContributionToUserScore(), 0.01);
+        Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
+        Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
+
+        User updatedUser = userRepository.findOne(savedUser.getId());
+        Assert.assertEquals(savedUser.getScore() - alert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
+        Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
     }
 }

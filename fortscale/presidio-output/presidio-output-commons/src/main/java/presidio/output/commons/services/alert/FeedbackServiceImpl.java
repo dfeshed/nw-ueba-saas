@@ -7,6 +7,7 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         });
 
         alertPersistencyService.save((List<Alert>)alerts);
-        userPersistencyService.save((List<User>) usersToBeUpdated);
+        userPersistencyService.save(new ArrayList<>(usersToBeUpdated));
     }
 
     private Double calcContributionToUserScoreDelta(Alert alert, AlertEnums.AlertFeedback feedback) {

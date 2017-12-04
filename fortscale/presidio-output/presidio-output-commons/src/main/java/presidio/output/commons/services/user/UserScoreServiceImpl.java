@@ -12,9 +12,19 @@ import presidio.output.domain.records.users.User;
  */
 public class UserScoreServiceImpl implements UserScoreService {
 
+
     private int percentThresholdCritical;
     private int percentThresholdHigh;
     private int percentThresholdMedium;
+
+    public UserScoreServiceImpl(int percentThresholdCritical,
+                                int percentThresholdHigh,
+                                int percentThresholdMedium) {
+        this.percentThresholdCritical = percentThresholdCritical;
+        this.percentThresholdHigh = percentThresholdHigh;
+        this.percentThresholdMedium = percentThresholdMedium;
+
+    }
 
     @Autowired
     private AlertSeverityService alertSeverityService;
