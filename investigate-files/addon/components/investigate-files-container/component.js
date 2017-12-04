@@ -10,6 +10,7 @@ import {
   getPageOfFiles,
   getFilter,
   fetchSchemaInfo,
+  initializeFilesPreferences,
   resetDownloadId
 } from 'investigate-files/actions/data-creators';
 
@@ -26,6 +27,7 @@ const dispatchToActions = {
   getFilter,
   getPageOfFiles,
   fetchSchemaInfo,
+  initializeFilesPreferences,
   resetDownloadId
 };
 
@@ -54,6 +56,7 @@ const Files = Component.extend({
   init() {
     this._super(...arguments);
     if (!this.get('hasFiles')) {
+      this.send('initializeFilesPreferences');
       this.send('fetchSchemaInfo');
       this.send('getFilter');
     }

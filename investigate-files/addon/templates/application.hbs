@@ -1,5 +1,9 @@
 {{#rsa-investigate-header activeTab='protected.investigate.investigate-files' as |section| }}
+  {{#if section.isIconBar}}
+    {{files-preferences}}
+  {{/if}}
   {{#if section.isMain}}
     {{outlet}}
   {{/if}}
 {{/rsa-investigate-header}}
+{{preferences-panel}}

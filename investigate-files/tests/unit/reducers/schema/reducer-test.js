@@ -33,7 +33,9 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     schema: null,
-    schemaLoading: true
+    schemaLoading: true,
+    visibleColumns: [],
+    userProjectionChanged: false
   });
 });
 
@@ -82,4 +84,25 @@ test('The UPDATE_COLUMN_VISIBILITY action will toggle the defaultProjection prop
   const result = reducer(previous, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'entropy', visible: false } });
 
   assert.equal(result.schema[1].defaultProjection, true, 'expected toggle the property');
+  assert.equal(result.userProjectionChanged, true, 'projection changed flag is set');
+});
+
+test('The GET_PREFERENCES action will set visibleColumns', function(assert) {
+  const previous = Immutable.from({
+    visibleColumns: []
+  });
+  const response = {
+    data: {
+      filePreference: {
+        visibleColumns: ['firstFileName', 'entropy']
+      }
+    }
+  };
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_PREFERENCES,
+    payload: response
+  });
+
+  const result = reducer(previous, newAction);
+  assert.equal(result.visibleColumns.length, 2, 'visible columns length is properly set');
 });

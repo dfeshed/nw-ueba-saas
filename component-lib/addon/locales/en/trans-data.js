@@ -1579,6 +1579,13 @@ export default {
       DB: 'Database Time',
       WALL: 'Wall Clock Time',
       autoDownloadExtractedFiles: 'Download extracted files automatically'
+    },
+    'endpoint-preferences': {
+      triggerTip: 'Open/Hide Endpoint Preferences',
+      visibleColumns: 'Visible Columns',
+      sortField: 'Sort Field',
+      sortOrder: 'Sort Order',
+      filter: 'Filter'
     }
   },
   packager: {
@@ -1679,6 +1686,7 @@ export default {
       }
     },
     fields: {
+      panelTitle: 'Files Preferences',
       id: 'ID',
       companyName: 'Company Name',
       checksumMd5: 'MD5',
@@ -2070,6 +2078,7 @@ export default {
       },
       footer: '{{count}} of {{total}} hosts',
       column: {
+        panelTitle: 'Hosts Preferences',
         id: 'Agent ID',
         analysisData: {
           iocs: 'IOC Alerts',

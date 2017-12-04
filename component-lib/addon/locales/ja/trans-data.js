@@ -1578,6 +1578,13 @@ export default {
       DB: 'ja_Database Time',
       WALL: 'ja_Wall Clock Time',
       autoDownloadExtractedFiles: 'ja_Download extracted files automatically'
+    },
+    'endpoint-preferences': {
+      triggerTip: 'ja_Open/Hide Endpoint Preferences',
+      visibleColumns: 'ja_Visible Columns',
+      sortField: 'ja_Sort Field',
+      sortOrder: 'ja_Sort Order',
+      filter: 'ja_Filter'
     }
   },
   packager: {
@@ -1678,6 +1685,7 @@ export default {
       }
     },
     fields: {
+      panelTitle: 'ja_Files Preferences',
       id: 'ja_ID',
       companyName: 'ja_Company Name',
       checksumMd5: 'ja_MD5',
@@ -2071,6 +2079,7 @@ export default {
       },
       footer: 'ja_showing {{count}} of {{total}} ja_hosts',
       column: {
+        panelTitle: 'ja_Hosts Preferences',
         id: 'ja_Agent ID',
         analysisData: {
           iocs: 'ja_IOC Alerts',

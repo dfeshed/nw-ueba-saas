@@ -49,6 +49,7 @@
     "ember-cli-template-lint": "0.4.12",
     "ember-cli-uglify": "^1.2.0",
     "ember-cli-windows-addon": "1.3.1",
+    "ember-dependency-lookup": "2.0.0",
     "ember-engines": "0.5.12",
     "ember-exam": "0.7.0",
     "ember-sinon": "0.6.0",
@@ -72,7 +73,8 @@
     "configPath": "tests/dummy/config",
     "paths": [
       "../component-lib",
-      "../streaming-data"
+      "../streaming-data",
+      "../preferences"
     ]
   },
   "private": true

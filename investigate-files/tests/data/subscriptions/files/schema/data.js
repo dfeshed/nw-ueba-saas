@@ -3,6 +3,38 @@ export default {
   'type': 'files',
   'fields': [
     {
+      name: 'firstFileName',
+      description: 'Filename',
+      dataType: 'STRING',
+      searchable: true,
+      defaultProjection: true,
+      wrapperType: 'STRING'
+    },
+    {
+      name: 'firstSeenTime',
+      description: 'First seen time',
+      dataType: 'DATE',
+      searchable: false,
+      defaultProjection: true,
+      wrapperType: 'STRING'
+    },
+    {
+      name: 'machineOsType',
+      description: 'Operating system',
+      dataType: 'STRING',
+      values: ['windows', 'linux', 'mac'],
+      searchable: true,
+      wrapperType: 'STRING'
+    },
+    {
+      name: 'size',
+      description: 'File size',
+      dataType: 'LONG',
+      searchable: true,
+      defaultProjection: true,
+      wrapperType: 'NUMBER'
+    },
+    {
       'name': 'checksumMd5',
       'dataType': 'STRING',
       'searchable': false,

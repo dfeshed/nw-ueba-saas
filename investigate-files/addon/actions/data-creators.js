@@ -87,6 +87,26 @@ const fetchSchemaInfo = () => {
   };
 };
 
+const initializeFilesPreferences = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.GET_PREFERENCES,
+      promise: File.fetchPreferences('endpoint-preferences'),
+      meta: {
+        onSuccess: ({ data }) => {
+          const { sortField } = data.filePreference;
+          if (sortField) {
+            dispatch({
+              type: ACTION_TYPES.SET_SORT_BY,
+              payload: { sortField, isSortDescending: false }
+            });
+          }
+        }
+      }
+    });
+  };
+};
+
 
 /**
  * An action creator for dispatches a set of actions for updating file filter criteria and re-running fetch of the
@@ -294,5 +314,6 @@ export {
   resetDownloadId,
   createCustomSearch,
   setFilesFilter,
-  setSystemFilterFlag
+  setSystemFilterFlag,
+  initializeFilesPreferences
 };

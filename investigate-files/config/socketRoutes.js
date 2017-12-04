@@ -37,6 +37,17 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
       }
+    },
+    'endpoint-preferences': {
+      socketUrl,
+      getPreferences: {
+      subscriptionDestination: '/user/queue/endpoint/preferences/get',
+        requestDestination: '/ws/endpoint/preferences/get'
+      },
+      setPreferences: {
+        subscriptionDestination: '/user/queue/endpoint/preferences/set',
+        requestDestination: '/ws/endpoint/preferences/set'
+      }
     }
   };
 };

@@ -85,11 +85,20 @@ const deleteFilter = (id) => {
   });
 };
 
+const fetchPreferences = (preferenceFor) => {
+  return promiseRequest({
+    modelName: preferenceFor,
+    method: 'getPreferences',
+    query: { }
+  });
+};
+
 
 export default {
   fetchFiles,
   fileExport,
   createCustomSearch,
   getSavedFilters,
-  deleteFilter
+  deleteFilter,
+  fetchPreferences
 };
