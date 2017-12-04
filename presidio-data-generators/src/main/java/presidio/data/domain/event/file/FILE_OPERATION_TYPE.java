@@ -2,9 +2,6 @@ package presidio.data.domain.event.file;
 
 import java.util.Arrays;
 
-/**
- * Created by presidio on 7/13/17.
- */
 public enum FILE_OPERATION_TYPE{
 
     FOLDER_OPENED ("FOLDER_OPENED"),

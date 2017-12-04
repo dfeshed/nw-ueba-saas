@@ -2,9 +2,6 @@ package presidio.data.domain.event.activedirectory;
 
 import java.util.Arrays;
 
-/**
- * Created by presidio on 7/13/17.
- */
 public enum AD_OPERATION_TYPE {
 
     ACCOUNT_MANAGEMENT ("ACCOUNT_MANAGEMENT"),

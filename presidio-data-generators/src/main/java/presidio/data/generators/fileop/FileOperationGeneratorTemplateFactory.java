@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by YaronDL on 8/8/2017.
- */
 public class FileOperationGeneratorTemplateFactory {
 
 
@@ -284,7 +281,5 @@ public class FileOperationGeneratorTemplateFactory {
         FileOperationGenerator generator = new FileOperationGenerator();
         return generator;
     }
-
-
 }
 

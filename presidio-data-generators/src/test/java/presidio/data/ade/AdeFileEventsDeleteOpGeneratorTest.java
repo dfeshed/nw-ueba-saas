@@ -1,22 +1,14 @@
 package presidio.data.ade;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import presidio.data.domain.FileEntity;
 import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
-import presidio.data.domain.event.file.FileEvent;
 import presidio.data.domain.event.file.FileOperation;
 import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.event.file.FileEventsGenerator;
 import presidio.data.generators.fileop.IFileOperationGenerator;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by YaronDL on 8/8/2017.
- */
 public class AdeFileEventsDeleteOpGeneratorTest {
 
     @Test

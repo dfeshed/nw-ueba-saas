@@ -13,9 +13,7 @@ import java.util.stream.Collectors;
 /**
  * This class is one element data provider from a cyclic list of string values - ADE File
  */
-public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator<OperationType> implements IOperationTypeGenerator
-{
-
+public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator<OperationType> implements IOperationTypeGenerator {
     private static final String[] DEFAULT_AD_OPERATION_TYPE_NAMES = {
             AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value,
             AD_OPERATION_TYPE.USER_PASSWORD_CHANGED.value,

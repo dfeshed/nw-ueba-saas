@@ -1,9 +1,6 @@
 package presidio.data.domain.event.activedirectory;
 
-
 import presidio.data.domain.event.OperationType;
-
-import java.util.List;
 
 /**
  * ActiveDirectory operation entity.

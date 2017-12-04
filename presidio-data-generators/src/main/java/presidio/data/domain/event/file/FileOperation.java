@@ -1,10 +1,7 @@
 package presidio.data.domain.event.file;
 
-
 import presidio.data.domain.FileEntity;
 import presidio.data.domain.event.OperationType;
-
-import java.util.List;
 
 /**
  * Events generator domain, contains all fields for DLPFileOperation generator

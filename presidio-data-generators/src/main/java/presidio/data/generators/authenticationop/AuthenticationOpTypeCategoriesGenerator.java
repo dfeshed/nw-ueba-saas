@@ -1,6 +1,5 @@
 package presidio.data.generators.authenticationop;
 
-import presidio.data.domain.event.file.FILE_OPERATION_TYPE_CATEGORIES;
 import presidio.data.generators.common.IStringListGenerator;
 
 import java.util.Arrays;

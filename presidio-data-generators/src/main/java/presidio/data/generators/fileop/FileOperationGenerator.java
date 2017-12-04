@@ -9,9 +9,6 @@ import presidio.data.generators.fileentity.IFileEntityGenerator;
 
 import java.util.Collections;
 
-/**
- *
- * **/
 public class FileOperationGenerator implements IFileOperationGenerator {
     private IFileEntityGenerator sourceFileEntityGenerator;
     private IFileEntityGenerator destFileEntityGenerator;

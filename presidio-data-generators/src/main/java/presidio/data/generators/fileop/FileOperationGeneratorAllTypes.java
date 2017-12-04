@@ -9,9 +9,6 @@ import presidio.data.generators.common.precentage.OperationResultPercentageGener
 import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
 
-/**
- *
- * **/
 public class FileOperationGeneratorAllTypes implements IFileOperationGenerator {
     private IFileEntityGenerator sourceFileEntityGenerator;
     private IFileEntityGenerator destFileEntityGenerator;

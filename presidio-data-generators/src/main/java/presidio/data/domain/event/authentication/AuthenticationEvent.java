@@ -6,7 +6,6 @@ import presidio.data.domain.event.Event;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
 
 public class AuthenticationEvent extends Event implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -15,8 +14,7 @@ public class AuthenticationEvent extends Event implements Serializable {
     private Instant eventTime;
     private String dataSource;
     private User user;
-    private String operationType;
-    private List<String> operationTypeCategories;
+    private AuthenticationOperation authenticationOperation;
     private MachineEntity srcMachineEntity;
     private MachineEntity dstMachineEntity;
     private String result;
@@ -26,26 +24,24 @@ public class AuthenticationEvent extends Event implements Serializable {
     private String objectCanonical;
     private String site;
 
-    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, AuthenticationOperation authenticationOperation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
         this.eventId = eventId;
         this.eventTime = eventTime;
         this.dataSource = dataSource;
         this.user = user;
-        this.operationType = operationType;
-        this.operationTypeCategories = operationTypeCategories;
+        this.authenticationOperation = authenticationOperation;
         this.srcMachineEntity = srcMachineEntity;
         this.dstMachineEntity = dstMachineEntity;
         this.result = result;
         this.resultCode = resultCode;
     }
 
-    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical) {
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, AuthenticationOperation authenticationOperation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical) {
         this.eventId = eventId;
         this.eventTime = eventTime;
         this.dataSource = dataSource;
         this.user = user;
-        this.operationType = operationType;
-        this.operationTypeCategories = operationTypeCategories;
+        this.authenticationOperation = authenticationOperation;
         this.srcMachineEntity = srcMachineEntity;
         this.dstMachineEntity = dstMachineEntity;
         this.result = result;
@@ -54,13 +50,12 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.objectCanonical = objectCanonical;
     }
 
-    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, String operationType, List<String> operationTypeCategories, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical, String site) {
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, AuthenticationOperation authenticationOperation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical, String site) {
         this.eventId = eventId;
         this.eventTime = eventTime;
         this.dataSource = dataSource;
         this.user = user;
-        this.operationType = operationType;
-        this.operationTypeCategories = operationTypeCategories;
+        this.authenticationOperation = authenticationOperation;
         this.srcMachineEntity = srcMachineEntity;
         this.dstMachineEntity = dstMachineEntity;
         this.result = result;
@@ -106,20 +101,12 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.user = user;
     }
 
-    public String getOperationType() {
-        return operationType;
+    public AuthenticationOperation getAuthenticationOperation() {
+        return authenticationOperation;
     }
 
-    public void setOperationType(String operationType) {
-        this.operationType = operationType;
-    }
-
-    public List<String> getOperationTypeCategories() {
-        return operationTypeCategories;
-    }
-
-    public void setOperationTypeCategories(List<String> operationTypeCategories) {
-        this.operationTypeCategories = operationTypeCategories;
+    public void setAuthenticationOperation(AuthenticationOperation authenticationOperation) {
+        this.authenticationOperation = authenticationOperation;
     }
 
     public MachineEntity getSrcMachineEntity() {
@@ -187,14 +174,18 @@ public class AuthenticationEvent extends Event implements Serializable {
     }
 
     @Override
+    public Instant getDateTime() {
+        return this.eventTime;
+    }
+
+    @Override
     public String toString() {
         return "AuthenticationEvent{" +
                 "eventId='" + eventId + '\'' +
                 ", eventTime=" + eventTime +
                 ", dataSource='" + dataSource + '\'' +
                 ", user=" + user +
-                ", operationType='" + operationType + '\'' +
-                ", operationTypeCategories=" + operationTypeCategories +
+                ", authenticationOperation=" + authenticationOperation +
                 ", srcMachineEntity=" + srcMachineEntity +
                 ", dstMachineEntity=" + dstMachineEntity +
                 ", result='" + result + '\'' +
@@ -202,11 +193,7 @@ public class AuthenticationEvent extends Event implements Serializable {
                 ", authenticationDescription='" + authenticationDescription + '\'' +
                 ", objectDN='" + objectDN + '\'' +
                 ", objectCanonical='" + objectCanonical + '\'' +
+                ", site='" + site + '\'' +
                 '}';
-    }
-
-    @Override
-    public Instant getDateTime() {
-        return this.eventTime;
     }
 }

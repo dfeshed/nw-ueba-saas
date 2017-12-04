@@ -1,6 +1,5 @@
 package presidio.data.generators.event.activedirectory;
 
-
 import presidio.data.domain.event.activedirectory.ActiveDirectoryEvent;
 import presidio.data.generators.utils.StringUtils;
 
