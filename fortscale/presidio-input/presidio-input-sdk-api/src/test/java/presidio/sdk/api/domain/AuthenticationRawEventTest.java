@@ -90,7 +90,7 @@ public class AuthenticationRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(0, violations.size());
+        Assert.assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class AuthenticationRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(0, violations.size());
+        Assert.assertTrue(violations.isEmpty());
     }
 
     @Test
@@ -114,7 +114,7 @@ public class AuthenticationRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(0, violations.size());
+        Assert.assertTrue(violations.isEmpty());
     }
 
     private AuthenticationRawEvent createEvent() {
