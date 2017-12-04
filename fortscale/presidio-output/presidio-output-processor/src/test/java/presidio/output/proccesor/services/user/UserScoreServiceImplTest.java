@@ -56,6 +56,7 @@ public class UserScoreServiceImplTest {
                 ALERT_CONTRIBUTION_MEDIUM,
                 ALERT_CONTRIBUTION_LOW);
 
+        userScoreServiceCommons = new presidio.output.commons.services.user.UserScoreServiceImpl(PERCENT_THRESHOLD_CRITICAL, PERCENT_THRESHOLD_HIGH, PERCENT_THRESHOLD_MEDIUM);
         userScoreService = new UserScoreServiceImpl(mockPresistency, null, alertSeverityService, userScoreServiceCommons, 1000, 90);
     }
 
