@@ -1,9 +1,23 @@
 import { isBlank } from 'ember-utils';
 
+const ENDPOINT_IP_MAPPING = 'machine.networkInterfaces.ipv4';
+const ENDPOINT_MAC_NAME_MAPPING = 'machine.networkInterfaces.macAddress';
+const ENDPOINT_HOST_MAPPING = 'machine.machineName';
+
 const INVESTIGATE_ENDPOINT_META_MAPPING = {
-  'alias.host': 'machine.machineName',
-  'ip.src': 'machine.networkInterfaces.ipv4',
-  'alias.mac': 'machine.networkInterfaces.macAddress'
+  'alias.host': ENDPOINT_HOST_MAPPING,
+  'device.host': ENDPOINT_HOST_MAPPING,
+  'host.src': ENDPOINT_HOST_MAPPING,
+  'host.dst': ENDPOINT_HOST_MAPPING,
+  'ip.src': ENDPOINT_IP_MAPPING,
+  'ip.dst': ENDPOINT_IP_MAPPING,
+  'device.ip': ENDPOINT_IP_MAPPING,
+  'paddr': ENDPOINT_IP_MAPPING,
+  'ip.addr': ENDPOINT_IP_MAPPING,
+  'alias.ip': ENDPOINT_IP_MAPPING,
+  'alias.mac': ENDPOINT_MAC_NAME_MAPPING,
+  'eth.src': ENDPOINT_MAC_NAME_MAPPING,
+  'eth.dst': ENDPOINT_MAC_NAME_MAPPING
 };
 
 const MONGO_OPERATOR_MAPPING = {
