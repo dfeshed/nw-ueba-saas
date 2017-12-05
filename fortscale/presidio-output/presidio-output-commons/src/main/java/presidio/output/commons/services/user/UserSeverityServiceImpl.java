@@ -22,7 +22,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
 
 
     /**
-     * Calculate severities map
+     * Calculate severities map which defines the right user severity per user score calculated according to percentiles
      *
      * @param userScores
      * @return map from score to severity

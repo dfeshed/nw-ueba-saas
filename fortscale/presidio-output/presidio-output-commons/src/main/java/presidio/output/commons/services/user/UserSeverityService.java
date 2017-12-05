@@ -1,7 +1,7 @@
 package presidio.output.commons.services.user;
 
 /**
- * Created by barak_schuster on 12/4/17.
+ * Created by Efrat Noam on 12/4/17.
  */
 public interface UserSeverityService {
 
