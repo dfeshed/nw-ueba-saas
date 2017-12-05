@@ -55,10 +55,13 @@ $investigateBorderBottomColor: border-color(secondary);
       margin: 0 5px;
     }
     .rsa-icon {
-      color: text-color(primary);
+      color: text-color(primary, light);
       cursor: pointer;
       margin: 0 rsa-whitespace(least);
       padding: 0 rsa-whitespace(least) rsa-whitespace(less);
+      &:hover {
+        color: text-color(primary, lightest);
+      }
       &.active:not(.disabled) {
         color: text-color(primary, lightest);
         border-bottom: border-color(secondary) 3px solid;

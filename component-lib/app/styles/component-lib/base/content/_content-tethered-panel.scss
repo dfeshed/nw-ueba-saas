@@ -9,7 +9,7 @@
 
 .panel-content {
   background: background-color(primary, darkest);
-  color: text-color(primary, lighter);
+  color: text-color(primary, lightest);
   text-align: left;
   position: relative;
   box-shadow: 1px 1px 2px background-color(neutral, dark, translucent);
@@ -330,6 +330,7 @@
       }
 
       &:hover {
+        color: rgba(250,250,250, 1);
         background-color: background-color(secondary, darker);
         cursor: pointer;
       }

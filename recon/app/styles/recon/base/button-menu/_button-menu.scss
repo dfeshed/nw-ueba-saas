@@ -31,10 +31,11 @@
   li a.disabled {
     pointer-events: none;
     cursor: default;
-    color: text-color(primary, base);
+    color: rgba(117,117,117, 1);
   }
 
   li a:hover {
+    color: rgba(250,250,250, 1);
     background: background-color(secondary, darker);
     cursor: pointer;
   }

@@ -21,6 +21,7 @@
     min-width: calc(100vw / 4);
     padding: rsa-whitespace();
     box-sizing: border-box;
+    color: text-color(primary, lightest);
     background-color: background-color(primary, darkest);
 
     .controls {
@@ -28,6 +29,11 @@
 
       .rsa-form-button {
         padding: rsa-whitespace(least);
+        color: text-color(primary, light);
+
+        &:hover {
+          color: text-color(primary, lightest);
+        }
       }
     }
   }
