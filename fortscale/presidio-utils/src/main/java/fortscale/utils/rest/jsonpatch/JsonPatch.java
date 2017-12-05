@@ -80,19 +80,9 @@ public final class JsonPatch
     /**
      * List of operations
      */
-    private final List<JsonPatchOperation> operations;
+    private List<JsonPatchOperation> operations;
 
-    /**
-     * Constructor
-     * <p>
-     * <p>Normally, you should never have to use it.</p>
-     *
-     * @param operations the list of operations for this patch
-     * @see JsonPatchOperation
-     */
-    @JsonCreator
-    public JsonPatch(final List<JsonPatchOperation> operations) {
-        this.operations = ImmutableList.copyOf(operations);
+    public JsonPatch() {
     }
 
     /**
@@ -130,6 +120,10 @@ public final class JsonPatch
 
     public List<JsonPatchOperation> getOperations() {
         return operations;
+    }
+
+    public void setOperations(List<JsonPatchOperation> operations) {
+        this.operations = operations;
     }
 
     @Override
