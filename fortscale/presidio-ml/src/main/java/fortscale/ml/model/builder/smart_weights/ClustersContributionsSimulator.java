@@ -181,7 +181,6 @@ public class ClustersContributionsSimulator {
      * @param smartAggregatedRecordDataContainers the smarts to pull from. It's assumed that they belong to the same day.
      * @param clusterConfList confs used for calculating the smart value.
      * @param k the number of top smarts to pull.
-     * @return
      */
     private List<SmartAggregatedRecordDataContainer> calcTopSmartsInOneDay(List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers,
                                                                            List<ClusterConf> clusterConfList,
@@ -211,7 +210,7 @@ public class ClustersContributionsSimulator {
         return smartAggregatedRecordDataContainers.stream()
                 .map(smartAggregatedRecordDataContainer -> new ImmutablePair<>(
                         smartAggregatedRecordDataContainer,
-                        scorerAlgorithm.calculateScore(smartAggregatedRecordDataContainer.getSmartAggregatedRecordsData(), clusterConfList)
+                        scorerAlgorithm.calculateScore(smartAggregatedRecordDataContainer.getSmartAggregatedRecordsData(), clusterConfList).getScore()
                 ));
     }
 
