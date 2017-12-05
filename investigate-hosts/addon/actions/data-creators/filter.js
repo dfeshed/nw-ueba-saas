@@ -134,6 +134,7 @@ const deleteSavedSearch = (id, callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
+          dispatch(resetFilters());
           callbacks.onSuccess(response);
         },
         onFailure: (response) => {

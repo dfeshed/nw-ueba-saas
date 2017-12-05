@@ -152,6 +152,7 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
         onSuccess: (response) => {
           Logger.debug(ACTION_TYPES.DELETE_FILTER, response);
           callbacks.onSuccess(response);
+          dispatch(resetFilters());
         },
         onFailure: (response) => {
           _handleError(ACTION_TYPES.DELETE_FILTER, response);
