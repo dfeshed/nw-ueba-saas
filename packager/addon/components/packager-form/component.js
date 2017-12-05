@@ -28,7 +28,7 @@ const dispatchToActions = {
   resetForm
 };
 
-const REGEX = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
+const INVALID_CONFIG_NAME_PATTERN = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
 const formComponent = Component.extend({
   layout,
@@ -82,7 +82,7 @@ const formComponent = Component.extend({
       });
       return true;
     }
-    if (REGEX.test(configName)) {
+    if (INVALID_CONFIG_NAME_PATTERN.test(configName)) {
       this.setProperties({
         isError: true,
         errorMessage: this.get('i18n').t('packager.specialCharacter')
@@ -132,7 +132,7 @@ const formComponent = Component.extend({
         this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
         this.resetProperties();
       } else if (!this.validateMandatoryFields()) {
-        this.send('setConfig', this.get('configData'), false);
+        this.send('setConfig', this.get('configData'));
         this.resetProperties();
       }
     },
@@ -149,6 +149,7 @@ const formComponent = Component.extend({
       this.toggleProperty('isGenerateLogDisabled');
       this.toggleProperty('isLogCollectionEnabled');
       this.set('configData.logCollectionConfig.enabled', this.get('isLogCollectionEnabled'));
+      this.resetProperties();
     },
 
     toggleProperty(property) {
