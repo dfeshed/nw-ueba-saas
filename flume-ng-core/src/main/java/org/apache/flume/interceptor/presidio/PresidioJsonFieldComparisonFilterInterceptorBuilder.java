@@ -7,12 +7,9 @@ import fortscale.utils.logging.Logger;
 
 import java.util.function.BiPredicate;
 
-import static org.apache.flume.interceptor.presidio.AbstractPresidioJsonInterceptor.EMPTY_STRING;
+public class PresidioJsonFieldComparisonFilterInterceptorBuilder extends AbstractPresidioJsonFilterInterceptorBuilder {
 
-public class PresidioJsonBaseFilterInterceptorBuilder extends AbstractPresidioJsonFilterInterceptorBuilder {
-
-    private static final Logger logger = Logger.getLogger(PresidioJsonBaseFilterInterceptorBuilder.class);
-    protected static final String FIELD_MARKER = "|field|";
+    private static final Logger logger = Logger.getLogger(PresidioJsonFieldComparisonFilterInterceptorBuilder.class);
 
     @Override
     protected BiPredicate<JsonObject, String> createPredicate(String fieldName, String predicateString, String predicatesParamsDelim) {
@@ -22,22 +19,16 @@ public class PresidioJsonBaseFilterInterceptorBuilder extends AbstractPresidioJs
             @Override
             public boolean test(JsonObject jsonObject, String currFieldValue) {
                 final FilterOp op = FilterOp.createOp(split[0]);
-                String toCompareTo = split[1];
-                if (toCompareTo.startsWith(FIELD_MARKER)) { //if we want to compare
-                    final String toCompareFieldName = toCompareTo.substring(FIELD_MARKER.length());
-                    JsonElement jsonElement = jsonObject.get(toCompareFieldName);
-                    if (jsonElement == null || jsonElement.isJsonNull()) {
-                        logger.debug("PresidioJsonBaseFilterInterceptorBuilder is comparing to an empty field %s", toCompareFieldName);
-                        toCompareTo = "";
-                    } else {
-                        toCompareTo = jsonElement.getAsString();
-                    }
+                String fieldToCompareTo = split[1];
+                JsonElement jsonElement = jsonObject.get(fieldToCompareTo);
+                if (jsonElement == null || jsonElement.isJsonNull()) {
+                    logger.debug("PresidioJsonFieldComparisonFilterInterceptorBuilder is comparing to an empty field %s", fieldToCompareTo);
+                    fieldToCompareTo = "";
                 } else {
-                    if (toCompareTo.equals(EMPTY_STRING)) {
-                        toCompareTo = "";
-                    }
+                    fieldToCompareTo = jsonElement.getAsString();
                 }
-                return op.evaluate(currFieldValue, toCompareTo);
+
+                return op.evaluate(currFieldValue, fieldToCompareTo);
             }
         };
     }
