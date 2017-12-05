@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.algorithms;
 
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.ContinuousMaxDataModel;
 import fortscale.ml.model.GaussianPriorModel;
 import fortscale.ml.model.IContinuousDataModel;
 import org.apache.commons.math3.distribution.TDistribution;
@@ -32,7 +33,7 @@ public class GaussianModelScorerAlgorithm {
 									  GaussianPriorModel priorModel,
 									  int globalInfluence,
 									  double value) {
-		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
+		double degreesOfFreedom = getNumOfSamples(model)-1;//calcDegreesOfFreedom(model, priorModel, globalInfluence);
 		if (degreesOfFreedom <= 0) {
 			// TDistribution can't handle non-positive degrees of freedom
 			return 0;
@@ -60,17 +61,22 @@ public class GaussianModelScorerAlgorithm {
 		if (priorSd == null) {
 			return model.getSd();
 		}
-		return Math.sqrt((globalInfluence * priorSd * priorSd + model.getN() * model.getSd() * model.getSd()) /
-				(globalInfluence + model.getN()));
+		long N = getNumOfSamples(model);
+		return Math.sqrt((globalInfluence * priorSd * priorSd + N * model.getSd() * model.getSd()) /
+				(globalInfluence + N));
 	}
 
-	private static double calcDegreesOfFreedom(IContinuousDataModel model,
-											   GaussianPriorModel priorModel,
-											   int globalInfluence) {
-		double df = model.getN() - 1;
-		if (priorModel != null) {
-			df += globalInfluence;
-		}
-		return df;
+//	private static double calcDegreesOfFreedom(IContinuousDataModel model,
+//											   GaussianPriorModel priorModel,
+//											   int globalInfluence) {
+//		double df = getNumOfSamples(model) - 1;
+//		if (priorModel != null) {
+//			df += globalInfluence;
+//		}
+//		return df;
+//	}
+
+	private static long getNumOfSamples(IContinuousDataModel model){
+		return model instanceof ContinuousMaxDataModel ? ((ContinuousMaxDataModel) model).getNumOfPartitions() : model.getNumOfSamples();
 	}
 }
