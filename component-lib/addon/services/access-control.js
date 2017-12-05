@@ -84,7 +84,8 @@ export default Service.extend({
 
   @computed('roles.[]')
   respondCanManageAlertRules(roles) {
-    return this._hasPermission(roles, 'respond-server.alertrule.manage');
+    return this._hasPermission(roles, 'respond-server.alertrule.manage') ||
+      this._hasPermission(roles, 'accessManageAlertHandlingRules');
   },
 
   @computed('roles.[]')
@@ -107,13 +108,37 @@ export default Service.extend({
     return this._hasPermission(roles, 'respond-server.journal.manage');
   },
 
+  // End respond access permissions
+
   @computed('roles.[]')
   hasInvestigateHostsAccess(roles) {
     // this permission is same for both hosts and files
     return this._hasPermission(roles, 'endpoint-server.machine.read');
   },
 
-  // End respond access permissions
+  // Begin Configure Permissions
+
+  @computed('roles.[]')
+  hasLiveSearchAccess(roles) {
+    return this._hasPermission(roles, 'searchLiveResources');
+  },
+
+  @computed('roles.[]')
+  hasESARulesAccess(roles) {
+    return this._hasPermission(roles, 'accessViewRules');
+  },
+
+  @computed('roles.[]')
+  hasLiveResourcesAccess(roles) {
+    return this._hasPermission(roles, 'manageLiveResources');
+  },
+
+  @computed('roles.[]')
+  hasLiveFeedsAccess(roles) {
+    return this._hasPermission(roles, 'manageLiveFeeds');
+  },
+
+  // End Configure Permissions
 
   @computed('hasInvestigateAccess', 'hasInvestigateEmberAccess', 'hasInvestigateClassicAccess')
   investigateUrl: (hasInvestigateAccess, hasInvestigateEmberAccess, hasInvestigateClassicAccess) => {
@@ -158,7 +183,7 @@ export default Service.extend({
     if (intersections.includes('searchLiveResources') || intersections.includes('*')) {
       url = '/live/search';
     } else if (intersections.includes('accessManageAlertHandlingRules')) {
-      url = '/incident/configuration';
+      url = '/configure/respond/incident-rules';
     } else if (intersections.includes('accessViewRules')) {
       url = '/alerting/configure';
     } else if (intersections.includes('manageLiveResources')) {

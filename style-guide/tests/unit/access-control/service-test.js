@@ -191,12 +191,16 @@ test('hasConfigAccess is set when required roles are included', function(assert)
   assert.equal(service.get('hasConfigAccess'), false);
   service.get('roles').clear().addObject('searchLiveResources');
   assert.equal(service.get('hasConfigAccess'), true);
+  assert.equal(service.get('hasLiveSearchAccess'), true);
   service.get('roles').clear().addObject('accessManageAlertHandlingRules');
   assert.equal(service.get('hasConfigAccess'), true);
   service.get('roles').clear().addObject('accessViewRules');
+  assert.equal(service.get('hasESARulesAccess'), true);
   assert.equal(service.get('hasConfigAccess'), true);
   service.get('roles').clear().addObject('manageLiveResources');
   assert.equal(service.get('hasConfigAccess'), true);
+  assert.equal(service.get('hasLiveResourcesAccess'), true);
   service.get('roles').clear().addObject('manageLiveFeeds');
   assert.equal(service.get('hasConfigAccess'), true);
+  assert.equal(service.get('hasLiveFeedsAccess'), true);
 });

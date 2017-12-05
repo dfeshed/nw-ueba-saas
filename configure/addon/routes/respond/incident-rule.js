@@ -11,8 +11,8 @@ export default Route.extend({
   },
 
   beforeModel() {
-    if (!this.get('accessControl.hasRespondConfigureAccess')) {
-      // this.transitionTo('index');
+    if (!this.get('accessControl.respondCanManageAlertRules')) {
+      this.transitionToExternal('protected');
     }
   },
 

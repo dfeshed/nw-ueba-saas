@@ -10,6 +10,12 @@ export default Route.extend({
     return this.get('i18n').t('configure.incidentRulesTitle');
   },
 
+  beforeModel() {
+    if (!this.get('accessControl.respondCanManageAlertRules')) {
+      this.transitionToExternal('protected');
+    }
+  },
+
   actions: {
     transitionToRule(ruleId) {
       this.transitionTo('respond.incident-rule', ruleId);

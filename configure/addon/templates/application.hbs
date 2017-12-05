@@ -1,20 +1,30 @@
 <page class="configure-engine {{routePath}}">
   <div class="rsa-nav-tab-group">
-    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/search')}}
-      <div class="label">{{t 'configure.liveContent'}}</div>
-    {{/rsa-nav-tab}}
-    {{#rsa-nav-tab  align='left' isActive=true}}
-      <div class="label">{{t 'configure.incidentRulesTitle'}}</div>
-    {{/rsa-nav-tab}}
-    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/alerting/configure')}}
-      <div class="label">{{t 'configure.esaRules'}}</div>
-    {{/rsa-nav-tab}}
-    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/manage')}}
-      <div class="label">{{t 'configure.subscriptions'}}</div>
-    {{/rsa-nav-tab}}
-    {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/feeds')}}
-      <div class="label">{{t 'configure.customFeeds'}}</div>
-    {{/rsa-nav-tab}}
+    {{#if accessControl.hasLiveSearchAccess}}
+      {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/search')}}
+        <div class="label">{{t 'configure.liveContent'}}</div>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.respondCanManageAlertRules}}
+      {{#rsa-nav-tab  align='left' isActive=true}}
+        <div class="label">{{t 'configure.incidentRulesTitle'}}</div>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasESARulesAccess}}
+      {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/alerting/configure')}}
+        <div class="label">{{t 'configure.esaRules'}}</div>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasLiveResourcesAccess}}
+      {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/manage')}}
+        <div class="label">{{t 'configure.subscriptions'}}</div>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasLiveFeedsAccess}}
+      {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/live/feeds')}}
+        <div class="label">{{t 'configure.customFeeds'}}</div>
+      {{/rsa-nav-tab}}
+    {{/if}}
   </div>
   {{outlet}}
 </page>
