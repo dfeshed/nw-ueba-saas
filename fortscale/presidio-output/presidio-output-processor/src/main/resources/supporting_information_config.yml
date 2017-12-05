@@ -536,8 +536,8 @@ indicators:
     anomalyField: site
   historicalData:
       type: count_aggregations
-      featureBucketConfName: userIdHistogramSiteAuthenticationDaily
-      featureName: userIdHistogram
+      featureBucketConfName: siteHistogramUserIdAuthenticationDaily
+      featureName: siteHistogram
   classification: abnormal_ad_site_access
 
 - id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
