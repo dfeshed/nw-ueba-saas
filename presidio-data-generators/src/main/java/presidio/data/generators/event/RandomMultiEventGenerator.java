@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 
 public class RandomMultiEventGenerator extends AbstractEventGenerator<Event>{
-    private ITimeGenerator timeGenerator;
     private Iterator<EventGeneratorProbability> eventGeneratorProbabilityIterator;
     private List<EventGeneratorProbability> eventGeneratorProbabilityList;
     private Random random;
