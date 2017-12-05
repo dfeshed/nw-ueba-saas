@@ -58,7 +58,7 @@ public class ScoringService {
 			FeatureScore featureScore = adeEventTypeScorer.calculateScore(adeRecordReader);
 			String scorerName = featureScore.getName();
 			Double score = featureScore.getScore();
-			scoringServiceMetricsContainer.updateMetic(startInstant,scorerName,adeEventType,score);
+			scoringServiceMetricsContainer.updateMetric(startInstant,scorerName,adeEventType,score);
 			list.add(featureScore);
 		}
 		return list;

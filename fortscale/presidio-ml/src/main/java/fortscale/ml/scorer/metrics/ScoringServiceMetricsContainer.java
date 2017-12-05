@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -19,16 +20,20 @@ import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKe
 public class ScoringServiceMetricsContainer {
     public static final String METRIC_NAME = "scoring";
     private MetricCollectingService metricCollectingService;
+    private MetricsExporter metricsExporter;
+
     // cached map of metrics by tags and logical time
     private Map<ScoringMetricsKey, Metric> scoringMetrics;
 
     /**
      *
      * @param metricCollectingService
+     * @param metricsExporter
      */
-    public ScoringServiceMetricsContainer(MetricCollectingService metricCollectingService) {
+    public ScoringServiceMetricsContainer(MetricCollectingService metricCollectingService, MetricsExporter metricsExporter) {
         this.metricCollectingService = metricCollectingService;
         this.scoringMetrics = new HashMap<>();
+        this.metricsExporter = metricsExporter;
     }
 
     /**
@@ -38,7 +43,7 @@ public class ScoringServiceMetricsContainer {
      * @param adeEventType
      * @param score
      */
-    public void updateMetic(Instant logicalStartTime, String scorerName, String adeEventType, Double score) {
+    public void updateMetric(Instant logicalStartTime, String scorerName, String adeEventType, Double score) {
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         tags.put(SCORER, scorerName);
         tags.put(ADE_EVENT_TYPE, adeEventType);
@@ -49,8 +54,6 @@ public class ScoringServiceMetricsContainer {
             metric = createNewMetric(logicalStartTime,tags);
             // cache the metric
             scoringMetrics.put(key,metric);
-            // subscribe metric to collecting service
-            metricCollectingService.addMetric(metric);
         }
         updateMetric(metric,score);
     }
@@ -63,6 +66,18 @@ public class ScoringServiceMetricsContainer {
         metric.getValue().compute(MetricEnums.MetricValues.MAX_SCORE,(k,v) -> Math.max(v.doubleValue(),score));
     }
 
+
+    public void flush()
+    {
+        // subscribe metric to collecting service
+        scoringMetrics.values().forEach(metric -> metricCollectingService.addMetric(metric));
+
+        // export metrics to elastic
+        metricsExporter.manualExportMetrics(MetricsExporter.MetricBucketEnum.APPLICATION);
+
+        // reset cache
+        scoringMetrics = new HashMap<>();
+    }
 
     /**
      * @param logicalStartTime - the logical execution time of the processing (not of the event)

@@ -55,7 +55,9 @@ public abstract class MetricsExporter implements ApplicationListener<ContextClos
         // flush the metrics
         this.flush();
         // shutdown the scheduler
-        scheduler.shutdown();
+        if(scheduler!=null) {
+            scheduler.shutdown();
+        }
     }
 
     public enum MetricBucketEnum {

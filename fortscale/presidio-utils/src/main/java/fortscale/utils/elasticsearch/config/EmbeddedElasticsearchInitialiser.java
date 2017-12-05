@@ -2,14 +2,9 @@ package fortscale.utils.elasticsearch.config;
 
 import fortscale.utils.logging.Logger;
 import org.junit.Assert;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +35,7 @@ public class EmbeddedElasticsearchInitialiser {
                     .withStartTimeout(1, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
+                    .withSetting("node.max_local_storage_nodes",100)
                     .withCleanInstallationDirectoryOnStop(true)
                     .build()
                     .start();

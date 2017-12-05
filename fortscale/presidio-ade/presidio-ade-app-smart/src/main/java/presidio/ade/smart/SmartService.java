@@ -1,13 +1,14 @@
 package presidio.ade.smart;
 
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
 import fortscale.smart.SmartRecordAggregator;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -36,16 +37,17 @@ public class SmartService {
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
 	private final StoreManager storeManager;
+	private final ScoringServiceMetricsContainer scoringServiceMetricsContainer;
 
 	/**
 	 * C'tor.
-	 *
-	 * @param smartRecordConfService      contains all the {@link SmartRecordConf}s
+	 *  @param smartRecordConfService      contains all the {@link SmartRecordConf}s
 	 * @param aggregationRecordsThreshold only {@link AdeAggregationRecord}s whose values / scores are larger
 	 *                                    than this threshold will be included in the {@link SmartRecord}s
 	 * @param aggregatedDataReader        reads from the store of {@link AdeAggregationRecord}s
 	 * @param smartScoringService         scores {@link SmartRecord}s
 	 * @param smartDataStore              the store of {@link SmartRecord}s
+	 * @param scoringServiceMetricsContainer
 	 */
 	public SmartService(
 			SmartRecordConfService smartRecordConfService,
@@ -53,7 +55,7 @@ public class SmartService {
 			AggregatedDataReader aggregatedDataReader,
 			SmartScoringService smartScoringService,
 			SmartDataStore smartDataStore,
-			StoreManager storeManager) {
+			StoreManager storeManager, ScoringServiceMetricsContainer scoringServiceMetricsContainer) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
@@ -61,6 +63,7 @@ public class SmartService {
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
 		this.storeManager = storeManager;
+		this.scoringServiceMetricsContainer = scoringServiceMetricsContainer;
 	}
 
 	/**
@@ -81,6 +84,7 @@ public class SmartService {
 				// If this line will be deleted the model cache will need to have some efficient refresh mechanism.
 				smartScoringService.resetModelCache();
 
+
 				logger.info("Starting to process time range partition {}.", partition);
 				aggregatedDataReader.read(params, partition).forEach(iterator -> {
 					SmartRecordAggregator aggregator = new SmartRecordAggregator(
@@ -90,6 +94,9 @@ public class SmartService {
 					smartScoringService.score(records,timeRange);
 					smartDataStore.storeSmartRecords(smartRecordConfName, records);
 				});
+
+				//Flush stored metrics to elasticsearch
+				scoringServiceMetricsContainer.flush();
 			}
 			catch (Exception e)
 			{
