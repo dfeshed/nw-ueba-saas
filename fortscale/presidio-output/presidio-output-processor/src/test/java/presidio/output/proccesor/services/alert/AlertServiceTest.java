@@ -34,7 +34,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTransla
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.AlertEnums.*;
 import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Bucket;
@@ -384,12 +384,12 @@ public class AlertServiceTest {
 
     @Test
     public void severityTest() {
-        assertEquals(alertSeverityServiceImpl.severity(0), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertSeverityServiceImpl.severity(40), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertSeverityServiceImpl.severity(70), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertSeverityServiceImpl.severity(81), AlertEnums.AlertSeverity.MEDIUM);
-        assertEquals(alertSeverityServiceImpl.severity(91), AlertEnums.AlertSeverity.HIGH);
-        assertEquals(alertSeverityServiceImpl.severity(97), AlertEnums.AlertSeverity.CRITICAL);
+        assertEquals(alertSeverityServiceImpl.severity(0), AlertSeverity.LOW);
+        assertEquals(alertSeverityServiceImpl.severity(40), AlertSeverity.LOW);
+        assertEquals(alertSeverityServiceImpl.severity(70), AlertSeverity.LOW);
+        assertEquals(alertSeverityServiceImpl.severity(81), AlertSeverity.MEDIUM);
+        assertEquals(alertSeverityServiceImpl.severity(91), AlertSeverity.HIGH);
+        assertEquals(alertSeverityServiceImpl.severity(97), AlertSeverity.CRITICAL);
     }
 
     private SmartRecord generateSingleSmart(int score) {

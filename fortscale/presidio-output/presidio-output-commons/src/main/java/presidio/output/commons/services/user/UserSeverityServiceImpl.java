@@ -4,7 +4,7 @@ import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import presidio.output.domain.records.users.UserSeverity;
 
 /**
- * Created by barak_schuster on 12/4/17.
+ * Created by efrat Noam on 12/4/17.
  */
 public class UserSeverityServiceImpl implements UserSeverityService {
 
@@ -16,7 +16,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
                                 int percentThresholdHigh,
                                 int percentThresholdMedium) {
         this.percentThresholdCritical = percentThresholdCritical;
-        this.percentThresholdHigh = percentThresholdHigh;
+        this.percentThresholdHigh = percentThUserScoreServiceresholdHigh;
         this.percentThresholdMedium = percentThresholdMedium;
     }
 
