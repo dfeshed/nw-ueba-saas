@@ -362,12 +362,12 @@ export default Component.extend(DomWatcher, EKMixin, {
      * Callback from child component(s) after user tries to reorder columns via drag-drop.
      * Responsible for invoking the (optional) configurable callback `onReorderColumns`.
      * If `onReorderColumns` is not given, or if it returns truthy, then this action will apply the requested change
-     * to the `columns`. Otherwise, if the callback returns falsey, then this method will abort and exit silently.
+     * to the `visibleColumns`. Otherwise, if the callback returns falsey, then this method will abort and exit silently.
      * @see ember-sortable addon
      * @public
      */
     reorderColumns(newColumns, draggedColumn) {
-      const columns = this.get('columns');
+      const columns = this.get('visibleColumns');
       if (!columns || !columns.length || !this.get('enableReorderColumns')) {
         return;
       }
