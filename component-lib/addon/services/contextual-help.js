@@ -21,6 +21,8 @@ export default Service.extend({
   respIncListVw: 'respIncListVw',
   respIncDetailVw: 'respIncDetailVw',
   respRemTasksVw: 'respRemTasksVw',
+  incRulesListVw: 'incRulesListVw',
+  incRulesDetailVw: 'incRulesDetailVw',
 
   module: null,
   topic: null,

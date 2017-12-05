@@ -16,6 +16,14 @@ export default Route.extend({
     }
   },
 
+  activate() {
+    this.set('contextualHelp.topic', this.get('contextualHelp.incRulesListVw'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.topic', null);
+  },
+
   actions: {
     transitionToRule(ruleId) {
       this.transitionTo('respond.incident-rule', ruleId);
