@@ -24,12 +24,13 @@ public interface SupportingInformationGenerator {
         try {
             // generate indicators
             indicators = generateIndicators(adeAggregationRecord, alert, eventsLimit);
-            if(CollectionUtils.isEmpty(indicators)) {
-                logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", adeAggregationRecord.getId(),  adeAggregationRecord.getFeatureName());
+            if (CollectionUtils.isEmpty(indicators)) {
+                logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
             }
 
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
+                indicator.setScoreContribution(100);//todo: when AdeAggregationRecord will have score contribution field get this value from there
 
                 // generate events
                 List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit);
@@ -37,21 +38,21 @@ public interface SupportingInformationGenerator {
                     indicator.setEvents(events);
                     indicator.setEventsNum(events.size());
                 } else {
-                    logger.warn("failed to generate events for indicator ID {}, feature {}", adeAggregationRecord.getId(),  adeAggregationRecord.getFeatureName());
+                    logger.warn("failed to generate events for indicator ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
                 }
 
                 // generate historical data
                 HistoricalData historicalData = generateHistoricalData(adeAggregationRecord, indicator);
                 if (historicalData == null) {
-                    logger.warn("failed to generate historical data to indicator ID {}, feature {}", adeAggregationRecord.getId(),  adeAggregationRecord.getFeatureName());
+                    logger.warn("failed to generate historical data to indicator ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
                 }
                 indicator.setHistoricalData(historicalData);
             }
         } catch (Exception ex) {
-            logger.error("failed to build supporting info for feature {}, indicator ID {}", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId(),ex);
+            logger.error("failed to build supporting info for feature {}, indicator ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId(), ex);
         }
 
-        logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(),  adeAggregationRecord.getId());
+        logger.debug("building supporting info for feature {}, indicator ID {} has been completed", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
         return indicators;
     }
 

@@ -1,6 +1,7 @@
 package presidio.output.processor.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -21,6 +22,13 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
         AlertClassificationPriorityConfig.class
 })
 public class AlertServiceElasticConfig {
+
+    @Value("${output.events.limit}")
+    private int eventsLimit;
+
+    @Value("${indicators.contribution.limit.to.classification}")
+    private int contributionLimit;
+
     @Autowired
     private AlertSeverityService alertEnumsSeverityService;
 
@@ -43,7 +51,9 @@ public class AlertServiceElasticConfig {
                 alertEnumsSeverityService,
                 alertClassificationService,
                 alertSeverityService,
-                supportingInformationGeneratorFactory
+                supportingInformationGeneratorFactory,
+                eventsLimit,
+                contributionLimit
         );
     }
 }

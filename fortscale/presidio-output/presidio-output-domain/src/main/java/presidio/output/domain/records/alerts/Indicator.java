@@ -31,6 +31,7 @@ public class Indicator extends AbstractElasticDocument {
     public static final String SCHEMA = "schema";
     public static final String SCORE = "score";
     public static final String EVENTS_NUM = "eventsNum";
+    public static final String SCORE_CONTRIBUTION = "scoreContribution";
 
     @JsonProperty(NAME)
     private String name;
@@ -56,6 +57,9 @@ public class Indicator extends AbstractElasticDocument {
     @JsonProperty(SCORE)
     private double score;
 
+    @JsonProperty(SCORE_CONTRIBUTION)
+    private double scoreContribution;
+
     @JsonProperty(TYPE)
     @Enumerated(EnumType.STRING)
     private AlertEnums.IndicatorTypes type;
@@ -76,6 +80,14 @@ public class Indicator extends AbstractElasticDocument {
         super();
         events = new ArrayList<IndicatorEvent>();
         this.alertId = alertId;
+    }
+
+    public void setScoreContribution(double scoreContribution) {
+        this.scoreContribution = scoreContribution;
+    }
+
+    public double getScoreContribution() {
+        return scoreContribution;
     }
 
     public String getName() {
