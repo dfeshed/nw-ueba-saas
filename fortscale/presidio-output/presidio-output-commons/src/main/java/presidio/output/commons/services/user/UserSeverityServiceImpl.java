@@ -1,41 +1,25 @@
 package presidio.output.commons.services.user;
 
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-import org.springframework.beans.factory.annotation.Autowired;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.commons.services.alert.AlertSeverityService;
-import presidio.output.domain.records.users.User;
 
 /**
- * Created by efratn on 03/12/2017.
+ * Created by barak_schuster on 12/4/17.
  */
-public class UserScoreServiceImpl implements UserScoreService {
-
+public class UserSeverityServiceImpl implements UserSeverityService {
 
     private int percentThresholdCritical;
     private int percentThresholdHigh;
     private int percentThresholdMedium;
 
-    public UserScoreServiceImpl(int percentThresholdCritical,
+    public UserSeverityServiceImpl(int percentThresholdCritical,
                                 int percentThresholdHigh,
                                 int percentThresholdMedium) {
         this.percentThresholdCritical = percentThresholdCritical;
         this.percentThresholdHigh = percentThresholdHigh;
         this.percentThresholdMedium = percentThresholdMedium;
-
     }
 
-    @Autowired
-    private AlertSeverityService alertSeverityService;
-
-    @Override
-    public void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user) {
-        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(alertSeverity);
-        double userScore = user.getScore();
-        userScore += userScoreContribution;
-        user.setScore(userScore);
-    }
 
     /**
      * Calculate severities map
@@ -44,7 +28,7 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return map from score to severity
      */
     @Override
-    public UserScoreServiceImpl.UserScoreToSeverity getSeveritiesMap(double[] userScores) {
+    public UserScoreToSeverity getSeveritiesMap(double[] userScores) {
         Percentile p = new Percentile();
 
         p.setData(userScores);
@@ -53,7 +37,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         double ceilScoreForMediumSeverity = p.evaluate(percentThresholdHigh);//The maximum score that user score still considered medium
         double ceilScoreForHighSeverity = p.evaluate(percentThresholdCritical); //The maximum score that user score still considered high
 
-        UserScoreServiceImpl.UserScoreToSeverity userScoreToSeverity = new UserScoreServiceImpl.UserScoreToSeverity(ceilScoreForLowSeverity, ceilScoreForMediumSeverity, ceilScoreForHighSeverity);
+        UserScoreToSeverity userScoreToSeverity = new UserScoreToSeverity(ceilScoreForLowSeverity, ceilScoreForMediumSeverity, ceilScoreForHighSeverity);
 
 
         return userScoreToSeverity;

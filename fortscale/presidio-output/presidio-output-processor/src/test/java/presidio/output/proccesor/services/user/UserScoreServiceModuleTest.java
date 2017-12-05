@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.AbstractElasticDocument;
@@ -63,10 +64,10 @@ public class UserScoreServiceModuleTest {
     private AlertSeverityService alertSeverityService;
 
     @Autowired
-    private UserScoreService userScoreService;
+    private UserSeverityService userSeverityService;
 
     @Autowired
-    private presidio.output.commons.services.user.UserScoreService userScoreServiceCommon;
+    private UserScoreService userScoreService;
 
     @After
     public void cleanTestData() {
@@ -228,7 +229,7 @@ public class UserScoreServiceModuleTest {
                 userPersistencyService,
                 alertPersistencyService,
                 alertSeverityService,
-                userScoreServiceCommon,
+                userSeverityService,
                 500,
                 DAYS_COUNT + 10);
 

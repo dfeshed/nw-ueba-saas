@@ -1,8 +1,6 @@
 package presidio.output.commons.services.alert;
 
 
-import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-import presidio.output.commons.services.user.UserScoreServiceImpl;
 import presidio.output.domain.records.alerts.AlertEnums;
 
 import java.util.Map;
@@ -53,7 +51,6 @@ public class AlertSeverityServiceImpl implements AlertSeverityService {
     public Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity) {
         return this.alertSeverityToScoreContribution.get(severity);
     }
-
 
 
 }

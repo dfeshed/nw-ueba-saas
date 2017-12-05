@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
     private final EventPersistencyService eventPersistencyService;
     private final UserPersistencyService userPersistencyService;
     private final UserScoreService userScoreService;
-    private final presidio.output.commons.services.user.UserScoreService userScoreServiceCommon;
     private final String TAG_ADMIN = "admin";
 
 
@@ -41,7 +40,6 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(EventPersistencyService eventPersistencyService,
                            UserPersistencyService userPersistencyService,
                            UserScoreService userScoreService,
-                           presidio.output.commons.services.user.UserScoreService userScoreServiceCommon,
                            int alertEffectiveDurationInDays,
                            int defaultUsersBatchSize) {
         this.eventPersistencyService = eventPersistencyService;
@@ -49,7 +47,6 @@ public class UserServiceImpl implements UserService {
         this.userScoreService = userScoreService;
         this.alertEffectiveDurationInDays = alertEffectiveDurationInDays;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
-        this.userScoreServiceCommon = userScoreServiceCommon;
     }
 
     public int getDefaultUsersBatchSize() {
@@ -104,7 +101,7 @@ public class UserServiceImpl implements UserService {
         List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), indicators);
         user.setIndicators(indicatorsUnion);
         user.incrementAlertsCountByOne();
-        userScoreServiceCommon.increaseUserScoreWithoutSaving(alertSeverity, user);
+        userScoreService.increaseUserScoreWithoutSaving(alertSeverity, user);
     }
 
     @Override

@@ -3,14 +3,14 @@ package presidio.output.commons.services.spring;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.output.commons.services.user.UserScoreService;
-import presidio.output.commons.services.user.UserScoreServiceImpl;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.commons.services.user.UserSeverityServiceImpl;
 
 /**
  * Created by Efrat Noam on 12/4/17.
  */
 @Configuration
-public class UserScoreServiceConfig {
+public class UserSeverityServiceConfig {
 
     @Value("${user.severities.percent.threshold.critical:95}")
     private int percentThresholdCritical;
@@ -20,8 +20,8 @@ public class UserScoreServiceConfig {
     private int percentThresholdMedium;
 
     @Bean
-    public UserScoreService userScoreServiceCommon() {
-        return new UserScoreServiceImpl(percentThresholdCritical, percentThresholdHigh, percentThresholdMedium);
+    public UserSeverityService userSeverityService() {
+        return new UserSeverityServiceImpl(percentThresholdCritical, percentThresholdHigh, percentThresholdMedium);
     }
 
 }

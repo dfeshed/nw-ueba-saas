@@ -1,6 +1,5 @@
 package presidio.output.commons.services.alert;
 
-import presidio.output.commons.services.user.UserScoreServiceImpl;
 import presidio.output.domain.records.alerts.AlertEnums;
 
 /**

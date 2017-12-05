@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.commons.services.alert.AlertSeverityService;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.commons.services.user.UserSeverityServiceImpl;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
@@ -40,10 +42,10 @@ public class UserScoreServiceImplTest {
     public static final int ALERT_CONTRIBUTION_MEDIUM = 20;
     public static final int ALERT_CONTRIBUTION_LOW = 10;
 
-    private presidio.output.commons.services.user.UserScoreServiceImpl userScoreServiceCommons;
     private UserScoreServiceImpl userScoreService;
     private UserPersistencyService mockPresistency;
     private AlertSeverityService alertSeverityService;
+    private UserSeverityService userSeverityService;
 
     @Before
     public void setup() {
@@ -55,9 +57,10 @@ public class UserScoreServiceImplTest {
                 ALERT_CONTRIBUTION_HIGH,
                 ALERT_CONTRIBUTION_MEDIUM,
                 ALERT_CONTRIBUTION_LOW);
+        userSeverityService = new UserSeverityServiceImpl(PERCENT_THRESHOLD_CRITICAL, PERCENT_THRESHOLD_HIGH, PERCENT_THRESHOLD_MEDIUM);
 
-        userScoreServiceCommons = new presidio.output.commons.services.user.UserScoreServiceImpl(PERCENT_THRESHOLD_CRITICAL, PERCENT_THRESHOLD_HIGH, PERCENT_THRESHOLD_MEDIUM);
-        userScoreService = new UserScoreServiceImpl(mockPresistency, null, alertSeverityService, userScoreServiceCommons, 1000, 90);
+
+        userScoreService = new UserScoreServiceImpl(mockPresistency, null, alertSeverityService, userSeverityService, 1000, 90);
     }
 
     @Test
@@ -70,7 +73,7 @@ public class UserScoreServiceImplTest {
         }
 
 //        AlertSeverityServiceImpl.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
-        presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severityTreeMap = userScoreServiceCommons.getSeveritiesMap(d);
+        UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(d);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(100D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(249999D));
@@ -128,7 +131,7 @@ public class UserScoreServiceImplTest {
         d[19] = 2000;
 
 //        AlertSeverityServiceImpl.UserScoreToSeverity severityTreeMap = Whitebox.invokeMethod(userScoreService, "getSeveritiesMap", d);
-        presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severityTreeMap = userScoreServiceCommons.getSeveritiesMap(d);
+        UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(d);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(100D));
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(300D));
@@ -206,7 +209,7 @@ public class UserScoreServiceImplTest {
         Page<User> page1 = new PageImpl(page, pageable1, 10);
 
 
-        presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity userScoreToSeverity = new presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity(20D, 40D, 80D);
+        UserSeverityServiceImpl.UserScoreToSeverity userScoreToSeverity = new UserSeverityServiceImpl.UserScoreToSeverity(20D, 40D, 80D);
         Whitebox.invokeMethod(userScoreService, "updateSeveritiesForUsersList", userScoreToSeverity, page1.getContent(), true);
 
 

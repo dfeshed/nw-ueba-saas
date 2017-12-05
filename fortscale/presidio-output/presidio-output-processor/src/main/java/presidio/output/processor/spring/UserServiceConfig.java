@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.commons.services.alert.AlertSeverityService;
-import presidio.output.commons.services.spring.UserScoreServiceConfig;
+import presidio.output.commons.services.spring.UserSeverityServiceConfig;
+import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
@@ -19,7 +20,7 @@ import presidio.output.processor.services.user.UserServiceImpl;
  * Created by efratn on 22/08/2017.
  */
 @Configuration
-@Import(UserScoreServiceConfig.class)
+@Import(UserSeverityServiceConfig.class)
 public class UserServiceConfig {
 
     @Value("${user.severities.batch.size:2000}")
@@ -45,16 +46,16 @@ public class UserServiceConfig {
     private AlertPersistencyService alertPersistencyService;
 
     @Autowired
-    private presidio.output.commons.services.user.UserScoreService userScoreServiceCommon;
+    private UserSeverityService userSeverityService;
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), userScoreServiceCommon, alertEffectiveDurationInDays, defaultAlertsBatchFile);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchFile);
     }
 
     @Bean
     public UserScoreService userScoreService(){
-        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, userScoreServiceCommon, defaultUsersBatchFile,defaultAlertsBatchFile);
+        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, userSeverityService, defaultUsersBatchFile,defaultAlertsBatchFile);
     }
 
 }

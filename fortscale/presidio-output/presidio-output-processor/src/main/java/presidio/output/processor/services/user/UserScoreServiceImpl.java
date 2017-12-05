@@ -4,6 +4,8 @@ import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.commons.services.user.UserSeverityServiceImpl;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
@@ -32,7 +34,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private AlertSeverityService alertSeverityService;
 
-    private presidio.output.commons.services.user.UserScoreService userScoreService;
+    private UserSeverityService userSeverityService;
 
     private int defaultAlertsBatchSize;
 
@@ -41,22 +43,30 @@ public class UserScoreServiceImpl implements UserScoreService {
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
                                 AlertSeverityService alertSeverityService,
-                                presidio.output.commons.services.user.UserScoreService userScoreService,
+                                UserSeverityService userSeverityService,
                                 int defaultAlertsBatchSize,
                                 int defaultUsersBatchSize) {
         this.userPersistencyService = userPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
         this.alertSeverityService = alertSeverityService;
-        this.userScoreService = userScoreService;
+        this.userSeverityService = userSeverityService;
 
         this.defaultAlertsBatchSize = defaultAlertsBatchSize;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
     }
 
     @Override
+    public void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user) {
+        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(alertSeverity);
+        double userScore = user.getScore();
+        userScore += userScoreContribution;
+        user.setScore(userScore);
+    }
+
+    @Override
     public void updateSeverities() {
         final double[] scores = getScoresArray();
-        final presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severitiesMap = userScoreService.getSeveritiesMap(scores);
+        final UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = userSeverityService.getSeveritiesMap(scores);
         UserQuery.UserQueryBuilder userQueryBuilder =
                 new UserQuery.UserQueryBuilder()
                         .pageNumber(0)
@@ -172,12 +182,12 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
         final double[] scores = getScoresArray();
-        final presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severitiesMap = userScoreService.getSeveritiesMap(scores);
+        final UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = userSeverityService.getSeveritiesMap(scores);
         updateSeveritiesForUsersList(severitiesMap, users, persistChanges);
 
     }
 
-    private void updateSeveritiesForUsersList(presidio.output.commons.services.user.UserScoreServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
+    private void updateSeveritiesForUsersList(UserSeverityServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
         List<User> updatedUsers = new ArrayList<>();
         if (users == null) {
             return;

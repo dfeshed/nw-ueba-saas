@@ -1,5 +1,6 @@
 package presidio.output.processor.services.user;
 
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
@@ -27,4 +28,11 @@ public interface UserScoreService {
      * @param persistChanges - if true -save updated users to DB. If false- only update the users on the list
      */
     void updateSeveritiesForUsersList(List<User> users, boolean persistChanges);
+
+    /**
+     * Increasing the user score, depended on the alert severity. Update the user and persist
+     *
+     * @param alertSeverity
+     */
+    void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user);
 }
