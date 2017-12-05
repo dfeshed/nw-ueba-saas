@@ -240,7 +240,7 @@ const getStoryline = (incidentId) => {
  */
 const getStorylineEvents = (incidentId) => {
   return (dispatch, getState) => {
-    const { id, storyline, storylineEvents, storylineEventsStatus } = getState().respond.incident;
+    const { id, storyline, storylineEvents, storylineEventsBuffer, storylineEventsStatus } = getState().respond.incident;
 
     // Check that we are not getting called back from an outdated incident.
     if (id !== incidentId) {
@@ -255,7 +255,7 @@ const getStorylineEvents = (incidentId) => {
     // Search the storyline for an indicator in `storyline` array that is not included in
     // the `storylineEvents` array. If none, we're done.
     const indicator = storyline.find(({ id: indicatorId }) => {
-      return !storylineEvents.findBy('indicatorId', indicatorId);
+      return !storylineEvents.findBy('indicatorId', indicatorId) && !storylineEventsBuffer.findBy('indicatorId', indicatorId);
     });
     if (!indicator) {
       dispatch({ type: ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED });
@@ -266,7 +266,6 @@ const getStorylineEvents = (incidentId) => {
 
     alerts.getAlertEvents(indicator.id)
       .then(({ data }) => {
-
         // Did the current incident changed while we waited for events? If so, discard events.
         const { id: currentIncidentId } = getState().respond.incident;
         if (currentIncidentId !== incidentId) {

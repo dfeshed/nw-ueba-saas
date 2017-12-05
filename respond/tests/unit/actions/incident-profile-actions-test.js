@@ -74,6 +74,8 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
       type: 'storyPoint',
       ids: ['12345']
     },
+    storylineEventsBuffer: [{}],
+    storylineEventsBufferMax: 50,
     storylineEventsStatus: 'complete',
     storylineStatus: 'complete',
     tasks: [{}],
@@ -104,6 +106,8 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
       type: '',
       ids: []
     },
+    storylineEventsBuffer: [],
+    storylineEventsBufferMax: 50,
     storylineStatus: null,
     tasks: [],
     tasksStatus: null

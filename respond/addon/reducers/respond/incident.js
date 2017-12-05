@@ -31,6 +31,13 @@ let initialState = {
   // events for the alerts currently in `storyline`
   storylineEvents: null,
 
+  // buffer for storyline events so that they can accumulate without affecting render performance, and then flush
+  // to the storylineEvents array once the storylineEventsBufferMax has been reached
+  storylineEventsBuffer: [],
+
+  // When the number of events in the buffer exceeds the max, the buffer will be flushed into the storylineEvents array
+  storylineEventsBufferMax: 50,
+
   // status of the current request for storyline events, if any; either 'streaming', 'paused', 'complete' or 'error'
   storylineEventsStatus: null,
 
@@ -210,15 +217,30 @@ const incident = reduxActions.handleActions({
     // Check for data capture & normalization errors and correct them.
     fixNormalizedEvents(events);
 
-    const storylineEvents = state.storylineEvents || [];
+    let storylineEvents = state.storylineEvents || [];
+    let storylineEventsBuffer = [...state.storylineEventsBuffer, { indicatorId, events }];
+
+    // If we have no events yet, flush the buffer, otherwise
+    // flush the buffer whenever we have received more than the buffer max
+    if (!storylineEvents.length || storylineEventsBuffer.length > state.storylineEventsBufferMax) {
+      storylineEvents = [...storylineEvents, ...storylineEventsBuffer];
+      storylineEventsBuffer = [];
+    }
+
     return state.merge({
-      storylineEvents: [ ...storylineEvents, { indicatorId, events } ],
+      storylineEvents,
+      storylineEventsBuffer,
       storylineEventsStatus: 'paused'
     });
   },
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED]: (state) => {
-    return state.set('storylineEventsStatus', 'completed');
+    // When we're done fetching storyline events, make sure we flush the buffer into storylineEvents
+    return state.merge({
+      storylineEvents: [...state.storylineEvents, ...state.storylineEventsBuffer],
+      storylineEventsBuffer: [],
+      storylineEventsStatus: 'completed'
+    });
   },
 
   [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_ERROR]: (state) => {
