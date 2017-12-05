@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.metrics;
 
+import fortscale.domain.feature.score.FeatureScore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
@@ -47,6 +48,7 @@ public class ScoringServiceMetricsContainer {
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         tags.put(SCORER, scorerName);
         tags.put(ADE_EVENT_TYPE, adeEventType);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT,MetricEnums.MetricUnitType.NUMBER.toString());
         ScoringMetricsKey key = new ScoringMetricsKey(logicalStartTime,tags);
         Metric metric = scoringMetrics.get(key);
         if (metric == null)
@@ -97,6 +99,13 @@ public class ScoringServiceMetricsContainer {
                 .setMetricLogicTime(logicalStartTime)
                 .setMetricMultipleValues(values)
                 .build();
+    }
+
+    public void updateMetric(Instant startInstant, String adeEventType, FeatureScore featureScore) {
+        updateMetric(startInstant,featureScore.getName(),adeEventType,featureScore.getScore());
+        for (FeatureScore fs: featureScore.getFeatureScores()) {
+            updateMetric(startInstant,fs.getName(),adeEventType,fs.getScore());
+        }
     }
 
 

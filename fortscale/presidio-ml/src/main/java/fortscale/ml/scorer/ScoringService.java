@@ -56,9 +56,7 @@ public class ScoringService {
 		List<FeatureScore> list = new ArrayList<>();
 		for (Scorer adeEventTypeScorer : adeEventTypeScorers) {
 			FeatureScore featureScore = adeEventTypeScorer.calculateScore(adeRecordReader);
-			String scorerName = featureScore.getName();
-			Double score = featureScore.getScore();
-			scoringServiceMetricsContainer.updateMetric(startInstant,scorerName,adeEventType,score);
+			scoringServiceMetricsContainer.updateMetric(startInstant,adeEventType,featureScore);
 			list.add(featureScore);
 		}
 		return list;
