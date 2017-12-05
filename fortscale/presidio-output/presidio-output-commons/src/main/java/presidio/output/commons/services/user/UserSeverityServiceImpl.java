@@ -16,7 +16,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
                                 int percentThresholdHigh,
                                 int percentThresholdMedium) {
         this.percentThresholdCritical = percentThresholdCritical;
-        this.percentThresholdHigh = percentThUserScoreServiceresholdHigh;
+        this.percentThresholdHigh = percentThresholdHigh;
         this.percentThresholdMedium = percentThresholdMedium;
     }
 
