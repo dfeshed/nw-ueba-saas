@@ -3,23 +3,30 @@
  * @param bytes
  * @public
  */
+
+
 export const convertFromBytes = (bytes) => {
   let val = null;
+  let unit = null;
   const GB = Math.pow(1024, 3);
   const MB = Math.pow(1024, 2);
   const KB = 1024;
   const values = bytes.map((item) => {
     const { value } = item;
     if (item.value >= GB) {
-      val = `${(value / GB).toFixed(1)} GB`;
+      val = (value / GB).toFixed(1);
+      unit = 'GB';
     } else if (value >= MB) {
-      val = `${(value / MB).toFixed(1)} MB`;
+      val = (value / MB).toFixed(1);
+      unit = 'MB';
     } else if (value >= KB) {
-      val = `${(value / KB).toFixed(1)} KB`;
+      val = (value / KB).toFixed(1);
+      unit = 'KB';
     } else {
-      val = `${value} bytes`;
+      val = value;
+      unit = 'bytes';
     }
-    return { value: val };
+    return { value: val.toString(), unit };
   });
   return values;
 };

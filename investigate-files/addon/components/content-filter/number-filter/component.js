@@ -98,8 +98,8 @@ const NumberFilter = Component.extend(FilterMixin, {
       }
       const translated = this.get('i18n').t(name);
       return restrictionType === 'BETWEEN' ?
-        `${filterName}: ${values[0].value}-${values[1].value}` :
-        `${filterName}: ${translated} ${values[0].value}`;
+        `${filterName}: ${values[0].value}-${values[1].value} ${values[0].unit}` :
+        `${filterName}: ${translated} ${values[0].value} ${values[0].unit}`;
     }
     return `${filterName}: All`;
   },
@@ -113,11 +113,14 @@ const NumberFilter = Component.extend(FilterMixin, {
     if (expression && expression.propertyValues) {
       const { restrictionType, propertyValues: value } = expression;
       this.set('restrictionType', RESTRICTION_TYPES_BY_TYPE[restrictionType]);
+      const convertedValue = convertFromBytes(value);
       if (value && value.length > 1) { // If length > 1 then set the start and end
-        this.set('start', value[0].value);
-        this.set('end', value[1].value);
+        this.set('start', convertedValue[0].value);
+        this.set('end', convertedValue[1].value);
+        this.set('selectedUnit', convertedValue[0].unit);
       } else {
-        this.set('value', value[0].value);
+        this.set('value', convertedValue[0].value);
+        this.set('selectedUnit', convertedValue[0].unit);
       }
     }
   },
@@ -141,10 +144,8 @@ const NumberFilter = Component.extend(FilterMixin, {
       } = this.getProperties('restrictionType', 'config', 'start', 'end', 'selectedUnit', 'value');
       let propertyValues = null;
       if ((value && value.length) || (!isEmpty(start) && !isEmpty(end))) {
-        if (propertyName === 'entropy') { // for entropy parse Float
+        if (propertyName === 'entropy' || propertyName === 'size') { // for entropy parse Float
           propertyValues = type === 'BETWEEN' ? [{ value: parseFloat(start) }, { value: parseFloat(end) }] : [{ value: parseFloat(value) }];
-        } else {
-          propertyValues = type === 'BETWEEN' ? [{ value: parseInt(start, 10) }, { value: parseInt(end, 10) }] : [{ value: parseInt(value, 10) }];
         }
       } else {
         this.set('restrictionType', null);
