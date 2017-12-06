@@ -72,10 +72,11 @@ public class ScoringServiceMetricsContainer {
     public void flush()
     {
         // subscribe metric to collecting service
-        scoringMetrics.values().forEach(metric -> metricCollectingService.addMetric(metric));
-
-        // export metrics to elastic
-        metricsExporter.manualExportMetrics(MetricsExporter.MetricBucketEnum.APPLICATION);
+        scoringMetrics.values().forEach(metric -> {
+            metricCollectingService.addMetric(metric);
+            // export metrics to elastic
+            metricsExporter.manualExportMetrics(MetricsExporter.MetricBucketEnum.APPLICATION);
+        });
 
         // reset cache
         scoringMetrics = new HashMap<>();
