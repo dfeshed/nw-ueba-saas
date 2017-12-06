@@ -2,12 +2,13 @@ import logging
 
 from datetime import timedelta
 
-
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio_extension.builders.adapter.adapter_dag_builder_extension import AdapterDagBuilderExtension
+presidio_extension = __import__('presidio-extension')
+AdapterDagBuilderExtension = getattr(presidio_extension, 'AdapterDagBuilderExtension')
+#from presidio_extension.builders.adapter.adapter_dag_builder_extension import AdapterDagBuilderExtension
 
 ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
 
