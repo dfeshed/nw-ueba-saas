@@ -29,6 +29,7 @@
             <label class="rsa-form-radio-label {{option}} {{if (eq option (get preferences item.field)) 'checked'}}">
               {{radio-button
                 value=option
+                groupValue=(readonly (get preferences item.field))
                 changed=(action 'saveNewPreferences' item.field option) }}
               {{t (concat fieldPrefix '.' option)}}
             </label>
