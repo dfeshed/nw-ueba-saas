@@ -4,6 +4,7 @@ import config from './overview-property-config';
 import PropertyPanel from 'investigate-hosts/components/host-detail/base-property-panel/component';
 import set from 'ember-metal/set';
 import get from 'ember-metal/get';
+import _ from 'lodash';
 
 /**
  * Overide the the `host-detail/base-property-panel` to accommodate different json structure
@@ -60,36 +61,30 @@ export default PropertyPanel.extend({
    * @private
    * @returns {Array}
    */
-  updateConfig(data, config) {
-    let newConfig = [];
 
+  updateConfig(data, config) {
+    let newConfigList = [];
     if (data) {
-      newConfig = config.map((item) => {
+      newConfigList = config.map((item) => {
         const { multiOption, prefix } = item;
         if (multiOption) {
+          const multiOptionConfigList = [];
           const values = get(data, prefix);
           if (values) {
-            for (let i = 0; i < values.length; i++) {
-              item.fields = item.fields.map((fieldItem) => {
-                return {
-                  field: fieldItem.field,
-                  labelKey: fieldItem.labelKey,
-                  fieldPrefix: `${item.prefix}.${i}`
-                };
-              });
-              if (i === (values.length - 1)) {
-                return item;
-              }
-              newConfig.push(item);
-            }
-          } else {
-            return item;
+            values.forEach((value, index) => {
+              const newItem = {
+                ...item,
+                fields: item.fields.map((fieldItem) => ({ ...fieldItem, fieldPrefix: `${item.prefix}.${index}` }))
+              };
+              multiOptionConfigList.push(newItem);
+            });
+            return multiOptionConfigList;
           }
         } else {
           return item;
         }
       });
     }
-    return newConfig;
+    return _.flatten(newConfigList);
   }
 });
