@@ -174,6 +174,13 @@ public class SmartWeightsScorerAlgorithm {
             }
         }
 
+        // Convert the contributions to proportional contributions (fractions)
+        if (sum > 0) {
+            for (FeatureScore contribution : contributions) {
+                contribution.setScore(contribution.getScore() / sum);
+            }
+        }
+
         return new FeatureScore(StringUtils.EMPTY, roundToSmartValuePrecision(sum), Arrays.asList(
                 new FeatureScore(CONTRIBUTIONS_FEATURE_SCORE_NAME, 0d, contributions),
                 new FeatureScore(SCORE_AND_WEIGHT_PRODUCTS_FEATURE_SCORE_NAME, 0d, scoreAndWeightProducts)
