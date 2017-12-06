@@ -54,10 +54,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -398,6 +395,6 @@ public class AlertServiceTest {
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now());
         return new SmartRecord(
                 timeRange, contextId, featureName, FixedDurationStrategy.HOURLY,
-                5.0, score, feature_scores, aggregated_feature_events, null);
+                5.0, score, feature_scores, aggregated_feature_events, null, null, null);
     }
 }

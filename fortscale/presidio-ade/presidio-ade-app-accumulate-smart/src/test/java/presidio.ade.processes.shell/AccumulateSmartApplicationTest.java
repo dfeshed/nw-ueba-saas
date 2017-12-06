@@ -110,7 +110,7 @@ public class AccumulateSmartApplicationTest {
 
                 SmartRecord smartRecord = new SmartRecord(
                         timeRange, CONTEXT_ID, featureName, FixedDurationStrategy.HOURLY,
-                        smartValue, smartScore, featureScores, aggregationRecords, null);
+                        smartValue, smartScore, featureScores, aggregationRecords, null, null, null);
                 smartRecords.add(smartRecord);
                 start = end;
                 end = end.plus(smartDuration);
@@ -157,7 +157,7 @@ public class AccumulateSmartApplicationTest {
                 aggregatedFeatureEventsValues.forEach((k, value) -> {
                     value.forEach((hour, score) -> {
                         //assert that score with zero did not store in map
-                        Assert.assertFalse(score.equals(0));
+                        Assert.assertFalse(score.equals(0.0));
                     });
                     //assert num of aggr (without aggr with score zero)
                     Assert.assertTrue(value.size() == NUM_OF_SMARTS_PER_HOUR - 2);

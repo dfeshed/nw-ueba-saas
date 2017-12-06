@@ -33,6 +33,8 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	public static final String AGGREGATION_RECORDS_FIELD = "aggregationRecords";
 	public static final String FEATURE_NAME_FIELD = "featureName";
 	public static final String CONTEXT_FIELD = "context";
+	public static final String CONTRIBUTIONS_FIELD = "contributions";
+	public static final String SCORE_AND_WEIGHT_PRODUCTS_FIELD = "scoreAndWeightProducts";
 
 	@Field(FIXED_DURATION_STRATEGY_FIELD)
 	private FixedDurationStrategy fixedDurationStrategy;
@@ -48,6 +50,10 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 	private String featureName;
 	@Field(CONTEXT_FIELD)
 	private Map<String, String> context;
+	@Field(CONTRIBUTIONS_FIELD)
+	private Map<String, Double> contributions;
+	@Field(SCORE_AND_WEIGHT_PRODUCTS_FIELD)
+	private Map<String, Double> scoreAndWeightProducts;
 
 	public SmartRecord() {
 		super();
@@ -62,7 +68,9 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 			double smartScore,
 			List<FeatureScore> featureScores,
 			List<AdeAggregationRecord> aggregationRecords,
-			Map<String, String> context) {
+			Map<String, String> context,
+			Map<String, Double> contributions,
+			Map<String, Double> scoreAndWeightProducts) {
 
 		super(timeRange.getStart(), timeRange.getEnd(), contextId);
 		this.fixedDurationStrategy = fixedDurationStrategy;
@@ -72,6 +80,8 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 		this.aggregationRecords = aggregationRecords;
 		this.featureName = featureName;
 		this.context = context;
+		this.contributions = contributions;
+		this.scoreAndWeightProducts = scoreAndWeightProducts;
 	}
 
 	public SmartRecord(
@@ -81,7 +91,7 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 			FixedDurationStrategy fixedDurationStrategy,
 			Map<String, String> context) {
 
-		this(timeRange, contextId, featureName, fixedDurationStrategy, 0, 0, null, null, context);
+		this(timeRange, contextId, featureName, fixedDurationStrategy, 0, 0, null, null, context, null, null);
 	}
 
 	@Override
@@ -151,6 +161,22 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 
 	public void setContext(Map<String, String> context) {
 		this.context = context;
+	}
+
+	public Map<String, Double> getContributions() {
+		return contributions;
+	}
+
+	public void setContributions(Map<String, Double> contributions) {
+		this.contributions = contributions;
+	}
+
+	public Map<String, Double> getScoreAndWeightProducts() {
+		return scoreAndWeightProducts;
+	}
+
+	public void setScoreAndWeightProducts(Map<String, Double> scoreAndWeightProducts) {
+		this.scoreAndWeightProducts = scoreAndWeightProducts;
 	}
 
 	@Override

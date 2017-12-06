@@ -9,6 +9,11 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm.CONTRIBUTIONS_FEATURE_SCORE_NAME;
+import static fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm.SCORE_AND_WEIGHT_PRODUCTS_FEATURE_SCORE_NAME;
 
 /**
  * This service uses a generic {@link ScoringService} to score {@link SmartRecord}s. For each smart record,
@@ -44,10 +49,16 @@ public class SmartScoringService {
 		smartRecords.forEach(this::score);
 	}
 
+	/**
+	 * Reset model cache.
+	 */
+	public void resetModelCache() {
+		scoringService.resetModelCache();
+	}
+
 	private void score(SmartRecord smartRecord) {
 		AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(smartRecord);
 		List<FeatureScore> levelOneFeatureScores = scoringService.score(adeRecordReader);
-
 
 		if (levelOneFeatureScores.size() == 1) {
 			FeatureScore smartScore = levelOneFeatureScores.get(0);
@@ -58,6 +69,7 @@ public class SmartScoringService {
 				smartRecord.setSmartValue(smartValue.getScore());
 				smartRecord.setScore(smartScore.getScore());
 				smartRecord.setFeatureScoreList(levelOneFeatureScores);
+				addAdditionalInfo(smartRecord, extractAdditionalInfo(smartValue));
 			} else {
 				logger.error(
 						"A smart record's second level list of feature scores should contain only one " +
@@ -72,10 +84,20 @@ public class SmartScoringService {
 		}
 	}
 
-	/**
-	 * Reset model cache
-	 */
-	public void resetModelCache(){
-		scoringService.resetModelCache();
+	private static Map<String, List<FeatureScore>> extractAdditionalInfo(FeatureScore smartValue) {
+		List<FeatureScore> featureScores = smartValue.getFeatureScores();
+		Map<String, List<FeatureScore>> additionalInfo = featureScores.stream()
+				.collect(Collectors.toMap(FeatureScore::getName, FeatureScore::getFeatureScores));
+		featureScores.clear();
+		return additionalInfo;
+	}
+
+	private static void addAdditionalInfo(SmartRecord smartRecord, Map<String, List<FeatureScore>> additionalInfo) {
+		smartRecord.setContributions(toMap(additionalInfo.get(CONTRIBUTIONS_FEATURE_SCORE_NAME)));
+		smartRecord.setScoreAndWeightProducts(toMap(additionalInfo.get(SCORE_AND_WEIGHT_PRODUCTS_FEATURE_SCORE_NAME)));
+	}
+
+	private static Map<String, Double> toMap(List<FeatureScore> list) {
+		return list.stream().collect(Collectors.toMap(FeatureScore::getName, FeatureScore::getScore));
 	}
 }

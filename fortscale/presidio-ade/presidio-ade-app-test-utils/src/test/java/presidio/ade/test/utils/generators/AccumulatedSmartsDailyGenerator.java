@@ -14,20 +14,19 @@ import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.data.generators.common.*;
 import presidio.data.generators.common.time.TimeGenerator;
-import presidio.data.generators.event.IEventGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
 public class AccumulatedSmartsDailyGenerator {
+    private static final int SEED = 1;
+
     private IStringGenerator contextIdGenerator;
     private TimeGenerator timeGenerator;
     private Map<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresToScoreAndProbabilityMap;
     private Random random;
     private int numOfSmartsPerDay;
-    private final int seed = 1;
-    private SmartAccumulatorService smartAccumulatorService;
 
     public AccumulatedSmartsDailyGenerator(IStringGenerator contextIdGenerator,
                                            TimeGenerator timeGenerator,
@@ -37,16 +36,11 @@ public class AccumulatedSmartsDailyGenerator {
         this.timeGenerator = timeGenerator;
         this.featuresToScoreAndProbabilityMap = featuresToScoreAndProbabilityMap;
         this.numOfSmartsPerDay = numOfSmartsPerDay;
-        random = new Random(seed);
-
-
+        random = new Random(SEED);
     }
 
     /**
      * Generates accumulated smarts
-     *
-     * @return
-     * @throws GeneratorException
      */
     public List<AccumulatedSmartRecord> generate() throws GeneratorException {
 
@@ -66,12 +60,10 @@ public class AccumulatedSmartsDailyGenerator {
                     Instant smartStartInstant = startInstant.plus(Duration.ofHours(hour));
                     Instant smartEndInstant = smartStartInstant.plus(Duration.ofHours(1));
                     TimeRange smartTimeRange = new TimeRange(smartStartInstant, smartEndInstant);
-
-                    String featureName = "userId_hourly";
                     Map<String, String> context = new HashMap<>();
                     context.put("userId", contextId);
 
-                    SmartRecord smartRecord = new SmartRecord(smartTimeRange, contextId, "userId_hourly", FixedDurationStrategy.HOURLY, 0.0, 0.0, Collections.emptyList(), Collections.emptyList(), context);
+                    SmartRecord smartRecord = new SmartRecord(smartTimeRange, contextId, "userId_hourly", FixedDurationStrategy.HOURLY, 0.0, 0.0, Collections.emptyList(), Collections.emptyList(), context, null, null);
                     List<AdeAggregationRecord> aggregationRecords = new ArrayList<>();
                     for (Map.Entry<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresToScoreAndProbability : featuresToScoreAndProbabilityMap.entrySet()) {
                         for (AggregatedFeatureEventConf feature : featuresToScoreAndProbability.getKey()) {
@@ -97,8 +89,7 @@ public class AccumulatedSmartsDailyGenerator {
             }
 
             SmartAccumulationsCache smartAccumulationsCache = new SmartAccumulationsInMemory();
-            smartAccumulatorService = new SmartAccumulatorService(smartAccumulationsCache, accumulatedTimeRange);
-            smartAccumulatorService.accumulate(smarts);
+            new SmartAccumulatorService(smartAccumulationsCache, accumulatedTimeRange).accumulate(smarts);
             evList.addAll(smartAccumulationsCache.getAllAccumulatedRecords());
         }
 
