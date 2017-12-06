@@ -461,6 +461,12 @@
       ],
       "FILE_CONTENTS_WRITTEN": [
         "FILE_ACTION"
+      ],
+      "FOLDER_AUDITING_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
+      ],
+      "FILE_AUDITING_CHANGED": [
+        "FILE_PERMISSION_CHANGE"
       ]
     },
     "AUTHENTICATION": {
