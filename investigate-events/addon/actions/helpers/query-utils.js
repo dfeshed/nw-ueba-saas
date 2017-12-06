@@ -9,7 +9,7 @@ import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/uti
 // Appends a condition for session id, but only if a session id is given.
 // @param {string} filter A Core filter condition (typically for meta keys other than 'sessionid').
 // @param {string} [startSessionId] Optional lower bound (exclusive) for session IDs.
-function addSessionIdFilter(filter, startSessionId) {
+function _addSessionIdFilter(filter, startSessionId) {
   const out = [];
   if (startSessionId) {
     out.push(`(sessionid > ${startSessionId})`);
@@ -31,16 +31,16 @@ function addSessionIdFilter(filter, startSessionId) {
  * @returns {object} Newly created stream instance.
  * @public
  */
-function buildEventStreamInputs(query, language, limit, batch = 1, startSessionId = null) {
-  const inputs = makeServerInputsForQuery(query, language);
+function _buildEventStreamInputs(query, language, limit, batch = 1, startSessionId = null) {
+  const inputs = _makeServerInputsForQuery(query, language);
   inputs.stream = { limit, batch };
   const metaFilterInput = inputs.filter.findBy('field', 'query');
-  metaFilterInput.value = addSessionIdFilter(metaFilterInput.value, startSessionId);
+  metaFilterInput.value = _addSessionIdFilter(metaFilterInput.value, startSessionId);
   return inputs;
 }
 
 function buildMetaValueStreamInputs(metaName, query, language, queryOptions, limit, batch) {
-  const inputs = buildEventStreamInputs(query, language, limit, batch);
+  const inputs = _buildEventStreamInputs(query, language, limit, batch);
   inputs.filter.pushObject({ field: 'metaName', value: metaName });
   if (queryOptions) {
     const { size, metric, sortField, sortOrder } = getProperties(queryOptions, 'size', 'metric', 'sortField', 'sortOrder');
@@ -59,7 +59,7 @@ function buildMetaValueStreamInputs(metaName, query, language, queryOptions, lim
  * @param {object[]} language Array of meta key definitions. @see investigate-events/state/query
  * @public
  */
-function makeServerInputsForQuery(query, language) {
+function _makeServerInputsForQuery(query, language) {
   const {
       serviceId, startTime, endTime, metaFilter
     } = getProperties(
@@ -137,7 +137,7 @@ function executeMetaValuesRequest(request, inputs, values) {
 /**
  * Parses a given URI string that represents a filter for a Core Events query.
  * Assumes the URI is of the following syntax: `serviceId/startTime/endTime/metaFilterUri`.
- * The `metaFilter` piece is further parsed into an list of individual filter conditions (@see parseMetaFilterUri).
+ * The `metaFilter` piece is further parsed into an list of individual filter conditions (@see _parseMetaFilterUri).
  * @param {string} uri The URI string.
  * @returns {{ serviceId: string, startTime: number, endTime: number, metaFilter: object }}
  * @public
@@ -146,7 +146,7 @@ function parseEventQueryUri(uri) {
   const parts = uri ? uri.split('/') : [];
   const [ serviceId, startTime, endTime ] = parts;
   const metaFilterUri = parts.slice(3, parts.length).join('/');
-  const metaFilterConditions = parseMetaFilterUri(metaFilterUri);
+  const metaFilterConditions = _parseMetaFilterUri(metaFilterUri);
 
   return {
     serviceId,
@@ -173,7 +173,7 @@ function parseEventQueryUri(uri) {
  * (ii) value` is a meta key value (raw, not alias).
  * @private
  */
-function parseMetaFilterUri(uri) {
+function _parseMetaFilterUri(uri) {
   if (isBlank(uri)) {
     // When uri is empty, return empty array. Alas, ''.split() returns a non-empty array; it's a 1-item array with
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
@@ -204,7 +204,7 @@ function uriEncodeEventQuery(queryAttrs) {
   } = getProperties(queryAttrs, 'serviceId', 'startTime', 'endTime', 'metaFilter');
 
   const conditions = get(metaFilter || {}, 'conditions');
-  const metaFilterUri = uriEncodeMetaFilterConditions(conditions);
+  const metaFilterUri = _uriEncodeMetaFilterConditions(conditions);
 
   return [ serviceId, startTime, endTime, metaFilterUri ].join('/');
 }
@@ -216,7 +216,7 @@ function uriEncodeEventQuery(queryAttrs) {
  * @returns {string}
  * @private
  */
-function uriEncodeMetaFilterConditions(conditions = []) {
+function _uriEncodeMetaFilterConditions(conditions = []) {
   return conditions
     .map((condition) => {
       if (condition.operator === 'exists' || condition.operator === '!exists') {
@@ -231,11 +231,8 @@ function uriEncodeMetaFilterConditions(conditions = []) {
 }
 
 export {
-  buildEventStreamInputs,
-  makeServerInputsForQuery,
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   parseEventQueryUri,
-  uriEncodeEventQuery,
-  uriEncodeMetaFilterConditions
+  uriEncodeEventQuery
 };

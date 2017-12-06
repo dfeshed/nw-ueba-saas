@@ -86,11 +86,6 @@ export const setSelectedEvent = (event) => {
   };
 };
 
-export const setSessionId = (serviceId) => ({
-  type: ACTION_TYPES.SESSION_SELECTED,
-  payload: serviceId
-});
-
 export const setService = (service) => {
   return (dispatch) => {
     dispatch({
