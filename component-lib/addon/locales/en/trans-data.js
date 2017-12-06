@@ -2442,7 +2442,7 @@ export default {
       noBtn: 'No',
       delete: {
         successMessage: 'Query deleted successfully.',
-        confirmMessage: 'Are you sure you want to delete the selected query/queries?'
+        confirmMessage: 'Are you sure you want to delete the selected query?'
       },
       edit: {
         successMessage: 'Query name updated successfully',

@@ -2442,7 +2442,7 @@ export default {
       noBtn: 'ja_No',
       delete: {
         successMessage: 'ja_Query deleted successfully.',
-        confirmMessage: 'ja_Are you sure you want to delete the selected query/queries?'
+        confirmMessage: 'ja_Are you sure you want to delete the selected query?'
       },
       edit: {
         successMessage: 'ja_Query name updated successfully',
