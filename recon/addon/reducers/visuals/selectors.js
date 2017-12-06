@@ -8,6 +8,7 @@ const _typeCode = createSelector(
   (currentReconView) => currentReconView ? currentReconView.code : null
 );
 const visuals = (state) => state.recon.visuals;
+const packetsPageSize = (state) => state.recon.packets.packetsPageSize;
 
 export const isRequestShown = (recon) => recon.visuals.isRequestShown;
 
@@ -19,10 +20,10 @@ export const allDataHidden = createSelector(
 );
 
 export const getReconPreferences = createSelector(
-  [visuals],
-  (visuals) => {
+  [visuals, packetsPageSize],
+  (visuals, packetsPageSize) => {
     const filterVal = visuals .without('defaultReconView', 'currentReconView', 'defaultLogFormat', 'defaultPacketFormat');
-    return { 'eventAnalysisPreferences': filterVal };
+    return { eventAnalysisPreferences: { ...filterVal, packetsPageSize } };
   }
 );
 

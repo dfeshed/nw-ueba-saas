@@ -128,4 +128,11 @@ export default class DataHelper {
     this._onView(RECON_VIEW_TYPES_BY_NAME.FILE);
     return this;
   }
+
+  // Packets
+
+  packetPageSize(setTo) {
+    _set(this.state, 'packets.packetsPageSize', setTo);
+    return this;
+  }
 }

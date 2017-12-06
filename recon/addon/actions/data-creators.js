@@ -228,12 +228,17 @@ const _changePageNumber = (pageNumber) => {
   };
 };
 
-const changePacketsPerPage = (packetsPerPage) => {
-  return (dispatch) => {
+const changePacketsPerPage = (packetsPerPage, needToPersist = true) => {
+  return (dispatch, getState) => {
     dispatch({
       type: ACTION_TYPES.CHANGE_PACKETS_PER_PAGE,
       payload: Number(packetsPerPage)
     });
+    /* Since we need to persist the value only when user changes it from dropdown
+       and not when we getPreferences from the backend hence adding the condition*/
+    if (needToPersist) {
+      persistPreferences(getState);
+    }
     dispatch(pageFirst());
   };
 };
@@ -404,6 +409,8 @@ const _determineReconView = (meta, size) => {
             type: ACTION_TYPES.SET_PREFERENCES,
             payload: data
           });
+          // We need to set packetsPageSize to the value that is persisted to the backend
+          changePacketsPerPage(data.eventAnalysisPreferences.packetsPageSize, false);
         }
         // it should be called after the value for 'isMetaShown' is fetched from the backend
         if (size !== 'full') {

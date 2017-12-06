@@ -155,9 +155,12 @@ test('getReconPreferences', function(assert) {
         isReconOpen: false,
         isRequestShown: true,
         isResponseShown: true
+      },
+      packets: {
+        packetsPageSize: 100
       }
     }
   }));
   assert.deepEqual(result, {
-    eventAnalysisPreferences: { isHeaderOpen: true, isMetaShown: true, isReconExpanded: true, isReconOpen: false, isRequestShown: true, isResponseShown: true } });
+    eventAnalysisPreferences: { isHeaderOpen: true, isMetaShown: true, isReconExpanded: true, isReconOpen: false, isRequestShown: true, isResponseShown: true, packetsPageSize: 100 } });
 });

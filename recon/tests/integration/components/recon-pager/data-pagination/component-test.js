@@ -5,6 +5,8 @@ import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import { selectChoose, clickTrigger } from '../../../../helpers/ember-power-select';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import $ from 'jquery';
+import { patchSocket } from '../../../../helpers/patch-socket';
+import wait from 'ember-test-helpers/wait';
 
 let setState;
 
@@ -90,4 +92,32 @@ test('testing packet pagination navigation buttons', function(assert) {
   assert.equal(this.$('.page-previous-button').hasClass('is-disabled'), false, 'Page previous should not be disabled');
   assert.equal(this.$('.page-next-button').hasClass('is-disabled'), false, 'Page next should not be disabled');
   assert.equal(this.$('.page-last-button').hasClass('is-disabled'), false, 'Page last should not be disabled');
+});
+
+test('Change in number of packets per page should result in call to setPreferences with new setting', function(assert) {
+  setupState(410);
+  const done = assert.async();
+  this.render(hbs`{{recon-pager/data-pagination}}`);
+  clickTrigger('.power-select-dropdown');
+  selectChoose('.power-select-dropdown', '300');
+  patchSocket((method, modelName, query) => {
+    assert.equal(method, 'setPreferences');
+    assert.equal(modelName, 'investigate-events-preferences');
+    assert.equal(query.data.eventAnalysisPreferences.packetsPageSize, 300, 'preference call is made with preference set to 300');
+    done();
+  });
+});
+
+test('Recon should pick default Page Size set by the user', function(assert) {
+  assert.expect(2);
+  new ReduxDataHelper(setState)
+    .isPacketView()
+    .packetTotal(410)
+    .packetPageSize(300)
+    .build();
+  this.render(hbs`{{recon-pager/data-pagination}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.ember-power-select-trigger').text().trim(), '300');
+    assert.equal(this.$('.last-page').text(), 2, 'Last Page Number should be changed');
+  });
 });
