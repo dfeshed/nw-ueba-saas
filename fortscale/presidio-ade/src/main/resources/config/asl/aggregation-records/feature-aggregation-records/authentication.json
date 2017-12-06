@@ -3,13 +3,13 @@
     {
       "name": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly",
       "type": "F",
-      "bucketConfName": "successfulAuthenticationHistogramUserIdAuthenticationHourly",
+      "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "successfulAuthenticationHistogram"
+          "resultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -20,13 +20,13 @@
     {
       "name": "numberOfFailedAuthenticationsUserIdAuthenticationHourly",
       "type": "F",
-      "bucketConfName": "failedAuthenticationHistogramUserIdAuthenticationHourly",
+      "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "failedAuthenticationHistogram"
+          "resultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -112,6 +112,23 @@
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      }
+    },
+    {
+      "name": "numberOfDistinctSiteUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "siteHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSiteHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

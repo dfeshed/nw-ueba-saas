@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE, type = Indicator.INDICATOR_TYPE)
-@Mapping(mappingPath = "elasticsearch/mappings/indicators-mappings.json")
+@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-indicator.json")
 public class Indicator extends AbstractElasticDocument {
 
     public static final String INDICATOR_TYPE = "indicator";

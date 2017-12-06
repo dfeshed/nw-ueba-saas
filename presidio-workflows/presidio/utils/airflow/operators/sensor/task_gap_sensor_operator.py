@@ -4,6 +4,7 @@ from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
+from datetime import timedelta
 
 
 class TaskGapSensorOperator(BaseSensorOperator):
@@ -29,7 +30,14 @@ class TaskGapSensorOperator(BaseSensorOperator):
             external_task_id,
             execution_delta,
             *args, **kwargs):
-        super(TaskGapSensorOperator, self).__init__(*args, **kwargs)
+        super(TaskGapSensorOperator, self).__init__(
+            retries=99999,
+            retry_exponential_backoff=True,
+            max_retry_delay=timedelta(seconds=300),
+            retry_delay=timedelta(seconds=5),
+            *args,
+            **kwargs
+        )
 
         self._execution_delta = execution_delta
         self._external_dag_id = external_dag_id

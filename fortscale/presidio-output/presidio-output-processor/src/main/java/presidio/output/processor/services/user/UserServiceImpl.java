@@ -5,7 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;

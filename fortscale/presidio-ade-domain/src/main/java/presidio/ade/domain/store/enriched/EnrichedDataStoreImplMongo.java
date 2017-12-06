@@ -1,16 +1,16 @@
 package presidio.ade.domain.store.enriched;
 
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
-import fortscale.utils.ttl.TtlService;
+import fortscale.utils.store.StoreManager;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,29 +22,33 @@ import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataStore {
+public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedDataStore {
     private static final Logger logger = Logger.getLogger(EnrichedDataStoreImplMongo.class);
 
     private final MongoTemplate mongoTemplate;
     private final EnrichedDataAdeToCollectionNameTranslator translator;
     private final AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
-    private TtlService ttlService;
+    private final long contextIdToNumOfItemsPageSize;
+    private StoreManager storeManager;
 
-    public EnrichedDataStoreImplMongo(MongoTemplate mongoTemplate, EnrichedDataAdeToCollectionNameTranslator translator, AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
+    public EnrichedDataStoreImplMongo(
+            MongoTemplate mongoTemplate,
+            EnrichedDataAdeToCollectionNameTranslator translator,
+            AdeEventTypeToAdeEnrichedRecordClassResolver adeEventTypeToAdeEnrichedRecordClassResolver,
+            MongoDbBulkOpUtil mongoDbBulkOpUtil,
+            long contextIdToNumOfItemsPageSize) {
+
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.adeEventTypeToAdeEnrichedRecordClassResolver = adeEventTypeToAdeEnrichedRecordClassResolver;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
+        this.contextIdToNumOfItemsPageSize = contextIdToNumOfItemsPageSize;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
         logger.info("storing by recordsMetadata={}", recordsMetadata);
         String collectionName = translator.toCollectionName(recordsMetadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        ttlService.save(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName);
     }
 
     @Override
@@ -126,29 +130,53 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
 
 
     @Override
-    public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(EnrichedRecordsMetadata recordsMetadata, String contextType) {
+    public List<ContextIdToNumOfItems> aggregateContextToNumOfEvents(
+            EnrichedRecordsMetadata recordsMetadata, String contextType) {
 
-        Instant startDate = recordsMetadata.getStartInstant();
-        Instant endDate = recordsMetadata.getEndInstant();
+        Date startDate = Date.from(recordsMetadata.getStartInstant());
+        Date endDate = Date.from(recordsMetadata.getEndInstant());
         String adeEventType = recordsMetadata.getAdeEventType();
-
-        //Get pojoClass by adeEventType
         Class pojoClass = adeEventTypeToAdeEnrichedRecordClassResolver.getClass(adeEventType);
-        //Get type of context
         String fieldName = getFieldName(pojoClass, contextType);
-
         String collectionName = translator.toCollectionName(recordsMetadata);
 
-        //Create Aggregation on context ids
-        Aggregation agg = newAggregation(
-                match(where(EnrichedRecord.START_INSTANT_FIELD).gte(Date.from(startDate)).lt(Date.from(endDate))),
-                Aggregation.group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD),
-                Aggregation.project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD).and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD).andExclude("_id")
-        );
+        try {
+            return aggregateContextIdToNumOfItems(startDate, endDate, fieldName, -1, 0, collectionName);
+        } catch (InvalidDataAccessApiUsageException e) {
+            long nextPageIndex = 0;
+            List<ContextIdToNumOfItems> subList;
+            List<ContextIdToNumOfItems> results = new LinkedList<>();
 
-        AggregationResults<ContextIdToNumOfItems> result = mongoTemplate.aggregate(agg, collectionName, ContextIdToNumOfItems.class);
-        //Create list of ContextIdToNumOfItems, which contain contextId and totalNumOfEvents
-        return result.getMappedResults();
+            do {
+                subList = aggregateContextIdToNumOfItems(startDate, endDate, fieldName,
+                        nextPageIndex * contextIdToNumOfItemsPageSize, contextIdToNumOfItemsPageSize, collectionName);
+                results.addAll(subList);
+                nextPageIndex++;
+            } while (subList.size() == contextIdToNumOfItemsPageSize);
+
+            return results;
+        }
+    }
+
+    private List<ContextIdToNumOfItems> aggregateContextIdToNumOfItems(
+            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName) {
+
+        List<AggregationOperation> aggregationOperations = new LinkedList<>();
+        aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
+        aggregationOperations.add(group(fieldName).count().as(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD));
+        aggregationOperations.add(project(ContextIdToNumOfItems.TOTAL_NUM_OF_ITEMS_FIELD)
+                .and("_id").as(ContextIdToNumOfItems.CONTEXT_ID_FIELD)
+                .andExclude("_id"));
+
+        if (skip >= 0 && limit > 0) {
+            aggregationOperations.add(sort(Direction.ASC, ContextIdToNumOfItems.CONTEXT_ID_FIELD));
+            aggregationOperations.add(skip(skip));
+            aggregationOperations.add(limit(limit));
+        }
+
+        return mongoTemplate
+                .aggregate(newAggregation(aggregationOperations), collectionName, ContextIdToNumOfItems.class)
+                .getMappedResults();
     }
 
     /**
@@ -201,14 +229,21 @@ public class EnrichedDataStoreImplMongo implements TtlServiceAwareEnrichedDataSt
     }
 
     @Override
-    public void setTtlService(TtlService ttlService) {
-        this.ttlService = ttlService;
+    public void setStoreManager(StoreManager storeManager) {
+        this.storeManager = storeManager;
     }
 
     @Override
     public void remove(String collectionName, Instant until) {
         Query query = new Query()
                 .addCriteria(where(AdeRecord.START_INSTANT_FIELD).lt(until));
+        mongoTemplate.remove(query, collectionName);
+    }
+
+    @Override
+    public void remove(String collectionName, Instant start, Instant end) {
+        Query query = new Query()
+                .addCriteria(where(AdeRecord.START_INSTANT_FIELD).gte(start).lt(end));
         mongoTemplate.remove(query, collectionName);
     }
 

@@ -33,23 +33,6 @@
       }
     },
     {
-      "name": "numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly",
-      "type": "F",
-      "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "operationTypeResultHistogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_histogram_key_value_func",
-        "key": "SUCCESS"
-      }
-    },
-    {
       "name": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly",
       "type": "F",
       "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
@@ -67,15 +50,32 @@
       }
     },
     {
-      "name": "numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "securitySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "userChangeSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "securitySensitiveOperationResultHistogram"
+          "userChangeSecuritySensitiveOperationResultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "objectChangeOperationResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "objectChangeOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

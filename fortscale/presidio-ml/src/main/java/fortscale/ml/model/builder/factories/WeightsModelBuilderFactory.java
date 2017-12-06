@@ -28,11 +28,11 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     private Boolean useWeightForContributionCalculation;
     @Value("${presidio.ade.model.smart.weights.builder.max.allowed.weight:0.1}")
     private Double maxAllowedWeight;
-    @Value("${presidio.ade.model.smart.weights.builder.min.allowed.weight:0.01}")
+    @Value("${presidio.ade.model.smart.weights.builder.min.allowed.weight:0.05}")
     private Double minAllowedWeight;
     @Value("${presidio.ade.model.smart.weights.builder.penalty.log.base:5}")
     private Double penaltyLogBase;
-    @Value("${presidio.ade.model.smart.weights.builder.simulation.weight.decay.factor:0.8}")
+    @Value("${presidio.ade.model.smart.weights.builder.simulation.weight.decay.factor:0.97}")
     private Double simulationWeightDecayFactor;
 
 

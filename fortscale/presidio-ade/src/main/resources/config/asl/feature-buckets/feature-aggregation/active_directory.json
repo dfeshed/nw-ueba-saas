@@ -71,7 +71,7 @@
       ]
     },
     {
-      "name": "securitySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "name": "userChangeSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -82,7 +82,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "securitySensitiveOperationResultHistogram",
+          "name": "userChangeSecuritySensitiveOperationResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
@@ -92,7 +92,34 @@
             "type": "aggr_feature_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+            "jsonPath": "[?('USER_CHANGE_OPERATION' in @['operationTypeCategories'] && 'SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "objectChangeOperationResultHistogramUserIdActiveDirectoryHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "objectChangeOperationResultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('OBJECT_CHANGE_OPERATION' in @['operationTypeCategories'])]"
           }
         }
       ]

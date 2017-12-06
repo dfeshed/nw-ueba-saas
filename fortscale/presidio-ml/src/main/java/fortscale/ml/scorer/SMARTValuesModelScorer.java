@@ -2,10 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.CertaintyFeatureScore;
 import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.PartitionedDataModel;
-import fortscale.ml.model.SMARTValuesModel;
-import fortscale.ml.model.SMARTValuesPriorModel;
+import fortscale.ml.model.*;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;

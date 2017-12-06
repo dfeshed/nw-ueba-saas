@@ -7,10 +7,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A configuration of {@link SmartRecord}s.
@@ -29,6 +26,7 @@ public class SmartRecordConf {
 	private List<String> contexts;
 	private FixedDurationStrategy fixedDurationStrategy;
 	private boolean includeAllAggregationRecords;
+	private List<String> excludedAggregationRecords;
 	private Double defaultWeight;
 	private List<ClusterConf> clusterConfs;
 	private Set<String> aggregationRecordNames;
@@ -39,6 +37,7 @@ public class SmartRecordConf {
 			@JsonProperty("contexts") List<String> contexts,
 			@JsonProperty("fixedDurationStrategy") String fixedDurationStrategy,
 			@JsonProperty("includeAllAggregationRecords") boolean includeAllAggregationRecords,
+			@JsonProperty("excludedAggregationRecords") List<String> excludedAggregationRecords,
 			@JsonProperty("defaultWeight") Double defaultWeight,
 			@JsonProperty("clusterConfs") List<ClusterConf> clusterConfs) {
 
@@ -46,6 +45,8 @@ public class SmartRecordConf {
 		this.contexts = contexts;
 		this.fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(fixedDurationStrategy);
 		this.includeAllAggregationRecords = includeAllAggregationRecords;
+		this.excludedAggregationRecords = excludedAggregationRecords == null ?
+				Collections.emptyList() : excludedAggregationRecords;
 		this.defaultWeight = defaultWeight;
 		this.clusterConfs = clusterConfs;
 		validateArguments();
@@ -67,6 +68,10 @@ public class SmartRecordConf {
 
 	public boolean isIncludeAllAggregationRecords() {
 		return includeAllAggregationRecords;
+	}
+
+	public List<String> getExcludedAggregationRecords() {
+		return excludedAggregationRecords;
 	}
 
 	public Double getDefaultWeight() {
@@ -93,6 +98,11 @@ public class SmartRecordConf {
 		} else {
 			Assert.notEmpty(clusterConfs,
 					"If not all aggregation records are included, the list of cluster confs cannot be empty.");
+		}
+
+		if (!excludedAggregationRecords.isEmpty()) {
+			Assert.isTrue(includeAllAggregationRecords, "Excluded aggregation records are allowed only if the " +
+					"'includeAllAggregationRecords' flag is on (i.e. singleton clusters are auto-completed).");
 		}
 	}
 

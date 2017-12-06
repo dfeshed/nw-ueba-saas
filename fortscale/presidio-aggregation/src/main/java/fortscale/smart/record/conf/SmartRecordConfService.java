@@ -157,12 +157,19 @@ public class SmartRecordConfService extends AslConfigurationService {
 		FixedDurationStrategy fixedDurationStrategy = smartRecordConf.getFixedDurationStrategy();
 		Collection<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService
 				.getAggregatedFeatureEventConfs(contexts, fixedDurationStrategy);
+		List<String> excludedAggregationRecords = smartRecordConf.getExcludedAggregationRecords();
 		Set<String> aggregationRecordNames = smartRecordConf.getAggregationRecordNames();
 
 		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfs) {
 			String aggregatedFeatureEventConfName = aggregatedFeatureEventConf.getName();
 
-			if (!aggregationRecordNames.contains(aggregatedFeatureEventConfName)) {
+			if (excludedAggregationRecords.contains(aggregatedFeatureEventConfName)) {
+				if (aggregationRecordNames.contains(aggregatedFeatureEventConfName)) {
+					throw new IllegalArgumentException(String.format(
+							"Aggregation record %s is supposed to be excluded, but it is manually " +
+							"defined in one of the cluster confs.", aggregatedFeatureEventConfName));
+				}
+			} else if (!aggregationRecordNames.contains(aggregatedFeatureEventConfName)) {
 				List<String> singletonList = Collections.singletonList(aggregatedFeatureEventConfName);
 				ClusterConf clusterConf = new ClusterConf(singletonList, smartRecordConf.getDefaultWeight());
 				smartRecordConf.getClusterConfs().add(clusterConf);

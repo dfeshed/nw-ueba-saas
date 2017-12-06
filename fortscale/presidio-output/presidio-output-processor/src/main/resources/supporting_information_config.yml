@@ -219,19 +219,35 @@ indicators:
     featureName: startInstantHistogram
   classification: non_standard_hours
 
-- id: sumOfHighestOperationTypeScoresUserIdSecuritySensitiveActiveDirectoryHourly
+- id: sumOfHighestOperationTypeScoresUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly
   type: SCORE_AGGREGATION
-  name: abnormal_sensitive_operation
-  adeEventType: scored_enriched.active_directory.userId.securitySensitive.activeDirectory.score
+  name: abnormal_group_membership_sensitive_operation
+  adeEventType: scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
       fieldName: operationTypeCategories
-      fieldValue: SECURITY_SENSITIVE_OPERATION
+      fieldValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: abnormal_ad_changes
+
+- id: sumOfHighestOperationTypeScoresUserIdObjectChangeActiveDirectoryHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_object_change_operation
+  adeEventType: scored_enriched.active_directory.operationType.userIdObjectChange.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyFilters:
+      fieldName: operationTypeCategories
+      fieldValue: OBJECT_CHANGES
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
@@ -242,10 +258,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: SECURITY_SENSITIVE_OPERATION
-    anomalyFilters:
-        fieldName: operationTypeCategories
-        fieldValue: GROUP_MEMBERSHIP
+    anomalyValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: hourly_aggregations
   classification: mass_changes_to_critical_enterprise_groups
@@ -262,27 +275,30 @@ indicators:
     type: hourly_aggregations
   classification: mass_changes_to_groups
 
-- id: numberOfSuccessfulOperationTypeUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_successful_AD_operations
+  name: high_number_of_successful_object_change_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
-    anomalyField: result
-    anomalyValue: SUCCESS
+    anomalyField: operationTypeCategories
+    anomalyValue: OBJECT_CHANGES
+    anomalyFilters:
+       fieldName: result
+       fieldValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: abnormal_ad_changes
 
 
-- id: numberOfSuccessfulSecuritySensitiveOperationUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_successful_security_sensitive_operations
+  name: high_number_of_successful_user_change_security_sensitive_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: SECURITY_SENSITIVE_OPERATION
+    anomalyValue: USER_CHANGE_OPERATION,SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
       fieldName: result
       fieldValue: SUCCESS
@@ -493,6 +509,7 @@ indicators:
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily
     featureName: srcMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_host
+  transformer: abnormalSourceMachineTransformer
 
 - id: sumOfHighestDstMachineNameRegexClusterScoresUserIdInteractiveRemoteAuthenticationHourly
   type: SCORE_AGGREGATION
@@ -532,7 +549,7 @@ indicators:
     anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations
-  classification: multiple_failed_logons
+  classification: brute_force_authentication
 
 - id: numberOfDistinctDstMachineDomainUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -600,7 +617,7 @@ classificationPriority:
 - classificationName: elevated_privileges_granted
   priority: 3
 
-- classificationName: multiple_failed_logons
+- classificationName: brute_force_authentication
   priority: 4
 
 - classificationName: user_logins_to_multiple_domains

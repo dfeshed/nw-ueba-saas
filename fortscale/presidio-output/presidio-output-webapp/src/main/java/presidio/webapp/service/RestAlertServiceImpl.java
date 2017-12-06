@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
+import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -25,25 +26,25 @@ import java.util.concurrent.TimeUnit;
 public class RestAlertServiceImpl implements RestAlertService {
 
 
-    private final AlertPersistencyService elasticAlertService;
+    private final AlertPersistencyService alertPersistencyService;
     private final int pageNumber;
     private final int pageSize;
 
-    public RestAlertServiceImpl(AlertPersistencyService elasticAlertService, int pageNumber, int pageSize) {
+    public RestAlertServiceImpl(AlertPersistencyService alertPersistencyService, int pageNumber, int pageSize) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
-        this.elasticAlertService = elasticAlertService;
+        this.alertPersistencyService = alertPersistencyService;
     }
 
     @Override
     public presidio.webapp.model.Alert getAlertById(String id, boolean expand) {
-        presidio.output.domain.records.alerts.Alert alertData = elasticAlertService.findOne(id);
+        presidio.output.domain.records.alerts.Alert alertData = alertPersistencyService.findOne(id);
         presidio.webapp.model.Alert resultAlert = null;
         if (alertData != null) {
             resultAlert = createRestAlert(alertData);
             if (expand) {
                 List<Indicator> restIndicators = new ArrayList<Indicator>();
-                Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
+                Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(id, new PageRequest(0, 100));
                 for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                     // workaround - projection doesn't work
                     indicator.setHistoricalData(null);
@@ -60,7 +61,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         AlertQuery convertedAlertQuery = createQuery(alertQuery);
         Page<presidio.output.domain.records.alerts.Alert> alerts;
         try {
-            alerts = elasticAlertService.find(convertedAlertQuery);
+            alerts = alertPersistencyService.find(convertedAlertQuery);
         } catch (Exception ex) {
             alerts = new PageImpl<>(null, null, 0);
         }
@@ -73,7 +74,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 if (alertQuery.getExpand().booleanValue()) {
                     // TODO: improve performance with in query
                     List<Indicator> restIndicators = new ArrayList<Indicator>();
-                    Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 100));
+                    Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 100));
                     for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                         indicator.setHistoricalData(null);
                         restIndicators.add(createRestIndicator(indicator));
@@ -222,7 +223,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public AlertsWrapper getAlertsByUserId(String userId, boolean expand) {
         Page<presidio.output.domain.records.alerts.Alert> alerts;
-        alerts = elasticAlertService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
+        alerts = alertPersistencyService.findByUserId(userId, new PageRequest(pageNumber, pageSize));
         List restAlerts = new ArrayList();
         int totalElements = 0;
         if (alerts.getTotalElements() > 0) {
@@ -230,7 +231,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 presidio.webapp.model.Alert restAlert = createRestAlert(alert);
                 if (expand) {
                     List<Indicator> restIndicators = new ArrayList<Indicator>();
-                    Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 100));
+                    Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 100));
                     for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                         // workaround - projection doesn't work
                         indicator.setHistoricalData(null);
@@ -246,32 +247,37 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public Map<String, List<presidio.webapp.model.Alert>> getAlertsByUsersIds(Collection<String> userIds) {
-        Page<presidio.output.domain.records.alerts.Alert> alerts;
-        try {
-            alerts = elasticAlertService.findByUserIdIn(userIds, new PageRequest(pageNumber, pageSize));
-        } catch (Exception ex) {
-            alerts = new PageImpl<>(null, null, 0);
-        }
-        List restAlerts;
-        if (alerts.getTotalElements() > 0) {
-            restAlerts = new ArrayList();
-            alerts.forEach(alert -> restAlerts.add(createRestAlert(alert)));
-            return userIdsToAlerts(restAlerts, (List) userIds);
-        }
-        return null;
+    public Map<String, List<Alert>> getAlertsByUsersIds(Collection<String> userIds) {
+
+        Map<String, List<Alert>> alertsByUserIds = new HashMap<>();
+
+        PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
+        userIds.forEach(id -> {
+            Page<presidio.output.domain.records.alerts.Alert> alertsByUserId = alertPersistencyService.findByUserId(id, pageRequest);
+            alertsByUserIds.put(id, convertToRestAlerts(alertsByUserId));
+        });
+
+        return alertsByUserIds;
+    }
+
+    private List<Alert> convertToRestAlerts(Page<presidio.output.domain.records.alerts.Alert> alertsByUserId) {
+        List<Alert> restAlerts = new ArrayList<>();
+        alertsByUserId.forEach(alert -> {
+            restAlerts.add(createRestAlert(alert));
+        });
+        return restAlerts;
     }
 
     @Override
     public Indicator getIndicatorById(String indicatorId, boolean expand) {
         presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
         if (expand) {
-            presidio.output.domain.records.alerts.Indicator indicator = elasticAlertService.findIndicatorById(indicatorId);
+            presidio.output.domain.records.alerts.Indicator indicator = alertPersistencyService.findIndicatorById(indicatorId);
             restIndicator = createRestIndicator(indicator);
         } else {
             // workaround - projection doesn't work
-            // presidio.output.domain.records.alerts.IndicatorSummary indicator = elasticAlertService.findIndicatorSummaryById(indicatorId);
-            presidio.output.domain.records.alerts.Indicator indicator = elasticAlertService.findIndicatorById(indicatorId);
+            // presidio.output.domain.records.alerts.IndicatorSummary indicator = alertPersistencyService.findIndicatorSummaryById(indicatorId);
+            presidio.output.domain.records.alerts.Indicator indicator = alertPersistencyService.findIndicatorById(indicatorId);
             indicator.setHistoricalData(null);
             restIndicator = createRestIndicator(indicator);
         }
@@ -286,19 +292,19 @@ public class RestAlertServiceImpl implements RestAlertService {
         int pageSize = indicatorQuery.getPageSize() != null ? indicatorQuery.getPageSize() : 10;
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
-            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 restIndicators.add(createRestIndicator(indicator));
             }
             totalElements = Math.toIntExact(indicators.getTotalElements());
         } else {
             // workaround - projection doesn't work
-            Page<presidio.output.domain.records.alerts.Indicator> indicators = elasticAlertService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 indicator.setHistoricalData(null);
                 restIndicators.add(createRestIndicator(indicator));
             }
-            //Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = elasticAlertService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            //Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = alertPersistencyService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             //for (presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary : indicatorsSummary) {
             //   restIndicators.add(createRestIndicator(indicatorSummary));
             //}
@@ -311,18 +317,27 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
         List<presidio.webapp.model.Event> restEvents = new ArrayList<presidio.webapp.model.Event>();
-        presidio.webapp.model.Indicator restIndicator = new presidio.webapp.model.Indicator();
         //TODO: fix sort
         //Sort sort = RestUtils.parseSortField(eventQuery.getSort());
         int pageNumber = eventQuery.getPageNumber() != null ? eventQuery.getPageNumber() : 0;
         int pageSize = eventQuery.getPageSize() != null ? eventQuery.getPageSize() : 10;
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
-        Page<IndicatorEvent> events = elasticAlertService.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
+        Page<IndicatorEvent> events = alertPersistencyService.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
         for (presidio.output.domain.records.alerts.IndicatorEvent event : events) {
             restEvents.add(createRestEvent(event));
         }
         int totalElements = Math.toIntExact(events.getTotalElements());
         return createEventsWrapper(restEvents, totalElements, eventQuery.getPageNumber());
+    }
+
+    @Override
+    public void updateAlertFeedback(String alertId, AlertQueryEnums.AlertFeedback feedback) {
+        presidio.output.domain.records.alerts.Alert alert = alertPersistencyService.findOne(alertId);
+
+
+
+        alertPersistencyService.updateAlertFeedback(alertId, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
+
     }
 
     private presidio.webapp.model.Alert createRestAlert(presidio.output.domain.records.alerts.Alert alert) {

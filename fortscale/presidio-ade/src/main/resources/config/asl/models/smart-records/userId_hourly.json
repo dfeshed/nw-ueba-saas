@@ -22,15 +22,15 @@
         "smartRecordConfName": "userId_hourly"
       },
       "retriever": {
-        "type": "accumulated_smart_value_retriever",
-        "timeRangeInSeconds": 2592000,
+        "type": "accumulated_context_smart_value_retriever",
+        "timeRangeInSeconds": 7776000,
         "functions": [],
         "smartRecordConfName": "userId_hourly",
-        "weightsModelName": "smart.global.weights.userId.hourly",
-        "partitionsResolutionInSeconds": 86400
+        "weightsModelName": "smart.global.weights.userId.hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_max_values_model_builder",
+        "partitionsResolutionInSeconds": 86400
       }
     },
     {

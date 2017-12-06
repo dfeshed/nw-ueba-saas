@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.ObjectUtils;
-import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.commons.services.alert.UserSeverity;
 import presidio.output.domain.repositories.UserRepository;
 import presidio.webapp.controllers.users.UsersApi;
 import presidio.webapp.model.User;
@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = ApiControllerModuleTestConfig.class)
 @Category(ModuleTestCategory.class)
-@ActiveProfiles("useEmbeddedElastic")
 public class UserApiControllerModuleTest {
 
     private static final String USERS_URI = "/users";

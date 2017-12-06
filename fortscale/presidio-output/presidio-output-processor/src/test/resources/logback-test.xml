@@ -8,7 +8,7 @@
 
     <include resource="presidio/logging/logback/base-test.xml" />
     <logger name="org.springframework" level="WARN"/>
-    <logger name="pl.allegro.tech.embeddedelasticsearch" level="DEBUG"/>
+    <logger name="pl.allegro.tech.embeddedelasticsearch" level="INFO"/>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

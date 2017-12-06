@@ -3,13 +3,14 @@ package presidio.ade.smart;
 import com.google.common.collect.Lists;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.SMARTValuesModel;
+import fortscale.ml.model.SMARTMaxValuesModel;
 import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
+import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeRange;
@@ -55,7 +56,7 @@ public class SmartApplicationTest extends BaseAppTest {
     private IMapGenerator aggregatedFeatureToScoreGenerator;
     private IMapGenerator aggregatedFeatureToValueGenerator;
     private static final double avgFeatureValueForLowAnomaliesUser = 0.5;
-    private static final int numOfFeaturesInGroups = 6;
+    private static final int numOfFeaturesInGroups = 5;
     public static final String EXECUTION_COMMAND = "process --smart_record_conf_name %s --start_date %s --end_date %s";
     @Autowired
     private AggregatedDataStore aggregatedDataStore;
@@ -65,6 +66,8 @@ public class SmartApplicationTest extends BaseAppTest {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
     private ModelsCacheService modelsCacheService;
+    @Autowired
+    private SmartRecordConfService smartRecordConfService;
 
     @Override
     protected String getContextTestExecutionCommand() {
@@ -193,13 +196,17 @@ public class SmartApplicationTest extends BaseAppTest {
         executeAndAssertCommandSuccess(command);
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        Double expectedScore = smartRecords.get(0).getScore();
-        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
-        Assert.assertTrue(expectedScore > 0);
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
 
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+
+        Map<Integer, List<SmartRecord>> aggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getAggregationRecords().size()));
+        aggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+            Double expectedScore = smartRecordList.get(0).getScore();
+            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+            Assert.assertTrue(expectedScore > 0);
+            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+        });
     }
 
 
@@ -357,17 +364,20 @@ public class SmartApplicationTest extends BaseAppTest {
 
         List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
 
-        Double expectedScore = smartRecords.get(0).getScore();
-        Double expectedSmartValue = smartRecords.get(0).getSmartValue();
-        Assert.assertTrue(expectedScore > 0);
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
-
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * (durationOfProcess - (2 * numOfDaysToReduce)));
 
         Instant smartRecordStart = smartRecords.stream().min(Comparator.comparing(SmartRecord::getStartInstant)).get().getStartInstant();
         Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
         Assert.assertTrue(start.equals(smartRecordStart));
         Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
+
+        Map<Integer, List<SmartRecord>> aggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getAggregationRecords().size()));
+        aggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+            Double expectedScore = smartRecordList.get(0).getScore();
+            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+            Assert.assertTrue(expectedScore > 0);
+            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+        });
     }
 
 
@@ -523,7 +533,7 @@ public class SmartApplicationTest extends BaseAppTest {
                     List<AdeAggregationRecord> adeAggregationRecords = s.getAggregationRecords();
                     Assert.assertTrue(adeAggregationRecords.size() == 1);
                     return adeAggregationRecords.get(0).getFeatureName().equals(featureName);
-                }).map(s -> s).collect(Collectors.toList());
+                }).collect(Collectors.toList());
 
                 for (SmartRecord smart : filteredSmartsByFeature) {
                     if (weightToScore.containsKey(weight)) {
@@ -608,14 +618,26 @@ public class SmartApplicationTest extends BaseAppTest {
      * @param weightToFeaturesSortedMap weight to features sorted map.
      */
     private void createLowAnomaliesUserSmartValuesModel(Instant end, String contextId, TreeMap<Double, List<String>> weightToFeaturesSortedMap) {
-        long numOfZeroValues = 300L;
-        long numOfPositiveValues = 60L;
+        int numOfZeroValues = 50;
+        int numOfPositiveValues = 5;
         Double minWeight = Collections.min(weightToFeaturesSortedMap.keySet());
         double avgSmartValue = avgFeatureValueForLowAnomaliesUser * minWeight;
-        double sumOfValues = avgSmartValue * numOfPositiveValues;
-        SMARTValuesModel smartValuesModel = new SMARTValuesModel();
-        smartValuesModel.init(numOfZeroValues, numOfPositiveValues, sumOfValues, 30, end);
-        ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartValuesModel, end.minus(Duration.ofDays(90)), end);
+
+        Map<Long, Double> startInstantToMaxSmartValue = new HashMap<>();
+        Duration duration = Duration.ofDays(1);
+        Instant startInstant = end.minus(duration);
+        for (int i = 0; i < numOfPositiveValues; i++) {
+            startInstantToMaxSmartValue.put(startInstant.getEpochSecond(), avgSmartValue);
+            startInstant = startInstant.minus(duration);
+        }
+        for (int i = 0; i < numOfZeroValues; i++) {
+            startInstantToMaxSmartValue.put(startInstant.getEpochSecond(), 0.0);
+            startInstant = startInstant.minus(duration);
+        }
+
+        SMARTMaxValuesModel smartMaxValuesModel = new SMARTMaxValuesModel();
+        smartMaxValuesModel.init(startInstantToMaxSmartValue, startInstantToMaxSmartValue.size(), end);
+        ModelDAO modelDao = new ModelDAO("test-session-id", contextId, smartMaxValuesModel, end.minus(Duration.ofDays(90)), end);
         mongoTemplate.insert(modelDao, "model_smart.userId.hourly");
     }
 
@@ -643,7 +665,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Split features into groups, where each group has same weight.
      */
     private TreeMap<Double, List<String>> createFeaturesGroups() {
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = getIncludedAggregatedFeatureEventConfs();
         Double weight = 0.1;
         Double decreasedValueOfWeight = 0.005;
 
@@ -669,7 +691,7 @@ public class SmartApplicationTest extends BaseAppTest {
      * Map contains all features, where only one has score/value = 100.
      */
     private void createSingleHighValueAggregatedFeatureGenerators() {
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = getIncludedAggregatedFeatureEventConfs();
 
         Map<AggregatedFeatureEventConf, Double> aggregatedFeatureEventConfToValue = aggregatedFeatureEventConfList.stream().collect(Collectors.toMap(aggregatedFeature -> aggregatedFeature, aggregatedFeature -> 0.0));
 
@@ -717,7 +739,9 @@ public class SmartApplicationTest extends BaseAppTest {
         for (int i = 0; i < numOfFeaturesInGroups; i++) {
             List<String> featuresWithDiffWeight = new ArrayList<>();
             for (List<String> features : weightToFeaturesSortedMap.values()) {
-                featuresWithDiffWeight.add(features.get(i));
+                if (i < features.size()) {
+                    featuresWithDiffWeight.add(features.get(i));
+                }
             }
             featuresWithDiffWeightList.add(featuresWithDiffWeight);
         }
@@ -744,6 +768,13 @@ public class SmartApplicationTest extends BaseAppTest {
 
         aggregatedFeatureToScoreGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToScoreList);
         aggregatedFeatureToValueGenerator = new CyclicMapGenerator<>(aggregatedFeatureEventConfToValueList);
+    }
+
+    private List<AggregatedFeatureEventConf> getIncludedAggregatedFeatureEventConfs() {
+        List<String> excludedAggregationRecords = smartRecordConfService.getSmartRecordConf("userId_hourly").getExcludedAggregationRecords();
+        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream()
+                .filter(aggregatedFeatureEventConf -> !excludedAggregationRecords.contains(aggregatedFeatureEventConf.getName()))
+                .collect(Collectors.toList());
     }
 
     @Configuration

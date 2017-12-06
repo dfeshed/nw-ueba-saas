@@ -12,7 +12,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -25,7 +25,7 @@
                   "name": "numberOfSuccessfulFilePermissionChanges.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -54,7 +54,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -67,7 +67,7 @@
                   "name": "numberOfSuccessfulFileActions.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -95,7 +95,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -108,7 +108,7 @@
                   "name": "numberOfFailedFilePermissionChanges.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -136,7 +136,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -149,7 +149,7 @@
                   "name": "numberOfFailedFileActions.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -177,22 +177,22 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "numberOfDistinctFileOpened.userId.file.hourly.base_scorer",
-            "model": {
-              "name": "numberOfDistinctFileOpened.userId.file.hourly"
-            },
-            "additional-models": [
-              {
-                "name": "numberOfDistinctFileOpened.userId.prior.global.file.hourly"
-              }
-            ],
-            "global-influence": 20,
-            "number-of-partitions-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": false
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctFileOpened.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctFileOpened.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctFileOpened.userId.prior.global.file.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
             }
           },
           "reduction-configs": [
@@ -218,7 +218,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -231,7 +231,7 @@
                   "name": "numberOfDistinctFolderOpened.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -259,7 +259,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -272,7 +272,7 @@
                   "name": "numberOfFileDeleted.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -300,7 +300,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -313,7 +313,7 @@
                   "name": "numberOfSuccessfulFileRenamed.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -341,7 +341,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -354,7 +354,7 @@
                   "name": "numberOfFileMoved.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -382,7 +382,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -395,7 +395,7 @@
                   "name": "numberOfFileMovedFromSharedDrive.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -423,7 +423,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -436,7 +436,7 @@
                   "name": "numberOfFileMovedToSharedDrive.userId.prior.global.file.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }

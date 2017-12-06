@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
-import presidio.monitoring.endPoint.PresidioMetricEndPoint;
+import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.factory.PresidioMetricFactory;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
+import presidio.monitoring.services.MetricConventionApplyer;
+import presidio.monitoring.services.PresidioMetricConventionApplyer;
 
 @Configuration
 @Import(MonitoringConfiguration.class)
@@ -21,17 +22,17 @@ public class PresidioMonitoringConfiguration {
 
     @Bean
     public MetricCollectingService metricCollectingService() {
-        return new MetricCollectingServiceImpl(presidioMetricEndPoint());
+        return new MetricCollectingServiceImpl(presidioMetricBucket());
     }
 
     @Bean
-    public PresidioMetricEndPoint presidioMetricEndPoint() {
-        return new PresidioMetricEndPoint(new PresidioSystemMetricsFactory(applicationName));
+    public MetricConventionApplyer metricConventionApplyer() {
+        return new PresidioMetricConventionApplyer(applicationName);
     }
 
     @Bean
-    public PresidioMetricFactory presidioMetricFactory() {
-        return new PresidioMetricFactory(applicationName);
+    public PresidioMetricBucket presidioMetricBucket() {
+        return new PresidioMetricBucket(new PresidioSystemMetricsFactory(applicationName), metricConventionApplyer());
     }
 
     @Bean
@@ -41,7 +42,7 @@ public class PresidioMonitoringConfiguration {
 
     @Bean
     public MonitroingAspectSetup monitroingAspectSetup() {
-        return  new MonitroingAspectSetup(presidioMetricEndPoint(), presidioMetricFactory());
+        return new MonitroingAspectSetup(presidioMetricBucket());
     }
 
 }

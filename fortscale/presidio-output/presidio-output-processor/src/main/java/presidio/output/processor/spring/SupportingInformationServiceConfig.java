@@ -2,6 +2,7 @@ package presidio.output.processor.spring;
 
 import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,6 +20,8 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByWeekdayPopulator;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
+import presidio.output.processor.services.alert.supportinginformation.transformer.AbnormalSourceMachineTransformer;
+import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformerFactory;
 
 @Configuration
 @Import({
@@ -62,6 +65,18 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
         return new HistoricalDataPopulatorFactory();
     }
 
+    @Bean(name = "abnormalSourceMachineTransformer")
+    public AbnormalSourceMachineTransformer abnormalSourceMachineTransformer() {
+        return new AbnormalSourceMachineTransformer();
+    }
+
+    @Bean
+    public ServiceLocatorFactoryBean serviceLocatorFactoryBeanForSupportingInformationTransformerFactory() {
+        ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
+        factoryBean.setServiceLocatorInterface(SupportingInformationTransformerFactory.class);
+        return factoryBean;
+    }
+
     @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
         return new SupportingInformationForScoreAggr(
@@ -79,6 +94,8 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
                 eventPersistencyService,
                 historicalDataPopulatorFactory());
     }
+
+
 
     @Bean
     public SupportingInformationGeneratorFactory supportingInformationGeneratorFactory() {

@@ -31,6 +31,7 @@ import presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator;
 import presidio.ade.test.utils.generators.ScoredEnrichedFileGeneratorConfig;
 import presidio.data.generators.common.GeneratorException;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -97,6 +98,33 @@ public class AdeManagerSdkTest {
         Assert.assertEquals("Unexpected index name.",
                 new HashSet<>(Arrays.asList("_id_", "start")),
                 indexInfo.stream().map(IndexInfo::getName).collect(Collectors.toSet()));
+    }
+
+    /**
+     * Test cleanup of enriched data
+     */
+    @Test
+    public void cleanupEnrichedData() {
+        Instant startInstant = systemDateService.getInstant();
+        Instant endInstant = systemDateService.getInstant().plus(4, ChronoUnit.HOURS);
+        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource", startInstant, endInstant);
+        List<MockedEnrichedRecord> records = dataGenerator.generate(metaData);
+        adeManagerSdk.storeEnrichedRecords(metaData, records);
+
+        Instant removeFrom = startInstant.plus(Duration.ofHours(1));
+        Instant removeTo = removeFrom.plus(Duration.ofHours(1));
+        adeManagerSdk.cleanupEnrichedData(new TimeRange(removeFrom, removeTo));
+
+
+        String collectionName = translator.toCollectionName(metaData);
+        List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
+
+        insertedRecords.forEach(insertedRecord -> {
+            Instant start = insertedRecord.getStartInstant();
+            Assert.assertTrue(start.isAfter(removeTo) ||
+                    start.equals(removeTo) ||
+                    start.isBefore(removeFrom));
+        });
     }
 
     @Configuration

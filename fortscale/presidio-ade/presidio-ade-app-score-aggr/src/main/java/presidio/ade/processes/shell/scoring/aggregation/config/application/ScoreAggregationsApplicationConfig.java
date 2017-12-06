@@ -3,12 +3,11 @@ package presidio.ade.processes.shell.scoring.aggregation.config.application;
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.shell.BootShimConfig;
-import fortscale.utils.ttl.TtlService;
-import fortscale.utils.ttl.TtlServiceConfig;
+import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.StoreManagerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +36,7 @@ import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAgg
         EnrichedDataStoreConfig.class,
         AggregatedDataStoreConfig.class,
         BootShimConfig.class,
-        TtlServiceConfig.class,
+        StoreManagerConfig.class,
         NullStatsServiceConfig.class, // todo: remove this
 })
 public class ScoreAggregationsApplicationConfig {
@@ -60,11 +59,11 @@ public class ScoreAggregationsApplicationConfig {
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
-    private TtlService ttlService;
+    private StoreManager storeManager;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, ttlService, pageSize, maxGroupSize);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, storeManager, pageSize, maxGroupSize);
     }
 }

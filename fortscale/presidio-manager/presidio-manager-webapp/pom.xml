@@ -16,16 +16,8 @@
 
     <properties>
         <tomcat.web.scope>provided</tomcat.web.scope>
+        <exec-maven-plugin>1.2.1</exec-maven-plugin>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>bootwar</id>
-            <properties>
-                <tomcat.web.scope>compile</tomcat.web.scope>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -135,7 +127,43 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.kongchen</groupId>
+            <artifactId>swagger-maven-plugin</artifactId>
+        </dependency>
+
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.bat</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.sh</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>bootwar</id>
+            <properties>
+                <tomcat.web.scope>compile</tomcat.web.scope>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <finalName>presidio-manager</finalName>
@@ -165,6 +193,150 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../../target/war-dependencies</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>3.1.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                        <version>2.8.8</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <swaggerApiReader>fortscale.utils.swagger.PresidioSwaggerReader</swaggerApiReader>
+                            <springmvc>true</springmvc>
+                            <locations>
+                                <location>presidio.webapp.controller</location>
+                                <location>presidio.webapp.model</location>
+                            </locations>
+                            <schemes>
+                                <scheme>https</scheme>
+                            </schemes>
+                            <info>
+                                <title>Presidio Rest API</title>
+                                <version>${project.version}</version>
+                                <description>Fortscale Presidio is a plug-in that can be natively embedded by security infrastructure solutions to deliver the visibility and risk-based analysis they need to make better, smarter security decisions. Leveraging the engine from Fortscale’s award-winning user and entity behavioral analytics (UEBA) platform, Presidio enables SIEM, EDR/EPP, DLP, CASB, IAM and other security infrastructure vendors to quickly and simply incorporate real-time, risk-based intelligence on the activity of users and entities within the customer’s environment to enhance their own analysis and security enforcement.
+                                    [ Configuration sequence diagram ](https://www.draw.io/?state=%7B%22ids%22:%5B%220By8FcYQOrmVpVzNJQ2NuNkV0T1k%22%5D,%22action%22:%22open%22,%22userId%22:%22100443953654893261199%22%7D#G0By8FcYQOrmVpVzNJQ2NuNkV0T1k)
+                                    [Find out more about Fortscale](http://presidio-domain)
+                                </description>
+                                <contact>
+                                    <email>support@fortscale.com</email>
+                                </contact>
+                            </info>
+
+                            <host>presidio-domain</host>
+                            <basePath> </basePath>
+                            <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
+                            <swaggerFileName>presidio-manager-swagger</swaggerFileName>
+                            <outputFormats>yaml</outputFormats>
+                            <modelSubstitute>/manager-override.map</modelSubstitute>
+                            <modelConverters>
+                                <modelConverter>fortscale.utils.swagger.DateTimeModelConverter</modelConverter>
+                            </modelConverters>
+                            <securityDefinitions>
+                                <securityDefinition>
+                                    <name>basicAuth</name>
+                                    <type>basic</type>
+                                </securityDefinition>
+                            </securityDefinitions>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>auto-generate-manager-yml</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>2.2.3</version>
+                <executions>
+                    <execution>
+                        <id>auto-generate-REST-client</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${basedir}/target/extra-resources/swagger/presidio-manager-swagger.yaml</inputSpec>
+                            <language>java</language>
+                            <library>jersey2</library>
+                            <modelPackage>presidio.manager.client.model</modelPackage>
+                            <apiPackage>presidio.manager.client.api</apiPackage>
+                            <invokerPackage>presidio.manager.client.client</invokerPackage>
+                            <addCompileSourceRoot>false</addCompileSourceRoot>
+                            <configOptions>
+                                <groupId>fortscale</groupId>
+                                <artifactId>presidio-manager-generated-client</artifactId>
+                                <artifactVersion>${project.version}</artifactVersion>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin}</version>
+                <executions>
+                    <execution>
+                        <id>compile-client</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/compile-client${script.extension}</executable>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-client</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/deploy-client${script.extension}</executable>
+                            <arguments>
+                                <argument>${project.version}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../../target/extra-resources/swagger</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/extra-resources/swagger</directory>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>

@@ -90,8 +90,31 @@ public class AuthenticationRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof FieldsMustHaveDifferentValues);
+        Assert.assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testSrcAndDstMachineIdAreNull() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setSrcMachineId(null);
+        authenticationRawEvent.setDstMachineId(null);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
+        Assert.assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testSrcAndDstMachineIdAreEmpty() {
+        AuthenticationRawEvent authenticationRawEvent = createEvent();
+        authenticationRawEvent.setSrcMachineId("");
+        authenticationRawEvent.setDstMachineId("");
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<AuthenticationRawEvent>> violations = validator.validate(authenticationRawEvent);
+        Assert.assertTrue(violations.isEmpty());
     }
 
     private AuthenticationRawEvent createEvent() {
