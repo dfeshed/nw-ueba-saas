@@ -179,6 +179,9 @@
         "OBJECT_CHANGES",
         "USER_CHANGES"
       ],
+      "GROUP_SAMACCOUNTNAME_CHANGED": [
+        "GROUP_MEMBERSHIP"
+      ],
       "USER_OBJECT_REMOVED": [
         "OBJECT_CHANGES"
       ],
