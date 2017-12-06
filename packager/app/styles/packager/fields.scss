@@ -1,51 +1,59 @@
 .input-content {
-    padding: 0 rsa-whitespace();
-    &__description {
-        padding: rsa-whitespace();
+  padding: 0 rsa-whitespace();
+  &__description {
+    padding: rsa-whitespace();
+  }
+  &__fields {
+    .field {
+      padding: rsa-whitespace();
+      .ember-text-area {
+        min-height: 6rem;
+      }
     }
-    &__fields {
-        .field {
-            padding: rsa-whitespace();
-            .ember-text-area {
-                min-height: 6rem;
-            }
-        }
-        .buttons {
-            div {
-                padding-right: rsa-whitespace();
-            }
-        }
+    .buttons {
+      div {
+        padding-right: rsa-whitespace();
+      }
     }
-    .server-input-group {
-        div:first-child {
-            padding-right: rsa-whitespace();
-        }
+  }
+  .server-input-group {
+    div:first-child {
+      padding-right: rsa-whitespace();
     }
-    .windows-log-collection {
-        .rsa-content-accordion {
-            h3 {
-                color: text-color(secondary);
-            }
-        }
-        .fileContainer {
-            margin-top: 1.3rem;
-            [type=file] {
-                display: none;
-            }
-        }
-        .custom-file-upload {
-            display: inline-block;
-            cursor: pointer;
-            padding: rsa-whitespace(less) rsa-whitespace();
-            border: 1px solid $formInputBorderColor;
-        }
+  }
+  .windows-log-collection {
+    .rsa-content-accordion {
+      h3 {
+        color: text-color(secondary);
+      }
+    }
+    .fileContainer {
+      margin-top: 1.3rem;
+      [type=file] {
+        display: none;
+      }
+    }
+    .custom-file-upload {
+      display: inline-block;
+      cursor: pointer;
+      padding: rsa-whitespace(less) rsa-whitespace();
+      border: 1px solid $formInputBorderColor;
+    }
 
-        .load-error-message {
-            position: fixed;
-            top: 5%;
-            left: 50%;
-            width: 100vw;
-            margin-left: -50vw;
-        }
+    .load-error-message {
+      position: fixed;
+      top: 5%;
+      left: 50%;
+      width: 100vw;
+      margin-left: -50vw;
     }
+  }
+}
+.device {
+  .ember-power-select-option{
+    word-spacing: rsa-whitespace(more);
+  }
+  .ember-power-select-selected-item {
+    word-spacing: rsa-whitespace(more);
+  }
 }

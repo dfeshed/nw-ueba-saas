@@ -133,6 +133,8 @@
           {{#power-select
             placeholder=(t 'packager.placeholder')
             options=listOfService
+            dropdownClass="device"
+            triggerClass="device"
             searchField="value"
             triggerClass=errorClass
             dropdownClass=errorClass
@@ -154,6 +156,8 @@
             placeholder=(t 'packager.placeholder')
             options=listOfSecondaryService
             searchField="value"
+            dropdownClass="device"
+            triggerClass="device"
             searchPlaceholder=(t 'packager.searchPlaceholder')
             selected=selectedSecondaryDestination
             onchange=(action 'setSecondaryDestination' value="id") as |list|}}
