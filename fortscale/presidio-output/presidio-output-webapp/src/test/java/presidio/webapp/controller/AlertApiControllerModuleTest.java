@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import presidio.output.domain.records.UserScorePercentilesDocument;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -25,6 +27,7 @@ import presidio.output.domain.records.users.*;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.UserRepository;
+import presidio.output.domain.repositories.UserScorePrcentilesRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.model.*;
@@ -64,6 +67,9 @@ public class AlertApiControllerModuleTest {
     @Autowired
     private AlertPersistencyServiceImpl alertPersistencyService;
 
+    @Autowired
+    private UserScorePrcentilesRepository userScorePrcentilesRepository;
+
     private ObjectMapper objectMapper;
 
     private Comparator<Alert> defaultAlertComparator = new Comparator<Alert>() {
@@ -82,9 +88,15 @@ public class AlertApiControllerModuleTest {
 
     @After
     public void cleanTestData() {
-        //delete the created users
+        //delete the created alerts
         Iterable<presidio.output.domain.records.alerts.Alert> allAlerts = alertRepository.findAll();
         alertRepository.delete(allAlerts);
+
+        //delete the created users
+        userRepository.delete(userRepository.findAll());
+
+        //delete the created user score percentile documents
+        userScorePrcentilesRepository.delete(userScorePrcentilesRepository.findAll());
     }
 
     @Test
@@ -268,7 +280,7 @@ public class AlertApiControllerModuleTest {
         alertRepository.save(Arrays.asList(alert1, alert2));
 
         // init expected response
-        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        Alert expectedAlert1 = convertDomainAlertToResusertAlert(alert1);
         AlertsWrapper expectedResponse = new AlertsWrapper();
         expectedResponse.setTotal(1);
         List<Alert> alerts = Arrays.asList(expectedAlert1);
@@ -276,7 +288,7 @@ public class AlertApiControllerModuleTest {
         expectedResponse.setPage(0);
 
         // get actual response
-        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("severity", AlertQueryEnums.AlertSeverity.CRITICAL.name()))
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("getSeverity", AlertQueryEnums.AlertSeverity.CRITICAL.name()))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();
@@ -372,10 +384,13 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void testUpdateAlertFeedback_NONE_to_RISK() throws Exception {
+    public void testUpdateAlertFeedback_NONEtoRISK() throws Exception {
+
+        Mockito.verify(Mockito.spy(UserScorePrcentilesRepository.class), Mockito.times(0)).findAll();
+
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
-        user.setScore(10);
+        user.setScore(150);
         user.setUserName("testUser");
         user.setSeverity(UserSeverity.HIGH);
         User savedUser = userRepository.save(user);
@@ -409,16 +424,62 @@ public class AlertApiControllerModuleTest {
 
         User updatedUser = userRepository.findOne(savedUser.getId());
         Assert.assertEquals(savedUser.getScore(), updatedUser.getScore(), 0.01);
-        Assert.assertEquals(savedUser.getSeverity(), updatedUser.getSeverity());
+        Assert.assertEquals(user.getSeverity(), updatedUser.getSeverity());
     }
 
     @Test
-    public void testUpdateAlertFeedback_RISK_to_NOT_RISK() throws Exception {
+    public void testUpdateAlertFeedback_RISKtoNOT_RISK_userScorePercentilesExists() throws Exception {
+        UserScorePercentilesDocument percentilesDoc = new UserScorePercentilesDocument(150, 100, 50);
+        userScorePrcentilesRepository.save(percentilesDoc);
+
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
-        user.setScore(10);
+        user.setScore(170);
         user.setUserName("testUser");
-        user.setSeverity(UserSeverity.HIGH);
+        user.setSeverity(UserSeverity.LOW);
+        User savedUser = userRepository.save(user);
+
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedUser.getId(), "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert.setFeedback(AlertEnums.AlertFeedback.RISK);
+        alert.setContributionToUserScore(10D);
+        alertRepository.save(alert);
+
+
+        //building the request-  update feedback from NONE to RISK
+        UpdateFeedbackRequest requestBody = new UpdateFeedbackRequest();
+        requestBody.setAlertFeedback(AlertQueryEnums.AlertFeedback.NOT_RISK);
+        requestBody.setAlertIds(Arrays.asList(alert.getId()));
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(requestBody);
+
+        //trigger the actual API
+        MvcResult mvcResult = alertsApiMVC.perform(post(UPDATE_ALERT_FEEDBACK_URI)
+                .contentType("application/json")
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //feedback RISK -> NOT_RISK: alert score and contribution should be updated and also the user score
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
+        Assert.assertEquals(0, updatedAlert.getContributionToUserScore(), 0.01);
+        Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
+        Assert.assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
+
+        User updatedUser = userRepository.findOne(savedUser.getId());
+        Assert.assertEquals(savedUser.getScore() - alert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
+        Assert.assertEquals(UserSeverity.CRITICAL, updatedUser.getSeverity());
+    }
+
+    @Test
+    public void testUpdateAlertFeedback_RISKtoNOT_RISK_userScorePercentilesDoesntExist() throws Exception {
+        //save user in elastic
+        presidio.output.domain.records.users.User user = new User();
+        user.setScore(170);
+        user.setUserName("testUser");
+        user.setSeverity(UserSeverity.LOW);
         User savedUser = userRepository.save(user);
 
         //save alerts in elastic

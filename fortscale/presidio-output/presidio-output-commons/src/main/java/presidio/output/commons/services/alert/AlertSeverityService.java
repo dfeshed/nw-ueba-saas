@@ -9,5 +9,5 @@ public interface AlertSeverityService {
 
     Double getUserScoreContributionFromSeverity(AlertEnums.AlertSeverity severity);
 
-    AlertEnums.AlertSeverity severity(double score);
+    AlertEnums.AlertSeverity getSeverity(double score);
 }

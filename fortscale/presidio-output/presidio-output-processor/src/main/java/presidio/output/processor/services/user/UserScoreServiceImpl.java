@@ -34,8 +34,6 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     private AlertSeverityService alertSeverityService;
 
-    private UserSeverityService userSeverityService;
-
     private int defaultAlertsBatchSize;
 
     public int defaultUsersBatchSize;
@@ -43,13 +41,11 @@ public class UserScoreServiceImpl implements UserScoreService {
     public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
                                 AlertSeverityService alertSeverityService,
-                                UserSeverityService userSeverityService,
                                 int defaultAlertsBatchSize,
                                 int defaultUsersBatchSize) {
         this.userPersistencyService = userPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
         this.alertSeverityService = alertSeverityService;
-        this.userSeverityService = userSeverityService;
 
         this.defaultAlertsBatchSize = defaultAlertsBatchSize;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
@@ -63,24 +59,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         user.setScore(userScore);
     }
 
-    @Override
-    public void updateSeverities() {
-        final double[] scores = getScoresArray();
-        final UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = userSeverityService.getSeveritiesMap(scores);
-        UserQuery.UserQueryBuilder userQueryBuilder =
-                new UserQuery.UserQueryBuilder()
-                        .pageNumber(0)
-                        .pageSize(defaultUsersBatchSize)
-                        .sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
-        Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
-        while (page != null && page.hasContent()) {
-            log.info("Updating severity for page: " + page.toString());
-            updateSeveritiesForUsersList(severitiesMap, page.getContent(), true);
-            page = getNextUserPage(userQueryBuilder, page);
-
-        }
-    }
 
     /**
      * Iterate all users which have score more then 0, and reset the score to 0.
@@ -111,7 +90,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             usersPage = getNextUserPage(userQueryBuilder, usersPage);
         }
 
-        log.info("Reseting " + clearedUsersList.size() + " users scores and severity");
+        log.info("Reseting " + clearedUsersList.size() + " users scores and getSeverity");
         userPersistencyService.save(clearedUsersList);
     }
 
@@ -180,33 +159,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         return dates;
     }
 
-    public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
-        final double[] scores = getScoresArray();
-        final UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = userSeverityService.getSeveritiesMap(scores);
-        updateSeveritiesForUsersList(severitiesMap, users, persistChanges);
 
-    }
 
-    private void updateSeveritiesForUsersList(UserSeverityServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
-        List<User> updatedUsers = new ArrayList<>();
-        if (users == null) {
-            return;
-        }
-        users.forEach(user -> {
-            double userScore = user.getScore();
-            UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
 
-            log.debug("Updating user severity for userId: " + user.getUserId());
-            if (!newUserSeverity.equals(user.getSeverity())) {
-                user.setSeverity(newUserSeverity);
-                updatedUsers.add(user); //Update user only if severity changes
-            }
-        });
-
-        if (updatedUsers.size() > 0 && persistChanges) {
-            userPersistencyService.save(updatedUsers);
-        }
-    }
 
     /**
      * Return the next user page or null if no next
@@ -246,30 +201,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         return page;
     }
 
-    /**
-     * This function load all users' score and store it in a double array
-     * Only for user scores above 0
-     */
-    private double[] getScoresArray() {
 
-
-        Sort sort = new Sort(Sort.Direction.ASC, User.SCORE_FIELD_NAME);
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1).pageNumber(0).pageSize(this.defaultUsersBatchSize).sort(sort);
-        Page<User> page = userPersistencyService.find(userQueryBuilder.build());
-        int numberOfElements = new Long(page.getTotalElements()).intValue();
-        double[] scores = new double[numberOfElements];
-        AtomicInteger courser = new AtomicInteger(0);
-
-
-        while (page != null && page.hasContent()) {
-            page.getContent().forEach(user -> {
-                scores[courser.getAndAdd(1)] = user.getScore();
-            });
-            page = getNextUserPage(userQueryBuilder, page);
-
-        }
-
-        return scores;
-    }
 
 }

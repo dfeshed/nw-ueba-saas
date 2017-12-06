@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.commons.services.spring.UserSeverityServiceConfig;
-import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
@@ -45,9 +44,6 @@ public class UserServiceConfig {
     @Autowired
     private AlertPersistencyService alertPersistencyService;
 
-    @Autowired
-    private UserSeverityService userSeverityService;
-
     @Bean
     public UserService userService() {
         return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchFile);
@@ -55,7 +51,7 @@ public class UserServiceConfig {
 
     @Bean
     public UserScoreService userScoreService(){
-        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, userSeverityService, defaultUsersBatchFile,defaultAlertsBatchFile);
+        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, defaultUsersBatchFile,defaultAlertsBatchFile);
     }
 
 }

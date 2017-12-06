@@ -57,7 +57,7 @@ public class AlertQuery {
     @JsonProperty("sortFieldNames")
     private List<AlertQuerySortFieldName> sortFieldNames = new ArrayList<AlertQuerySortFieldName>();
 
-    @JsonProperty("severity")
+    @JsonProperty("getSeverity")
     private List<AlertSeverity> severity = new ArrayList<AlertSeverity>();
 
     @JsonProperty("expand")
@@ -362,9 +362,9 @@ public class AlertQuery {
     }
 
     /**
-     * Get severity
+     * Get getSeverity
      *
-     * @return severity
+     * @return getSeverity
      **/
     @ApiModelProperty(value = "")
     public List<AlertSeverity> getSeverity() {
@@ -485,7 +485,7 @@ public class AlertQuery {
         sb.append("    usersId: ").append(toIndentedString(usersId)).append("\n");
         sb.append("    sortFieldNames: ").append(toIndentedString(sortFieldNames)).append("\n");
         sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
-        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+        sb.append("    getSeverity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
         sb.append("    aggregateBy: ").append(toIndentedString(aggregateBy)).append("\n");
         sb.append("}");

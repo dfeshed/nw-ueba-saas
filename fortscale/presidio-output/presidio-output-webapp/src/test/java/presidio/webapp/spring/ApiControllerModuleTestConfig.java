@@ -7,11 +7,12 @@ import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.output.commons.services.spring.UserSeverityServiceConfig;
 
 import java.util.Properties;
 
 @Configuration
-@Import({OutputWebappTestConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class})
+@Import({OutputWebappTestConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class, UserSeverityServiceConfig.class})
 public class ApiControllerModuleTestConfig {
 
     @Bean

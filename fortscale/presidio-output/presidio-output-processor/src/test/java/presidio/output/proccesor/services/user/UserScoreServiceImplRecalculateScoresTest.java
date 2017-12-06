@@ -11,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import presidio.output.commons.services.user.UserSeverityService;
-import presidio.output.commons.services.user.UserSeverityServiceImpl;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.commons.services.alert.AlertSeverityService;
@@ -48,7 +46,6 @@ public class UserScoreServiceImplRecalculateScoresTest {
     private UserPersistencyService mockUserPresistency;
     private AlertPersistencyService mockAlertPresistency;
     private AlertSeverityService mockAlertSeverityService;
-    private UserSeverityService mockUserSeverityService;
 
     private Page<Alert> emptyAlertPage;
 
@@ -65,14 +62,10 @@ public class UserScoreServiceImplRecalculateScoresTest {
                 ALERT_CONTRIBUTION_LOW);
         mockUserPresistency = Mockito.mock(UserPersistencyServiceImpl.class);
         mockAlertPresistency = Mockito.mock(AlertPersistencyServiceImpl.class);
-        mockUserSeverityService = Mockito.mock(UserSeverityServiceImpl.class);
-
-
 
         userScoreService = new UserScoreServiceImpl(mockUserPresistency,
                 mockAlertPresistency,
                 mockAlertSeverityService,
-                mockUserSeverityService,
                 1000,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS);
 

@@ -82,7 +82,7 @@ public class Alert {
     @JsonProperty("timeframe")
     private TimeframeEnum timeframe = null;
 
-    @JsonProperty("severity")
+    @JsonProperty("getSeverity")
     private AlertSeverity severity = null;
 
     @JsonProperty("userId")
@@ -319,9 +319,9 @@ public class Alert {
     }
 
     /**
-     * Get severity
+     * Get getSeverity
      *
-     * @return severity
+     * @return getSeverity
      **/
     @ApiModelProperty(value = "")
     public AlertSeverity getSeverity() {
@@ -422,7 +422,7 @@ public class Alert {
         sb.append("    feedback: ").append(toIndentedString(feedback)).append("\n");
         sb.append("    userScoreContribution: ").append(toIndentedString(userScoreContribution)).append("\n");
         sb.append("    timeframe: ").append(toIndentedString(timeframe)).append("\n");
-        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+        sb.append("    getSeverity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
         sb.append("    indicators: ").append(toIndentedString(indicators)).append("\n");
         sb.append("}");

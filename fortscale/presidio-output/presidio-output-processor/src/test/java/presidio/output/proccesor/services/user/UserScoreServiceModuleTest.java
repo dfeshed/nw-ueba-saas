@@ -26,8 +26,6 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
-import presidio.output.processor.services.user.UserScoreService;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
@@ -66,9 +64,6 @@ public class UserScoreServiceModuleTest {
     @Autowired
     private UserSeverityService userSeverityService;
 
-    @Autowired
-    private UserScoreService userScoreService;
-
     @After
     public void cleanTestData() {
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
@@ -94,7 +89,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -133,7 +128,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -172,7 +167,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -201,7 +196,7 @@ public class UserScoreServiceModuleTest {
 
         userService.updateAllUsersAlertData();
 
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
 
         User user0 = getUserById("userId0");
@@ -216,8 +211,6 @@ public class UserScoreServiceModuleTest {
         User user99 = getUserById("userId99");
         Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
         Assert.assertEquals(UserSeverity.CRITICAL, user99.getSeverity());
-
-
     }
 
 
@@ -225,14 +218,6 @@ public class UserScoreServiceModuleTest {
     public void testBulkUserScoreLargeScale() throws InterruptedException {
         final int DAYS_COUNT = 110;
         final int USERS_COUNT = 1500;
-        userScoreService = new UserScoreServiceImpl(
-                userPersistencyService,
-                alertPersistencyService,
-                alertSeverityService,
-                userSeverityService,
-                500,
-                DAYS_COUNT + 10);
-
 
         List<User> userList = new ArrayList<>();
         List<LocalDateTime> dates = getListOfLastXdays(DAYS_COUNT);
@@ -267,7 +252,7 @@ public class UserScoreServiceModuleTest {
         long timeBefore = System.currentTimeMillis();
         userService.updateAllUsersAlertData();
 
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
         long timeAfter = System.currentTimeMillis();
         long seconds = (timeAfter - timeBefore) / 1000;
         System.out.println("Total time in seconds: " + seconds);

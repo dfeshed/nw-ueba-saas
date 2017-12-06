@@ -50,7 +50,7 @@ public class UserQuery {
     @JsonProperty("sortFieldNames")
     private List<UserQuerySortFieldName> sortFieldNames = new ArrayList<UserQuerySortFieldName>();
 
-    @JsonProperty("severity")
+    @JsonProperty("getSeverity")
     private List<UserSeverity> severity = new ArrayList<UserSeverity>();
 
     @JsonProperty("expand")
@@ -302,9 +302,9 @@ public class UserQuery {
     }
 
     /**
-     * Get severity
+     * Get getSeverity
      *
-     * @return severity
+     * @return getSeverity
      **/
     @ApiModelProperty(value = "")
     public List<UserSeverity> getSeverity() {
@@ -420,7 +420,7 @@ public class UserQuery {
         sb.append("    indicatorsName: ").append(toIndentedString(indicatorsName)).append("\n");
         sb.append("    sortFieldNames: ").append(toIndentedString(sortFieldNames)).append("\n");
         sb.append("    sortDirection: ").append(toIndentedString(sortDirection)).append("\n");
-        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
+        sb.append("    getSeverity: ").append(toIndentedString(severity)).append("\n");
         sb.append("    expand: ").append(toIndentedString(expand)).append("\n");
         sb.append("    aggregateBy: ").append(toIndentedString(aggregateBy)).append("\n");
         sb.append("}");

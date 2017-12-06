@@ -60,7 +60,7 @@ public class AlertServiceImpl implements AlertService {
         }
         java.util.Date startDate = Date.from(smart.getStartInstant());
         java.util.Date endDate = Date.from(smart.getEndInstant());
-        AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
+        AlertEnums.AlertSeverity severity = alertEnumsSeverityService.getSeverity(score);
         Double alertContributionToUserScore = alertSeverityService.getUserScoreContributionFromSeverity(severity);
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags(), alertContributionToUserScore);
         // supporting information

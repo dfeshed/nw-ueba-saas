@@ -34,7 +34,7 @@ public class AlertSeverityServiceImpl implements AlertSeverityService {
     }
 
     @Override
-    public AlertEnums.AlertSeverity severity(double score) {
+    public AlertEnums.AlertSeverity getSeverity(double score) {
         if (criticalScore <= score) {
             return AlertEnums.AlertSeverity.CRITICAL;
         }
