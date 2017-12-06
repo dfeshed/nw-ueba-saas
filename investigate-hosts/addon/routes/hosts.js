@@ -33,7 +33,7 @@ export default Route.extend({
 
   beforeModel() {
     if (!this.get('accessControl.hasInvestigateHostsAccess')) {
-      window.location = '/investigate'; // Redirecting to parent route
+      this.transitionToExternal('protected.permission-denied'); // Directing to permission denied page
     }
   },
 

@@ -10,16 +10,10 @@ export default Route.extend({
   beforeModel() {
     return new RSVP.Promise((resolve) => {
       // Re-route back to the parent's protected route if we don't have permission
-      if (!this.get('accessControl.hasInvestigateAccess')) {
-        resolve(this.transitionTo('protected'));
+      if (!this.get('accessControl.hasInvestigateAccess') || !this.get('accessControl.hasInvestigateEmberAccess')) {
+        resolve(this.transitionTo('protected.permission-denied'));
       } else {
-        if (!this.get('accessControl.hasInvestigateEmberAccess')) {
-          // In case of user having only access to classic we are routing only to the investigate tab which are having classic access.
-          const selectedPage = this.get('investigatePage.selected');
-          return window.location.href = selectedPage.isClassic ? selectedPage.route : this.get('accessControl.investigateUrl');
-        } else {
-          resolve();
-        }
+        resolve();
       }
     });
   },

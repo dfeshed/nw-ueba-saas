@@ -12,7 +12,7 @@ export default Service.extend({
   adminRoles: ['*', 'accessAdminModule', 'viewAppliances', 'viewServices', 'viewEventSources', 'accessHealthWellness', 'manageSystemSettings', 'manageSASecurity'],
   configRoles: ['*', 'searchLiveResources', 'accessManageAlertHandlingRules', 'accessViewRules', 'manageLiveResources', 'manageLiveFeeds'],
 
-  investigationEmberRoles: ['*', 'investigate-server.configuration.manage', 'investigate-server.logs.manage', 'investigate-server.security.read', 'investigate-server.process.manage', 'investigate-server.health.read', 'investigate-server.*', 'investigate-server.security.manage', 'investigate-server.metrics.read', 'investigate-server.event.read', 'investigate-server.content.export', 'investigate-server.content.reconstruct'],
+  investigationEmberRoles: ['*', 'investigate-server.configuration.manage', 'investigate-server.logs.manage', 'investigate-server.security.read', 'investigate-server.process.manage', 'investigate-server.health.read', 'investigate-server.*', 'investigate-server.security.manage', 'investigate-server.metrics.read', 'investigate-server.event.read', 'investigate-server.content.export', 'investigate-server.content.reconstruct', 'endpoint-server.machine.read'],
   investigationClassicRoles: ['*', 'accessInvestigationModule', 'manageContextList', 'contextLookup', 'navigateDevices', 'navigateCreateIncidents', 'navigateEvents'],
 
   // computed intersections between roles and role groups
@@ -29,6 +29,11 @@ export default Service.extend({
   @gt('adminAccessIntersections.length', 0) hasAdminAccess: null,
   @gt('configAccessIntersections.length', 0) hasConfigAccess: null,
   @or('hasInvestigateClassicAccess', 'hasInvestigateEmberAccess') hasInvestigateAccess: null,
+
+  @computed('roles.[]')
+  hasInvestigateEventsAccess(roles) {
+    return this._hasPermission(roles, 'investigate-server.event.read');
+  },
 
   @computed('roles.[]')
   hasInvestigateContentExportAccess(roles) {

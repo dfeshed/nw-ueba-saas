@@ -26,6 +26,7 @@ Router.map(function() {
   this.route('internal-error');
 
   this.route('protected', { path: '/' }, function() {
+    this.route('permission-denied');
     this.route('monitor');
     this.route('packager');
     this.mount('respond');

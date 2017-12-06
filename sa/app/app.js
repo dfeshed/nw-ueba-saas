@@ -24,6 +24,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
+          'protected.permission-denied': 'protected.permission-denied',
           'protected.investigate.investigate-files': 'protected.investigate.investigate-files',
           'protected.investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
         }
@@ -79,6 +80,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
+          'protected.permission-denied': 'protected.permission-denied',
           'protected.investigate.investigate-events': 'protected.investigate.investigate-events',
           'protected.investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
         }
@@ -98,6 +100,7 @@ const App = Application.extend({
         ],
         externalRoutes: {
           protected: 'protected',
+          'protected.permission-denied': 'protected.permission-denied',
           'protected.investigate.investigate-events': 'protected.investigate.investigate-events',
           'protected.investigate.investigate-files': 'protected.investigate.investigate-files'
         }

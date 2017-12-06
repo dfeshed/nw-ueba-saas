@@ -22,6 +22,11 @@ export default {
       bulletA: 'The Legacy NetWitness UI may still be starting up. Please wait a few minutes and try again.',
       bulletB: 'If after a few minutes you are still receiving this message, please check to make sure that the NetWitness Legacy UI is properly running. ',
       subtitle: 'Internal Server Error'
+    },
+    permissionDenied: {
+      errorDescription: '403 Forbidden is an HTTP status code returned by a web server when a user requests a web page or media that the server does not allow them to. In other words, the server can be reached, but the server declined to allow access to the page.',
+      subtitle: 'You cannot access the requested page.',
+      title: 'Forbidden.'
     }
   },
   monitor: {

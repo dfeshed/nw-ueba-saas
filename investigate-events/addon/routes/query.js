@@ -53,8 +53,8 @@ export default Route.extend({
 
   beforeModel() {
     // Re-route back to the parent's protected route if we don't have permission
-    if (!this.get('accessControl.hasInvestigateAccess')) {
-      this.transitionToExternal('protected');
+    if (!this.get('accessControl.hasInvestigateEventsAccess')) {
+      this.transitionToExternal('protected.permission-denied');
     }
   },
 

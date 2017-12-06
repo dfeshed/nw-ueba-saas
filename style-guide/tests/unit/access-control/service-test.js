@@ -141,6 +141,13 @@ test('hasReconAccess is set when required roles are included', function(assert) 
   assert.equal(service.get('hasReconAccess'), true);
 });
 
+test('hasInvestigateEventsAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  assert.equal(service.get('hasInvestigateEventsAccess'), false);
+  service.set('roles', ['investigate-server.event.read']);
+  assert.equal(service.get('hasInvestigateEventsAccess'), true);
+});
+
 test('hasRespondAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasRespondAccess'), false);
