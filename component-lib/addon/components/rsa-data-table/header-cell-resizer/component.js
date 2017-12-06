@@ -94,7 +94,7 @@ export default Component.extend(HasTableParent, {
     let target = column;
 
     if (side === 'left') {
-      const columns = this.get('table.columns');
+      const columns = this.get('table.visibleColumns');
       const index = columns.indexOf(column);
 
       if (index > 0) {
