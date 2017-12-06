@@ -63,7 +63,7 @@ const FILTER_TYPES = [
   {
     'propertyName': 'machine.securityConfigurations',
     'label': 'investigateHosts.hosts.column.machine.securityConfigurations',
-    'filterControl': 'host-list/content-filter/text-filter',
+    'filterControl': 'host-list/content-filter/list-filter',
     'selected': false,
     'panelId': 'securityConfigurations',
     'isDefault': false
