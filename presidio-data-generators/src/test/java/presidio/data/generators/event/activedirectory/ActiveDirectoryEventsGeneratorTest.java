@@ -80,18 +80,18 @@ public class ActiveDirectoryEventsGeneratorTest {
     public void OperationTypeTest () {
         // Operation types - see that all included, in the same order as enum
         Assert.assertEquals(AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value, events.get(0).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_PASSWORD_CHANGED.value, events.get(1).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_PASSWORD_CHANGED_BY_NON_OWNER.value, events.get(2).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value, events.get(3).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_ENABLED.value, events.get(4).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_DISABLED.value, events.get(5).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_UNLOCKED.value, events.get(6).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_TYPE_CHANGED.value, events.get(7).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_RE_ENABLED.value, events.get(8).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_ACCOUNT_LOCKED.value, events.get(9).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED.value, events.get(10).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value, events.get(11).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value, events.get(12).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value, events.get(1).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_COMPUTER_OBJECT.value, events.get(2).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.DACL_CHANGED_ON_COMPUTER_OBJECT.value, events.get(3).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_RENAMED.value, events.get(4).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_REMOVED.value, events.get(5).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_MOVED.value, events.get(6).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ADDED.value, events.get(7).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_ENABLED.value, events.get(8).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_DISABLED.value, events.get(9).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_GROUP_OBJECT.value, events.get(10).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_REMOVED_FROM_GROUP.value, events.get(11).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_GROUP.value, events.get(12).getOperation().getOperationType().getName());
     }
 
     @Test
