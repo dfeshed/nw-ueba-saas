@@ -1,17 +1,24 @@
-import Ember from 'ember';
+import { assert } from 'ember-metal/utils';
+import { deprecate } from 'ember-deprecations';
+import { log } from 'ember-debug';
+import RSVP from 'rsvp';
+import run from 'ember-runloop';
+import { isNone } from 'ember-utils';
 import { StreamCache } from '../streams';
 import Socket from '../sockets';
 import $ from 'jquery';
 import config from 'ember-get-config';
 
-const {
-  assert,
-  Logger,
-  RSVP,
-  run,
-  isNone
-} = Ember;
-
+const _missingRouteNameWarning = (fn, method, modelName) => {
+  deprecate(`Direct importing of ${fn} is deprecated, please use request service`,
+    false,
+    {
+      id: `${method}.${modelName}`,
+      until: '8.0',
+      url: 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/investigate-events/addon/actions/fetch/utils.js'
+    }
+  );
+};
 
 /*
   * Base set of asserts for calls into promiseRequest and streamRequest
@@ -71,6 +78,10 @@ const streamRequest = ({
     onTimeout
   }, routeName) => {
 
+  if (routeName === undefined || routeName === '') {
+    routeName = _missingRouteNameWarning('streamRequest', method, modelName);
+  }
+
   _baseAsserts(method, modelName, query, 'streamRequest');
   assert('Cannot call streamRequest without onResponse', onResponse);
 
@@ -86,7 +97,7 @@ const streamRequest = ({
       onStopped,
       onCompleted,
       onError: onError || function(response) {
-        Logger.error(
+        log.error(
           `Unhandled error in stream, method: ${method}, modelName: ${modelName}, code: ${response.code}`,
           response);
       },
@@ -133,6 +144,11 @@ const promiseRequest = ({
     onTimeout
   }, routeName) => {
   let stream;
+
+  if (routeName === undefined || routeName === '') {
+    routeName = _missingRouteNameWarning('promiseRequest', method, modelName);
+  }
+
   _baseAsserts(method, modelName, query, 'promiseRequest');
 
   streamOptions.isTimeoutEnabled = !isNone(onTimeout);

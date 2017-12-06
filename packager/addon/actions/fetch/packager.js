@@ -1,15 +1,17 @@
 
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 const getPackagerConfig = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'get',
     modelName: 'packager',
     query: {}
   });
 };
 const setPackagerConfig = (model) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'set',
     modelName: 'packager',
     query: {
@@ -18,7 +20,8 @@ const setPackagerConfig = (model) => {
   });
 };
 const getListOfDevices = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getServices',
     modelName: 'packager',
     query: {}

@@ -1,7 +1,10 @@
-import {
-  promiseRequest,
-  streamRequest
-} from 'streaming-data/services/data-access/requests';
+/**
+ * If you've come here from a deprecation warning, look at
+ * `findAllPromiseRequest()`/`streamingRequest()` for the proper way to
+ * initiate `promiseRequest`/`streamRequest`.
+ * @public
+ */
+import { lookup } from 'ember-dependency-lookup';
 
 /**
  * Creates a metaFilter conditions filter
@@ -67,7 +70,8 @@ export const timeRangeFilter = (startTime, endTime) => ({
  * @public
  */
 export const findAllPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'findAll',
     modelName,
     query,
@@ -84,7 +88,8 @@ export const findAllPromiseRequest = (modelName, query = {}, streamOptions = {})
  * @public
  */
 export const queryPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'query',
     modelName,
     query,
@@ -101,7 +106,8 @@ export const queryPromiseRequest = (modelName, query = {}, streamOptions = {}) =
  * @public
  */
 export const streamPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'stream',
     modelName,
     query,
@@ -120,7 +126,8 @@ export const streamPromiseRequest = (modelName, query = {}, streamOptions = {}) 
  * @public
  */
 export const streamingRequest = (modelName, query = {}, handlers = {}, streamOptions = {}) => {
-  streamRequest({
+  const request = lookup('service:request');
+  request.streamRequest({
     method: 'stream',
     modelName,
     query,

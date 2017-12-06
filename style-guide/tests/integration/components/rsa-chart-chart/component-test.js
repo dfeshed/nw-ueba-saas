@@ -1,4 +1,4 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, skip, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('/rsa-chart', 'Integration | Component | rsa-chart', {
@@ -11,7 +11,7 @@ test('it renders', function(assert) {
   assert.equal(this.$('.rsa-chart-background').length, 1, 'Testing to see if the .rsa-chart-background class exists');
 });
 
-test('The Chart component is properly sized when supplied with a margin attribute', function(assert) {
+skip('The Chart component is properly sized when supplied with a margin attribute', function(assert) {
   this.set('margin', { top: 0, bottom: 0, left: 0, right: 0 });
   this.render(hbs `{{rsa-chart margin=margin}}`);
   // const $el = this.$('.rsa-chart svg');
