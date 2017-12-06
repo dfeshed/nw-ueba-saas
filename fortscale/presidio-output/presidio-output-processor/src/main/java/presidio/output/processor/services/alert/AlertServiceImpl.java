@@ -106,10 +106,10 @@ public class AlertServiceImpl implements AlertService {
         alertPersistencyService.save(alerts);
     }
 
-    private Map<String, Number> createIndicatorNameToContributionMap(List<Indicator> indicators){
+    private Map<String, Number> createIndicatorNameToContributionMap(List<Indicator> indicators) {
         Map<String, Number> map = new HashMap<>();
-        indicators.forEach(indicator ->{
-            map.put(indicator.getName(),indicator.getScoreContribution());
+        indicators.forEach(indicator -> {
+            map.put(indicator.getName(), indicator.getScoreContribution());
         });
         return map;
     }

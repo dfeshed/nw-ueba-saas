@@ -11,15 +11,21 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.stereotype.Service;
 import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Bucket;
+import presidio.output.domain.records.alerts.CountAggregation;
+import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.TimeAggregation;
+import presidio.output.domain.records.alerts.WeekdayAggregation;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
-import presidio.webapp.model.Alert;
 import presidio.webapp.model.*;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
-import presidio.webapp.model.Indicator;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -335,7 +341,6 @@ public class RestAlertServiceImpl implements RestAlertService {
         presidio.output.domain.records.alerts.Alert alert = alertPersistencyService.findOne(alertId);
 
 
-
         alertPersistencyService.updateAlertFeedback(alertId, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
 
     }
@@ -386,6 +391,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restIndicator.setSchema(indicator.getSchema().name());
         restIndicator.setScore(indicator.getScore());
         restIndicator.setEventsNum(indicator.getEventsNum());
+        //todo: add contribution to score value
         restIndicator.setType(Indicator.TypeEnum.fromValue(indicator.getType().name()));
         if (indicator.getHistoricalData() != null) {
             restIndicator.setHistoricalData(createRestHistorical(indicator.getHistoricalData()));
@@ -412,7 +418,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restEvent.putAll(indicatorEvent.getFeatures());
         if (MapUtils.isNotEmpty(indicatorEvent.getScores())) {
             restEvent.setScores(indicatorEvent.getScores());
-            restEvent.put("scores",indicatorEvent.getScores());
+            restEvent.put("scores", indicatorEvent.getScores());
         }
         return restEvent;
     }
