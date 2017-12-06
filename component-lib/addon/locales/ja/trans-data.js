@@ -1629,7 +1629,15 @@ export default {
     placeholder: 'ja_Make a selection',
     searchPlaceholder: 'ja_Type to filter options',
     emptyName: 'ja_Configuration name is empty',
-    specialCharacter: 'ja_Configuration name contains special charatcer.'
+    channelFilter: 'ja_Channel Filters',
+    specialCharacter: 'ja_Configuration name contains special charatcer.',
+    eventPlaceholder: 'ja_(All)',
+    channel: {
+      name: 'ja_CHANNEL NAME',
+      filter: 'ja_FILTER',
+      event: 'ja_EVENT ID',
+      empty: ''
+    }
   },
   investigateFiles: {
     title: 'ja_Files',

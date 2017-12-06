@@ -39,7 +39,40 @@
       padding: rsa-whitespace(less) rsa-whitespace();
       border: 1px solid $formInputBorderColor;
     }
+    .icon-align-right {
+      text-align: right;
+    }
 
+    .channel-select {
+      margin-top: .7rem;
+      div {
+        border-bottom: 1px solid text-color(primary, dark);
+      }
+    }
+
+    .channel-number {
+      margin-top: 1.2rem;
+      margin-left: .5rem;
+    }
+
+    .event-id {
+      font-size: 1rem;
+    }
+
+    .delete-button {
+      color: text-color(accentOne, darker);
+    }
+
+    .ember-power-select-trigger {
+      overflow: hidden;
+    }
+
+    .event-id input {
+      border-bottom: 1px solid text-color(primary, dark);
+    }
+    .ember-power-select-status-icon{
+      height: 100%;
+    }
     .load-error-message {
       position: fixed;
       top: 5%;
@@ -49,6 +82,7 @@
     }
   }
 }
+
 .device {
   .ember-power-select-option{
     word-spacing: rsa-whitespace(more);

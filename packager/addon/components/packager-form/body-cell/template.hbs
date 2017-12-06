@@ -1,0 +1,43 @@
+{{#rsa-data-table/body-cell item=item index=index column=column isError=(eq (get item column.field) error) delete=delete class='body-cell'}}
+  {{#if (eq column.displayType 'channelInput')}}
+    <label class="rsa-form-label power-select channel">
+      <div class="channel-select">
+        {{#power-select
+          placeholder=(t 'packager.placeholder')
+          options=channelOptions
+          selected=item.channel
+          searchPlaceholder=(t 'packager.searchPlaceholder')
+          onchange=(action 'setSelected' column.field bubbles=false)
+          onkeydown=(action 'setChannelOptions' bubbles=false) as |option|}}
+          {{option}}
+        {{/power-select}}
+      </div>
+    </label>
+  {{else if (eq column.displayType 'EventInput')}}
+    <div class="event-id">
+      {{rsa-form-input placeholder=(t 'packager.eventPlaceholder') value=item.eventId}}
+    </div>
+  {{else if (eq column.displayType 'dropdown') }}
+    <label class="rsa-form-label power-select channel">
+      <div class="channel-select">
+        {{#power-select
+          placeholder=(t 'packager.placeholder')
+          options=filterOptions
+          selected=item.filter
+          searchPlaceholder=(t 'packager.searchPlaceholder')
+          searchEnabled=false
+          onchange=(action 'setSelected' column.field bubbles=false) as |option|}}
+          {{option}}
+        {{/power-select}}
+      </div>
+    </label>
+  {{else if (eq column.displayType 'icon') }}
+    {{#unless (eq index 0)}}
+      {{#rsa-form-button isIconOnly=true defaultAction=(action delete index bubble=false)}}
+        {{rsa-icon name='bin-1' size='smaller' class='delete-button'}}
+      {{/rsa-form-button}}
+    {{/unless}}
+  {{else}}
+    <div class="channel-number">{{serialNumber}}</div>
+  {{/if}}
+{{/rsa-data-table/body-cell}}

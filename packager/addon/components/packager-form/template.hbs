@@ -91,27 +91,6 @@
       </label>
     </div>
     {{#if isLogCollectionEnabled}}
-
-      <div class="load-error-message">
-        <ul class="rsa-flash-messages">
-          {{#each flashMessages.queue as |flash|}}
-            {{#flash-message tagName="li" flash=flash as |component flash|}}
-              <hbox align="stretch">
-                <centered xs="2">
-                  {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
-                </centered>
-                <vbox xs="9" justify="center" class="message">
-                  {{flash.message}}
-                </vbox>
-                <vbox xs="1" justify="start" align="center">
-                  {{rsa-icon name="close"}}
-                </vbox>
-              </hbox>
-            {{/flash-message}}
-          {{/each}}
-        </ul>
-      </div>
-
       <hbox xs="12">
         <div class="col-xs-5 field">
           {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=errorMessage}}
@@ -167,7 +146,24 @@
       </div>
 
       <div class="col-xs-12 field">
-        {{rsa-form-input label=(t 'packager.channels') value=configData.logCollectionConfig.channels}}
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{t 'packager.channelFilter'}}
+          </div>
+          <div class="icon-align-right add-row">
+            {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
+              {{rsa-icon name='add-1' size='small'}}
+            {{/rsa-form-button}}
+          </div>
+          {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
+            {{#rsa-data-table/header as |column|}}
+              {{t column.title}}
+            {{/rsa-data-table/header}}
+            {{#rsa-data-table/body as |item index column|}}
+              {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
+            {{/rsa-data-table/body}}
+          {{/rsa-data-table}}
+        </label>
       </div>
 
       <div class="col-xs-5 field protocol-js">
@@ -175,7 +171,6 @@
           <div class="label-text">
             {{t 'packager.protocol'}}
           </div>
-
           {{#power-select
             placeholder=(t 'packager.placeholder')
             options=protocolOptions

@@ -1630,7 +1630,15 @@ export default {
     placeholder: 'Make a selection',
     searchPlaceholder: 'Type to filter options',
     emptyName: 'Configuration name is empty',
-    specialCharacter: 'Configuration name contains special charatcer.'
+    channelFilter: 'Channel Filters',
+    specialCharacter: 'Configuration name contains special charatcer.',
+    eventPlaceholder: '(All)',
+    channel: {
+      name: 'CHANNEL NAME',
+      filter: 'FILTER',
+      event: 'EVENT ID',
+      empty: ''
+    }
   },
   investigateFiles: {
     title: 'Files',

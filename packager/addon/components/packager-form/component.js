@@ -7,6 +7,7 @@ import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 import _ from 'lodash';
 import { listOfServices } from '../../reducers/selectors';
+import columns from './columns';
 
 import {
   setConfig,
@@ -28,6 +29,7 @@ const dispatchToActions = {
   resetForm
 };
 
+const VALID_EVENT_PATTERN = /^[0-9-]+$/;
 const INVALID_CONFIG_NAME_PATTERN = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 
 const formComponent = Component.extend({
@@ -46,6 +48,8 @@ const formComponent = Component.extend({
   primaryDestination: '',
   secondaryDestination: '',
   selectedFrequency: '1 Hour',
+  invalidTableItem: '-999999',
+  columns,
 
   @alias('configData.packageConfig.autoUninstall')
   autoUninstall: null,
@@ -75,6 +79,8 @@ const formComponent = Component.extend({
 
   validateMandatoryFields() {
     const configName = this.get('configData.logCollectionConfig.configName');
+    const channels = this.get('configData.logCollectionConfig.channels');
+    let channelValidation = true;
     if (isEmpty(configName)) {
       this.setProperties({
         isError: true,
@@ -96,6 +102,32 @@ const formComponent = Component.extend({
       });
       return true;
     }
+    channels.every((obj) => {
+      const { eventId, filter, channel } = obj;
+      if (isEmpty(channel) || isEmpty(filter) || isEmpty(eventId)) {
+        this.set('invalidTableItem', '');
+        channelValidation = false;
+        return false;
+      }
+
+      const arrayOfEvents = eventId.split(',');
+      arrayOfEvents.every((event) => {
+        if (!VALID_EVENT_PATTERN.test(event.trim())) {
+          this.set('invalidTableItem', eventId);
+          channelValidation = false;
+          return false;
+        } else {
+          return true;
+        }
+      });
+
+      return channelValidation;
+    });
+
+    if (!channelValidation) {
+      return true;
+    }
+
     if (isEmpty(this.get('configData.logCollectionConfig.protocol'))) {
       this.setProperties({
         protocolErrorClass: 'is-error',
@@ -103,6 +135,7 @@ const formComponent = Component.extend({
       });
       return true;
     }
+
     return false;
   },
 
@@ -178,27 +211,37 @@ const formComponent = Component.extend({
           let formContent = {};
           const listOfDest = [];
           fileContent = e.target.result;
-          formContent = JSON.parse(fileContent.substring(0, fileContent.indexOf('}') + 1));
+          formContent = JSON.parse(fileContent.substring(0, fileContent.lastIndexOf('}') + 1));
           this.set('configData.logCollectionConfig', formContent);
           this.set('selectedProtocol', formContent.protocol);
-          if (!(this.get('listOfService').some((l) => formContent.primaryDestination === l.id))) {
+
+          const primaryExists = this.get('listOfService').some((l) =>
+          formContent.primaryDestination === l.id);
+
+          if (!isEmpty(formContent.primaryDestination) && !primaryExists) {
             listOfDest.push(formContent.primaryDestination);
             this.set('primaryDestination', '');
           } else {
             this.set('primaryDestination', formContent.primaryDestination);
           }
-          if (!(this.get('listOfService').some((l) => formContent.secondaryDestination === l.id))) {
+
+          const secondaryExists = this.get('listOfService').some((l) =>
+          formContent.secondaryDestination === l.id);
+
+          if (!isEmpty(formContent.secondaryDestination) && !secondaryExists) {
             listOfDest.push(formContent.secondaryDestination);
             this.set('secondaryDestination', '');
           } else {
             this.set('secondaryDestination', formContent.secondaryDestination);
           }
+
           if (!isEmpty(listOfDest)) {
             const dest = this.get('i18n').t('packager.upload.warning', { id: listOfDest.join(',') });
             this.get('flashMessages').warning(`${this.get('i18n').t('packager.upload.success')} ${dest}`);
           } else {
             this.get('flashMessages').success(this.get('i18n').t('packager.upload.success'));
           }
+
         } catch (err) {
           this.get('flashMessages').warning(this.get('i18n').t('packager.upload.failure'));
         } finally {
@@ -206,6 +249,17 @@ const formComponent = Component.extend({
         }
       };
       reader.readAsText(ev.target.files[0]);
+    },
+
+    // adding an empty row to the channel filters table
+    addRowFilter(item) {
+      if (item.target.classList.contains('rsa-icon')) {
+        this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: '' });
+      }
+    },
+    // pass the index of the row to delete the row in the channel filters
+    deleteRow(index) {
+      this.get('configData.logCollectionConfig.channels').removeAt(index);
     }
   }
 
