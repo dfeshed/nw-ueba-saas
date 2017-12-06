@@ -4,14 +4,14 @@
 
   &:hover {
     cursor: pointer;
-    color: rgba(250,250,250, 1);
+    color: text-color(primary, lightest);
     text-decoration: underline;
-    background-color: background-color(secondary);
+    background-color: background-color(secondary, dark);
   }
 }
 
 .recon-tooltip.panel-content {
-  color: rgba(250,250,250, 1);
+  color: text-color(primary, lightest);
   &.standard {
     @include border(1px, solid, primary);
     background-color: background-color(primary);
@@ -53,13 +53,13 @@
 
 // Tweaks to persist the default text highlight color when going out of focus
 ::selection {  /* WebKit/Blink Browsers */
-  background: background-color(secondary);
+  background: background-color(secondary, dark);
 }
 ::-moz-selection { /* Gecko Browsers */
-  background: background-color(secondary);
+  background: background-color(secondary, dark);
 }
 .text-container {
   span {
-    background: background-color(secondary);
+    background: background-color(secondary, dark);
   }
 }

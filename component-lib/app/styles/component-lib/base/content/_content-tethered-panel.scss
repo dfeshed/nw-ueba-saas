@@ -78,19 +78,19 @@
 
   &.primary,
   &.highlighted {
-    @include border(1px, solid, secondary);
+    @include border(1px, solid, secondary, dark);
 
     header {
       color: text-color(secondary);
     }
 
     svg line {
-      stroke: text-color(secondary);
+      stroke: text-color(secondary, dark);
     }
   }
 
   &.highlighted {
-    background-color: background-color(secondary);
+    background-color: background-color(secondary, dark);
     padding: rsa-whitespace(least) 0;
 
     header {
@@ -105,8 +105,8 @@
     }
 
     polygon {
-      stroke: text-color(secondary);
-      fill: text-color(secondary);
+      stroke: text-color(secondary, dark);
+      fill: text-color(secondary, dark);
     }
   }
 
@@ -330,7 +330,7 @@
       }
 
       &:hover {
-        color: rgba(250,250,250, 1);
+        color: text-color(primary, lightest);
         background-color: background-color(secondary, darker);
         cursor: pointer;
       }

@@ -19,7 +19,7 @@
     line-height: 1.5em;
     &:hover {
       background-color: background-color(secondary, darker);
-      color: rgba(250,250,250, 1);
+      color: text-color(primary, lightest);
     }
     &--parent {
       padding-right: rsa-whitespace(more);

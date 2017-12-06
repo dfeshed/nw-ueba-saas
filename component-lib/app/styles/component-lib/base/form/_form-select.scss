@@ -45,9 +45,12 @@ $ember-power-select-line-height: 2rem;
   background: background-color(primary, darkest);
 
   .ember-power-select-option {
+    &[aria-current="true"] {
+      color: text-color(primary, lightest);
+    }
     &[aria-selected="true"] {
       &[aria-current="false"] {
-        color: rgba(250,250,250, 1);
+        color: text-color(primary, lightest);
       }
     }
   }
