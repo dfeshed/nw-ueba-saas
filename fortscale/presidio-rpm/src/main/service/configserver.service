@@ -1,0 +1,18 @@
+[Unit]
+Description=Presidio configserver daemon
+After= network.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/configserver
+User=presidio
+Group=presidio
+Type=simple
+ExecStart=nohup java -Xmx100m -jar /home/presidio/presidio-core/bin/presidio-configuration-server-*.jar>/var/log/presidio/configurationserver/configserver.log &
+KillMode=mixed
+KillSignal=SIGKILL
+Restart=on-failure
+RestartSec=5s
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
