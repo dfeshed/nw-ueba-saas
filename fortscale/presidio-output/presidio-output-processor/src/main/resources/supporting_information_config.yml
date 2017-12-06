@@ -538,7 +538,7 @@ indicators:
       type: count_aggregations
       featureBucketConfName: siteHistogramUserIdAuthenticationDaily
       featureName: siteHistogram
-  classification: abnormal_ad_site_access
+  classification: abnormal_site_access
 
 - id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
@@ -621,14 +621,14 @@ indicators:
 
 - id: numberOfDistinctSiteUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_destination_sites
+  name: high_number_of_distinct_sites
   adeEventType: authentication
   schema: AUTHENTICATION
   anomalyDescriptior:
     anomalyField: site
   historicalData:
     type: hourly_aggregations
-  classification: abnormal_ad_site_access
+  classification: abnormal_site_access
 
 classificationPriority:
 
@@ -674,7 +674,7 @@ classificationPriority:
 - classificationName: mass_permission_changes
   priority: 14
 
-- classificationName: abnormal_ad_site_access
+- classificationName: abnormal_site_access
   priority: 15
 
 - classificationName: abnormal_ad_changes
