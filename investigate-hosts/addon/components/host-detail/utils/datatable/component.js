@@ -20,6 +20,7 @@ export default Component.extend({
     const rsaDataTableBody = this.$('.rsa-data-table-body');
     const dataTableTotalWidth = rsaDataTableBody[0] ? rsaDataTableBody[0].scrollWidth : '0';
     this.$('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
+    this.$('.rsa-data-table-header').innerWidth(dataTableTotalWidth);
   },
 
   actions: {
