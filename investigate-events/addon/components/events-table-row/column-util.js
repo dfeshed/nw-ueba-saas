@@ -287,10 +287,10 @@ function buildDefaultCellContent($content, field, item, opts) {
   const value = item[field];
   const tooltip = formatUtil.tooltip(field, value, opts);
   const text = formatUtil.text(field, value, opts);
-
+  const htmlWrapper = `<span metaname="${field}" metavalue="${value}">${text}</span>`;
   $content
     .attr('title', tooltip)
-    .text(text);
+    .html(htmlWrapper);
 }
 
 /**

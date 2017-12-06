@@ -24,6 +24,21 @@
         }
       }
     }
+    &__coloumGroup {
+      display: inline-flex;
+      .ember-power-select-trigger {
+        // Need to use important to override from-select style.
+        border: 1px solid border-color(primary, light) !important;
+        .ember-power-select-status-icon {
+          right: rsa-whitespace(least)
+        }
+      }
+      div {
+        margin-top: rsa-whitespace(less);
+        min-width: 150px;
+
+      }
+    }
     .events-table-control {
       display: inline-block;
       margin-right: 12px;

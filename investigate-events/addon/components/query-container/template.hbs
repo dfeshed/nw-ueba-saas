@@ -39,7 +39,7 @@
         {{events-table
           items=eventResults.data
           selectedIndex=selectedIndex
-          columnsConfig=eventColumnGroups.selected.columns
+          eventColumnGroups=eventColumnGroups
           status=eventResults.status
           percent=percentReturned
           rowClickAction=(route-action 'selectEvent')

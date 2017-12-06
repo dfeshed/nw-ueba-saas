@@ -19,7 +19,7 @@ const EventsTable = Component.extend({
 
   // Passed along to data table.
   items: undefined,
-  columnsConfig: undefined,
+  eventColumnGroups: undefined,
   rowClickAction: undefined,
   loadLogsAction: undefined,
 
@@ -34,6 +34,11 @@ const EventsTable = Component.extend({
       class: isSizeNotMax ? 'shrink-diagonal-2' : 'expand-diagonal-4',
       title: isSizeNotMax ? 'investigate.events.shrink' : 'investigate.events.expand'
     };
+  },
+  actions: {
+    handleColumnGroupChange(value) {
+      this.set('eventColumnGroups.selected', value);
+    }
   }
 });
 

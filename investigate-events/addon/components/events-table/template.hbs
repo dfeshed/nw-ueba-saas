@@ -1,8 +1,19 @@
 <hbox class="rsa-investigate-events-table__header">
-  <h2>
-    {{t "investigate.events.title"}}
-    {{events-table/event-counter}}
-  </h2>
+  <div class="rsa-investigate-events-table__header__coloumGroup">
+    <h2>
+      {{t "investigate.events.title"}}
+      {{events-table/event-counter}}
+    </h2>
+    <label class="rsa-form-label power-select">
+      {{#power-select
+        options=eventColumnGroups.all
+        selected=eventColumnGroups.selected
+        searchEnabled=false
+        onchange=(action 'handleColumnGroupChange') as |option|}}
+        {{option.name}}
+      {{/power-select}}
+    </label>
+  </div>
   <div class="events-table-control">
     {{rsa-icon
       disabled=(not isOpen)
@@ -29,7 +40,7 @@
       fitToWidth=true
       items=items
       selectedIndex=selectedIndex
-      columnsConfig=columnsConfig
+      columnsConfig=eventColumnGroups.selected.columns
       language=language
       aliases=aliases
       onRowClick=rowClickAction

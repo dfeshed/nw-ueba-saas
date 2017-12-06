@@ -1,27 +1,21 @@
 import EmberObject from 'ember-object';
 import computed from 'ember-computed';
-
-const BASE_COLUMNS = [
-  { field: 'time', title: 'Time', width: 100 },
-  { field: 'medium', title: 'Event Type' },
-  { field: 'custom.theme', title: 'Theme' },
-  { field: 'size', title: 'Size' }
-];
+import { BASE_COLUMNS, OOTBColumnGroups } from 'investigate-events/constants/OOTBColumnGroups';
 
 const GROUPS = [
   {
-    name: 'List View',
+    name: 'Summary List',
     columns: BASE_COLUMNS.concat([
       { field: 'custom.meta-summary', title: 'Summary', width: 'auto' }
     ])
   }, {
-    name: 'Details View',
+    name1: 'Details View',
     columns: BASE_COLUMNS.concat([
       { field: 'custom.theme', title: 'Event Theme' },
       { field: 'custom.meta-details', title: 'Details', width: 'auto' }
     ])
   }, {
-    name: 'Log View',
+    name1: 'Log View',
     columns: BASE_COLUMNS.concat([
       { field: 'log', width: 'auto' },
       { field: 'ip.src' },
@@ -30,7 +24,7 @@ const GROUPS = [
       { field: 'device.type' }
     ])
   }, {
-    name: 'Network View',
+    name1: 'Network View',
     columns: BASE_COLUMNS.concat([
       { field: 'ip.proto' },
       { field: 'ip.src' },
@@ -49,7 +43,7 @@ export default EmberObject.extend({
    * @type {object[]}
    * @public
    */
-  all: GROUPS,
+  all: GROUPS.concat(OOTBColumnGroups),
 
   /**
    * The group from `all` that is currently selected.

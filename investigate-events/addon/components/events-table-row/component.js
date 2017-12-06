@@ -70,7 +70,7 @@ export default Component.extend(RowMixin, {
    * @private
    */
   _columnWidthDidChange: observer('table.columns.@each.width', function() {
-    run(this, this._repaintCellWidths);
+    run.once(this, this._repaintCellWidths);
   }),
 
   didInsertElement() {
