@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,7 +56,7 @@ public class PatchOperation {
     private String path = null;
 
     @JsonProperty("value")
-    private List<String> value = new ArrayList<String>();
+    private Object value = null;
 
     public PatchOperation op(OpEnum op) {
         this.op = op;
@@ -97,13 +96,8 @@ public class PatchOperation {
         this.path = path;
     }
 
-    public PatchOperation value(List<String> value) {
+    public PatchOperation value(Object value) {
         this.value = value;
-        return this;
-    }
-
-    public PatchOperation addValueItem(String valueItem) {
-        this.value.add(valueItem);
         return this;
     }
 
@@ -113,7 +107,7 @@ public class PatchOperation {
      * @return value
      **/
     @ApiModelProperty(value = "")
-    public List<String> getValue() {
+    public Object getValue() {
         return value;
     }
 
