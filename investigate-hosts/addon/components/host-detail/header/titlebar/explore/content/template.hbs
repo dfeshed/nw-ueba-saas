@@ -1,7 +1,7 @@
-{{#if fileSearchResults.length}}
-  {{#each fileSearchResults as |res index|}}
+{{#if enahancedSearchResult.length}}
+  {{#each enahancedSearchResult as |res index|}}
     <div>
-      {{#rsa-content-accordion isCollapsed=(not-eq index 0) label=res.title class="host-explore__content__snapshot"}}
+      {{#rsa-content-accordion isCollapsed=(not-eq index 0) label=res.label class="host-explore__content__snapshot"}}
         {{#each res.files as |file|}}
           <hbox>
             <div class="host-explore__content__header">

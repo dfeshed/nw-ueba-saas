@@ -100,6 +100,13 @@ $result-text-color: text-color(primary, light);
     }
   }
 }
+
+.host-explore__content__snapshot {
+  h3 {
+    text-transform: lowercase;
+  }
+}
+
 .titlebar__buttons-holder {
   padding-left: rsa-whitespace();
 }
