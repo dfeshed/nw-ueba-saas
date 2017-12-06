@@ -2,8 +2,6 @@ import { createSelector } from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 import { isPacketView } from 'recon/reducers/visuals/selectors';
 
-const i18n = lookup('service:i18n');
-
 const _contentError = (recon) => recon.data.contentError;
 const _contentLoading = (recon) => recon.data.contentLoading;
 const _headerLoading = (recon) => recon.header.headerLoading;
@@ -33,6 +31,7 @@ export const isContentError = createSelector(
 export const errorMessage = createSelector(
   [_contentError, _eventId],
   (contentError, eventId) => {
+    const i18n = lookup('service:i18n');
     let ret;
     switch (contentError) {
       case 2:
