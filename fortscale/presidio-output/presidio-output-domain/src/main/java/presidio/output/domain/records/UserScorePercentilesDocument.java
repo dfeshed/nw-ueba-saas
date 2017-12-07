@@ -29,6 +29,7 @@ public class UserScorePercentilesDocument extends AbstractElasticDocument {
     public UserScorePercentilesDocument() {}
 
     public UserScorePercentilesDocument(double ceilScoreForHighSeverity, double ceilScoreForMediumSeverity, double ceilScoreForLowSeverity) {
+        setId(USER_SCORE_PERCENTILES_DOC_ID);
         this.ceilScoreForHighSeverity = ceilScoreForHighSeverity;
         this.ceilScoreForMediumSeverity = ceilScoreForMediumSeverity;
         this.ceilScoreForLowSeverity = ceilScoreForLowSeverity;
