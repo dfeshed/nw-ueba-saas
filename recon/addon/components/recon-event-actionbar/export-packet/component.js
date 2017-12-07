@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import computed, { not } from 'ember-computed-decorators';
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import ReconExport from 'recon/mixins/recon-export';
 import layout from './template';
@@ -55,13 +55,16 @@ const DownloadPacketComponent = Component.extend(ReconExport, {
     return this.get('i18n').t(`recon.packetView.${packetFormat.value}`);
   },
 
-  @computed('hasPayload', 'isDownloading', 'accessControl.hasInvestigateContentExportAccess')
-  isDisabled(hasPayload, isDownloading, hasInvestigateContentExportAccess) {
-    if (hasInvestigateContentExportAccess && hasPayload && !isDownloading) {
+  @computed('hasPayload', 'isDownloading')
+  isDisabled(hasPayload, isDownloading) {
+    if (hasPayload && !isDownloading) {
       return false;
     }
     return true;
   },
+
+  @not('accessControl.hasInvestigateContentExportAccess') isHidden: true,
+
   @computed('isDisabled')
   isPayloadDisabled(isDisabled) {
     if (isDisabled) {

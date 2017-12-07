@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import computed, { not } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
@@ -33,10 +33,12 @@ const ExportFilesComponent = Component.extend(ReconExport, {
     }
   },
 
-  @computed('isDownloading', 'selectedFiles.length', 'accessControl.hasInvestigateContentExportAccess')
-  isDisabled(isDownloading, count, hasInvestigateContentExportAccess) {
-    return !count || isDownloading || !hasInvestigateContentExportAccess;
-  }
+  @computed('isDownloading', 'selectedFiles.length')
+  isDisabled(isDownloading, count) {
+    return !count || isDownloading;
+  },
+
+  @not('accessControl.hasInvestigateContentExportAccess') isHidden: true
 });
 
 export default connect(stateToComputed, dispatchToActions)(ExportFilesComponent);

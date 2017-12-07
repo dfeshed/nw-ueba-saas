@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import { htmlSafe } from 'ember-string';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
+import computed, { not } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 
 import {
@@ -47,10 +47,12 @@ const DownloadLogsComponent = Component.extend(ReconExport, {
   offsetsStyle: null,
   downloadFormats: downloadFormat,
 
-  @computed('isDownloading', 'accessControl.hasInvestigateContentExportAccess')
-  isDisabled(isDownloading, hasInvestigateContentExportAccess) {
-    return isDownloading || !hasInvestigateContentExportAccess;
+  @computed('isDownloading')
+  isDisabled(isDownloading) {
+    return isDownloading;
   },
+
+  @not('accessControl.hasInvestigateContentExportAccess') isHidden: true,
 
   @computed('i18n', 'isDownloading', 'defaultLogFormat')
   caption(i18n, isDownloading, defaultLogFormat) {

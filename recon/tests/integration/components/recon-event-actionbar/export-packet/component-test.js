@@ -15,6 +15,8 @@ const data = {
 moduleForComponent('recon-event-actionbar/export-packet', 'Integration | Component | recon event actionbar/export packet', {
   integration: true,
   beforeEach() {
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.hasInvestigateContentExportAccess', true);
     this.registry.injection('component:recon-event-actionbar/export-packet', 'i18n', 'service:i18n');
     this.inject.service('redux');
     this.inject.service('flash-messages');
@@ -26,7 +28,7 @@ moduleForComponent('recon-event-actionbar/export-packet', 'Integration | Compone
 test('it renders', function(assert) {
   new DataHelper(this.get('redux')).initializeData();
 
-  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
 
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
@@ -41,7 +43,7 @@ test('the menu renders properly and has the correct labels for export pcap menu'
   };
   new DataHelper(this.get('redux')).initializeData(_data);
 
-  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
   this.$('.rsa-split-dropdown').find('.rsa-form-button').click();
 
   return wait().then(() => {
@@ -56,20 +58,19 @@ test('the menu renders properly and has the correct labels for export pcap menu'
   });
 });
 
-test('the button disables when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
+test('the button is hidden when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
   const _data = {
     ...data,
     fileExtractStatus: 'idle'
   };
   new DataHelper(this.get('redux')).initializeData(_data);
 
-  this.set('accessControl', EmberObject.create({}));
   this.set('accessControl.hasInvestigateContentExportAccess', false);
 
   this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('.export-packet-button.is-disabled').length, 1);
+    assert.equal(this.$('.export-packet-button').length, 0);
   });
 });
 
@@ -78,7 +79,7 @@ test('it renders proper label when export pcap data', function(assert) {
     .initializeData(data)
     .startDownloadingData();
 
-  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
 
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
@@ -96,7 +97,7 @@ test('Recon should pick default Packet format set by user', function(assert) {
     assert.equal(method, 'getPreferences');
     assert.equal(modelName, 'investigate-events-preferences');
   });
-  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();
     assert.equal(str, 'Download All Payloads');
@@ -109,7 +110,7 @@ test('the extracted file must be downloaded automatically', function(assert) {
       .initializeData()
       .setAutoDownloadPreference(true)
       .setExtractedFileLink(fileLink);
-  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
 
   return wait().then(() => {
     const iframe = this.$('.js-export-packet-iframe');
@@ -132,7 +133,7 @@ test('the extracted file must not be downloaded automatically', function(assert)
     assert.equal(flash.message.string, expectedMsg);
   });
 
-  this.render(hbs`{{recon-event-actionbar/export-packet}}`);
+  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
 
   return wait().then(() => {
     const iframe = this.$('.js-export-packet-iframe');

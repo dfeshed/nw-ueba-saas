@@ -12,6 +12,8 @@ const data = {
 moduleForComponent('recon-event-actionbar/export-files', 'Integration | Component | recon event actionbar/export files', {
   integration: true,
   beforeEach() {
+    this.set('accessControl', EmberObject.create({}));
+    this.set('accessControl.hasInvestigateContentExportAccess', true);
     this.registry.injection('component:recon-event-actionbar/export-files', 'i18n', 'service:i18n');
     this.inject.service('redux');
     this.inject.service('flash-messages');
@@ -23,14 +25,17 @@ moduleForComponent('recon-event-actionbar/export-files', 'Integration | Componen
 test('it renders', function(assert) {
   new DataHelper(this.get('redux')).initializeData();
 
-  this.render(hbs`{{recon-event-actionbar/export-files}}`);
+  this.set('accessControl', EmberObject.create({}));
+  this.set('accessControl.hasInvestigateContentExportAccess', true);
+
+  this.render(hbs`{{recon-event-actionbar/export-files accessControl=accessControl}}`);
 
   return wait().then(() => {
     assert.equal(this.$('.export-files-button').length, 1, 'Expected download files button');
   });
 });
 
-test('the button disables when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
+test('the button is hidden when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
   const _data = {
     ...data,
     fileExtractStatus: 'idle'
@@ -38,12 +43,11 @@ test('the button disables when accessControl.hasInvestigateContentExportAccess i
 
   new DataHelper(this.get('redux')).initializeData(_data);
 
-  this.set('accessControl', EmberObject.create({}));
   this.set('accessControl.hasInvestigateContentExportAccess', false);
 
   this.render(hbs`{{recon-event-actionbar/export-files accessControl=accessControl}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('.export-files-button.is-disabled').length, 1, 'Expected disabled download button');
+    assert.equal(this.$('.export-files-button').length, 0, 'Expected no download button');
   });
 });

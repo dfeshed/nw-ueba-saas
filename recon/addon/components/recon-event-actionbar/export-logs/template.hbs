@@ -1,28 +1,30 @@
-<hbox class="rsa-button-group">
-  {{#rsa-form-button
-    class="export-logs-button"
-    defaultAction=(action 'processFiles' defaultLogFormat)
-    isDisabled=isDisabled
-  }}
-    {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
-    {{caption}}
-  {{/rsa-form-button}}
-  {{#click-outside action=(action "clickOutside")}}
+{{#unless isHidden}}
+  <hbox class="rsa-button-group">
     {{#rsa-form-button
-      class="rsa-split-dropdown"
-      defaultAction=(action 'toggleExpand')
+      class="export-logs-button"
+      defaultAction=(action 'processFiles' defaultLogFormat)
+      isDisabled=isDownloading
     }}
-      {{rsa-icon name="arrow-down-12"}}
+      {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
+      {{caption}}
     {{/rsa-form-button}}
-    {{#recon-button-menu isExpanded=isExpanded style=offsetsStyle}}
-      {{#each downloadFormats as |download|}}
-        <li>
-          <a {{action 'processMenuItem' download.key}}>
-            {{t (concat 'recon.textView.' (get download 'value'))}}
-          </a>
-        </li>
-      {{/each}}
-    {{/recon-button-menu}}
-  {{/click-outside}}
-</hbox>
-<iframe src="{{iframeSrc}}" class="export-logs-iframe js-export-logs-iframe"></iframe>
+    {{#click-outside action=(action "clickOutside")}}
+      {{#rsa-form-button
+        class="rsa-split-dropdown"
+        defaultAction=(action 'toggleExpand')
+      }}
+        {{rsa-icon name="arrow-down-12"}}
+      {{/rsa-form-button}}
+      {{#recon-button-menu isExpanded=isExpanded style=offsetsStyle}}
+        {{#each downloadFormats as |download|}}
+          <li>
+            <a {{action 'processMenuItem' download.key}}>
+              {{t (concat 'recon.textView.' (get download 'value'))}}
+            </a>
+          </li>
+        {{/each}}
+      {{/recon-button-menu}}
+    {{/click-outside}}
+  </hbox>
+  <iframe src="{{iframeSrc}}" class="export-logs-iframe js-export-logs-iframe"></iframe>
+{{/unless}}
