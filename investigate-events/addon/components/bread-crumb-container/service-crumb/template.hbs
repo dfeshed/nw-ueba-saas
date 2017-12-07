@@ -1,0 +1,39 @@
+{{#if serviceDisplayName}}
+  {{#rsa-content-tethered-panel-trigger
+    triggerEvent='click'
+    panel=panelId
+  }}
+    {{#rsa-form-button
+      class='rsa-investigate-breadcrumb__crumb'
+      allowToggleActive=true
+      title=serviceDisplayName
+      withDropdown=true
+    }}
+      {{rsa-icon style='lined' name='server-3'}}
+      <span class='js-test-service'>{{serviceDisplayName}}</span>
+    {{/rsa-form-button}}
+  {{/rsa-content-tethered-panel-trigger}}
+  {{#rsa-content-tethered-panel
+    displayCloseButton=false
+    isPopover=true
+    position='bottom-right'
+    panelId=panelId
+    as |hideTooltip|
+  }}
+    <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
+      {{#each servicesWithURI as |service|}}
+        <li>
+          {{!--
+              Why the undefined eventId? Ember is trying to be helpful by
+              caching our query params. In this case however, it's not useful
+              because could point to an event that a service does not know
+              about. So we force it to undefined.
+          --}}
+          {{#link-to 'query' service.queryURI (query-params eventId="undefined")}}
+            {{service.displayName}}
+          {{/link-to}}
+        </li>
+      {{/each}}
+    </ul>
+  {{/rsa-content-tethered-panel}}
+{{/if}}

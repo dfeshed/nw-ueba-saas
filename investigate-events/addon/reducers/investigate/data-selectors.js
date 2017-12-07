@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import $ from 'jquery';
 
 const { createSelector } = reselect;
 
@@ -7,6 +8,8 @@ const { createSelector } = reselect;
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.data.metaPanelSize;
+const _data = (state) => state.investigate.eventTimeline.data;
+const _status = (state) => state.investigate.eventTimeline.status;
 const _visuals = (state) => state.recon.visuals;
 
 // SELECTOR FUNCTIONS
@@ -28,6 +31,16 @@ export const queryBodyClass = createSelector(
 export const isReconFullSize = createSelector(
   [_reconSize],
   (reconSize) => reconSize === RECON_PANEL_SIZES.FULL
+);
+
+export const isDataEmpty = createSelector(
+  [_data, _status],
+  (data, status) => ($.isEmptyObject(data) && status === 'resolved')
+);
+
+export const shouldShowStatus = createSelector(
+  [isDataEmpty, _status],
+  (isEmpty, status = '') => !!status.match(/wait|rejected/) || isEmpty
 );
 
 export const getCurrentPreferences = createSelector(

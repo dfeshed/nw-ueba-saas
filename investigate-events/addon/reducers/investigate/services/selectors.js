@@ -31,6 +31,13 @@ export const selectedService = createSelector(
   }
 );
 
+export const getServiceDisplayName = createSelector(
+  [selectedService],
+  (selectedSvc) => {
+    return selectedSvc === null ? null : selectedSvc.displayName;
+  }
+);
+
 export const hasServices = createSelector(
   [_services],
   (services) => !!(services && services.length)
