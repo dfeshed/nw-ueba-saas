@@ -1,7 +1,6 @@
 import Route from 'ember-route';
 import getOwner from 'ember-owner/get';
 import service from 'ember-service/inject';
-
 import config from 'dummy/config/environment';
 
 export default Route.extend({

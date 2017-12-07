@@ -172,20 +172,18 @@ export default Route.extend({
     },
 
     selectEvent(event) {
-      if (this.get('accessControl.hasReconAccess')) {
-        const { reconSize } = this.get('redux').getState().investigate.data;
-        const { sessionId } = event;
-        this.get('redux').dispatch(setSelectedEvent(event));
-        this.get('redux').dispatch(setReconOpen());
-        this.send('contextPanelClose');
-        this.transitionTo({
-          queryParams: {
-            eventId: sessionId,
-            reconSize,
-            metaPanelSize: META_PANEL_SIZES.MIN
-          }
-        });
-      }
+      const { reconSize } = this.get('redux').getState().investigate.data;
+      const { sessionId } = event;
+      this.get('redux').dispatch(setSelectedEvent(event));
+      this.get('redux').dispatch(setReconOpen());
+      this.send('contextPanelClose');
+      this.transitionTo({
+        queryParams: {
+          eventId: sessionId,
+          reconSize,
+          metaPanelSize: META_PANEL_SIZES.MIN
+        }
+      });
     },
 
     toggleReconSize() {

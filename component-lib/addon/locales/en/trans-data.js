@@ -248,7 +248,8 @@ export default {
     },
     fatalError: {
       115: 'Session is unavailable for viewing.',
-      124: 'Invalid session ID: {{eventId}}'
+      124: 'Invalid session ID: {{eventId}}',
+      permissions: 'You do not have the required permissions to view this content.'
     },
     toggles: {
       header: 'Show/Hide Header',

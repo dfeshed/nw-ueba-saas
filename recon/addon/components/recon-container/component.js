@@ -41,6 +41,7 @@ const ReconContainer = Component.extend({
   classNames: ['recon-container'],
   classNameBindings: ['isReady::loading'],
 
+  accessControl: service(),
   flashMessages: service(),
   i18n: service(),
 
@@ -69,10 +70,20 @@ const ReconContainer = Component.extend({
   @and('isViewReady', 'isAnimationDone')
   isReady: false,
 
-  @computed('i18n', 'apiFatalErrorCode', 'eventId')
-  errorMessage(i18n, code, eventId) {
-    return i18n.t(`recon.fatalError.${code}`, { eventId });
+  @computed('i18n', 'apiFatalErrorCode', 'eventId', 'missingPermissions')
+  errorMessage(i18n, code, eventId, missingPermissions) {
+    if (missingPermissions) {
+      return i18n.t('recon.fatalError.permissions');
+    } else {
+      return i18n.t(`recon.fatalError.${code}`, { eventId });
+    }
   },
+
+  @computed('accessControl.hasReconAccess')
+  missingPermissions(hasReconAccess) {
+    return !hasReconAccess;
+  },
+
   // Temporary observer hacks while only doing redux half-way
   // If container participated in redux, then it would simply
   // bind to the same isReconExpanded and act directly, without

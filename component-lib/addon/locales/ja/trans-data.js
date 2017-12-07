@@ -247,7 +247,8 @@ export default {
     },
     fatalError: {
       115: 'ja_Session is unavailable for viewing.',
-      124: 'ja_Invalid session ID: {{eventId}}'
+      124: 'ja_Invalid session ID: {{eventId}}',
+      permissions: 'ja_You do not have the required permissions to view this content.'
     },
     toggles: {
       header: 'ja_Show/Hide Header',

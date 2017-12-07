@@ -1,4 +1,4 @@
-{{#if apiFatalErrorCode}}
+{{#if (or apiFatalErrorCode missingPermissions)}}
   {{rsa-panel-message message=errorMessage}}
 {{else}}
   {{#if isReady}}
