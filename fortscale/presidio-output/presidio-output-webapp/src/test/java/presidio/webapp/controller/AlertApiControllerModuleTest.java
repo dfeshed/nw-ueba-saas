@@ -474,6 +474,52 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
+    public void testUpdateAlertFeedback_NOT_RISKtoRISK_userScorePercentilesExists() throws Exception {
+        UserScorePercentilesDocument percentilesDoc = new UserScorePercentilesDocument(150, 100, 50);
+        userScorePercentilesRepository.save(percentilesDoc);
+
+        //save user in elastic
+        presidio.output.domain.records.users.User user = new User();
+        user.setScore(170);
+        user.setUserName("testUser");
+        user.setSeverity(UserSeverity.LOW);
+        User savedUser = userRepository.save(user);
+
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert = generateAlert(savedUser.getId(), "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alert.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        alert.setContributionToUserScore(0D);
+        alertRepository.save(alert);
+
+
+        //building the request-  update feedback from NONE to RISK
+        UpdateFeedbackRequest requestBody = new UpdateFeedbackRequest();
+        requestBody.setAlertFeedback(AlertQueryEnums.AlertFeedback.RISK);
+        requestBody.setAlertIds(Arrays.asList(alert.getId()));
+        ObjectMapper mapper = new ObjectMapper();
+        String requestJson = mapper.writeValueAsString(requestBody);
+
+        //trigger the actual API
+        MvcResult mvcResult = alertsApiMVC.perform(post(UPDATE_ALERT_FEEDBACK_URI)
+                .contentType("application/json")
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //feedback NOT_RISK -> RISK: alert score and contribution should be updated and also the user score
+        presidio.output.domain.records.alerts.Alert updatedAlert = alertRepository.findOne(alert.getId());
+        Assert.assertEquals(alert.getScore(), updatedAlert.getScore(), 0.01);
+        Assert.assertEquals(10D, updatedAlert.getContributionToUserScore(), 0.01);
+        Assert.assertEquals(alert.getSeverity(), updatedAlert.getSeverity());
+        Assert.assertEquals(AlertEnums.AlertFeedback.RISK, updatedAlert.getFeedback());
+
+        User updatedUser = userRepository.findOne(savedUser.getId());
+        Assert.assertEquals(savedUser.getScore() + updatedAlert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
+        Assert.assertEquals(UserSeverity.CRITICAL, updatedUser.getSeverity());
+    }
+
+    @Test
     public void testUpdateAlertFeedback_RISKtoNOT_RISK_userScorePercentilesDoesntExist() throws Exception {
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();

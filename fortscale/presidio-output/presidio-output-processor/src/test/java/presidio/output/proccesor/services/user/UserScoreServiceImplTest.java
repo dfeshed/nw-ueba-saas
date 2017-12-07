@@ -29,7 +29,7 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.proccesor.spring.TestConfig;
-import presidio.output.processor.spring.AlertEnumsConfig;
+import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.processor.spring.UserServiceConfig;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ import java.util.List;
         EventPersistencyServiceConfig.class,
         PresidioOutputPersistencyServiceConfig.class,
         MongodbTestConfig.class,
-        AlertEnumsConfig.class,
+        AlertSeverityServiceConfig.class,
         ElasticsearchTestConfig.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserScoreServiceImplTest {

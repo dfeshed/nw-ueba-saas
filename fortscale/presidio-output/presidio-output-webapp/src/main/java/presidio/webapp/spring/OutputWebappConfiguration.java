@@ -1,6 +1,5 @@
 package presidio.webapp.spring;
 
-import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import fortscale.utils.rest.HttpMethodOverrideHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.commons.services.alert.FeedbackService;
 import presidio.output.commons.services.alert.FeedbackServiceImpl;
+import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
@@ -23,7 +23,7 @@ import presidio.webapp.service.RestAlertServiceImpl;
 import presidio.webapp.service.RestUserService;
 import presidio.webapp.service.RestUserServiceImpl;
 
-@Import({PresidioOutputPersistencyServiceConfig.class, ElasticsearchConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class})
 @Configuration
 public class OutputWebappConfiguration {
 

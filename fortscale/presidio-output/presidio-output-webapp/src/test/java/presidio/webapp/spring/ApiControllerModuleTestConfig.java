@@ -25,6 +25,9 @@ public class ApiControllerModuleTestConfig {
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
+        properties.put("severity.critical", 95);
+        properties.put("severity.high", 90);
+        properties.put("severity.mid", 80);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

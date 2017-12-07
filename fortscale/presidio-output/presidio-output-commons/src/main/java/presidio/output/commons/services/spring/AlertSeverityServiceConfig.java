@@ -1,4 +1,4 @@
-package presidio.output.processor.spring;
+package presidio.output.commons.services.spring;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import presidio.output.commons.services.alert.AlertSeverityService;
 
 
 @Configuration
-public class AlertEnumsConfig {
+public class AlertSeverityServiceConfig {
 
     @Value("${severity.critical}")
     private double criticalScore;
@@ -26,7 +26,7 @@ public class AlertEnumsConfig {
     double alertContributionCritical;
 
     @Bean
-    public AlertSeverityService alertEnumsSeverityService() {
+    public AlertSeverityService alertSeverityService() {
         return new AlertSeverityServiceImpl(
                 criticalScore,
                 highScore,
