@@ -61,7 +61,7 @@ public class MultipleSmartCollectionsPaginationServiceTest {
         for (Pair<String, Double> contextIdAndScorePair : contextIdAndScorePairs) {
             SmartRecord smartRecord = new SmartRecord(
                     timeRange, contextIdAndScorePair.getKey(), "featureName", FixedDurationStrategy.HOURLY,
-                    0.5, contextIdAndScorePair.getValue(), Collections.emptyList(), Collections.emptyList(), null, null, null);
+                    0.5, contextIdAndScorePair.getValue(), Collections.emptyList(), Collections.emptyList(), null);
             smartRecords.add(smartRecord);
         }
 

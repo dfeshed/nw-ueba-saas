@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.smart.config.SmartApplicationConfigurationTest;
@@ -200,8 +201,8 @@ public class SmartApplicationTest extends BaseAppTest {
 
         Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
 
-        Map<Integer, List<SmartRecord>> aggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getAggregationRecords().size()));
-        aggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getSmartAggregationRecords().size()));
+        smartAggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
             Double expectedScore = smartRecordList.get(0).getScore();
             Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
             Assert.assertTrue(expectedScore > 0);
@@ -371,8 +372,8 @@ public class SmartApplicationTest extends BaseAppTest {
         Assert.assertTrue(start.equals(smartRecordStart));
         Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
 
-        Map<Integer, List<SmartRecord>> aggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getAggregationRecords().size()));
-        aggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getSmartAggregationRecords().size()));
+        smartAggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
             Double expectedScore = smartRecordList.get(0).getScore();
             Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
             Assert.assertTrue(expectedScore > 0);
@@ -484,10 +485,13 @@ public class SmartApplicationTest extends BaseAppTest {
         for (Instant end : instants) {
             for (Map.Entry<Double, List<String>> weightToFeature : weightToFeaturesSortedMap.entrySet()) {
                 List<String> features = weightToFeature.getValue();
-                List<SmartRecord> filteredSmarts = smartRecords.stream().filter(s -> {
-                    List<AdeAggregationRecord> adeAggregationRecords = s.getAggregationRecords();
-                    return adeAggregationRecords.stream().anyMatch(a -> features.contains(a.getFeatureName())) && s.getEndInstant().compareTo(end) == 0;
-                }).map(s -> s).collect(Collectors.toList());
+                List<SmartRecord> filteredSmarts = smartRecords.stream().filter(smartRecord -> {
+                    List<SmartAggregationRecord> smartAggregationRecords = smartRecord.getSmartAggregationRecords();
+                    return smartAggregationRecords.stream()
+                            .map(SmartAggregationRecord::getAggregationRecord)
+                            .anyMatch(aggregationRecord -> features.contains(aggregationRecord.getFeatureName()))
+                            && smartRecord.getEndInstant().compareTo(end) == 0;
+                }).collect(Collectors.toList());
 
                 if (!filteredSmarts.isEmpty()) {
 
@@ -528,11 +532,10 @@ public class SmartApplicationTest extends BaseAppTest {
         for (Map.Entry<Double, List<String>> weightToFeature : weightToFeaturesSortedMap.entrySet()) {
             Double weight = weightToFeature.getKey();
             for (String featureName : weightToFeature.getValue()) {
-
-                List<SmartRecord> filteredSmartsByFeature = smartRecords.stream().filter(s -> {
-                    List<AdeAggregationRecord> adeAggregationRecords = s.getAggregationRecords();
-                    Assert.assertTrue(adeAggregationRecords.size() == 1);
-                    return adeAggregationRecords.get(0).getFeatureName().equals(featureName);
+                List<SmartRecord> filteredSmartsByFeature = smartRecords.stream().filter(smartRecord -> {
+                    List<SmartAggregationRecord> smartAggregationRecords = smartRecord.getSmartAggregationRecords();
+                    Assert.assertTrue(smartAggregationRecords.size() == 1);
+                    return smartAggregationRecords.get(0).getAggregationRecord().getFeatureName().equals(featureName);
                 }).collect(Collectors.toList());
 
                 for (SmartRecord smart : filteredSmartsByFeature) {

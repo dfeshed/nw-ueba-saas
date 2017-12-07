@@ -8,6 +8,7 @@ import fortscale.smart.record.conf.ClusterConf;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.*;
@@ -80,8 +81,11 @@ public class SmartWeightsScorerAlgorithm {
 
     public FeatureScore calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel) {
         List<SmartAggregatedRecordData> recordsDataContainer = new ArrayList<>();
-        for (AdeAggregationRecord adeAggregationRecord: smartRecord.getAggregationRecords()){
-            recordsDataContainer.add(new SmartAggregatedRecordData(adeAggregationRecord.getFeatureName(), SmartUtil.getAdeAggregationRecordScore(adeAggregationRecord)));
+        for (SmartAggregationRecord smartAggregationRecord : smartRecord.getSmartAggregationRecords()) {
+            AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
+            recordsDataContainer.add(new SmartAggregatedRecordData(
+                    aggregationRecord.getFeatureName(), SmartUtil.getAdeAggregationRecordScore(aggregationRecord)
+            ));
         }
 
         return calculateScore(recordsDataContainer, smartWeightsModel.getClusterConfs());

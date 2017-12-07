@@ -5,6 +5,7 @@ import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import presidio.ade.domain.record.AdeRecordReader;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.Collection;
@@ -93,8 +94,14 @@ public class SmartScoringService {
 	}
 
 	private static void addAdditionalInfo(SmartRecord smartRecord, Map<String, List<FeatureScore>> additionalInfo) {
-		smartRecord.setContributions(toMap(additionalInfo.get(CONTRIBUTIONS_FEATURE_SCORE_NAME)));
-		smartRecord.setScoreAndWeightProducts(toMap(additionalInfo.get(SCORE_AND_WEIGHT_PRODUCTS_FEATURE_SCORE_NAME)));
+		Map<String, Double> contributions = toMap(additionalInfo.get(CONTRIBUTIONS_FEATURE_SCORE_NAME));
+		Map<String, Double> scoreAndWeightProducts = toMap(additionalInfo.get(SCORE_AND_WEIGHT_PRODUCTS_FEATURE_SCORE_NAME));
+
+		for (SmartAggregationRecord smartAggregationRecord : smartRecord.getSmartAggregationRecords()) {
+			String featureName = smartAggregationRecord.getAggregationRecord().getFeatureName();
+			smartAggregationRecord.setContribution(contributions.get(featureName));
+			smartAggregationRecord.setScoreAndWeightProduct(scoreAndWeightProducts.get(featureName));
+		}
 	}
 
 	private static Map<String, Double> toMap(List<FeatureScore> list) {

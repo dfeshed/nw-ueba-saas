@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
 import static fortscale.ml.model.retriever.smart_data.SmartAccumulationFlattener.flattenSmartRecordToSmartAggrData;
 
 /**
- * Created by barak_schuster on 30/08/2017.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
 public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
 
@@ -64,9 +65,7 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
 
             List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
             timePartitions.addAll(calcPartitions(accumulatedSmartRecords));
-            for (SmartAggregatedRecordDataContainer smartAggregatedRecordDataContainer : smartAggregatedRecordDataContainers) {
-                finalSmartAggregatedRecordDataContainers.add(smartAggregatedRecordDataContainer);
-            }
+            finalSmartAggregatedRecordDataContainers.addAll(smartAggregatedRecordDataContainers);
         }
 
         int amountOfContextIds = contextIds.size();
@@ -99,7 +98,7 @@ public class AccumulatedSmartDataRetriever extends AbstractDataRetriever {
 
     @Override
     public Set<String> getEventFeatureNames() {
-        return Collections.singleton(SmartRecord.AGGREGATION_RECORDS_FIELD);
+        return Collections.singleton(SmartRecord.SMART_AGGREGATION_RECORDS_FIELD);
     }
 
     @Override
