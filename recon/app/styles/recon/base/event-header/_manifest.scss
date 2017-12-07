@@ -34,6 +34,11 @@
     }
   }
 
+  .recon-event-titlebar,
+  .recon-event-actionbar {
+    @include rsa-layer(controls);
+  }
+
   .recon-event-titlebar {
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
