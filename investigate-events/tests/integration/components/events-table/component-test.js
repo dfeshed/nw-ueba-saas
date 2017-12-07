@@ -7,6 +7,11 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
 import EventColumnGroups from 'investigate-events/helpers/event-column-config';
+import { patchSocket } from '../../../helpers/patch-socket';
+import Helper from 'ember-helper';
+import RSVP from 'rsvp';
+
+const prefToSave = { eventAnalysisPreferences: { isReconExpanded: false } };
 
 moduleForComponent('events-table', 'Integration | Component | events table', {
   integration: true,
@@ -14,6 +19,15 @@ moduleForComponent('events-table', 'Integration | Component | events table', {
   beforeEach(assert) {
     this.inject.service('redux');
     initialize({ '__container__': this.container });
+    // Mock the route action 'toggleReconSize' on the click of expand/shrink toggle button on events page
+    this.container.registry.registrations['helper:route-action'] = Helper.helper((arg) => {
+      return this.routeActions[arg];
+    });
+    this.routeActions = {
+      toggleReconSize(arg) {
+        return RSVP.resolve({ arg });
+      }
+    };
     this.set('eventColumnGroups', EventColumnGroups.create());
     new DataHelper(this.get('redux')).initializeData();
     this.render(hbs`{{events-table eventColumnGroups=eventColumnGroups}}`);
@@ -65,5 +79,19 @@ test('it should show columns for Web Analysis', function(assert) {
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.rsa-data-table-header-cell').length, 55, 'Should show columns for Web analysis.');
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Web Analysis', 'Default Column group is Summary List.');
+  });
+});
+
+test('Click on isExpanded toggle button on event page, persist the recon size', function(assert) {
+  assert.equal(this.$('.rsa-icon-expand-diagonal-4-filled').length, 1);
+  this.$('.rsa-icon-expand-diagonal-4-filled').click();
+  patchSocket((method, modelName, query) => {
+    assert.equal(query.data.eventAnalysisPreferences.isReconExpanded, true);
+    assert.equal(method, 'setPreferences');
+    assert.equal(modelName, 'investigate-events-preferences');
+    assert.deepEqual(query, {
+      data: prefToSave
+    });
+    assert.equal(query.data.eventAnalysisPreferences.isReconExpanded, false);
   });
 });

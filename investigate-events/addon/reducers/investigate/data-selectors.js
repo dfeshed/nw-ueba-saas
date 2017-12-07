@@ -7,6 +7,7 @@ const { createSelector } = reselect;
 const _reconSize = (state) => state.investigate.data.reconSize;
 const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.data.metaPanelSize;
+const _visuals = (state) => state.recon.visuals;
 
 // SELECTOR FUNCTIONS
 export const queryBodyClass = createSelector(
@@ -27,4 +28,13 @@ export const queryBodyClass = createSelector(
 export const isReconFullSize = createSelector(
   [_reconSize],
   (reconSize) => reconSize === RECON_PANEL_SIZES.FULL
+);
+
+export const getCurrentPreferences = createSelector(
+  [_reconSize, _visuals],
+  (reconSize, visuals) => {
+    const isReconExpanded = (reconSize === RECON_PANEL_SIZES.MAX);
+    const filterVal = visuals.without('defaultReconView', 'currentReconView', 'defaultLogFormat', 'defaultPacketFormat');
+    return { eventAnalysisPreferences: { ...filterVal, isReconExpanded } };
+  }
 );

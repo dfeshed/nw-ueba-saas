@@ -12,7 +12,10 @@ import { selectedTimeRange } from 'investigate-events/reducers/investigate/query
 import { lookup } from 'ember-dependency-lookup';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { SET_PREFERENCES } from 'recon/actions/types';
+import { getCurrentPreferences } from 'investigate-events/reducers/investigate/data-selectors';
+import Ember from 'ember';
 
+const { Logger } = Ember;
 const { log } = console;
 const prefService = lookup('service:preferences');
 
@@ -130,6 +133,18 @@ const _getPreferences = (dispatch, modelName) => {
         payload: { reconSize, queryTimeFormat }
       });
     }
+  });
+};
+
+/**
+ * Clicking on event page expand and shrink toggle button, persisting the recon panel size
+ * @param {function} isReconExpanded true/false
+ * @return void
+ * @public
+ */
+export const savePreferences = (getState) => {
+  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState)).then(() => {
+    Logger.info('Successfully persisted Value');
   });
 };
 
