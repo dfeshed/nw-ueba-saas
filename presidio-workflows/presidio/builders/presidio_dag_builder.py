@@ -8,7 +8,6 @@ from airflow.operators.subdag_operator import SubDagOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
-from presidio.utils.airflow.operators.retriable_subdag_operator import RetriableSubDagOperator
 
 RETRY_ARGS_CONF_KEY = "subdag_retry_args"
 DAGS_CONF_KEY = "dags"
@@ -82,14 +81,14 @@ class PresidioDagBuilder(object):
         retry_args = {}
         if task_id:
             # read task subdag retry args
-            retry_args = RetriableSubDagOperator.conf_reader.read(
+            retry_args = PresidioDagBuilder.conf_reader.read(
                 conf_key=self.get_retry_args_task_instance_conf_key_prefix(task_id))
         if not retry_args:
             # read default subdag retry args
             logging.debug((
                 "did not found task retry configuration for operator=%s. settling for default configuration" % (
                     self.__class__.__name__)))
-            retry_args = RetriableSubDagOperator.conf_reader.read(
+            retry_args = PresidioDagBuilder.conf_reader.read(
                 conf_key=self.get_default_retry_args_conf_key())
         return retry_args
 
