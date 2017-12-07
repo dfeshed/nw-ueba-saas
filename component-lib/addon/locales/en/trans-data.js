@@ -2011,7 +2011,7 @@ export default {
         hash: 'Hash: ',
         search: {
           minimumtext: {
-            required: 'Enter minimum three characters'
+            required: 'For file name or path, enter minimum 3 characters. For hash, enter entire hash string'
           }
         }
       },

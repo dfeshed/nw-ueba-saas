@@ -114,7 +114,7 @@ const ContentFilter = Component.extend({
         expressionList,
         hasError } = this.getProperties('filterSelected', 'saveFilterName', 'expressionList', 'isNameInvalid');
       const filter = {
-        name: saveFilterName,
+        name: saveFilterName || '',
         id: filterSelected.id,
         description: filterSelected.description
       };

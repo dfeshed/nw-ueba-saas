@@ -141,7 +141,7 @@ const ContentFilter = Component.extend({
         expressionList,
         hasError } = this.getProperties('saveFilterName', 'expressionList', 'isNameInvalid');
       const filter = {
-        name: saveFilterName,
+        name: saveFilterName || '',
         description: ''
       };
       //  checking if any of the added filter fields are empty.

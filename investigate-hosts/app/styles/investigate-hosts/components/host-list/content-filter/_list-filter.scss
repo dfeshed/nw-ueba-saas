@@ -1,6 +1,8 @@
 .list-filter {
   &__content {
     min-width: 8rem !important;
+    max-height: 336px;
+    overflow-y: scroll;
     .body {
       min-width: 5rem;
       max-width: 20rem;
