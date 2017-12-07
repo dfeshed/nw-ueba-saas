@@ -2,18 +2,12 @@ import { isEmpty } from 'ember-utils';
 
 const VALID_PORT_PATTERN = /^(0|[1-9]\d*)$/;
 const VALID_IP_PATTERN = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-const VALID_NAME_PATTERN = /[^a-zA-Z0-9 ]/;
+const VALID_NAME_PATTERN = /^[a-zA-Z0-9]+$/;
 const INVALID_CONFIG_NAME_PATTERN = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/g;
 const VALID_EVENT_PATTERN = /^[0-9-]+$/;
 
 export const validatePackageConfig = (formData) => {
-  const { port, server, serviceName, displayName, password } = formData;
-  if (!VALID_PORT_PATTERN.test(port)) {
-    return {
-      isPortError: true,
-      invalidPortMessage: 'packager.errorMessages.invalidPort'
-    };
-  }
+  const { port, server, serviceName, displayName, certificatePassword } = formData;
   if (!VALID_IP_PATTERN.test(server)) {
     return {
       isServerError: true,
@@ -21,19 +15,26 @@ export const validatePackageConfig = (formData) => {
     };
   }
 
-  if (isEmpty(password)) {
+  if (!VALID_PORT_PATTERN.test(port)) {
+    return {
+      isPortError: true,
+      invalidPortMessage: 'packager.errorMessages.invalidPort'
+    };
+  }
+
+  if (isEmpty(certificatePassword)) {
     return {
       isPasswordError: true,
       passwordEmptyMessage: 'packager.errorMessages.passwordEmptyMessage'
     };
   }
-  if (VALID_NAME_PATTERN.test(serviceName)) {
+  if (!VALID_NAME_PATTERN.test(serviceName)) {
     return {
       isServiceNameError: true,
       invalidServiceNameMessage: 'packager.errorMessages.invalidName'
     };
   }
-  if (VALID_NAME_PATTERN.test(displayName)) {
+  if (!VALID_NAME_PATTERN.test(displayName)) {
     return {
       isDisplayNameError: true,
       invalidServiceNameMessage: 'packager.errorMessages.invalidName'

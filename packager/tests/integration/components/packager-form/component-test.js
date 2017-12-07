@@ -28,7 +28,7 @@ const newConfig = {
     'id': '59894c9984518a5cfb8fbec2',
     'server': '10.101.34.245',
     'port': 443,
-    'password': 'test',
+    'certificatePassword': 'test',
     'serviceName': 'test',
     'displayName': 'test'
   },
@@ -121,7 +121,7 @@ test('Channel filter null validation when generate agent button clicked', functi
       'id': '59894c9984518a5cfb8fbec2',
       'server': '10.101.34.245',
       'port': 443,
-      'password': 'test'
+      'certificatePassword': 'test'
     },
     'logCollectionConfig': {
       'configName': 'test',
@@ -150,7 +150,7 @@ test('Channel filter regex validation when generate agent button clicked', funct
       'id': '59894c9984518a5cfb8fbec2',
       'server': '10.101.34.245',
       'port': 443,
-      'password': 'test'
+      'certificatePassword': 'test'
     },
     'logCollectionConfig': {
       'configName': 'test',

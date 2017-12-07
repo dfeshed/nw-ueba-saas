@@ -233,6 +233,10 @@ const formComponent = Component.extend({
     // pass the index of the row to delete the row in the channel filters
     deleteRow(index) {
       this.get('configData.logCollectionConfig.channels').removeAt(index);
+    },
+    reset() {
+      this.resetProperties();
+      this.send('resetForm');
     }
   }
 

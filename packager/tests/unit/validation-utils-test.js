@@ -10,7 +10,7 @@ test('validatePackageConfig - valid', function(assert) {
     server: '1.1.1.1',
     serviceName: 'TEST',
     displayName: 'TEST',
-    password: 'CXXA123'
+    certificatePassword: 'CXXA123'
   };
   const error = validatePackageConfig(formData);
   assert.equal(error, null);
@@ -18,6 +18,7 @@ test('validatePackageConfig - valid', function(assert) {
 
 test('validatePackageConfig - invalid port', function(assert) {
   const formData = {
+    server: '1.1.1.1',
     port: '12X'
   };
   const error = validatePackageConfig(formData);
@@ -29,6 +30,7 @@ test('validatePackageConfig - invalid port', function(assert) {
 
 test('validatePackageConfig - invalid IP', function(assert) {
   const formData = {
+    server: '1.1.1.X',
     port: '123'
   };
   const error = validatePackageConfig(formData);
@@ -40,11 +42,11 @@ test('validatePackageConfig - invalid IP', function(assert) {
 
 test('validatePackageConfig - invalid serviceName', function(assert) {
   const formData = {
-    port: '12',
     server: '1.1.1.1',
+    port: '12',
+    certificatePassword: 'CXXA123',
     serviceName: 'TEST@_+',
-    displayName: 'TEST',
-    password: 'CXXA123'
+    displayName: 'TEST'
   };
   const error = validatePackageConfig(formData);
   assert.deepEqual(error, {
