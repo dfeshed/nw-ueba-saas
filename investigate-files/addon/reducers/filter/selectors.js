@@ -33,7 +33,6 @@ export const filters = createSelector(
       const column = searchableColumns.findBy('name', propertyName); // check if column is searchable
       if (column) { // Add the config only if it's searchable
         const { values, dataType } = column;
-
         const expression = expressionList.findBy('propertyName', propertyName);
         const selected = !!expression;
         const showRemoveButton = !isDefault && selected;
@@ -41,7 +40,7 @@ export const filters = createSelector(
 
         return {
           ...item,
-          options: values,
+          options: values ? values.asMutable() : null,
           dataType,
           expression,
           selected,
