@@ -280,7 +280,7 @@ public class AlertApiControllerModuleTest {
         alertRepository.save(Arrays.asList(alert1, alert2));
 
         // init expected response
-        Alert expectedAlert1 = convertDomainAlertToResusertAlert(alert1);
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
         AlertsWrapper expectedResponse = new AlertsWrapper();
         expectedResponse.setTotal(1);
         List<Alert> alerts = Arrays.asList(expectedAlert1);
