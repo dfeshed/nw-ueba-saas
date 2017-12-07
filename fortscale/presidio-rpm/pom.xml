@@ -33,7 +33,6 @@
         </presidio-workflows-src.location>
         <common-conf-path>/home/presidio/presidio-core/configurations/airflow/</common-conf-path>
         <presidio-conf-group>presidio-conf</presidio-conf-group>
-        <configserver_service_run_file>/var/run/configserver/</configserver_service_run_file>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -188,32 +187,6 @@
                                 </source>
                             </sources>
                         </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>/usr/lib/systemd/system/</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>
-                                        ${project.basedir}/src/main/service/configserver.service
-                                    </location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>/etc/sysconfig/</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>
-                                        ${project.basedir}/src/main/service/configserver
-                                    </location>
-                                </source>
-                            </sources>
-                        </mapping>
                     </mappings>
                     <preinstallScriptlet>
                         <script>
@@ -280,19 +253,12 @@
                             ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
                             ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
                             fi
-
-                            <!-- pre remove commands -->
-                            echo "Stopping configserver service"
-                            echo "Removing configserver service from startup"
-                            systemctl disable --now configserver.service
                         </script>
                     </preremoveScriptlet>
                     <postremoveScriptlet>
                         <script>
                             <!-- post remove commands -->
                             <!-- remove presidio-core main folder -->
-
-
                         </script>
                     </postremoveScriptlet>
                 </configuration>

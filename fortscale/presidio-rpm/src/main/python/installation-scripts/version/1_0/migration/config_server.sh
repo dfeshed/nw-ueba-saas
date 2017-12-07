@@ -2,9 +2,8 @@
 
 if [ "$1" = "--uninstall" ]; then
 
-#core rpm preremoveScriptlet already disables configserver service
-echo "Stopping config server"
-systemctl stop configserver
+echo "Removing configserver service to startup and stopping it"
+systemctl disable --now configserver.service
 echo "Sleeping for 5 seconds before deleting configuration service files"
 sleep 5
 echo "Removing configuration service files"
@@ -13,13 +12,13 @@ rm -rf -v /usr/lib/systemd/system/configserver.service
 systemctl daemon-reload
 rm -rf -v  /var/log/presidio/configurationserver/
 
-else #upgrade
+else #install
 
 echo "Stopping config server anyway"
-systemctl stop configserver # when core rpm preremoveScriptlet disabled the service, it also stopped it but just in case
+systemctl stop configserver
 
 echo "Creating configuration server log folder"
-log_dir=/var/log/presidio/configurationserver/
+log_dir=/var/log/presidio/configserver/
 mkdir $log_dir
 chown presidio:presidio $log_dir
 
@@ -28,6 +27,10 @@ cd /home/presidio/presidio-core/configurations
 git init
 git add .
 git commit -m "adding configuration files"
+
+echo "Copying configserver service files to their designated folders"
+cp /home/presidio/presidio-core/installation/installation-scripts/service/configserver.service /usr/lib/systemd/system/
+cp /home/presidio/presidio-core/installation/installation-scripts/service/configserver /etc/sysconfig/
 
 systemctl daemon-reload
 
