@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.commons.services.user.UserSeverityService;
@@ -47,6 +48,7 @@ import java.util.List;
         MongodbTestConfig.class,
         AlertEnumsConfig.class,
         ElasticsearchTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserScoreServiceImplTest {
 
     @MockBean
