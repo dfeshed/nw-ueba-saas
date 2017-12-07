@@ -228,6 +228,12 @@ export const initializeInvestigate = (params) => {
     _getPreferences(dispatch, modelName).then(() => {
       _initializeServices(dispatch, getState);
       _initializeDictionaries(dispatch, getState).then(() => {
+        // TEMP FIX: Until index and query routes are merged, we can't land on
+        // this route without a selected service. We need to get the summary
+        // for the selected service to handle the case where the user might
+        // update their DB/WALL preference.
+        dispatch(getServiceSummary());
+        // TEMP FIX: end
         dispatch(getEventCount());
         if (_showFutureFeatures) {
           dispatch(getEventTimeline());
