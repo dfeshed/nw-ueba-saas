@@ -97,9 +97,10 @@ const NumberFilter = Component.extend(FilterMixin, {
         values = convertFromBytes(inputValue);
       }
       const translated = this.get('i18n').t(name);
+      const unit = values[0].unit || '';
       return restrictionType === 'BETWEEN' ?
-        `${filterName}: ${values[0].value}-${values[1].value} ${values[0].unit}` :
-        `${filterName}: ${translated} ${values[0].value} ${values[0].unit}`;
+        `${filterName}: ${values[0].value}-${values[1].value} ${unit}` :
+        `${filterName}: ${translated} ${values[0].value} ${unit}`;
     }
     return `${filterName}: All`;
   },
@@ -151,7 +152,7 @@ const NumberFilter = Component.extend(FilterMixin, {
         this.set('restrictionType', null);
       }
       // From the ui user has selected the memory unit convert that into bytes
-      if (propertyName === 'size') {
+      if (propertyName === 'size' && propertyValues) {
         propertyValues = convertToBytes(selectedUnit, propertyValues);
       }
       this.send('updateFilter', { propertyName, restrictionType: type, propertyValues });
