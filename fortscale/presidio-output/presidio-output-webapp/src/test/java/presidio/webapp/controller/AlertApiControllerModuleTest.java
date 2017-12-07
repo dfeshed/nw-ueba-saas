@@ -288,7 +288,7 @@ public class AlertApiControllerModuleTest {
         expectedResponse.setPage(0);
 
         // get actual response
-        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("getSeverity", AlertQueryEnums.AlertSeverity.CRITICAL.name()))
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI).param("severity", AlertQueryEnums.AlertSeverity.CRITICAL.name()))
                 .andExpect(status().isOk())
                 .andReturn();
         String actualResponseStr = mvcResult.getResponse().getContentAsString();

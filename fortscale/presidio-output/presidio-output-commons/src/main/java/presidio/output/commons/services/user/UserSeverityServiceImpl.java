@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UserSeverityServiceImpl implements UserSeverityService {
 
     private static final Logger logger = Logger.getLogger(UserSeverityServiceImpl.class);
+    private static final String USER_SCORE_PERCENTILES_DOC_ID = "user-score-percentile-doc-id";
 
     private int percentThresholdCritical;
     private int percentThresholdHigh;
@@ -68,6 +69,13 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         double ceilScoreForLowSeverity = p.evaluate(percentThresholdMedium); //The maximum score that user score still considered low
         double ceilScoreForMediumSeverity = p.evaluate(percentThresholdHigh);//The maximum score that user score still considered medium
         double ceilScoreForHighSeverity = p.evaluate(percentThresholdCritical); //The maximum score that user score still considered high
+
+        //Storing the new percentiles doc-
+        UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(USER_SCORE_PERCENTILES_DOC_ID);
+        percentileDoc.setCeilScoreForHighSeverity(ceilScoreForHighSeverity);
+        percentileDoc.setCeilScoreForMediumSeverity(ceilScoreForMediumSeverity);
+        percentileDoc.setCeilScoreForLowSeverity(ceilScoreForLowSeverity);
+        percentilesRepository.save(percentileDoc);
 
         return new UserScoreToSeverity(ceilScoreForLowSeverity, ceilScoreForMediumSeverity, ceilScoreForHighSeverity);
 
