@@ -2015,7 +2015,14 @@ export default {
         }
       },
       footerLabel: {
-        files: 'files'
+        autoruns: {
+          autoruns: 'autoruns',
+          services: 'services',
+          tasks: 'tasks'
+        },
+        files: 'files',
+        drivers: 'drivers',
+        libraries: 'libraries'
       },
       summary: {
         snapshotTime: 'Snapshot Time',

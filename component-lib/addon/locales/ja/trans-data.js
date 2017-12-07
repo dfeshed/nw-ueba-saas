@@ -2016,7 +2016,14 @@ export default {
         }
       },
       footerLabel: {
-        files: 'ja_files'
+        autoruns: {
+          autoruns: 'ja_autoruns',
+          services: 'ja_services',
+          tasks: 'ja_tasks'
+        },
+        files: 'ja_files',
+        drivers: 'ja_drivers',
+        libraries: 'ja_libraries'
       },
       summary: {
         snapshotTime: 'ja_Snapshot Time',

@@ -60,7 +60,7 @@ test('it renders data and property panel for services', function(assert) {
     const firstRowPathText = this.$('.rsa-data-table-body-row').first().find('.rsa-data-table-body-cell').last().text().trim();
 
     assert.equal(tableRows, 6, 'number of rows of data');
-    assert.equal(fileInfoText, '6 of 6', 'number of rows of data in pager');
+    assert.equal(fileInfoText, '6 of 6 services', 'number of rows of data in pager');
     assert.equal(firstRowPathText, '/TEST/DATA/PATH/YAY', 'first row path text ');
 
     // props checks
