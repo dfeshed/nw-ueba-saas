@@ -1,7 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import Immutable from 'seamless-immutable';
-
 import machines from '../../state/host.machines';
 
 import _ from 'lodash';

@@ -6,6 +6,9 @@
 /* putting the engines styles */
 @import 'investigate-hosts/manifest';
 
+/* Pulling in preference panel styles */
+@import 'preferences/manifest';
+
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.engine-dummy {
   color: rsa-color(gray, light);

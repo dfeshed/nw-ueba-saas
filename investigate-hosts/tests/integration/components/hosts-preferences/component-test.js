@@ -7,14 +7,14 @@ import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import {
-  schema
+  hostSchema
 } from '../../../data/data';
 
 let setState;
 
-moduleForComponent('files-preferences', 'Integration | Component | files preferences', {
+moduleForComponent('hosts-preferences', 'Integration | Component | hosts preferences', {
   integration: true,
-  resolver: engineResolverFor('investigate-files'),
+  resolver: engineResolverFor('investigate-hosts'),
   beforeEach() {
     initialize(this);
     setState = (state) => {
@@ -30,14 +30,15 @@ moduleForComponent('files-preferences', 'Integration | Component | files prefere
 
 test('it renders', function(assert) {
   new ReduxDataHelper(setState)
-    .schema(schema.fields)
+    .schema(hostSchema.fields)
     .visibleColumns([])
     .userProjectionChanged(false)
     .build();
-  this.render(hbs`{{files-preferences}}{{preferences-panel}}`);
+  this.render(hbs`{{hosts-preferences}}{{preferences-panel}}`);
   this.$('.rsa-icon-settings-1-filled').trigger('click');
   return wait().then(() => {
-    assert.equal(this.$('header.preference-panel-js').text().trim(), 'Files Preferences', 'Make sure header title is present');
+    assert.equal(this.$('.rsa-preferences-panel-trigger').length, 1, 'panel trigger is present');
+    assert.equal(this.$('header.preference-panel-js').text().trim(), 'Hosts Preferences', 'Make sure header title is present');
     // assert.equal(this.$('div.rsa-preferences-field-content').length, 2, '2 preference fields are rendered');
   });
 });

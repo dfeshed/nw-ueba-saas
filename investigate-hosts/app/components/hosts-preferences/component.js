@@ -1,0 +1,1 @@
+export { default } from 'investigate-hosts/components/hosts-preferences/component';

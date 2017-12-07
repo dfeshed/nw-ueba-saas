@@ -1,6 +1,7 @@
 import reselect from 'reselect';
 import { RESTRICTION_TYPE } from './restriction-type';
 import Immutable from 'seamless-immutable';
+import CONFIG from './config';
 
 const COLUMN_WIDTH = {
   'machine.machineName': 180,
@@ -25,16 +26,27 @@ const CHECKBOX_COLUMN = Immutable.from([{
 
 const { createSelector } = reselect;
 const _schema = (state) => state.endpoint.schema.schema || [];
+const _visibleColumns = (state) => state.endpoint.schema.visibleColumns;
+const _userProjectionChanged = (state) => state.endpoint.schema.userProjectionChanged;
 
 export const getHostTableColumns = createSelector(
-  _schema,
-  (schema) => {
+  [_schema, _visibleColumns, _userProjectionChanged],
+  (schema, visibleColumns, userProjectionChanged) => {
     let finalSchema = [];
     if (schema && schema.length) {
       const updatedSchema = schema.map((item) => {
-        const { dataType, name: field, searchable, values } = item;
+        const { dataType, name: field, searchable, values, userProjection } = item;
+        let visible = item.defaultProjection;
+        if (visibleColumns.length) {
+          if (userProjectionChanged) {
+            visible = userProjection || item.defaultProjection;
+          } else {
+            // If user preferences is saved, it should override default projections
+            visible = visibleColumns.includes(field);
+          }
+        }
         return {
-          visible: item.defaultProjection,
+          visible,
           dataType,
           field,
           searchable,
@@ -72,4 +84,27 @@ export const prepareSchema = createSelector(
     });
   }
 );
+
+export const isSchemaLoaded = createSelector(
+  getHostTableColumns,
+  (columns) => {
+    return !!columns.length;
+  }
+);
+
+export const preferencesConfig = createSelector(
+  [isSchemaLoaded, _schema],
+  (isSchemaLoaded, columns) => {
+    const fileConfig = { ...CONFIG };
+    if (isSchemaLoaded) {
+      // Set options of the dropdown from column schema
+      const visibleColumns = fileConfig.items.find((item) => item.field === 'machinePreference.visibleColumns');
+      const sortColumns = fileConfig.items.find((item) => item.field === 'machinePreference.sortField');
+      const options = columns.map((column) => column.name);
+      visibleColumns.options = options;
+      sortColumns.options = options;
+      return fileConfig;
+    }
+    return fileConfig;
+  });
 

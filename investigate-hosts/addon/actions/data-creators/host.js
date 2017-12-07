@@ -6,6 +6,7 @@ import { setAppliedHostFilter, resetDetailsInputAndContent, resetHostDownloadLin
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
+import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import Ember from 'ember';
 const { Logger } = Ember;
@@ -239,6 +240,28 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
     }
   };
 };
+
+const initializeHostsPreferences = () => {
+  return (dispatch) => {
+    const prefService = lookup('service:preferences');
+    dispatch({
+      type: ACTION_TYPES.GET_PREFERENCES,
+      promise: prefService.getPreferences('endpoint-preferences'),
+      meta: {
+        onSuccess: ({ machinePreference }) => {
+          const { sortField } = machinePreference;
+          if (sortField) {
+            dispatch({
+              type: ACTION_TYPES.SET_HOST_COLUMN_SORT,
+              payload: { key: sortField, descending: false }
+            });
+          }
+        }
+      }
+    });
+  };
+};
+
 export {
   getAllSchemas,
   getPageOfMachines,
@@ -248,6 +271,7 @@ export {
   updateColumnVisibility,
   setHostColumnSort,
   deleteHosts,
-  initializeHostPage
+  initializeHostPage,
+  initializeHostsPreferences
 };
 

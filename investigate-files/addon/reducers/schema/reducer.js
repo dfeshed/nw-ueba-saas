@@ -22,7 +22,7 @@ const schemaReducer = handleActions({
 
   [ACTION_TYPES.GET_PREFERENCES]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.set('visibleColumns', action.payload.data.filePreference.visibleColumns)
+      success: (s) => s.set('visibleColumns', action.payload.filePreference.visibleColumns)
     });
   },
 

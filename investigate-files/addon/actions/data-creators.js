@@ -10,6 +10,7 @@
  */
 
 import Ember from 'ember';
+import { lookup } from 'ember-dependency-lookup';
 
 import * as ACTION_TYPES from './types';
 import {
@@ -24,7 +25,6 @@ const { Logger } = Ember;
 const _handleError = (response, type) => {
   Logger.error(type, response);
 };
-
 
 /**
  * Action creator that dispatches a set of actions for fetching files (with or without filters) and sorted by one field.
@@ -89,12 +89,13 @@ const fetchSchemaInfo = () => {
 
 const initializeFilesPreferences = () => {
   return (dispatch) => {
+    const prefService = lookup('service:preferences');
     dispatch({
       type: ACTION_TYPES.GET_PREFERENCES,
-      promise: File.fetchPreferences('endpoint-preferences'),
+      promise: prefService.getPreferences('endpoint-preferences'),
       meta: {
-        onSuccess: ({ data }) => {
-          const { sortField } = data.filePreference;
+        onSuccess: ({ filePreference }) => {
+          const { sortField } = filePreference;
           if (sortField) {
             dispatch({
               type: ACTION_TYPES.SET_SORT_BY,

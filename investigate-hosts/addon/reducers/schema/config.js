@@ -5,7 +5,7 @@
  *
  * modelName:: Determine which socket to fetch or save preferences.
  * fieldPrefix:: This is prefix used for proper translation of items.options. Used in preferences/preferences-details
- *   Ex: For options field 'size' to be properly translated, make sure 'investigateFiles.fields.size' (fieldPrefix+option)
+ *   Ex: For options field 'agentId' to be properly translated, make sure 'investigateHosts.hosts.column.agentId' (fieldPrefix+option)
  *   is present in translation file
  * addtionalFilterKey:: This property provide flexibility to send query data back for server API.
  * items: Preferences to display along with field details to pull field value from data json.
@@ -14,29 +14,19 @@
  **/
 export default {
   modelName: 'endpoint-preferences',
-  fieldPrefix: 'investigateFiles.fields',
+  fieldPrefix: 'investigateHosts.hosts.column',
   items: [
     {
       name: 'preferences.endpoint-preferences.visibleColumns',
       type: 'multiSelect',
       options: [],
-      field: 'filePreference.visibleColumns'
+      field: 'machinePreference.visibleColumns'
     },
     {
       name: 'preferences.endpoint-preferences.sortField',
       type: 'dropdown',
-      options: [
-        'firstFileName',
-        'firstSeenTime',
-        'machineOsType',
-        'size',
-        'format',
-        'signature.features',
-        'entropy',
-        'pe.resources.company',
-        'mac.resources.company'
-      ],
-      field: 'filePreference.sortField'
+      options: [],
+      field: 'machinePreference.sortField'
     }
   ]
 };

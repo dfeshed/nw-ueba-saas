@@ -1,7 +1,9 @@
 /* eslint-env node */
 const common = require('../../../common');
+const preferencesConfigGen = require('../../../preferences').socketRouteGenerator;
+let mergedConfig;
 
-module.exports = function(env) {
+const hostsConfigGen = function(env) {
 
   const socketUrl = common.determineSocketUrl(env, '/endpoint/socket');
 
@@ -60,4 +62,21 @@ module.exports = function(env) {
       }
     }
   };
+};
+
+module.exports = function(environment) {
+  // cache it, prevents super spammy console as this gets called
+  // many times during startup
+  if (mergedConfig) {
+    return mergedConfig;
+  }
+
+  // as of ember 2.14, for some reason environment can be undefined
+  if (!environment) {
+    return {};
+  }
+
+  const configGenerators = [hostsConfigGen, preferencesConfigGen];
+  mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
+  return mergedConfig;
 };

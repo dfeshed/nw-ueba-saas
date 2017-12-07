@@ -92,10 +92,8 @@ test('The GET_PREFERENCES action will set visibleColumns', function(assert) {
     visibleColumns: []
   });
   const response = {
-    data: {
-      filePreference: {
-        visibleColumns: ['firstFileName', 'entropy']
-      }
+    filePreference: {
+      visibleColumns: ['firstFileName', 'entropy']
     }
   };
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {

@@ -2,8 +2,10 @@
 // THE FOLLOWING IS AN EXAMPLE, WILL NEED TO BE CHANGED PER ENGINE
 
 const common = require('../../common');
+const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
+let mergedConfig;
 
-module.exports = function(environment) {
+const filesConfigGen = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/endpoint/socket');
 
@@ -37,17 +39,23 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
       }
-    },
-    'endpoint-preferences': {
-      socketUrl,
-      getPreferences: {
-      subscriptionDestination: '/user/queue/endpoint/preferences/get',
-        requestDestination: '/ws/endpoint/preferences/get'
-      },
-      setPreferences: {
-        subscriptionDestination: '/user/queue/endpoint/preferences/set',
-        requestDestination: '/ws/endpoint/preferences/set'
-      }
     }
   };
+};
+
+module.exports = function(environment) {
+  // cache it, prevents super spammy console as this gets called
+  // many times during startup
+  if (mergedConfig) {
+    return mergedConfig;
+  }
+
+  // as of ember 2.14, for some reason environment can be undefined
+  if (!environment) {
+    return {};
+  }
+
+  const configGenerators = [filesConfigGen, preferencesConfigGen];
+  mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
+  return mergedConfig;
 };
