@@ -15,6 +15,8 @@ import presidio.output.domain.records.users.User;
 @Document(indexName = User.INDEX_NAME, type = User.USER_SCORE_THRESHOLDS_DOC_TYPE)
 public class UserScorePercentilesDocument extends AbstractElasticDocument {
 
+    public static final String USER_SCORE_PERCENTILES_DOC_ID = "user-score-percentile-doc-id";
+
     @Field(type = FieldType.Double)
     private double ceilScoreForLowSeverity;
 

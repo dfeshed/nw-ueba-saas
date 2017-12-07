@@ -12,7 +12,7 @@ import presidio.output.domain.records.UserScorePercentilesDocument;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.repositories.UserScorePrcentilesRepository;
+import presidio.output.domain.repositories.UserScorePercentilesRepository;
 import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.util.ArrayList;
@@ -25,14 +25,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class UserSeverityServiceImpl implements UserSeverityService {
 
     private static final Logger logger = Logger.getLogger(UserSeverityServiceImpl.class);
-    private static final String USER_SCORE_PERCENTILES_DOC_ID = "user-score-percentile-doc-id";
 
     private int percentThresholdCritical;
     private int percentThresholdHigh;
     private int percentThresholdMedium;
 
     @Autowired
-    private UserScorePrcentilesRepository percentilesRepository;
+    private UserScorePercentilesRepository percentilesRepository;
 
     @Autowired
     private UserPersistencyService userPersistencyService;
@@ -71,7 +70,10 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         double ceilScoreForHighSeverity = p.evaluate(percentThresholdCritical); //The maximum score that user score still considered high
 
         //Storing the new percentiles doc-
-        UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(USER_SCORE_PERCENTILES_DOC_ID);
+        UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
+        if(percentileDoc == null) {
+            percentileDoc = new UserScorePercentilesDocument();
+        }
         percentileDoc.setCeilScoreForHighSeverity(ceilScoreForHighSeverity);
         percentileDoc.setCeilScoreForMediumSeverity(ceilScoreForMediumSeverity);
         percentileDoc.setCeilScoreForLowSeverity(ceilScoreForLowSeverity);
@@ -82,17 +84,13 @@ public class UserSeverityServiceImpl implements UserSeverityService {
     }
 
     private UserScoreToSeverity getExistingUserScoreToSeverity() {
-        Iterable<UserScorePercentilesDocument> percentilesThresholds = percentilesRepository.findAll();
+        UserScorePercentilesDocument userSeverityPercentilesDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
 
-        if(! percentilesThresholds.iterator().hasNext()) { //no existing percentiles were found
+        if(userSeverityPercentilesDoc == null) { //no existing percentiles were found
             logger.debug("No user score percentile calculation results were found, setting scores thresholds to zero (all users will get LOW severity (till next daily calculation)");
             return new UserScoreToSeverity(-1, -1, -1);
         }
 
-        if (Iterables.size(percentilesThresholds) > 1) {
-            logger.error("Found more than 1 user score percentile calculation results, taking one of them randomly");
-        }
-        UserScorePercentilesDocument userSeverityPercentilesDoc = percentilesThresholds.iterator().next();
         return new UserScoreToSeverity(
                 userSeverityPercentilesDoc.getCeilScoreForLowSeverity(),
                 userSeverityPercentilesDoc.getCeilScoreForMediumSeverity(),

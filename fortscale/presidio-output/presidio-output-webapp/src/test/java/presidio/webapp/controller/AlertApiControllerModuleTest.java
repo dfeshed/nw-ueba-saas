@@ -27,7 +27,7 @@ import presidio.output.domain.records.users.*;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.UserRepository;
-import presidio.output.domain.repositories.UserScorePrcentilesRepository;
+import presidio.output.domain.repositories.UserScorePercentilesRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.model.*;
@@ -68,7 +68,7 @@ public class AlertApiControllerModuleTest {
     private AlertPersistencyServiceImpl alertPersistencyService;
 
     @Autowired
-    private UserScorePrcentilesRepository userScorePrcentilesRepository;
+    private UserScorePercentilesRepository userScorePercentilesRepository;
 
     private ObjectMapper objectMapper;
 
@@ -96,7 +96,7 @@ public class AlertApiControllerModuleTest {
         userRepository.delete(userRepository.findAll());
 
         //delete the created user score percentile documents
-        userScorePrcentilesRepository.delete(userScorePrcentilesRepository.findAll());
+        userScorePercentilesRepository.delete(userScorePercentilesRepository.findAll());
     }
 
     @Test
@@ -386,7 +386,7 @@ public class AlertApiControllerModuleTest {
     @Test
     public void testUpdateAlertFeedback_NONEtoRISK() throws Exception {
 
-        Mockito.verify(Mockito.spy(UserScorePrcentilesRepository.class), Mockito.times(0)).findAll();
+        Mockito.verify(Mockito.spy(UserScorePercentilesRepository.class), Mockito.times(0)).findAll();
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
@@ -430,7 +430,7 @@ public class AlertApiControllerModuleTest {
     @Test
     public void testUpdateAlertFeedback_RISKtoNOT_RISK_userScorePercentilesExists() throws Exception {
         UserScorePercentilesDocument percentilesDoc = new UserScorePercentilesDocument(150, 100, 50);
-        userScorePrcentilesRepository.save(percentilesDoc);
+        userScorePercentilesRepository.save(percentilesDoc);
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();

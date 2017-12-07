@@ -24,7 +24,7 @@ import presidio.output.domain.records.UserScorePercentilesDocument;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.repositories.UserScorePrcentilesRepository;
+import presidio.output.domain.repositories.UserScorePercentilesRepository;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
@@ -33,7 +33,6 @@ import presidio.output.processor.spring.AlertEnumsConfig;
 import presidio.output.processor.spring.UserServiceConfig;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -55,7 +54,7 @@ public class UserScoreServiceImplTest {
     private UserPersistencyService mockUserPresistency;
 
     @MockBean
-    private UserScorePrcentilesRepository mockPercentilesRepository;
+    private UserScorePercentilesRepository mockPercentilesRepository;
 
     @Autowired
     private UserSeverityService userSeverityService;
@@ -100,7 +99,7 @@ public class UserScoreServiceImplTest {
             }
         });
 
-
+        Mockito.verify(Mockito.spy(UserScorePercentilesRepository.class), Mockito.times(0)).findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(true);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(55D));
@@ -146,7 +145,7 @@ public class UserScoreServiceImplTest {
         percentileDoc.setCeilScoreForHighSeverity(150);
         percentileDoc.setCeilScoreForMediumSeverity(100);
         percentileDoc.setCeilScoreForLowSeverity(50);
-        Mockito.when(mockPercentilesRepository.findAll()).thenReturn(Arrays.asList(percentileDoc));
+        Mockito.when(mockPercentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID)).thenReturn(percentileDoc);
 
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(false);
 

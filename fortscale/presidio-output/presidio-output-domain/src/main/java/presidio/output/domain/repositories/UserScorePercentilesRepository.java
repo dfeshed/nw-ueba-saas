@@ -6,6 +6,6 @@ import presidio.output.domain.records.UserScorePercentilesDocument;
 /**
  * Created by Efrat Noam on 12/5/17.
  */
-public interface UserScorePrcentilesRepository extends ElasticsearchRepository<UserScorePercentilesDocument, String> {
+public interface UserScorePercentilesRepository extends ElasticsearchRepository<UserScorePercentilesDocument, String> {
 
 }
