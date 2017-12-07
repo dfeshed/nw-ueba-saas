@@ -48,13 +48,13 @@ export const validateLogConfigFields = (formData) => {
 
   if (isEmpty(configName)) {
     return {
-      isError: true,
+      isConfigError: true,
       errorMessage: 'packager.emptyName'
     };
   }
   if (INVALID_CONFIG_NAME_PATTERN.test(configName)) {
     return {
-      isError: true,
+      isConfigError: true,
       errorMessage: 'packager.specialCharacter'
     };
   }
@@ -79,6 +79,9 @@ export const validateLogConfigFields = (formData) => {
         isError: true
       };
       return false;
+    }
+    if (eventId.trim().toUpperCase() === 'ALL') {
+      return true;
     }
     const arrayOfEvents = eventId.split(',');
     const hasInvalidEventId = arrayOfEvents.some((event) => {

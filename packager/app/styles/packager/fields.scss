@@ -39,8 +39,8 @@
       padding: rsa-whitespace(less) rsa-whitespace();
       border: 1px solid $formInputBorderColor;
     }
-    .icon-align-right {
-      text-align: right;
+    .icon-align-left {
+      text-align: left;
     }
 
     .channel-select {
@@ -59,10 +59,6 @@
       font-size: 1rem;
     }
 
-    .delete-button {
-      color: text-color(accentOne, darker);
-    }
-
     .ember-power-select-trigger {
       overflow: hidden;
     }
@@ -79,6 +75,12 @@
       left: 50%;
       width: 100vw;
       margin-left: -50vw;
+    }
+    .channel-container {
+     border: 1px solid text-color(primary, light);
+       .rsa-data-table-body {
+         overflow: hidden;
+       }
     }
   }
 }

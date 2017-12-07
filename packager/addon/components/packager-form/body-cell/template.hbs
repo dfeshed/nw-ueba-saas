@@ -15,7 +15,7 @@
     </label>
   {{else if (eq column.displayType 'EventInput')}}
     <div class="event-id">
-      {{rsa-form-input placeholder=(t 'packager.eventPlaceholder') value=item.eventId}}
+      {{rsa-form-input value=item.eventId}}
     </div>
   {{else if (eq column.displayType 'dropdown') }}
     <label class="rsa-form-label power-select channel">
@@ -32,12 +32,8 @@
       </div>
     </label>
   {{else if (eq column.displayType 'icon') }}
-    {{#unless (eq index 0)}}
-      {{#rsa-form-button isIconOnly=true defaultAction=(action delete index bubble=false)}}
-        {{rsa-icon name='bin-1' size='smaller' class='delete-button'}}
-      {{/rsa-form-button}}
-    {{/unless}}
-  {{else}}
-    <div class="channel-number">{{serialNumber}}</div>
+    {{#rsa-form-button isIconOnly=true isDisabled=(eq index 0) defaultAction=(action delete index bubble=false)}}
+      {{rsa-icon name='bin-1' size='small' class='delete-button'}}
+    {{/rsa-form-button}}
   {{/if}}
 {{/rsa-data-table/body-cell}}

@@ -121,7 +121,7 @@
     {{#if isLogCollectionEnabled}}
       <hbox xs="12">
         <div class="col-xs-5 field">
-          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=(t errorMessage)}}
+          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isConfigError errorMessage=(t errorMessage)}}
         </div>
         <div class="col-xs-6 field fileContainer">
           <label for="file-upload" class="custom-file-upload">
@@ -178,19 +178,21 @@
           <div class="label-text">
             {{t 'packager.channelFilter'}}
           </div>
-          <div class="icon-align-right add-row">
+          <div class="icon-align-left add-row">
             {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
               {{rsa-icon name='add-1' size='small'}}
             {{/rsa-form-button}}
           </div>
-          {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
-            {{#rsa-data-table/header as |column|}}
-              {{t column.title}}
-            {{/rsa-data-table/header}}
-            {{#rsa-data-table/body as |item index column|}}
-              {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
-            {{/rsa-data-table/body}}
-          {{/rsa-data-table}}
+          <div class="channel-container">
+            {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
+              {{#rsa-data-table/header as |column|}}
+                {{t column.title}}
+              {{/rsa-data-table/header}}
+              {{#rsa-data-table/body as |item index column|}}
+                {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
+              {{/rsa-data-table/body}}
+            {{/rsa-data-table}}
+          </div>
         </label>
       </div>
 

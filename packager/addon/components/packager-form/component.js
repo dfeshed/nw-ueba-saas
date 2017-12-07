@@ -98,6 +98,7 @@ const formComponent = Component.extend({
       protocolClassName: 'rsa-form-label power-select',
       selectedProtocol: null,
       isPortError: false,
+      isConfigError: false,
       isServerError: false,
       isDisplayNameError: false,
       isServiceNameError: false,
@@ -226,7 +227,7 @@ const formComponent = Component.extend({
     // adding an empty row to the channel filters table
     addRowFilter(item) {
       if (item.target.classList.contains('rsa-icon')) {
-        this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: '' });
+        this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
       }
     },
     // pass the index of the row to delete the row in the channel filters

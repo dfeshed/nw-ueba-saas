@@ -74,6 +74,6 @@ test('validateLogConfigFields - invalid config name', function(assert) {
   const error = validateLogConfigFields(formData);
   assert.deepEqual(error, {
     'errorMessage': 'packager.specialCharacter',
-    'isError': true
+    'isConfigError': true
   });
 });

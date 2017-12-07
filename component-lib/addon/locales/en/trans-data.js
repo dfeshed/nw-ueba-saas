@@ -1638,11 +1638,10 @@ export default {
     emptyName: 'Configuration name is empty',
     channelFilter: 'Channel Filters',
     specialCharacter: 'Configuration name contains special charatcer.',
-    eventPlaceholder: '(All)',
     channel: {
-      name: 'CHANNEL NAME',
-      filter: 'FILTER',
-      event: 'EVENT ID',
+      name: 'CHANNEL NAME *',
+      filter: 'FILTER *',
+      event: 'EVENT ID *',
       empty: ''
     }
   },
