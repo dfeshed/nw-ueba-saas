@@ -49,13 +49,12 @@ public class UserSeverityServiceImpl implements UserSeverityService {
 
 
     /**
-     * Calculate severities map which defines the right user getSeverity per user score calculated according to percentiles
+     * Calculate severities map which defines the right user severity per user score calculated according to percentiles
      *
      * @return map from score to getSeverity
      */
     @Override
     public UserScoreToSeverity getSeveritiesMap(boolean recalcUserScorePercentiles) {
-        //TODO- can be retrieved once on the application startup
         if(!recalcUserScorePercentiles) {
             return getExistingUserScoreToSeverity();
         }
@@ -78,7 +77,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         Iterable<UserScorePercentilesDocument> percentilesThresholds = percentilesRepository.findAll();
 
         if(! percentilesThresholds.iterator().hasNext()) { //no existing percentiles were found
-            logger.debug("No user score percentile calculation results were found, setting scores thresholds to zero (all users will get LOW getSeverity (till next daily calculation)");
+            logger.debug("No user score percentile calculation results were found, setting scores thresholds to zero (all users will get LOW severity (till next daily calculation)");
             return new UserScoreToSeverity(-1, -1, -1);
         }
 
@@ -103,7 +102,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
         while (page != null && page.hasContent()) {
-            logger.info("Updating getSeverity for user's page: " + page.toString());
+            logger.info("Updating severity for user's page: " + page.toString());
             updateSeveritiesForUsersList(severitiesMap, page.getContent(), true);
             page = getNextUserPage(userQueryBuilder, page);
 
@@ -170,10 +169,10 @@ public class UserSeverityServiceImpl implements UserSeverityService {
             double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
 
-            logger.debug("Updating user getSeverity for userId: " + user.getUserId());
+            logger.debug("Updating user severity for userId: " + user.getUserId());
             if (!newUserSeverity.equals(user.getSeverity())) {
                 user.setSeverity(newUserSeverity);
-                updatedUsers.add(user); //Update user only if getSeverity changes
+                updatedUsers.add(user); //Update user only if severity changes
             }
         });
 

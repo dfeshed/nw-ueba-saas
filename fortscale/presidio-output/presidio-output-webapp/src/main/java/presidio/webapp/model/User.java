@@ -33,7 +33,7 @@ public class User {
     @JsonProperty("score")
     private Integer score = null;
 
-    @JsonProperty("getSeverity")
+    @JsonProperty("severity")
     private UserSeverity severity = null;
 
     @JsonProperty("alertsCount")
@@ -172,9 +172,9 @@ public class User {
     }
 
     /**
-     * Get getSeverity
+     * Get severity
      *
-     * @return getSeverity
+     * @return severity
      **/
     @ApiModelProperty(value = "")
     public UserSeverity getSeverity() {

@@ -38,7 +38,6 @@ public class FeedbackServiceImpl implements FeedbackService {
     public void updateAlertFeedback(List<String> alertIds, AlertEnums.AlertFeedback feedback) {
         Iterable<presidio.output.domain.records.alerts.Alert> alerts = alertPersistencyService.findAll(alertIds);
 
-        //TODO- check if feedback was changed
 
         Set<User> usersToBeUpdated = new HashSet<>();
         alerts.forEach(alert->{
@@ -58,7 +57,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 presidio.output.domain.records.users.User user = userPersistencyService.findUserById(alert.getUserId());
                 user.setScore(user.getScore() + contributionDelta);
 
-                //4. update user getSeverity according to new score (based on already calculated severities percentiles)
+                //4. update user severity according to new score (based on already calculated severities percentiles)
                 UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
                 user.setSeverity(newSeverity);
                 usersToBeUpdated.add(user);

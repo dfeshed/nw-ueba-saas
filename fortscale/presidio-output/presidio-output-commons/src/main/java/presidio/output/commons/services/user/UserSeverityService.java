@@ -20,7 +20,7 @@ public interface UserSeverityService {
     void updateSeveritiesForUsersList(List<User> users, boolean persistChanges);
 
     /**
-     * Iterate all users and re-calculate the getSeverity - read users from DB and update severities in DB
+     * Iterate all users and re-calculate the severities percentiles - read users from DB and update severities in DB
      */
     void updateSeverities();
 }
