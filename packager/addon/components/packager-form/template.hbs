@@ -2,10 +2,21 @@
   <div class="field">
     <hbox xs="12">
       <div class="col-xs-5 host-ip-js">
-        {{rsa-form-input label=(t 'packager.server') value=configData.packageConfig.server}}
+        {{rsa-form-input
+          isError=isServerError
+          class='server-input-js'
+          errorMessage=(t invalidServerMessage)
+          label=(t 'packager.server')
+          value=configData.packageConfig.server}}
       </div>
       <div class="col-xs-4 host-port-js">
-        {{rsa-form-input label=(t 'packager.port') value=configData.packageConfig.port}}
+        {{rsa-form-input
+          maxLength=10
+          class='port-input-js'
+          isError=isPortError
+          errorMessage=(t invalidPortMessage)
+          label=(t 'packager.port')
+          value=configData.packageConfig.port}}
       </div>
     </hbox>
   </div>
@@ -35,7 +46,13 @@
   <div class="field">
     <hbox xs="12">
       <div class="col-xs-5">
-        {{rsa-form-input type="password" label=(t 'packager.certificatePassword') value=configData.packageConfig.certificatePassword}}
+        {{rsa-form-input
+          type="password"
+          class='password-input-js'
+          isError=isPasswordError
+          errorMessage=(t passwordEmptyMessage)
+          label=(t 'packager.certificatePassword')
+          value=configData.packageConfig.password}}
       </div>
     </hbox>
   </div>
@@ -67,17 +84,28 @@
   <div class="field">
     <hbox xs="12">
       <div class="col-xs-5 service-name-js">
-        {{rsa-form-input label=(t 'packager.serviceName') value=configData.packageConfig.serviceName}}
+        {{rsa-form-input
+          isError=isServiceNameError
+          class='service-name-input-js'
+          errorMessage=(t invalidServiceNameMessage)
+          maxLength=256
+          label=(t 'packager.serviceName')
+          value=configData.packageConfig.serviceName}}
       </div>
       <div class="col-xs-5 display-name-js">
-        {{rsa-form-input label=(t 'packager.displayName') value=configData.packageConfig.displayName}}
+        {{rsa-form-input
+          isError=isDisplayNameError
+          errorMessage=(t invalidServiceNameMessage)
+          maxLength=256
+          label=(t 'packager.displayName')
+          value=configData.packageConfig.displayName}}
       </div>
     </hbox>
   </div>
 </div>
 <div class="field">
   <div class="col-xs-10">
-    {{rsa-form-input label=(t 'packager.description') value=configData.packageConfig.description}}
+    {{rsa-form-input maxLength=256 label=(t 'packager.description') value=configData.packageConfig.description}}
   </div>
 </div>
 <div class="windows-log-collection">
@@ -93,7 +121,7 @@
     {{#if isLogCollectionEnabled}}
       <hbox xs="12">
         <div class="col-xs-5 field">
-          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=errorMessage}}
+          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isError errorMessage=(t errorMessage)}}
         </div>
         <div class="col-xs-6 field fileContainer">
           <label for="file-upload" class="custom-file-upload">
@@ -172,6 +200,7 @@
             {{t 'packager.protocol'}}
           </div>
           {{#power-select
+            classNames='protocol-dropdown'
             placeholder=(t 'packager.placeholder')
             options=protocolOptions
             selected=selectedProtocol
@@ -201,10 +230,10 @@
     {{#rsa-form-button isDisabled=isResetDisabled defaultAction=(action 'resetForm')}}
       {{t 'packager.reset'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button style='primary' class="generateButton-js" isDisabled=isDisabled defaultAction=(action 'generateAgent')}}
+    {{#rsa-form-button style='primary' class="generate-button-js" isDisabled=isDisabled defaultAction=(action 'generateAgent')}}
       {{t 'packager.generateAgent'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button isDisabled=isGenerateLogDisabled defaultAction=(action 'generateLogConfig')}}
+    {{#rsa-form-button class="generate-log-button-js"isDisabled=isGenerateLogDisabled defaultAction=(action 'generateLogConfig')}}
       {{t 'packager.generateLogConfig'}}
     {{/rsa-form-button}}
   </hbox>

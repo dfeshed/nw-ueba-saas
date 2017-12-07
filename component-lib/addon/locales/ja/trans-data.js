@@ -1588,12 +1588,18 @@ export default {
     }
   },
   packager: {
+    errorMessages: {
+      invalidIP: 'ja_Please enter valid IP address',
+      invalidPort: 'ja_Please enter valid port number',
+      invalidName: 'ja_Please enter a valid name without special characters',
+      passwordEmptyMessage: 'ja_Please enter certificate password'
+    },
     packagerTitle: 'ja_Packager',
-    serviceName: 'ja_Service Name',
+    serviceName: '*ja_Service Name',
     server: '*ja_Server',
     port: '*ja_HTTPS Port',
     certificateValidation: 'ja_Certificate Validation',
-    certificatePassword: 'ja_Certificate Password',
+    certificatePassword: '*ja_Certificate Password',
     none: 'ja_None',
     fullChain: 'ja_Full Chain',
     generateLogConfig: 'ja_Generate Log Configuration Only',
@@ -1604,7 +1610,7 @@ export default {
     description: 'ja_Description',
     title: 'Packager',
     becon: 'ja_Becon',
-    displayName: 'ja_Display Name',
+    displayName: '*ja_Display Name',
     upload: {
       success: 'ja_Configuration file loaded successfully.',
       failure: 'ja_Unable to upload Configuration file.',

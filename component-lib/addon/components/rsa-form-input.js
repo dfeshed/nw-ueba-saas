@@ -17,7 +17,7 @@ export default Component.extend({
     'isReadOnly',
     'isSuccess'
   ],
-
+  maxLength: null,
   errorMessage: null,
   isDisabled: false,
   isError: false,

@@ -1589,12 +1589,18 @@ export default {
     }
   },
   packager: {
+    errorMessages: {
+      invalidIP: 'Please enter valid IP address',
+      invalidPort: 'Please enter valid port number',
+      invalidName: 'Please enter a valid name without special characters',
+      passwordEmptyMessage: 'Please enter certificate password'
+    },
     packagerTitle: 'Packager',
-    serviceName: 'Service Name',
+    serviceName: '*Service Name',
     server: '*Server',
     port: '*HTTPS Port',
     certificateValidation: 'Certificate Validation',
-    certificatePassword: 'Certificate Password',
+    certificatePassword: '*Certificate Password',
     none: 'None',
     fullChain: 'Full Chain',
     thumbprint: 'Thumbprint',
@@ -1605,7 +1611,7 @@ export default {
     description: 'Description',
     title: 'Packager',
     becon: 'Becon',
-    displayName: 'Display Name',
+    displayName: '*Display Name',
     upload: {
       success: 'Configuration file loaded successfully.',
       failure: 'Unable to upload Configuration file.',

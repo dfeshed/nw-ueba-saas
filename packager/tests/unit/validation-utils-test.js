@@ -1,0 +1,79 @@
+import { module, test } from 'qunit';
+
+import { validatePackageConfig, validateLogConfigFields } from 'packager/components/packager-form/validation-utils';
+
+module('Unit | Util');
+
+test('validatePackageConfig - valid', function(assert) {
+  const formData = {
+    port: '12',
+    server: '1.1.1.1',
+    serviceName: 'TEST',
+    displayName: 'TEST',
+    password: 'CXXA123'
+  };
+  const error = validatePackageConfig(formData);
+  assert.equal(error, null);
+});
+
+test('validatePackageConfig - invalid port', function(assert) {
+  const formData = {
+    port: '12X'
+  };
+  const error = validatePackageConfig(formData);
+  assert.deepEqual(error, {
+    'invalidPortMessage': 'packager.errorMessages.invalidPort',
+    'isPortError': true
+  });
+});
+
+test('validatePackageConfig - invalid IP', function(assert) {
+  const formData = {
+    port: '123'
+  };
+  const error = validatePackageConfig(formData);
+  assert.deepEqual(error, {
+    'invalidServerMessage': 'packager.errorMessages.invalidIP',
+    'isServerError': true
+  });
+});
+
+test('validatePackageConfig - invalid serviceName', function(assert) {
+  const formData = {
+    port: '12',
+    server: '1.1.1.1',
+    serviceName: 'TEST@_+',
+    displayName: 'TEST',
+    password: 'CXXA123'
+  };
+  const error = validatePackageConfig(formData);
+  assert.deepEqual(error, {
+    'invalidServiceNameMessage': 'packager.errorMessages.invalidName',
+    'isServiceNameError': true
+  });
+});
+
+test('validateLogConfigFields - valid', function(assert) {
+  const formData = {
+    configName: 'TEST',
+    primaryDestination: 'aa',
+    protocol: 'Test',
+    channels: [{ channel: 'Security', filter: 'Include', eventId: '123' }]
+  };
+  const error = validateLogConfigFields(formData);
+  assert.deepEqual(error, null);
+});
+
+test('validateLogConfigFields - invalid config name', function(assert) {
+  const formData = {
+    configName: 'TEST@!',
+    primaryDestination: 'aa',
+    protocol: 'Test',
+    channels: []
+  };
+  const error = validateLogConfigFields(formData);
+  assert.deepEqual(error, {
+    'errorMessage': 'packager.specialCharacter',
+    'isError': true
+  });
+});
