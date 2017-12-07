@@ -12,6 +12,6 @@ export default {
     'certificateValidation': 'thumbprint'
   },
   'logCollectionConfig': {
-
+    'channels': [{ channel: 'Security', filter: 'Include', eventId: 'ALL' }]
   }
 };
