@@ -15,6 +15,16 @@ export default Service.extend({
   invPacketAnalysis: 'invPacketAnalysis',
   invTextAnalysis: 'invTextAnalysis',
 
+  invHosts: 'hosts',
+  invFiles: 'files',
+  invHostsOverview: 'hostsOverview',
+  invHostsProcess: 'hostsProcess',
+  invHostsAutoruns: 'hostsAutoruns',
+  invHostsFiles: 'hostsFiles',
+  invHostsDrivers: 'hostsDrivers',
+  invHostsLibraries: 'hostsLibraries',
+  invHostsSysInfo: 'hostsSysInfo',
+
   respondModule: 'respond',
   respAlrtListVw: 'respAlrtListVw',
   respAlrtDetailVw: 'respAlrtDetailVw',

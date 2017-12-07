@@ -12,6 +12,8 @@ const Eng = Engine.extend({
     services: [
       '-document',
       'access-control',
+      // Used to update the app header's help link based on state changes
+      'contextual-help',
       'dateFormat',
       'timeFormat',
       'timezone',

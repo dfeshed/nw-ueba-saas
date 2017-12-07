@@ -39,7 +39,7 @@ const parseQueryString = (queryString) => {
   return decodeURIComponent(queryString).split('&&') // currently endpoint is supporting only &&
     .map((queryString) => {
       const [ meta, operator, ...valuePieces ] = queryString.split(' ');
-      const value = valuePieces.join(' ').replace(/^"(.*)"$/, '$1'); // Replace the start and end double quotes
+      const value = valuePieces.join(' ').replace(/^'(.*)'$/, '$1'); // Replace the start and end single quotes
       const propertyName = INVESTIGATE_ENDPOINT_META_MAPPING[meta];
       const restrictionType = MONGO_OPERATOR_MAPPING[operator];
       return { propertyName, propertyValues: [ { value } ], restrictionType };

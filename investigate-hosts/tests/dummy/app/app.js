@@ -15,6 +15,7 @@ const App = Application.extend({
         services: [
           '-document',
           'dateFormat',
+          'contextual-help',
           'access-control',
           'timeFormat',
           'timezone',

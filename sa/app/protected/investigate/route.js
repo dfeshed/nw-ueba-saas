@@ -5,7 +5,10 @@ import RSVP from 'rsvp';
 export default Route.extend({
 
   accessControl: service(),
+
   investigatePage: service(),
+
+  contextualHelp: service(),
 
   beforeModel() {
     return new RSVP.Promise((resolve) => {
@@ -33,5 +36,13 @@ export default Route.extend({
 
   title() {
     return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('investigate.title') });
+  },
+
+  activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.investigateModule'));
+  },
+
+  deactivate() {
+    this.set('contextualHelp.module', null);
   }
 });

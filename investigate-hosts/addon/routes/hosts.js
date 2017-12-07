@@ -5,6 +5,16 @@ import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
 import { ping } from 'streaming-data/services/data-access/requests';
 import run from 'ember-runloop';
 
+const HELP_ID_MAPPING = {
+  'OVERVIEW': 'contextualHelp.invHostsOverview',
+  'PROCESS': 'contextualHelp.invHostsProcess',
+  'AUTORUNS': 'contextualHelp.invHostsAutoruns',
+  'FILES': 'contextualHelp.invHostsFiles',
+  'DRIVERS': 'contextualHelp.invHostsDrivers',
+  'LIBRARIES': 'contextualHelp.invHostsLibraries',
+  'SYSTEM': 'contextualHelp.invHostsSysInfo'
+};
+
 export default Route.extend({
 
   i18n: service(),
@@ -41,6 +51,12 @@ export default Route.extend({
     return ping('endpoint-server-ping')
       .then(() => {
         const redux = this.get('redux');
+        const { machineId, tabName = 'OVERVIEW' } = params;
+        if (machineId) {
+          this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
+        } else {
+          this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
+        }
         run.next(() => {
           redux.dispatch(initializeHostPage(params));
         });
@@ -67,5 +83,6 @@ export default Route.extend({
   // On deactivating the route send the user left page action to cleanup the state if any
   deactivate() {
     this.get('redux').dispatch(userLeftListPage());
+    this.set('contextualHelp.topic', null);
   }
 });

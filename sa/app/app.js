@@ -71,6 +71,7 @@ const App = Application.extend({
         services: [
           '-document',
           'access-control',
+          'contextual-help',
           'dateFormat',
           'timeFormat',
           'timezone',
@@ -91,6 +92,7 @@ const App = Application.extend({
         services: [
           '-document',
           'access-control',
+          'contextual-help',
           'dateFormat',
           'timeFormat',
           'timezone',
