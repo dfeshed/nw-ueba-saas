@@ -2,7 +2,6 @@ import $ from 'jquery';
 import computed from 'ember-computed-decorators';
 import Controller from 'ember-controller';
 import service from 'ember-service/inject';
-import { DEFAULT_THEME } from 'sa/reducers/global/preferences';
 
 const cssVariablesSupported = window.CSS &&
     window.CSS.supports && window.CSS.supports('--a', 0);
@@ -82,8 +81,7 @@ export default Controller.extend({
     this.themeName = () => {
       const state = redux.getState();
       const { global } = state;
-      const theme = global && global.preferences && global.preferences.theme && global.preferences.theme.toLowerCase();
-      return theme === 'undefined' || theme === undefined ? DEFAULT_THEME.toLowerCase() : theme;
+      return global && global.preferences && global.preferences.theme && global.preferences.theme.toLowerCase();
     };
 
     let activeTheme;

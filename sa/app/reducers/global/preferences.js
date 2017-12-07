@@ -19,9 +19,12 @@ export default function preferences(state, action) {
       return state;
     }
     case ACTION_TYPES.UPDATE_PREFERENCES_THEME: {
-      return state.merge({
-        theme: action.theme
-      });
+      if (action && action.theme && action.theme !== 'null' && action.theme !== 'undefined') {
+        return state.merge({
+          theme: action.theme
+        });
+      }
+      return state;
     }
 
     default: {

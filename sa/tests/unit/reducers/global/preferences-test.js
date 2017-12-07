@@ -13,6 +13,50 @@ test('should return the initial state', function(assert) {
   });
 });
 
+test('UPDATE will only alter theme when the action.theme is legit', function(assert) {
+  let result = reducer(undefined, {});
+
+  assert.deepEqual(result, {
+    theme: 'DARK'
+  });
+
+  result = reducer(result, {
+    type: ACTION_TYPES.UPDATE_PREFERENCES_THEME,
+    theme: undefined
+  });
+
+  assert.deepEqual(result, {
+    theme: 'DARK'
+  });
+
+  result = reducer(result, {
+    type: ACTION_TYPES.UPDATE_PREFERENCES_THEME,
+    theme: 'undefined'
+  });
+
+  assert.deepEqual(result, {
+    theme: 'DARK'
+  });
+
+  result = reducer(result, {
+    type: ACTION_TYPES.UPDATE_PREFERENCES_THEME,
+    theme: null
+  });
+
+  assert.deepEqual(result, {
+    theme: 'DARK'
+  });
+
+  result = reducer(result, {
+    type: ACTION_TYPES.UPDATE_PREFERENCES_THEME,
+    theme: 'null'
+  });
+
+  assert.deepEqual(result, {
+    theme: 'DARK'
+  });
+});
+
 test('REHYDRATE will only alter theme when the JSON data structure is legit', function(assert) {
   const previous = Immutable.from({
     theme: 'DARK'
