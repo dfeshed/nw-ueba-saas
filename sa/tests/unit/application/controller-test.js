@@ -30,6 +30,52 @@ test('generates non prod theme url when link with fingerprint not found', functi
   assert.equal(result, '/assets/light.css');
 });
 
+test('will NOT alter the body class when theme is undefined (string)', function(assert) {
+  $('body').addClass('our-application');
+
+  let updatesRun = 0;
+  const redux = this.container.lookup('service:redux');
+  const controller = this.subject();
+  const original = controller._updateBodyClass;
+  controller._updateBodyClass = function() {
+    updatesRun++;
+    return original.apply(this, arguments);
+  };
+
+  redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: 'undefined' });
+
+  assert.ok($('body').hasClass('dark-theme'));
+  assert.ok($('body').hasClass('our-application'));
+  assert.notOk($('body').hasClass('undefined-theme'));
+
+  // While IE11 is supported this _updateBodyClass call is important
+  // because without it we never fetch the dark.css file explicitly
+  assert.equal(updatesRun, 1);
+});
+
+test('will NOT alter the body class when theme is undefined (type)', function(assert) {
+  $('body').addClass('our-application');
+
+  let updatesRun = 0;
+  const redux = this.container.lookup('service:redux');
+  const controller = this.subject();
+  const original = controller._updateBodyClass;
+  controller._updateBodyClass = function() {
+    updatesRun++;
+    return original.apply(this, arguments);
+  };
+
+  redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: undefined });
+
+  assert.ok($('body').hasClass('dark-theme'));
+  assert.ok($('body').hasClass('our-application'));
+  assert.notOk($('body').hasClass('undefined-theme'));
+
+  // While IE11 is supported this _updateBodyClass call is important
+  // because without it we never fetch the dark.css file explicitly
+  assert.equal(updatesRun, 1);
+});
+
 test('will alter the body class when theme is truly different', function(assert) {
   $('body').addClass('our-application');
 
@@ -59,6 +105,5 @@ test('will alter the body class when theme is truly different', function(assert)
   assert.ok($('body').hasClass('our-application'));
   assert.notOk($('body').hasClass('light-theme'));
   assert.equal(updatesRun, 2);
-
   controller._updateBodyClass = original;
 });

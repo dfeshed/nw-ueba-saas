@@ -1,8 +1,10 @@
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'sa/actions/types';
 
+export const DEFAULT_THEME = 'DARK';
+
 const initialState = {
-  theme: 'DARK'
+  theme: DEFAULT_THEME
 };
 
 export default function preferences(state, action) {
