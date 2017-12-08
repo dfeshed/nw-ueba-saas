@@ -410,7 +410,7 @@ const _determineReconView = (meta, size) => {
             payload: data
           });
           // We need to set packetsPageSize to the value that is persisted to the backend
-          changePacketsPerPage(data.eventAnalysisPreferences.packetsPageSize, false);
+          dispatch(changePacketsPerPage(data.eventAnalysisPreferences.packetsPageSize, false));
         }
         // it should be called after the value for 'isMetaShown' is fetched from the backend
         if (size !== 'full') {
