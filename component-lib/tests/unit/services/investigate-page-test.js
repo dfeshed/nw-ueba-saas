@@ -11,7 +11,7 @@ const requestStub = Service.extend({
 
 moduleFor('service:investigate-page', 'Unit | Service | investigate page', {
   // Specify the other units that are required for this test.
-  needs: ['service:accessControl'],
+  needs: ['service:accessControl', 'service:flashMessages', 'service:i18n'],
   beforeEach() {
     this.register('service:request', requestStub);
   }

@@ -8,6 +8,8 @@ export default Service.extend({
 
   accessControl: service(),
   request: service(),
+  flashMessages: service(),
+  i18n: service(),
 
   hasAdminAccess: alias('accessControl.hasAdminAccess'),
   hasConfigAccess: alias('accessControl.hasConfigAccess'),

@@ -8,6 +8,8 @@ export default Service.extend({
   request: service(),
   accessControl: service(),
   selected: null,
+  flashMessages: service(),
+  i18n: service(),
   hasInvestigateAccess: alias('accessControl.hasInvestigateAccess'),
   options: [
     { key: '/navigate', label: 'navigate', route: '/investigation', isClassic: true },

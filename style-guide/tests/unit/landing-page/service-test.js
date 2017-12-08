@@ -3,7 +3,7 @@ import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:landing-page', 'Unit | Service | landing page', {
   // Specify the other units that are required for this test.
-  needs: ['service:accessControl', 'service:request']
+  needs: ['service:accessControl', 'service:request', 'service:flashMessages', 'service:i18n']
 });
 
 // Replace this with your real tests.
