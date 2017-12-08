@@ -1,11 +1,15 @@
-{{#if isLoading}}
-  <div class="recon-loader">
-    {{rsa-loader size='larger'}}
-  </div>
+{{#if missingPermissions}}
+  {{rsa-panel-message message=(t 'recon.fatalError.permissions')}}
 {{else}}
-  {{#if isContentError}}
-    {{rsa-panel-message message=errorMessage}}
+  {{#if isLoading}}
+    <div class="recon-loader">
+      {{rsa-loader size='larger'}}
+    </div>
   {{else}}
-    {{component currentReconView.component}}
+    {{#if isContentError}}
+      {{rsa-panel-message message=errorMessage}}
+    {{else}}
+      {{component currentReconView.component}}
+    {{/if}}
   {{/if}}
 {{/if}}

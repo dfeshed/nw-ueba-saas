@@ -70,18 +70,9 @@ const ReconContainer = Component.extend({
   @and('isViewReady', 'isAnimationDone')
   isReady: false,
 
-  @computed('i18n', 'apiFatalErrorCode', 'eventId', 'missingPermissions')
-  errorMessage(i18n, code, eventId, missingPermissions) {
-    if (missingPermissions) {
-      return i18n.t('recon.fatalError.permissions');
-    } else {
-      return i18n.t(`recon.fatalError.${code}`, { eventId });
-    }
-  },
-
-  @computed('accessControl.hasReconAccess')
-  missingPermissions(hasReconAccess) {
-    return !hasReconAccess;
+  @computed('i18n', 'apiFatalErrorCode', 'eventId')
+  errorMessage(i18n, code, eventId) {
+    return i18n.t(`recon.fatalError.${code}`, { eventId });
   },
 
   // Temporary observer hacks while only doing redux half-way
