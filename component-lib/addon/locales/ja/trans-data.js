@@ -1649,7 +1649,7 @@ export default {
     title: 'ja_Files',
     deleteTitle: 'ja_Confirm Delete',
     button: {
-      exportToCSV: 'ja_Export To CSV',
+      exportToCSV: 'ja_Export to CSV',
       downloading: 'ja_Downloading',
       save: 'ja_Save',
       reset: 'ja_Reset',
@@ -1960,7 +1960,7 @@ export default {
       button: {
         addMore: 'Add more +',
         loadMore: 'Load More',
-        exportCSV: 'ja_Export CSV',
+        exportCSV: 'ja_Export to CSV',
         export: 'ja_Export to JSON',
         exportTooltip: 'ja_Exports all scan data categories for the host.',
         downloading: 'ja_Downloading',

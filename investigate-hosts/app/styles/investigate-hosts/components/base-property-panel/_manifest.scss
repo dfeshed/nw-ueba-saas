@@ -13,7 +13,7 @@ $panel-width: 200px;
 }
 
 .host-property-panel {
-  @include border-top(1px, solid, secondary);
+  @include border-left(1px, solid, primary, dark);
   overflow: auto;
   padding: 0 rsa-whitespace();
   background: background-color(primary, darkest);;

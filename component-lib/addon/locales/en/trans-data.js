@@ -1650,7 +1650,7 @@ export default {
     title: 'Files',
     deleteTitle: 'Confirm Delete',
     button: {
-      exportToCSV: 'Export To CSV',
+      exportToCSV: 'Export to CSV',
       downloading: 'Downloading',
       save: 'Save',
       reset: 'Reset',
@@ -1959,7 +1959,7 @@ export default {
       button: {
         addMore: 'Add more +',
         loadMore: 'Load More',
-        exportCSV: 'Export CSV',
+        exportCSV: 'Export to CSV',
         export: 'Export to JSON',
         exportTooltip: 'Exports all scan data categories for the host.',
         downloading: 'Downloading',

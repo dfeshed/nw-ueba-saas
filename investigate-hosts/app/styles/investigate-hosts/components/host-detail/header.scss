@@ -74,6 +74,7 @@
 }
 
 .actionbar {
+  @include border-bottom(1px, solid, primary, light);
   padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
   .snapshot-select {
