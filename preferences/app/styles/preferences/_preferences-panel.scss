@@ -10,7 +10,7 @@
   border-bottom: 0.3rem solid border-color(secondary);
   overflow: hidden;
   white-space: nowrap;
-  @include rsa-layer(panels);
+  @include rsa-layer(overlay);
 
   &.is-expanded {
     transition: width .65s;

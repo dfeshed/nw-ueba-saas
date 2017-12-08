@@ -1,4 +1,4 @@
 {{rsa-icon name='settings-1'
   click=(action 'togglePreferencesPanel' additionalFilters preferencesConfig)
-  title=(t (concat 'preferences.' preferencesConfig.modelName '.triggerTip'))
+  title=(t (concat preferencesConfig.fieldPrefix '.triggerTip'))
   active=isExpanded}}
