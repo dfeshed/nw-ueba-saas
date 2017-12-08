@@ -2,7 +2,6 @@ import computed from 'ember-computed-decorators';
 import { assert } from 'ember-metal/utils';
 import config from './overview-property-config';
 import PropertyPanel from 'investigate-hosts/components/host-detail/base-property-panel/component';
-import set from 'ember-metal/set';
 import get from 'ember-metal/get';
 import _ from 'lodash';
 
@@ -19,7 +18,6 @@ export default PropertyPanel.extend({
     assert('Cannot instantiate Summary panel without configuration.', config);
     config = this.updateConfig(data, config);
     if (data) {
-
       const i18n = this.get('i18n');
       // Loop through the list of property and set the value for each field
       const properties = config.map((item) => {
@@ -29,12 +27,13 @@ export default PropertyPanel.extend({
           const label = `${this.get('localeNameSpace')}.${labelKey}`;
           // If field prefix combine that field to get the value
           const value = fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field);
-          set(fieldItem, 'value', value);
-          set(fieldItem, 'displayName', i18n.t(label));
-          return fieldItem;
+          return {
+            ...fieldItem,
+            value,
+            displayName: i18n.t(label).string
+          };
         });
-        set(item, 'fields', fields);
-        return item;
+        return { ...item, fields };
       });
       return properties;
     }
@@ -68,18 +67,15 @@ export default PropertyPanel.extend({
       newConfigList = config.map((item) => {
         const { multiOption, prefix } = item;
         if (multiOption) {
-          const multiOptionConfigList = [];
-          const values = get(data, prefix);
-          if (values) {
-            values.forEach((value, index) => {
-              const newItem = {
-                ...item,
-                fields: item.fields.map((fieldItem) => ({ ...fieldItem, fieldPrefix: `${item.prefix}.${index}` }))
-              };
-              multiOptionConfigList.push(newItem);
-            });
-            return multiOptionConfigList;
-          }
+          const values = get(data, prefix) || [];
+          const multiOptionConfigList = values.map((value, index) => ({
+            ...item,
+            fields: item.fields.map((fieldItem) => ({
+              ...fieldItem,
+              fieldPrefix: `${item.prefix}.${index}`
+            }))
+          }));
+          return multiOptionConfigList;
         } else {
           return item;
         }
