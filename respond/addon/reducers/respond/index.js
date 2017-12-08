@@ -7,6 +7,7 @@ import incident from './incident';
 import incidents from './incidents';
 import users from './users';
 import remediationTasks from './remediation-tasks';
+import storyline from './storyline';
 
 export default combineReducers({
   alertIncidentAssociation,
@@ -16,5 +17,6 @@ export default combineReducers({
   incident,
   incidents,
   remediationTasks,
+  storyline,
   users
 });

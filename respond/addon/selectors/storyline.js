@@ -1,5 +1,3 @@
-import Immutable from 'seamless-immutable';
-import _ from 'lodash';
 import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import arrayFilterByList from 'respond/utils/array/filter-by-list';
@@ -7,6 +5,7 @@ import StoryPoint from 'respond/utils/storypoint/storypoint';
 const { createSelector } = reselect;
 
 const incidentState = (state) => state.respond.incident;
+const storylineState = (state) => state.respond.storyline;
 
 /**
  * Retrieves the respond.incident.info object from state, or an empty object.
@@ -19,13 +18,18 @@ export const incidentInfo = createSelector(
 );
 
 export const getStoryline = createSelector(
-  incidentState,
-  (incidentState) => incidentState.storyline
+  storylineState,
+  (storylineState) => storylineState.storyline
 );
 
 export const getStorylineEvents = createSelector(
-  incidentState,
-  (incidentState) => incidentState.storylineEvents
+  storylineState,
+  (storylineState) => storylineState.storylineEvents
+);
+
+export const getStorylineStatus = createSelector(
+  storylineState,
+  (storylineState) => storylineState.storylineStatus
 );
 
 /**
@@ -35,12 +39,7 @@ export const getStorylineEvents = createSelector(
  */
 export const incidentIndicators = createSelector(
   getStoryline,
-  (storyline) => {
-    storyline = storyline || [];
-    // Stop-gap: the original alerts table cannot be used currently with immutable data structures; until that
-    // is resolved, we need to make the data mutable again.
-    return Immutable.asMutable(storyline, { deep: true });
-  }
+  (storyline) => storyline || []
 );
 
 /**
@@ -50,12 +49,7 @@ export const incidentIndicators = createSelector(
  */
 export const storylineEvents = createSelector(
   getStorylineEvents,
-  (storylineEvents) => {
-    storylineEvents = storylineEvents || [];
-    // Stop-gap: the original alerts table cannot be used currently with immutable data structures; until that
-    // is resolved, we need to make the data mutable again.
-    return Immutable.asMutable(storylineEvents, { deep: true });
-  }
+  (storylineEvents) => storylineEvents || []
 );
 
 /**
@@ -84,41 +78,30 @@ export const storyPoints = createSelector(
  * @type {Object[]}
  * @private
  */
-export const storyPointsIncludingEvents = createSelector(
+export const storyPointsWithEvents = createSelector(
   [ storyPoints, storylineEvents ],
   (storyPoints, storylineEvents) => {
-    return (storyPoints || []).map((storyPoint) => {
-      if (!storyPoint.events) {
-        const payload = (storylineEvents || []).find((point) => {
-          return point.indicatorId === storyPoint.indicator.id;
-        });
-        return _.defaults({
-          events: payload && payload.events || []
-        }, storyPoint);
-      }
-      return storyPoint;
-    });
-  }
-);
+    (storyPoints || []).forEach((storyPoint) => {
 
-export const storyPointsWithEvents = createSelector(
-  storyPointsIncludingEvents,
-  (storyPointsIncludingEvents) => {
-    return storyPointsIncludingEvents.map((storyPoint) => {
+      // If the storyPoint doesn't have events yet, fetch them from storylineEvents state.
+      if (!storyPoint.get('events')) {
+        const payload = (storylineEvents || []).findBy('indicatorId', storyPoint.get('indicator.id'));
+        if (payload) {
+          storyPoint.set('events', payload.events);
+        }
+      }
+
       // If the storyPoint has its events now, close it if it doesn't have any child items.
       // For example, if the events have no enrichments and the child items are supposed to display enrichments,
       // then there are no child items to display, so we should mark it closed. Otherwise, if we leave it opened,
       // the UI will render it as open but not render any child items, which would be an awkward state.
-      if (storyPoint.events.length > 0) {
-        const items = storyPoint && storyPoint.items || [];
-        if (!items.length > 0) {
-          return _.defaults({
-            isOpen: false
-          }, storyPoint);
+      if (storyPoint.get('events')) {
+        if (!storyPoint.get('items.length')) {
+          storyPoint.set('isOpen', false);
         }
       }
-      return storyPoint;
     });
+    return storyPoints;
   }
 );
 
@@ -193,7 +176,6 @@ export const incidentSelection = createSelector(
   incidentState,
   (incidentState) => incidentState.selection
 );
-
 
 /**
  * If the current selections are storyPoints, returns selected storypoint ids; otherwise empty array.

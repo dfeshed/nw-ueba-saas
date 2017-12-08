@@ -3,7 +3,6 @@ import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
-import fixNormalizedEvents from './util/events';
 import { toggle } from 'respond/utils/immut/array';
 import { isEmberArray } from 'ember-array/utils';
 
@@ -18,28 +17,6 @@ let initialState = {
 
   // either 'wait', 'error' or 'completed'
   infoStatus: null,
-
-  // incident storyline information
-  storyline: null,
-
-  // either 'streaming', 'error' or 'completed'
-  storylineStatus: null,
-
-  // function to stop the current `storyline` stream request, if any
-  stopStorylineStream: null,
-
-  // events for the alerts currently in `storyline`
-  storylineEvents: null,
-
-  // buffer for storyline events so that they can accumulate without affecting render performance, and then flush
-  // to the storylineEvents array once the storylineEventsBufferMax has been reached
-  storylineEventsBuffer: [],
-
-  // When the number of events in the buffer exceeds the max, the buffer will be flushed into the storylineEvents array
-  storylineEventsBufferMax: 50,
-
-  // status of the current request for storyline events, if any; either 'streaming', 'paused', 'complete' or 'error'
-  storylineEventsStatus: null,
 
   // either 'overview', 'storyline' or 'events'
   viewMode: 'overview',
@@ -149,102 +126,6 @@ const incident = reduxActions.handleActions({
       failure: (s) => s.set('infoStatus', 'error'),
       success: (s) => s.merge({ info: action.payload.data, infoStatus: 'completed' })
     });
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STARTED]: (state) => {
-    return state.merge({
-      storyline: [],
-      storylineStatus: 'streaming'
-    });
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_STREAM_INITIALIZED]: (state, { payload }) => {
-    return state.set('stopStorylineStream', payload);
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_RETRIEVE_BATCH]: (state, { payload: { data, meta } }) => {
-    // Tag each retrieved indicator with its parent incident id.
-    // This is useful downstream for mapping indicators back to their parent.
-    const storylineId = state.id;
-    data = data || [];
-    data.forEach((indicator) => {
-      indicator.storylineId = storylineId;
-    });
-
-    const storyline = state.storyline || [];
-    return state.merge({
-      storyline: [ ...storyline, ...data ],
-      storylineStatus: meta.complete ? 'completed' : 'streaming'
-    });
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_COMPLETED]: (state) => {
-    return state.set('stopStorylineStream', null);
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_ERROR]: (state) => {
-    return state.merge({
-      storylineStatus: 'error',
-      stopStorylineStream: null
-    });
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_STREAM_INITIALIZED]: (state) => {
-    // Don't reset the array here; that is handled in the INITIALIZE_INCIDENT reducer.
-    // This action may be called when adding indicators to the storyline, in which case
-    // we don't want to lose all the events we already have in the storyline.
-    return state.set('storylineEvents', state.storylineEvents || []);
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_REQUEST_BATCH]: (state) => {
-    return state.set('storylineEventsStatus', 'streaming');
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_RETRIEVE_BATCH]: (state, { payload: { indicatorId, events } }) => {
-    events = events || [];
-    events.forEach((evt, index) => {
-      // Tag each retrieved event with its parent indicator id.
-      // This is useful downstream for mapping events back to their parent.
-      evt.indicatorId = indicatorId;
-
-      // Ensure each event has an id.
-      // This is useful for selecting individual events in the UI.
-      if (!evt.id) {
-        evt.id = `${indicatorId}:${index}`;
-      }
-    });
-
-    // Check for data capture & normalization errors and correct them.
-    fixNormalizedEvents(events);
-
-    let storylineEvents = state.storylineEvents || [];
-    let storylineEventsBuffer = [...state.storylineEventsBuffer, { indicatorId, events }];
-
-    // If we have no events yet, flush the buffer, otherwise
-    // flush the buffer whenever we have received more than the buffer max
-    if (!storylineEvents.length || storylineEventsBuffer.length > state.storylineEventsBufferMax) {
-      storylineEvents = [...storylineEvents, ...storylineEventsBuffer];
-      storylineEventsBuffer = [];
-    }
-
-    return state.merge({
-      storylineEvents,
-      storylineEventsBuffer,
-      storylineEventsStatus: 'paused'
-    });
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_COMPLETED]: (state) => {
-    // When we're done fetching storyline events, make sure we flush the buffer into storylineEvents
-    return state.merge({
-      storylineEvents: [...state.storylineEvents, ...state.storylineEventsBuffer],
-      storylineEventsBuffer: [],
-      storylineEventsStatus: 'completed'
-    });
-  },
-
-  [ACTION_TYPES.FETCH_INCIDENT_STORYLINE_EVENTS_ERROR]: (state) => {
-    return state.set('storylineEventsStatus', 'error');
   },
 
   [ACTION_TYPES.SET_VIEW_MODE]: persistIncidentState((state, { payload }) => {
@@ -468,9 +349,8 @@ const incident = reduxActions.handleActions({
     handle(state, action, {
       start: (s) => s.set('addRelatedIndicatorsStatus', 'wait'),
       success: (s) => {
-        const { payload: { data: addedIndicatorIds, request: { data: { entity: { id } } } } } = action;
+        const { payload: { response: { data: addedIndicatorIds, request: { data: { entity: { id } } } } } } = action;
         const { searchResults } = s;
-        const updatedIndicators = [];
 
         // Update any indicators in searchResults that match the indicators in payload
         const searchResultsUpdated = searchResults.map((indicator) => {
@@ -480,21 +360,12 @@ const incident = reduxActions.handleActions({
               partOfIncident: true,
               incidentId: id
             });
-            // Track all updated indicators so they can be added to the storyline
-            updatedIndicators.push(updatedIndicator);
             return updatedIndicator;
           }
           return indicator;
         });
 
-        // Append updated indicators to storyline
-        const storyline = s.storyline || [];
-        const storylineUpdated = updatedIndicators ?
-          [ ...storyline, ...updatedIndicators ] :
-          s.storyline;
-
         return s.merge({
-          storyline: storylineUpdated,
           searchResults: searchResultsUpdated,
           addRelatedIndicatorsStatus: 'success'
         });

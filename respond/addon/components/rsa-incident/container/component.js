@@ -14,11 +14,13 @@ const stateToComputed = ({
     incidents: {
       isTransactionUnderway
     },
+    storyline: {
+      storylineStatus,
+      storyline
+    },
     incident: {
       id,
       isShowingTasksAndJournal,
-      storylineStatus,
-      storyline,
       hideViz
     }
   }

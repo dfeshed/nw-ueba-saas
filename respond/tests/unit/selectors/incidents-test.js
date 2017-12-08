@@ -5,7 +5,6 @@ import {
   getIncidentId,
   getIncidentInfo,
   getIncidentInfoStatus,
-  getStorylineStatus,
   getViewMode,
   getInspectorWidth
 } from 'respond/selectors/incidents';
@@ -36,7 +35,6 @@ test('Basic incident selectors', function(assert) {
   assert.equal(getIncidentId(state), 'INC-123', 'The returned value from the getIncidentId selector is as expected');
   assert.equal(getIncidentInfo(state), incident.info, 'The returned value from the getIncidentInfo selector is as expected');
   assert.equal(getIncidentInfoStatus(state), 'completed', 'The returned value from the getIncidentInfoStatus selector is as expected');
-  assert.equal(getStorylineStatus(state), 'wait', 'The returned value from the getStorylineStatus selector is as expected');
   assert.equal(getViewMode(state), 'storyline', 'The returned value from the getViewMode selector is as expected');
   assert.equal(getInspectorWidth(state), 400, 'The returned value from the getInspectorWidth selector is as expected');
 });

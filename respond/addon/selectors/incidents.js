@@ -38,11 +38,6 @@ export const getIncidentInfoStatus = createSelector(
   (incidentState) => incidentState.infoStatus
 );
 
-export const getStorylineStatus = createSelector(
-  incidentState,
-  (incidentState) => incidentState.storylineStatus
-);
-
 export const getViewMode = createSelector(
   incidentState,
   (incidentState) => incidentState.viewMode

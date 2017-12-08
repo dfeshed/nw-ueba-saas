@@ -54,8 +54,6 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
     info: {
       name: 'Testing 123'
     },
-    storyline: [{ id: 'x' }],
-    storylineEvents: [{ id: 'y' }],
     viewMode: 'storyline',
     inspectorWidth: 500,
     hideViz: true,
@@ -65,7 +63,6 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
     defaultSearchEntityType: 'DOMAIN',
     addRelatedIndicatorsStatus: 'success',
     infoStatus: 'success',
-    stopStorylineStream: () => {},
     searchEntity: {},
     searchStatus: 'complete',
     searchResults: [{}],
@@ -74,10 +71,6 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
       type: 'storyPoint',
       ids: ['12345']
     },
-    storylineEventsBuffer: [{}],
-    storylineEventsBufferMax: 50,
-    storylineEventsStatus: 'complete',
-    storylineStatus: 'complete',
     tasks: [{}],
     tasksStatus: 'wait'
   };
@@ -85,9 +78,6 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
   const expectedEndState = {
     id: 'INC-321',
     info: null,
-    storyline: null,
-    storylineEvents: null,
-    storylineEventsStatus: null,
     viewMode: 'storyline',
     inspectorWidth: 500,
     hideViz: true,
@@ -97,7 +87,6 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
     defaultSearchEntityType: 'DOMAIN',
     addRelatedIndicatorsStatus: null,
     infoStatus: null,
-    stopStorylineStream: null,
     searchEntity: null,
     searchStatus: null,
     searchResults: null,
@@ -106,9 +95,6 @@ test('With INITIALIZE_INCIDENT, the incident state is updated as expected', func
       type: '',
       ids: []
     },
-    storylineEventsBuffer: [],
-    storylineEventsBufferMax: 50,
-    storylineStatus: null,
     tasks: [],
     tasksStatus: null
   };

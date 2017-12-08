@@ -3,6 +3,7 @@ import * as ACTION_TYPES from '../types';
 import * as DictionaryCreators from './dictionary-creators';
 import { next } from 'ember-runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
+import RSVP from 'rsvp';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -189,7 +190,7 @@ const getStoryline = (incidentId) => {
 
     // If we already have a storyline stream running, stop it. This prevents a previously started stream
     // from continuing to deliver results at the same time as the new stream.
-    const { stopStorylineStream } = getState().respond.incident;
+    const { stopStorylineStream } = getState().respond.storyline;
     if (stopStorylineStream) {
       stopStorylineStream();
     }
@@ -240,7 +241,7 @@ const getStoryline = (incidentId) => {
  */
 const getStorylineEvents = (incidentId) => {
   return (dispatch, getState) => {
-    const { id, storyline, storylineEvents, storylineEventsBuffer, storylineEventsStatus } = getState().respond.incident;
+    const { id, storyline, storylineEvents, storylineEventsBuffer, storylineEventsStatus } = getState().respond.storyline;
 
     // Check that we are not getting called back from an outdated incident.
     if (id !== incidentId) {
@@ -395,18 +396,33 @@ const stopSearchRelatedIndicators = () => {
  * @param callbacks.onFailure {function} - The callback to be executed when the operation fails
  * @public
  */
-const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => ({
-  type: ACTION_TYPES.ADD_RELATED_INDICATORS,
-  promise: Incidents.addAlertsToIncident(indicatorIds, incidentId),
-  meta: {
-    onSuccess: (response) => {
-      callbacks.onSuccess(response);
-    },
-    onFailure: (response) => {
-      callbacks.onFailure(response);
-    }
-  }
-});
+const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => {
+  return (dispatch, getState) => {
+    const { respond: { incident: { searchResults } } } = getState();
+    const addAlertsToIncident = Incidents.addAlertsToIncident(indicatorIds, incidentId);
+    // Wrap the addAlertsToIncident promise with another so that we can pass along the searchResults as part of the promise resolve response
+    // This allows the storyline reducer to have access to the searchResults for adding the corresponding alert(s) to the storyline
+    const promise = new RSVP.Promise(function(resolve, reject) {
+      addAlertsToIncident.then(function(response) {
+        resolve({ response, searchResults });
+      }).catch(function(error) {
+        reject(error);
+      });
+    });
+    return dispatch({
+      type: ACTION_TYPES.ADD_RELATED_INDICATORS,
+      promise,
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+        },
+        onFailure: (response) => {
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
 
 const clearAddRelatedIndicatorsStatus = () => ({ type: ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS });
 

@@ -2,12 +2,11 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import { updateItem, setViewMode, resizeIncidentInspector } from 'respond/actions/creators/incidents-creators';
-import { storyPointCount, storyEventCount } from 'respond/selectors/storyline';
+import { storyPointCount, storyEventCount, getStorylineStatus } from 'respond/selectors/storyline';
 import {
   getIncidentId,
   getIncidentInfo,
   getIncidentInfoStatus,
-  getStorylineStatus,
   getViewMode,
   getInspectorWidth } from 'respond/selectors/incidents';
 import DragBehavior from 'respond/utils/behaviors/drag';

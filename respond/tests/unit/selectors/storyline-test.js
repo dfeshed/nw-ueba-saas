@@ -1,4 +1,3 @@
-import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import { storyPointsWithEvents, storyEventCountExpected, selectedStoryEventCountExpected } from 'respond/selectors/storyline';
 
@@ -9,7 +8,9 @@ test('storyEventCountExpected returns 0 if neither the incident info nor storyli
   const state = {
     respond: {
       incident: {
-        info: null,
+        info: null
+      },
+      storyline: {
         storyline: null
       }
     }
@@ -27,7 +28,9 @@ test('storyEventCountExpected returns the original eventCount when the storyline
       incident: {
         info: {
           eventCount
-        },
+        }
+      },
+      storyline: {
         storyline: null
       }
     }
@@ -41,7 +44,8 @@ test('storyEventCountExpected returns the sum of the indicators numEvents when t
 
   const state = {
     respond: {
-      incident: {
+      incident: {},
+      storyline: {
         storyline: [
           {
             alert: { numEvents: 10 }
@@ -65,7 +69,9 @@ test('storyEventCountExpected returns the max result when two counts are availab
       incident: {
         info: {
           eventCount: 10
-        },
+        }
+      },
+      storyline: {
         storyline: [
           {
             alert: { numEvents: 10 }
@@ -89,7 +95,9 @@ test('selectedStoryEventCountExpected returns the selection size when events are
         selection: {
           type: 'event',
           ids: [ 'event1', 'event2' ]
-        },
+        }
+      },
+      storyline: {
         storyline: [
           {
             alert: { numEvents: 10 }
@@ -113,7 +121,9 @@ test('selectedStoryEventCountExpected returns the sum of alert.numEvents when st
         selection: {
           type: 'storyPoint',
           ids: [ 'alert2', 'alert3' ]
-        },
+        }
+      },
+      storyline: {
         storyline: [
           {
             id: 'alert1',
@@ -143,7 +153,9 @@ test('selectedStoryEventCountExpected returns the sum of all alert.numEvents whe
         selection: {
           type: 'storyPoint',
           ids: []
-        },
+        }
+      },
+      storyline: {
         storyline: [
           {
             id: 'alert1',
@@ -173,7 +185,9 @@ test('storyPointsWithEvents returns sum of storyline and events including isOpen
         selection: {
           type: 'storyPoint',
           ids: []
-        },
+        }
+      },
+      storyline: {
         storyline: [
           {
             id: 'alert1',
@@ -214,14 +228,8 @@ test('storyPointsWithEvents returns sum of storyline and events including isOpen
     }
   };
 
-  const result = storyPointsWithEvents(Immutable.from(state));
-  // Ensure that the returned data structures are not immutable, as this will currently break downstream components.
-  assert.equal(Immutable.isImmutable(result), false, 'The result of the selector is not immutable');
-  assert.equal(Immutable.isImmutable(result[1].events), false, 'The nested events array is not immutable');
-  // Because we have called asMutable() on the storyline and storyline events in the selector, the
-  // resulting array from storyPointsWithEvents() cannot be compared using assert.deepEqual, since
-  // prototype functions/properties were made own properties via the asMutable() func call. Instead
-  // doing a targeted deep equal on specific properties of the array objects.
+  const result = storyPointsWithEvents(state);
+
   assert.deepEqual(result[0].events, [
     {
       description: 'IPIOC',
@@ -249,8 +257,7 @@ test('storyPointsWithEvents returns sum of storyline and events including isOpen
     },
     id: 'alert2'
   });
-  assert.ok(result[1].isOpen);
-  assert.deepEqual(result[2].events, []);
+  assert.equal(result[1].isOpen, false);
   assert.deepEqual(result[2].indicator, {
     alert: {
       numEvents: 30
