@@ -42,7 +42,7 @@ test('it provides option to select column groups', function(assert) {
   clickTrigger();
   return waitFor('.ember-power-select-options').then(() => {
     const $options = $('.ember-power-select-option');
-    assert.equal($options.text().trim().replace(/\s+/g, ''), 'SummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysis');
+    assert.equal($options.text().trim().replace(/\s+/g, ''), 'SummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
   });
 });
 
@@ -50,7 +50,7 @@ test('it should show columns for Event Analysis', function(assert) {
   clickTrigger();
   selectChoose('.ember-power-select-trigger', 'Email Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 44, 'Should show columns for event analysis.');
+    assert.equal(this.$('.rsa-data-table-header-cell').length, 41, 'Should show columns for event analysis.');
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Email Analysis', 'Default Column group is Summary List.');
   });
 });
@@ -59,7 +59,7 @@ test('it should show columns for Malware Analysis', function(assert) {
   clickTrigger();
   selectChoose('.ember-power-select-trigger', 'Malware Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 29, 'Should show columns for malware analysis.');
+    assert.equal(this.$('.rsa-data-table-header-cell').length, 27, 'Should show columns for malware analysis.');
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Default Column group is Summary List.');
   });
 });
@@ -68,7 +68,7 @@ test('it should show columns for Threat Analysis', function(assert) {
   clickTrigger();
   selectChoose('.ember-power-select-trigger', 'Threat Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 59, 'Should show columns for threat analysis.');
+    assert.equal(this.$('.rsa-data-table-header-cell').length, 57, 'Should show columns for threat analysis.');
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Threat Analysis', 'Default Column group is Summary List.');
   });
 });
@@ -77,8 +77,17 @@ test('it should show columns for Web Analysis', function(assert) {
   clickTrigger();
   selectChoose('.ember-power-select-trigger', 'Web Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 55, 'Should show columns for Web analysis.');
+    assert.equal(this.$('.rsa-data-table-header-cell').length, 53, 'Should show columns for Web analysis.');
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Web Analysis', 'Default Column group is Summary List.');
+  });
+});
+
+test('it should show columns for Endpoint Analysis', function(assert) {
+  clickTrigger();
+  selectChoose('.ember-power-select-trigger', 'Endpoint Analysis');
+  return waitFor('.ember-power-select-selected-item').then(() => {
+    assert.equal(this.$('.rsa-data-table-header-cell').length, 32, 'Should show columns for Endpoint analysis.');
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Endpoint Analysis', 'Default Column group is Summary List.');
   });
 });
 

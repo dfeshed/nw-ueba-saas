@@ -6,6 +6,8 @@ const GROUPS = [
   {
     name: 'Summary List',
     columns: BASE_COLUMNS.concat([
+      { field: 'custom.theme', title: 'Theme' },
+      { field: 'size', title: 'Size' },
       { field: 'custom.meta-summary', title: 'Summary', width: 'auto' }
     ])
   }, {
