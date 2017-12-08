@@ -64,6 +64,14 @@ export const getFields = createSelector(
   (ruleState) => ruleState.fields
 );
 
+// The field Domain for Suspected C&C is the same as Domain from a condition's perspective
+// Removing the Domain for Suspected C&C from the available fields for conditions, since it cannot
+// be distinguished from "Domain" which has the same value.
+export const getConditionFields = createSelector(
+  getFields,
+  (fields) => fields.filter((field) => field.groupByField !== 'alert.groupby_c2domain')
+);
+
 export const getRuleGroupBy = createSelector(
   getRuleInfo,
   (ruleInfo) => {

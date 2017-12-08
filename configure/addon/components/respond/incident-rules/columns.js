@@ -25,7 +25,7 @@ export default [
   {
     field: 'name',
     title: 'configure.incidentRules.name',
-    width: '22%',
+    width: '20%',
     dataType: 'text'
   },
   {

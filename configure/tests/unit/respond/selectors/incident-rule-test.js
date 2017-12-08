@@ -7,6 +7,7 @@ import {
   getRootConditionGroup,
   getFieldsStatus,
   getFields,
+  getConditionFields,
   isLoading,
   hasAdvancedQuery,
   getRuleGroupBy,
@@ -115,6 +116,11 @@ test('Basic Incident Rules selectors', function(assert) {
   assert.equal(getIncidentScoringOptions(state), ruleInfo.incidentScoringOptions, 'The returned value from getIncidentScoringOptions selector is as expected');
   assert.equal(isTransactionUnderway(state), true, 'The returned value from isTransactionUnderway selector is as expected');
   assert.equal(getVisited(state), state.visited, 'The returned value from getVisited selector is as expected');
+
+  const conditionFields = getConditionFields(state);
+  const standardFields = getFields(state);
+  assert.equal(conditionFields.length, standardFields.length - 1, 'Condition fields has one less field than that produced by the standard fields');
+  assert.equal(conditionFields.findBy('groupByField', 'alert.groupby_c2domain'), undefined, 'The Domain for Suspected C&C is not in the condition fields, since it duplicates domain');
 });
 
 test('Time Window Selectors', function(assert) {

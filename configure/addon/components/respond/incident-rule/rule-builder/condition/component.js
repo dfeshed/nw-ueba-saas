@@ -3,13 +3,13 @@ import computed, { alias } from 'ember-computed-decorators';
 import operators from 'configure/utils/rules/operators';
 import { connect } from 'ember-redux';
 import { updateCondition, removeCondition } from 'configure/actions/creators/respond/incident-rule-creators';
-import { getFields } from 'configure/reducers/respond/incident-rules/rule/selectors';
+import { getConditionFields } from 'configure/reducers/respond/incident-rules/rule/selectors';
 
 const { text, number, date, category } = operators;
 
 const stateToComputed = (state) => {
   return {
-    fields: getFields(state)
+    fields: getConditionFields(state)
   };
 };
 
