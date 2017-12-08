@@ -195,6 +195,18 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     this.$('input').prop('type', 'text').prop('spellcheck', false);
   },
 
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    const { meta, operator, value } = this;
+    // checking for null as this hook is called with null values multiple times.
+    if (meta != null && operator != null && value != null) {
+      // api needs a string instead of object
+      const filterText = `${meta} ${operator} ${value}`;
+      this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
+    }
+  },
+
   _validateComplete(isValid, apiMetaMessage) {
     if (!isValid) {
       this.set('queryFragmentInvalid', true);
@@ -362,6 +374,8 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
                 this.set('editActive', false);
 
                 // set query validation properties to default if editing
+                // this is required apart from the other api call made in didInsertAttrs
+                // as user can edit a invalid pill
                 this.set('queryFragmentInvalid', false);
                 this.set('apiMetaMessage', null);
                 this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
