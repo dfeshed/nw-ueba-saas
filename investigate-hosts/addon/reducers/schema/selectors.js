@@ -6,8 +6,8 @@ import CONFIG from './config';
 const COLUMN_WIDTH = {
   'machine.machineName': 180,
   'agentStatus.scanStatus': 130,
-  'machine.scanStartTime': 130,
-  'agentStatus.lastSeenTime': 130,
+  'machine.scanStartTime': 150,
+  'agentStatus.lastSeenTime': 150,
   'analysisData.machineRiskScore': 100,
   'machine.machineOsType': 120,
   'machine.networkInterfaces.ipv4': 130,

@@ -10,7 +10,7 @@ export function getField(params) {
 
 
   let result;
-  const [object, column, timezone, dateFormat, timeFormat ] = params;
+  const [object, column, timezone, dateFormat, timeFormat, localeLanguage ] = params;
   const { dataType, displayFormat } = column;
   const keys = column.get('field').split('.');
 
@@ -19,6 +19,7 @@ export function getField(params) {
     if (value instanceof Array) {
       val = value;
     } else if (dataType === 'DATE') {
+      moment.locale(localeLanguage ? localeLanguage : 'en'); // Setting the language to the value of i18n.locale, if sent, or 'en'
       const date = moment(value);
       const selectedZoneId = timezone._selected.zoneId;
       const dateForm = date.tz(selectedZoneId).format(dateFormat._selected.format);

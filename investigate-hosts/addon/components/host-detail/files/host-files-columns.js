@@ -34,7 +34,7 @@ let columnsConfig = {
       'field': 'timeCreated',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
-      'width': 115
+      'width': 150
     }
   ],
   mac: [
@@ -50,7 +50,7 @@ let columnsConfig = {
       'field': 'timeCreated',
       'label': 'investigateHosts.files.fields.timeCreated',
       'format': 'DATE',
-      'width': 115
+      'width': 150
     }
   ]
 };

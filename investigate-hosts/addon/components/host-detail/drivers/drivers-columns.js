@@ -30,7 +30,7 @@ const machineOsBasedConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      width: '10%',
+      width: '20%',
       format: 'DATE'
     }
   ],
@@ -38,7 +38,7 @@ const machineOsBasedConfig = {
     {
       field: 'timeCreated',
       title: 'FILE CREATION TIME',
-      width: '10%',
+      width: '20%',
       format: 'DATE'
     }
   ],

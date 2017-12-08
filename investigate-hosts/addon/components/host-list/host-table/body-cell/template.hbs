@@ -10,7 +10,7 @@
   </span>
   
 {{else if (eq column.field 'agentStatus.lastSeenTime')}}
-  <span title="{{get-field item column timezone dateFormat timeFormat}}">
+  <span title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
     {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
   </span>
 {{else if (eq column.field 'agentStatus.scanStatus')}}
@@ -22,5 +22,5 @@
     {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
   </div>
 {{else}}
-  <span title="{{get-field item column timezone dateFormat timeFormat}}"> {{get-field item column timezone dateFormat timeFormat}}</span>
+  <span title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}"> {{get-field item column timezone dateFormat timeFormat i18n.locale}}</span>
 {{/if}}

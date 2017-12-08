@@ -11,7 +11,7 @@ let columnsConfig = {
     {
       field: 'path',
       title: 'Path',
-      width: '20%',
+      width: '80%',
       disableSort: true
     }
   ],
@@ -19,7 +19,7 @@ let columnsConfig = {
     {
       field: 'registryPath',
       title: 'REGISTRY PATH',
-      width: '20%',
+      width: '80%',
       disableSort: true
     }
   ],
@@ -27,7 +27,7 @@ let columnsConfig = {
     {
       field: 'path',
       title: 'Path',
-      width: '20%',
+      width: '80%',
       disableSort: true
     }
   ]
