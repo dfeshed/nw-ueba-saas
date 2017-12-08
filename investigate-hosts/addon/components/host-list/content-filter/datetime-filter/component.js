@@ -5,6 +5,7 @@ import service from 'ember-service/inject';
 import FilterMixin from 'investigate-hosts/mixins/content-filter-mixins';
 import set from 'ember-metal/set';
 import { prepareExpressionProperty } from './utils';
+import _ from 'lodash';
 
 import {
   updateFilter
@@ -86,12 +87,13 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   /**
    * Toggle date range filter based on config flag
    * @param showDateRange
+   * @param restrictionTypes
    * @returns {Array}
    * @public
    */
-  @computed('config.showDateRange')
-  restrictionList(showDateRange) {
-    const types = RESTRICTION_TYPES;
+  @computed('config.showDateRange', 'restrictionTypes')
+  restrictionList(showDateRange, restrictionTypes) {
+    const types = _.clone(restrictionTypes);
     if (!showDateRange) {
       types.splice(2, 1);
     }

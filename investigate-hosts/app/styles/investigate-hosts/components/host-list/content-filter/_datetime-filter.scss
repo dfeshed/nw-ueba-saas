@@ -1,5 +1,8 @@
 .datetime-filter {
 
+  .ember-power-select-options {
+    width: 107px;
+  }
     .remove-filter-icon .rsa-icon-remove-circle-2 {
         width: 2rem;
         position: relative;
@@ -18,7 +21,7 @@
           min-width: 31rem;
           padding-bottom: 1rem;
           &__input {
-            margin-left: 24px;
+            margin-left: 43px;
             padding-top: 1.3rem;
             float: left;
             min-width: 154px;
@@ -28,9 +31,13 @@
               margin-top: -10px;
               margin-right: -5px;
             }
+            .rsa-form-input {
+              width: 193px;
+            }
           }
           .filter-operator-select {
-            width: 73px;
+            width: 100px;
+            padding-right: 13px;
           }
           .filter-operator-dropdown {
             width: 100px;
