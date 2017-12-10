@@ -10,6 +10,7 @@ import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,10 +92,9 @@ public class SmartScoringService {
 	}
 
 	private static Map<String, List<FeatureScore>> extractAdditionalInfo(FeatureScore smartValue) {
-		List<FeatureScore> featureScores = smartValue.getFeatureScores();
-		Map<String, List<FeatureScore>> additionalInfo = featureScores.stream()
+		Map<String, List<FeatureScore>> additionalInfo = smartValue.getFeatureScores().stream()
 				.collect(Collectors.toMap(FeatureScore::getName, FeatureScore::getFeatureScores));
-		featureScores.clear();
+		smartValue.setFeatureScores(Collections.emptyList());
 		return additionalInfo;
 	}
 
@@ -110,6 +110,10 @@ public class SmartScoringService {
 	}
 
 	private static Map<String, Double> toMap(List<FeatureScore> list) {
-		return list.stream().collect(Collectors.toMap(FeatureScore::getName, FeatureScore::getScore));
+		if (list == null) {
+			return Collections.emptyMap();
+		} else {
+			return list.stream().collect(Collectors.toMap(FeatureScore::getName, FeatureScore::getScore));
+		}
 	}
 }
