@@ -161,15 +161,29 @@ public class RestUserServiceImpl implements RestUserService {
 
     @Override
     public UsersWrapper updateUsers(UserQuery userQuery, JsonPatch jsonPatch) {
+        // Getting the relevant users
         Page<presidio.output.domain.records.users.User> users = userPersistencyService.find(convertUserQuery(userQuery));
-
         List<presidio.output.domain.records.users.User> updatedUsers = new ArrayList<>();
+
+        // apply the update
+        updateUsers(jsonPatch, users, updatedUsers);
+
+        // Get the remaining users
+        while (users.hasNext()) {
+            userQuery.setPageSize(users.nextPageable().getPageSize());
+            userQuery.setPageNumber(users.nextPageable().getPageNumber());
+            users = userPersistencyService.find(convertUserQuery(userQuery));
+            updateUsers(jsonPatch, users, updatedUsers);
+        }
+
+        userPersistencyService.save(updatedUsers);
+        return createUsersWrapper(updatedUsers, Long.valueOf(users.getTotalElements()).intValue(), null, null);
+    }
+
+    private void updateUsers(JsonPatch jsonPatch, Page<presidio.output.domain.records.users.User> users, List<presidio.output.domain.records.users.User> updatedUsers) {
         users.getContent().forEach(user -> {
             updatedUsers.add(patchUser(jsonPatch, user));
         });
-
-        userPersistencyService.save(updatedUsers);
-        return createUsersWrapper(updatedUsers, users.getNumberOfElements(), users.getNumber(), null);
     }
 
     private presidio.output.domain.records.users.UserQuery convertUserQuery(UserQuery userQuery) {
