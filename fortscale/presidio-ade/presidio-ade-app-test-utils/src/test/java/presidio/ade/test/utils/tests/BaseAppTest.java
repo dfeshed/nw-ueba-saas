@@ -1,5 +1,6 @@
 package presidio.ade.test.utils.tests;
 
+import fortscale.utils.logging.Logger;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.test.category.ModuleTestCategory;
@@ -24,6 +25,7 @@ public abstract class BaseAppTest {
     protected BootShim bootShim;
     @Autowired
     protected MongoTemplate mongoTemplate;
+    private static final Logger logger = Logger.getLogger(BaseAppTest.class);
 
     /**
      * test spring context loading and "empty" shell-execution
@@ -36,7 +38,13 @@ public abstract class BaseAppTest {
     protected void executeAndAssertCommandSuccess(String command)
     {
         CommandResult commandResult = bootShim.getShell().executeCommand(command);
-        Assert.assertTrue(commandResult.isSuccess());
+
+        boolean commandResultSuccess = commandResult.isSuccess();
+        if(!commandResultSuccess)
+        {
+            logger.error("got exception while executing command",commandResult.getException());
+        }
+        Assert.assertTrue(commandResultSuccess);
     }
 
     protected abstract String getContextTestExecutionCommand();

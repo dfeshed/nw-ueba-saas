@@ -19,7 +19,11 @@ def get_presidio_core_sub_dag_operator(dag, data_sources):
     return SubDagOperator(
         subdag=PresidioCoreDagBuilder(data_sources).build(presidio_core_dag),
         task_id=presidio_core_dag_id,
-        dag=dag
+        dag=dag,
+        retries=4,
+        retry_delay=timedelta(seconds=5),
+        retry_exponential_backoff=True,
+        max_retry_delay=timedelta(minutes=10)
     )
 
 default_args = {
