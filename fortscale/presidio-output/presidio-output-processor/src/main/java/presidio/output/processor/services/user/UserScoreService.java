@@ -16,7 +16,7 @@ public interface UserScoreService {
     Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays);
 
     /**
-     * Increasing the user score, depended on the alert getSeverity. Update the user and persist
+     * Increasing the user score, depended on the alert severity. Update the user and persist
      *
      * @param alertSeverity
      */

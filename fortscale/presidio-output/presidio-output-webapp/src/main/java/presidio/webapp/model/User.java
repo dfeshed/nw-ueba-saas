@@ -283,7 +283,7 @@ public class User {
         sb.append(", userDisplayName='").append(userDisplayName).append('\'');
         sb.append(", tags=").append(tags);
         sb.append(", score=").append(score);
-        sb.append(", getSeverity=").append(severity);
+        sb.append(", severity=").append(severity);
         sb.append(", alertsCount=").append(alertsCount);
         sb.append(", alerts=").append(alerts);
         sb.append(", alertClassifications=").append(alertClassifications);

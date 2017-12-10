@@ -90,7 +90,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             usersPage = getNextUserPage(userQueryBuilder, usersPage);
         }
 
-        log.info("Reseting " + clearedUsersList.size() + " users scores and getSeverity");
+        log.info("Reseting " + clearedUsersList.size() + " users scores and severity");
         userPersistencyService.save(clearedUsersList);
     }
 

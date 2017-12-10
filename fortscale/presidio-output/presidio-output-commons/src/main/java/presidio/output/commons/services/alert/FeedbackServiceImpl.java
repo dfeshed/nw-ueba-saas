@@ -65,7 +65,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Iterable<presidio.output.domain.records.alerts.Alert> alerts = alertPersistencyService.findAll(alertIds);
 
 
-        Set<User> usersToBeUpdated = new HashSet<>();
+        Map<String, User> usersToBeUpdated = new HashMap<>();
         alerts.forEach(alert->{
             AlertEnums.AlertFeedback origianlFeedback = alert.getFeedback();
             //1. update alert feedback with the new given feedback
@@ -80,20 +80,37 @@ public class FeedbackServiceImpl implements FeedbackService {
                 alert.setContributionToUserScore(origContribution + contributionDelta);
 
                 //3. increase\decrease user score with the updated alert contribution
-                presidio.output.domain.records.users.User user = userPersistencyService.findUserById(alert.getUserId());
-                user.setScore(user.getScore() + contributionDelta);
+                User updatedUser = updateUserScore(alert.getUserId(), usersToBeUpdated, contributionDelta);
+                usersToBeUpdated.put(updatedUser.getId(), updatedUser);
 
-                //4. update user severity according to new score (based on already calculated severities percentiles)
-                UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
-                user.setSeverity(newSeverity);
-                usersToBeUpdated.add(user);
             }
         });
 
-        alertPersistencyService.save((List<Alert>)alerts);
-        if(! usersToBeUpdated.isEmpty()) {
-            userPersistencyService.save(new ArrayList<>(usersToBeUpdated));
+        //4. update user severity according to new score (based on already calculated severities percentiles)
+        for (User user: usersToBeUpdated.values()) {
+            UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
+            user.setSeverity(newSeverity);
         }
+
+        List<Alert> alertsList = (List<Alert>) alerts;
+        if(! alertsList.isEmpty()) {
+            alertPersistencyService.save(alertsList);
+        }
+        if(! usersToBeUpdated.isEmpty()) {
+            userPersistencyService.save(new ArrayList<>(usersToBeUpdated.values()));
+        }
+    }
+
+    private User updateUserScore(String userId, Map<String, User> usersCache, Double scoreDelta) {
+        User user;
+        if(usersCache.containsKey(userId)) {
+            user = usersCache.get(userId);
+        }
+        else {
+            user = userPersistencyService.findUserById(userId);
+        }
+        user.setScore(user.getScore() + scoreDelta);
+        return user;
     }
 
     private Double calcContributionToUserScoreDelta(Alert alert,

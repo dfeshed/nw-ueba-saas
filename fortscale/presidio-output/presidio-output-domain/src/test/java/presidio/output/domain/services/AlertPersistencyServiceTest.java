@@ -813,34 +813,4 @@ public class AlertPersistencyServiceTest {
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstUserName, iterator.next().getUserName());
     }
-
-    @Test
-    public void testUpdateFeedback() {
-        Alert alert1 = new Alert("userId1", "smartId", null, "username", new Date(), new Date(), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        Alert alertCreated = alertPersistencyService.save(alert1);
-
-        assertEquals(AlertFeedback.NONE, alert1.getFeedback());
-        alertPersistencyService.updateAlertFeedback(alertCreated.getId(), AlertFeedback.NOT_RISK);
-
-        Alert updatedAlert = alertPersistencyService.findOne(alertCreated.getId());
-        assertEquals(AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
-    }
-
-    @Test
-    public void testUpdateFeedbackAlertIdNull() {
-        try {
-            alertPersistencyService.updateAlertFeedback(null, AlertFeedback.NOT_RISK);
-        } catch (Exception e) {
-            Assert.fail("exception was thrown while trying to update alert with id null");
-        }
-    }
-
-    @Test
-    public void testUpdateFeedbackWithNullFeedbackValue() {
-        try {
-            alertPersistencyService.updateAlertFeedback("alertId", null);
-        } catch (Exception e) {
-            Assert.fail("exception was thrown while trying to update alert with id null");
-        }
-    }
 }

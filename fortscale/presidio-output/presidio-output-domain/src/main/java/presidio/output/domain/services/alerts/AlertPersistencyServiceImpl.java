@@ -144,26 +144,4 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     public Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest) {
         return indicatorEventRepository.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
     }
-
-    @Override
-    public void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback) {
-        if(alertId == null || feedback == null) {
-            logger.error("Failed to update alert- alert id or feedback cannot be null");
-            return;
-        }
-
-
-        //building update request-
-        IndexRequest indexRequest = new IndexRequest();
-        indexRequest.source(Alert.FEEDBACK, feedback);
-        UpdateQuery updateQuery = new UpdateQueryBuilder()
-                .withId(alertId)
-                .withClass(Alert.class)
-                .withIndexRequest(indexRequest)
-                .build();
-
-        UpdateResponse updateResponse = elasticsearchTemplate.update(updateQuery);
-    }
-
-
 }
