@@ -31,6 +31,7 @@ public class MetricGeneratorService {
 
     private Map<MetricEnums.MetricValues, Number> valuesMapGenerator(List<Number> values) {
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+
         Iterator itr = MetricEnums.MetricValues.collectionOfMetricValues().iterator();
         int number = new Random().nextInt(values.size());
         if (number == 0) {
