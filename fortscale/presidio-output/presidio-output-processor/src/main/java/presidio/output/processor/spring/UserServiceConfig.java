@@ -5,12 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
 import presidio.output.commons.services.alert.AlertSeverityService;
+import presidio.output.commons.services.spring.UserSeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
@@ -20,6 +19,7 @@ import presidio.output.processor.services.user.UserServiceImpl;
  * Created by efratn on 22/08/2017.
  */
 @Configuration
+@Import(UserSeverityServiceConfig.class)
 public class UserServiceConfig {
 
     @Value("${user.severities.batch.size:2000}")

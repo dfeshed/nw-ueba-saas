@@ -2,7 +2,6 @@ package presidio.output.domain.services.alerts;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.*;
 
 import java.util.Collection;
@@ -19,6 +18,8 @@ public interface AlertPersistencyService {
     Alert findOne(String id);
 
     Iterable<Alert> findAll();
+
+    Iterable<Alert> findAll(List<String> ids);
 
     Page<Alert> findByUserName(String userName, PageRequest pageRequest);
 
@@ -39,7 +40,5 @@ public interface AlertPersistencyService {
     Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, PageRequest pageRequest);
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
-
-    void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback);
 
 }

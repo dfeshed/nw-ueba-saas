@@ -16,7 +16,7 @@ public abstract class AbstractElasticDocument {
 
     @Id
     @Field(type = FieldType.String, store = true)
-    private String id;
+    protected String id;
 
     @Field(type = FieldType.Date, store = true)
     private Date createdDate;
@@ -79,5 +79,20 @@ public abstract class AbstractElasticDocument {
         String updatedBy = Thread.currentThread().getName();
         setUpdatedDate(date);
         setUpdatedBy(updatedBy);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractElasticDocument that = (AbstractElasticDocument) o;
+
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

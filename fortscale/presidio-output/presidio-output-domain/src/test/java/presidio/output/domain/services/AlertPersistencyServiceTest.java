@@ -19,10 +19,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.AlertEnums.*;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums.*;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.TestConfig;
@@ -75,7 +74,7 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         Alert alert =
-                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
         Alert testAlert = alertPersistencyService.save(alert);
         assertNotNull(testAlert.getId());
         assertEquals(testAlert.getId(), alert.getId());
@@ -89,9 +88,9 @@ public class AlertPersistencyServiceTest {
         Date endDate = new Date();
         List<Alert> alertList = new ArrayList<>();
         alertList.add(
-                new Alert("userId1", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D));
+                new Alert("userId1", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D));
         alertList.add(
-                new Alert("userId2", "smartId", classifications3, "user2", startDate, endDate, 10.0d, 7, AlertEnums.AlertTimeframe.DAILY, AlertEnums.AlertSeverity.CRITICAL, null, 5D));
+                new Alert("userId2", "smartId", classifications3, "user2", startDate, endDate, 10.0d, 7, AlertTimeframe.DAILY, AlertSeverity.CRITICAL, null, 5D));
         Iterable<Alert> testAlert = alertPersistencyService.save(alertList);
 
         assertThat(Lists.newArrayList(testAlert).size(), is(2));
@@ -485,17 +484,17 @@ public class AlertPersistencyServiceTest {
         Date startDate = new Date();
         Date endDate = new Date();
         Alert alert1 = new Alert("userId1", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        alert1.setFeedback(AlertEnums.AlertFeedback.RISK);
+        alert1.setFeedback(AlertFeedback.RISK);
         Alert alert2 = new Alert("userId2", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        alert2.setFeedback(AlertEnums.AlertFeedback.RISK);
+        alert2.setFeedback(AlertFeedback.RISK);
         Alert alert3 = new Alert("userId3", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        alert3.setFeedback(AlertEnums.AlertFeedback.RISK);
+        alert3.setFeedback(AlertFeedback.RISK);
         Alert alert4 = new Alert("userId4", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        alert4.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        alert4.setFeedback(AlertFeedback.NOT_RISK);
         Alert alert5 = new Alert("userId5", "smartId", classifications1, "normalized_username_ipusr4@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        alert5.setFeedback(AlertEnums.AlertFeedback.NOT_RISK);
+        alert5.setFeedback(AlertFeedback.NOT_RISK);
         Alert alert6 = new Alert("userId6", "smartId", classifications1, "normalized_username_ipusr3@somebigcompany.com", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.MEDIUM, null, 5D);
-        alert6.setFeedback(AlertEnums.AlertFeedback.NONE);
+        alert6.setFeedback(AlertFeedback.NONE);
         alertPersistencyService.save(Arrays.asList(alert1, alert2, alert3, alert4, alert5, alert6));
 
         AlertQuery alertQuery =
@@ -813,35 +812,5 @@ public class AlertPersistencyServiceTest {
         Assert.assertEquals(1, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstUserName, iterator.next().getUserName());
-    }
-
-    @Test
-    public void testUpdateFeedback() {
-        Alert alert1 = new Alert("userId1", "smartId", null, "username", new Date(), new Date(), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        Alert alertCreated = alertPersistencyService.save(alert1);
-
-        assertEquals(AlertEnums.AlertFeedback.NONE, alert1.getFeedback());
-        alertPersistencyService.updateAlertFeedback(alertCreated.getId(), AlertEnums.AlertFeedback.NOT_RISK);
-
-        Alert updatedAlert = alertPersistencyService.findOne(alertCreated.getId());
-        assertEquals(AlertEnums.AlertFeedback.NOT_RISK, updatedAlert.getFeedback());
-    }
-
-    @Test
-    public void testUpdateFeedbackAlertIdNull() {
-        try {
-            alertPersistencyService.updateAlertFeedback(null, AlertEnums.AlertFeedback.NOT_RISK);
-        } catch (Exception e) {
-            Assert.fail("exception was thrown while trying to update alert with id null");
-        }
-    }
-
-    @Test
-    public void testUpdateFeedbackWithNullFeedbackValue() {
-        try {
-            alertPersistencyService.updateAlertFeedback("alertId", null);
-        } catch (Exception e) {
-            Assert.fail("exception was thrown while trying to update alert with id null");
-        }
     }
 }

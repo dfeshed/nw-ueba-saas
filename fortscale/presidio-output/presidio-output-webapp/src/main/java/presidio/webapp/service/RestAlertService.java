@@ -25,5 +25,5 @@ public interface RestAlertService {
 
     EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, presidio.webapp.model.EventQuery eventQuery);
 
-    void updateAlertFeedback(String alertId, AlertQueryEnums.AlertFeedback feedback);
+    void updateAlertFeedback(List<String> alertIds, AlertQueryEnums.AlertFeedback feedback);
 }
