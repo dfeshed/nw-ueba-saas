@@ -4,14 +4,15 @@ import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.commons.services.user.UserSeverityServiceImpl;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
@@ -58,24 +59,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         user.setScore(userScore);
     }
 
-    @Override
-    public void updateSeverities() {
-        final double[] scores = getScoresArray();
-        final AlertEnumsSeverityService.UserScoreToSeverity severitiesMap = alertSeverityService.getSeveritiesMap(scores);
-        UserQuery.UserQueryBuilder userQueryBuilder =
-                new UserQuery.UserQueryBuilder()
-                        .pageNumber(0)
-                        .pageSize(defaultUsersBatchSize)
-                        .sort(new Sort(new Sort.Order(Sort.Direction.ASC, User.SCORE_FIELD_NAME)));
-        Page<User> page = userPersistencyService.find(userQueryBuilder.build());
 
-        while (page != null && page.hasContent()) {
-            log.info("Updating severity for page: " + page.toString());
-            updateSeveritiesForUsersList(severitiesMap, page.getContent(), true);
-            page = getNextUserPage(userQueryBuilder, page);
-
-        }
-    }
 
     /**
      * Iterate all users which have score more then 0, and reset the score to 0.
@@ -175,33 +159,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         return dates;
     }
 
-    public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
-        final double[] scores = getScoresArray();
-        final AlertEnumsSeverityService.UserScoreToSeverity severitiesMap = alertSeverityService.getSeveritiesMap(scores);
-        updateSeveritiesForUsersList(severitiesMap, users, persistChanges);
 
-    }
 
-    private void updateSeveritiesForUsersList(AlertEnumsSeverityService.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
-        List<User> updatedUsers = new ArrayList<>();
-        if (users == null) {
-            return;
-        }
-        users.forEach(user -> {
-            double userScore = user.getScore();
-            UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
 
-            log.debug("Updating user severity for userId: " + user.getUserId());
-            if (!newUserSeverity.equals(user.getSeverity())) {
-                user.setSeverity(newUserSeverity);
-                updatedUsers.add(user); //Update user only if severity changes
-            }
-        });
-
-        if (updatedUsers.size() > 0 && persistChanges) {
-            userPersistencyService.save(updatedUsers);
-        }
-    }
 
     /**
      * Return the next user page or null if no next
@@ -241,30 +201,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         return page;
     }
 
-    /**
-     * This function load all users' score and store it in a double array
-     * Only for user scores above 0
-     */
-    private double[] getScoresArray() {
 
-
-        Sort sort = new Sort(Sort.Direction.ASC, User.SCORE_FIELD_NAME);
-        UserQuery.UserQueryBuilder userQueryBuilder = new UserQuery.UserQueryBuilder().minScore(1).pageNumber(0).pageSize(this.defaultUsersBatchSize).sort(sort);
-        Page<User> page = userPersistencyService.find(userQueryBuilder.build());
-        int numberOfElements = new Long(page.getTotalElements()).intValue();
-        double[] scores = new double[numberOfElements];
-        AtomicInteger courser = new AtomicInteger(0);
-
-
-        while (page != null && page.hasContent()) {
-            page.getContent().forEach(user -> {
-                scores[courser.getAndAdd(1)] = user.getScore();
-            });
-            page = getNextUserPage(userQueryBuilder, page);
-
-        }
-
-        return scores;
-    }
 
 }

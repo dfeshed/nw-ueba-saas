@@ -24,7 +24,11 @@ def get_ade_scoring_sub_dag_operator(data_sources, hourly_smart_events_confs, pr
         subdag=AnomalyDetectionEngineScoringDagBuilder(data_sources, hourly_smart_events_confs,
                                                        []).build(ade_scoring_dag),
         task_id=ade_scoring_dag_id,
-        dag=presidio_core_dag
+        dag=presidio_core_dag,
+        retries=4,
+        retry_delay=timedelta(seconds=5),
+        retry_exponential_backoff=True,
+        max_retry_delay=timedelta(minutes=10)
     )
 
 def get_ade_modeling_sub_dag_operator(data_sources, hourly_smart_events_confs, presidio_core_dag):
@@ -41,7 +45,11 @@ def get_ade_modeling_sub_dag_operator(data_sources, hourly_smart_events_confs, p
         subdag=AnomalyDetectionEngineModelingDagBuilder(data_sources, hourly_smart_events_confs,
                                                        []).build(ade_modeling_dag),
         task_id=ade_modeling_dag_id,
-        dag=presidio_core_dag
+        dag=presidio_core_dag,
+        retries=4,
+        retry_delay=timedelta(seconds=5),
+        retry_exponential_backoff=True,
+        max_retry_delay=timedelta(minutes=10)
     )
 
 default_args = {

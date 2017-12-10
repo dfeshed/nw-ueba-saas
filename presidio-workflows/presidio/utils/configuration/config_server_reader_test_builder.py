@@ -28,6 +28,12 @@ class ConfigServerConfigurationReaderTestBuilder():
                             "retry_delay": 0,
                             "retry_exponential_backoff": True,
                             "max_retry_delay": 300
+                        },
+                        "subdag_retry_args": {
+                            "max_retry_delay": 300,
+                            "retries": 4,
+                            "retry_delay": 5,
+                            "retry_exponential_backoff": True,
                         }
                     }
                 }

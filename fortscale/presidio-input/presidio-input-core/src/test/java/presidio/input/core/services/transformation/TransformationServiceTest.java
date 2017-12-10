@@ -8,18 +8,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.services.transformation.managers.*;
+import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.input.core.spring.InputCoreConfigurationTest;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by Efrat Noam on 11/8/17.
@@ -37,10 +43,10 @@ public class TransformationServiceTest {
         List<AbstractInputDocument> events = Arrays.asList(authenticationRawEvent);
         List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
 
-        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
-        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
-        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
-        Assert.assertEquals("" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
+        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
+        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
+        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
     }
 
     @Test
@@ -50,10 +56,10 @@ public class TransformationServiceTest {
         List<AbstractInputDocument> events = Arrays.asList(authenticationRawEvent);
         List<AbstractInputDocument> transformedEvents = transformationService.run(events, Schema.AUTHENTICATION);
 
-        Assert.assertEquals("nameSPBGDCW.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
-        Assert.assertEquals("idSPBGDCW01.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
-        Assert.assertEquals("nameSPBGDCW.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
-        Assert.assertEquals("idSPBGDCW02.prod.quest.corp" ,((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
+        Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("idSPBGDCW01.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
+        Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
+        Assert.assertEquals("idSPBGDCW02.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
     }
 
     private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate,
@@ -77,7 +83,7 @@ public class TransformationServiceTest {
                 dstMachineId,
                 dstMachineName,
                 "dstMachineDomain",
-                "resultCode");
+                "resultCode", "site");
     }
 
     @Configuration
@@ -87,6 +93,9 @@ public class TransformationServiceTest {
             PresidioMonitoringConfiguration.class})
     @EnableSpringConfigured
     public static class springConfig {
+        @MockBean
+        private MetricRepository metricRepository;
+
         @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();

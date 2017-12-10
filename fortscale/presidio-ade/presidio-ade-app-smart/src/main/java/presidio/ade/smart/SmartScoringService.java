@@ -4,6 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
@@ -44,10 +45,13 @@ public class SmartScoringService {
 	 * of feature scores is not as expected, the smart value and score will not be changed.
 	 *
 	 * @param smartRecords the smart records that are scored
+	 * @param timeRange
 	 */
-	public void score(Collection<SmartRecord> smartRecords) {
+	public void score(Collection<SmartRecord> smartRecords, TimeRange timeRange) {
 		logger.debug("Going to calculate the value and score of {} smart records.", smartRecords.size());
-		smartRecords.forEach(this::score);
+		for (SmartRecord smartRecord : smartRecords) {
+			score(smartRecord,timeRange);
+		}
 	}
 
 	/**
@@ -57,9 +61,9 @@ public class SmartScoringService {
 		scoringService.resetModelCache();
 	}
 
-	private void score(SmartRecord smartRecord) {
+	private void score(SmartRecord smartRecord, TimeRange timeRange) {
 		AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(smartRecord);
-		List<FeatureScore> levelOneFeatureScores = scoringService.score(adeRecordReader);
+		List<FeatureScore> levelOneFeatureScores = scoringService.score(adeRecordReader, timeRange);
 
 		if (levelOneFeatureScores.size() == 1) {
 			FeatureScore smartScore = levelOneFeatureScores.get(0);

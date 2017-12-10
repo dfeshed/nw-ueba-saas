@@ -1090,6 +1090,29 @@ class REST_API(BaseView):
         non_subdags_dags = {k: v for k, v in all_dags.iteritems() if v.is_subdag == False}
         return non_subdags_dags
 
+    def is_searchterm_in_file(self,fullpath,searchterm):
+        """
+        :return: true if term in file, false otherwise 
+        """
+        for line in file(fullpath):
+            if searchterm in line:
+                return True
+
+    def searchthis(self,location, searchterm):
+        """
+        search a term in location recursively
+        :param location: i.e. '/var/log' 
+        :param searchterm: i.e. 'ERROR'
+        :return: list of full file paths containing the the term 
+        """
+        file_containing_searchterm = []
+        for dir_path, dirs, file_names in os.walk(location):
+            for file_name in file_names:
+                fullpath = os.path.join(dir_path, file_name)
+                if self.is_searchterm_in_file(fullpath=fullpath,searchterm=searchterm):
+                    file_containing_searchterm.append(fullpath)
+        return file_containing_searchterm
+
     def failed_tasks_logs(self):
         """
 
@@ -1101,13 +1124,20 @@ class REST_API(BaseView):
             with TemporaryDirectory(prefix='airflowtmplog') as tmp_dir:
                 with NamedTemporaryFile(prefix='airflow_error_logs_', dir=tmp_dir, suffix=".zip") as temp_file:
                     with ZipFile(temp_file, 'w') as temp_zip_file:
+                        log_files = set(self.searchthis('/var/log/presidio/3p/airflow','ERROR'))
+                        # logs of failed tasks
                         for dag_run in dag_runs:
                             task_instances = dag_run.get_task_instances(state=State.FAILED)
                             for task_instance in task_instances:
                                 # ignore ".log" suffix
-                                log_path = task_instance.log_filepath[:-4]
+                                log_path = (task_instance.log_filepath[:-4]).replace('//','/')
+                                if log_path in log_files:
+                                    log_files.remove(log_path)
                                 if os.path.exists(log_path):
                                     temp_zip_file.write(log_path, log_path, ZIP_DEFLATED)
+                        # logs containing 'ERROR' that are not in failed tasks
+                        for log_path in log_files:
+                            temp_zip_file.write(log_path, log_path, ZIP_DEFLATED)
                     temp_file.seek(0)
 
                     return Response(temp_file.read(),

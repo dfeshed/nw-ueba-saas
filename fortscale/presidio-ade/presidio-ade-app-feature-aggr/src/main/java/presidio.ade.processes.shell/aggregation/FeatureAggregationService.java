@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
@@ -23,6 +24,7 @@ import java.util.*;
 
 public class FeatureAggregationService extends FixedDurationStrategyExecutor {
 
+    private final ScoringServiceMetricsContainer scoringServiceMetricsContainer;
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
@@ -38,7 +40,8 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
                                      InMemoryFeatureBucketAggregator featureBucketAggregator,
                                      FeatureAggregationScoringService featureAggregationScoringService,
                                      AggregationRecordsCreator featureAggregationsCreator,
-                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
+                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize,
+                                     ScoringServiceMetricsContainer scoringServiceMetricsContainer) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -48,6 +51,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
+        this.scoringServiceMetricsContainer = scoringServiceMetricsContainer;
     }
 
     @Override
@@ -67,9 +71,12 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
-            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords);
+            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
         }
+
+        //Flush stored metrics to elasticsearch
+        scoringServiceMetricsContainer.flush();
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange) {

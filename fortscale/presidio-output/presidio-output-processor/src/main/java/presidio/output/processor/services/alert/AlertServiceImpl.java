@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
@@ -61,7 +61,7 @@ public class AlertServiceImpl implements AlertService {
         }
         java.util.Date startDate = Date.from(smart.getStartInstant());
         java.util.Date endDate = Date.from(smart.getEndInstant());
-        AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
+        AlertEnums.AlertSeverity severity = alertEnumsSeverityService.getSeverity(score);
         Double alertContributionToUserScore = alertSeverityService.getUserScoreContributionFromSeverity(severity);
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags(), alertContributionToUserScore);
         // supporting information
