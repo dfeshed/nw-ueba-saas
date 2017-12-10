@@ -527,6 +527,19 @@ indicators:
     featureName: dstMachineNameRegexClusterHistogram
   classification: user_login_to_abnormal_remote_host
 
+- id: sumOfHighestSiteScoresUserIdAuthenticationHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_site
+  adeEventType: scored_enriched.authentication.site.userId.authentication.score
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: site
+  historicalData:
+      type: count_aggregations
+      featureBucketConfName: siteHistogramUserIdAuthenticationDaily
+      featureName: siteHistogram
+  classification: abnormal_site_access
+
 - id: numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_authentications
@@ -606,6 +619,17 @@ indicators:
     type: hourly_aggregations
   classification: user_logged_into_multiple_hosts
 
+- id: numberOfDistinctSiteUserIdAuthenticationHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_sites
+  adeEventType: authentication
+  schema: AUTHENTICATION
+  anomalyDescriptior:
+    anomalyField: site
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_site_access
+
 classificationPriority:
 
 - classificationName: mass_changes_to_critical_enterprise_groups
@@ -650,17 +674,20 @@ classificationPriority:
 - classificationName: mass_permission_changes
   priority: 14
 
-- classificationName: abnormal_ad_changes
+- classificationName: abnormal_site_access
   priority: 15
 
-- classificationName: sensitive_user_status_changes
+- classificationName: abnormal_ad_changes
   priority: 16
 
-- classificationName: abnormal_file_access
+- classificationName: sensitive_user_status_changes
   priority: 17
 
-- classificationName: non_standard_hours
+- classificationName: abnormal_file_access
   priority: 18
 
-- classificationName: suspicious_user_activity
+- classificationName: non_standard_hours
   priority: 19
+
+- classificationName: suspicious_user_activity
+  priority: 20
