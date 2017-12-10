@@ -27,16 +27,18 @@ public class ScoringService {
 	private ModelsCacheService modelCacheService;
 	private ScoringServiceMetricsContainer scoringServiceMetricsContainer;
 	private ModelCacheMetricsContainer modelCacheMetricsContainer;
+
 	public ScoringService(
 			ScorerConfService scorerConfService,
 			FactoryService<Scorer> scorerFactoryService,
-			ModelsCacheService modelCacheService, ScoringServiceMetricsContainer scoringServiceMetricsContainer) {
+			ModelsCacheService modelCacheService, ScoringServiceMetricsContainer scoringServiceMetricsContainer, ModelCacheMetricsContainer modelCacheMetricsContainer) {
 
 		this.scorerConfService = scorerConfService;
 		this.scorerFactoryService = scorerFactoryService;
 		this.modelCacheService = modelCacheService;
 		this.adeEventTypeToScorersMap = new HashMap<>();
 		this.scoringServiceMetricsContainer = scoringServiceMetricsContainer;
+		this.modelCacheMetricsContainer = modelCacheMetricsContainer;
 		loadScorers();
 	}
 
