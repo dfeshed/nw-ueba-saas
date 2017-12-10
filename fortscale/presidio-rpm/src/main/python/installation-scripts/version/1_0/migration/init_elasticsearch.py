@@ -16,6 +16,7 @@ SEARCHES = '/searches'
 VISUALIZATION = '/visualizations'
 INDEXES = '/mappings'
 SETTINGS = '/settings'
+SETTING = 'settings'
 ALIASES = '/aliases'
 HEADERS = {"Content-Type": "application/json"}
 MAPPINGS = "mappings"
@@ -27,27 +28,29 @@ def elastic_put_request(directory, url):
     path = ELASTICSEARCH_PATH + directory
     for indexJson in os.listdir(path):
         name = indexJson.split(".")[0]
-        f.write(path + '/' + indexJson + "\n")
-        with open(path + '/' + indexJson) as json_data:
-            index = json.load(json_data)
-            if MAPPINGS in path:
-                name = name + '/_mappings/' + dict.keys(index)[0]
-                index = json.dumps(dict.values(index)[0])
-            else:
-                index = json.dumps(index)
-            if ALIASES in path:
-                responce = requests.post(url, data=index, headers=HEADERS)
-                f.write(url + "\n")
-                print(url)
-            else:
-                responce = requests.put(url + name, data=index, headers=HEADERS)
-                f.write(url + name + "\n")
-                print (url + name)
-            print(index)
-            f.write(index + "\n")
-            print(responce)
-            f.write(responce + "\n")
+        if not SETTING in name:
+            f.write(path + '/' + indexJson + "\n")
+            with open(path + '/' + indexJson) as json_data:
+                index = json.load(json_data)
+                if MAPPINGS in path:
+                    name = name + '/_mappings/' + dict.keys(index)[0]
+                    index = json.dumps(dict.values(index)[0])
+                else:
+                    index = json.dumps(index)
+                if ALIASES in path:
+                    responce = requests.post(url, data=index, headers=HEADERS)
+                    f.write(url + "\n")
+                    print(url)
+                else:
+                    responce = requests.put(url + name, data=index, headers=HEADERS)
+                    f.write(url + name + "\n")
+                    print (url + name)
+                print(index)
+                f.write(index + "\n")
+                print(responce)
+                f.write(str(responce) + "\n")
     return;
+
 
 
 # when creating indexes importent to start with the settings than mapping and finish with the aliases
