@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
-import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
@@ -17,6 +16,7 @@ import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,7 +35,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final AggregationRecordsCreator aggregationRecordsCreator;
     private final EnrichedDataStore enrichedDataStore;
     private final EnrichedEventsScoringService enrichedEventsScoringService;
-    private final ScoringServiceMetricsContainer scoringServiceMetricsContainer;
+    private final MetricContainerFlusher metricsContainer;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
@@ -51,7 +51,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
                                     AggregationRecordsCreator aggregationRecordsCreator,
                                     AggregatedDataStore aggregatedDataStore,
                                     AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
-                                    int pageSize, int maxGroupSize, ScoringServiceMetricsContainer scoringServiceMetricsContainer) {
+                                    int pageSize, int maxGroupSize, MetricContainerFlusher metricContainerFlusher) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -61,7 +61,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
-        this.scoringServiceMetricsContainer = scoringServiceMetricsContainer;
+        this.metricsContainer = metricContainerFlusher;
     }
 
 
@@ -94,7 +94,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         }
 
         //Flush stored metrics to elasticsearch
-        scoringServiceMetricsContainer.flush();
+        metricsContainer.flush();
     }
 
     private boolean isStoreScoredEnrichedRecords(TimeRange timeRange, String dataSource){

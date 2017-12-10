@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.AdeEventTypeScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -25,7 +26,7 @@ public class ScoringService {
 	private Map<String, List<Scorer>> adeEventTypeToScorersMap;
 	private ModelsCacheService modelCacheService;
 	private ScoringServiceMetricsContainer scoringServiceMetricsContainer;
-
+	private ModelCacheMetricsContainer modelCacheMetricsContainer;
 	public ScoringService(
 			ScorerConfService scorerConfService,
 			FactoryService<Scorer> scorerFactoryService,
@@ -41,11 +42,12 @@ public class ScoringService {
 
 	public List<FeatureScore> score(AdeRecordReader adeRecordReader, TimeRange timeRange) {
 
+
 		String adeEventType = adeRecordReader.getAdeEventType();
 		//todo: dataSourceMetrics.calculateScoreTime = adeRecordReader.getDate_time().getEpochSecond();
 		List<Scorer> adeEventTypeScorers = adeEventTypeToScorersMap.get(adeEventType);
 		Instant startInstant = timeRange.getStart();
-
+		modelCacheMetricsContainer.setLogicalStartTime(startInstant);
 		if (adeEventTypeScorers == null || adeEventTypeScorers.isEmpty()) {
 			//todo: dataSourceMetrics.dataSourceScorerNotFound++;
 			logger.error("No defined scorers for ade event type {}. ADE record reader: {}.", adeEventType, adeRecordReader);
