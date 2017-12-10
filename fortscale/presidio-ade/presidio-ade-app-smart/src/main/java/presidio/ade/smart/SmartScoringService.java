@@ -45,12 +45,13 @@ public class SmartScoringService {
 	 * of feature scores is not as expected, the smart value and score will not be changed.
 	 *
 	 * @param smartRecords the smart records that are scored
-	 * @param timeRange
+	 * @param timeRange    the time range that is being processed
 	 */
 	public void score(Collection<SmartRecord> smartRecords, TimeRange timeRange) {
 		logger.debug("Going to calculate the value and score of {} smart records.", smartRecords.size());
+
 		for (SmartRecord smartRecord : smartRecords) {
-			score(smartRecord,timeRange);
+			score(smartRecord, timeRange);
 		}
 	}
 
