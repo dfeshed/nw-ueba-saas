@@ -36,16 +36,20 @@ def elastic_put_request(directory, url):
                 index = json.dumps(index)
             if ALIASES in path:
                 responce = requests.post(url, data=index, headers=HEADERS)
+                f.write(url + "\n")
                 print(url)
             else:
                 responce = requests.put(url + name, data=index, headers=HEADERS)
                 print (url + name)
             print(index)
+            f.write(index + "\n")
             print(responce)
+            f.write(responce + "\n")
     return;
 
 
 # when creating indexes importent to start with the settings than mapping and finish with the aliases
+f = open("/home/presidio/presidio-core/el-extensions/log.txt", "w+")
 elastic_put_request(SETTINGS, MACHINE_URL)
 elastic_put_request(INDEXES, MACHINE_URL)
 elastic_put_request(ALIASES, URL_ALIASES)
@@ -53,3 +57,4 @@ elastic_put_request(INDEX_PATTERN, URL_KIBANA_PATTERNS)
 # elastic_put_request(DASHBOARDS, URL_KIBANA_DASHBOARDS)
 # elastic_put_request(SEARCHES, URL_KIBANA_SEARCHES)
 # elastic_put_request(VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
+f.close()
