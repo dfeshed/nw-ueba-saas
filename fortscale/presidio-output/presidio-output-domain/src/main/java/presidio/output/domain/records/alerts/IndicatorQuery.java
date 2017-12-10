@@ -20,6 +20,8 @@ public class IndicatorQuery {
 
     public static class IndicatorQueryBuilder {
 
+        private final String SORT_FIELD = "";
+
         private Sort sort;
         private int pageNumber;
         private int pageSize;
@@ -28,22 +30,27 @@ public class IndicatorQuery {
         public IndicatorQueryBuilder(Sort sort) {
         }
 
-        IndicatorQueryBuilder setSort(Sort sort) {
+        IndicatorQueryBuilder sort(Sort sort) {
             this.sort = sort;
             return this;
         }
 
-        IndicatorQueryBuilder setPageNumber(int pageNumber) {
+        public IndicatorQueryBuilder sortField() {
+            Sort sort = new Sort(Sort.Direction.DESC, SORT_FIELD);
+            return sort(sort);
+        }
+
+        IndicatorQueryBuilder pageNumber(int pageNumber) {
             this.pageNumber = pageNumber;
             return this;
         }
 
-        IndicatorQueryBuilder setPageSize(int pageSize) {
+        IndicatorQueryBuilder pageSize(int pageSize) {
             this.pageSize = pageSize;
             return this;
         }
 
-        IndicatorQueryBuilder setFilterByAlertsId(String filterByAlertsId) {
+        IndicatorQueryBuilder filterByAlertsId(String filterByAlertsId) {
             this.filterByAlertsId = filterByAlertsId;
             return this;
         }
