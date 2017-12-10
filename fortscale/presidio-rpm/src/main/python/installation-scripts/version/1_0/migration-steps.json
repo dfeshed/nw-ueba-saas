@@ -37,6 +37,14 @@
       "executor": "default",
       "description": "Creating elasticsearch indexes and kibana dashboards",
       "has_uninstall": "false"
+    },
+    {
+      "filePath": "python_packages_handler.sh",
+      "executor": "default",
+      "description": "Handle python packages",
+      "has_uninstall": "true",
+      "uninstall_param": "--uninstall",
+      "uninstall_description": "Uninstalling python packages"
     }
   ]
 }
