@@ -27,6 +27,7 @@ def elastic_put_request(directory, url):
     path = ELASTICSEARCH_PATH + directory
     for indexJson in os.listdir(path):
         name = indexJson.split(".")[0]
+        f.write(path + '/' + indexJson + "\n")
         with open(path + '/' + indexJson) as json_data:
             index = json.load(json_data)
             if MAPPINGS in path:
@@ -40,6 +41,7 @@ def elastic_put_request(directory, url):
                 print(url)
             else:
                 responce = requests.put(url + name, data=index, headers=HEADERS)
+                f.write(url + name + "\n")
                 print (url + name)
             print(index)
             f.write(index + "\n")
