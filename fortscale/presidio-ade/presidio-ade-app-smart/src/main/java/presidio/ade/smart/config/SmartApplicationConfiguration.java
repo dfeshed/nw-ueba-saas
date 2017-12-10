@@ -1,5 +1,7 @@
 package presidio.ade.smart.config;
 
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainerConfig;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.store.StoreManager;
@@ -31,6 +33,7 @@ import presidio.ade.smart.SmartService;
         SmartApplicationSmartScoringServiceConfig.class,
         SmartDataStoreConfig.class,
         StoreManagerConfig.class,
+        ScoringServiceMetricsContainerConfig.class
 })
 public class SmartApplicationConfiguration {
     @Value("${presidio.ade.aggregation.records.threshold:#{null}}")
@@ -46,7 +49,8 @@ public class SmartApplicationConfiguration {
     private SmartDataStore smartDataStore;
     @Autowired
     private StoreManager storeManager;
-
+    @Autowired
+    private ScoringServiceMetricsContainer scoringServiceMetricsContainer;
 
     @Bean
     public SmartService smartService() {
@@ -56,6 +60,7 @@ public class SmartApplicationConfiguration {
                 aggregatedDataReader,
                 smartScoringService,
                 smartDataStore,
-                storeManager);
+                storeManager,
+                scoringServiceMetricsContainer);
     }
 }

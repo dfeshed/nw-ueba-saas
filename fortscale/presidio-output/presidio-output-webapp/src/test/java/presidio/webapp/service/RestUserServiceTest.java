@@ -13,8 +13,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -162,7 +162,7 @@ public class RestUserServiceTest {
     public void testUpdateUser_addFirstTag() throws IOException {
         User user = createUser(1);
 
-        String patchOperationString = "[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"1\"}]";
+        String patchOperationString = "{\"operations\":[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"1\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
         when(userPersistencyService.findUserById(anyString())).thenReturn(user);
@@ -178,7 +178,7 @@ public class RestUserServiceTest {
         User user = createUser(1);
         user.setTags(Arrays.asList("Tag"));
 
-        String patchOperationString = "[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"1\"}]";
+        String patchOperationString = "{\"operations\":[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"1\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
         when(userPersistencyService.findUserById(anyString())).thenReturn(user);
@@ -194,7 +194,7 @@ public class RestUserServiceTest {
         User user = createUser(1);
         user.setTags(Arrays.asList("Tag"));
 
-        String patchOperationString = "[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"Tag\"}]";
+        String patchOperationString = "{\"operations\":[{ \"op\": \"add\", \"path\": \"/tags/-\", \"value\":\"Tag\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
         when(userPersistencyService.findUserById(anyString())).thenReturn(user);
@@ -210,7 +210,7 @@ public class RestUserServiceTest {
         User user = createUser(1);
         user.setTags(Arrays.asList("Tag", "anotherTag"));
 
-        String patchOperationString = "[{ \"op\": \"remove\", \"path\": \"/tags/-\", \"value\":\"Tag\"}]";
+        String patchOperationString = "{\"operations\":[{ \"op\": \"remove\", \"path\": \"/tags/-\", \"value\":\"Tag\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
         when(userPersistencyService.findUserById(anyString())).thenReturn(user);
@@ -226,7 +226,7 @@ public class RestUserServiceTest {
         User user = createUser(1);
         user.setTags(Arrays.asList("Tag", "anotherTag"));
 
-        String patchOperationString = "[{ \"op\": \"remove\", \"path\": \"/tags/-\", \"value\":\"notExistingTag\"}]";
+        String patchOperationString = "{\"operations\":[{ \"op\": \"remove\", \"path\": \"/tags/-\", \"value\":\"notExistingTag\"}]}";
         JsonNode jsonNode = ObjectMapperProvider.defaultJsonObjectMapper().readTree(patchOperationString);
 
         when(userPersistencyService.findUserById(anyString())).thenReturn(user);

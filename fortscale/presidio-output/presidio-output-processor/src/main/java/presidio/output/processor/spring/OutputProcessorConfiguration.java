@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
+import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 /**
@@ -37,7 +37,7 @@ public class OutputProcessorConfiguration {
     private UserPersistencyService userPersistencyService;
 
     @Autowired
-    private UserScoreService userScoreService;
+    private UserSeverityService userSeverityService;
 
     @Value("${smart.threshold.score}")
     private int smartThreshold;
@@ -47,6 +47,6 @@ public class OutputProcessorConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userScoreService, smartThreshold, smartPageSize);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, smartThreshold, smartPageSize);
     }
 }

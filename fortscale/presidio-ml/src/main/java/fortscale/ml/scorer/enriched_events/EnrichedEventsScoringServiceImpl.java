@@ -4,6 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecordReader;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -37,7 +38,7 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
         this.adeEnrichedScoredRecordBuilder = adeEnrichedScoredRecordBuilder;
     }
 
-    public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore) {
+    public List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore, TimeRange timeRange) {
         if (enrichedRecordList.size() == 0) {
             logger.warn("got an empty enriched record list");
             return Collections.emptyList();
@@ -47,7 +48,7 @@ public class EnrichedEventsScoringServiceImpl implements EnrichedEventsScoringSe
 
         for (EnrichedRecord enrichedRecord : enrichedRecordList) {
             AdeRecordReader adeRecordReader = (AdeRecordReader)recordReaderFactoryService.getRecordReader(enrichedRecord);
-            List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader);
+            List<FeatureScore> featureScoreList = scoringService.score(adeRecordReader,timeRange);
             adeEnrichedScoredRecordBuilder.fill(scoredRecords, enrichedRecord, featureScoreList);
         }
 

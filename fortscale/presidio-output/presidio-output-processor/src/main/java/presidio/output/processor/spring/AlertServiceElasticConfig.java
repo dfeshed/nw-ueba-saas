@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.commons.services.alert.AlertSeverityService;
+import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.processor.services.alert.AlertClassificationService;
@@ -15,7 +16,7 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 @Configuration
 @Import({
         PresidioOutputPersistencyServiceConfig.class,
-        AlertEnumsConfig.class,
+        AlertSeverityServiceConfig.class,
         UserServiceConfig.class,
         SupportingInformationServiceConfig.class,
         AlertClassificationPriorityConfig.class

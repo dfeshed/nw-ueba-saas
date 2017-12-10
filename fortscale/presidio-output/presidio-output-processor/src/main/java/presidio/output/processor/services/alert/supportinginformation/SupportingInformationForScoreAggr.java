@@ -14,7 +14,7 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.sdk.common.AdeManagerSdk;
-import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.Indicator;
@@ -120,7 +120,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             String[] values = StringUtils.split(fieldValue,",");
             for (String value: values) {
                 Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-                features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), featureValue));
+                features.add(Pair.of(fieldName, featureValue));
             }
         }
 

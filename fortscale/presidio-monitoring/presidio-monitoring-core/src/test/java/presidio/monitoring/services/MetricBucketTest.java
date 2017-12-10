@@ -42,7 +42,7 @@ public class MetricBucketTest {
                 setMetricName("test2").
                 setMetricValue(1).
                 build());
-        List<MetricDocument> metricList = presidioMetricBucket.getApplicationMetrics();
+        List<MetricDocument> metricList = presidioMetricBucket.getApplicationMetricsAndResetApplicationMetrics();
         metricList.size();
         Assert.assertEquals(2, metricList.size());
         metricList.forEach(metric -> {

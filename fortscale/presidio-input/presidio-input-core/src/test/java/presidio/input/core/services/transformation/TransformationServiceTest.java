@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.transformation.managers.TransformationService;
 import presidio.input.core.spring.InputCoreConfigurationTest;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
@@ -91,6 +93,9 @@ public class TransformationServiceTest {
             PresidioMonitoringConfiguration.class})
     @EnableSpringConfigured
     public static class springConfig {
+        @MockBean
+        private MetricRepository metricRepository;
+
         @Bean
         public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
             Properties properties = new Properties();
