@@ -18,14 +18,10 @@ airflow trigger_dag --conf '{"maxDBEntryAgeInDays":30}' airflow-db-cleanup
 
 DAG_ID = os.path.basename(__file__).replace(".pyc", "").replace(".py", "")  # airflow-db-cleanup
 
-config_reader = ConfigServerConfigurationReaderSingleton().config_reader
-dag_configs = config_reader.read(conf_key='dags.dags_configs')
 
-if (len(dag_configs) == 1):
-    # we currently take the assumption that only 1 dag config exists. should support more in the future.
-    START_DATE = dateutil.parser.parse(dag_configs[0]['start_date'], ignoretz=True)
-else:
-    raise Exception("could not find start_date in first dag config, currently assuming there should be 1 after system configuration")
+
+# we currently take the assumption that only 1 dag config exists. should support more in the future.
+START_DATE = datetime(year=2017, month=1, day=1)
 
 SCHEDULE_INTERVAL = "@daily"            # How often to Run. @daily - Once a day at Midnight (UTC)
 DAG_OWNER_NAME = "operations"           # Who is listed as the owner of this DAG in the Airflow Web Server
@@ -53,7 +49,7 @@ default_args = {
     'retry_delay': timedelta(minutes=1)
 }
 
-dag = DAG(DAG_ID, default_args=default_args, schedule_interval=SCHEDULE_INTERVAL, start_date=START_DATE)
+dag = DAG(DAG_ID, default_args=default_args, schedule_interval=SCHEDULE_INTERVAL, start_date=START_DATE, catchup=False)
 
 
 def print_configuration_function(**context):

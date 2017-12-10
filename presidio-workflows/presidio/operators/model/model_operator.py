@@ -33,12 +33,15 @@ class ModelOperator(SpringBootJarOperator):
             'session_id': session_id
         }
 
-        print('agg operator. commad=', command)
-        print('agg operator. kwargs=', kwargs)
+        retry_extra_params = {}
+        retry_extra_params['schedule_interval'] = self.interval
+
         super(ModelOperator, self).__init__(
             task_id=self.task_id,
             java_args=java_args,
             command=command,
+            retry_extra_params=retry_extra_params,
+            retry_java_args_method=ModelOperator.add_java_args,
             *args,
             **kwargs
         )
@@ -50,12 +53,6 @@ class ModelOperator(SpringBootJarOperator):
 
         :raise InvalidExecutionDateError - Raise error if the execution_date is not the last interval of fixed duration.
         """
-        java_args = self.add_java_args(context)
-
-        super(ModelOperator, self).update_java_args(java_args)
-        super(ModelOperator, self).execute(context)
-
-    def add_java_args(self, context):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
 
@@ -63,6 +60,23 @@ class ModelOperator(SpringBootJarOperator):
         java_args = {
             'end_date': convert_to_utc(end_date)
         }
+
+        super(ModelOperator, self).update_java_args(java_args)
+        super(ModelOperator, self).execute(context)
+
+    @staticmethod
+    def add_java_args(context):
+
+        params = context['params']
+        interval = params['retry_extra_params']['schedule_interval']
+        context_wrapper = ContextWrapper(context)
+        execution_date = context_wrapper.get_execution_date()
+
+        end_date = execution_date + interval
+        java_args = {
+            'end_date': convert_to_utc(end_date)
+        }
+        java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in java_args.iteritems())
         return java_args
 
     @abstractmethod

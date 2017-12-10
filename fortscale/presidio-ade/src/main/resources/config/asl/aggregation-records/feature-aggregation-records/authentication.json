@@ -3,13 +3,13 @@
     {
       "name": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly",
       "type": "F",
-      "bucketConfName": "successfulAuthenticationHistogramUserIdAuthenticationHourly",
+      "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "successfulAuthenticationHistogram"
+          "resultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -20,13 +20,13 @@
     {
       "name": "numberOfFailedAuthenticationsUserIdAuthenticationHourly",
       "type": "F",
-      "bucketConfName": "failedAuthenticationHistogramUserIdAuthenticationHourly",
+      "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "failedAuthenticationHistogram"
+          "resultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

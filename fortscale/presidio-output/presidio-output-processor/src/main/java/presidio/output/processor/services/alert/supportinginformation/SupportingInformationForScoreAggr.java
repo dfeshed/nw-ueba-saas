@@ -120,7 +120,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             String[] values = StringUtils.split(fieldValue,",");
             for (String value: values) {
                 Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-                features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), featureValue));
+                features.add(Pair.of(fieldName, featureValue));
             }
         }
 

@@ -12,7 +12,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -25,7 +25,7 @@
                   "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -53,7 +53,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -66,7 +66,7 @@
                   "name": "numberOfGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -94,7 +94,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -107,7 +107,7 @@
                   "name": "numberOfSuccessfulObjectChangeOperation.userId.prior.global.activeDirectory.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }
@@ -127,40 +127,28 @@
       "ade-event-type": "aggr_event.numberOfFailedOperationTypeUserIdActiveDirectoryHourly",
       "scorers": [
         {
-          "type": "low-values-score-reducer",
+          "type": "score-exponential-mapper",
           "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.scorer",
-          "base-scorer": {
-            "type": "score-exponential-mapper",
-            "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.mapper",
-            "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2
-            },
-            "base-scorer": {
-              "type": "gaussian-model-scorer",
-              "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.base_scorer",
-              "model": {
-                "name": "numberOfFailedOperationType.userId.activeDirectory.hourly"
-              },
-              "additional-models": [
-                {
-                  "name": "numberOfFailedOperationType.userId.prior.global.activeDirectory.hourly"
-                }
-              ],
-              "global-influence": 20,
-              "number-of-partitions-to-influence-enough": 10,
-              "use-certainty-to-calculate-score": false
-            }
+          "score-mapping-conf": {
+            "minScoreToMap": 95,
+            "maxScoreToMap": 100,
+            "base": 2.5
           },
-          "reduction-configs": [
-            {
-              "reducingFeatureName": "featureValue",
-              "reducingFactor": 0,
-              "maxValueForFullyReduce": 3.0,
-              "minValueForNotReduce": 6.0
-            }
-          ]
+          "base-scorer": {
+            "type": "gaussian-model-scorer",
+            "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.base_scorer",
+            "model": {
+              "name": "numberOfFailedOperationType.userId.activeDirectory.hourly"
+            },
+            "additional-models": [
+              {
+                "name": "numberOfFailedOperationType.userId.prior.global.activeDirectory.hourly"
+              }
+            ],
+            "global-influence": 15,
+            "number-of-partitions-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": false
+          }
         }
       ]
     },
@@ -176,7 +164,7 @@
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
-              "base": 2
+              "base": 2.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -189,7 +177,7 @@
                   "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly"
                 }
               ],
-              "global-influence": 20,
+              "global-influence": 15,
               "number-of-partitions-to-influence-enough": 10,
               "use-certainty-to-calculate-score": false
             }

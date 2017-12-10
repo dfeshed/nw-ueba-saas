@@ -244,7 +244,7 @@ indicators:
     anomalyField: operationType
     anomalyFilters:
       fieldName: operationTypeCategories
-      fieldValue: OBJECT_CHANGES
+      fieldValue: OBJECT_CHANGE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily
@@ -282,7 +282,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: OBJECT_CHANGES
+    anomalyValue: OBJECT_CHANGE_OPERATION
     anomalyFilters:
        fieldName: result
        fieldValue: SUCCESS
