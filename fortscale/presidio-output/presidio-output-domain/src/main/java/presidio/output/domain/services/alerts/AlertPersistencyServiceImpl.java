@@ -12,7 +12,12 @@ import org.springframework.data.elasticsearch.core.query.UpdateQuery;
 import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
 import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.IndicatorQuery;
+import presidio.output.domain.records.alerts.IndicatorSummary;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -142,8 +147,13 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
+    public Page<Indicator> findIndicatorsByAlertId(IndicatorQuery indicatorQuery) {
+        return indicatorRepository.search(new IndicatorElasticsearchQueryBuilder(indicatorQuery).build());
+    }
+
+    @Override
     public void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback) {
-        if(alertId == null || feedback == null) {
+        if (alertId == null || feedback == null) {
             logger.error("Failed to update alert- alert id or feedback cannot be null");
             return;
         }
