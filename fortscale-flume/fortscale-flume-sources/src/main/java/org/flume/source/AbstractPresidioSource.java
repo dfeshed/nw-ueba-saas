@@ -15,6 +15,7 @@ import org.apache.flume.source.AbstractEventDrivenSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFactory;
 
 import java.nio.charset.Charset;
@@ -105,7 +106,7 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
         logger.debug("Sending control message DONE");
 
         presidioExternalMonitoringService.reportCustomMetricReportOnce(
-                NUMBER_OF_DONE_MESSAGES_SENT, 1, new HashSet<>(), AMOUNT, null);
+                NUMBER_OF_DONE_MESSAGES_SENT, 1, new HashSet<>(), MetricEnums.MetricUnitType.NUMBER, null);
         this.getChannelProcessor().processEvent(isDoneControlMessage);
     }
 
