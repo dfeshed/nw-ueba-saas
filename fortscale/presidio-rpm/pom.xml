@@ -31,6 +31,7 @@
         </presidio-workflows-src.location>
         <common-conf-path>/home/presidio/presidio-core/configurations/airflow/</common-conf-path>
         <presidio-conf-group>presidio-conf</presidio-conf-group>
+        <env_var_profile_script>/home/presidio/presidio-core/installation/installation-scripts/version/1_0/utils/presidio_profile.sh</env_var_profile_script>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
@@ -174,6 +175,17 @@
                         </sources>
                     </mapping>
                     <mapping>
+                        <directoryIncluded>false</directoryIncluded>
+                        <directory>/etc/profile.d/</directory>
+                        <username>root</username>
+                        <groupname>root</groupname>
+                        <sources>
+                            <source>
+                                <location>${env_var_profile_script}</location>
+                            </source>
+                        </sources>
+                    </mapping>
+                    <mapping>
                         <directory>${rpm-maven-plugin.directory}</directory>
 
                         <username>presidio</username>
@@ -200,11 +212,15 @@
                     <!--<fileEncoding>utf-8</fileEncoding>-->
                     <script>
                         <!-- setting presidio home folder env variable. Should be equal to rpm-maven-plugin.deployment_target_directory property -->
-                        echo "Setting PRESIDIO_HOME to /home/presidio/presidio-core/"
+                        <!--echo "Setting PRESIDIO_HOME to /home/presidio/presidio-core/"
                         export PRESIDIO_HOME=${rpm-maven-plugin.deployment_target_directory}
                         echo "Writing env variable PRESIDIO_HOME to /etc/profile"
-                        echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile
+                        echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile -->
                         <!--always upgrade presidio-workflows python package-->
+
+                        echo "Executing Presidio Environment variables profile script"
+                        bash ${env_var_profile_script}
+
                         echo "Running upgrading presidio workflows"
                         bash ${rpm-maven-plugin.workflows-upgrade-script-path}
 
