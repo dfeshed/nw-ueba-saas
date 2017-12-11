@@ -111,19 +111,20 @@ clean_dags_from_db_operator = PythonOperator(task_id='cleanup_dags_from_postgres
                                              op_kwargs={'dag_ids': copy(dag_ids_to_clean)},
                                              dag=cleanup_dag)
 
+
 clean_mongo_operator = BashOperator(task_id='clean_mongo',
-                                    bash_command="mongo presidio -u presidio -p P@ssw0rd --eval \"db.getCollectionNames().forEach(function(t){0==t.startsWith('ca_')&&0==t.startsWith('system')&&db.getCollection(t).drop()});\"",
+                                    bash_command="mongo presidio -u presidio -p P@ssw0rd --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('ca_')&&0==t.startsWith('system'))  {print('dropping: ' +t); db.getCollection(t).drop();}});\"",
                                     dag=cleanup_dag)
 
 clean_elastic_operator = BashOperator(task_id='clean_elastic', bash_command="curl -X DELETE http://localhost:9200/_all",
                                       dag=cleanup_dag)
 
 clean_adapter_operator = BashOperator(task_id='clean_adapter',
-                                      bash_command="rm -rf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rf /data/presidio/3p/flume/data/adapter/",
+                                      bash_command="rm -rvf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rvf /data/presidio/3p/flume/data/adapter/",
                                       dag=cleanup_dag)
 
 clean_logs_operator = BashOperator(task_id='clean_logs',
-                                   bash_command="rm -rf /var/log/presidio/3p/airflow/full_flow_* && rm -rf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -f /opt/flume/logs/flume.log && rm -f /tmp/spring.log",
+                                   bash_command="rm -rvf /var/log/presidio/3p/airflow/full_flow_* && rm -rvf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -vf /tmp/spring.log",
                                    dag=cleanup_dag)
 
 pause_dags_operator >> kill_dags_task_instances_operator
