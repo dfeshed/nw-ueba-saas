@@ -8,13 +8,17 @@ import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.HistoricalData;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -24,6 +28,8 @@ import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
+import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformer;
+import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformerFactory;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -37,6 +43,9 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     public static final String START_INSTANT = "startInstant";
     private final ObjectMapper objectMapper;
+
+    @Autowired
+    private SupportingInformationTransformerFactory transformerFactory;
 
     @Value("${output.aggregated.feature.historical.period.days: #{30}}")
     private int historicalPeriodInDays;
@@ -97,19 +106,22 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
-        Map<String, Object> features = new HashMap<String, Object>();
+        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
         String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
         if (StringUtils.isNoneEmpty(anomalyValue, anomalyField)) {
             Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
-            features.put(anomalyField, featureValue);
+            features.add(Pair.of(anomalyField, featureValue));
         }
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
-            Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.put(fieldName, featureValue);
+            String[] values = StringUtils.split(fieldValue,",");
+            for (String value: values) {
+                Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
+                features.add(Pair.of(fieldName, featureValue));
+            }
         }
 
         List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit);
@@ -160,6 +172,12 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         HistoricalData historicalData = historicalDataPopulator.createHistoricalData(timeRange, contextField, contextValue, schema, featureName, anomalyValue, indicatorConfig.getHistoricalData());
         historicalData.setIndicatorId(indicator.getId());
         historicalData.setSchema(indicator.getSchema());
+
+        if (indicatorConfig.getTransformer() != null) {
+            SupportingInformationTransformer transformer = transformerFactory.getTransformer(indicatorConfig.getTransformer());
+            transformer.transformHistoricalData(historicalData);
+        }
+
         return historicalData;
     }
 
@@ -185,13 +203,13 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         }
 
         // get distinct values of all the scored events
-        Map<String, Object> features = new HashMap<String, Object>();
+        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
             Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.put(anomalyFiltersConfig.getFieldName(), featureValue);
+            features.add(Pair.of(anomalyFiltersConfig.getFieldName(), featureValue));
         }
         List<Object> featureValues =
                 scoredEventService.findDistinctScoredFeatureValue(indicatorConfig.getSchema(),

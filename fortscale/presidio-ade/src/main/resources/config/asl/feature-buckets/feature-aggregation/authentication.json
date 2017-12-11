@@ -1,7 +1,7 @@
 {
   "BucketConfs": [
     {
-      "name": "successfulAuthenticationHistogramUserIdAuthenticationHourly",
+      "name": "resultHistogramUserIdAuthenticationHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -12,7 +12,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "successfulAuthenticationHistogram",
+          "name": "resultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
@@ -20,36 +20,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.result == 'SUCCESS')]"
-          }
-        }
-      ]
-    },
-    {
-      "name": "failedAuthenticationHistogramUserIdAuthenticationHourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "userId"
-      ],
-      "adeEventTypes": [
-        "authentication"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "failedAuthenticationHistogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "result"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.result == 'FAILURE')]"
           }
         }
       ]

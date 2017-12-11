@@ -15,7 +15,8 @@ import fortscale.common.general.Schema;
         "schema",
         "anomalyDescriptior",
         "historicalData",
-        "classification"
+        "classification",
+        "transformer"
 })
 public class IndicatorConfig {
 
@@ -42,6 +43,9 @@ public class IndicatorConfig {
 
     @JsonProperty("classification")
     private String classification;
+
+    @JsonProperty("transformer")
+    private String transformer;
 
     @JsonProperty("id")
     public String getId() {
@@ -121,5 +125,14 @@ public class IndicatorConfig {
     @JsonProperty("classification")
     public void setClassification(String classification) {
         this.classification = classification;
+    }
+
+    @JsonProperty("transformer")
+    public String getTransformer() {
+        return transformer;
+    }
+    @JsonProperty("transformer")
+    public void setTransformer(String transformer) {
+        this.transformer = transformer;
     }
 }
