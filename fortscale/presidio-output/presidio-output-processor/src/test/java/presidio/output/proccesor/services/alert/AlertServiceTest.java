@@ -18,10 +18,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.record.aggregated.*;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.activedirectory.AdeScoredActiveDirectoryRecord;
@@ -34,8 +31,6 @@ import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTransla
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
-import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.Indicator;
@@ -44,7 +39,7 @@ import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.alert.AlertServiceImpl;
@@ -54,10 +49,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -74,9 +66,6 @@ public class AlertServiceTest {
 
     @Autowired
     private AlertServiceImpl alertService;
-
-    @Autowired
-    private AlertEnumsSeverityService alertEnumsSeverityService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -123,15 +112,14 @@ public class AlertServiceTest {
     public void generateAlertWithOnlyStaticIndicatorsTest() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
-        AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+        AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
                 +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
         EnrichedEvent event = new FileEnrichedEvent(Instant.now(), Instant.now(), "eventId", Schema.FILE.toString(), "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<>(),
                 EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
         mongoTemplate.save(event, fileEnrichedEventCollectionName);
-        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
-
+        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertNull(alert);
@@ -186,7 +174,10 @@ public class AlertServiceTest {
         AdeScoredEnrichedRecord activeDirectoryScoredEnrichedEvent = new AdeScoredActiveDirectoryRecord(eventTime, "startInstant.userId.file.score", "file", 10.0d, new ArrayList<FeatureScore>(), activeDirectoryEnrichedRecord);
         mongoTemplate.save(activeDirectoryScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName("scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score"));
 
-        smart.setAggregationRecords(Arrays.asList(staticAggregationRecord, notStaticAggregationRecord));
+        smart.setSmartAggregationRecords(Arrays.asList(
+                new SmartAggregationRecord(staticAggregationRecord),
+                new SmartAggregationRecord(notStaticAggregationRecord)
+        ));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
@@ -202,7 +193,7 @@ public class AlertServiceTest {
         Instant endDate = Instant.parse("2017-10-20T16:00:00.000Z");
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+        AdeAggregationRecord aggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
                 +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
@@ -216,8 +207,7 @@ public class AlertServiceTest {
         mongoTemplate.save(fileEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
         mongoTemplate.save(fileEvent2, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
 
-        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
-
+        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertNotNull(alert);
@@ -234,7 +224,7 @@ public class AlertServiceTest {
         Instant endDate = Instant.parse("2017-11-20T16:00:00.000Z");
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly",
+        AdeAggregationRecord aggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly",
                 +10d, "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // event
@@ -250,8 +240,7 @@ public class AlertServiceTest {
         mongoTemplate.save(activeDirectoryEvent3, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
 
-        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
-
+        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertNotNull(alert);
@@ -267,13 +256,12 @@ public class AlertServiceTest {
         Instant endDate = Instant.parse("2017-10-23T16:00:00.000Z");
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+        AdeAggregationRecord aggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
                 +2000d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
-        generateFileEvents(2000, adeAggregationRecord.getStartInstant());
-
-        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+        generateFileEvents(2000, aggregationRecord.getStartInstant());
+        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertNotNull(alert);
@@ -291,13 +279,12 @@ public class AlertServiceTest {
         Instant endDate = Instant.parse("2017-05-23T16:00:00.000Z");
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
+        AdeAggregationRecord aggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
                 100.0, "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
         // raw event
-        generateAuthenticationEvents(1, adeAggregationRecord.getStartInstant());
-
-        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+        generateAuthenticationEvents(1, aggregationRecord.getStartInstant());
+        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertNotNull(alert);
@@ -313,13 +300,12 @@ public class AlertServiceTest {
         Instant endDate = Instant.parse("2017-10-24T16:00:00.000Z");
 
         // indicator
-        AdeAggregationRecord adeAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<FeatureScore>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
+        AdeAggregationRecord aggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
                 +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
-        generateFileEvents(102, adeAggregationRecord.getStartInstant()); //generating 2 events more than the limit (=100)
-
-        smart.setAggregationRecords(Arrays.asList(adeAggregationRecord));
+        generateFileEvents(102, aggregationRecord.getStartInstant()); //generating 2 events more than the limit (=100)
+        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
 
         //generate alerts:
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
@@ -382,22 +368,12 @@ public class AlertServiceTest {
         }
     }
 
-    @Test
-    public void severityTest() {
-        assertEquals(alertEnumsSeverityService.severity(0), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertEnumsSeverityService.severity(40), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertEnumsSeverityService.severity(70), AlertEnums.AlertSeverity.LOW);
-        assertEquals(alertEnumsSeverityService.severity(81), AlertEnums.AlertSeverity.MEDIUM);
-        assertEquals(alertEnumsSeverityService.severity(91), AlertEnums.AlertSeverity.HIGH);
-        assertEquals(alertEnumsSeverityService.severity(97), AlertEnums.AlertSeverity.CRITICAL);
-    }
-
     private SmartRecord generateSingleSmart(int score) {
-        List<FeatureScore> feature_scores = new ArrayList<>();
-        List<AdeAggregationRecord> aggregated_feature_events = new ArrayList<>();
+        List<FeatureScore> featureScores = new ArrayList<>();
+        List<SmartAggregationRecord> smartAggregationRecords = new ArrayList<>();
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now());
         return new SmartRecord(
                 timeRange, contextId, featureName, FixedDurationStrategy.HOURLY,
-                5.0, score, feature_scores, aggregated_feature_events, null);
+                5.0, score, featureScores, smartAggregationRecords, null);
     }
 }

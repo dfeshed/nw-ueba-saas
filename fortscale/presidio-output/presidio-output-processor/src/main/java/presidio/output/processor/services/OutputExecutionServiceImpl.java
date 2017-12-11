@@ -12,10 +12,10 @@ import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
+import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserScoreService;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
@@ -28,7 +28,7 @@ import java.util.*;
 public class OutputExecutionServiceImpl implements OutputExecutionService {
     private static final Logger logger = Logger.getLogger(OutputExecutionServiceImpl.class);
 
-    private final UserScoreService userScoreService;
+    private final UserSeverityService userSeverityService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
@@ -40,7 +40,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final String ALERT_WITH_SEVERITY_METRIC_PREFIX = "alert_created_with_severity.";
     private final String LAST_SMART_TIME_METRIC_NAME = "last_smart_time";
     private static final String ADE_SMART_USER_ID = "userId";
-    private final String USER_GOT_SMART = "userGotSmart";
 
     @Autowired
     MetricCollectingService metricCollectingService;
@@ -48,12 +47,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
-                                      UserScoreService userScoreService,
+                                      UserSeverityService userSeverityService,
                                       int smartThresholdScoreForCreatingAlert, int smartPageSize) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
-        this.userScoreService = userScoreService;
+        this.userSeverityService = userSeverityService;
         this.smartPageSize = smartPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
     }
@@ -124,7 +123,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         //Update the users severities
         if (CollectionUtils.isNotEmpty(users)) {
-            this.userScoreService.updateSeveritiesForUsersList(users, true);
+            this.userSeverityService.updateSeveritiesForUsersList(users, true);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUMBER_OF_ALERTS_METRIC_NAME).
@@ -169,7 +168,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         this.userService.updateAllUsersAlertData();
         logger.info("Finish Recalculating User Score");
         logger.info("Start Updating UserSeverity");
-        this.userScoreService.updateSeverities();
+        this.userSeverityService.updateSeverities();
         logger.info("Finish Updating Users Severity");
     }
 

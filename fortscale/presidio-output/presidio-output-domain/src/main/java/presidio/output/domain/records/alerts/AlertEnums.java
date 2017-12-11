@@ -1,4 +1,4 @@
-package presidio.output.commons.services.alert;
+package presidio.output.domain.records.alerts;
 
 
 public class AlertEnums {

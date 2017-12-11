@@ -6,7 +6,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import presidio.output.domain.records.alerts.Alert;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface AlertRepository extends ElasticsearchRepository<Alert, String> {
 

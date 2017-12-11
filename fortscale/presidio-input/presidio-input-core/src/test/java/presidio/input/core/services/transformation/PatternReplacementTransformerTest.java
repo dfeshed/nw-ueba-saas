@@ -34,7 +34,7 @@ public class PatternReplacementTransformerTest {
         AuthenticationRawEvent authRawEvent = createAuthenticationEvent(Instant.now(), "dwef043.fortscale.com");
         List<AbstractInputDocument> transformedEvents = patternReplacementTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
 
-        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent)transformedEvents.get(0)).getSrcMachineCluster());
+        Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
     }
 
     private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate, String srcMachineName) {
@@ -53,6 +53,6 @@ public class PatternReplacementTransformerTest {
                 "dstMachineId",
                 "dstMachineName",
                 "dstMachineDomain",
-                "resultCode");
+                "resultCode", "site");
     }
 }

@@ -80,7 +80,7 @@ public class OperationTypeCategoryTransformerTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "srcMachineName", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site");
 
         OperationTypeCategoryTransformer operationTypeCategoryTransformer = new OperationTypeCategoryTransformer(null);
         List<AbstractInputDocument> transformed = operationTypeCategoryTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));

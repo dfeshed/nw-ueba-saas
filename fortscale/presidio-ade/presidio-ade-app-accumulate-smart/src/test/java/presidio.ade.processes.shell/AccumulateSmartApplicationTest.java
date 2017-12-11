@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 import presidio.ade.domain.store.smart.SmartDataStore;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by maria_dorohin on 8/24/17.
@@ -103,14 +105,16 @@ public class AccumulateSmartApplicationTest {
                 //The following if condition is to check the following 2 scenarios:
                 // - days that one of the smart don't contains aggregation records
                 // - a day that all of its smarts don't contain any aggregation record.
-                List<AdeAggregationRecord> aggregationRecords = Collections.emptyList();
+                List<SmartAggregationRecord> smartAggregationRecords = Collections.emptyList();
                 if(days != 1 && smartIndex != days){
-                    aggregationRecords = createAggregationRecord(start, end, featureName, smartScore + smartIndex * 10);
+                    smartAggregationRecords = createAggregationRecords(start, end, featureName, smartScore + smartIndex * 10).stream()
+                            .map(SmartAggregationRecord::new)
+                            .collect(Collectors.toList());
                 }
 
                 SmartRecord smartRecord = new SmartRecord(
                         timeRange, CONTEXT_ID, featureName, FixedDurationStrategy.HOURLY,
-                        smartValue, smartScore, featureScores, aggregationRecords, null);
+                        smartValue, smartScore, featureScores, smartAggregationRecords, null);
                 smartRecords.add(smartRecord);
                 start = end;
                 end = end.plus(smartDuration);
@@ -128,7 +132,7 @@ public class AccumulateSmartApplicationTest {
      * @param featureValue value
      * @return List<AdeAggregationRecord>
      */
-    private List<AdeAggregationRecord> createAggregationRecord(Instant start, Instant end, String featureName, double featureValue) {
+    private List<AdeAggregationRecord> createAggregationRecords(Instant start, Instant end, String featureName, double featureValue) {
         List<AdeAggregationRecord> adeAggregationRecords = new ArrayList<>();
         AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(start, end, featureName, featureValue, "testConfName", Collections.singletonMap("userId", CONTEXT_ID), AggregatedFeatureType.SCORE_AGGREGATION);
         adeAggregationRecords.add(adeAggregationRecord);
@@ -157,7 +161,7 @@ public class AccumulateSmartApplicationTest {
                 aggregatedFeatureEventsValues.forEach((k, value) -> {
                     value.forEach((hour, score) -> {
                         //assert that score with zero did not store in map
-                        Assert.assertFalse(score.equals(0));
+                        Assert.assertFalse(score.equals(0.0));
                     });
                     //assert num of aggr (without aggr with score zero)
                     Assert.assertTrue(value.size() == NUM_OF_SMARTS_PER_HOUR - 2);

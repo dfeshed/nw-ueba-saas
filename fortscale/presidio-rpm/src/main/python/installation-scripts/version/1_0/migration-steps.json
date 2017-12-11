@@ -33,7 +33,7 @@
       "has_uninstall": "false"
     },
     {
-      "filePath": "init_elasticsearch.py",
+      "filePath": "init_elasticsearch.sh",
       "executor": "default",
       "description": "Creating elasticsearch indexes and kibana dashboards",
       "has_uninstall": "false"

@@ -27,6 +27,7 @@ public class AuthenticationInputToOutputConverter implements InputOutputConverte
         outputEvent.setDstMachineNameRegexCluster(StringUtils.isEmpty(transformedEvent.getDstMachineCluster()) ? transformedEvent.getDstMachineName() : transformedEvent.getDstMachineCluster());
         outputEvent.setDstMachineDomain(transformedEvent.getDstMachineDomain());
         outputEvent.setResultCode(transformedEvent.getResultCode());
+        outputEvent.setSite(transformedEvent.getSite());
         return outputEvent;
     }
 }
