@@ -2,12 +2,10 @@ package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,9 +36,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
 public class UserScoreServiceModuleTest {
 
     @Autowired
@@ -100,7 +97,6 @@ public class UserScoreServiceModuleTest {
 
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -139,7 +135,6 @@ public class UserScoreServiceModuleTest {
 
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -178,7 +173,6 @@ public class UserScoreServiceModuleTest {
     }
 
     @Test
-    @Ignore
     public void testBulkUserScore() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
             AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
@@ -282,7 +276,8 @@ public class UserScoreServiceModuleTest {
     }
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
-        User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user1 = new User(userId, userName, "displayName", 1d, null, null, null, UserSeverity.CRITICAL, 0);
+        user1.setId(userId);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
 
