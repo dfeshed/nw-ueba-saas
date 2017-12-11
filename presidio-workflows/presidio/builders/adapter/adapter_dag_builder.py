@@ -6,7 +6,7 @@ from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-presidio_extension = __import__('presidio_extension')
+presidio_extension = __import__('presidio_extension.builders.adapter.adapter_dag_builder_extension', fromlist=['AdapterDagBuilderExtension'])
 AdapterDagBuilderExtension = getattr(presidio_extension, 'AdapterDagBuilderExtension')
 
 ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
