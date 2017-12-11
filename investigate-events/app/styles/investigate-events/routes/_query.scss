@@ -10,6 +10,7 @@ $investigateReconFullWidth: 100%;
     }
     &-slave {
       width: $reconWidth;
+      box-shadow: inset 0px 0px 0px 1px background-color(primary, dark, somewhat-opaque);
     }
   }
 }
