@@ -1,8 +1,10 @@
 package fortscale.ml.model.builder.smart_weights;
 
+import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,7 +18,8 @@ import static fortscale.ml.model.builder.smart_weights.SmartWeightModelTestUtils
 import static fortscale.ml.model.builder.smart_weights.SmartWeightModelTestUtils.createClusterConfs;
 
 /**
- * Created by barak_schuster on 31/08/2017.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
 public class ClustersContributionsSimulatorTest {
     /*************************************************************************************************************
@@ -43,16 +46,14 @@ public class ClustersContributionsSimulatorTest {
             Mockito.when(scorerAlgorithmMock.calculateScore(
                     Mockito.eq(smartAggregatedRecordDataContainer.getSmartAggregatedRecordsData()),
                     Mockito.anyListOf(ClusterConf.class)
-            )).thenReturn(smartValue);
+            )).thenReturn(new FeatureScore(StringUtils.EMPTY, smartValue));
             return smartAggregatedRecordDataContainer;
         }
 
         public static SmartAggregatedRecordDataContainer createSmartAggregatedRecordDataContainer(long startTime,
                                                                                                   Map<String, Double> fullAggregatedFeatureEventNameToScore) {
             Instant startTimeInstant = Instant.ofEpochMilli(startTime);
-            SmartAggregatedRecordDataContainer smartAggregatedRecordDataContainer = new SmartAggregatedRecordDataContainer(startTimeInstant, fullAggregatedFeatureEventNameToScore);
-
-            return smartAggregatedRecordDataContainer;
+            return new SmartAggregatedRecordDataContainer(startTimeInstant, fullAggregatedFeatureEventNameToScore);
         }
 
         /**

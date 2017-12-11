@@ -23,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 import presidio.output.domain.records.alerts.Alert;
@@ -39,12 +40,7 @@ import presidio.output.processor.services.OutputExecutionServiceImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
@@ -88,7 +84,7 @@ public class OutputExecutionServiceModuleTest {
         usersToScoreList.add(new Pair<>("userTest7", 45.0));
         usersToScoreList.add(new Pair<>("userTest8", 85.0));
 
-        AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "highestStartInstantScoreUserIdFileHourly",
+        AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(Instant.now(), Instant.now(), "highestStartInstantScoreUserIdFileHourly",
                 10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", USER_ID_TEST_USER), AggregatedFeatureType.SCORE_AGGREGATION);
         EnrichedEvent event = new FileEnrichedEvent(Instant.now(), Instant.now(), "eventId", Schema.FILE.toString(),
                 USER_ID_TEST_USER, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
@@ -100,7 +96,7 @@ public class OutputExecutionServiceModuleTest {
         context.put("userId", USER_ID_TEST_USER);
         for (Pair<String, Double> usersToScore : usersToScoreList) {
             SmartRecord smartRecord = new SmartRecord(timeRange, usersToScore.getKey(), "featureName", FixedDurationStrategy.HOURLY,
-                    90, usersToScore.getValue(), Collections.emptyList(), Arrays.asList(adeAggregationRecord), context);
+                    90, usersToScore.getValue(), Collections.emptyList(), Collections.singletonList(new SmartAggregationRecord(aggregationRecord)), context);
             smartRecords.add(smartRecord);
         }
 

@@ -29,7 +29,8 @@ import static fortscale.ml.model.ModelBuilderData.NoDataReason.NO_DATA_IN_DATABA
 import static fortscale.ml.model.retriever.smart_data.SmartAccumulationFlattener.flattenSmartRecordToSmartAggrData;
 
 /**
- * Created by barak_schuster on 24/08/2017.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
 public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
 
@@ -60,7 +61,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
                 partitionsResolutionInSeconds, smartRecordConfDurationStrategyInSeconds, dataRetrieverConf.getFactoryName(), smartRecordConf.getName());
         Assert.isTrue(partitionsResolutionInSeconds % smartRecordConfDurationStrategyInSeconds == 0, message);
         this.weightsModelName = dataRetrieverConf.getWeightsModelName();
-        Assert.hasText(weightsModelName ,String.format("weightsModelName must be defined for retriever name=%s",this.smartRecordConfName));
+        Assert.hasText(weightsModelName, String.format("weightsModelName must be defined for retriever name=%s", this.smartRecordConfName));
 
         this.smartWeightsScorerAlgorithm = smartWeightsScorerAlgorithm;
     }
@@ -70,7 +71,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         if(modelConfService == null) {
             modelConfService = DynamicModelConfServiceContainer.getModelConfService();
             this.weightsModelConf = this.modelConfService.getModelConf(weightsModelName);
-            Assert.notNull(this.weightsModelConf ,String.format("modelConf must be defined for retriever name=%s",this.smartRecordConfName));
+            Assert.notNull(this.weightsModelConf, String.format("modelConf must be defined for retriever name=%s", this.smartRecordConfName));
         }
         Instant startTime = getStartTime(endTime).toInstant();
         Instant endTimeInstant = endTime.toInstant();
@@ -111,13 +112,12 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     private double calculateSmartValue(SmartAggregatedRecordDataContainer recordsDataContainer, SmartWeightsModel smartWeightsModel) {
         List<ClusterConf> clusterConfs = smartWeightsModel.getClusterConfs();
         List<SmartAggregatedRecordData> aggregatedRecordsData = recordsDataContainer.getSmartAggregatedRecordsData();
-        return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData,clusterConfs);
+        return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData, clusterConfs).getScore();
     }
 
     private ModelDAO getModelDAO(Instant endTimeInstant) {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
-        ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
-        return  latestBeforeEventTimeAfterOldestAllowedModelDao;
+        return modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
     }
 
 
@@ -133,12 +133,12 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         if (contextIds.isEmpty()) {
             return new ModelBuilderData(NO_DATA_IN_DATABASE);
         }
-        Set<Long> distinctParitionIds = new HashSet<>();
+        Set<Long> distinctPartitionIds = new HashSet<>();
         for (String contextId : contextIds) {
             List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulationDataReader.findAccumulatedEventsByContextIdAndStartTimeRange(smartRecordConfName, contextId, startTime, endTime);
             List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers = flattenSmartRecordToSmartAggrData(accumulatedSmartRecords);
 
-            distinctParitionIds.addAll(calcNumOfPartitions(accumulatedSmartRecords));
+            distinctPartitionIds.addAll(calcNumOfPartitions(accumulatedSmartRecords));
             smartAggregatedRecordDataContainers.stream()
                     .mapToDouble(smartData -> calculateSmartValue(smartData, smartWeightsModel))
                     .max()
@@ -151,7 +151,7 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
         if (reductionHistogram.getN() == 0) {
             return new ModelBuilderData(ModelBuilderData.NoDataReason.ALL_DATA_FILTERED);
         } else {
-            reductionHistogram.setNumberOfPartitions(distinctParitionIds.size());
+            reductionHistogram.setNumberOfPartitions(distinctPartitionIds.size());
             SmartValueData smartValueData = new SmartValueData(reductionHistogram,weightsModelEndTime);
             return new ModelBuilderData(smartValueData);
         }
@@ -180,9 +180,9 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
     }
 
     Set<Long> calcNumOfPartitions(List<AccumulatedSmartRecord> data) {
-        return data.stream().map(x -> {
-            long partitionId = ((long) x.getStartInstant().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds;
-            return partitionId;
-        }).distinct().collect(Collectors.toSet());
+        return data.stream()
+                .map(x -> (x.getStartInstant().getEpochSecond() / partitionsResolutionInSeconds) * partitionsResolutionInSeconds)
+                .distinct()
+                .collect(Collectors.toSet());
     }
 }

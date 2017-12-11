@@ -4,6 +4,7 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
@@ -65,9 +66,11 @@ public class AlertServiceImpl implements AlertService {
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags(), alertContributionToUserScore);
         // supporting information
         List<Indicator> supportingInfo = new ArrayList<>();
-        for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {
-            SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(adeAggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(adeAggregationRecord, alert, eventsLimit));
+
+        for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
+            AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
+            SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
+            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {
@@ -109,6 +112,9 @@ public class AlertServiceImpl implements AlertService {
     }
 
     private List<String> extractIndicatorsNames(SmartRecord smart) {
-        return smart.getAggregationRecords().stream().map(AdeAggregationRecord::getFeatureName).collect(Collectors.toList());
+        return smart.getSmartAggregationRecords().stream()
+                .map(SmartAggregationRecord::getAggregationRecord)
+                .map(AdeAggregationRecord::getFeatureName)
+                .collect(Collectors.toList());
     }
 }
