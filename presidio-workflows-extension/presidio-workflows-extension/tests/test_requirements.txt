@@ -1,7 +1,0 @@
-pytest-cov
-pytest-xdist
-pytest
-requests
-pytz
-mock
-apache-airflow[devel]==1.8.2
