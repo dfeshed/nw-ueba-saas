@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "886eb050-de68-11e7-8d38-f9d268797d31",
+    "_type": "visualization",
+    "_source": {
+      "title": "Scoring: amount of score>0 per adeEventType",
+      "visState": "{\"title\":\"Scoring: amount of score>0 per adeEventType\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.AMOUNT_OF_NON_ZERO_SCORE\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"tags.ADE_EVENT_TYPE.keyword\",\"include\":\"\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"_term\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]
