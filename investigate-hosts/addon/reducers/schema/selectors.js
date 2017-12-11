@@ -24,29 +24,31 @@ const CHECKBOX_COLUMN = Immutable.from([{
   headerComponentClass: 'rsa-form-checkbox'
 }]);
 
+const DEFAULT_COLUMNS = Immutable.from(['machine.machineName']);
+
+
 const { createSelector } = reselect;
 const _schema = (state) => state.endpoint.schema.schema || [];
 const _visibleColumns = (state) => state.endpoint.schema.visibleColumns;
-const _userProjectionChanged = (state) => state.endpoint.schema.userProjectionChanged;
+
+
+const _userSelectedColumns = createSelector(
+  _visibleColumns,
+  (visibleColumns) => {
+    return visibleColumns && visibleColumns.length ? [...visibleColumns, ...DEFAULT_COLUMNS] : Immutable.from(DEFAULT_COLUMNS);
+  }
+);
 
 export const getHostTableColumns = createSelector(
-  [_schema, _visibleColumns, _userProjectionChanged],
-  (schema, visibleColumns, userProjectionChanged) => {
+  [_schema, _userSelectedColumns],
+  (schema, visibleColumns) => {
     let finalSchema = [];
     if (schema && schema.length) {
       const updatedSchema = schema.map((item) => {
-        const { dataType, name: field, searchable, values, userProjection } = item;
-        let visible = item.defaultProjection;
-        if (visibleColumns.length) {
-          if (userProjectionChanged) {
-            visible = userProjection || item.defaultProjection;
-          } else {
-            // If user preferences is saved, it should override default projections
-            visible = visibleColumns.includes(field);
-          }
-        }
+        const { dataType, name: field, searchable, values, visible } = item;
+        const updatedVisibility = visible || visibleColumns.includes(field);
         return {
-          visible,
+          visible: updatedVisibility,
           dataType,
           field,
           searchable,
@@ -55,8 +57,13 @@ export const getHostTableColumns = createSelector(
           width: COLUMN_WIDTH[field]
         };
       });
-      // Making it as mutable as schema is passed down to data-table component and data-table component expecting simple array/ember array
-      finalSchema = CHECKBOX_COLUMN.concat(updatedSchema).asMutable();
+
+      const visibleList = updatedSchema.filter((column) => column.visible);
+
+      if (visibleList) {
+        // Making it as mutable as schema is passed down to data-table component and data-table component expecting simple array/ember array
+        finalSchema = CHECKBOX_COLUMN.concat(updatedSchema).asMutable();
+      }
     }
     return finalSchema;
   }

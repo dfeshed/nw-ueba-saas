@@ -36,8 +36,7 @@ test('should return the initial state', function(assert) {
   assert.deepEqual(result, {
     schema: null,
     schemaLoading: true,
-    visibleColumns: [],
-    userProjectionChanged: false
+    visibleColumns: []
   });
 });
 
@@ -71,7 +70,7 @@ test('The UPDATE_COLUMN_VISIBILITY action will toggle the defaultProjection prop
         'description': 'Agent Id',
         'dataType': 'STRING',
         'searchable': true,
-        'defaultProjection': true,
+        'visible': true,
         'wrapperType': 'STRING'
       },
       {
@@ -79,7 +78,7 @@ test('The UPDATE_COLUMN_VISIBILITY action will toggle the defaultProjection prop
         'description': 'Agent Version',
         'dataType': 'STRING',
         'searchable': true,
-        'defaultProjection': false,
+        'visible': false,
         'wrapperType': 'STRING'
       }
     ],
@@ -88,8 +87,7 @@ test('The UPDATE_COLUMN_VISIBILITY action will toggle the defaultProjection prop
 
   const result = reducer(previous, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machine.agentVersion', visible: false } });
 
-  assert.equal(result.schema[1].defaultProjection, true, 'expected toggle the property');
-  assert.equal(result.userProjectionChanged, true, 'projection changed flag is set');
+  assert.equal(result.schema[1].visible, true, 'expected toggle the property');
 });
 
 

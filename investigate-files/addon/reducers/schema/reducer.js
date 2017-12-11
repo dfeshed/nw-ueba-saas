@@ -7,8 +7,7 @@ import * as ACTION_TYPES from 'investigate-files/actions/types';
 const schemaInitialState = Immutable.from({
   schema: null,
   schemaLoading: true,
-  visibleColumns: [],
-  userProjectionChanged: false
+  visibleColumns: []
 });
 
 const schemaReducer = handleActions({
@@ -28,18 +27,15 @@ const schemaReducer = handleActions({
 
   [ACTION_TYPES.UPDATE_COLUMN_VISIBILITY]: (state, { payload }) => state.merge({
     schema: state.schema.map((field) => {
-      let { defaultProjection } = field;
-      let userProjection = false;
+      let { visible } = field;
       if (field.name === payload.field) {
-        defaultProjection = userProjection = !payload.visible;
+        visible = !payload.visible;
       }
       return {
         ...field,
-        defaultProjection,
-        userProjection
+        visible
       };
-    }),
-    userProjectionChanged: true
+    })
   }),
 
   [ACTION_TYPES.SET_VISIBLE_COLUMNS]: (state, { payload }) => state.set('visibleColumns', payload)

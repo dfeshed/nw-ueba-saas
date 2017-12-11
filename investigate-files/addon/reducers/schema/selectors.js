@@ -30,28 +30,31 @@ const SUPPORTED_SORT_TYPES = [
   'mac.resources.company'
 ];
 
+const DEFAULT_COLUMNS = Immutable.from(['firstFileName']);
+
 const schema = (state) => state.files.schema.schema || Immutable.from([]);
-const visibleColumns = (state) => state.files.schema.visibleColumns;
-const userProjectionChanged = (state) => state.files.schema.userProjectionChanged;
+const _visibleColumns = (state) => state.files.schema.visibleColumns;
+
+
+const _userSelectedColumns = createSelector(
+  _visibleColumns,
+  (visibleColumns) => {
+    return visibleColumns && visibleColumns.length ? [...visibleColumns, ...DEFAULT_COLUMNS] : Immutable.from(DEFAULT_COLUMNS);
+  }
+);
 
 export const columns = createSelector(
-  [schema, visibleColumns, userProjectionChanged],
-  (schema, visibleColumns, userProjectionChanged) => {
+  [schema, _userSelectedColumns],
+  (schema, visibleColumns) => {
     const updatedSchema = schema.map((item) => {
-      const { dataType, name: field, searchable, values, userProjection } = item;
-      let visible = item.defaultProjection;
-      if (visibleColumns.length) {
-        if (userProjectionChanged) {
-          visible = userProjection || item.defaultProjection;
-        } else {
-          visible = visibleColumns.includes(field);
-        }
-      }
+      const { dataType, name: field, searchable, values, visible } = item;
+
+      const updatedVisibility = visible || visibleColumns.includes(field);
 
       const disableSort = !SUPPORTED_SORT_TYPES.includes(field);
 
       return {
-        visible,
+        visible: updatedVisibility,
         dataType,
         field,
         searchable,

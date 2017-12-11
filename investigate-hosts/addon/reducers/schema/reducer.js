@@ -6,8 +6,7 @@ import Immutable from 'seamless-immutable';
 const schemaInitialState = Immutable.from({
   schema: null,
   schemaLoading: true,
-  visibleColumns: [],
-  userProjectionChanged: false
+  visibleColumns: []
 });
 
 const schemas = reduxActions.handleActions({
@@ -21,18 +20,15 @@ const schemas = reduxActions.handleActions({
   },
   [ACTION_TYPES.UPDATE_COLUMN_VISIBILITY]: (state, { payload }) => state.merge({
     schema: state.schema.map((field) => {
-      let { defaultProjection } = field;
-      let userProjection = false;
+      let { visible } = field;
       if (field.name === payload.field) {
-        defaultProjection = userProjection = !payload.visible;
+        visible = !payload.visible;
       }
       return {
         ...field,
-        defaultProjection,
-        userProjection
+        visible
       };
-    }),
-    userProjectionChanged: true
+    })
   }),
 
   [ACTION_TYPES.GET_PREFERENCES]: (state, action) => {
