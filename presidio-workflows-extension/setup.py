@@ -61,7 +61,7 @@ setup(name='presidio-workflows-extension',
       url='https://bitbucket.org/fortscale/presidio-core',
       author='fortscale',
       author_email='fsgit@fortscale.com',
-      packages=['presidio_extension'],
+      packages=find_packages(),
       install_requires=[
           'apache-airflow[devel]==1.8.2', 'psycopg2', 'python-dateutil'
       ],
