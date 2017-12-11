@@ -91,6 +91,7 @@ def cleanup_dags_from_postgres(dag_ids,session=None):
     for t in ["xcom", "task_instance", "sla_miss", "log", "job", "dag_run", "dag"]:
         for dag_id in dag_ids:
             sql = "DELETE FROM {} WHERE dag_id LIKE \'%{}%\'".format(t, dag_id)
+            logging.info("executing: %s",sql)
             session.execute(sql)
 
 dag_models = get_dag_modelss_by_prefix("full_flow")
