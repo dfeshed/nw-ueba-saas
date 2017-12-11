@@ -247,10 +247,8 @@
                             <!-- pre remove commands -->
                             if [ "$1" = 0 ] ; then
                             echo "pre remove condition passed"
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
-                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
                             fi
-
                         </script>
                     </preremoveScriptlet>
                     <postremoveScriptlet>
