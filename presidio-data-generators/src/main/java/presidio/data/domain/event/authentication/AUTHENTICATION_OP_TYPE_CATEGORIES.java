@@ -2,7 +2,7 @@ package presidio.data.domain.event.authentication;
 
 import java.util.Arrays;
 
-public enum  AUTHENTICATION_OP_TYPE_CATEGORIES {
+public enum AUTHENTICATION_OP_TYPE_CATEGORIES {
 
     INTERACTIVE_REMOTE ("INTERACTIVE_REMOTE");
 

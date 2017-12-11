@@ -119,9 +119,8 @@ public class ActiveDirectoryEventsGeneratorTest {
 
         ActiveDirectoryEventsGenerator generator = new ActiveDirectoryEventsGenerator();
         IActiveDirectoryOperationGenerator opGenerator = new ActiveDirectoryOpGeneratorTemplateFactory().getActiveDirectoryOperationsGenerator(
-                AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value,
-                Arrays.asList(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value,
-                        ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP.value));
+                AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP.value
+        );
 
         generator.setActiveDirOperationGenerator(opGenerator);
         events = generator.generate();
