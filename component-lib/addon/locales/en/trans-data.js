@@ -134,7 +134,7 @@ export default {
     placeholder: 'Enter a Meta Key and Value (optional)',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
-    expensive: 'Performing this operation could add a considerable amount of time.'
+    expensive: 'Performing this operation might take more time.'
   },
 
   ipConnections: {

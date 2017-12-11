@@ -33,7 +33,7 @@ test('it sets operatorOptions when metaFormat is Text', function(assert) {
   });
   const options = component.get('operatorOptions');
 
-  assert.equal(options.get('length'), 8);
+  assert.equal(options.get('length'), 7);
   assert.ok(options.findBy('displayName', '='), 'Expected to find =');
   assert.ok(options.findBy('displayName', '!='), 'Expected to find !=');
   assert.ok(options.findBy('displayName', 'exists'), 'Expected to find exists');
@@ -41,7 +41,6 @@ test('it sets operatorOptions when metaFormat is Text', function(assert) {
   assert.ok(options.findBy('displayName', 'contains'), 'Expected to find contains');
   assert.ok(options.findBy('displayName', 'begins'), 'Expected to find begins');
   assert.ok(options.findBy('displayName', 'ends'), 'Expected to find ends');
-  assert.ok(options.findBy('displayName', 'regex'), 'Expected to find regex');
 });
 
 test('it sets operatorOptions when metaFormat is IPv4 or IPv6', function(assert) {
@@ -76,7 +75,6 @@ test('it sets isExpensive when metaIndex is anything but value', function(assert
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', 'regex').isExpensive, 'Expected regex to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
   component.set('metaFormat', null);
@@ -93,7 +91,6 @@ test('it sets isExpensive when metaIndex is anything but value', function(assert
   assert.ok(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', 'regex').isExpensive, 'Expected regex to be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
   component.set('metaFormat', null);
@@ -110,7 +107,6 @@ test('it sets isExpensive when metaIndex is anything but value', function(assert
   assert.ok(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', 'regex').isExpensive, 'Expected regex to be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
   component.set('metaFormat', null);

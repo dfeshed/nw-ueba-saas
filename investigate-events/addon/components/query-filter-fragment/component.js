@@ -43,7 +43,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
   classNames: ['rsa-query-fragment'],
 
-  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing', 'isExpensive', 'queryFragmentInvalid'],
+  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing', 'isExpensive', 'queryFragmentInvalid', 'metaIndex'],
 
   type: 'meta',
 
@@ -90,10 +90,9 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     const contains = { displayName: 'contains', isExpensive: !efficientIndex };
     const begins = { displayName: 'begins', isExpensive: !efficientIndex };
     const ends = { displayName: 'ends', isExpensive: !efficientIndex };
-    const regex = { displayName: 'regex', isExpensive: !efficientIndex };
 
     if (metaFormat === 'Text') {
-      return [ eq, notEq, exists, notExists, contains, begins, ends, regex ];
+      return [ eq, notEq, exists, notExists, contains, begins, ends ];
     } else if (metaFormat === 'IPv4' || metaFormat === 'IPv6') {
       return [ eq, notEq, exists, notExists ];
     } else {
@@ -476,7 +475,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         const keyIndexes = ['none', 'key', 'value'];
 
         this.set('meta', selection.metaName);
-        this.set('metaIndex', keyIndexes[keyIndexType]);
+        this.set('metaIndex', keyIndexes[keyIndexType - 1]);
         this.set('metaFormat', selection.format);
         this.set('type', 'operator');
       } else if (type === 'operator') {

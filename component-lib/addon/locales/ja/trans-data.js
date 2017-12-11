@@ -134,7 +134,7 @@ export default {
     placeholder: 'ja_Enter a Meta Key and Value (optional)',
     querySelected: 'ja_Query with selected filters',
     querySelectedNewTab: 'ja_Query with selected filters in a new tab',
-    expensive: 'ja_Performing this operation could add a considerable amount of time.'
+    expensive: 'ja_Performing this operation might take more time.'
   },
   ipConnections: {
     ipCount: '(ja_{{count}} IPs)',

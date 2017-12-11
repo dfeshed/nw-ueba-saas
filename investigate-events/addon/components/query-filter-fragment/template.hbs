@@ -14,7 +14,7 @@
     onchange=(action 'updateFilter') as |option|}}
 
     {{#if (eq type 'operator')}}
-      {{rsa-icon name="report-problem-triangle"
+      {{rsa-icon name="stopwatch"
         style="lined"
         class=(if option.isExpensive "is-expensive expensive-operator-indicator" "expensive-operator-indicator")
         title=(t 'queryBuilder.expensive')
@@ -33,7 +33,7 @@
 {{else}}
   <div class="meta" title={{apiMetaMessage}} {{action 'toggleSelect'}}>
     {{#if isExpensive}}
-      {{rsa-icon name="report-problem-triangle"
+      {{rsa-icon name="stopwatch"
         style="lined"
         class="expensive-operator-indicator"
         title=(t 'queryBuilder.expensive')
