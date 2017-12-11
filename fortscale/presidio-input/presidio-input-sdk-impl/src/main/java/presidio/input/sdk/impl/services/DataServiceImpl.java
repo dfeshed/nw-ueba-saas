@@ -47,12 +47,10 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public int clean(Instant startDate, Instant endDate, Schema schema) {
-        Instant startTimeBegingOfTime = Instant.ofEpochSecond(0);
-        Instant endTimeCurrentSystemTime = Instant.ofEpochSecond(System.currentTimeMillis() / 1000);  //todo: at the moment we just want to delete all the documents in the collection, in the future we will use values that we receive from user or airflow
         logger.debug("Deleting dlpfile records between {}:{} and {}:{}.",
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        return dataSourceRepository.cleanDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(schema), startTimeBegingOfTime, endTimeCurrentSystemTime);
+        return dataSourceRepository.cleanDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
     }
 
     @Override
