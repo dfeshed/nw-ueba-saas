@@ -27,7 +27,7 @@ public class IndicatorQuery {
         private int pageSize;
         private String filterByAlertsId;
 
-        public IndicatorQueryBuilder(Sort sort) {
+        public IndicatorQueryBuilder() {
         }
 
         IndicatorQueryBuilder sort(Sort sort) {

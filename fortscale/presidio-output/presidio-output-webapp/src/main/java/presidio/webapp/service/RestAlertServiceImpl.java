@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
 import presidio.output.commons.services.alert.AlertEnums;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.CountAggregation;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -291,14 +290,17 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public IndicatorsWrapper getIndicatorsByAlertId(String alertId, IndicatorQuery indicatorQuery) {
+    public IndicatorsWrapper getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery) {
         List<Indicator> restIndicators = new ArrayList<Indicator>();
         int totalElements = 0;
         int pageNumber = indicatorQuery.getPageNumber() != null ? indicatorQuery.getPageNumber() : 0;
         int pageSize = indicatorQuery.getPageSize() != null ? indicatorQuery.getPageSize() : 10;
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
+
         if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
             Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
+            Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId();
+
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 restIndicators.add(createRestIndicator(indicator));
             }
@@ -318,6 +320,10 @@ public class RestAlertServiceImpl implements RestAlertService {
         }
         return createIndicatorsWrapper(restIndicators, totalElements, indicatorQuery.getPageNumber());
 
+    }
+
+    private presidio.output.domain.records.alerts.IndicatorQuery convertInIndicatorQuery(IndicatorQuery indicatorQuery) {
+        return new presidio.output.domain.records.alerts.IndicatorQuery.IndicatorQueryBuilder().builde();
     }
 
     @Override
