@@ -7,9 +7,9 @@
     <label class="rsa-form-label power-select">
       {{#power-select
         options=eventColumnGroups.all
-        selected=eventColumnGroups.selected
+        selected=selectedColumnGroup
         searchEnabled=false
-        onchange=(action 'handleColumnGroupChange') as |option|}}
+        onchange=(action 'setColumnGroup') as |option|}}
         {{option.name}}
       {{/power-select}}
     </label>
@@ -40,7 +40,7 @@
       fitToWidth=true
       items=items
       selectedIndex=selectedIndex
-      columnsConfig=eventColumnGroups.selected.columns
+      columnsConfig=selectedColumnGroup.columns
       language=language
       aliases=aliases
       onRowClick=rowClickAction

@@ -10,7 +10,6 @@ import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-uti
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { lookup } from 'ember-dependency-lookup';
-import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { SET_PREFERENCES } from 'recon/actions/types';
 import { getCurrentPreferences } from 'investigate-events/reducers/investigate/data-selectors';
 import Ember from 'ember';
@@ -122,28 +121,30 @@ const _getPreferences = (dispatch, modelName) => {
     if (data) {
       // Only if preferences is sent from api, set the preference state.
       // Otherwise, initial state will be used.
-      const {
-        eventAnalysisPreferences = {},
-        queryTimeFormat
-      } = data;
-      const reconSize = eventAnalysisPreferences.isReconExpanded ?
-        RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN;
       dispatch({
         type: ACTION_TYPES.SET_PREFERENCES,
-        payload: { reconSize, queryTimeFormat }
+        payload: data
+      });
+    } else {
+      // Since there is no preference data for the current user, set the default column group.
+      // This cannot be set as initial state in redux, since it results in the entire events table
+      // rendering twice - the first time for default, then again for the persisted group when
+      // we get preference data from backend.
+      dispatch({
+        type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
+        payload: 'SUMMARY'
       });
     }
   });
 };
 
 /**
- * Clicking on event page expand and shrink toggle button, persisting the recon panel size
- * @param {function} isReconExpanded true/false
- * @return void
+ * Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
+ * @param state the redux state
  * @public
  */
-export const savePreferences = (getState) => {
-  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState)).then(() => {
+export const savePreferences = (state) => {
+  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state)).then(() => {
     Logger.info('Successfully persisted Value');
   });
 };

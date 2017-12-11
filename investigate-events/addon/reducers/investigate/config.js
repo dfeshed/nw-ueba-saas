@@ -80,6 +80,9 @@ export default {
       defaultPacketFormat: 'PCAP',
       autoDownloadExtractedFiles: true,
       packetsPageSize: 100
+    },
+    eventPreferences: {
+      columnGroup: 'SUMMARY'
     }
   }
 };

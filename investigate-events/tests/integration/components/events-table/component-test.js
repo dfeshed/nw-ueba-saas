@@ -29,7 +29,7 @@ moduleForComponent('events-table', 'Integration | Component | events table', {
       }
     };
     this.set('eventColumnGroups', EventColumnGroups.create());
-    new DataHelper(this.get('redux')).initializeData();
+    new DataHelper(this.get('redux')).initializeData().setColumnGroup('SUMMARY');
     this.render(hbs`{{events-table eventColumnGroups=eventColumnGroups}}`);
     assert.equal(this.$('.rsa-investigate-events-table').length, 1);
     assert.equal(this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
@@ -51,7 +51,7 @@ test('it should show columns for Event Analysis', function(assert) {
   selectChoose('.ember-power-select-trigger', 'Email Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.rsa-data-table-header-cell').length, 41, 'Should show columns for event analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Email Analysis', 'Default Column group is Summary List.');
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Email Analysis', 'Selected column group should be Email Analysis.');
   });
 });
 
@@ -60,7 +60,7 @@ test('it should show columns for Malware Analysis', function(assert) {
   selectChoose('.ember-power-select-trigger', 'Malware Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.rsa-data-table-header-cell').length, 27, 'Should show columns for malware analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Default Column group is Summary List.');
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Selected column group should be Malware Analysis.');
   });
 });
 
@@ -69,7 +69,7 @@ test('it should show columns for Threat Analysis', function(assert) {
   selectChoose('.ember-power-select-trigger', 'Threat Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.rsa-data-table-header-cell').length, 57, 'Should show columns for threat analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Threat Analysis', 'Default Column group is Summary List.');
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Threat Analysis', 'Selected column group should be Threat Analysis.');
   });
 });
 
@@ -78,7 +78,7 @@ test('it should show columns for Web Analysis', function(assert) {
   selectChoose('.ember-power-select-trigger', 'Web Analysis');
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.rsa-data-table-header-cell').length, 53, 'Should show columns for Web analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Web Analysis', 'Default Column group is Summary List.');
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Web Analysis', 'Selected column group should be Web Analysis.');
   });
 });
 
@@ -102,5 +102,19 @@ test('Click on isExpanded toggle button on event page, persist the recon size', 
       data: prefToSave
     });
     assert.equal(query.data.eventAnalysisPreferences.isReconExpanded, false);
+  });
+});
+
+test('summary list group is selected by default when there is nothing stored', function(assert) {
+  new DataHelper(this.get('redux')).initializeData().setPreferences({});
+  return waitFor('.ember-power-select-selected-item').then(() => {
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Summary List', 'Selected column group should be Summary List.');
+  });
+});
+
+test('persisted column group is preselected in the drop down', function(assert) {
+  new DataHelper(this.get('redux')).setColumnGroup('MALWARE');
+  return waitFor('.ember-power-select-selected-item').then(() => {
+    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Expected Malware Analysis to be selected');
   });
 });

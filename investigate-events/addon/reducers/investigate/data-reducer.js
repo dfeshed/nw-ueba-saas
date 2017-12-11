@@ -16,12 +16,20 @@ const _initialState = Immutable.from({
   isReconOpen: false,
   metaPanelSize: META_PANEL_SIZES.DEFAULT,
   reconSize: RECON_PANEL_SIZES.MAX,
-  eventsPreferencesConfig: CONFIG
+  eventsPreferencesConfig: CONFIG,
+  columnGroup: null // null avoids rendering the events table before fetching the persisted column group from backend
 });
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
-    return state.set('reconSize', payload.reconSize || RECON_PANEL_SIZES.MAX);
+    const {
+      eventAnalysisPreferences = {},
+      eventPreferences: { columnGroup } = {}
+    } = payload;
+    return state.merge({
+      reconSize: eventAnalysisPreferences.isReconExpanded ? RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN,
+      columnGroup: columnGroup || 'SUMMARY'
+    });
   },
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
@@ -68,5 +76,9 @@ export default handleActions({
 
   [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload }) => {
     return state.set('isReconOpen', payload);
+  },
+
+  [ACTION_TYPES.SET_SELECTED_COLUMN_GROUP]: (state, { payload }) => {
+    return state.set('columnGroup', payload);
   }
 }, _initialState);

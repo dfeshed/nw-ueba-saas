@@ -8,12 +8,16 @@ test('get the current preferences to save', function(assert) {
   const response = {
     eventAnalysisPreferences: {
       isReconExpanded: true
+    },
+    eventPreferences: {
+      columnGroup: 'EMAIL'
     }
   };
   const state = Immutable.from({
     investigate: {
       data: {
-        reconSize: 'max'
+        reconSize: 'max',
+        columnGroup: 'EMAIL'
       }
     },
     recon: {

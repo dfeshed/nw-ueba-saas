@@ -3,7 +3,8 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 const DEFAULT_DATA = {
   data: {
     metaPanelSize: undefined,
-    reconSize: undefined
+    reconSize: undefined,
+    columnGroup: null
   },
   dictionaries: {
     aliases: undefined,
@@ -68,6 +69,16 @@ export default class DataHelper {
 
   setMetaPanelSize(size) {
     this.dispatch(ACTION_TYPES.SET_META_PANEL_SIZE, size);
+    return this;
+  }
+
+  setPreferences(preferences) {
+    this.dispatch(ACTION_TYPES.SET_PREFERENCES, preferences);
+    return this;
+  }
+
+  setColumnGroup(columnGroupId) {
+    this.dispatch(ACTION_TYPES.SET_SELECTED_COLUMN_GROUP, columnGroupId);
     return this;
   }
 }

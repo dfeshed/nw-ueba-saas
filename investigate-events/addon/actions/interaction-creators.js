@@ -3,6 +3,9 @@ import { getServiceSummary } from './data-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
 import moment from 'moment';
+import {
+  savePreferences
+} from 'investigate-events/actions/data-creators';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -105,3 +108,13 @@ export const setReconClosed = () => ({
   type: ACTION_TYPES.SET_RECON_VIEWABLE,
   payload: false
 });
+
+export const setColumnGroup = (selectedGroup) => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
+      payload: selectedGroup.id
+    });
+    savePreferences(getState());
+  };
+};

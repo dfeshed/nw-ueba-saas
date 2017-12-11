@@ -5,6 +5,7 @@ export const BASE_COLUMNS = [
 
 export const OOTBColumnGroups = [
   {
+    id: 'EMAIL',
     name: 'Email Analysis',
     columns: BASE_COLUMNS.concat([
       {
@@ -128,6 +129,7 @@ export const OOTBColumnGroups = [
     ]),
     ootb: true
   }, {
+    id: 'MALWARE',
     name: 'Malware Analysis',
     columns: BASE_COLUMNS.concat([
       {
@@ -209,6 +211,7 @@ export const OOTBColumnGroups = [
     ]),
     ootb: true
   }, {
+    id: 'THREAT',
     name: 'Threat Analysis',
     columns: BASE_COLUMNS.concat([
       {
@@ -380,6 +383,7 @@ export const OOTBColumnGroups = [
     ]),
     ootb: true
   }, {
+    id: 'WEB',
     name: 'Web Analysis',
     columns: BASE_COLUMNS.concat([
       {
@@ -540,6 +544,7 @@ export const OOTBColumnGroups = [
     ootb: true
   }, {
     name: 'Endpoint Analysis',
+    id: 'ENDPOINT',
     columns: BASE_COLUMNS.concat([
       {
         field: 'device.type',
