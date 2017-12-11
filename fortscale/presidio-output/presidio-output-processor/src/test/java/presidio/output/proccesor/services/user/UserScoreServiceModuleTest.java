@@ -9,6 +9,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.commons.services.user.UserSeverityService;
@@ -38,7 +39,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserScoreServiceModuleTest {
 
     @Autowired
