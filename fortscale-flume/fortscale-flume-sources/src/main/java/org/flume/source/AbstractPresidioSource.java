@@ -20,6 +20,7 @@ import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFac
 
 import java.nio.charset.Charset;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -105,8 +106,8 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
         isDoneControlMessage.getHeaders().put(CommonStrings.IS_DONE, Boolean.TRUE.toString());
         logger.debug("Sending control message DONE");
 
-        presidioExternalMonitoringService.reportCustomMetricReportOnce(
-                NUMBER_OF_DONE_MESSAGES_SENT, 1, new HashSet<>(), MetricEnums.MetricUnitType.NUMBER, null);
+        presidioExternalMonitoringService.reportCustomMetric(
+                NUMBER_OF_DONE_MESSAGES_SENT, 1, new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, null);
         this.getChannelProcessor().processEvent(isDoneControlMessage);
     }
 
@@ -161,8 +162,8 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
 
 
     private void processEvent(AbstractDocument event) throws JsonProcessingException {
-        presidioExternalMonitoringService.reportCustomMetricReportOnce(
-                NUMBER_OF_PROCESSED_EVENTS, 1, new HashSet<>(), AMOUNT, null);
+        presidioExternalMonitoringService.reportCustomMetric(
+                NUMBER_OF_PROCESSED_EVENTS, 1, new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, Instant.now());
 
         final String eventAsString;
         eventAsString = mapper.writeValueAsString(event);
@@ -172,17 +173,17 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
     }
 
     private void processPage(List<AbstractDocument> pageEvents) throws Exception {
-        presidioExternalMonitoringService.reportCustomMetricReportOnce(
-                NUMBER_OF_PROCESSED_PAGES, 1, new HashSet<>(), AMOUNT, null);
-        presidioExternalMonitoringService.reportCustomMetricReportOnce(
-                NUMBER_OF_EVENTS_IN_PAGES, pageEvents.size(), new HashSet<>(), AMOUNT, null);
+        presidioExternalMonitoringService.reportCustomMetric(
+                NUMBER_OF_PROCESSED_PAGES, 1, new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, null);
+        presidioExternalMonitoringService.reportCustomMetric(
+                NUMBER_OF_EVENTS_IN_PAGES, pageEvents.size(), new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, null);
 
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);
 
-            presidioExternalMonitoringService.reportCustomMetricReportOnce(
-                    NUMBER_OF_FILTERED_PAGES, 1, new HashSet<>(), AMOUNT, null);
+            presidioExternalMonitoringService.reportCustomMetric(
+                    NUMBER_OF_FILTERED_PAGES, 1, new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, null);
             throw new Exception(errorMessage);
         } else {
             for (AbstractDocument pageEvent : pageEvents) {
