@@ -68,19 +68,6 @@ test('it renders form with saved data', function(assert) {
   assert.equal($serviceName.val(), 'NWE Agent', 'Expected to match the value "NWE Agent" in DOM.');
 });
 
-test('Protocol is empty on click of generate agent button', function(assert) {
-  new ReduxDataHelper(setState)
-    .setData('defaultPackagerConfig', newConfig)
-    .setData('devices', devices)
-    .build();
-  this.render(hbs`{{packager-form isLogCollectionEnabled=true}}`);
-  const $button = this.$('.generate-button-js .rsa-form-button');
-  return waitFor(() => $button.trigger('click'))().then(() => {
-    const $protocol = this.$('.protocol-js label');
-    assert.ok($protocol.hasClass('is-error'));
-  });
-});
-
 test('Primary decoder have values', function(assert) {
   new ReduxDataHelper(setState)
     .setData('defaultPackagerConfig', newConfig)
@@ -214,4 +201,17 @@ test('validates the packager config and sets the error field', function(assert) 
   $INPUT.change();
   this.$('.generate-button-js .rsa-form-button').trigger('click');
   assert.ok(this.$('.password-input-js').hasClass('is-error'), 'Expected to have error class on password field');
+});
+
+test('Protocol resets to default when reset button is clicked', function(assert) {
+  new ReduxDataHelper(setState)
+    .setData('defaultPackagerConfig', newConfig)
+    .build();
+  this.set('selectedProtocol', 'UDP');
+  this.render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+  const $button = this.$('.reset-button .rsa-form-button');
+  return waitFor(() => $button.trigger('click'))().then(() => {
+    const protocol = this.get('selectedProtocol');
+    assert.equal(protocol, 'TCP');
+  });
 });

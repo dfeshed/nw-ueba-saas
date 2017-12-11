@@ -1627,7 +1627,7 @@ export default {
     configurationName: 'ja_Configuration Name*',
     primaryLogDecoder: 'ja_Primary Log Decoder/Log collector*',
     secondaryLogDecoder: 'ja_Secondary Log Decoder/Log Collector',
-    protocol: 'ja_Protocol*',
+    protocol: 'ja_Protocol',
     channels: 'ja_Channel filters',
     eventId: 'ja_event id to include/exclude (?)',
     heartbeatLogs: 'ja_Send Heartbeat logs',
@@ -1637,7 +1637,7 @@ export default {
     searchPlaceholder: 'ja_Type to filter options',
     emptyName: 'ja_Configuration name is empty',
     channelFilter: 'ja_Channel Filters',
-    specialCharacter: 'ja_Configuration name contains special charatcer.',
+    specialCharacter: 'ja_Configuration name contains special character.',
     channel: {
       name: 'ja_CHANNEL NAME *',
       filter: 'ja_FILTER *',

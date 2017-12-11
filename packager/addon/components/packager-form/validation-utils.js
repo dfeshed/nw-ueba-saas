@@ -44,7 +44,7 @@ export const validatePackageConfig = (formData) => {
 };
 
 export const validateLogConfigFields = (formData) => {
-  const { configName, primaryDestination, protocol, channels } = formData;
+  const { configName, primaryDestination, channels } = formData;
   let error = null;
 
   if (isEmpty(configName)) {
@@ -63,12 +63,6 @@ export const validateLogConfigFields = (formData) => {
     return {
       errorClass: 'is-error',
       className: 'rsa-form-label is-error power-select'
-    };
-  }
-  if (isEmpty(protocol)) {
-    return {
-      protocolErrorClass: 'is-error',
-      protocolClassName: 'rsa-form-label is-error power-select'
     };
   }
 

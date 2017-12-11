@@ -9,8 +9,6 @@ export default DataTableBody.extend({
 
   filterOptions: ['Include', 'Exclude'],
 
-/* Localization is not in scope for the channel options presently
-   since the endpoint agent doesn't support localization. Reference - PR#1991*/
   channelOptions: A(channels),
 
   actions: {

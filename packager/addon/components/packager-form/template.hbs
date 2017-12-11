@@ -205,8 +205,7 @@
           placeholder=(t 'packager.placeholder')
           options=protocolOptions
           selected=selectedProtocol
-          triggerClass=protocolErrorClass
-          dropdownClass=protocolErrorClass
+          searchEnabled=false
           searchPlaceholder=(t 'packager.searchPlaceholder')
           onchange=(action 'setSelect' 'protocol' 'selectedProtocol') as |option|}}
           {{option}}
@@ -227,7 +226,7 @@
 
 <div class="field buttons">
   <hbox class="rsa-button-group">
-    {{#rsa-form-button isDisabled=isResetDisabled defaultAction=(action 'resetForm')}}
+    {{#rsa-form-button class="reset-button" isDisabled=isResetDisabled defaultAction=(action 'reset')}}
       {{t 'packager.reset'}}
     {{/rsa-form-button}}
     {{#rsa-form-button style='primary' class="generate-button-js" isDisabled=isDisabled defaultAction=(action 'generateAgent')}}

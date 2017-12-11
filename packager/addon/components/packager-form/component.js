@@ -61,6 +61,7 @@ const formComponent = Component.extend({
 
   selectedFrequency: '1 Hour',
   invalidTableItem: '-999999',
+  selectedProtocol: 'TCP',
 
 
   @alias('configData.packageConfig.autoUninstall')
@@ -94,9 +95,8 @@ const formComponent = Component.extend({
       isError: false,
       errorClass: null,
       className: 'rsa-form-label power-select',
-      protocolErrorClass: null,
       protocolClassName: 'rsa-form-label power-select',
-      selectedProtocol: null,
+      selectedProtocol: 'TCP',
       isPortError: false,
       isConfigError: false,
       isServerError: false,
@@ -121,7 +121,6 @@ const formComponent = Component.extend({
   actions: {
 
     generateAgent() {
-      this.resetProperties();
       const { autoUninstall } = this.get('configData.packageConfig');
       if (autoUninstall && !isEmpty(autoUninstall[0])) {
         this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
@@ -132,23 +131,27 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
+          this.resetProperties();
         }
       } else {
+        this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         const error = this._validate();
         this.setProperties(error);
         if (!error) {
           this.send('setConfig', this.get('configData'), false);
+          this.resetProperties();
         }
       }
     },
 
     generateLogConfig() {
-      this.resetProperties();
       const error = validateLogConfigFields(this.get('configData.logCollectionConfig'));
       this.setProperties(error);
       if (!error) {
         // only log config data need to be send on click of this button.
+        this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
+        this.resetProperties();
       }
     },
 

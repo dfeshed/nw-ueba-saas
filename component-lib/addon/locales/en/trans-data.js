@@ -1628,7 +1628,7 @@ export default {
     configurationName: 'Configuration Name*',
     primaryLogDecoder: 'Primary Log Decoder/Log collector*',
     secondaryLogDecoder: 'Secondary Log Decoder/Log Collector',
-    protocol: 'Protocol*',
+    protocol: 'Protocol',
     channels: 'Channel filters',
     eventId: 'event id to include/exclude (?)',
     heartbeatLogs: 'Send Heartbeat logs',
@@ -1638,7 +1638,7 @@ export default {
     searchPlaceholder: 'Type to filter options',
     emptyName: 'Configuration name is empty',
     channelFilter: 'Channel Filters',
-    specialCharacter: 'Configuration name contains special charatcer.',
+    specialCharacter: 'Configuration name contains special character.',
     channel: {
       name: 'CHANNEL NAME *',
       filter: 'FILTER *',
