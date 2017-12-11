@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Delete presidio workflows packages
 # Installing is handle in build-workflows.sh
