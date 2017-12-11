@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,7 @@ import java.util.Map;
  * This interceptor is used to join fields from the received JSON into a new object (map)
  * Returns the same JSON with a new map containing the values.
  */
-public class JsonMapCreatorInterceptor extends AbstractInterceptor {
+public class JsonMapCreatorInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonMapCreatorInterceptor.class);
 
@@ -146,7 +145,7 @@ public class JsonMapCreatorInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToPut, mapKey,
                     deleteFields, defaultValueConfigurations, overrideExistingMap);
             logger.info("Creating JsonMapCreatorInterceptor: {}", jsonMapCreatorInterceptor);

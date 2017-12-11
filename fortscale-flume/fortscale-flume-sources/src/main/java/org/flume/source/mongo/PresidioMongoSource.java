@@ -26,6 +26,10 @@ import java.util.List;
 
 import static org.apache.flume.CommonStrings.*;
 
+
+/**
+ * an AbstractPresidioSource that reads events from MongoDB
+ */
 public class PresidioMongoSource extends AbstractPresidioSource implements Configurable {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);

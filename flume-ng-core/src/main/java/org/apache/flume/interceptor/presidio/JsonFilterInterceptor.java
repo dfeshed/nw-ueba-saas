@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ import java.util.List;
  * This interceptor is used to remove certain (redundant) fields from the received JSON
  * Returns the same JSON without the aforementioned fields
  */
-public class JsonFilterInterceptor extends AbstractInterceptor {
+public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
 
@@ -80,7 +79,7 @@ public class JsonFilterInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             final JsonFilterInterceptor jsonFilterInterceptor = new JsonFilterInterceptor(fieldsToFilter);
             logger.info("Creating JsonFilterInterceptor: {}", jsonFilterInterceptor);
             return jsonFilterInterceptor;

@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,7 @@ import java.util.regex.Pattern;
  * This interceptor is used to indicate whether a field's value matches a regex.
  * Returns the same JSON with additional predicate.
  */
-public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
+public class JsonRegexPredicatorInterceptor extends AbstractPresidioInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(JsonRegexPredicatorInterceptor.class);
 
     private final List<String> valueFields;
@@ -142,7 +141,7 @@ public class JsonRegexPredicatorInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             logger.info("Creating JsonRegexPredicatorInterceptor: {}={}, {}={}, {}={}",
                     VALUE_FIELDS_CONF_NAME, valueFields, PREDICATOR_FIELDS_CONF_NAME, predicatorFields,
                     REGEX_CONF_NAME, regexList);

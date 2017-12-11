@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * This interceptor is used to join 2 fields in the received JSON (append and put in a single field).
  * Returns the same JSON with the new field {@link #targetField}, and with/without filtering the {@link #baseField} and {@link #toAppendField} fields according to {@link #removeBaseField} and {@link #removeToAppendField}
  */
-public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
+public class JsonFieldJoinerInterceptor extends AbstractPresidioInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonFieldJoinerInterceptor.class);
 
@@ -54,7 +53,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         if (baseFieldValue == null || baseFieldValue.isJsonNull() || baseFieldValue.toString().equals("null")) {
             if (filterOnMissingBaseField) {
                 logger.warn("Failed to join fields. Base field doesn't exist. for event {}. interceptor configuration: {}", event, this);
-                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), "Failed to join fields. Base field doesn't exist", event);
+                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(getApplicationName() + "-" + this.getClass().getSimpleName(), "Failed to join fields. Base field doesn't exist", event);
                 return null;
             } else {
                 baseValue = "";
@@ -67,7 +66,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         if (toAppendFieldValue == null || toAppendFieldValue.toString().equals("null")) {
             if (filterOnMissingToAppendField) {
                 logger.warn("Failed to join fields. To Append field doesn't exist for event {}. interceptor configuration: {}", event, this);
-                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), "Failed to join fields. To Append field doesn't exist", event);
+                PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(getApplicationName() + "-" + this.getClass().getSimpleName(), "Failed to join fields. To Append field doesn't exist", event);
                 return null;
             } else {
                 toAppendValue = "";
@@ -148,7 +147,7 @@ public class JsonFieldJoinerInterceptor extends AbstractInterceptor {
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             final JsonFieldJoinerInterceptor jsonFieldJoinerInterceptor = new JsonFieldJoinerInterceptor(baseField, toAppendField,
                     targetField, filterOnMissingBaseField, filterOnMissingToAppendField, removeBaseField, removeToAppendField);
             logger.info("Creating JsonFieldJoinerInterceptor: {}", jsonFieldJoinerInterceptor);

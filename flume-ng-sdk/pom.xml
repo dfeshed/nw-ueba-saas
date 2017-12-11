@@ -106,19 +106,6 @@ limitations under the License.
                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>org.apache.avro</groupId>
-                                        <artifactId>avro-maven-plugin</artifactId>
-                                        <versionRange>[${avro.version},)</versionRange>
-                                        <goals>
-                                            <goal>idl-protocol</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute/>
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
                                         <groupId>com.thoughtworks.paranamer</groupId>
                                         <artifactId>paranamer-maven-plugin</artifactId>
                                         <versionRange>[2.3,)</versionRange>
@@ -138,21 +125,6 @@ limitations under the License.
         </pluginManagement>
         <plugins>
 
-            <plugin>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro-maven-plugin</artifactId>
-                <configuration>
-                    <stringType>CharSequence</stringType>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>idl-protocol</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>com.thoughtworks.paranamer</groupId>
@@ -209,15 +181,6 @@ limitations under the License.
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.avro</groupId>
-            <artifactId>avro-ipc</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
@@ -227,6 +190,24 @@ limitations under the License.
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
+            <version>${thrift.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
         </dependency>
 
     </dependencies>

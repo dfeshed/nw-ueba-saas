@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterceptor {
+/**
+ * This interceptor is used to modify the format of the timestamp the received JSON.
+ * Returns the same JSON with the updated timestamp (in the dame field  or a new field depends on the configuration)
+ */
+public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidioInterceptor {
 
 
     private static final Logger logger = LoggerFactory.getLogger(JsonTimestampWithOffsetFormatterInterceptor.class);
@@ -57,7 +60,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
             newTimestamp = getNewTimestamp(originTimestamp, originFormat, timezoneOffset, destinationFormat);
         } catch (Exception e) {
             logger.warn("Failed to get timestamp for event {}. interceptor configuration: {}", event, this, e);
-            PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), "Failed to get timestamp", event);
+            PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(getApplicationName() + "-" + this.getClass().getSimpleName(), "Failed to get timestamp", event);
             return null;
         }
         eventBodyAsJson.addProperty(destinationField, newTimestamp);
@@ -152,7 +155,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractInterce
         }
 
         @Override
-        public Interceptor build() {
+        public AbstractPresidioInterceptor doBuild() {
             final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneOffsetField, destinationField, destinationFormat, removeOriginField, removeTimezoneOffsetField);
             logger.info("Creating JsonTimestampWithOffsetFormatterInterceptor: {}", jsonTimestampWithOffsetFormatterInterceptor);
             return jsonTimestampWithOffsetFormatterInterceptor;

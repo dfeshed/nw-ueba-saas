@@ -21,6 +21,9 @@ import static org.apache.flume.CommonStrings.DEFAULT_DATE_FORMAT;
 import static org.apache.flume.CommonStrings.END_DATE;
 import static org.apache.flume.CommonStrings.START_DATE;
 
+/**
+ * an AbstractPresidioSource that runs a REST query to get the events
+ */
 public class PresidioRestSource extends AbstractPresidioSource implements Configurable {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioRestSource.class);

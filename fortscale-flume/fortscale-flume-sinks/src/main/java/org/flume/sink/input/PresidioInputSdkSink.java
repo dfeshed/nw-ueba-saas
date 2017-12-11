@@ -1,5 +1,6 @@
 package org.flume.sink.input;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoException;
@@ -25,6 +26,9 @@ import java.util.Map;
 
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 
+/**
+ * an AbstractPresidioSink that uses the InputSDK jar to write events to Presidio-Input's input
+ */
 public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioInputSdkSink.class);
@@ -34,6 +38,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     static {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private static final String SCHEMA = "schema";
@@ -107,7 +112,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             } catch (Exception e) {
                 final Map<String, String> eventHeaders = flumeEvent.getHeaders();
                 if (!e.getClass().isAssignableFrom(MongoException.class)) {
-                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(getApplicationName() + "-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
                 }
                 final String errorMessage = String.format("Failed to sink event. Can't getEvent since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);

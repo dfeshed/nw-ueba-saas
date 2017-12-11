@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoException;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
@@ -38,6 +39,10 @@ import static org.apache.flume.CommonStrings.PASSWORD;
 import static org.apache.flume.CommonStrings.PORT;
 import static org.apache.flume.CommonStrings.USERNAME;
 
+
+/**
+ * an AbstractPresidioSink that writes events to MongoDB
+ */
 public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
@@ -66,6 +71,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private Class<T> recordType;
     private String indexFieldName;
 
+
     public PresidioMongoSink() {
         this(null);
     }
@@ -89,11 +95,6 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 }
             }
 
-            final String recordTypeAsString = context.getString(RECORD_TYPE);
-            if (Class.forName(recordTypeAsString) == null) {
-                throw new Exception(String.format("%s:[%s] is not a valid type for %s.", RECORD_TYPE, recordTypeAsString, getName()));
-            }
-
             hasAuthentication = Boolean.parseBoolean(context.getString(HAS_AUTHENTICATION));
             if (hasAuthentication) {
                 if (!context.containsKey(USERNAME) || !context.containsKey(PASSWORD)) {
@@ -101,25 +102,24 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 }
             }
 
-            /* configure mongo */
-            recordType = getRecordType(recordTypeAsString);
-            batchSize = Integer.parseInt(context.getString(BATCH_SIZE, "1"));
-            collectionName = context.getString(COLLECTION_NAME);
-            dbName = context.getString(DB_NAME);
-            host = context.getString(HOST);
-            port = Integer.parseInt(context.getString(PORT, "27017"));
-            username = context.getString(USERNAME, "");
-            indexFieldName = context.getString(INDEX_FIELD_NAME, "");
-            final String password = context.getString(PASSWORD, "");
-            if (sinkMongoRepository == null) {
-                sinkMongoRepository = createRepository(dbName, host, port, username, password);
+            final String recordTypeAsString = context.getString(RECORD_TYPE);
+            if (Class.forName(recordTypeAsString) == null) {
+                throw new Exception(String.format("%s:[%s] is not a valid type for %s.", RECORD_TYPE, recordTypeAsString, getName()));
+            } else {
+                recordType = getRecordType(recordTypeAsString);
             }
+
+            batchSize = context.getInteger(BATCH_SIZE, 1000);
+            collectionName = context.getString(COLLECTION_NAME);
+
+            initRepository(context);
         } catch (Exception e) {
             final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
             throw new FlumeException(errorMessage, e);
         }
     }
+
 
     @Override
     protected List<T> getEvents() throws Exception {
@@ -148,7 +148,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             } catch (Exception e) {
                 final Map<String, String> eventHeaders = flumeEvent.getHeaders();
                 if (!e.getClass().isAssignableFrom(MongoException.class)) {
-                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent("Adapter-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
+                    PresidioFilteredEventsMongoRepository.saveFailedFlumeEvent(getApplicationName() + "-" + this.getClass().getSimpleName(), e.getMessage(), flumeEvent);
                 }
                 final String errorMessage = String.format("PresidioMongoSink failed to sink event. Can't get event since event is not of correct type. expected type:%s, actual event: body:[ %s ], headers:[ %s ].", recordType, eventBody, eventHeaders);
                 logger.error(errorMessage);
@@ -196,9 +196,22 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         return (Class<T>) Class.forName(recordTypeAsString);
     }
 
+
+    private void initRepository(Context context) throws UnknownHostException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException {
+        dbName = context.getString(DB_NAME);
+        host = context.getString(HOST);
+        port = context.getInteger(PORT, 27017);
+        username = context.getString(USERNAME, "");
+        indexFieldName = context.getString(INDEX_FIELD_NAME, "");
+        final String password = context.getString(PASSWORD, "");
+        if (sinkMongoRepository == null) {
+            sinkMongoRepository = createRepository(dbName, host, port, username, password);
+        }
+    }
+
     @Override
     public String toString() {
-        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+        return new ToStringBuilder(this)
                 .append("sinkMongoRepository", sinkMongoRepository)
                 .append("hasAuthentication", hasAuthentication)
                 .append("dbName", dbName)
@@ -209,7 +222,11 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
                 .append("batchSize", batchSize)
                 .append("recordType", recordType)
                 .append("indexFieldName", indexFieldName)
+                .append("minBackoffSleep", minBackoffSleep)
+                .append("maxBackoffSleep", maxBackoffSleep)
+                .append("backoffSleepIncrement", backoffSleepIncrement)
                 .append("isBatch", isBatch)
+                .append("applicationName", applicationName)
                 .append("isDone", isDone)
                 .toString();
     }

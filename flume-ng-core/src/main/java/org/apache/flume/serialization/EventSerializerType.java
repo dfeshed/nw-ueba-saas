@@ -24,19 +24,18 @@ import org.apache.flume.annotations.InterfaceStability;
 @InterfaceAudience.Private
 @InterfaceStability.Unstable
 public enum EventSerializerType {
-  TEXT(BodyTextEventSerializer.Builder.class),
-  HEADER_AND_TEXT(HeaderAndBodyTextEventSerializer.Builder.class),
-  AVRO_EVENT(FlumeEventAvroEventSerializer.Builder.class),
-  OTHER(null);
+    TEXT(BodyTextEventSerializer.Builder.class),
+    HEADER_AND_TEXT(HeaderAndBodyTextEventSerializer.Builder.class),
+    OTHER(null);
 
-  private final Class<? extends EventSerializer.Builder> builderClass;
+    private final Class<? extends EventSerializer.Builder> builderClass;
 
-  EventSerializerType(Class<? extends EventSerializer.Builder> builderClass) {
-    this.builderClass = builderClass;
-  }
+    EventSerializerType(Class<? extends EventSerializer.Builder> builderClass) {
+        this.builderClass = builderClass;
+    }
 
-  public Class<? extends EventSerializer.Builder> getBuilderClass() {
-    return builderClass;
-  }
+    public Class<? extends EventSerializer.Builder> getBuilderClass() {
+        return builderClass;
+    }
 
 }
