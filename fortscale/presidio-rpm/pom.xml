@@ -209,7 +209,7 @@
                             echo "Writing env variable PRESIDIO_HOME to /etc/profile"
                             echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile
                             <!--always upgrade presidio-workflows python package-->
-                            echo "Running upgrading presidio workflows"
+                            echo "Running presidio workflows upgrade"
                             bash ${rpm-maven-plugin.workflows-upgrade-script-path}
 
                             echo "Running Python migration project"
