@@ -38,6 +38,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
+
 public class UserScoreServiceModuleTest {
 
     @Autowired
@@ -71,6 +72,7 @@ public class UserScoreServiceModuleTest {
                 .get();
     }
 
+    @Ignore
     @Test
     public void testSingleUserScoreCalculation() {
         //Generate one user with 2 critical alerts
@@ -97,6 +99,7 @@ public class UserScoreServiceModuleTest {
 
     }
 
+    @Ignore
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -207,7 +210,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(UserSeverity.CRITICAL, user99.getSeverity());
     }
 
-
+    @Ignore
     @Test
     public void testBulkUserScoreLargeScale() throws InterruptedException {
         final int DAYS_COUNT = 110;
@@ -276,7 +279,7 @@ public class UserScoreServiceModuleTest {
     }
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
-        User user1 = new User(userId, userName, "displayName", 1d, null, null, null, UserSeverity.CRITICAL, 0);
+        User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         user1.setId(userId);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
