@@ -1,21 +1,25 @@
-import Ember from 'ember';
+import Component from 'ember-component';
+import service from 'ember-service/inject';
+import { isEmberArray } from 'ember-array/utils';
+import get from 'ember-metal/get';
+import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { computeExtent, dateFormatter } from 'component-lib/utils/chart-utils';
 import { format } from 'd3-format';
 import { scaleTime, scaleUtc } from 'd3-scale';
+import { isDataEmpty, shouldShowStatus } from 'investigate-events/reducers/investigate/data-selectors';
 
-const {
-  Component,
-  inject: {
-    service
-  },
-  isArray,
-  isEmpty,
-  get
-} = Ember;
+const stateToComputed = (state) => ({
+  data: state.investigate.eventTimeline.data,
+  status: state.investigate.eventTimeline.status,
+  startTime: state.investigate.queryNode.startTime,
+  endTime: state.investigate.queryNode.endTime,
+  isDataEmpty: isDataEmpty(state),
+  shouldShowStatus: shouldShowStatus(state)
+});
 
-export default Component.extend({
+const TimelineComponent = Component.extend({
   classNames: 'rsa-investigate-timeline',
   classNameBindings: ['status', 'isExpanded'],
 
@@ -44,7 +48,6 @@ export default Component.extend({
    * @type {string}
    * @public
    */
-  status: undefined,
   timeFormat: service(),
   timezone: service(),
   xProp: 'value',
@@ -65,8 +68,8 @@ export default Component.extend({
    */
   @computed('data')
   chartData(data = []) {
-    if (isArray(data)) {
-      return isArray(data[0]) ? data : [ data ];
+    if (isEmberArray(data)) {
+      return isEmberArray(data[0]) ? data : [ data ];
     }
     return [[]];
   },
@@ -82,16 +85,6 @@ export default Component.extend({
     const counts = points.map((point) => countFormat(point[yProp]));
     return date ? { date, counts } : null;
   },
-
-  @computed('data', 'status')
-  isDataEmpty(data, status) {
-    return isEmpty(data) && status === 'resolved';
-  },
-
-  // Resolves to true if either: (a) status == 'wait', or (b) status == 'rejected' or (c) isDataEmpty is truthy.
-  // Used to toggle status indicator.
-  @computed('status', 'isDataEmpty')
-  shouldShowStatus: (status = '', isEmpty) => !!status.match(/wait|rejected/) || isEmpty,
 
   @computed('startTime')
   startDate: (date) => date * 1000,
@@ -124,3 +117,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(TimelineComponent);

@@ -8,12 +8,7 @@
           <div class="capitalize">{{or eventResults.message (t 'investigate.events.error')}}</div>
         {{/rsa-panel-message}}
       {{else}}
-        {{time-line
-          data=eventTimeline.data
-          status=eventTimeline.status
-          retryAction=(route-action "eventTimelineGet" queryNode true)
-          startTime=queryNode.startTime
-          endTime=queryNode.endTime}}
+        {{query-container/time-line retryAction=(route-action "eventTimelineGet" queryNode true)}}
       {{/if}}
     {{/if}}
   </header>
@@ -45,7 +40,6 @@
           rowClickAction=(route-action 'selectEvent')
           loadMoreAction=(action 'eventsGetMore')
           loadLogsAction=(action 'eventsLogsGet')
-          totalCount=eventCount.data
           isOpen=isReconOpen
         }}
       </section>
