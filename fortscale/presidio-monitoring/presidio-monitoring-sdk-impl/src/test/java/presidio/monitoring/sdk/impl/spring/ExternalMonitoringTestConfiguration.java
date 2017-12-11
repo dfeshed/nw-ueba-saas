@@ -63,7 +63,9 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricBucket()), new MetricExportingServiceImpl(new NullMetricsExporter(null,null)));
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricBucket())
+                ,
+                new MetricExportingServiceImpl(metricsExporter()));
     }
 
     @Bean
