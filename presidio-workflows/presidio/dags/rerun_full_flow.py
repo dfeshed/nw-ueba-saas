@@ -120,11 +120,11 @@ clean_elastic_operator = BashOperator(task_id='clean_elastic', bash_command="cur
                                       dag=cleanup_dag)
 
 clean_adapter_operator = BashOperator(task_id='clean_adapter',
-                                      bash_command="rm -rvf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rvf /data/presidio/3p/flume/data/adapter/",
+                                      bash_command="rm -rf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rf /data/presidio/3p/flume/data/adapter/",
                                       dag=cleanup_dag)
 
 clean_logs_operator = BashOperator(task_id='clean_logs',
-                                   bash_command="rm -rvf /var/log/presidio/3p/airflow/full_flow_* && rm -rvf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -vf /tmp/spring.log",
+                                   bash_command="rm -rf /var/log/presidio/3p/airflow/full_flow_* && rm -rf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -f /tmp/spring.log",
                                    dag=cleanup_dag)
 
 pause_dags_operator >> kill_dags_task_instances_operator
