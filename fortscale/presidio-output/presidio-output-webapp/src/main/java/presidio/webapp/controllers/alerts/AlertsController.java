@@ -6,16 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQuery;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.EventQuery;
-import presidio.webapp.model.EventsWrapper;
-import presidio.webapp.model.Indicator;
-import presidio.webapp.model.IndicatorQuery;
-import presidio.webapp.model.IndicatorsWrapper;
+import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
+
+import java.util.List;
 
 
 @Controller
@@ -95,6 +91,15 @@ public class AlertsController implements AlertsApi {
             logger.error("Trying the to get indicators with this indicatorQuery:{} , But got internal error {}", indicatorQuery.toString(), ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public ResponseEntity<Void> updateAlertsFeedback(
+            @ApiParam(value = "request contains alert ids to be updated and the new feedback",required=true )
+            @RequestBody
+                    UpdateFeedbackRequest updateFeedbackRequest) {
+        restAlertService.updateAlertFeedback(updateFeedbackRequest.getAlertIds(), updateFeedbackRequest.getAlertFeedback());
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 }

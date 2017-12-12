@@ -99,19 +99,26 @@ public class AirflowApiClientImpl implements AirflowApiClient {
             urlVariables.put(DAG_ID_URL_VARIABLE, dagId);
         }
         String url = urlBuilder.toString();
-        AirflowDagExecutionDatesApiResponse response = restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
-
         Map<String, DagExecutionStatus> result = new HashMap<>();
-        if(response!=null && response.getOutput()!=null) {
-            result =
-                    response.getOutput().stream()
-                            .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
-                            .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
+
+        try {
+            AirflowDagExecutionDatesApiResponse response = restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
+            if(response!=null && response.getOutput()!=null) {
+                result =
+                        response.getOutput().stream()
+                                .map(x -> new DagExecutionStatus(x.getDagId(), x.getStartDate(), x.getExecutionDates(), state))
+                                .collect(Collectors.toMap(DagExecutionStatus::getDagId, Function.identity()));
+            }
+            else
+            {
+                logger.info("got 0 dags for dagId={}, state={}",dagId,state);
+            }
         }
-        else
+        catch (Exception e)
         {
-            logger.info("got 0 dags for dagId={}, state={}",dagId,state);
+            logger.info("got 0 dags for dagId={}, state={} with exception",dagId,state,e);
         }
+
         return result;
     }
 }

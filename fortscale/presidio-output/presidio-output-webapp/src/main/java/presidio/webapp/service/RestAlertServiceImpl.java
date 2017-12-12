@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.alert.FeedbackService;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -26,14 +26,19 @@ import java.util.concurrent.TimeUnit;
 public class RestAlertServiceImpl implements RestAlertService {
 
 
+    private final FeedbackService feedbackService;
     private final AlertPersistencyService alertPersistencyService;
     private final int pageNumber;
     private final int pageSize;
 
-    public RestAlertServiceImpl(AlertPersistencyService alertPersistencyService, int pageNumber, int pageSize) {
+    public RestAlertServiceImpl(AlertPersistencyService alertPersistencyService,
+                                FeedbackService feedbackService,
+                                int pageNumber,
+                                int pageSize) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.alertPersistencyService = alertPersistencyService;
+        this.feedbackService = feedbackService;
     }
 
     @Override
@@ -331,12 +336,9 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public void updateAlertFeedback(String alertId, AlertQueryEnums.AlertFeedback feedback) {
-        presidio.output.domain.records.alerts.Alert alert = alertPersistencyService.findOne(alertId);
+    public void updateAlertFeedback(List<String> alertIds, AlertQueryEnums.AlertFeedback feedback) {
+        feedbackService.updateAlertFeedback(alertIds, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
 
-
-
-        alertPersistencyService.updateAlertFeedback(alertId, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
 
     }
 

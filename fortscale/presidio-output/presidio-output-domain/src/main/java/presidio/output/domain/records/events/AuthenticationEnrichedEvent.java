@@ -19,8 +19,9 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
     public static final String SRC_MACHINE_NAME_REGEX_CLUSTER = "srcMachineNameRegexCluster";
     public static final String DST_MACHINE_NAME_REGEX_CLUSTER = "dstMachineNameRegexCluster";
     public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
+    public static final String SITE_FIELD = "site";
 
-    public AuthenticationEnrichedEvent(){
+    public AuthenticationEnrichedEvent() {
         super();
     }
 
@@ -42,6 +43,9 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
 
     @Field(DST_MACHINE_DOMAIN)
     private String dstMachineDomain;
+
+    @Field(SITE_FIELD)
+    private String site;
 
     public void setSrcMachineId(String srcMachineId) {
         SrcMachineId = srcMachineId;
@@ -81,5 +85,13 @@ public class AuthenticationEnrichedEvent extends EnrichedEvent {
 
     public String getDstMachineDomain() {
         return dstMachineDomain;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
     }
 }

@@ -560,6 +560,9 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         for (IndexQuery query : queries) {
             bulkRequest.add(prepareIndex(query));
         }
+        if (queries.isEmpty()) {
+            return;
+        }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
         if (bulkResponse.hasFailures()) {
             Map<String, String> failedDocuments = new HashMap<String, String>();

@@ -1,14 +1,14 @@
-package presidio.output.processor.spring;
+package presidio.output.commons.services.spring;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import presidio.output.commons.services.alert.AlertEnumsSeverityService;
+import presidio.output.commons.services.alert.AlertSeverityServiceImpl;
 import presidio.output.commons.services.alert.AlertSeverityService;
 
 
 @Configuration
-public class AlertEnumsConfig {
+public class AlertSeverityServiceConfig {
 
     @Value("${severity.critical}")
     private double criticalScore;
@@ -24,26 +24,16 @@ public class AlertEnumsConfig {
     double alertContributionHigh;
     @Value("${user.score.alert.contribution.critical:20}")
     double alertContributionCritical;
-    @Value("${user.severities.percent.threshold.critical:95}")
-    private int percentThresholdCritical;
-    @Value("${user.severities.percent.threshold.high:80}")
-    private int percentThresholdHigh;
-    @Value("${user.severities.percent.threshold.medium:70}")
-    private int percentThresholdMedium;
-
 
     @Bean
-    public AlertSeverityService alertEnumsSeverityService() {
-        return new AlertEnumsSeverityService(
+    public AlertSeverityService alertSeverityService() {
+        return new AlertSeverityServiceImpl(
                 criticalScore,
                 highScore,
                 midScore,
                 alertContributionCritical,
                 alertContributionHigh,
                 alertContributionMedium,
-                alertContributionLow,
-                percentThresholdCritical,
-                percentThresholdHigh,
-                percentThresholdMedium);
+                alertContributionLow);
     }
 }

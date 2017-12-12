@@ -19,15 +19,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.record.aggregated.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SmartWeightsModelScorerTest {
@@ -142,8 +140,7 @@ public class SmartWeightsModelScorerTest {
 
     private SmartRecord createMockedSmartRecord(List<AdeAggregationRecord> adeAggregationRecords){
         SmartRecord ret = Mockito.mock(SmartRecord.class);
-        Mockito.when(ret.getAggregationRecords()).thenReturn(adeAggregationRecords);
-
+        Mockito.when(ret.getSmartAggregationRecords()).thenReturn(adeAggregationRecords.stream().map(SmartAggregationRecord::new).collect(Collectors.toList()));
         return ret;
     }
 

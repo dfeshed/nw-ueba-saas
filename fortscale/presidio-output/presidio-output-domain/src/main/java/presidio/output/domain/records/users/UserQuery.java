@@ -2,7 +2,6 @@ package presidio.output.domain.records.users;
 
 
 import org.springframework.data.domain.Sort;
-import presidio.output.commons.services.alert.UserSeverity;
 
 import java.util.List;
 

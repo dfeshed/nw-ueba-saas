@@ -5,8 +5,8 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.config.ScorerConfServiceImpl;
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
 import fortscale.utils.factory.FactoryService;
-import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Import;
  * Created by barak_schuster on 7/25/17.
  */
 @Configuration
-@Import(
+@Import({ScoringServiceMetricsContainer.class,
 //        application-specific confs
-        ScorersFactoryConfig.class)
+        ScorersFactoryConfig.class})
 public class ScoringServiceConfig {
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
@@ -33,6 +33,9 @@ public class ScoringServiceConfig {
     @Autowired
     private ModelsCacheService modelCacheService;
 
+    @Autowired
+    private ScoringServiceMetricsContainer scoringServiceMetricsContainer;
+
     @Bean
     public ScorerConfService scorerConfService() {
         // TODO: Return a real ScorerConfService
@@ -41,7 +44,7 @@ public class ScoringServiceConfig {
 
     @Bean
     public ScoringService scoringService() {
-        return new ScoringService(scorerConfService(), scorerFactoryService, modelCacheService);
+        return new ScoringService(scorerConfService(), scorerFactoryService, modelCacheService, scoringServiceMetricsContainer);
     }
 }
 

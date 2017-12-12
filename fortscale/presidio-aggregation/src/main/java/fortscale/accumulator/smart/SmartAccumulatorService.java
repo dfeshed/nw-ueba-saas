@@ -58,8 +58,9 @@ public class SmartAccumulatorService {
 
             Map<String, Map<Integer, Double>> aggregatedFeatureEventsValuesMap = accumulatedSmartRecord.getAggregatedFeatureEventsValuesMap();
 
-            for (AdeAggregationRecord adeAggregationRecord : smartRecord.getAggregationRecords()) {
-                fillAggregatedFeatureEventsValues(adeAggregationRecord, aggregatedFeatureEventsValuesMap, smartHourOfInstant);
+            for (SmartAggregationRecord smartAggregationRecord : smartRecord.getSmartAggregationRecords()) {
+                AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
+                fillAggregatedFeatureEventsValues(aggregationRecord, aggregatedFeatureEventsValuesMap, smartHourOfInstant);
             }
             smartAccumulationsCache.storeAccumulatedRecords(contextId, accumulatedSmartRecord);
         }
@@ -97,19 +98,15 @@ public class SmartAccumulatorService {
     /**
      * Get hour of instant
      * e.g: 2017-05-12T20:30:10.00Z => 20
-     *
-     * @param StartInstant
      */
-    private int getHourOfInstant(Instant StartInstant) {
-        return LocalDateTime.ofInstant(StartInstant, ZoneId.of("UTC")).getHour();
+    private int getHourOfInstant(Instant startInstant) {
+        return LocalDateTime.ofInstant(startInstant, ZoneId.of("UTC")).getHour();
     }
 
 
     /**
      * Validate that start and end instants contained in timeRange
      *
-     * @param startInstant
-     * @param endInstant
      * @return boolean
      */
     private boolean validateInstants(Instant startInstant, Instant endInstant) {

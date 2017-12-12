@@ -4,7 +4,6 @@ import fortscale.domain.core.EventResult;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
-import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,6 +17,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
     public static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
     public static final String DST_MACHINE_DOMAIN_FIELD_NAME = "dstMachineDomain";
+    public static final String SITE_FIELD_NAME = "site";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -34,6 +34,9 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     @Field(DST_MACHINE_DOMAIN_FIELD_NAME)
     private String dstMachineDomain;
 
+    @Field(SITE_FIELD_NAME)
+    private String site;
+
     public AuthenticationRawEvent(AuthenticationRawEvent other) {
         super(other);
         this.srcMachineId = other.srcMachineId;
@@ -41,6 +44,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.dstMachineId = other.dstMachineId;
         this.dstMachineName = other.dstMachineName;
         this.dstMachineDomain = other.dstMachineDomain;
+        this.site = other.site;
     }
 
     public AuthenticationRawEvent() {
@@ -49,13 +53,14 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                   List<String> operationTypeCategory, EventResult result, String userName,
                                   String userDisplayName, Map<String, String> additionalInfo, String srcMachineId,
-                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain, String resultCode) {
+                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain, String resultCode, String site) {
         super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.srcMachineId = srcMachineId;
         this.srcMachineName = srcMachineName;
         this.dstMachineId = dstMachineId;
         this.dstMachineName = dstMachineName;
         this.dstMachineDomain = dstMachineDomain;
+        this.site = site;
     }
 
     public String getDstMachineId() {
@@ -98,6 +103,13 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.dstMachineDomain = dstMachineDomain;
     }
 
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
 
     @Override
     public String toString() {
@@ -117,6 +129,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
                 ", userDisplayName='" + userDisplayName + '\'' +
                 ", additionalInfo=" + additionalInfo +
                 ", dateTime=" + dateTime +
+                ", site=" + site +
                 '}';
     }
 }
