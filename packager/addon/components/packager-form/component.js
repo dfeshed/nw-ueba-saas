@@ -7,6 +7,7 @@ import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 import _ from 'lodash';
 import { listOfServices } from '../../reducers/selectors';
+import { getConfiguration } from 'packager/actions/fetch/packager';
 import { validatePackageConfig, validateLogConfigFields } from './validation-utils';
 import columns from './columns';
 
@@ -118,6 +119,39 @@ const formComponent = Component.extend({
     return error;
   },
 
+  _validateDestinationFields(primaryDestination, secondaryDestination) {
+    const listOfDest = [];
+    const flashMessage = this.get('flashMessages');
+    const listOfService = this.get('listOfService');
+    const i18nMessages = this.get('i18n');
+    const isPrimaryDestinationAvailable = (listOfService.some((service) => primaryDestination === service.id));
+    const isSecondaryDestinationAvailable = (listOfService.some((service) => secondaryDestination === service.id));
+    if (!isPrimaryDestinationAvailable) {
+      listOfDest.push(primaryDestination);
+    }
+    if (!isSecondaryDestinationAvailable) {
+      listOfDest.push(secondaryDestination);
+    }
+    if (!isEmpty(listOfDest)) {
+      const dest = i18nMessages.t('packager.upload.warning', { id: listOfDest.join(',') });
+      flashMessage.warning(`${i18nMessages.t('packager.upload.success')} ${dest}`);
+    } else {
+      flashMessage.success(i18nMessages.t('packager.upload.success'));
+    }
+  },
+
+  _fetchLogConfigFromServer(formContent) {
+    getConfiguration(formContent)
+      .then((response) => {
+        const responseConfiguration = response.data;
+        this.set('selectedProtocol', responseConfiguration.protocol);
+        this.set('configData.logCollectionConfig', responseConfiguration);
+        this._validateDestinationFields(responseConfiguration.primaryDestination, responseConfiguration.secondaryDestination);
+      }).catch(({ meta: message }) => {
+        this.get('flashMessage').error(message.message);
+      });
+  },
+
   actions: {
 
     generateAgent() {
@@ -184,40 +218,10 @@ const formComponent = Component.extend({
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          let formContent = {};
-          const listOfDest = [];
           const fileContent = e.target.result;
-          formContent = JSON.parse(fileContent.substring(0, fileContent.lastIndexOf('}') + 1));
-          this.set('configData.logCollectionConfig', formContent);
-          this.set('selectedProtocol', formContent.protocol);
-
-          const primaryExists = this.get('listOfService').some((l) =>
-          formContent.primaryDestination === l.id);
-
-          if (!isEmpty(formContent.primaryDestination) && !primaryExists) {
-            listOfDest.push(formContent.primaryDestination);
-            this.set('primaryDestination', '');
-          } else {
-            this.set('primaryDestination', formContent.primaryDestination);
-          }
-
-          const secondaryExists = this.get('listOfService').some((l) =>
-          formContent.secondaryDestination === l.id);
-
-          if (!isEmpty(formContent.secondaryDestination) && !secondaryExists) {
-            listOfDest.push(formContent.secondaryDestination);
-            this.set('secondaryDestination', '');
-          } else {
-            this.set('secondaryDestination', formContent.secondaryDestination);
-          }
-
-          if (!isEmpty(listOfDest)) {
-            const dest = this.get('i18n').t('packager.upload.warning', { id: listOfDest.join(',') });
-            this.get('flashMessages').warning(`${this.get('i18n').t('packager.upload.success')} ${dest}`);
-          } else {
-            this.get('flashMessages').success(this.get('i18n').t('packager.upload.success'));
-          }
-
+          const formContent = JSON.parse(fileContent.substring(0, fileContent.lastIndexOf('}') + 1));
+          formContent.enabled = true;
+          this._fetchLogConfigFromServer(formContent);
         } catch (err) {
           this.get('flashMessages').warning(this.get('i18n').t('packager.upload.failure'));
         } finally {

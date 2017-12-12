@@ -19,6 +19,10 @@ module.exports = function(environment) {
       getServices: {
         subscriptionDestination: '/user/queue/endpoint/logconfig/servers',
         requestDestination: '/ws/endpoint/logconfig/servers'
+      },
+      loadConfig: {
+        subscriptionDestination: '/user/queue/endpoint/logconfig/load',
+        requestDestination: '/ws/endpoint/logconfig/load'
       }
     }
   };

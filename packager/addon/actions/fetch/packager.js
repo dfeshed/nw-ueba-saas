@@ -28,9 +28,23 @@ const getListOfDevices = () => {
   });
 };
 
+const getConfiguration = (model) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'loadConfig',
+    modelName: 'packager',
+    query: {
+      data: model
+    }
+  });
+};
+
 
 export {
   getPackagerConfig,
   setPackagerConfig,
-  getListOfDevices
+  getListOfDevices,
+  getConfiguration
 };
+
+
