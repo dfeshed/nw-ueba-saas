@@ -23,9 +23,6 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 })
 public class AlertServiceElasticConfig {
     @Autowired
-    private AlertSeverityService alertEnumsSeverityService;
-
-    @Autowired
     private AlertClassificationService alertClassificationService;
 
     @Autowired
@@ -41,7 +38,6 @@ public class AlertServiceElasticConfig {
     public AlertService alertService() {
         return new AlertServiceImpl(
                 alertPersistencyService,
-                alertEnumsSeverityService,
                 alertClassificationService,
                 alertSeverityService,
                 supportingInformationGeneratorFactory
