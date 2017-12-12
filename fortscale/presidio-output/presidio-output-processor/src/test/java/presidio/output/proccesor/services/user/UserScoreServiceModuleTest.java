@@ -73,7 +73,6 @@ public class UserScoreServiceModuleTest {
                 .get();
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculation() {
         //Generate one user with 2 critical alerts
