@@ -95,7 +95,8 @@
       <div class="col-xs-5 display-name-js">
         {{rsa-form-input
           isError=isDisplayNameError
-          errorMessage=(t invalidServiceNameMessage)
+          class='display-name-input-js'
+          errorMessage=(t invalidDisplayNameMessage)
           maxLength=256
           label=(t 'packager.displayName')
           value=configData.packageConfig.displayName}}

@@ -30,7 +30,7 @@ const newConfig = {
     'port': 443,
     'certificatePassword': 'test',
     'serviceName': 'test',
-    'displayName': 'test'
+    'displayName': 'Display Name Test'
   },
   'logCollectionConfig': {
     'configName': 'test',
@@ -160,7 +160,7 @@ test('Channel filter regex validation when generate agent button clicked', funct
 });
 
 test('validates the packager config and sets the error field', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
   new ReduxDataHelper(setState).setData('defaultPackagerConfig', newConfig).build();
 
   this.render(hbs`{{packager-form}}`);
@@ -170,6 +170,7 @@ test('validates the packager config and sets the error field', function(assert) 
   const $SERVICE_NAME_FIELD = this.$('.service-name-input-js input');
   const $PASSWORD_FIELD = this.$('.password-input-js input');
   const $INPUT = this.$('.server-input-group input');
+  const $DISPLAY_NAME_FIELD = this.$('.display-name-input-js input');
 
   // Invalid ip
   $IP_FIELD.val('1.1.x.x');
@@ -192,6 +193,15 @@ test('validates the packager config and sets the error field', function(assert) 
   $INPUT.change();
   this.$('.generate-button-js .rsa-form-button').trigger('click');
   assert.ok(this.$('.service-name-input-js').hasClass('is-error'), 'Expected to have error class on service field');
+
+  // Invalid Displpay name
+  $IP_FIELD.val('1.1.1.1');
+  $PORT_FIELD.val('123');
+  $SERVICE_NAME_FIELD.val('EndServer');
+  $DISPLAY_NAME_FIELD.val('Display&Name#Test');
+  $INPUT.change();
+  this.$('.generate-button-js .rsa-form-button').trigger('click');
+  assert.ok(this.$('.display-name-input-js').hasClass('is-error'), 'Expected to have error class on display field');
 
   // Password is required
   $IP_FIELD.val('1.1.1.1');
