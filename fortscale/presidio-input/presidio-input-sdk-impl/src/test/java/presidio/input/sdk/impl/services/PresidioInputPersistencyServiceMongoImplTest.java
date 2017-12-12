@@ -19,6 +19,7 @@ import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
+import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -61,7 +62,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void testReadBoundariesStartTime() throws Exception {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = createEvent();
+        AbstractAuditableDocument doc = createEvent(Instant.now());
 
         list.add(doc);
         presidioInputPersistencyService.store(Schema.FILE, list);
@@ -72,7 +73,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void testReadBoundariesEndTime() throws Exception {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = createEvent();
+        AbstractAuditableDocument doc = createEvent(Instant.now());
         list.add(doc);
         presidioInputPersistencyService.store(Schema.FILE, list);
         List<? extends AbstractAuditableDocument> all = presidioInputPersistencyService.find(Schema.FILE, startTime, doc.getDateTime());
@@ -83,7 +84,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     @Test
     public void storeOneEventToMongoAndReadEventFromMongo() {
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        AbstractAuditableDocument doc = createEvent();
+        AbstractAuditableDocument doc = createEvent(Instant.now());
         list.add(doc);
         presidioInputPersistencyService.store(Schema.FILE, list);
         List<FileRawEvent> all = mongoTemplate.findAll(FileRawEvent.class, toCollectionNameTranslator.toCollectionName(Schema.FILE));
@@ -94,28 +95,25 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     public void deleteAllEventsFromMongoCollectionFile() {
         mongoTemplate.dropCollection(FileRawEvent.class);
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now().minus(5, ChronoUnit.MINUTES), "eventId", "dataSource",
-                "userId", "operationType", null, EventResult.SUCCESS,
-                "userName", "userDisplayName", null, "srcFilePath",
-                true, "dstFilePath", true, 0L, "resultCode");
-        list.add(fileRawEvent);
+        Instant currentTime = Instant.now();
+        list.add(createEvent(currentTime.minus(5, ChronoUnit.MINUTES)));
+        list.add(createEvent(currentTime.minus(5, ChronoUnit.HOURS)));
         presidioInputPersistencyService.store(Schema.FILE, list);
         int numberOfEventsDeleted = 0;
         try {
-            Instant startDateOfEpoce = Instant.ofEpochSecond(0);
-            numberOfEventsDeleted = presidioInputPersistencyService.clean(Schema.FILE, startDateOfEpoce, startDateOfEpoce);
+            numberOfEventsDeleted = presidioInputPersistencyService.clean(Schema.FILE, currentTime.truncatedTo(ChronoUnit.HOURS), currentTime.truncatedTo(ChronoUnit.HOURS).plus(1, ChronoUnit.HOURS));
         } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
-        List<FileRawEvent> all = mongoTemplate.findAll(FileRawEvent.class);
+        List<FileRawEvent> all = mongoTemplate.findAll(FileRawEvent.class, ((InputToCollectionNameTranslator) toCollectionNameTranslator).toCollectionName(Schema.FILE));
         Assert.assertEquals(1, numberOfEventsDeleted);
-        Assert.assertEquals(0, all.size());
+        Assert.assertEquals(1, all.size());
     }
 
-    public FileRawEvent createEvent() {
+    public FileRawEvent createEvent(Instant time) {
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("key", "value");
-        FileRawEvent fileRawEvent = new FileRawEvent(Instant.now(), "eventId", "dataSource",
+        FileRawEvent fileRawEvent = new FileRawEvent(time, "eventId", "dataSource",
                 "userId", "operationType", null, EventResult.SUCCESS,
                 "userName", "userDisplayName", additionalInfo, "srcFilePath",
                 true, "dstFilePath", true, 0L, "resultCode");
