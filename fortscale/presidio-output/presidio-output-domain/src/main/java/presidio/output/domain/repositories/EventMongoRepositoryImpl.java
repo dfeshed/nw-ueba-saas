@@ -10,10 +10,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.Pair;
 import presidio.output.domain.records.events.EnrichedEvent;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by efratn on 02/08/2017.
@@ -55,7 +55,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
             );
 
         });
-        if (CollectionUtils.isNotEmpty(criterias)){
+        if (CollectionUtils.isNotEmpty(criterias)) {
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
         query.limit(limitEvents);
@@ -79,5 +79,13 @@ public class EventMongoRepositoryImpl implements EventRepository {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void remove(String collectionName, Instant startDate, Instant endDate) {
+        Query query = new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+                .gte(startDate)
+                .lt(endDate));
+        mongoTemplate.remove(query, collectionName);
     }
 }
