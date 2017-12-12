@@ -12,4 +12,6 @@ public interface PresidioExternalMonitoringService {
 
     void reportCustomMetricMultipleValues(String metricName, Map<MetricEnums.MetricValues, Number> value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime);
 
+    void manualExportMetrics();
+
 }
