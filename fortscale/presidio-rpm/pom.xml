@@ -31,7 +31,7 @@
         </presidio-workflows-src.location>
         <common-conf-path>/home/presidio/presidio-core/configurations/airflow/</common-conf-path>
         <presidio-conf-group>presidio-conf</presidio-conf-group>
-        <env_var_profile_script>/home/presidio/presidio-core/installation/installation-scripts/version/1_0/utils/presidio_profile.sh</env_var_profile_script>
+        <env_var_profile_script>${project.parent.build.directory}/../presidio-rpm/src/main/python/installation-scripts/version/1_0/utils/presidio_profile.sh</env_var_profile_script>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
