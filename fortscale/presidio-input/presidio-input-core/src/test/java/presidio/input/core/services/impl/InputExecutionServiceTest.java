@@ -59,8 +59,6 @@ public class InputExecutionServiceTest {
 
     @Test
     public void testCleanup() throws Exception {
-        Instant currentTime = Instant.parse("2017-12-12T14:15:29.975Z");
-
         Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
         Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
 
