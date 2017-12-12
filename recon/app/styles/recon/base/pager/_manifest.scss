@@ -50,7 +50,7 @@
           color: text-color(primary, lightest);
         }
         &.disabled {
-          color: text-color(primary, dark);
+          color: text-color(primary);
           cursor: default;
         }
       }

@@ -67,7 +67,7 @@ $investigateBorderBottomColor: border-color(secondary);
         border-bottom: border-color(secondary) 3px solid;
       }
       &.disabled {
-        color: text-color(primary, dark);
+        color: text-color(primary);
         cursor: default;
       }
     }
