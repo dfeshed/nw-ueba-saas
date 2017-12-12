@@ -72,16 +72,28 @@ const autorun = new schema.Entity('autorun', {}, { processStrategy: commonNormal
 const service = new schema.Entity('service', {}, { processStrategy: commonNormalizerStrategy });
 const task = new schema.Entity('task', {}, { processStrategy: commonNormalizerStrategy });
 
-
-const fileContext = new schema.Entity('fileContext',
+const fileContextAutoruns = new schema.Entity('fileContextAutoruns',
   {
-    autoruns: [autorun],
-    tasks: [task],
+    autoruns: [autorun]
+  },
+  { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
+
+const fileContextServices = new schema.Entity('fileContextServices',
+  {
     services: [service]
   },
   { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
 
-// List of file context
-const fileContextListSchema = [fileContext];
 
-export { fileContextListSchema };
+const fileContextTasks = new schema.Entity('fileContextTasks',
+  {
+    tasks: [task]
+  },
+  { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
+
+// List of file context
+const fileContextAutorunsSchema = [fileContextAutoruns];
+const fileContextServicesSchema = [fileContextServices];
+const fileContextTasksSchema = [fileContextTasks];
+
+export { fileContextAutorunsSchema, fileContextServicesSchema, fileContextTasksSchema };

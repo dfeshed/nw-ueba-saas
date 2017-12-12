@@ -14,6 +14,8 @@ const initialState = {
   service: null,
   task: null,
   autorunLoadingStatus: null,
+  serviceLoadingStatus: null,
+  taskLoadingStatus: null,
   selectedRowId: null
 };
 
@@ -42,11 +44,7 @@ test('The SET_AUTORUN_SELECTED_ROW will reset the state', function(assert) {
 });
 
 test('The FETCH_FILE_CONTEXT_AUTORUNS sets the host details information', function(assert) {
-  const previous = Immutable.from({
-    autorun: null,
-    service: null,
-    task: null
-  });
+  const previous = Immutable.from({ autorun: null });
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_FILE_CONTEXT_AUTORUNS,
     payload: { data: autorunsData }
@@ -54,6 +52,24 @@ test('The FETCH_FILE_CONTEXT_AUTORUNS sets the host details information', functi
 
   const endState = reducer(previous, action);
   assert.deepEqual(_.values(endState.autorun).length, 1);
+});
+
+test('The FETCH_FILE_CONTEXT_SERVICES sets the host details information', function(assert) {
+  const previous = Immutable.from({ service: null });
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_FILE_CONTEXT_SERVICES,
+    payload: { data: autorunsData }
+  });
+  const endState = reducer(previous, action);
   assert.deepEqual(_.values(endState.service).length, 1);
-  assert.deepEqual(_.values(endState.task).length, 1);
+});
+
+test('The FETCH_FILE_CONTEXT_TASKS sets the host details information', function(assert) {
+  const previous = Immutable.from({ task: null });
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_FILE_CONTEXT_TASKS,
+    payload: { data: autorunsData }
+  });
+  const endState = reducer(previous, action);
+  assert.deepEqual(_.values(endState.task).length, 2);
 });

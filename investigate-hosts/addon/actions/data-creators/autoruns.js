@@ -18,7 +18,7 @@ const getFileContextAutoruns = () => {
     const data = {
       agentId,
       scanTime,
-      categories: ['AUTORUNS', 'SERVICES', 'TASKS']
+      categories: ['AUTORUNS']
     };
     dispatch({
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_AUTORUNS,
@@ -32,18 +32,62 @@ const getFileContextAutoruns = () => {
 };
 
 /**
- * An Action Creator for changing the autoruns view.
- *
- * @param {object}
- * @returns {function} redux-thunk
+* Action creator for fetching all services given host id and scan time
+* @method getFileContextServices
+* @public
+* @returns {Object}
+*/
+const getFileContextServices = () => {
+  return (dispatch, getState) => {
+    // Get selected agentId and scan time from the state
+    const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
+    const data = {
+      agentId,
+      scanTime,
+      categories: ['SERVICES']
+    };
+    dispatch({
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT_SERVICES,
+      promise: HostDetails.getFileContextData(data),
+      meta: {
+        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_FILE_CONTEXT_SERVICES, response),
+        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_SERVICES, response)
+      }
+    });
+  };
+};
+
+/**
+ * Action creator for fetching all tasks given host id and scan time
+ * @method getFileContextTasks
  * @public
+ * @returns {Object}
  */
-const setAutorunsTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_AUTORUNS_TAB, payload: { tabName } });
+const getFileContextTasks = () => {
+  return (dispatch, getState) => {
+    // Get selected agentId and scan time from the state
+    const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
+    const data = {
+      agentId,
+      scanTime,
+      categories: ['TASKS']
+    };
+    dispatch({
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT_TASKS,
+      promise: HostDetails.getFileContextData(data),
+      meta: {
+        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_FILE_CONTEXT_TASKS, response),
+        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_TASKS, response)
+      }
+    });
+  };
+};
 
 const setSelectedRow = ({ id }) => ({ type: ACTION_TYPES.SET_AUTORUN_SELECTED_ROW, payload: { id } });
 
 export {
   getFileContextAutoruns,
-  setSelectedRow,
-  setAutorunsTabView
+  getFileContextServices,
+  getFileContextTasks,
+  setSelectedRow
 };

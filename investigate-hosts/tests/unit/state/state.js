@@ -1379,6 +1379,22 @@ export const autorunsData = [
           'id': 'autoruns_13',
           'fileId': '59d635be973e7702acf7e600'
         }
+      ],
+      'initd': [
+        {
+          'description': ' Starts the Avahi Daemon',
+          'fileId': '5a2a6d790d4a9d761fa473ba',
+          'pid': 1857,
+          'status': 'avahi-daemon (pid  1857) is running...',
+          'type': 'Initds'
+        }
+      ],
+      'crons': [
+        {
+          'id': 'crons_635',
+          'launchArguments': '/etc/cron.hourly',
+          'user': 'root'
+        }
       ]
     },
     'fileProperties': {

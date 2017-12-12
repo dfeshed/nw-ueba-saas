@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { setAutorunsTabView } from 'investigate-hosts/actions/data-creators/autoruns';
+import { setAutorunsTabView } from 'investigate-hosts/actions/data-creators/details';
 import { getAutorunTabs, selectedAutorunTab } from 'investigate-hosts/reducers/visuals/selectors';
 
 const stateToComputed = (state) => ({

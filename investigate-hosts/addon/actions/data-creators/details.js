@@ -2,7 +2,7 @@ import * as ACTION_TYPES from '../types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess } from './process';
-import { getFileContextAutoruns, setAutorunsTabView } from './autoruns';
+import { getFileContextAutoruns, getFileContextServices, getFileContextTasks } from './autoruns';
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
@@ -71,7 +71,7 @@ const _getHostDetails = (forceRefresh) => {
 const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
     const { endpoint: { drivers, autoruns, libraries, hostFiles, process, visuals } } = getState();
-    const { activeHostDetailTab } = visuals;
+    const { activeHostDetailTab, activeAutorunTab } = visuals;
     switch (activeHostDetailTab) {
       case 'PROCESS':
         if (!process.processList) {
@@ -79,8 +79,12 @@ const _fetchDataForSelectedTab = () => {
         }
         break;
       case 'AUTORUNS':
-        if (!autoruns.autorun) {
+        if (activeAutorunTab === 'AUTORUNS' && !autoruns.autorun) {
           dispatch(getFileContextAutoruns());
+        } else if (activeAutorunTab === 'SERVICES' && !autoruns.service) {
+          dispatch(getFileContextServices());
+        } else if (activeAutorunTab === 'TASKS' && !autoruns.task) {
+          dispatch(getFileContextTasks());
         }
         break;
       case 'FILES':
@@ -117,6 +121,20 @@ const setNewTabView = (tabName) => {
   return (dispatch) => {
     dispatch(changeDetailTab(tabName));
     dispatch(_getHostDetails());
+  };
+};
+
+/**
+ * An Action Creator for changing the autoruns view.
+ *
+ * @param {object}
+ * @returns {function} redux-thunk
+ * @public
+ */
+const setAutorunsTabView = (tabName) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.CHANGE_AUTORUNS_TAB, payload: { tabName } });
+    dispatch(_fetchDataForSelectedTab());
   };
 };
 
@@ -160,5 +178,6 @@ export {
   setNewTabView,
   setTransition,
   exportFileContext,
-  loadDetailsWithExploreInput
+  loadDetailsWithExploreInput,
+  setAutorunsTabView
 };

@@ -2,14 +2,14 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/autoruns';
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
-import { isDataLoading, services, selectedServiceFileProperties } from 'investigate-hosts/reducers/details/autorun/selectors';
+import { isServiceDataLoading, services, selectedServiceFileProperties } from 'investigate-hosts/reducers/details/autorun/selectors';
 import columnsConfig from './services-columns';
 import propertyConfig from './services-property-config';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => {
   return {
-    status: isDataLoading(state),
+    status: isServiceDataLoading(state),
     services: services(state),
     machineOsType: machineOsType(state),
     fileProperties: selectedServiceFileProperties(state)

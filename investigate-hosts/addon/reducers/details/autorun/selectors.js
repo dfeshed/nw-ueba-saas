@@ -3,15 +3,27 @@ import { getProperties, getValues } from 'investigate-hosts/reducers/details/sel
 
 const { createSelector } = reselect;
 const _autorunLoadingStatus = (state) => state.endpoint.autoruns.autorunLoadingStatus;
+const _serviceLoadingStatus = (state) => state.endpoint.autoruns.serviceLoadingStatus;
+const _taskLoadingStatus = (state) => state.endpoint.autoruns.taskLoadingStatus;
 const _autorunObject = (state) => state.endpoint.autoruns.autorun;
 const _serviceObject = (state) => state.endpoint.autoruns.service;
 const _taskObject = (state) => state.endpoint.autoruns.task;
 const _selectedRowId = (state) => state.endpoint.autoruns.selectedRowId;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 
-export const isDataLoading = createSelector(
+export const isAutorunDataLoading = createSelector(
   _autorunLoadingStatus,
   (autorunLoadingStatus) => (autorunLoadingStatus === 'wait')
+);
+
+export const isServiceDataLoading = createSelector(
+  _serviceLoadingStatus,
+  (serviceLoadingStatus) => (serviceLoadingStatus === 'wait')
+);
+
+export const isTaskDataLoading = createSelector(
+  _taskLoadingStatus,
+  (taskLoadingStatus) => (taskLoadingStatus === 'wait')
 );
 
 export const autoruns = createSelector(

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { autorunsData } from '../../../state/state';
-import { fileContextListSchema } from 'investigate-hosts/reducers/details/autorun/schemas';
+import { fileContextAutorunsSchema, fileContextServicesSchema, fileContextTasksSchema } from 'investigate-hosts/reducers/details/autorun/schemas';
 import Immutable from 'seamless-immutable';
 import { normalize } from 'normalizr';
 
@@ -13,7 +13,7 @@ import {
 } from 'investigate-hosts/reducers/details/autorun/selectors';
 
 test('autoruns', function(assert) {
-  const normalizedData = normalize(autorunsData, fileContextListSchema);
+  const normalizedData = normalize(autorunsData, fileContextAutorunsSchema);
   const { autorun } = normalizedData.entities;
   const result = autoruns(Immutable.from({
     endpoint: {
@@ -28,7 +28,7 @@ test('autoruns', function(assert) {
 });
 
 test('services', function(assert) {
-  const normalizedData = normalize(autorunsData, fileContextListSchema);
+  const normalizedData = normalize(autorunsData, fileContextServicesSchema);
   const { service } = normalizedData.entities;
   const result = services(Immutable.from({
     endpoint: {
@@ -44,7 +44,7 @@ test('services', function(assert) {
 });
 
 test('tasks', function(assert) {
-  const normalizedData = normalize(autorunsData, fileContextListSchema);
+  const normalizedData = normalize(autorunsData, fileContextTasksSchema);
   const { task } = normalizedData.entities;
   const result = tasks(Immutable.from({
     endpoint: {
@@ -55,5 +55,5 @@ test('tasks', function(assert) {
       }
     }
   }));
-  assert.equal(result.length, 1);
+  assert.equal(result.length, 2);
 });
