@@ -43,25 +43,25 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
 
     /**
      * Set tags to modelMetricsContainers
+     *
      * @param factoryNames
      * @param modelConfName
-     * @param logicalStartTime
+     * @param logicalTime
      * @param numOfContexts
      */
-    public void init(Set<String> factoryNames, String modelConfName, Instant logicalStartTime, int numOfContexts){
+    public void init(Set<String> factoryNames, String modelConfName, Instant logicalTime, int numOfContexts) {
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         tags.put(MODEL, modelConfName);
 
         factoryNames.forEach(factoryName -> {
             IModelMetricsContainer modelMetricsContainer = modelMetricsContainers.get(factoryName);
-            if(modelMetricsContainer != null) {
+            if (modelMetricsContainer != null) {
                 modelMetricsContainers.get(factoryName).addTags(tags);
-                modelMetricsContainers.get(factoryName).setLogicalStartTime(logicalStartTime);
+                modelMetricsContainers.get(factoryName).setLogicalTime(logicalTime);
                 modelMetricsContainers.get(factoryName).setNumOfContexts(numOfContexts);
             }
         });
     }
-
 
     /**
      * Updates modeling metrics by provided data
@@ -78,9 +78,9 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
         metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_CONTEXTS, (k, v) -> v.doubleValue() + numOfSuccesses + numOfFailures);
     }
 
-
     /**
      * updates modeling metrics by provided data
+     *
      * @param logicalStartTime
      * @param modelConfName
      * @param noDataReason
@@ -91,7 +91,6 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
             metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_ALL_DATA_FILTERED, (k, v) -> v.doubleValue() + 1);
         }
     }
-
 
     public void flush() {
         // subscribe metric to collecting service

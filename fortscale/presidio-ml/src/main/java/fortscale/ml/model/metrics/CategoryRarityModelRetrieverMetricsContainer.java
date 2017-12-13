@@ -23,9 +23,13 @@ public class CategoryRarityModelRetrieverMetricsContainer extends ModelMetricsCo
         super(metricCollectingService, metricsExporter);
     }
 
+    /**
+     * Updates modeling metrics by provided data
+     * @param featureBucketSize
+     */
     public void updateMetric(int featureBucketSize) {
         Metric metric = getMetric();
-        metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_READ_DATA, (k, v) -> v.doubleValue()+ featureBucketSize);
+        metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_READ_DATA, (k, v) -> v.doubleValue() + featureBucketSize);
     }
 
 
@@ -41,7 +45,7 @@ public class CategoryRarityModelRetrieverMetricsContainer extends ModelMetricsCo
                 .setMetricReportOnce(true)
                 .setMetricUnit(MetricEnums.MetricUnitType.NUMBER)
                 .setMetricTags(tags)
-                .setMetricLogicTime(logicalStartTime)
+                .setMetricLogicTime(logicalTime)
                 .setMetricMultipleValues(values)
                 .build();
     }

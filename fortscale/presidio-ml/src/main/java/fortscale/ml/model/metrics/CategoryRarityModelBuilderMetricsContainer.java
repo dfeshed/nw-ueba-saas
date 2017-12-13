@@ -27,6 +27,12 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
     }
 
 
+    /**
+     * Updates modeling metrics by provided data
+     * @param sizeOfFeatureValues
+     * @param numOfPartitions
+     * @param buckets
+     */
     public void updateMetric(int sizeOfFeatureValues, long numOfPartitions, double[] buckets) {
         Metric metric = getMetric();
         metric.getValue().compute(MetricEnums.MetricValues.MAX_SIZE_OF_FEATURE_VALUES, (k, v) -> Math.max(v.doubleValue(), sizeOfFeatureValues));
@@ -64,7 +70,7 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
                 .setMetricReportOnce(true)
                 .setMetricUnit(MetricEnums.MetricUnitType.NUMBER)
                 .setMetricTags(tags)
-                .setMetricLogicTime(logicalStartTime)
+                .setMetricLogicTime(logicalTime)
                 .setMetricMultipleValues(values)
                 .build();
     }

@@ -7,16 +7,14 @@ import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
 @Configuration
-public class CategoryRarityModeBuilderMetricsContainerConfig
-{
+public class CategoryRarityModeBuilderMetricsContainerConfig {
     @Autowired
     private MetricCollectingService metricCollectingService;
     @Autowired
     private MetricsExporter metricsExporter;
 
     @Bean
-    public CategoryRarityModelBuilderMetricsContainer categoryRarityModelingServiceMetricsContainer()
-    {
+    public CategoryRarityModelBuilderMetricsContainer categoryRarityModelingServiceMetricsContainer() {
         return new CategoryRarityModelBuilderMetricsContainer(metricCollectingService, metricsExporter);
     }
 }

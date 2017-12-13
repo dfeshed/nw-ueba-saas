@@ -9,13 +9,24 @@ import java.util.Map;
 
 public interface IModelMetricsContainer {
 
-     String getFactoryName();
+    /**
+     * @return factory name of model conf
+     */
+    String getFactoryName();
 
-     void addTags(Map<MetricEnums.MetricTagKeysEnum, String> tags);
+    /**
+     * Add tags to specific model metrics container
+     * @param tags
+     */
+    void addTags(Map<MetricEnums.MetricTagKeysEnum, String> tags);
 
-     void setLogicalStartTime(Instant logicalStartTime);
+    /**
+     * Set logical time
+     * @param logicalStartTime
+     */
+    void setLogicalTime(Instant logicalStartTime);
 
-     void setNumOfContexts(int numOfContexts);
+    void setNumOfContexts(int numOfContexts);
 
-     void flush();
+    void flush();
 }

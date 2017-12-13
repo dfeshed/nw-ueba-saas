@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 @Configuration
 @Import({CategoryRarityModeBuilderMetricsContainerConfig.class,
         CategoryRarityModeRetrieverMetricsContainerConfig.class})
-public class ModelingServiceMetricsContainerConfig
-{
+public class ModelingServiceMetricsContainerConfig {
     @Autowired
     private MetricCollectingService metricCollectingService;
     @Autowired
@@ -25,14 +24,13 @@ public class ModelingServiceMetricsContainerConfig
     private Map<String, IModelMetricsContainer> modelBuilderMetricsContainers;
 
     @Autowired
-    public void setUpModelBuilderMetricsContainers(Set<IModelMetricsContainer> modelBuilderMetricsContainers){
+    public void setUpModelBuilderMetricsContainers(Set<IModelMetricsContainer> modelBuilderMetricsContainers) {
         this.modelBuilderMetricsContainers = modelBuilderMetricsContainers.stream()
                 .collect(Collectors.toMap(IModelMetricsContainer::getFactoryName, Function.identity()));
     }
 
     @Bean
-    public ModelingServiceMetricsContainer modelingServiceMetricsContainer()
-    {
+    public ModelingServiceMetricsContainer modelingServiceMetricsContainer() {
         return new ModelingServiceMetricsContainer(metricCollectingService, metricsExporter, modelBuilderMetricsContainers);
     }
 }

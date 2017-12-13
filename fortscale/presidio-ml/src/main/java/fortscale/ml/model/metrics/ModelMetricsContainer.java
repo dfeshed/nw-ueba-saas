@@ -15,11 +15,10 @@ public abstract class ModelMetricsContainer implements IModelMetricsContainer {
     protected MetricCollectingService metricCollectingService;
     protected MetricsExporter metricsExporter;
     protected Map<MetricEnums.MetricTagKeysEnum, String> tags;
-    protected Instant logicalStartTime;
+    protected Instant logicalTime;
     protected int numOfContexts;
     // cached map of metrics by tags and logical time
     protected Map<ModelingMetricsKey, Metric> modelingMetrics;
-
 
 
     /**
@@ -40,8 +39,8 @@ public abstract class ModelMetricsContainer implements IModelMetricsContainer {
         this.tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MetricEnums.MetricUnitType.NUMBER.toString());
     }
 
-    public void setLogicalStartTime(Instant logicalStartTime) {
-        this.logicalStartTime = logicalStartTime;
+    public void setLogicalTime(Instant logicalTime) {
+        this.logicalTime = logicalTime;
     }
 
     public void setNumOfContexts(int numOfContexts) {
@@ -62,12 +61,11 @@ public abstract class ModelMetricsContainer implements IModelMetricsContainer {
 
 
     /**
-     *
      * @return metric
      */
     protected Metric getMetric() {
         Map<MetricEnums.MetricTagKeysEnum, String> metricTags = new HashMap<>(tags);
-        ModelingMetricsKey key = new ModelingMetricsKey(logicalStartTime, metricTags);
+        ModelingMetricsKey key = new ModelingMetricsKey(logicalTime, metricTags);
         Metric metric = modelingMetrics.get(key);
         if (metric == null) {
             metric = createNewMetric(metricTags);
@@ -80,10 +78,11 @@ public abstract class ModelMetricsContainer implements IModelMetricsContainer {
 
     /**
      * Create new metric
+     *
      * @param tags
      * @return
      */
-    protected abstract Metric  createNewMetric(Map<MetricEnums.MetricTagKeysEnum, String> tags);
+    protected abstract Metric createNewMetric(Map<MetricEnums.MetricTagKeysEnum, String> tags);
 
 
     /**
