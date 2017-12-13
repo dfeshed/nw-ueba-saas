@@ -28,7 +28,7 @@ const ListFilter = Component.extend(FilterMixin, {
    * Restriction type for the list filter
    * @public
    */
-  restrictionType: 'ALL',
+  restrictionType: 'IN',
 
   /**
    * Prepared checkbox option for display
