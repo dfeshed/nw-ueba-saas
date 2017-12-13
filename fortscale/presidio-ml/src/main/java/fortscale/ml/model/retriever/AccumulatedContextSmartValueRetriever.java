@@ -5,15 +5,12 @@ import fortscale.ml.model.*;
 import fortscale.ml.model.retriever.smart_data.ContextSmartValueData;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordData;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
-import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
-import fortscale.utils.factory.FactoryService;
-import fortscale.utils.time.TimeRange;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
@@ -21,7 +18,6 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static fortscale.ml.model.retriever.smart_data.SmartAccumulationFlattener.flattenSmartRecordToSmartAggrData;
 
@@ -31,7 +27,6 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
     private final SmartRecordConf smartRecordConf;
     private final String smartRecordConfName;
     private final SmartAccumulationDataReader accumulationDataReader;
-    private final FactoryService<IContextSelector> contextSelectorFactoryService;
     private ModelConf weightsModelConf;
     private final String weightsModelName;
     private ModelConfService modelConfService;
@@ -39,14 +34,13 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
     private final SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
     private final Duration oldestAllowedModelDurationDiff;
 
-    public AccumulatedContextSmartValueRetriever(AccumulatedContextSmartValueRetrieverConf dataRetrieverConf, SmartAccumulationDataReader accumulationDataReader, SmartRecordConfService smartRecordConfService, FactoryService<IContextSelector> contextSelectorFactoryService, ModelStore modelStore, Duration oldestAllowedModelDurationDiff, SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm) {
+    public AccumulatedContextSmartValueRetriever(AccumulatedContextSmartValueRetrieverConf dataRetrieverConf, SmartAccumulationDataReader accumulationDataReader, SmartRecordConfService smartRecordConfService, ModelStore modelStore, Duration oldestAllowedModelDurationDiff, SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm) {
         super(dataRetrieverConf);
         this.smartRecordConfName = dataRetrieverConf.getSmartRecordConfName();
         this.modelStore = modelStore;
         this.oldestAllowedModelDurationDiff = oldestAllowedModelDurationDiff;
         Assert.hasText(this.smartRecordConfName, "smart record conf name must be defined for retriever");
         this.accumulationDataReader = accumulationDataReader;
-        this.contextSelectorFactoryService = contextSelectorFactoryService;
         this.smartRecordConf = smartRecordConfService.getSmartRecordConf(this.smartRecordConfName);
         this.weightsModelName = dataRetrieverConf.getWeightsModelName();
         Assert.hasText(weightsModelName, String.format("weightsModelName must be defined for retriever name=%s", this.smartRecordConfName));
@@ -83,13 +77,12 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
     private double calculateSmartValue(SmartAggregatedRecordDataContainer recordsDataContainer, SmartWeightsModel smartWeightsModel) {
         List<ClusterConf> clusterConfs = smartWeightsModel.getClusterConfs();
         List<SmartAggregatedRecordData> aggregatedRecordsData = recordsDataContainer.getSmartAggregatedRecordsData();
-        return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData, clusterConfs);
+        return smartWeightsScorerAlgorithm.calculateScore(aggregatedRecordsData, clusterConfs).getScore();
     }
 
     private ModelDAO getWeightsModelDao(Instant endTimeInstant) {
         Instant oldestAllowedModelTime = endTimeInstant.minus(oldestAllowedModelDurationDiff);
-        ModelDAO latestBeforeEventTimeAfterOldestAllowedModelDao = modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
-        return latestBeforeEventTimeAfterOldestAllowedModelDao;
+        return modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(weightsModelConf, null, endTimeInstant, oldestAllowedModelTime, 1).get(0);
     }
 
     @Override

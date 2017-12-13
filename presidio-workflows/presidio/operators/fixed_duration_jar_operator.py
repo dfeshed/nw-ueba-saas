@@ -28,7 +28,12 @@ class FixedDurationJarOperator(SpringBootJarOperator):
         self.interval = kwargs.get('dag').schedule_interval
         self.fixed_duration_strategy = fixed_duration_strategy
         self.add_fixed_duration_strategy(java_args)
-        super(FixedDurationJarOperator, self).__init__(java_args=java_args, command=command, *args, **kwargs)
+        retry_extra_params = {}
+        retry_extra_params['fixed_duration_strategy'] = fixed_duration_strategy
+        retry_extra_params['schedule_interval'] = self.interval
+
+        super(FixedDurationJarOperator, self).__init__(java_args=java_args, command=command, retry_extra_params=retry_extra_params,
+                                                       retry_java_args_method=FixedDurationJarOperator.add_java_args, *args, **kwargs)
 
     def add_fixed_duration_strategy(self, java_args):
         java_args.update({'fixed_duration_strategy': self.fixed_duration_strategy.total_seconds()})
@@ -41,12 +46,6 @@ class FixedDurationJarOperator(SpringBootJarOperator):
            
         :raise InvalidExecutionDateError - Raise error if the execution_date is not the last interval of fixed duration.
         """
-        java_args = self.add_java_args(context)
-
-        super(FixedDurationJarOperator, self).update_java_args(java_args)
-        super(FixedDurationJarOperator, self).execute(context)
-
-    def add_java_args(self, context):
         context_wrapper = ContextWrapper(context)
         execution_date = context_wrapper.get_execution_date()
         if not is_execution_date_valid(execution_date, self.fixed_duration_strategy,
@@ -55,7 +54,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
             # e.g: execution_date = datetime(2014, 11, 28, 13, 50, 0)
             # interval = timedelta(minutes=5)
             # fixed_duration = timedelta(days=1)
-            logging.debug(
+            logging.error(
                 'Create short_circuit_operator in order to skip the task.')
             raise InvalidExecutionDateError(execution_date, self.fixed_duration_strategy)
 
@@ -68,6 +67,33 @@ class FixedDurationJarOperator(SpringBootJarOperator):
             'start_date': utc_start_date,
             'end_date': utc_end_date
         }
+        super(FixedDurationJarOperator, self).update_java_args(java_args)
+        super(FixedDurationJarOperator, self).execute(context)
+
+    @staticmethod
+    def add_java_args(context):
+        params = context['params']
+        fixed_duration_strategy = params['retry_extra_params']['fixed_duration_strategy']
+        interval = params['retry_extra_params']['schedule_interval']
+        context_wrapper = ContextWrapper(context)
+        execution_date = context_wrapper.get_execution_date()
+
+        if not is_execution_date_valid(execution_date, fixed_duration_strategy,
+                                       interval):
+            logging.error(
+                'Create short_circuit_operator in order to skip the task.')
+            raise InvalidExecutionDateError(execution_date, fixed_duration_strategy)
+
+        start_date = floor_time(execution_date, time_delta=fixed_duration_strategy)
+        end_date = floor_time(execution_date + interval,
+                              time_delta=fixed_duration_strategy)
+        utc_start_date = convert_to_utc(start_date)
+        utc_end_date = convert_to_utc(end_date)
+        java_args = {
+            'start_date': utc_start_date,
+            'end_date': utc_end_date
+        }
+        java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in java_args.iteritems())
         return java_args
 
 

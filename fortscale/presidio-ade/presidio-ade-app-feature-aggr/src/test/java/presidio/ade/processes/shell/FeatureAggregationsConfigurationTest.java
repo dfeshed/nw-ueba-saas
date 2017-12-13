@@ -1,10 +1,13 @@
 package presidio.ade.processes.shell;
 
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
@@ -12,7 +15,7 @@ import java.util.Properties;
  * Created by barak_schuster on 7/30/17.
  */
 @Configuration
-@Import({MongodbTestConfig.class})
+@Import({MongodbTestConfig.class,PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
 public class FeatureAggregationsConfigurationTest extends FeatureAggregationsConfiguration {
     @Bean
     public static TestPropertiesPlaceholderConfigurer featureAggregationsApplicationTestProperties() {
@@ -31,6 +34,12 @@ public class FeatureAggregationsConfigurationTest extends FeatureAggregationsCon
         properties.put("spring.application.name", "test-app-name");
         properties.put("presidio.default.ttl.duration", "PT48H");
         properties.put("presidio.default.cleanup.interval", "PT24H");
+
+        properties.put("enable.metrics.export", true);
+        properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
+        properties.put("elasticsearch.host", "localhost");
+        properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
+        properties.put("monitoring.fixed.rate","60000");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

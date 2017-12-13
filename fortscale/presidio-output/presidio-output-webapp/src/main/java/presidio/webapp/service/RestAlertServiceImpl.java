@@ -15,30 +15,35 @@ import presidio.output.domain.records.alerts.CountAggregation;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.alerts.TimeAggregation;
 import presidio.output.domain.records.alerts.WeekdayAggregation;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.*;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
+import presidio.webapp.model.Indicator;
+import presidio.webapp.model.IndicatorQuery;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class RestAlertServiceImpl implements RestAlertService {
 
 
+    private final FeedbackService feedbackService;
     private final AlertPersistencyService alertPersistencyService;
     private final int pageNumber;
     private final int pageSize;
 
-    public RestAlertServiceImpl(AlertPersistencyService alertPersistencyService, int pageNumber, int pageSize) {
+    public RestAlertServiceImpl(AlertPersistencyService alertPersistencyService,
+                                FeedbackService feedbackService,
+                                int pageNumber,
+                                int pageSize) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.alertPersistencyService = alertPersistencyService;
+        this.feedbackService = feedbackService;
     }
 
     @Override
@@ -290,17 +295,14 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public IndicatorsWrapper getIndicatorsByAlertId(String alertId, presidio.webapp.model.IndicatorQuery indicatorQuery) {
+    public IndicatorsWrapper getIndicatorsByAlertId(String alertId, IndicatorQuery indicatorQuery) {
         List<Indicator> restIndicators = new ArrayList<Indicator>();
         int totalElements = 0;
         int pageNumber = indicatorQuery.getPageNumber() != null ? indicatorQuery.getPageNumber() : 0;
         int pageSize = indicatorQuery.getPageSize() != null ? indicatorQuery.getPageSize() : 10;
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
-
         if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
             Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
-            Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId();
-
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 restIndicators.add(createRestIndicator(indicator));
             }
@@ -343,11 +345,9 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     @Override
-    public void updateAlertFeedback(String alertId, AlertQueryEnums.AlertFeedback feedback) {
-        presidio.output.domain.records.alerts.Alert alert = alertPersistencyService.findOne(alertId);
+    public void updateAlertFeedback(List<String> alertIds, AlertQueryEnums.AlertFeedback feedback) {
+        feedbackService.updateAlertFeedback(alertIds, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
 
-
-        alertPersistencyService.updateAlertFeedback(alertId, AlertEnums.AlertFeedback.valueOf(feedback.toString()));
 
     }
 

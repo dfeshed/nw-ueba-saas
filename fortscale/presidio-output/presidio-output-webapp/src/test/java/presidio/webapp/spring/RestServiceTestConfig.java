@@ -3,6 +3,7 @@ package presidio.webapp.spring;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import presidio.webapp.service.FeedbackService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.webapp.service.RestAlertService;
@@ -18,10 +19,12 @@ public class RestServiceTestConfig {
     @MockBean
     UserPersistencyService userService;
 
+    @MockBean
+    FeedbackService feedbackService;
 
     @Bean
     RestAlertService restAlertService() {
-        return new RestAlertServiceImpl(alertService, 0, 2);
+        return new RestAlertServiceImpl(alertService, feedbackService, 0, 2);
     }
 
     @Bean

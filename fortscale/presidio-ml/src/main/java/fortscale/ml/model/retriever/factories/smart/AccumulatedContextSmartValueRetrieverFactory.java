@@ -1,13 +1,13 @@
 package fortscale.ml.model.retriever.factories.smart;
 
-import fortscale.ml.model.retriever.*;
-import fortscale.ml.model.selector.IContextSelector;
+import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.retriever.AccumulatedContextSmartValueRetriever;
+import fortscale.ml.model.retriever.AccumulatedContextSmartValueRetrieverConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
-import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 
 import java.time.Duration;
 
-
+@SuppressWarnings("unused")
 @Component
 public class AccumulatedContextSmartValueRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
 
@@ -23,8 +23,6 @@ public class AccumulatedContextSmartValueRetrieverFactory extends AbstractServic
     private SmartAccumulationDataReader accumulationDataReader;
     @Autowired
     private SmartRecordConfService smartRecordConfService;
-    @Autowired
-    private FactoryService<IContextSelector> contextSelectorFactoryService;
     @Autowired
     private ModelStore modelStore;
     @Autowired
@@ -42,6 +40,6 @@ public class AccumulatedContextSmartValueRetrieverFactory extends AbstractServic
     @Override
     public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
         AccumulatedContextSmartValueRetrieverConf config = (AccumulatedContextSmartValueRetrieverConf)factoryConfig;
-        return new AccumulatedContextSmartValueRetriever(config, accumulationDataReader, smartRecordConfService, contextSelectorFactoryService, modelStore, oldestAllowedModelDurationDiff, smartWeightsScorerAlgorithm);
+        return new AccumulatedContextSmartValueRetriever(config, accumulationDataReader, smartRecordConfService, modelStore, oldestAllowedModelDurationDiff, smartWeightsScorerAlgorithm);
     }
 }

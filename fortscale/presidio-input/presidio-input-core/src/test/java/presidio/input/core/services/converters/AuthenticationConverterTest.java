@@ -23,7 +23,7 @@ public class AuthenticationConverterTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "", "srcMachineName", "",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site");
         AuthenticationTransformedEvent inputRecord = new AuthenticationTransformedEvent(rawEvent);
         inputRecord.setDstMachineCluster("");
         inputRecord.setSrcMachineCluster("");
@@ -55,7 +55,7 @@ public class AuthenticationConverterTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "srcMachineName", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site");
         AuthenticationTransformedEvent inputRecord = new AuthenticationTransformedEvent(rawEvent);
         inputRecord.setDstMachineCluster("dstMachineCluster");
         inputRecord.setSrcMachineCluster("srcMachineCluster");

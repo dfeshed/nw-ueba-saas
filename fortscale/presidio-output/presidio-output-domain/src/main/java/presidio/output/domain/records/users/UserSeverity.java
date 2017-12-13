@@ -1,4 +1,4 @@
-package presidio.output.commons.services.alert;
+package presidio.output.domain.records.users;
 
 /**
  * Created by shays on 27/08/2017.

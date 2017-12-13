@@ -1,9 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
-import fortscale.ml.model.ContinuousDataModel;
-import fortscale.ml.model.GaussianPriorModel;
-import fortscale.ml.model.IContinuousDataModel;
-import fortscale.ml.model.Model;
+import fortscale.ml.model.*;
 import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
 
@@ -61,13 +58,22 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 				);
 			}
 		}
-		return new GaussianPriorModel().init(segmentPriors);
+
+		if(segmentPriors.isEmpty()){
+			return new GaussianPriorModel().initMinPrior(priorBuilder.getMinAllowedPrior());
+		} else {
+			return new GaussianPriorModel().init(segmentPriors);
+		}
 	}
 
 	private List<IContinuousDataModel> getModelsWithEnoughSamples(List<IContinuousDataModel> models) {
 		return models.stream()
-				.filter(model -> model.getNumOfSamples() >= minNumOfSamplesToLearnFrom)
+				.filter(model -> getNumOfSamples(model) >= minNumOfSamplesToLearnFrom)
 				.collect(Collectors.toList());
+	}
+
+	private static long getNumOfSamples(IContinuousDataModel model){
+		return model instanceof ContinuousMaxDataModel ? ((ContinuousMaxDataModel) model).getNumOfPartitions() : model.getNumOfSamples();
 	}
 
 	private List<IContinuousDataModel> castModelBuilderData(Object modelBuilderData) {

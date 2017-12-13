@@ -3,15 +3,10 @@ package presidio.output.domain.services.alerts;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
-import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
@@ -97,6 +92,11 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
+    public Iterable<Alert> findAll(List<String> ids) {
+        return alertRepository.findAll(ids);
+    }
+
+    @Override
     public Page<Alert> findByUserName(String userName, PageRequest pageRequest) {
         return alertRepository.findByUserName(userName, pageRequest);
     }
@@ -150,26 +150,4 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     public Page<Indicator> findIndicatorsByAlertId(IndicatorQuery indicatorQuery) {
         return indicatorRepository.search(new IndicatorElasticsearchQueryBuilder(indicatorQuery).build());
     }
-
-    @Override
-    public void updateAlertFeedback(String alertId, AlertEnums.AlertFeedback feedback) {
-        if (alertId == null || feedback == null) {
-            logger.error("Failed to update alert- alert id or feedback cannot be null");
-            return;
-        }
-
-
-        //building update request-
-        IndexRequest indexRequest = new IndexRequest();
-        indexRequest.source(Alert.FEEDBACK, feedback);
-        UpdateQuery updateQuery = new UpdateQueryBuilder()
-                .withId(alertId)
-                .withClass(Alert.class)
-                .withIndexRequest(indexRequest)
-                .build();
-
-        UpdateResponse updateResponse = elasticsearchTemplate.update(updateQuery);
-    }
-
-
 }

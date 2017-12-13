@@ -6,13 +6,14 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
+import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataStore;
+import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.util.Collection;
 import java.util.Set;
@@ -36,24 +37,25 @@ public class SmartService {
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
 	private final StoreManager storeManager;
+	private final MetricContainerFlusher metricContainerFlusher;
 
 	/**
 	 * C'tor.
-	 *
-	 * @param smartRecordConfService      contains all the {@link SmartRecordConf}s
-	 * @param aggregationRecordsThreshold only {@link AdeAggregationRecord}s whose values / scores are larger
-	 *                                    than this threshold will be included in the {@link SmartRecord}s
-	 * @param aggregatedDataReader        reads from the store of {@link AdeAggregationRecord}s
-	 * @param smartScoringService         scores {@link SmartRecord}s
-	 * @param smartDataStore              the store of {@link SmartRecord}s
-	 */
+     * @param smartRecordConfService      contains all the {@link SmartRecordConf}s
+     * @param aggregationRecordsThreshold only {@link AdeAggregationRecord}s whose values / scores are larger
+     *                                    than this threshold will be included in the {@link SmartRecord}s
+     * @param aggregatedDataReader        reads from the store of {@link AdeAggregationRecord}s
+     * @param smartScoringService         scores {@link SmartRecord}s
+     * @param smartDataStore              the store of {@link SmartRecord}s
+     * @param metricContainerFlusher
+     */
 	public SmartService(
-			SmartRecordConfService smartRecordConfService,
-			Double aggregationRecordsThreshold,
-			AggregatedDataReader aggregatedDataReader,
-			SmartScoringService smartScoringService,
-			SmartDataStore smartDataStore,
-			StoreManager storeManager) {
+            SmartRecordConfService smartRecordConfService,
+            Double aggregationRecordsThreshold,
+            AggregatedDataReader aggregatedDataReader,
+            SmartScoringService smartScoringService,
+            SmartDataStore smartDataStore,
+            StoreManager storeManager, MetricContainerFlusher metricContainerFlusher) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
@@ -61,6 +63,7 @@ public class SmartService {
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
 		this.storeManager = storeManager;
+		this.metricContainerFlusher = metricContainerFlusher;
 	}
 
 	/**
@@ -81,15 +84,19 @@ public class SmartService {
 				// If this line will be deleted the model cache will need to have some efficient refresh mechanism.
 				smartScoringService.resetModelCache();
 
+
 				logger.info("Starting to process time range partition {}.", partition);
 				aggregatedDataReader.read(params, partition).forEach(iterator -> {
 					SmartRecordAggregator aggregator = new SmartRecordAggregator(
 							conf, strategy, partition, aggregationRecordsThreshold);
 					while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 					Collection<SmartRecord> records = aggregator.getSmartRecords();
-					smartScoringService.score(records);
+					smartScoringService.score(records,timeRange);
 					smartDataStore.storeSmartRecords(smartRecordConfName, records);
 				});
+
+				//Flush stored metrics to elasticsearch
+				metricContainerFlusher.flush();
 			}
 			catch (Exception e)
 			{

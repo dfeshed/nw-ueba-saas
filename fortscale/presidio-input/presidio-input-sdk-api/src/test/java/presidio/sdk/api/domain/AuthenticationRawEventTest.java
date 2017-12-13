@@ -5,7 +5,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
-import presidio.sdk.api.validation.FieldsMustHaveDifferentValues;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -122,7 +121,7 @@ public class AuthenticationRawEventTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "srcMachineName", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site");
 
         return authenticationRawEvent;
     }

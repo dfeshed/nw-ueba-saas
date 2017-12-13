@@ -3,6 +3,7 @@ package fortscale.ml.model.cache;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
@@ -19,6 +20,7 @@ import java.util.Map;
  * Created by barak_schuster on 6/6/17.
  */
 public class ModelCacheServiceInMemory implements ModelsCacheService {
+    private final ModelCacheMetricsContainer modelCacheMetricsContainer;
     private Map<String, ModelCacheManager> modelCacheManagers;
     private ModelConfService modelConfService;
     private ModelStore modelStore;
@@ -33,10 +35,11 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
      * @param dataRetrieverFactoryService
      * @param maxDiffBetweenCachedModelAndEvent see {@link ModelCacheManagerInMemory}
      * @param cacheSize                            the size of each of the model caches
+     * @param modelCacheMetricsContainer
      */
     public ModelCacheServiceInMemory(ModelConfService modelConfService, ModelStore modelStore,
                                      FactoryService<AbstractDataRetriever> dataRetrieverFactoryService,
-                                     Duration maxDiffBetweenCachedModelAndEvent, int cacheSize, int numOfModelsPerContextId) {
+                                     Duration maxDiffBetweenCachedModelAndEvent, int cacheSize, int numOfModelsPerContextId, ModelCacheMetricsContainer modelCacheMetricsContainer) {
         this.modelConfService = modelConfService;
         this.modelStore = modelStore;
         this.dataRetrieverFactoryService = dataRetrieverFactoryService;
@@ -44,6 +47,7 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
         this.cacheSize = cacheSize;
         this.modelCacheManagers = new HashMap<>();
         this.numOfModelsPerContextId = numOfModelsPerContextId;
+        this.modelCacheMetricsContainer = modelCacheMetricsContainer;
     }
 
     @Override
@@ -71,7 +75,7 @@ public class ModelCacheServiceInMemory implements ModelsCacheService {
         ModelCacheManager modelCacheManager = modelCacheManagers.get(modelConfName);
         if (modelCacheManager == null) {
             ModelConf modelConf = modelConfService.getModelConf(modelConfName);
-            modelCacheManager = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf()), maxDiffBetweenCachedModelAndEvent, cacheSize, numOfModelsPerContextId);
+            modelCacheManager = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf()), maxDiffBetweenCachedModelAndEvent, cacheSize, numOfModelsPerContextId,modelCacheMetricsContainer);
             modelCacheManagers.put(modelConfName, modelCacheManager);
         }
 

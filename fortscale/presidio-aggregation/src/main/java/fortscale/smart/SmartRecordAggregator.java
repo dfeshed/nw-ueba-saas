@@ -6,6 +6,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.*;
@@ -66,11 +67,11 @@ public class SmartRecordAggregator {
 		for (AdeAggregationRecord newAggregationRecord : newAggregationRecords) {
 			if (isAggregationRecordTimeRangeValid(newAggregationRecord)) {
 				SmartRecord smartRecord = getSmartRecord(newAggregationRecord);
-				List<AdeAggregationRecord> existingAggregationRecords = smartRecord.getAggregationRecords();
+				List<SmartAggregationRecord> existingAggregationRecords = smartRecord.getSmartAggregationRecords();
 
 				if (existingAggregationRecords == null) {
 					existingAggregationRecords = new LinkedList<>();
-					smartRecord.setAggregationRecords(existingAggregationRecords);
+					smartRecord.setSmartAggregationRecords(existingAggregationRecords);
 				}
 
 				if (doesAggregationRecordAlreadyExist(newAggregationRecord, existingAggregationRecords)) {
@@ -80,7 +81,7 @@ public class SmartRecordAggregator {
 							smartRecord.getContextId(), newAggregationRecord.getFeatureName(), timeRange);
 				} else if (doesAggregationRecordPassThreshold(newAggregationRecord)) {
 					// TODO: Add metric
-					existingAggregationRecords.add(newAggregationRecord);
+					existingAggregationRecords.add(new SmartAggregationRecord(newAggregationRecord));
 				} else {
 					// TODO: Add metric
 					logger.debug("Discarding aggregation record of type {} between {}, " +
@@ -119,9 +120,10 @@ public class SmartRecordAggregator {
 	}
 
 	private boolean doesAggregationRecordAlreadyExist(
-			AdeAggregationRecord newAggregationRecord, List<AdeAggregationRecord> existingAggregationRecords) {
+			AdeAggregationRecord newAggregationRecord, List<SmartAggregationRecord> existingAggregationRecords) {
 
 		return existingAggregationRecords.stream()
+				.map(SmartAggregationRecord::getAggregationRecord)
 				.map(AdeAggregationRecord::getFeatureName)
 				.anyMatch(featureName -> featureName.equals(newAggregationRecord.getFeatureName()));
 	}

@@ -5,6 +5,7 @@ import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricExportingService;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -13,9 +14,11 @@ import java.util.Map;
 public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMonitoringService {
 
     private MetricCollectingService metricCollectingService;
+    private MetricExportingService metricExportingService;
 
 
-    public PresidioExternalMonitoringServiceImpl(MetricCollectingService metricCollectingService) {
+    public PresidioExternalMonitoringServiceImpl(MetricCollectingService metricCollectingService, MetricExportingService metricExportingService) {
+        this.metricExportingService = metricExportingService;
         this.metricCollectingService = metricCollectingService;
     }
 
@@ -58,5 +61,10 @@ public class PresidioExternalMonitoringServiceImpl implements PresidioExternalMo
                 setMetricLogicTime(logicTime).
                 build());
 
+    }
+
+    @Override
+    public void manualExportMetrics() {
+        metricExportingService.exportApplicationMetrics();
     }
 }

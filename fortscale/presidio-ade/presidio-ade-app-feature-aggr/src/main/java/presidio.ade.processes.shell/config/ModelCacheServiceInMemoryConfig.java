@@ -3,6 +3,8 @@ package presidio.ade.processes.shell.config;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelCacheServiceInMemory;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
@@ -24,8 +26,8 @@ import java.time.Duration;
         ScorersModelConfServiceConfig.class,
         FeatureAggregationDataRetrieverFactoryServiceConfig.class,
 //        common application confs
-        ModelStoreConfig.class
-
+        ModelStoreConfig.class,
+        ModelCacheMetricsContainerConfig.class
 })
 public class ModelCacheServiceInMemoryConfig {
     @Autowired
@@ -34,6 +36,9 @@ public class ModelCacheServiceInMemoryConfig {
     public ModelStore modelStore;
     @Autowired
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+    @Autowired
+    public ModelCacheMetricsContainer modelCacheMetricsContainer;
+
     @Value("#{T(java.time.Duration).parse('${fortscale.model.cache.maxDiffBetweenCachedModelAndEvent}')}")
     public Duration maxDiffBetweenCachedModelAndEvent;
     @Value("${fortscale.model.cache.size}")
@@ -41,6 +46,6 @@ public class ModelCacheServiceInMemoryConfig {
 
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
-        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, 1);
+        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, 1,modelCacheMetricsContainer);
     }
 }

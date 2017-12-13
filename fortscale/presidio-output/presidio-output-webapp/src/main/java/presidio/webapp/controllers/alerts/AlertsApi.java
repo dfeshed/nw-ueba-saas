@@ -2,7 +2,6 @@ package presidio.webapp.controllers.alerts;
 
 import io.swagger.annotations.*;
 
-import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -91,6 +90,21 @@ public interface AlertsApi {
     default ResponseEntity<Alert> updateAlert(@ApiParam(value = "Exact match to user name" ,required=true ) @RequestBody List<Patch> patch) {
         // do some magic!
         return new ResponseEntity<Alert>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Use this method to update feedback for bulk of alerts", notes = "", tags={"alerts"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Void.class),
+            @ApiResponse(code = 400, message = "Bad Request", response = Void.class)})
+    @RequestMapping(value = "/alerts/updateFeedback",
+            consumes = "application/json",
+            method = RequestMethod.POST)
+    default ResponseEntity<Void> updateAlertsFeedback(
+            @ApiParam(value = "request contains alert ids to be updated and the new feedback",required=true)
+            @RequestBody
+                    UpdateFeedbackRequest updateFeedbackRequest) {
+        // do some magic!
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 }

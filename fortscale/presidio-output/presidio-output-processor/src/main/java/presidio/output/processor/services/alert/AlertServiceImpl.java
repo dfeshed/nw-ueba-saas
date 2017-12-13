@@ -2,9 +2,12 @@ package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
@@ -27,7 +30,6 @@ public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    private final AlertSeverityService alertEnumsSeverityService;
     private final AlertPersistencyService alertPersistencyService;
     private final AlertSeverityService alertSeverityService;
     private final SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
@@ -42,14 +44,12 @@ public class AlertServiceImpl implements AlertService {
     private AlertClassificationService alertClassificationService;
 
     public AlertServiceImpl(AlertPersistencyService alertPersistencyService,
-                            AlertSeverityService alertEnumsSeverityService,
                             AlertClassificationService alertClassificationService,
                             AlertSeverityService alertSeverityService,
                             SupportingInformationGeneratorFactory supportingInformationGeneratorFactory,
                             int eventsLimit,
                             double indicatorsContributionLimitForClassification) {
         this.alertPersistencyService = alertPersistencyService;
-        this.alertEnumsSeverityService = alertEnumsSeverityService;
         this.alertClassificationService = alertClassificationService;
         this.alertSeverityService = alertSeverityService;
         this.supportingInformationGeneratorFactory = supportingInformationGeneratorFactory;
@@ -65,14 +65,16 @@ public class AlertServiceImpl implements AlertService {
         }
         java.util.Date startDate = Date.from(smart.getStartInstant());
         java.util.Date endDate = Date.from(smart.getEndInstant());
-        AlertEnums.AlertSeverity severity = alertEnumsSeverityService.severity(score);
+        AlertEnums.AlertSeverity severity = alertSeverityService.getSeverity(score);
         Double alertContributionToUserScore = alertSeverityService.getUserScoreContributionFromSeverity(severity);
         Alert alert = new Alert(user.getId(), smart.getId(), null, user.getUserName(), startDate, endDate, score, 0, getStrategyFromSmart(smart), severity, user.getTags(), alertContributionToUserScore);
         // supporting information
         List<Indicator> supportingInfo = new ArrayList<>();
-        for (AdeAggregationRecord adeAggregationRecord : smart.getAggregationRecords()) {
-            SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(adeAggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(adeAggregationRecord, alert, eventsLimit));
+
+        for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
+            AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
+            SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
+            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {
@@ -151,6 +153,9 @@ public class AlertServiceImpl implements AlertService {
     }
 
     private List<String> extractIndicatorsNames(SmartRecord smart) {
-        return smart.getAggregationRecords().stream().map(AdeAggregationRecord::getFeatureName).collect(Collectors.toList());
+        return smart.getSmartAggregationRecords().stream()
+                .map(SmartAggregationRecord::getAggregationRecord)
+                .map(AdeAggregationRecord::getFeatureName)
+                .collect(Collectors.toList());
     }
 }

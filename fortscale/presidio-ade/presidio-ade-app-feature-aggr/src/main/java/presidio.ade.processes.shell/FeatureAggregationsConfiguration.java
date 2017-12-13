@@ -4,7 +4,11 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainerConfig;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
+import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainerConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerConfig;
@@ -22,6 +26,8 @@ import presidio.ade.processes.shell.config.AggregationRecordsCreatorConfig;
 import presidio.ade.processes.shell.config.EventModelsCacheServiceConfig;
 import presidio.ade.processes.shell.config.FeatureAggregationScoringServiceConfig;
 import presidio.ade.processes.shell.config.InMemoryFeatureAggregatorConfig;
+import presidio.monitoring.flush.MetricContainerFlusher;
+import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
 @Configuration
 @Import({
@@ -32,6 +38,7 @@ import presidio.ade.processes.shell.config.InMemoryFeatureAggregatorConfig;
         FeatureAggregationScoringServiceConfig.class,
         //        common application confs
         EnrichedDataStoreConfig.class,
+        MetricContainerFlusherConfig.class,
         AggregatedDataStoreConfig.class,
         StoreManagerConfig.class,
         NullStatsServiceConfig.class, // TODO: Remove this
@@ -58,9 +65,11 @@ public class FeatureAggregationsConfiguration {
     private int maxGroupSize;
     @Autowired
     private StoreManager storeManager;
+    @Autowired
+    private MetricContainerFlusher metricContainerFlusher;
 
     @Bean
     public PresidioExecutionService featureAggregationBucketExecutionService() {
-        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, storeManager, pageSize, maxGroupSize);
+        return new FeatureAggregationsExecutionServiceImpl(bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, aggregationsCreator, scoredFeatureAggregatedStore, storeManager, pageSize, maxGroupSize, metricContainerFlusher);
     }
 }

@@ -17,12 +17,14 @@ import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.util.*;
 
 
 public class FeatureAggregationService extends FixedDurationStrategyExecutor {
 
+    private final MetricContainerFlusher metricContainerFlusher;
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
     private InMemoryFeatureBucketAggregator featureBucketAggregator;
@@ -38,7 +40,8 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
                                      InMemoryFeatureBucketAggregator featureBucketAggregator,
                                      FeatureAggregationScoringService featureAggregationScoringService,
                                      AggregationRecordsCreator featureAggregationsCreator,
-                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize) {
+                                     AggregatedDataStore scoredFeatureAggregatedStore, int pageSize, int maxGroupSize,
+                                     MetricContainerFlusher metricContainerFlusher) {
         super(fixedDurationStrategy);
         this.bucketConfigurationService = bucketConfigurationService;
         this.enrichedDataStore = enrichedDataStore;
@@ -48,6 +51,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         this.scoredFeatureAggregatedStore = scoredFeatureAggregatedStore;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
+        this.metricContainerFlusher = metricContainerFlusher;
     }
 
     @Override
@@ -67,9 +71,12 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
-            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords);
+            List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
             scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
         }
+
+        //Flush stored metrics to elasticsearch
+        metricContainerFlusher.flush();
     }
 
     protected FeatureBucketStrategyData createFeatureBucketStrategyData(TimeRange timeRange) {
