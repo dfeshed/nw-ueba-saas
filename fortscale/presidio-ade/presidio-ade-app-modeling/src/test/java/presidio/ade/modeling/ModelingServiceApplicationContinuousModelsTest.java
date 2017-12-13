@@ -24,6 +24,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -36,6 +37,8 @@ import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataSt
 import presidio.ade.modeling.config.ModelingServiceConfiguration;
 import presidio.ade.test.utils.generators.AccumulatedAggregationFeatureRecordHourlyGenerator;
 import presidio.data.generators.common.GeneratorException;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Duration;
@@ -71,6 +74,10 @@ public class ModelingServiceApplicationContinuousModelsTest {
     private String featureAggrRecordsBaseConfigurationPath;
     @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
     private String groupName;
+    @MockBean
+    MetricCollectingService metricCollectingService;
+    @MockBean
+    MetricsExporter metricsExporter;
 
     private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name feature-aggregation-record-models.file --session_id test-run --end_date %s";
 
@@ -176,7 +183,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
     }
 
     @Configuration
-    @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class, PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
+    @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class})
     public static class springConfig {
         @Bean
         public static TestPropertiesPlaceholderConfigurer continousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
@@ -199,11 +206,6 @@ public class ModelingServiceApplicationContinuousModelsTest {
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
             properties.put("presidio.model.store.query.pagination.size", "5");
-            properties.put("enable.metrics.export", true);
-            properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
-            properties.put("elasticsearch.host", "localhost");
-            properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-            properties.put("monitoring.fixed.rate","60000");
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

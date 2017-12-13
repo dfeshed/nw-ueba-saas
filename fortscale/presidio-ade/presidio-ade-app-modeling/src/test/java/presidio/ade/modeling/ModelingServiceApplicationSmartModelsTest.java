@@ -26,6 +26,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,6 +46,8 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Instant;
@@ -80,6 +83,10 @@ public class ModelingServiceApplicationSmartModelsTest {
     private String smartRecordsBaseConfigurationPath;
     @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
     private String groupName;
+    @MockBean
+    MetricCollectingService metricCollectingService;
+    @MockBean
+    MetricsExporter metricsExporter;
 
     private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name smart-record-models --session_id test-run --end_date %s";
 
@@ -420,8 +427,7 @@ public class ModelingServiceApplicationSmartModelsTest {
 
 
     @Configuration
-    @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class, SmartAccumulationDataStoreConfig.class,
-            PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
+    @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class, SmartAccumulationDataStoreConfig.class})
     public static class ModelingServiceApplicationSmartModelsTestConfig {
         @Bean
         public static TestPropertiesPlaceholderConfigurer continousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
@@ -443,11 +449,6 @@ public class ModelingServiceApplicationSmartModelsTest {
             properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff", "PT48H");
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
-            properties.put("enable.metrics.export", true);
-            properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
-            properties.put("elasticsearch.host", "localhost");
-            properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-            properties.put("monitoring.fixed.rate","60000");
 
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
