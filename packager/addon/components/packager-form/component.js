@@ -90,6 +90,12 @@ const formComponent = Component.extend({
   selectedSecondaryDestination(list, id) {
     return list.find((obj) => obj.id === id);
   },
+
+  @computed()
+  panelId() {
+    return `winLogCollectionTooltip-${this.get('elementId')}`;
+  },
+
   resetProperties() {
     this.setProperties({
       errorMessage: null,

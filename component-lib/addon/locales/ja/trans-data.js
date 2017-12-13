@@ -1638,6 +1638,7 @@ export default {
     channelFilter: 'ja_Channel Filters',
     specialCharacter: 'ja_Configuration name contains special character.',
     channel: {
+      add: 'ja_Add a new channel',
       name: 'ja_CHANNEL NAME *',
       filter: 'ja_FILTER *',
       event: 'ja_EVENT ID *',

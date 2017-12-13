@@ -1639,6 +1639,7 @@ export default {
     channelFilter: 'Channel Filters',
     specialCharacter: 'Configuration name contains special character.',
     channel: {
+      add: 'Add a new channel',
       name: 'CHANNEL NAME *',
       filter: 'FILTER *',
       event: 'EVENT ID *',

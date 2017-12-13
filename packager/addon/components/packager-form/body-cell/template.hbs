@@ -1,6 +1,6 @@
 {{#rsa-data-table/body-cell item=item index=index column=column isError=(eq (get item column.field) error) delete=delete class='body-cell'}}
   {{#if (eq column.displayType 'channelInput')}}
-    <label class="rsa-form-label power-select channel">
+    <label class="power-select channel">
       <div class="channel-select">
         {{#power-select
           placeholder=(t 'packager.placeholder')
@@ -9,7 +9,7 @@
           searchPlaceholder=(t 'packager.searchPlaceholder')
           onchange=(action 'setSelected' column.field bubbles=false)
           onkeydown=(action 'setChannelOptions' bubbles=false) as |option|}}
-          {{option}}
+          <span title={{option}}>{{option}}</span>
         {{/power-select}}
       </div>
     </label>
@@ -18,7 +18,7 @@
       {{rsa-form-input value=item.eventId}}
     </div>
   {{else if (eq column.displayType 'dropdown') }}
-    <label class="rsa-form-label power-select channel">
+    <label class="power-select channel">
       <div class="channel-select">
         {{#power-select
           placeholder=(t 'packager.placeholder')

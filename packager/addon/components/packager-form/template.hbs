@@ -136,7 +136,6 @@
         <div class="label-text">
           {{t 'packager.primaryLogDecoder'}}
         </div>
-
         {{#power-select
           placeholder=(t 'packager.placeholder')
           options=listOfService
@@ -150,12 +149,11 @@
           onchange=(action 'setPrimaryDestination' value="id") as |list|}}
           {{list.value}}
         {{/power-select}}
-
       </label>
     </div>
 
     <div class="col-xs-12 field">
-      <label class="rsa-form-label power-select">
+      <label class="power-select">
         <div class="label-text">
           {{t 'packager.secondaryLogDecoder'}}
         </div>
@@ -174,14 +172,19 @@
     </div>
 
     <div class="col-xs-12 field">
-      <label class="rsa-form-label power-select">
+      <label class="power-select">
         <div class="label-text">
           {{t 'packager.channelFilter'}}
         </div>
         <div class="icon-align-left add-row">
-          {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
-            {{rsa-icon name='add-1' size='small'}}
-          {{/rsa-form-button}}
+          {{#rsa-content-tethered-panel-trigger panel=panelId model=(t 'packager.channel.add')}}
+            {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
+              {{rsa-icon name='add-1' size='small'}}
+            {{/rsa-form-button}}
+          {{/rsa-content-tethered-panel-trigger}}
+          {{#rsa-content-tethered-panel position='top' panelId=panelId as |hide model|}}
+            <section>{{model}}</section>
+          {{/rsa-content-tethered-panel}}
         </div>
         <div class="channel-container">
           {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}

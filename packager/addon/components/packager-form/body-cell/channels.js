@@ -6,5 +6,5 @@ export default [
   'Security',
   'Application',
   'Setup',
-  'Forwarded Events'
+  'ForwardedEvents'
 ];
