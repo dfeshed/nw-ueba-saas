@@ -1,3 +1,28 @@
+# [7.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.5.0)
+## Features
+* More preferences support for investigate events
+  * [ASOC-42311](https://bedfordjira.na.rsa.net/browse/ASOC-42311):&emsp;Persist (but not edit) the number of packets per page in packet analysis to preferences
+  * [ASOC-42521](https://bedfordjira.na.rsa.net/browse/ASOC-42521):&emsp;Persisting Default column group
+  * [ASOC-45157](https://bedfordjira.na.rsa.net/browse/ASOC-45157):&emsp;Default Investigation Landing Page
+  * [ASOC-45852](https://bedfordjira.na.rsa.net/browse/ASOC-45852):&emsp;Panel sizing should be persisted per user on Expanding Events panel
+* OOTB Column group support for event analysis
+  * [ASOC-42520](https://bedfordjira.na.rsa.net/browse/ASOC-42520):&emsp;View the default column group and apply other column groups
+  * [ASOC-42523](https://bedfordjira.na.rsa.net/browse/ASOC-42523):&emsp;Modify the columns displayed in the events page table - Endpoint
+* [ASOC-44912](https://bedfordjira.na.rsa.net/browse/ASOC-44912):&emsp;Suppress Non-applicable & Indicate Expensive Operations
+* [ASOC-46078](https://bedfordjira.na.rsa.net/browse/ASOC-46078):&emsp;Classic Sub-Navigation for Incident Rules should point to Ember
+* Enhanced Light-theme
+  * [ASOC-46405](https://bedfordjira.na.rsa.net/browse/ASOC-46405):&emsp;Login Page Should remain static/dark regardless of users theme
+  * [ASOC-46406](https://bedfordjira.na.rsa.net/browse/ASOC-46406):&emsp;Light theme refinement for Investigate - Events & Recon Page
+  * [ASOC-46407](https://bedfordjira.na.rsa.net/browse/ASOC-46407):&emsp;MS Edge background image regression
+* Option to upload Agent packager config for Endpoint packager
+  * [ASOC-43896](https://bedfordjira.na.rsa.net/browse/ASOC-43896):&emsp;Include multiple LD/VLC + protocol selector
+  * [ASOC-38959](https://bedfordjira.na.rsa.net/browse/ASOC-38959):&emsp;Channel Filtering - User Interface
+  * [ASOC-46321](https://bedfordjira.na.rsa.net/browse/ASOC-46321):&emsp;Log configuration file holds UI specific values
+* [ASOC-43956](https://bedfordjira.na.rsa.net/browse/ASOC-43956):&emsp;Use Preference to select Wall Clock Time for query
+* [ASOC-29057](https://bedfordjira.na.rsa.net/browse/ASOC-29057):&emsp;Set/Persist User preference for default view
+
+
+
 # [7.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.4.0)
 ## Features
 * [ASOC-657](https://bedfordjira.na.rsa.net/browse/ASOC-657):&emsp;Support additional truncate options on application rules in UI rule editor
@@ -28,7 +53,3 @@
 * [ASOC-44994](https://bedfordjira.na.rsa.net/browse/ASOC-44994):&emsp;Remove Full Disk Scan from UI
 * [ASOC-42259](https://bedfordjira.na.rsa.net/browse/ASOC-42259):&emsp;Stabilization for UI post NW integration (QE Activity) Part 1
 * [ASOC-38645](https://bedfordjira.na.rsa.net/browse/ASOC-38645):&emsp;System Information - Security Products/Windows Patches
-
-
-## Workarounds
-* None
