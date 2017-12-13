@@ -2,9 +2,11 @@ package fortscale.ml.model;
 
 import fortscale.aggregation.configuration.AslConfigurationPaths;
 import fortscale.aggregation.configuration.AslResourceFactory;
+import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.StoreManager;
 import org.springframework.core.io.Resource;
+import presidio.monitoring.services.MetricCollectingService;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -29,6 +31,8 @@ public class ModelingService {
 	private ModelingEngineFactory modelingEngineFactory;
 	private StoreManager storeManager;
 	private ModelConfServiceBuilder modelConfServiceBuilder;
+	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+
 	/**
 	 * C'tor.
 	 *
@@ -39,10 +43,12 @@ public class ModelingService {
 	public ModelingService(
 			Collection<AslConfigurationPaths> modelConfigurationPathsCollection,
 			ModelingEngineFactory modelingEngineFactory,
-			AslResourceFactory aslResourceFactory, StoreManager storeManager) {
+			AslResourceFactory aslResourceFactory, StoreManager storeManager,
+			ModelingServiceMetricsContainer modelingServiceMetricsContainer) {
 		this.modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection,aslResourceFactory);
 		this.modelingEngineFactory = modelingEngineFactory;
 		this.storeManager = storeManager;
+		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
 	}
 
 	/**
@@ -71,6 +77,8 @@ public class ModelingService {
 				logger.info("Finished modeling engine process of modelConf {}.", modelConfName);
 			}
 			storeManager.cleanupCollections(endInstant);
+
+			modelingServiceMetricsContainer.flush();
 		}
 		catch (Exception e)
 		{

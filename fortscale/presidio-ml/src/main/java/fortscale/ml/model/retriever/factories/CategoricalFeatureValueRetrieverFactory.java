@@ -2,6 +2,8 @@ package fortscale.ml.model.retriever.factories;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.CategoricalFeatureValueRetriever;
 import fortscale.ml.model.retriever.CategoricalFeatureValueRetrieverConf;
@@ -22,9 +24,12 @@ public class CategoricalFeatureValueRetrieverFactory extends AbstractServiceAuto
 		return CategoricalFeatureValueRetrieverConf.FACTORY_NAME;
 	}
 
+	@Autowired
+	private CategoryRarityModelRetrieverMetricsContainer categoryRarityModelRetrieverMetricsContainer;
+
 	@Override
 	public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
 		CategoricalFeatureValueRetrieverConf config = (CategoricalFeatureValueRetrieverConf)factoryConfig;
-		return new CategoricalFeatureValueRetriever(config, bucketConfigurationService, featureBucketReader);
+		return new CategoricalFeatureValueRetriever(config, bucketConfigurationService, featureBucketReader, categoryRarityModelRetrieverMetricsContainer);
 	}
 }

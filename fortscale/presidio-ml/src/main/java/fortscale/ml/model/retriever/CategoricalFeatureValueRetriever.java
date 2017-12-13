@@ -8,6 +8,8 @@ import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
@@ -25,15 +27,19 @@ public class CategoricalFeatureValueRetriever extends AbstractDataRetriever {
     private final FeatureBucketReader featureBucketReader;
     private final FeatureBucketConf featureBucketConf;
     private final String featureName;
+    private CategoryRarityModelRetrieverMetricsContainer categoryRarityModelRetrieverMetricsContainer;
 
-    public CategoricalFeatureValueRetriever(CategoricalFeatureValueRetrieverConf config, BucketConfigurationService bucketConfigurationService, FeatureBucketReader featureBucketReader) {
+
+    public CategoricalFeatureValueRetriever(CategoricalFeatureValueRetrieverConf config, BucketConfigurationService bucketConfigurationService,
+                                            FeatureBucketReader featureBucketReader,
+                                            CategoryRarityModelRetrieverMetricsContainer categoryRarityModelRetrieverMetricsContainer) {
         super(config);
         this.bucketConfigurationService = bucketConfigurationService;
         this.featureBucketReader = featureBucketReader;
         String featureBucketConfName = config.getFeatureBucketConfName();
         this.featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
         this.featureName = config.getFeatureName();
-
+        this.categoryRarityModelRetrieverMetricsContainer = categoryRarityModelRetrieverMetricsContainer;
         validate(config);
     }
 
@@ -65,6 +71,7 @@ public class CategoricalFeatureValueRetriever extends AbstractDataRetriever {
 
     protected ModelBuilderData doRetrieve(String contextId, Date endTime, String featureValue) {
         List<FeatureBucket> featureBuckets = getFeatureBuckets(contextId, endTime);
+        categoryRarityModelRetrieverMetricsContainer.updateMetric(featureBuckets.size());
 
         if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 

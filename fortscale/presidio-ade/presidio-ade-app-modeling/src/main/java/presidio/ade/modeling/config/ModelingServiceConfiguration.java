@@ -8,6 +8,10 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.config.ContextSelectorFactoryServiceConfig;
 import fortscale.ml.model.config.DataRetrieverFactoryServiceConfig;
 import fortscale.ml.model.config.ModelBuilderFactoryServiceConfig;
+import fortscale.ml.model.metrics.CategoryRarityModeBuilderMetricsContainerConfig;
+import fortscale.ml.model.metrics.CategoryRarityModeRetrieverMetricsContainerConfig;
+import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
+import fortscale.ml.model.metrics.ModelingServiceMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
@@ -36,6 +40,9 @@ import java.util.Collection;
 		ModelingServiceDependencies.class,
 		ModelingServiceCommands.class,
 		StoreManagerConfig.class,
+		ModelingServiceMetricsContainerConfig.class,
+		CategoryRarityModeBuilderMetricsContainerConfig.class,
+		CategoryRarityModeRetrieverMetricsContainerConfig.class
 })
 public class ModelingServiceConfiguration {
 	@Value("${presidio.ade.modeling.enriched.records.group.name}")
@@ -60,6 +67,8 @@ public class ModelingServiceConfiguration {
 	@Autowired
 	private ModelStore modelStore;
 	@Autowired
+	ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+	@Autowired
 	private ModelingEngineFactory modelingEngineFactory;
 	@Autowired
 	private AslResourceFactory aslResourceFactory;
@@ -72,7 +81,8 @@ public class ModelingServiceConfiguration {
 				contextSelectorFactoryService,
 				dataRetrieverFactoryService,
 				modelBuilderFactoryService,
-				modelStore);
+				modelStore,
+				modelingServiceMetricsContainer);
 	}
 
 	@Bean
@@ -86,6 +96,6 @@ public class ModelingServiceConfiguration {
 				new AslConfigurationPaths(enrichedRecordsGroupName, enrichedRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(smartRecordsGroupName, smartRecordsBaseConfigurationPath));
-		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, storeManager);
+		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, storeManager, modelingServiceMetricsContainer);
 	}
 }
