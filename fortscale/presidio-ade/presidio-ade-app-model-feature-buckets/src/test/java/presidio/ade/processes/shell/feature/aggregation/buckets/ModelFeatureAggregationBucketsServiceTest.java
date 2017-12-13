@@ -7,6 +7,7 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
@@ -29,6 +30,8 @@ import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.processes.shell.feature.aggregation.buckets.config.ModelFeatureAggregationBucketsConfiguration;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -123,7 +126,10 @@ public class ModelFeatureAggregationBucketsServiceTest {
             BootShimConfig.class
     })
     public static class ModelFeatureAggregationBucketsServiceTestConfiguration extends ModelFeatureAggregationBucketsConfiguration {
-
+        @MockBean
+        MetricCollectingService metricCollectingService;
+        @MockBean
+        MetricsExporter metricsExporter;
         @Bean
         public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsServiceTestProp() {
             Properties properties = new Properties();
