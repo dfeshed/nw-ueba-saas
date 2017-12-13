@@ -2,6 +2,8 @@ package presidio.output.domain.records.alerts;
 
 import org.springframework.data.domain.Sort;
 
+import static presidio.output.domain.records.alerts.Indicator.SCORE_CONTRIBUTION;
+
 
 public class IndicatorQuery {
 
@@ -20,7 +22,7 @@ public class IndicatorQuery {
 
     public static class IndicatorQueryBuilder {
 
-        private final String SORT_FIELD = "";
+        private final String SORT_FIELD = SCORE_CONTRIBUTION;
 
         private Sort sort;
         private int pageNumber;

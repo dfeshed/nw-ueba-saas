@@ -30,8 +30,6 @@ public interface SupportingInformationGenerator {
 
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
-                indicator.setScoreContribution(100);//todo: when AdeAggregationRecord will have score contribution field get this value from there
-
                 // generate events
                 List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit);
                 if (CollectionUtils.isNotEmpty(events)) {
