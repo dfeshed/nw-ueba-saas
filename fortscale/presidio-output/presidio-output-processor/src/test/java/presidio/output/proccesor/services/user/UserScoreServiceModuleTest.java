@@ -99,7 +99,6 @@ public class UserScoreServiceModuleTest {
 
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
         //Generate one user with 2 critical alerts
