@@ -108,5 +108,6 @@ public class InputCoreManager {
 
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) {
         adeDataService.cleanup(schema, startDate, endDate);
+        outputDataServiceSDK.clean(schema, startDate, endDate);
     }
 }
