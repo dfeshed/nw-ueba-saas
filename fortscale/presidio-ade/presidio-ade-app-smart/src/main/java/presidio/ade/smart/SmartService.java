@@ -1,6 +1,5 @@
 package presidio.ade.smart;
 
-import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
 import fortscale.smart.SmartRecordAggregator;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -14,6 +13,7 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataStore;
+import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.util.Collection;
 import java.util.Set;
@@ -37,25 +37,25 @@ public class SmartService {
 	private final SmartScoringService smartScoringService;
 	private final SmartDataStore smartDataStore;
 	private final StoreManager storeManager;
-	private final ScoringServiceMetricsContainer scoringServiceMetricsContainer;
+	private final MetricContainerFlusher metricContainerFlusher;
 
 	/**
 	 * C'tor.
-	 *  @param smartRecordConfService      contains all the {@link SmartRecordConf}s
-	 * @param aggregationRecordsThreshold only {@link AdeAggregationRecord}s whose values / scores are larger
-	 *                                    than this threshold will be included in the {@link SmartRecord}s
-	 * @param aggregatedDataReader        reads from the store of {@link AdeAggregationRecord}s
-	 * @param smartScoringService         scores {@link SmartRecord}s
-	 * @param smartDataStore              the store of {@link SmartRecord}s
-	 * @param scoringServiceMetricsContainer
-	 */
+     * @param smartRecordConfService      contains all the {@link SmartRecordConf}s
+     * @param aggregationRecordsThreshold only {@link AdeAggregationRecord}s whose values / scores are larger
+     *                                    than this threshold will be included in the {@link SmartRecord}s
+     * @param aggregatedDataReader        reads from the store of {@link AdeAggregationRecord}s
+     * @param smartScoringService         scores {@link SmartRecord}s
+     * @param smartDataStore              the store of {@link SmartRecord}s
+     * @param metricContainerFlusher
+     */
 	public SmartService(
-			SmartRecordConfService smartRecordConfService,
-			Double aggregationRecordsThreshold,
-			AggregatedDataReader aggregatedDataReader,
-			SmartScoringService smartScoringService,
-			SmartDataStore smartDataStore,
-			StoreManager storeManager, ScoringServiceMetricsContainer scoringServiceMetricsContainer) {
+            SmartRecordConfService smartRecordConfService,
+            Double aggregationRecordsThreshold,
+            AggregatedDataReader aggregatedDataReader,
+            SmartScoringService smartScoringService,
+            SmartDataStore smartDataStore,
+            StoreManager storeManager, MetricContainerFlusher metricContainerFlusher) {
 
 		this.smartRecordConfService = smartRecordConfService;
 		this.aggregationRecordsThreshold = aggregationRecordsThreshold;
@@ -63,7 +63,7 @@ public class SmartService {
 		this.smartScoringService = smartScoringService;
 		this.smartDataStore = smartDataStore;
 		this.storeManager = storeManager;
-		this.scoringServiceMetricsContainer = scoringServiceMetricsContainer;
+		this.metricContainerFlusher = metricContainerFlusher;
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class SmartService {
 				});
 
 				//Flush stored metrics to elasticsearch
-				scoringServiceMetricsContainer.flush();
+				metricContainerFlusher.flush();
 			}
 			catch (Exception e)
 			{

@@ -1,6 +1,8 @@
 package presidio.ade.processes.shell.config;
 
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainerConfig;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.ml.scorer.config.ScorerConfService;
@@ -21,6 +23,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(
         {ScoringServiceMetricsContainerConfig.class,
+                ModelCacheMetricsContainerConfig.class,
 //        application-specific confs
         ScorersFactoryConfig.class})
 public class ScoringServiceConfig {
@@ -39,7 +42,8 @@ public class ScoringServiceConfig {
 
     @Autowired
     private ScoringServiceMetricsContainer scoringServiceMetricsContainer;
-
+    @Autowired
+    private ModelCacheMetricsContainer modelCacheMetricsContainer;
     @Bean
     public ScorerConfService scorerConfService() {
         return new ScorerConfServiceImpl(scorerConfigurationsLocationPath,scorerConfigurationsOverridingPath,scorerConfigurationsAdditionalPath);
@@ -47,6 +51,6 @@ public class ScoringServiceConfig {
 
     @Bean
     public ScoringService scoringService() {
-        return new ScoringService(scorerConfService(), scorerFactoryService, modelCacheService, scoringServiceMetricsContainer);
+        return new ScoringService(scorerConfService(), scorerFactoryService, modelCacheService, scoringServiceMetricsContainer,modelCacheMetricsContainer);
     }
 }

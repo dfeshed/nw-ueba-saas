@@ -5,6 +5,7 @@ import org.junit.Assert;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,7 +24,7 @@ public class EmbeddedElasticsearchInitialiser {
 
     private EmbeddedElastic embeddedElastic = null;
 
-    public void start() {
+    public void start() throws IOException, InterruptedException {
         if(embeddedElastic != null) {
             logger.debug("embedded elasticsearch already started, skipping startup");
             return;
@@ -40,7 +41,8 @@ public class EmbeddedElasticsearchInitialiser {
                     .start();
         } catch (Exception e) {
             embeddedElastic = null;
-            Assert.fail("Failed to start elasticsearch");
+            logger.error("Failed to start elasticsearch",e);
+            throw e;
         }
     }
 
