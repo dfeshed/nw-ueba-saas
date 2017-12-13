@@ -11,6 +11,8 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -43,6 +45,7 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Instant;
 import java.time.LocalTime;
@@ -417,7 +420,8 @@ public class ModelingServiceApplicationSmartModelsTest {
 
 
     @Configuration
-    @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class, SmartAccumulationDataStoreConfig.class})
+    @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class, SmartAccumulationDataStoreConfig.class,
+            PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
     public static class ModelingServiceApplicationSmartModelsTestConfig {
         @Bean
         public static TestPropertiesPlaceholderConfigurer continousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
@@ -439,6 +443,12 @@ public class ModelingServiceApplicationSmartModelsTest {
             properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff", "PT48H");
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
+            properties.put("enable.metrics.export", true);
+            properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
+            properties.put("elasticsearch.host", "localhost");
+            properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
+            properties.put("monitoring.fixed.rate","60000");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
