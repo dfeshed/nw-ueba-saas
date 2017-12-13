@@ -72,7 +72,7 @@ public class AlertServiceImpl implements AlertService {
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(updateIndicatorsContributionScore(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit),smartAggregationRecord.getContribution()));
+            supportingInfo.addAll(updateIndicatorsContributionScore(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit), smartAggregationRecord.getContribution()));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {
@@ -106,7 +106,7 @@ public class AlertServiceImpl implements AlertService {
         alertPersistencyService.save(alerts);
     }
 
-    private List<Indicator> updateIndicatorsContributionScore(List<Indicator> indicators , double contributionScore){
+    private List<Indicator> updateIndicatorsContributionScore(List<Indicator> indicators, double contributionScore) {
         indicators.forEach(indicator -> {
             indicator.setScoreContribution(contributionScore);
         });

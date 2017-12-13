@@ -20,6 +20,22 @@ public class IndicatorQuery {
         this.sort = indicatorQueryBuilder.sort;
     }
 
+    public Sort getSort() {
+        return sort;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public String getFilterByAlertsId() {
+        return filterByAlertsId;
+    }
+
     public static class IndicatorQueryBuilder {
 
         private final String SORT_FIELD = SCORE_CONTRIBUTION;
