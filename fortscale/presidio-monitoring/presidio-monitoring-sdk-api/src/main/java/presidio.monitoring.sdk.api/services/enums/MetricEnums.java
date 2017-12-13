@@ -25,7 +25,10 @@ public class MetricEnums {
         SUM_NUM_OF_PARTITIONS("sumNumOfPartitions"),
         AMOUNT_OF_CONTEXTS("amountOfContexts"),
         AMOUNT_OF_READ_DATA("amountOfReadData"),
-        AMOUNT_OF_WRITE_DATA("amountOfWriteData");
+        AMOUNT_OF_WRITE_DATA("amountOfWriteData"),
+        HIT("modelFromMemory"),
+        MISS("modelFromDB"),
+        EMPTY_MODEL("emptyModel");
 
         private String value;
 

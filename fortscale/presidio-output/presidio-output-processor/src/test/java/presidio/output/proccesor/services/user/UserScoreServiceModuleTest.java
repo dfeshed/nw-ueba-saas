@@ -2,31 +2,29 @@ package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
-import presidio.output.processor.services.user.UserScoreService;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
@@ -39,9 +37,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserScoreServiceModuleTest {
 
     @Autowired
@@ -63,7 +61,7 @@ public class UserScoreServiceModuleTest {
     private AlertSeverityService alertSeverityService;
 
     @Autowired
-    private UserScoreService userScoreService;
+    private UserSeverityService userSeverityService;
 
     @After
     public void cleanTestData() {
@@ -90,7 +88,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -129,7 +127,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -140,7 +138,6 @@ public class UserScoreServiceModuleTest {
 
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -168,7 +165,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -179,7 +176,6 @@ public class UserScoreServiceModuleTest {
     }
 
     @Test
-    @Ignore
     public void testBulkUserScore() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
             AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
@@ -197,7 +193,7 @@ public class UserScoreServiceModuleTest {
 
         userService.updateAllUsersAlertData();
 
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
 
         User user0 = getUserById("userId0");
@@ -212,22 +208,13 @@ public class UserScoreServiceModuleTest {
         User user99 = getUserById("userId99");
         Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
         Assert.assertEquals(UserSeverity.CRITICAL, user99.getSeverity());
-
-
     }
 
-
+    @Ignore
     @Test
     public void testBulkUserScoreLargeScale() throws InterruptedException {
         final int DAYS_COUNT = 110;
         final int USERS_COUNT = 1500;
-        userScoreService = new UserScoreServiceImpl(
-                userPersistencyService,
-                alertPersistencyService,
-                alertSeverityService,
-                500,
-                DAYS_COUNT + 10);
-
 
         List<User> userList = new ArrayList<>();
         List<LocalDateTime> dates = getListOfLastXdays(DAYS_COUNT);
@@ -262,7 +249,7 @@ public class UserScoreServiceModuleTest {
         long timeBefore = System.currentTimeMillis();
         userService.updateAllUsersAlertData();
 
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
         long timeAfter = System.currentTimeMillis();
         long seconds = (timeAfter - timeBefore) / 1000;
         System.out.println("Total time in seconds: " + seconds);
@@ -293,6 +280,7 @@ public class UserScoreServiceModuleTest {
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
         User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        user1.setId(userId);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
 

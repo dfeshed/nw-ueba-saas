@@ -2,6 +2,7 @@ package fortscale.ml.model.cache;
 
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
@@ -32,13 +33,15 @@ public class ModelCacheManagerInMemoryTest {
     public ModelConf modelConf;
     @MockBean
     public AbstractDataRetriever dataRetriever;
+    @MockBean
+    public ModelCacheMetricsContainer modelCacheMetricsContainer;
     private Duration maxDiffBetweenCachedModelAndEvent = Duration.ofDays(1);
     int cacheSize = 100;
 
     @Test
     public void shouldNotReloadModelToCacheOnceExpired()
     {
-        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize, 1);
+        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize, 1, modelCacheMetricsContainer);
         Instant eventTime = Instant.now();
         HashMap<String, String> context = new HashMap<>();
         context.put("contextField","non_existing_contextId");
@@ -61,7 +64,7 @@ public class ModelCacheManagerInMemoryTest {
 
     @Test
     public void shouldReturnNullModelIfNonExistInStore() throws Exception {
-        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize, 1);
+        ModelCacheManagerInMemory modelCacheManagerInMemory = new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize, 1, modelCacheMetricsContainer);
 
         Instant eventTime = Instant.now();
 
@@ -88,7 +91,7 @@ public class ModelCacheManagerInMemoryTest {
     @Test
     public void shouldReturnModelFromCache() throws Exception {
         ModelCacheManagerInMemory modelCacheManagerInMemory =
-                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize, 1);
+                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, cacheSize, 1, modelCacheMetricsContainer);
 
         Instant eventTime = Instant.now();
         Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
@@ -119,7 +122,7 @@ public class ModelCacheManagerInMemoryTest {
     public void shouldCleanCacheFromNonUsedModels() throws Exception {
         int lruModelCacheSize = 2;
         ModelCacheManagerInMemory modelCacheManagerInMemory =
-                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, lruModelCacheSize, 1);
+                new ModelCacheManagerInMemory(modelStore, modelConf, dataRetriever, maxDiffBetweenCachedModelAndEvent, lruModelCacheSize, 1, modelCacheMetricsContainer);
 
         Instant eventTime = Instant.now();
         Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);

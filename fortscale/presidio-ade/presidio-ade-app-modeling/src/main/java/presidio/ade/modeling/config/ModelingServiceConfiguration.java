@@ -26,6 +26,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.modeling.ModelingServiceCommands;
+import presidio.monitoring.flush.MetricContainerFlusher;
+import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,8 +43,7 @@ import java.util.Collection;
 		ModelingServiceCommands.class,
 		StoreManagerConfig.class,
 		ModelingServiceMetricsContainerConfig.class,
-		CategoryRarityModeBuilderMetricsContainerConfig.class,
-		CategoryRarityModeRetrieverMetricsContainerConfig.class
+		MetricContainerFlusherConfig.class,
 })
 public class ModelingServiceConfiguration {
 	@Value("${presidio.ade.modeling.enriched.records.group.name}")
@@ -74,6 +75,8 @@ public class ModelingServiceConfiguration {
 	private AslResourceFactory aslResourceFactory;
 	@Autowired
 	private StoreManager storeManager;
+	@Autowired
+	private MetricContainerFlusher metricContainerFlusher;
 
 	@Bean
 	public ModelingEngineFactory modelingEngineFactory() {
@@ -96,6 +99,6 @@ public class ModelingServiceConfiguration {
 				new AslConfigurationPaths(enrichedRecordsGroupName, enrichedRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(smartRecordsGroupName, smartRecordsBaseConfigurationPath));
-		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, storeManager, modelingServiceMetricsContainer);
+		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, storeManager, metricContainerFlusher);
 	}
 }

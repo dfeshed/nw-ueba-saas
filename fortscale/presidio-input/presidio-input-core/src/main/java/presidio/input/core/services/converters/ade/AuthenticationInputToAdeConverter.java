@@ -22,6 +22,7 @@ public class AuthenticationInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDstMachineNameRegexCluster(authenticationRawEvent.getDstMachineCluster());
         adeRecord.setDstMachineDomain(authenticationRawEvent.getDstMachineDomain());
         adeRecord.setResultCode(authenticationRawEvent.getResultCode());
+        adeRecord.setSite(authenticationRawEvent.getSite());
         return adeRecord;
     }
 }

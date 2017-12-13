@@ -2,6 +2,7 @@ package fortscale.ml.model.metrics;
 
 import fortscale.ml.model.ModelBuilderData;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import presidio.monitoring.flush.FlushableMetricContainer;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
@@ -18,7 +19,7 @@ import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKe
 /**
  * Metrics on models
  */
-public class ModelingServiceMetricsContainer {
+public class ModelingServiceMetricsContainer implements FlushableMetricContainer {
     public static final String METRIC_NAME = "modeling";
     private MetricCollectingService metricCollectingService;
     private MetricsExporter metricsExporter;

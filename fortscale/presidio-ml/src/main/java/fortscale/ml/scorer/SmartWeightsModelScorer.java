@@ -16,7 +16,6 @@ import java.util.List;
 
 public class SmartWeightsModelScorer extends AbstractScorer{
     private String modelName;
-    private double fractionalPower;
 
     private EventModelsCacheService eventModelsCacheService;
     private SmartWeightsScorerAlgorithm smartWeightsScorerAlgorithm;
@@ -42,8 +41,8 @@ public class SmartWeightsModelScorer extends AbstractScorer{
             //todo: add metrics.
             return new FeatureScore(getName(), 0.0);
         }
-        Assert.isInstanceOf(SmartWeightsModel.class,model, "smart weights model scorer expect to get SmartWeightModel Class.");
-        return new FeatureScore(getName(),calculateScore(smartRecord, (SmartWeightsModel) model));
+        Assert.isInstanceOf(SmartWeightsModel.class, model, "smart weights model scorer expect to get SmartWeightModel Class.");
+        return calculateScore(smartRecord, (SmartWeightsModel)model);
     }
 
     public FeatureScore calculateScore(AdeRecordReader adeRecordReader, Instant modelEndTime) {
@@ -61,13 +60,14 @@ public class SmartWeightsModelScorer extends AbstractScorer{
             //todo: add metrics.
             return new FeatureScore(getName(), 0.0);
         }
-        Assert.isInstanceOf(SmartWeightsModel.class,model, "smart weights model scorer expect to get SmartWeightModel Class.");
-        return new FeatureScore(getName(),calculateScore(smartRecord, (SmartWeightsModel) model));
+        Assert.isInstanceOf(SmartWeightsModel.class, model, "smart weights model scorer expect to get SmartWeightModel Class.");
+        return calculateScore(smartRecord, (SmartWeightsModel)model);
     }
 
 
-
-    private double calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel){
-        return smartWeightsScorerAlgorithm.calculateScore(smartRecord,smartWeightsModel);
+    private FeatureScore calculateScore(SmartRecord smartRecord, SmartWeightsModel smartWeightsModel) {
+        FeatureScore featureScore = smartWeightsScorerAlgorithm.calculateScore(smartRecord, smartWeightsModel);
+        featureScore.setName(getName());
+        return featureScore;
     }
 }

@@ -11,8 +11,8 @@ import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by efratn on 02/08/2017.
@@ -49,11 +49,11 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit)  {
+    public List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit) {
         String collectionName = toCollectionNameTranslator.toCollectionName(schema);
         List<? extends EnrichedEvent> events;
         try {
-             events = eventRepository.findEvents(collectionName,userId,timeRange,features, eventsLimit);
+            events = eventRepository.findEvents(collectionName, userId, timeRange, features, eventsLimit);
         } catch (Exception e) {
             String errorMsg = String.format("Failed to findEvents events by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
             logger.error(errorMsg, e);
@@ -81,5 +81,10 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         }
 
         return featureType;
+    }
+
+    @Override
+    public void remove(Schema schema, Instant startDate, Instant endDate) {
+        eventRepository.remove(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
     }
 }

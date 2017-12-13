@@ -3,6 +3,7 @@ package fortscale.ml.model.metrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
@@ -12,6 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Configuration
+@Import({CategoryRarityModeBuilderMetricsContainerConfig.class,
+        CategoryRarityModeRetrieverMetricsContainerConfig.class})
 public class ModelingServiceMetricsContainerConfig
 {
     @Autowired

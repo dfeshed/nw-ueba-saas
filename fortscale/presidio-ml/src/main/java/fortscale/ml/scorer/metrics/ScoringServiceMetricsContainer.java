@@ -2,6 +2,7 @@ package fortscale.ml.scorer.metrics;
 
 import fortscale.domain.feature.score.FeatureScore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import presidio.monitoring.flush.FlushableMetricContainer;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
@@ -18,7 +19,7 @@ import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKe
  *
  * Created by barak_schuster on 11/27/17.
  */
-public class ScoringServiceMetricsContainer {
+public class ScoringServiceMetricsContainer implements FlushableMetricContainer {
     public static final String METRIC_NAME = "scoring";
     private MetricCollectingService metricCollectingService;
     private MetricsExporter metricsExporter;

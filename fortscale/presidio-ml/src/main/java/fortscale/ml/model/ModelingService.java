@@ -6,6 +6,7 @@ import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.StoreManager;
 import org.springframework.core.io.Resource;
+import presidio.monitoring.flush.MetricContainerFlusher;
 import presidio.monitoring.services.MetricCollectingService;
 
 import java.time.Instant;
@@ -31,7 +32,7 @@ public class ModelingService {
 	private ModelingEngineFactory modelingEngineFactory;
 	private StoreManager storeManager;
 	private ModelConfServiceBuilder modelConfServiceBuilder;
-	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+	private  MetricContainerFlusher metricContainerFlusher;
 
 	/**
 	 * C'tor.
@@ -44,11 +45,11 @@ public class ModelingService {
 			Collection<AslConfigurationPaths> modelConfigurationPathsCollection,
 			ModelingEngineFactory modelingEngineFactory,
 			AslResourceFactory aslResourceFactory, StoreManager storeManager,
-			ModelingServiceMetricsContainer modelingServiceMetricsContainer) {
+			MetricContainerFlusher metricContainerFlusher) {
 		this.modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection,aslResourceFactory);
 		this.modelingEngineFactory = modelingEngineFactory;
 		this.storeManager = storeManager;
-		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
+		this.metricContainerFlusher = metricContainerFlusher;
 	}
 
 	/**
@@ -78,7 +79,7 @@ public class ModelingService {
 			}
 			storeManager.cleanupCollections(endInstant);
 
-			modelingServiceMetricsContainer.flush();
+			metricContainerFlusher.flush();
 		}
 		catch (Exception e)
 		{
