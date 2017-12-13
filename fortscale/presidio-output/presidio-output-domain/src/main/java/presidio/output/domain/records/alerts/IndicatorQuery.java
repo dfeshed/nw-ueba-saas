@@ -58,17 +58,17 @@ public class IndicatorQuery {
             return sort(sort);
         }
 
-        IndicatorQueryBuilder pageNumber(int pageNumber) {
+        public IndicatorQueryBuilder pageNumber(int pageNumber) {
             this.pageNumber = pageNumber;
             return this;
         }
 
-        IndicatorQueryBuilder pageSize(int pageSize) {
+        public IndicatorQueryBuilder pageSize(int pageSize) {
             this.pageSize = pageSize;
             return this;
         }
 
-        IndicatorQueryBuilder filterByAlertsId(String filterByAlertsId) {
+        public IndicatorQueryBuilder filterByAlertsId(String filterByAlertsId) {
             this.filterByAlertsId = filterByAlertsId;
             return this;
         }
