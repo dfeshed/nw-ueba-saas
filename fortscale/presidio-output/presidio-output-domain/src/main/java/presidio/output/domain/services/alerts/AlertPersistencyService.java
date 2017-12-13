@@ -2,7 +2,12 @@ package presidio.output.domain.services.alerts;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.IndicatorQuery;
+import presidio.output.domain.records.alerts.IndicatorSummary;
 
 import java.util.Collection;
 import java.util.List;
