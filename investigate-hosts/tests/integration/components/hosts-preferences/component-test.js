@@ -39,6 +39,7 @@ test('it renders', function(assert) {
   return wait().then(() => {
     assert.equal(this.$('.rsa-preferences-panel-trigger').length, 1, 'panel trigger is present');
     assert.equal(this.$('header.preference-panel-js').text().trim(), 'Hosts Preferences', 'Make sure header title is present');
+    assert.equal(this.$('.rsa-preferences-panel-trigger i').attr('title'), 'Open/Hide Hosts Preferences', 'Tooltip is correct');
     // assert.equal(this.$('div.rsa-preferences-field-content').length, 2, '2 preference fields are rendered');
   });
 });

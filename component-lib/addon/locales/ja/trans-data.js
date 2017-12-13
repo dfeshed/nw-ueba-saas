@@ -1581,7 +1581,6 @@ export default {
       autoDownloadExtractedFiles: 'ja_Download extracted files automatically'
     },
     'endpoint-preferences': {
-      triggerTip: 'ja_Open/Hide Endpoint Preferences',
       visibleColumns: 'ja_Visible Columns',
       sortField: 'ja_Sort Field',
       sortOrder: 'ja_Sort Order',
@@ -1669,7 +1668,7 @@ export default {
       windows: 'ja_WINDOWS',
       mac: 'ja_MAC',
       linux: 'ja_LINUX',
-      favouriteFilters: 'ja_Favourite Filters',
+      favouriteFilters: 'ja_Favorite Filters',
       addMore: 'ja_Add More',
       restrictionType: {
         moreThan: 'ja_Greater than',
@@ -1699,6 +1698,7 @@ export default {
     },
     fields: {
       panelTitle: 'ja_Files Preferences',
+      triggerTip: 'ja_Open/Hide Files Preferences',
       id: 'ja_ID',
       companyName: 'ja_Company Name',
       checksumMd5: 'ja_MD5',
@@ -2100,6 +2100,7 @@ export default {
       footer: 'ja_showing {{count}} of {{total}} ja_hosts',
       column: {
         panelTitle: 'ja_Hosts Preferences',
+        triggerTip: 'ja_Open/Hide Hosts Preferences',
         id: 'ja_Agent ID',
         analysisData: {
           iocs: 'ja_IOC Alerts',

@@ -1582,7 +1582,6 @@ export default {
       autoDownloadExtractedFiles: 'Download extracted files automatically'
     },
     'endpoint-preferences': {
-      triggerTip: 'Open/Hide Endpoint Preferences',
       visibleColumns: 'Visible Columns',
       sortField: 'Sort Field',
       sortOrder: 'Sort Order',
@@ -1700,6 +1699,7 @@ export default {
     },
     fields: {
       panelTitle: 'Files Preferences',
+      triggerTip: 'Open/Hide Files Preferences',
       id: 'ID',
       companyName: 'Company Name',
       checksumMd5: 'MD5',
@@ -2099,6 +2099,7 @@ export default {
       footer: '{{count}} of {{total}} hosts',
       column: {
         panelTitle: 'Hosts Preferences',
+        triggerTip: 'Open/Hide Hosts Preferences',
         id: 'Agent ID',
         analysisData: {
           iocs: 'IOC Alerts',
@@ -2479,7 +2480,7 @@ export default {
         windows: 'WINDOWS',
         mac: 'MAC',
         linux: 'LINUX',
-        favouriteFilters: 'Favourite Filters',
+        favouriteFilters: 'Favorite Filters',
         addMore: 'Add More',
         restrictionType: {
           moreThan: 'Greater than',
