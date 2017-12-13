@@ -102,3 +102,16 @@ test('The GET_PREFERENCES action will set visibleColumns', function(assert) {
   const result = reducer(previous, newAction);
   assert.equal(result.visibleColumns.length, 2, 'visible columns length is properly set');
 });
+
+test('The GET_PREFERENCES action will set default visibleColumns first time', function(assert) {
+  const previous = Immutable.from({
+    visibleColumns: []
+  });
+  const response = {};
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_PREFERENCES,
+    payload: response
+  });
+  const result = reducer(previous, newAction);
+  assert.equal(result.visibleColumns.length, 7, 'Default visible columns length is properly set');
+});

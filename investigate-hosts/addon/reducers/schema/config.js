@@ -28,5 +28,12 @@ export default {
       options: [],
       field: 'machinePreference.sortField'
     }
-  ]
+  ],
+  defaultPreferences: {
+    machinePreference: {
+      visibleColumns: ['machine.machineOsType', 'machine.machineName', 'machine.scanStartTime', 'machine.users.name',
+        'agentStatus.lastSeenTime', 'agentStatus.scanStatus'],
+      sortField: 'machine.scanStartTime'
+    }
+  }
 };

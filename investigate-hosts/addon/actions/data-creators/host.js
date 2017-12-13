@@ -248,13 +248,17 @@ const initializeHostsPreferences = () => {
       type: ACTION_TYPES.GET_PREFERENCES,
       promise: prefService.getPreferences('endpoint-preferences'),
       meta: {
-        onSuccess: ({ machinePreference }) => {
-          const { sortField } = machinePreference;
-          if (sortField) {
-            dispatch({
-              type: ACTION_TYPES.SET_HOST_COLUMN_SORT,
-              payload: { key: sortField, descending: false }
-            });
+        onSuccess: (data) => {
+          if (data && data.machinePreference) {
+            // Only if preferences is sent from api, set the preference state.
+            // Otherwise, initial state will be used.
+            const { sortField } = data.machinePreference;
+            if (sortField) {
+              dispatch({
+                type: ACTION_TYPES.SET_HOST_COLUMN_SORT,
+                payload: { key: sortField, descending: false }
+              });
+            }
           }
         }
       }

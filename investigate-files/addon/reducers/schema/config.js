@@ -33,10 +33,15 @@ export default {
         'format',
         'signature.features',
         'entropy',
-        'pe.resources.company',
-        'mac.resources.company'
+        'pe.resources.company'
       ],
       field: 'filePreference.sortField'
     }
-  ]
+  ],
+  defaultPreferences: {
+    filePreference: {
+      visibleColumns: ['firstFileName', 'firstSeenTime', 'machineOsType', 'signature.features', 'size', 'checksumSha256', 'entropy'],
+      sortField: 'firstSeenTime'
+    }
+  }
 };

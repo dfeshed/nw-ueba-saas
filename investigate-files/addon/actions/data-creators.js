@@ -94,13 +94,17 @@ const initializeFilesPreferences = () => {
       type: ACTION_TYPES.GET_PREFERENCES,
       promise: prefService.getPreferences('endpoint-preferences'),
       meta: {
-        onSuccess: ({ filePreference }) => {
-          const { sortField } = filePreference;
-          if (sortField) {
-            dispatch({
-              type: ACTION_TYPES.SET_SORT_BY,
-              payload: { sortField, isSortDescending: false }
-            });
+        onSuccess: (data) => {
+          if (data && data.filePreference) {
+            // Only if preferences is sent from api, set the preference state.
+            // Otherwise, initial state will be used.
+            const { sortField } = data.filePreference;
+            if (sortField) {
+              dispatch({
+                type: ACTION_TYPES.SET_SORT_BY,
+                payload: { sortField, isSortDescending: false }
+              });
+            }
           }
         }
       }

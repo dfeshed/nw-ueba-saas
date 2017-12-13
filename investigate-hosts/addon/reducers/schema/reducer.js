@@ -2,12 +2,22 @@ import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
+import CONFIG from './config';
 
 const schemaInitialState = Immutable.from({
   schema: null,
   schemaLoading: true,
   visibleColumns: []
 });
+
+const _handleGetPreferences = (action) => {
+  return (state) => {
+    const { payload } = action;
+    const visibleColumns = payload && payload.machinePreference ?
+      action.payload.machinePreference.visibleColumns : CONFIG.defaultPreferences.machinePreference.visibleColumns;
+    return state.set('visibleColumns', visibleColumns);
+  };
+};
 
 const schemas = reduxActions.handleActions({
 
@@ -33,7 +43,7 @@ const schemas = reduxActions.handleActions({
 
   [ACTION_TYPES.GET_PREFERENCES]: (state, action) => {
     return handle(state, action, {
-      success: (s) => s.set('visibleColumns', action.payload.machinePreference.visibleColumns)
+      success: _handleGetPreferences(action)
     });
   }
 }, schemaInitialState);
