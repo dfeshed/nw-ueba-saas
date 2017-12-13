@@ -9,7 +9,7 @@
   <ul class="rsa-dropdown-action-list">
     {{#each filterList as |option|}}
       <li>
-        <label class="rsa-form-checkbox-label {{if option.selected 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if (or option.selected (gte option.selected.length 0)) 'checked'}}">
           {{rsa-form-checkbox
             checked=option.selected
             change=(action 'onSelection' option)}}
