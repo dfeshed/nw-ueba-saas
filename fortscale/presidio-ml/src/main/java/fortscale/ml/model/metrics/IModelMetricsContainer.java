@@ -26,6 +26,10 @@ public interface IModelMetricsContainer {
      */
     void setLogicalTime(Instant logicalStartTime);
 
+    /**
+     * Set num of contexts
+     * @param numOfContexts
+     */
     void setNumOfContexts(int numOfContexts);
 
     void flush();

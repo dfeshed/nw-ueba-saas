@@ -8,8 +8,6 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.config.ContextSelectorFactoryServiceConfig;
 import fortscale.ml.model.config.DataRetrieverFactoryServiceConfig;
 import fortscale.ml.model.config.ModelBuilderFactoryServiceConfig;
-import fortscale.ml.model.metrics.CategoryRarityModeBuilderMetricsContainerConfig;
-import fortscale.ml.model.metrics.CategoryRarityModeRetrieverMetricsContainerConfig;
 import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.ml.model.metrics.ModelingServiceMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;

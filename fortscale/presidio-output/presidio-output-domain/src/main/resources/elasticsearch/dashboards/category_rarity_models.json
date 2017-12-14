@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "d9ec9010-e0d3-11e7-ad61-9d1df1ca0d2f",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Category rarity model",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"size_x\":6,\"size_y\":3,\"panelIndex\":1,\"type\":\"visualization\",\"id\":\"eafd1250-e0d1-11e7-ad61-9d1df1ca0d2f\",\"col\":1,\"row\":10},{\"size_x\":6,\"size_y\":3,\"panelIndex\":2,\"type\":\"visualization\",\"id\":\"01ccea50-e0d2-11e7-ad61-9d1df1ca0d2f\",\"col\":1,\"row\":1},{\"size_x\":6,\"size_y\":3,\"panelIndex\":3,\"type\":\"visualization\",\"id\":\"aa5bf770-e0d1-11e7-ad61-9d1df1ca0d2f\",\"col\":7,\"row\":1},{\"size_x\":6,\"size_y\":3,\"panelIndex\":4,\"type\":\"visualization\",\"id\":\"849a4960-e0d1-11e7-ad61-9d1df1ca0d2f\",\"col\":1,\"row\":7},{\"size_x\":6,\"size_y\":3,\"panelIndex\":5,\"type\":\"visualization\",\"id\":\"54369760-e0d1-11e7-ad61-9d1df1ca0d2f\",\"col\":1,\"row\":4},{\"size_x\":6,\"size_y\":3,\"panelIndex\":6,\"type\":\"visualization\",\"id\":\"6d83a460-e0d1-11e7-ad61-9d1df1ca0d2f\",\"col\":7,\"row\":7},{\"size_x\":6,\"size_y\":3,\"panelIndex\":7,\"type\":\"visualization\",\"id\":\"3d2151f0-e0d1-11e7-ad61-9d1df1ca0d2f\",\"col\":7,\"row\":4}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  }
+]

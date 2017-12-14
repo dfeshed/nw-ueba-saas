@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Import({CategoryRarityModeBuilderMetricsContainerConfig.class,
-        CategoryRarityModeRetrieverMetricsContainerConfig.class})
+        TimeModeBuilderMetricsContainerConfig.class
+})
 public class ModelingServiceMetricsContainerConfig {
     @Autowired
     private MetricCollectingService metricCollectingService;

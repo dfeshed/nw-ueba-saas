@@ -3,7 +3,6 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.metrics.CategoryRarityModeRetrieverMetricsContainerConfig;
 import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Duration;

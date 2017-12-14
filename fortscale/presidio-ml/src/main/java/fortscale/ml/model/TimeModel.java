@@ -3,7 +3,9 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.google.common.base.Joiner;
+import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.utils.ConversionUtils;
+import org.springframework.data.annotation.Transient;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -25,7 +27,10 @@ public class TimeModel implements PartitionedDataModel {
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
 
-	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions) {
+	public TimeModel(){	}
+
+	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions,
+					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer) {
 		Assert.isTrue(timeResolution % bucketSize == 0);
 
 		this.timeResolution = timeResolution;
@@ -50,6 +55,10 @@ public class TimeModel implements PartitionedDataModel {
 		categoryRarityModel = new CategoryRarityModel();
 		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
 		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions, numDistinctFeatures);
+
+		long numOfDistinctSamples =  timeToCounter.keySet().stream().distinct().count();
+		long numOfSmoothedBuckets = smoothedBuckets.stream().filter(smooth -> smooth > 0).count();
+	    timeModelBuilderMetricsContainer.updateMetric(numOfDistinctSamples, numberOfPartitions, categoryRarityModel.getBuckets(), numDistinctFeatures, numOfSmoothedBuckets);
 	}
 
 	private List<Double> createInitializedBuckets() {
