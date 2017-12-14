@@ -103,7 +103,6 @@ const formComponent = Component.extend({
       errorClass: null,
       className: 'rsa-form-label power-select',
       protocolClassName: 'rsa-form-label power-select',
-      selectedProtocol: 'TCP',
       isPortError: false,
       isConfigError: false,
       isServerError: false,
@@ -113,7 +112,9 @@ const formComponent = Component.extend({
       invalidServerMessage: null,
       invalidServiceNameMessage: null,
       invalidDisplayNameMessage: null,
-      invalidTableItem: null
+      invalidTableItem: null,
+      isPasswordError: null,
+      passwordEmptyMessage: null
     });
   },
 
@@ -161,6 +162,7 @@ const formComponent = Component.extend({
   actions: {
 
     generateAgent() {
+      this.resetProperties();
       const { autoUninstall } = this.get('configData.packageConfig');
       if (autoUninstall && !isEmpty(autoUninstall[0])) {
         this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
@@ -171,7 +173,6 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
-          this.resetProperties();
         }
       } else {
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
@@ -179,7 +180,6 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('setConfig', this.get('configData'), false);
-          this.resetProperties();
         }
       }
     },
@@ -249,6 +249,7 @@ const formComponent = Component.extend({
     },
     reset() {
       this.resetProperties();
+      this.set('selectedProtocol', 'TCP');
       this.send('resetForm');
     }
   }
