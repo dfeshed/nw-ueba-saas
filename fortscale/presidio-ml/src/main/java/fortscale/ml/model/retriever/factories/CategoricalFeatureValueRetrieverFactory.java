@@ -2,7 +2,6 @@ package fortscale.ml.model.retriever.factories;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
-import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;

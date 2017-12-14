@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Metrics on category rarity model retriever
  */
-public class CategoryRarityModelRetrieverMetricsContainer extends ModelMetricsContainer {
+public class CategoryRarityModelRetrieverMetricsContainer extends ModelRetrieverMetricsContainer {
     public static final String METRIC_NAME = "category_rarity_model_retriever";
 
     /**
@@ -20,34 +20,7 @@ public class CategoryRarityModelRetrieverMetricsContainer extends ModelMetricsCo
      * @param metricsExporter
      */
     public CategoryRarityModelRetrieverMetricsContainer(MetricCollectingService metricCollectingService, MetricsExporter metricsExporter) {
-        super(metricCollectingService, metricsExporter);
-    }
-
-    /**
-     * Updates modeling metrics by provided data
-     * @param featureBucketSize
-     */
-    public void updateMetric(int featureBucketSize) {
-        Metric metric = getMetric();
-        metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_READ_DATA, (k, v) -> v.doubleValue() + featureBucketSize);
-    }
-
-
-    /**
-     * @param tags - tags of the metrics
-     * @return new Metric object for logical time
-     */
-    protected Metric createNewMetric(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
-        Map<MetricEnums.MetricValues, Number> values = new HashMap<>();
-        values.put(MetricEnums.MetricValues.AMOUNT_OF_READ_DATA, 0L);
-        return new Metric.MetricBuilder()
-                .setMetricName(METRIC_NAME)
-                .setMetricReportOnce(true)
-                .setMetricUnit(MetricEnums.MetricUnitType.NUMBER)
-                .setMetricTags(tags)
-                .setMetricLogicTime(logicalTime)
-                .setMetricMultipleValues(values)
-                .build();
+        super(metricCollectingService, metricsExporter, METRIC_NAME);
     }
 
     @Override

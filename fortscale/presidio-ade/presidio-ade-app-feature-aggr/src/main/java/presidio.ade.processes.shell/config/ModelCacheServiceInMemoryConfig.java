@@ -5,8 +5,6 @@ import fortscale.ml.model.cache.ModelCacheServiceInMemory;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
 import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainerConfig;
-import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
-import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;

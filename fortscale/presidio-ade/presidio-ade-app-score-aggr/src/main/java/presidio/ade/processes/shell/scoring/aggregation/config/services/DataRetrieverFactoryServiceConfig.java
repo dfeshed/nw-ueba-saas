@@ -1,7 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
-import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;

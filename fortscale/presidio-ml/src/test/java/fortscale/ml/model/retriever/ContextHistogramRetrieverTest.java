@@ -1,6 +1,7 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.bucket.*;
+import fortscale.ml.model.metrics.TimeModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
@@ -32,6 +33,9 @@ public class ContextHistogramRetrieverTest {
 
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
+
+    @MockBean
+    private TimeModelRetrieverMetricsContainer timeModelRetrieverMetricsContainer;
 
 
     @Test
