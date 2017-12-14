@@ -40,7 +40,12 @@ import presidio.output.processor.services.OutputExecutionServiceImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
@@ -94,9 +99,11 @@ public class OutputExecutionServiceModuleTest {
 
         Map<String, String> context = new HashMap<>();
         context.put("userId", USER_ID_TEST_USER);
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
         for (Pair<String, Double> usersToScore : usersToScoreList) {
             SmartRecord smartRecord = new SmartRecord(timeRange, usersToScore.getKey(), "featureName", FixedDurationStrategy.HOURLY,
-                    90, usersToScore.getValue(), Collections.emptyList(), Collections.singletonList(new SmartAggregationRecord(aggregationRecord)), context);
+                    90, usersToScore.getValue(), Collections.emptyList(), Collections.singletonList(smartAggregationRecord), context);
             smartRecords.add(smartRecord);
         }
 
