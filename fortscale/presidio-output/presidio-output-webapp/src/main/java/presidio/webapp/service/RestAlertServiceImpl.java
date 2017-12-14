@@ -301,7 +301,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             query.pageNumber(indicatorQuery.getPageNumber());
         }
         if (indicatorQuery.getPageSize() != null) {
-            query.pageNumber(indicatorQuery.getPageSize());
+            query.pageSize(indicatorQuery.getPageSize());
         }
         if (indicatorQuery.getSort() != null) {
             query.sortField();
