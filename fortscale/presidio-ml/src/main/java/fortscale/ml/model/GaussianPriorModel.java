@@ -77,6 +77,11 @@ public class GaussianPriorModel implements Model {
 		return this;
 	}
 
+	public GaussianPriorModel initMinPrior(Double minPrior){
+		this.minPrior = minPrior;
+		return this;
+	}
+
 	public SegmentPrior[] getSegmentPriors() {
 		return segmentPriors;
 	}

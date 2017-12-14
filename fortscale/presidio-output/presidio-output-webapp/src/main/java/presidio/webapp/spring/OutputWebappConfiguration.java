@@ -8,8 +8,9 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.commons.services.alert.FeedbackService;
-import presidio.output.commons.services.alert.FeedbackServiceImpl;
+import presidio.output.commons.services.spring.UserSeverityServiceConfig;
+import presidio.webapp.service.FeedbackService;
+import presidio.webapp.service.FeedbackServiceImpl;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
@@ -23,7 +24,7 @@ import presidio.webapp.service.RestAlertServiceImpl;
 import presidio.webapp.service.RestUserService;
 import presidio.webapp.service.RestUserServiceImpl;
 
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class})
 @Configuration
 public class OutputWebappConfiguration {
 

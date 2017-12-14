@@ -48,6 +48,15 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 		// for normal distribution, getting a value that is at most two standard
  		// deviations from the mean has ~0.95 probability, so return std such that
  		// maxValueOverModels will get 0.95 probability
-		return (maxValueOverModels - mean) / 2.0;
+		return calcPrior(maxValueOverModels - mean);
+	}
+
+	@Override
+	public Double getMinAllowedPrior() {
+		return calcPrior(minAllowedDistFromMean);
+	}
+
+	private double calcPrior(double distFromMean){
+		return distFromMean / 2.0;
 	}
 }

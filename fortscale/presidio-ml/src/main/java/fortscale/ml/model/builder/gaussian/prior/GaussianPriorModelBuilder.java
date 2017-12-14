@@ -58,7 +58,12 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 				);
 			}
 		}
-		return new GaussianPriorModel().init(segmentPriors);
+
+		if(segmentPriors.isEmpty()){
+			return new GaussianPriorModel().initMinPrior(priorBuilder.getMinAllowedPrior());
+		} else {
+			return new GaussianPriorModel().init(segmentPriors);
+		}
 	}
 
 	private List<IContinuousDataModel> getModelsWithEnoughSamples(List<IContinuousDataModel> models) {

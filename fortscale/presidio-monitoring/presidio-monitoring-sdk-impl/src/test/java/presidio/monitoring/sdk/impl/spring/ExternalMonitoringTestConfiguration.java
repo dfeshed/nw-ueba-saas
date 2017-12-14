@@ -19,8 +19,10 @@ import presidio.monitoring.sdk.impl.services.PresidioExternalMonitoringServiceIm
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
+import presidio.monitoring.services.export.MetricExportingServiceImpl;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
+import presidio.monitoring.services.export.NullMetricsExporter;
 
 
 @Configuration
@@ -61,7 +63,9 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioExternalMonitoringService PresidioExternalMonitoringService() {
-        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricBucket()));
+        return new PresidioExternalMonitoringServiceImpl(new MetricCollectingServiceImpl(presidioMetricBucket())
+                ,
+                new MetricExportingServiceImpl(metricsExporter()));
     }
 
     @Bean

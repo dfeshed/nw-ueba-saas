@@ -1,6 +1,5 @@
 package presidio.output.commons.services.user;
 
-import com.google.common.collect.Iterables;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
     @Autowired
     private UserPersistencyService userPersistencyService;
 
-    @Value("${user.severities.batch.size:2000}")
+    @Value("${user.batch.size:2000}")
     private int defaultUsersBatchSize;
 
     public UserSeverityServiceImpl(int percentThresholdCritical,

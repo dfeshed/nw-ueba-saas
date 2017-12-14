@@ -20,12 +20,12 @@ import presidio.output.processor.services.user.*;
 @Import(UserSeverityServiceConfig.class)
 public class UserServiceConfig {
 
-    @Value("${user.severities.batch.size:2000}")
-    private int defaultUsersBatchFile;
+    @Value("${user.batch.size:2000}")
+    private int defaultUsersBatchSize;
 
 
     @Value("${alerts.batch.size:2000}")
-    private int defaultAlertsBatchFile;
+    private int defaultAlertsBatchSize;
 
     @Value("${alert.affect.duration.days:1000}")
     private int alertEffectiveDurationInDays;
@@ -48,12 +48,12 @@ public class UserServiceConfig {
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(),userSeverityService, alertEffectiveDurationInDays, defaultAlertsBatchFile);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchSize);
     }
 
     @Bean
     public UserScoreService userScoreService(){
-        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, defaultUsersBatchFile,defaultAlertsBatchFile);
+        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, defaultAlertsBatchSize, defaultUsersBatchSize);
     }
 
 }
