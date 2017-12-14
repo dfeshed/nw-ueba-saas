@@ -18,7 +18,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.aggregated.*;
+import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.activedirectory.AdeScoredActiveDirectoryRecord;
@@ -47,9 +51,19 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -119,7 +133,9 @@ public class AlertServiceTest {
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
         mongoTemplate.save(event, fileEnrichedEventCollectionName);
-        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertNull(alert);
@@ -174,9 +190,14 @@ public class AlertServiceTest {
         AdeScoredEnrichedRecord activeDirectoryScoredEnrichedEvent = new AdeScoredActiveDirectoryRecord(eventTime, "startInstant.userId.file.score", "file", 10.0d, new ArrayList<FeatureScore>(), activeDirectoryEnrichedRecord);
         mongoTemplate.save(activeDirectoryScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName("scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score"));
 
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(staticAggregationRecord);
+        SmartAggregationRecord smartAggregationRecord2 = new SmartAggregationRecord(notStaticAggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smartAggregationRecord2.setContribution(0.3);
+
         smart.setSmartAggregationRecords(Arrays.asList(
-                new SmartAggregationRecord(staticAggregationRecord),
-                new SmartAggregationRecord(notStaticAggregationRecord)
+                smartAggregationRecord,
+                smartAggregationRecord2
         ));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
@@ -206,8 +227,9 @@ public class AlertServiceTest {
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
         mongoTemplate.save(fileEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
         mongoTemplate.save(fileEvent2, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
-
-        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertNotNull(alert);
@@ -232,15 +254,15 @@ public class AlertServiceTest {
         mongoTemplate.save(activeDirectoryEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         // event
-        EnrichedEvent activeDirectoryEvent2 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(20, ChronoUnit.MINUTES), "eventId2", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "OWNER_CHANGED_ON_GROUP_OBJECT",  Arrays.asList(new String[]{"GROUP_MEMBERSHIP"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
+        EnrichedEvent activeDirectoryEvent2 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(20, ChronoUnit.MINUTES), "eventId2", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "OWNER_CHANGED_ON_GROUP_OBJECT", Arrays.asList(new String[]{"GROUP_MEMBERSHIP"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
         mongoTemplate.save(activeDirectoryEvent2, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         // event
-        EnrichedEvent activeDirectoryEvent3 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(30, ChronoUnit.MINUTES), "eventId3", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP",  Arrays.asList(new String[]{"GROUP_MEMBERSHIP","SECURITY_SENSITIVE_OPERATION"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
+        EnrichedEvent activeDirectoryEvent3 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(30, ChronoUnit.MINUTES), "eventId3", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP", Arrays.asList(new String[]{"GROUP_MEMBERSHIP", "SECURITY_SENSITIVE_OPERATION"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
         mongoTemplate.save(activeDirectoryEvent3, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
-
-
-        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertNotNull(alert);
@@ -261,13 +283,15 @@ public class AlertServiceTest {
 
         // raw event
         generateFileEvents(2000, aggregationRecord.getStartInstant());
-        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertNotNull(alert);
         assertEquals(1, alert.getIndicators().size());
-        assertEquals(2000d,((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).getValue());
-        assertEquals(true,((Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).isAnomaly());
+        assertEquals(2000d, ((Bucket) alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).getValue());
+        assertEquals(true, ((Bucket) alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0)).isAnomaly());
     }
 
 
@@ -284,12 +308,14 @@ public class AlertServiceTest {
 
         // raw event
         generateAuthenticationEvents(1, aggregationRecord.getStartInstant());
-        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertNotNull(alert);
-        Bucket bucket = (Bucket)alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0);
-        assertEquals("Unresolved",bucket.getKey());
+        Bucket bucket = (Bucket) alert.getIndicators().get(0).getHistoricalData().getAggregation().getBuckets().get(0);
+        assertEquals("Unresolved", bucket.getKey());
     }
 
     @Test
@@ -305,7 +331,9 @@ public class AlertServiceTest {
 
         // raw event
         generateFileEvents(102, aggregationRecord.getStartInstant()); //generating 2 events more than the limit (=100)
-        smart.setSmartAggregationRecords(Collections.singletonList(new SmartAggregationRecord(aggregationRecord)));
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
         //generate alerts:
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
@@ -322,10 +350,10 @@ public class AlertServiceTest {
         HashMap<String, String> additionalnfo = new HashMap<>();
         List<String> file_permission_change = Arrays.asList("FILE_PERMISSION_CHANGE");
 
-        for(int i = 1; i <= eventsNum; i ++) {
+        for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
-            EnrichedEvent fileEvent = new FileEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50),ChronoUnit.MINUTES), "eventId1"+i, schema, "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", file_permission_change,
+            EnrichedEvent fileEvent = new FileEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", file_permission_change,
                     EventResult.FAILURE, "FAILURE", additionalnfo, "absoluteSrcFilePath", "absoluteDstFilePath",
                     "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
             mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
@@ -346,10 +374,10 @@ public class AlertServiceTest {
         Instant now = Instant.now();
         String schema = Schema.AUTHENTICATION.toString();
 
-        for(int i = 1; i <= eventsNum; i ++) {
+        for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
-            AuthenticationEnrichedEvent authenticationEvent = new AuthenticationEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50),ChronoUnit.MINUTES), "eventId1"+i, schema, "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String> (),  EventResult.SUCCESS, "SUCCESS", new HashMap<>());
+            AuthenticationEnrichedEvent authenticationEvent = new AuthenticationEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
             authenticationEvent.setSrcMachineNameRegexCluster("N/A");
             mongoTemplate.save(authenticationEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.AUTHENTICATION));
 
