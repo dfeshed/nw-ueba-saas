@@ -8,7 +8,7 @@ $metadataLineHeight: 1.35;
 
   > label {
     @include rsa-font(header, small);
-    color: text-color(primary, light);
+    color: text-color(primary, lighter);
     display: table-cell;
     vertical-align: middle;
     max-width: $metadataLabelWidth - rsa-whitespace(less) * 2;
@@ -26,7 +26,7 @@ $metadataLineHeight: 1.35;
     @include rsa-font(body, small);
     display: table-cell;
     min-height: 1em * $metadataLineHeight;
-    color: text-color(neutral);
+    color: text-color(primary, lightest);
     width: 100%;
   }
 

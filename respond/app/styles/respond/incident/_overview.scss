@@ -2,6 +2,7 @@ $incidentOverviewLabelWidth: 6rem;
 $incidentOverviewLineHeight: 1.35;
 
 .rsa-incident-overview {
+
   .rsa-incident-info-status {
     overflow: auto;
   }
@@ -22,12 +23,13 @@ $incidentOverviewLineHeight: 1.35;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      color: text-color(primary, lighter);
     }
 
     > span {
       display: inline-block;
       min-height: 1em * $incidentOverviewLineHeight;
-      color: text-color(neutral);
+      color: text-color(primary, lightest);
     }
 
     > .edit-button {

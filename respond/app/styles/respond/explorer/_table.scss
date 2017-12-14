@@ -14,6 +14,10 @@
     color: text-color(secondary, light);
   }
 
+  .rsa-data-table-body-row.has-focus .rsa-data-table-body-cell a {
+    color: text-color(secondary, lightest);
+  }
+
   .rsa-data-table-body-cell, .rsa-data-table-header-cell {
     box-sizing: border-box;
   }
@@ -56,8 +60,13 @@
     margin: 0;
     padding: 0;
 
-    &.has-focus {
-      background-color: background-color(secondary, base, nearly-transparent);
+    &.has-focus,
+    &.has-focus:hover {
+      background-color: background-color(secondary, dark);
+    }
+
+    &:hover:not(.has-focus) {
+      background-color: background-color(primary, darker);
     }
   }
 

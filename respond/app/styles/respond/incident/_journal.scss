@@ -47,11 +47,12 @@ $headerHeight: 30px;
 
     textarea {
       @include rsa-font(body, small);
+      @include border(1px, solid, primary, light);
       height: 100px;
       width: 100%;
       margin-bottom: rsa-whitespace(less);
       background-color: transparent;
-      color: text-color(neutral);
+      color: text-color(primary, lightest);
       resize: none;
     }
   }

@@ -50,6 +50,18 @@
     text-overflow: ellipsis;
   }
 
+  &.is-selected {
+    .header span {
+      color: text-color(primary, lightest);
+    }
+    .rsa-alerts-table-alert-header__enrichments.tab {
+      &:not(.active) {
+        border-color: border-color(primary, lightest);
+        color: text-color(primary, lightest);
+      }
+    }
+  }
+
   &.is-open {
     /* Rotates arrow icon downward when group is open. */
     .rsa-group-table-group-header {

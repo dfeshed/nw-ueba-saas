@@ -247,10 +247,17 @@ $alertsTableDotSize: 5px;
 
   &.is-selected {
     background: background-color(secondary, dark);
+
+    .rsa-alerts-table-alert-header__events.tab {
+      &:not(.active) {
+        border-color: border-color(primary, lightest);
+        color: text-color(primary, lightest);
+      }
+    }
   }
 
   .p {
-    color: text-color(primary, light);
+    color: text-color(primary, lighter);
   }
 
   .tab {
@@ -271,14 +278,18 @@ $alertsTableDotSize: 5px;
 }
 
 .rsa-alerts-table-alert-item {
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
 
   .sep {
-    color: text-color(primary, light);
+    color: text-color(primary, lighter);
   }
 
   &.is-selected {
     background: background-color(secondary, dark);
+
+    .event .event-header span {
+      color: text-color(primary, lightest);
+    }
 
     .event {
       &::after {
@@ -293,7 +304,7 @@ $alertsTableDotSize: 5px;
 
   .event {
     &-header {
-      color: text-color(primary, light);
+      color: text-color(primary, lighter);
     }
 
     &::after {

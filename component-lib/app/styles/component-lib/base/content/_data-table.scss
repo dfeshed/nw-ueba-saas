@@ -117,11 +117,18 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     border-top: 1px solid border-color(primary, dark);
 
     &:hover,
+    &.has-focus,
+    &.is-selected,
+    &.has-focus:hover,
+    &.is-selected:hover {
+      border-top: 1px solid transparent;
+    }
+
+    &:hover,
     &.is-selected,
     &.is-selected:hover {
       margin: 0 calc(#{rsa-whitespace(less)} * -1);
       padding: 0 rsa-whitespace(less);
-      border-top: 1px solid transparent;
     }
 
     &:hover {
@@ -130,7 +137,9 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       }
     }
 
+    &.has-focus,
     &.is-selected,
+    &.has-focus:hover,
     &.is-selected:hover {
       .rsa-data-table-body-cell {
         background-color: background-color(secondary, dark);

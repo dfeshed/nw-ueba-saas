@@ -18,7 +18,7 @@ $alertsSearchLineHeight: 2rem;
       @include rsa-font(paragraph, small);
       padding: rsa-whitespace(less);
       padding-top: 0;
-      color: text-color(primary, light);
+      color: text-color(primary, lighter);
     }
 
     .param {
@@ -27,7 +27,7 @@ $alertsSearchLineHeight: 2rem;
       position: relative;
 
       &-label {
-        color: text-color(primary, light);
+        color: text-color(primary, lighter);
         position: absolute;
         left: 0;
         top: 0;
@@ -50,7 +50,7 @@ $alertsSearchLineHeight: 2rem;
         input[type="text"] {
           /* for consistency with ember-power-select's styling */
           line-height: $alertsSearchLineHeight;
-          @include border-bottom(1px, solid, primary, light);
+          @include border-bottom(1px, solid, primary, lighter);
           height: 30px;
           &:-ms-input-placeholder {
             color: text-color(primary);
@@ -88,7 +88,7 @@ $alertsSearchLineHeight: 2rem;
 
       &-text {
         @include rsa-font(body, small);
-        color: text-color(primary, light);
+        color: text-color(primary, lighter);
       }
 
       .rsa-loader__text {

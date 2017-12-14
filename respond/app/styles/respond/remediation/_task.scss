@@ -87,18 +87,18 @@
     input[type="text"] {
       padding: rsa-whitespace(less);
       width: 100%;
-      @include border(1px, solid, primary);
+      @include border(1px, solid, primary, light);
       box-sizing: border-box;
     }
     textarea {
       @include rsa-font(body, small);
+      @include border(1px, solid, primary, light);
       box-sizing: border-box;
       height: 100px;
       width: 100%;
       resize: none;
       background-color: transparent;
-      color: text-color(neutral);
-
+      color: text-color(primary, lightest);
     }
     .metadata {
       display: block;
@@ -114,7 +114,7 @@
     }
  }
   .controls {
-    @include border-top(1px, solid, primary);
+    @include border-top(1px, solid, primary, light);
     text-align: right;
     padding: rsa-whitespace() 0;
 
