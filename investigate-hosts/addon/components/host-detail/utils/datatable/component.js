@@ -18,9 +18,12 @@ export default Component.extend({
   didRender() {
     // Increase the rsa-data-table-body-rows border dynamically
     const rsaDataTableBody = this.$('.rsa-data-table-body');
-    const dataTableTotalWidth = rsaDataTableBody[0] ? rsaDataTableBody[0].scrollWidth : '0';
-    this.$('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
-    this.$('.rsa-data-table-header').innerWidth(dataTableTotalWidth);
+    const dataTableTotalWidth = rsaDataTableBody[0] ? rsaDataTableBody[0].scrollWidth : 0;
+
+    if (dataTableTotalWidth) {
+      this.$('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
+      this.$('.rsa-data-table-header').innerWidth(dataTableTotalWidth);
+    }
   },
 
   actions: {

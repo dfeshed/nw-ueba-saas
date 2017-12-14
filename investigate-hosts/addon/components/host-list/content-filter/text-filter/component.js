@@ -37,6 +37,11 @@ const dispatchToActions = {
 const preparePropertyValues = (propertyValues) => {
   propertyValues = propertyValues.split('||');
   return propertyValues.map((value) => {
+    // Validating the empty strings in the property values.
+    if (/^ *$/.test(value)) {
+      value = 'error';
+    }
+
     return { value: value.trim() };
   });
 };
@@ -48,6 +53,8 @@ const TextFilter = Component.extend(FilterMixin, {
   eventBus: service(),
 
   showRestrictionType: true,
+
+  isError: false,
 
   /**
    * List of supported operators
@@ -67,6 +74,8 @@ const TextFilter = Component.extend(FilterMixin, {
   restrictionType(expression) {
     if (expression && expression.propertyValues && expression.restrictionType != 'IN') {
       return expression.restrictionType;
+    } else if (expression && expression.propertyValues && expression.restrictionType == 'IN') {
+      return 'EQUAL';
     }
     return 'LIKE';
   },
@@ -119,10 +128,17 @@ const TextFilter = Component.extend(FilterMixin, {
         value
       } = this.getProperties('config', 'restrictionType', 'value');
 
-      const propertyValues = value && !isEmpty(value) ? preparePropertyValues(value) : null;
-      const restrictionTypeUpdated = (Array.isArray(propertyValues) && (propertyValues.length > 1)) ? 'IN' : restrictionType;
+      const propertyValues = value && !isEmpty(value) ? preparePropertyValues(value) : [];
 
-      this.send('updateFilter', { restrictionType: restrictionTypeUpdated, propertyName, propertyValues });
+      const errors = propertyValues.filter((o) => o.value === 'error');
+      if (propertyValues.length <= 0 || errors.length) {
+        this.set('isError', true);
+      } else {
+        this.set('isError', false);
+        const restrictionTypeUpdated = propertyValues.length > 1 ? 'IN' : restrictionType;
+
+        this.send('updateFilter', { restrictionType: restrictionTypeUpdated, propertyName, propertyValues });
+      }
     }
   }
 });

@@ -6064,6 +6064,7 @@ const data = [
       'gid': 0
     },
     'timeModified': 1478392173000,
+    'signature': 'signed',
     'timeAccessed': 1507159251000,
     'mode': 33261,
     'sameDirectoryFileCounts': {

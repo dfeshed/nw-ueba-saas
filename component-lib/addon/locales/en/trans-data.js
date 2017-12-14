@@ -2063,6 +2063,7 @@ export default {
         operator: 'Operator',
         searchPlaceHolder: 'Type to filter options',
         mutlipleValuesNote: 'Note: To search multiple values, use || as a separator',
+        invalidFilterInput: 'Invalid filter input',
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         }

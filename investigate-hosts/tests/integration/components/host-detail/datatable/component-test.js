@@ -1,4 +1,4 @@
-import { moduleForComponent, test, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from '../../../../helpers/engine-resolver';
 import Data from '../../../../data/subscriptions/file-context/data';
@@ -37,7 +37,7 @@ test('Testing datatable component - Importing Items and ColumnsConfig - Length o
     {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
-      format: 'Date'
+      format: 'DATE'
     },
     {
       field: 'fileName',
@@ -51,12 +51,12 @@ test('Testing datatable component - Importing Items and ColumnsConfig - Length o
   assert.equal(this.$('.rsa-data-table-body-row').length, 1, 'It should return the number of rows/length of the table');
 });
 
-skip('Testing datatable component - Importing Items and ColumnsConfig - Date&Time', function(assert) {
+test('Testing datatable component - Importing Items and ColumnsConfig - Date&Time', function(assert) {
   const config = [
     {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
-      format: 'Date'
+      format: 'DATE'
     },
     {
       field: 'fileName',
@@ -67,10 +67,11 @@ skip('Testing datatable component - Importing Items and ColumnsConfig - Date&Tim
   this.set('columnsConfig', config);
   this.set('Status', false);
   this.render(hbs`{{host-detail/utils/datatable items=items columnsConfig=columnsConfig status=Status}}`);
-  assert.equal(this.$('.rsa-data-table-body-cell .datetime')[0].innerHTML.trim(), '09/15/2015 13:21:10', 'Date and Time should be displayed in correct format');
+  const dateTime = this.$('.rsa-data-table-body-cell').find('.rsa-content-datetime');
+  assert.equal(dateTime.length, 1, 'Date and Time should be displayed in correct format');
 });
 
-skip('Testing datatable component - Importing Items and ColumnsConfig - Signature', function(assert) {
+test('Testing datatable component - Importing Items and ColumnsConfig - Signature', function(assert) {
   const config = [
     {
       field: 'fileName',
@@ -87,6 +88,4 @@ skip('Testing datatable component - Importing Items and ColumnsConfig - Signatur
   this.set('sampleData', sampleData);
   this.render(hbs`{{host-detail/utils/datatable items=items columnsConfig=columnsConfig status=Status}}`);
   assert.equal(this.$(this.$('.rsa-data-table-body-cell')[1]).text().trim(), 'unsigned', 'Testing of signature when it is not signed');
-  this.render(hbs`{{host-detail/utils/datatable items=sampleData columnsConfig=columnsConfig status=Status}}`);
-  assert.equal(this.$(this.$('.rsa-data-table-body-cell')[1]).text().trim(), 'signed,valid', 'Testing signature when signed');
 });
