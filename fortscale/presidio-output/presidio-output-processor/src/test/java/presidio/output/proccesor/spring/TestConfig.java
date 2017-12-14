@@ -27,7 +27,7 @@ public class TestConfig {
         properties.put("user.severities.percent.threshold.critical", 75);
         properties.put("user.severities.percent.threshold.high", 50);
         properties.put("user.severities.percent.threshold.medium", 25);
-        properties.put("indicators.contribution.limit.to.classification", 0.3);
+        properties.put("indicators.contribution.limit.to.classification.percent ", 0.3);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

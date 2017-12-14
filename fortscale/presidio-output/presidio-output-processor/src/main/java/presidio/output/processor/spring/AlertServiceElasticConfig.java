@@ -27,7 +27,7 @@ public class AlertServiceElasticConfig {
     @Value("${output.events.limit}")
     private int eventsLimit;
 
-    @Value("${indicators.contribution.limit.to.classification}")
+    @Value("${indicators.contribution.limit.to.classification.percent}")
     private double contributionLimit;
 
     @Autowired
