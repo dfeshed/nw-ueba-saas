@@ -70,7 +70,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             alerts = new PageImpl<>(null, null, 0);
         }
         List<presidio.webapp.model.Alert> restAlerts = new ArrayList<>();
-        int totalElements = 0;
+        int totalElements = Math.toIntExact(alerts.getTotalElements());
         Map<String, Aggregation> alertAggregations = null;
         if (alerts.getTotalElements() > 0) {
             for (presidio.output.domain.records.alerts.Alert alert : alerts) {
@@ -87,7 +87,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 }
                 restAlerts.add(restAlert);
             }
-            totalElements = Math.toIntExact(alerts.getTotalElements());
+
             if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
                 alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
             }
@@ -116,8 +116,8 @@ public class RestAlertServiceImpl implements RestAlertService {
             }
         } else {
             alertsWrapper.setAlerts(new ArrayList());
-            alertsWrapper.setTotal(0);
-            alertsWrapper.setPage(0);
+            alertsWrapper.setTotal(totalNumberOfElements);
+            alertsWrapper.setPage(pageNumber);
         }
         return alertsWrapper;
     }
