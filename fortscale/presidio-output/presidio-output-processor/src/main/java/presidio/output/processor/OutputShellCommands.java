@@ -44,7 +44,7 @@ public class OutputShellCommands implements CommandMarker {
         executionService.recalculateUserScore();
     }
 
-    @CliCommand(value = "clean", help = "clean application data for specified time range ")
+    @CliCommand(value = "cleanup", help = "clean application data for specified time range ")
     public void clean(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 

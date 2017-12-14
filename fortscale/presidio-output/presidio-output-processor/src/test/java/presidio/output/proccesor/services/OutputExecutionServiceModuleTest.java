@@ -25,8 +25,12 @@ import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
+import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -66,10 +70,12 @@ public class OutputExecutionServiceModuleTest {
     @Before
     public void setup() {
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
-        String fileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
+        String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
+        String adeFileEnrichedEventCollectionName = new  EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.FILE.getName().toLowerCase());
 
         mongoTemplate.dropCollection(smartUserIdHourlyCollectionName);
-        mongoTemplate.dropCollection(fileEnrichedEventCollectionName);
+        mongoTemplate.dropCollection(outputFileEnrichedEventCollectionName);
+        mongoTemplate.dropCollection(adeFileEnrichedEventCollectionName);
 
         List<SmartRecord> smartRecords = new ArrayList<>();
 
@@ -91,6 +97,13 @@ public class OutputExecutionServiceModuleTest {
                 EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
 
+        EnrichedFileRecord enrichedFileRecord = new EnrichedFileRecord(event.getEventDate());
+        enrichedFileRecord.setUserId("userId");
+        enrichedFileRecord.setEventId(event.getEventId());
+        enrichedFileRecord.setOperationType(event.getOperationType());
+        enrichedFileRecord.setOperationTypeCategories(event.getOperationTypeCategories());
+        enrichedFileRecord.setResult(event.getResult());
+
 
         Map<String, String> context = new HashMap<>();
         context.put("userId", USER_ID_TEST_USER);
@@ -101,7 +114,8 @@ public class OutputExecutionServiceModuleTest {
         }
 
         mongoTemplate.insert(smartRecords, smartUserIdHourlyCollectionName);
-        mongoTemplate.insert(event, fileEnrichedEventCollectionName);
+        mongoTemplate.insert(event, outputFileEnrichedEventCollectionName);
+        mongoTemplate.insert(enrichedFileRecord, adeFileEnrichedEventCollectionName);
     }
 
     @After
@@ -110,6 +124,16 @@ public class OutputExecutionServiceModuleTest {
         esTemplate.createIndex(Alert.class);
         esTemplate.putMapping(Alert.class);
         esTemplate.refresh(Alert.class);
+
+        esTemplate.deleteIndex(Indicator.class);
+        esTemplate.createIndex(Indicator.class);
+        esTemplate.putMapping(Indicator.class);
+        esTemplate.refresh(Indicator.class);
+
+        esTemplate.deleteIndex(IndicatorEvent.class);
+        esTemplate.createIndex(IndicatorEvent.class);
+        esTemplate.putMapping(IndicatorEvent.class);
+        esTemplate.refresh(IndicatorEvent.class);
 
         esTemplate.deleteIndex(User.class);
         esTemplate.createIndex(User.class);
@@ -153,6 +177,29 @@ public class OutputExecutionServiceModuleTest {
             Assert.assertEquals(1, user.getAlertClassifications().size());
             Assert.assertEquals(1, user.getIndicators().size());
             Assert.assertEquals(150, new Double(user.getScore()).intValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testCleanup() {
+
+        try {
+            outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
+            Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
+            Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
+            Assert.assertEquals(1, users.getNumberOfElements());
+            User user = users.iterator().next();
+            Assert.assertEquals(8, user.getAlertsCount());
+            Assert.assertEquals(55, new Double(user.getScore()).intValue());
+            outputExecutionService.clean(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
+            users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
+            user = users.iterator().next();
+            Assert.assertEquals(0, new Double(user.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

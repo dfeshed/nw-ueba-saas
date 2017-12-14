@@ -17,6 +17,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserService;
+import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
 import java.util.*;
@@ -102,8 +103,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
-
-                    userService.setUserAlertData(userEntity, alertEntity.getClassifications(), alertEntity.getIndicatorsNames(), alertEntity.getSeverity());
+                    UsersAlertData usersAlertData = new UsersAlertData();
+                    usersAlertData.incrementAlertsCount();
+                    usersAlertData.addClassifications(alertEntity.getClassifications());
+                    usersAlertData.addIndicators(alertEntity.getIndicatorsNames());
+                    usersAlertData.incrementUserScore(alertEntity.getContributionToUserScore());
+                    userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
                     metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_PREFIX + alertEntity.getSeverity().name()).
                             setMetricValue(1).
@@ -121,10 +126,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         users = storeUsers(users); //Get the generated users with the new elasticsearch ID
         storeAlerts(alerts);
 
-        //Update the users severities
-        if (CollectionUtils.isNotEmpty(users)) {
-            this.userSeverityService.updateSeveritiesForUsersList(users, true);
-        }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUMBER_OF_ALERTS_METRIC_NAME).
                 setMetricValue(alerts.size()).
@@ -191,7 +192,20 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     @Override
     public void clean(Instant startDate, Instant endDate) throws Exception {
-        // TODO: Implement
+
+        // delete alerts
+        List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
+
+        // update user scores
+        Set<User> usersToUpdate = new HashSet<User>();
+        cleanedAlerts.forEach(alert -> {
+            usersToUpdate.add(userService.findUserById(alert.getUserId()));
+        });
+        usersToUpdate.forEach(user -> {
+            userService.recalculateUserAlertData(user);
+        });
+        userService.save(new ArrayList<User>(usersToUpdate));
+
     }
 
     @Override

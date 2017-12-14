@@ -5,19 +5,17 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
+import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -28,23 +26,28 @@ public class UserServiceImpl implements UserService {
 
     private static final int USERS_SAVE_PAGE_SIZE = 1000;
 
+    private final AlertPersistencyService alertPersistencyService;
     private final EventPersistencyService eventPersistencyService;
     private final UserPersistencyService userPersistencyService;
     private final UserScoreService userScoreService;
+    private final UserSeverityService userSeverityService;
     private final String TAG_ADMIN = "admin";
-
 
     private final int alertEffectiveDurationInDays;//How much days an alert can affect on the user score
     private final int defaultUsersBatchSize;
 
     public UserServiceImpl(EventPersistencyService eventPersistencyService,
                            UserPersistencyService userPersistencyService,
+                           AlertPersistencyService alertPersistencyService,
                            UserScoreService userScoreService,
+                           UserSeverityService userSeverityService,
                            int alertEffectiveDurationInDays,
                            int defaultUsersBatchSize) {
         this.eventPersistencyService = eventPersistencyService;
         this.userPersistencyService = userPersistencyService;
+        this.alertPersistencyService = alertPersistencyService;
         this.userScoreService = userScoreService;
+        this.userSeverityService = userSeverityService;
         this.alertEffectiveDurationInDays = alertEffectiveDurationInDays;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
     }
@@ -89,19 +92,33 @@ public class UserServiceImpl implements UserService {
         return new UserDetails(userName, userDisplayName, userId, tags);
     }
 
-    public void setClassification(User user, List<String> classification) {
-        user.addAlertClassifications(classification);
-    }
 
     @Override
-    public void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity) {
+    public void setUserAlertData(User user, UsersAlertData usersAlertData) {
+        if (CollectionUtils.isNotEmpty(usersAlertData.getClassifications())) {
+            user.setAlertClassifications(new ArrayList<String>(usersAlertData.getClassifications()));
+        }
+        if (CollectionUtils.isNotEmpty(usersAlertData.getIndicators())) {
+            user.setIndicators(new ArrayList<String>(usersAlertData.getIndicators()));
+        }
+        user.setAlertsCount(usersAlertData.getAlertsCount());
+        user.setScore(usersAlertData.getUserScore());
+        UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
+        user.setSeverity(newSeverity);
+    }
 
-        List<String> classificationUnion = unionOfCollectionsToList(user.getAlertClassifications(), classification);
+
+    @Override
+    public void addUserAlertData(User user, UsersAlertData usersAlertData) {
+
+        List<String> classificationUnion = unionOfCollectionsToList(user.getAlertClassifications(), new ArrayList(usersAlertData.getClassifications()));
         user.setAlertClassifications(classificationUnion);
-        List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), indicators);
+        List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), new ArrayList(usersAlertData.getIndicators()));
         user.setIndicators(indicatorsUnion);
-        user.incrementAlertsCountByOne();
-        userScoreService.increaseUserScoreWithoutSaving(alertSeverity, user);
+        user.incrementAlertsCountByNumber(usersAlertData.getAlertsCount());
+        user.incrementUserScoreByNumber(usersAlertData.getUserScore());
+        UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
+        user.setSeverity(newSeverity);
     }
 
     @Override
@@ -167,8 +184,7 @@ public class UserServiceImpl implements UserService {
         users.forEach(user -> {
             double newUserScore = aggregatedUserScore.get(user.getId()).getUserScore();
             if (user.getScore() != newUserScore) {
-                user.setScore(newUserScore);
-                user.incrementAlertsCountByOne();
+                setUserAlertData(user, aggregatedUserScore.get(user.getId()));
                 changedUsers.add(user);
             }
         });
@@ -197,6 +213,20 @@ public class UserServiceImpl implements UserService {
         } else {
             return (List<String>) CollectionUtils.union(col1, col2);
         }
+    }
+
+    @Override
+    public void recalculateUserAlertData(User user) {
+        List<Alert> alerts = alertPersistencyService.findByUserId(user.getUserId());
+        UsersAlertData usersAlertData = new UsersAlertData();
+        alerts.forEach(alert -> {
+            usersAlertData.addClassifications(alert.getClassifications());
+            usersAlertData.addIndicators(alert.getIndicatorsNames());
+            usersAlertData.incrementAlertsCount();
+            usersAlertData.incrementUserScore(alert.getContributionToUserScore());
+
+        });
+        setUserAlertData(user, usersAlertData);
     }
 
 }

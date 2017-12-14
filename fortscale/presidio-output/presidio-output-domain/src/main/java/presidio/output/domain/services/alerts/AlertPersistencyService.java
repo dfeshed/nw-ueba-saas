@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import presidio.output.domain.records.alerts.*;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface AlertPersistencyService {
 
     Page<Alert> findByUserId(String userId, PageRequest pageRequest);
 
+    List<Alert> findByUserId(String userId);
+
     Page<Alert> findByUserIdIn(Collection<String> userId, PageRequest pageRequest);
 
     Page<Alert> findById(String id, PageRequest pageRequest);
@@ -40,5 +43,9 @@ public interface AlertPersistencyService {
     Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, PageRequest pageRequest);
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
+
+    List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
+
+    long countAlerts();
 
 }

@@ -107,9 +107,9 @@ public class UserScoreServiceModuleTest {
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
 
 
         List<User> userList = new ArrayList<>();
@@ -145,9 +145,9 @@ public class UserScoreServiceModuleTest {
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(60), getMinusDay(59), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(80), getMinusDay(79), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(39), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(60), getMinusDay(59), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(80), getMinusDay(79), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
+        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(39), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
 
 
         List<User> userList = new ArrayList<>();
@@ -233,8 +233,8 @@ public class UserScoreServiceModuleTest {
                 Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant());
                 Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant());
                 //Alerts per user per day
-                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 0D));
-                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
+                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 30D));
+                alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
             }
 
 
@@ -286,7 +286,7 @@ public class UserScoreServiceModuleTest {
         List<Alert> alerts = new ArrayList<>();
 
         for (AlertEnums.AlertSeverity severity : severities) {
-            alerts.add(new Alert(userId, "smartId", null, userName, getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, 0D));
+            alerts.add(new Alert(userId, "smartId", null, userName, getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, alertSeverityService.getUserScoreContributionFromSeverity(severity)));
         }
 
         List<User> userList = new ArrayList<>();
