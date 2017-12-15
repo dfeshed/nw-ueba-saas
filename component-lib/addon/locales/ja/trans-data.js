@@ -2482,7 +2482,7 @@ export default {
         windows: 'ja_WINDOWS',
         mac: 'ja_MAC',
         linux: 'ja_LINUX',
-        favouriteFilters: 'ja_Favourite Filters',
+        favouriteFilters: 'ja_Favorite Filters',
         addMore: 'ja_Add More',
         restrictionType: {
           moreThan: 'ja_Greater than',

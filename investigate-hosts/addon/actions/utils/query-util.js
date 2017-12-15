@@ -65,12 +65,7 @@ const addFilter = (query, expressionList) => {
   if (expressionList && expressionList.length) {
     const list = expressionList.filterBy('propertyValues');
     if (list.length) {
-      const modifiedList = list.map((item) => {
-        if (item.propertyValues.length) {
-          return item;
-        }
-      }).compact();
-
+      const modifiedList = list.filter((item) => item.propertyValues.length);
       if (modifiedList.length) {
         query.criteria = {
           expressionList: modifiedList,

@@ -1670,7 +1670,7 @@ export default {
       windows: 'WINDOWS',
       mac: 'MAC',
       linux: 'LINUX',
-      favouriteFilters: 'Favourite Filters',
+      favouriteFilters: 'Favorite Filters',
       addMore: 'Add More',
       restrictionType: {
         moreThan: 'Greater than',
