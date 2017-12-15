@@ -4,8 +4,9 @@ import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import FilterMixin from 'investigate-hosts/mixins/content-filter-mixins';
 import set from 'ember-metal/set';
-import { prepareExpressionProperty } from './utils';
+import { convertToTimeFormat, getTimezoneTime } from './utils';
 import _ from 'lodash';
+import moment from 'moment';
 
 import {
   updateFilter
@@ -60,6 +61,8 @@ const DateTimeFilter = Component.extend(FilterMixin, {
 
   selectedDateRangeOption: {},
 
+  timezone: service(),
+
    /**
    * Restriction type for the list filter
    * @public
@@ -76,7 +79,7 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   @computed('config.options', 'config.selected')
   listOptions(options, selections) {
     return options.map((item) => {
-      const listOption = { name: item.label, id: item.id, selected: item.selected };
+      const listOption = { selected: false, name: item.label, ...item };
       if (item.label === selections[0] || item.selected) {
         this.set('selectedDateRangeOption', listOption);
       }
@@ -160,6 +163,11 @@ const DateTimeFilter = Component.extend(FilterMixin, {
     this.parseExpression(expression);
   },
 
+  _getDisplayTime(time) {
+    const { zoneId } = this.get('timezone.selected');
+    return moment(time).tz(zoneId).format('YYYY-MM-DD HH:mm');
+  },
+
   actions: {
 
     /**
@@ -167,7 +175,7 @@ const DateTimeFilter = Component.extend(FilterMixin, {
      * @param option
      * @public
      */
-    onSelection(option) {
+    onTimeSelection(option) {
       const { selected } = option;
       set(option, 'selected', !selected);
       const {
@@ -178,10 +186,11 @@ const DateTimeFilter = Component.extend(FilterMixin, {
       if (option.id === 'Custom') {
         this.set('showListOptions', false);
       } else {
-        const values = [{ value: option.id, displayValue: option.name }];
-        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues: prepareExpressionProperty(values) });
+        const propertyValues = [{ value: convertToTimeFormat(option), displayValue: option.name }];
+        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues });
       }
     },
+
     onFilterUpdate() {
       let propertyValues = null;
       const {
@@ -194,22 +203,25 @@ const DateTimeFilter = Component.extend(FilterMixin, {
         selectedDateRangeOption
       } = this.getProperties('config', 'dateValue', 'dateStartValue', 'dateEndValue', 'restrictionType', 'isCustomChecked', 'selectedDateRangeOption');
 
+      const { zoneId } = this.get('timezone.selected');
+
       if (!isCustomChecked) {
-        const values = [{ value: selectedDateRangeOption.id, displayValue: selectedDateRangeOption.name }];
-        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues: prepareExpressionProperty(values) });
+        const propertyValues = [{ value: convertToTimeFormat(selectedDateRangeOption), displayValue: selectedDateRangeOption.name }];
+        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues });
       } else {
         if (type === 'BETWEEN') {
+          const startTime = getTimezoneTime(dateStartValue[0], zoneId);
+          const endTime = getTimezoneTime(dateEndValue[0], zoneId);
           propertyValues = [
-            { value: dateStartValue, displayValue: new Date(dateStartValue).toString() },
-            { value: dateEndValue, displayValue: new Date(dateEndValue).toString() }
+            { value: startTime, displayValue: this._getDisplayTime(startTime) },
+            { value: endTime, displayValue: this._getDisplayTime(endTime) }
           ];
         } else {
-          propertyValues = [{ value: dateValue, displayValue: new Date(dateValue).toString() }];
+          const time = getTimezoneTime(dateValue[0], zoneId);
+          propertyValues = [{ value: time, displayValue: this._getDisplayTime(time) }];
         }
-
-        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: true, propertyValues: prepareExpressionProperty(propertyValues) });
+        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: true, propertyValues });
       }
-
     },
     toggleIsChecked() {
       this.toggleProperty('isCustomChecked');
