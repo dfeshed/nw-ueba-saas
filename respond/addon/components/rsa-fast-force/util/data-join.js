@@ -91,7 +91,7 @@ export default function() {
 
   // Now update the radii of all the nodes.
   const nodesUpdate = nodesEnterGroup.merge(nodesAll);
-  nodesUpdate.select('.circle')
+  nodesUpdate.select('.circle').transition().duration(500)
     .attr('r', function(d) {
       return d.r;
     });
