@@ -9,7 +9,7 @@ export const listOfServices = createSelector(
     for (let i = 0; i < listOfDevices.length; i++) {
       const service = {};
       service.id = listOfDevices[i].host;
-      service.value = `${listOfDevices[i].displayName} ${listOfDevices[i].host} ${listOfDevices[i].name}`;
+      service.value = [listOfDevices[i].displayName, listOfDevices[i].host, listOfDevices[i].name];
       services.push(service);
     }
     return services;

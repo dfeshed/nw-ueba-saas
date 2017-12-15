@@ -175,6 +175,7 @@ const formComponent = Component.extend({
           this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
         }
       } else {
+        this.set('configData.logCollectionConfig.enabled', true);
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         const error = this._validate();
         this.setProperties(error);
@@ -190,6 +191,7 @@ const formComponent = Component.extend({
       if (!error) {
         // only log config data need to be send on click of this button.
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
+        this.set('configData.logCollectionConfig.enabled', true);
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
         this.resetProperties();
       }
@@ -198,7 +200,6 @@ const formComponent = Component.extend({
     enableLogCollection() {
       this.toggleProperty('isGenerateLogDisabled');
       this.toggleProperty('isLogCollectionEnabled');
-      this.set('configData.logCollectionConfig.enabled', this.get('isLogCollectionEnabled'));
       this.resetProperties();
     },
 

@@ -89,10 +89,5 @@
 }
 
 .device {
-  .ember-power-select-option{
-    word-spacing: rsa-whitespace(more);
-  }
-  .ember-power-select-selected-item {
-    word-spacing: rsa-whitespace(more);
-  }
+  padding-right: rsa-whitespace(more);
 }
