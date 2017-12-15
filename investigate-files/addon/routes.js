@@ -1,3 +1,5 @@
 import buildRoutes from 'ember-engines/routes';
 
-export default buildRoutes(function() {});
+export default buildRoutes(function() {
+  this.route('permission-denied');
+});

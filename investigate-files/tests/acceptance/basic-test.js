@@ -5,13 +5,24 @@ import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
 import requests from 'streaming-data/services/data-access/requests';
 import sinon from 'sinon';
+import Service from 'ember-service';
+
+const AccessControlService = Service.extend({
+  hasInvestigateEmberAccess: true,
+  hasInvestigateAccess: true,
+  hasInvestigateEventsAccess: true,
+  hasInvestigateHostsAccess: true
+});
 
 const {
   RSVP
 } = Ember;
 
-
 moduleForAcceptance('Acceptance | basic', {
+  beforeEach() {
+    this.application.register('service:accessControl', AccessControlService);
+    this.application.inject('route:application', 'accessControl', 'service:accessControl');
+  }
 });
 
 test('visiting /investigate-files', function(assert) {

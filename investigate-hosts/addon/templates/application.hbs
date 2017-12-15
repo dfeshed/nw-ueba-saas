@@ -1,9 +1,13 @@
 {{#rsa-investigate-header activeTab='protected.investigate.investigate-hosts' as |section| }}
-  {{#if section.isIconBar}}
+  {{#if (and accessControl.hasInvestigateHostsAccess section.isIconBar)}}
     {{hosts-preferences}}
   {{/if}}
+
   {{#if section.isMain}}
     {{outlet}}
   {{/if}}
 {{/rsa-investigate-header}}
-{{preferences-panel}}
+
+{{#if accessControl.hasInvestigateHostsAccess}}
+  {{preferences-panel}}
+{{/if}}

@@ -52,13 +52,6 @@ export default Route.extend({
     this.set('contextualHelp.topic', null);
   },
 
-  beforeModel() {
-    // Re-route back to the parent's protected route if we don't have permission
-    if (!this.get('accessControl.hasInvestigateEventsAccess')) {
-      this.transitionToExternal('protected.permission-denied');
-    }
-  },
-
   /**
    * Returns the app state model from the parent route. Is also responsible for
    * parsing the incoming query params and ensuring that the incoming query is

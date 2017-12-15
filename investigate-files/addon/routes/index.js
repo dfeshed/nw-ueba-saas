@@ -7,12 +7,6 @@ export default Route.extend({
 
   contextualHelp: service(),
 
-  beforeModel() {
-    if (!this.get('accessControl.hasInvestigateHostsAccess')) {
-      this.transitionToExternal('protected.permission-denied'); // Directing to permission denied page
-    }
-  },
-
   model() {
     return ping('endpoint-server-ping')
       .catch(function() {
