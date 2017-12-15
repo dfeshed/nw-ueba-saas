@@ -45,7 +45,7 @@
   --text-color-primary-darkest: 255,255,255; //#ffffff;
   --text-color-primary-darker: 246,246,246; //#f6f6f6;
   --text-color-primary-dark: 238,238,238; //#eeeeee;
-  --text-color-primary-base: 229,229,229; //#e5e5e5;
+  --text-color-primary-base: 220,220,218; //#dcdcda;
   --text-color-primary-light: 155,155,155; //#9b9b9b;
   --text-color-primary-lighter: 117,117,117; //#757575;
   --text-color-primary-lightest: 17,17,17; //#111111;
@@ -53,7 +53,7 @@
   --border-color-primary-darkest: 255,255,255; //#ffffff;
   --border-color-primary-darker: 246,246,246; //#f6f6f6;
   --border-color-primary-dark: 238,238,238; //#eeeeee;
-  --border-color-primary-base: 229,229,229; //#e5e5e5;
+  --border-color-primary-base: 220,220,218; //#dcdcda;
   --border-color-primary-light: 155,155,155; //#9b9b9b;
   --border-color-primary-lighter: 117,117,117; //#757575;
   --border-color-primary-lightest: 17,17,17; //#111111;
@@ -82,18 +82,18 @@
   --border-color-accent-three-lighter: 191,54,12; //#BF360C;
   --border-color-accent-three-lightest: 191,54,12; //#BF360C;
 
-  --border-color-accent-four-darkest: 255,111,0; //#FF6F00;
-  --border-color-accent-four-darker: 255,111,0; //#FF6F00;
-  --border-color-accent-four-dark: 255,160,0; //#FFA000;
-  --border-color-accent-four-base: 255,193,7; //#FFC107;
-  --border-color-accent-four-light: 255,213,79; //#FFD54F;
-  --border-color-accent-four-lighter: 255,236,179; //#FFECB3;
-  --border-color-accent-four-lightest: 255,236,179; //#FFECB3;
+  --border-color-accent-four-darkest: 240,209,142; //#F0D18E;
+  --border-color-accent-four-darker: 240,209,142; //#F0D18E;
+  --border-color-accent-four-dark: 235,189,92; //#EBBD5C;
+  --border-color-accent-four-base: 215,155,25; //#d79b19;
+  --border-color-accent-four-light: 192,138,22; //#C08A16;
+  --border-color-accent-four-lighter: 164,118,19; //#A47613;
+  --border-color-accent-four-lightest: 164,118,19; //#A47613;
 
   --background-color-primary-darkest: 255,255,255; //#ffffff;
   --background-color-primary-darker: 246,246,246; //#f6f6f6;
   --background-color-primary-dark: 238,238,238; //#eeeeee;
-  --background-color-primary-base: 229,229,229; //#e5e5e5;
+  --background-color-primary-base: 220,220,218; //#dcdcda;
   --background-color-primary-light: 155,155,155; //#9b9b9b;
   --background-color-primary-lighter: 117,117,117; //#757575;
   --background-color-primary-lightest: 17,17,17; //#111111;
@@ -146,13 +146,13 @@
   --text-color-accent-three-lighter: 191,54,12; //#BF360C;
   --text-color-accent-three-lightest: 191,54,12; //#BF360C;
 
-  --text-color-accent-four-darkest: 255,111,0; //#FF6F00;
-  --text-color-accent-four-darker: 255,111,0; //#FF6F00;
-  --text-color-accent-four-dark: 255,160,0; //#FFA000;
-  --text-color-accent-four-base: 255,193,7; //#FFC107;
-  --text-color-accent-four-light: 255,213,79; //#FFD54F;
-  --text-color-accent-four-lighter: 255,236,179; //#FFECB3;
-  --text-color-accent-four-lightest: 255,236,179; //#FFECB3;
+  --text-color-accent-four-darkest: 240,209,142; //#F0D18E;
+  --text-color-accent-four-darker: 240,209,142; //#F0D18E;
+  --text-color-accent-four-dark: 235,189,92; //#EBBD5C;
+  --text-color-accent-four-base: 215,155,25; //#d79b19;
+  --text-color-accent-four-light: 192,138,22; //#C08A16;
+  --text-color-accent-four-lighter: 164,118,19; //#A47613;
+  --text-color-accent-four-lightest: 164,118,19; //#A47613;
 
   --background-color-accent-one-darkest: 166,8,8; //#A60808;
   --background-color-accent-one-darker: 166,8,8; //#A60808;
@@ -178,11 +178,11 @@
   --background-color-accent-three-lighter: 191,54,12; //#BF360C;
   --background-color-accent-three-lightest: 191,54,12; //#BF360C;
 
-  --background-color-accent-four-darkest: 255,111,0; //#FF6F00;
-  --background-color-accent-four-darker: 255,111,0; //#FF6F00;
-  --background-color-accent-four-dark: 255,160,0; //#FFA000;
-  --background-color-accent-four-base: 255,193,7; //#FFC107;
-  --background-color-accent-four-light: 255,213,79; //#FFD54F;
-  --background-color-accent-four-lighter: 255,236,179; //#FFECB3;
-  --background-color-accent-four-lightest: 255,236,179; //#FFECB3;
+  --background-color-accent-four-darkest: 240,209,142; //#F0D18E;
+  --background-color-accent-four-darker: 240,209,142; //#F0D18E;
+  --background-color-accent-four-dark: 235,189,92; //#EBBD5C;
+  --background-color-accent-four-base: 215,155,25; //#d79b19;
+  --background-color-accent-four-light: 192,138,22; //#C08A16;
+  --background-color-accent-four-lighter: 164,118,19; //#A47613;
+  --background-color-accent-four-lightest: 164,118,19; //#A47613;
 }
