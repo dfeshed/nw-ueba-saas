@@ -2114,7 +2114,7 @@ export default {
         },
         machine: {
           machineOsType: 'ja_Operating System',
-          machineName: 'ja_Machine Name',
+          machineName: 'Host Name',
           id: 'ja_Agent ID',
           agentVersion: 'ja_Agent Version',
           scanStartTime: 'ja_Last Scan Time',
@@ -2127,7 +2127,7 @@ export default {
             hosts: 'ja_Host Entires'
           },
           users: {
-            name: 'ja_Users - Name',
+            name: 'ja_Username',
             sessionId: 'ja_Users - SessionID',
             sessionType: 'ja_Users - Session Type',
             isAdministrator: 'ja_Users - IsAdmin',
@@ -2176,14 +2176,14 @@ export default {
             features: 'ja_SecurityProducts - Features'
           },
           networkInterfaces: {
-            name: 'ja_NetworkInterface - Name',
-            macAddress: 'ja_NetworkInterface - MacAddress',
+            name: 'ja_NIC Name',
+            macAddress: 'ja_NIC MAC Address',
             networkId: 'ja_NetworkInterface - NerworkID',
             ipv4: 'ja_IPv4',
             ipv6: 'ja_IPv6',
             gateway: 'ja_NetworkInterface - Gateway',
             dns: 'ja_NetworkInterface - DNS',
-            promiscuous: 'ja_NetworkInterface - Promiscous'
+            promiscuous: 'ja_NIC Promiscous'
           }
         },
         riskScore: {

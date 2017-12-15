@@ -2113,7 +2113,7 @@ export default {
         },
         machine: {
           machineOsType: 'Operating System',
-          machineName: 'Machine Name',
+          machineName: 'Host Name',
           id: 'Agent ID',
           agentVersion: 'Agent Version',
           scanStartTime: 'Last Scan Time',
@@ -2126,7 +2126,7 @@ export default {
             hosts: 'Host Entires'
           },
           users: {
-            name: 'User Name',
+            name: 'Username',
             sessionId: 'User SessionID',
             sessionType: 'User Session Type',
             isAdministrator: 'User IsAdmin',
@@ -2175,14 +2175,14 @@ export default {
             features: 'SecurityProducts - Features'
           },
           networkInterfaces: {
-            name: 'NetworkInterface - Name',
-            macAddress: 'NetworkInterface - MacAddress',
+            name: 'NIC Name',
+            macAddress: 'NIC MAC Address',
             networkId: 'NetworkInterface - NerworkID',
             ipv4: 'IPv4',
             ipv6: 'IPv6',
             gateway: 'NetworkInterface - Gateway',
             dns: 'NetworkInterface - DNS',
-            promiscuous: 'NetworkInterface - Promiscous'
+            promiscuous: 'NIC Promiscous'
           }
         },
         riskScore: {
