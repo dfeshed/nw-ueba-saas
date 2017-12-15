@@ -20,12 +20,12 @@
 
     &.alert-success {
       @include border(1px, solid, accentTwo);
-      background-color: background-color(accentTwo, dark, nearly-opaque);
+      background-color: background-color(accentTwo, base, nearly-opaque);
     }
 
     &.alert-warning {
       @include border(1px, solid, accentFour);
-      background-color: background-color(accentFour, dark, nearly-opaque);
+      background-color: background-color(accentFour, base, nearly-opaque);
     }
 
     &.alert-error {

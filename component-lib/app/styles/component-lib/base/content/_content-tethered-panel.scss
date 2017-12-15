@@ -12,7 +12,7 @@
   color: text-color(primary, lightest);
   text-align: left;
   position: relative;
-  box-shadow: 1px 1px 2px background-color(neutral, dark, translucent);
+  box-shadow: 1px 1px 2px background-color(primary, darkest, translucent);
 
   .close-icon {
     position: absolute;

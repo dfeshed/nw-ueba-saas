@@ -1,6 +1,6 @@
 .host-autoruns {
   .rsa-data-table-header {
-    background-color: $host-details-table-header-color;
+    background-color: background-color(primary, darker);
   }
   .rsa-data-table {
     background-color: $host-details-table-row-color;

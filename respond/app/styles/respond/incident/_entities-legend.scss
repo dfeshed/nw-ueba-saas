@@ -11,7 +11,7 @@
 
   .has-exceeded-node-limit {
     margin-top: rsa-whitespace(least);
-    color: text-color(primary);
+    color: text-color(primary, light);
 
     .show-all {
       color: text-color(secondary, light);
@@ -51,7 +51,7 @@
     }
     &.mac-address {
       label {
-        color: text-color(primary); // $entityMACColor is too dark to be legible
+        color: text-color(primary, light);
       }
     }
     &.file-name {

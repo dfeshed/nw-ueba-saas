@@ -1,5 +1,5 @@
-$font-highlight-color: text-color(primary, lighter);
-$font-fade-color: text-color(primary, light);
+$font-highlight-color: text-color(primary, lightest);
+$font-fade-color: text-color(primary, lighter);
 $panelBackgroundImage: radial-gradient(circle at 0px 25%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
 radial-gradient(circle at 70% 0px, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
 radial-gradient(circle at 35% 65%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
