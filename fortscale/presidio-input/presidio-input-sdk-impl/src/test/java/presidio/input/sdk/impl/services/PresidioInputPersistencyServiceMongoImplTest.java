@@ -95,7 +95,7 @@ public class PresidioInputPersistencyServiceMongoImplTest {
     public void deleteAllEventsFromMongoCollectionFile() {
         mongoTemplate.dropCollection(FileRawEvent.class);
         List<AbstractAuditableDocument> list = new ArrayList<>();
-        Instant currentTime = Instant.now();
+        Instant currentTime = Instant.parse("2017-12-17T18:15:00Z");
         list.add(createEvent(currentTime.minus(5, ChronoUnit.MINUTES)));
         list.add(createEvent(currentTime.minus(5, ChronoUnit.HOURS)));
         presidioInputPersistencyService.store(Schema.FILE, list);
