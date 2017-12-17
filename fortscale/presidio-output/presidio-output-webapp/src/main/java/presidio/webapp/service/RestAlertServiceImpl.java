@@ -315,7 +315,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     private presidio.output.domain.records.alerts.IndicatorQuery createIndicatorQueryFromAlertId(String alertId) {
         presidio.output.domain.records.alerts.IndicatorQuery.IndicatorQueryBuilder query = new presidio.output.domain.records.alerts.IndicatorQuery.IndicatorQueryBuilder();
         query.pageNumber(0);
-        query.pageNumber(100);
+        query.pageSize(100);
         query.sortField();
         if (!alertId.isEmpty()) {
             query.filterByAlertsId(alertId);
