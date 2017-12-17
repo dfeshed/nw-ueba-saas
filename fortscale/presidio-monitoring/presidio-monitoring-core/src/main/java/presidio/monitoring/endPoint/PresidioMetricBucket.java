@@ -6,6 +6,7 @@ import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,7 +27,7 @@ public class PresidioMetricBucket {
 
     public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
-        if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
+        if (isMetricExist(metric)) {
             accumulateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
         }
         applicationMetrics.put(metric.getName(), metric);
@@ -35,10 +36,26 @@ public class PresidioMetricBucket {
     private void accumulateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
         Map<MetricEnums.MetricValues, Number> metricValues = metric.getValue();
         for (Map.Entry<MetricEnums.MetricValues, Number> entry : metricValues.entrySet()) {
-            if (value.get(entry.getKey()) != null) {
+            if (!ObjectUtils.isEmpty(value.get(entry.getKey()))) {
                 entry.setValue(operatorAddForNumber(value.get(entry.getKey()), entry.getValue()));
             }
         }
+        for (Map.Entry<MetricEnums.MetricValues, Number> entry : value.entrySet()) {
+            if (!metricValues.containsKey(entry.getKey())) {
+                metricValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private boolean isMetricExist(Metric metric) {
+        boolean isExist = false;
+        if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
+            Instant logicalTime = applicationMetrics.get(metric.getName()).getLogicTime();
+            if (!ObjectUtils.isEmpty(logicalTime) && !ObjectUtils.isEmpty(metric.getLogicTime()) && logicalTime.equals(metric.getLogicTime())) {
+                isExist = true;
+            }
+        }
+        return isExist;
     }
 
     private Number operatorAddForNumber(Number number1, Number number2) {
