@@ -309,7 +309,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (!alertId.isEmpty()) {
             query.filterByAlertsId(alertId);
         }
-        return query.builde();
+        return query.build();
     }
 
     private presidio.output.domain.records.alerts.IndicatorQuery createIndicatorQueryFromAlertId(String alertId) {
@@ -320,7 +320,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         if (!alertId.isEmpty()) {
             query.filterByAlertsId(alertId);
         }
-        return query.builde();
+        return query.build();
     }
 
     @Override
@@ -332,23 +332,17 @@ public class RestAlertServiceImpl implements RestAlertService {
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);
         if (Boolean.TRUE.equals(indicatorQuery.getExpand())) {
             Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(createIndicatorQuery(indicatorQuery, alertId));
-            //Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 restIndicators.add(createRestIndicator(indicator));
             }
             totalElements = Math.toIntExact(indicators.getTotalElements());
         } else {
             // workaround - projection doesn't work
-            //Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(createIndicatorQuery(indicatorQuery, alertId));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 indicator.setHistoricalData(null);
                 restIndicators.add(createRestIndicator(indicator));
             }
-            //Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = alertPersistencyService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(pageNumber, pageSize));
-            //for (presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary : indicatorsSummary) {
-            //   restIndicators.add(createRestIndicator(indicatorSummary));
-            //}
             totalElements = Math.toIntExact(indicators.getTotalElements());
         }
         return createIndicatorsWrapper(restIndicators, totalElements, indicatorQuery.getPageNumber());
@@ -356,7 +350,7 @@ public class RestAlertServiceImpl implements RestAlertService {
     }
 
     private presidio.output.domain.records.alerts.IndicatorQuery convertInIndicatorQuery(IndicatorQuery indicatorQuery) {
-        return new presidio.output.domain.records.alerts.IndicatorQuery.IndicatorQueryBuilder().builde();
+        return new presidio.output.domain.records.alerts.IndicatorQuery.IndicatorQueryBuilder().build();
     }
 
     @Override
