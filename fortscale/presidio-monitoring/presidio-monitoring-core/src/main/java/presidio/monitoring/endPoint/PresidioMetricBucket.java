@@ -1,5 +1,6 @@
 package presidio.monitoring.endPoint;
 
+import org.elasticsearch.common.collect.Tuple;
 import org.springframework.util.ObjectUtils;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public class PresidioMetricBucket {
 
-    private Map<String, Metric> applicationMetrics;
+    private Map<Tuple<String, Instant>, Metric> applicationMetrics;
     private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
     private MetricConventionApplyer metricConventionApplyer;
 
@@ -28,9 +29,9 @@ public class PresidioMetricBucket {
     public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
         if (isMetricExist(metric)) {
-            accumulateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
+            accumulateMetricValues(metric, applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())).getValue());
         }
-        applicationMetrics.put(metric.getName(), metric);
+        applicationMetrics.put(Tuple.tuple(metric.getName(), metric.getLogicTime()), metric);
     }
 
     private void accumulateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
@@ -49,9 +50,12 @@ public class PresidioMetricBucket {
 
     private boolean isMetricExist(Metric metric) {
         boolean isExist = false;
-        if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
-            Instant logicalTime = applicationMetrics.get(metric.getName()).getLogicTime();
+        if (!ObjectUtils.isEmpty(applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())))) {
+            Instant logicalTime = applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())).getLogicTime();
             if (!ObjectUtils.isEmpty(logicalTime) && !ObjectUtils.isEmpty(metric.getLogicTime()) && logicalTime.equals(metric.getLogicTime())) {
+                isExist = true;
+            }
+            if (ObjectUtils.isEmpty(logicalTime) && ObjectUtils.isEmpty(metric.getLogicTime())) {
                 isExist = true;
             }
         }
