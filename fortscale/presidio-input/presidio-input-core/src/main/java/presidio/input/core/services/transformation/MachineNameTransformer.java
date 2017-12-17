@@ -40,20 +40,21 @@ public class MachineNameTransformer implements Transformer {
             Object fieldValue = ReflectionUtils.getFieldValue(document, inputFieldName);
             String fieldValue1Str = (String) fieldValue;
 
-            //IP address is transformed to empty string
-            String replacedPattern;
-            Matcher matcher = ipPattern.matcher(fieldValue1Str);
-            if(matcher.matches()) {
-                replacedPattern = StringUtils.EMPTY;
-            }
-            else {
-                replacedPattern = this.patternReplacement.replacePattern(fieldValue1Str);
-            }
+            if (StringUtils.isNotEmpty(fieldValue1Str)) {
+                //IP address is transformed to empty string
+                String replacedPattern;
+                Matcher matcher = ipPattern.matcher(fieldValue1Str);
+                if (matcher.matches()) {
+                    replacedPattern = StringUtils.EMPTY;
+                } else {
+                    replacedPattern = this.patternReplacement.replacePattern(fieldValue1Str);
+                }
 
-            try {
-                ReflectionUtils.setFieldValue(document, outputFieldName, replacedPattern);
-            } catch (IllegalAccessException e) {
-                logger.error("error setting the {} field value", outputFieldName, e);
+                try {
+                    ReflectionUtils.setFieldValue(document, outputFieldName, replacedPattern);
+                } catch (IllegalAccessException e) {
+                    logger.error("error setting the {} field value", outputFieldName, e);
+                }
             }
         });
         return documents;
