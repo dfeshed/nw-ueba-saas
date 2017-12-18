@@ -55,13 +55,15 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
 
         factoryNames.forEach(factoryName -> {
             List<IModelMetricsContainer> modelMetricsContainerList = modelMetricsContainers.get(factoryName);
-            modelMetricsContainerList.forEach(modelMetricsContainer -> {
-                if (modelMetricsContainer != null) {
-                    modelMetricsContainer.addTags(tags);
-                    modelMetricsContainer.setLogicalTime(logicalTime);
-                    modelMetricsContainer.setNumOfContexts(numOfContexts);
-                }
-            });
+            if (modelMetricsContainerList != null) {
+                modelMetricsContainerList.forEach(modelMetricsContainer -> {
+                    if (modelMetricsContainer != null) {
+                        modelMetricsContainer.addTags(tags);
+                        modelMetricsContainer.setLogicalTime(logicalTime);
+                        modelMetricsContainer.setNumOfContexts(numOfContexts);
+                    }
+                });
+            }
         });
     }
 
