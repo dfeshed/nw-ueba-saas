@@ -14,11 +14,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGenerator;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +29,7 @@ public class AlertServiceImpl implements AlertService {
     private final SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
     private final double indicatorsContributionLimitForClassification;
     private final int eventsLimit;
+    private final int eventsPageSize;
 
 
     private final String FiXED_DURATION_HOURLY = "fixed_duration_hourly";
@@ -46,12 +43,14 @@ public class AlertServiceImpl implements AlertService {
                             AlertSeverityService alertSeverityService,
                             SupportingInformationGeneratorFactory supportingInformationGeneratorFactory,
                             int eventsLimit,
+                            int eventsPageSize,
                             double indicatorsContributionLimitForClassification) {
         this.alertPersistencyService = alertPersistencyService;
         this.alertClassificationService = alertClassificationService;
         this.alertSeverityService = alertSeverityService;
         this.supportingInformationGeneratorFactory = supportingInformationGeneratorFactory;
         this.eventsLimit = eventsLimit;
+        this.eventsPageSize = eventsPageSize;
         this.indicatorsContributionLimitForClassification = indicatorsContributionLimitForClassification;
     }
 
@@ -72,7 +71,7 @@ public class AlertServiceImpl implements AlertService {
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(updateIndicatorsContributionScore(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit), smartAggregationRecord.getContribution()));
+            supportingInfo.addAll(updateIndicatorsContributionScore(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit, eventsPageSize), smartAggregationRecord.getContribution()));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {

@@ -63,6 +63,20 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
+    public List<? extends EnrichedEvent> readRecords(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+        String collectionName = toCollectionNameTranslator.toCollectionName(schema);
+        List<? extends EnrichedEvent> events;
+        try {
+            events = eventRepository.findEvents(collectionName, userId, timeRange, features, numOfItemsToSkip, pageSize);
+        } catch (Exception e) {
+            String errorMsg = String.format("Failed to findEvents events by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            logger.error(errorMsg, e);
+            throw new RuntimeException(e);
+        }
+        return events;
+    }
+
+    @Override
     public EnrichedEvent findLatestEventForUser(String userId) {
         return eventRepository.findLatestEventForUser(userId);
     }
