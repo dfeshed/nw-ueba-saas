@@ -69,7 +69,7 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
         try {
             events = eventRepository.findEvents(collectionName, userId, timeRange, features, numOfItemsToSkip, pageSize);
         } catch (Exception e) {
-            String errorMsg = String.format("Failed to findEvents events by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            String errorMsg = String.format("Failed to readRecords by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
             logger.error(errorMsg, e);
             throw new RuntimeException(e);
         }

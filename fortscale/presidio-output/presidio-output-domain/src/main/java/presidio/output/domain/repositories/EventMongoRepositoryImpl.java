@@ -69,7 +69,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
         Query query = buildQuery(userId, timeRange, features);
         query.skip(numOfItemsToSkip).limit(pageSize);
 
