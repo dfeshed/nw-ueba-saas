@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.webapp.model.Alert;
 import presidio.webapp.model.*;
@@ -98,13 +98,10 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, Integer pageNumber, Map<String, Aggregation> alertAggregations) {
         AlertsWrapper alertsWrapper = new AlertsWrapper();
+        alertsWrapper.setTotal(totalNumberOfElements);
+        alertsWrapper.setPage(pageNumber);
         if (CollectionUtils.isNotEmpty(restAlerts)) {
             alertsWrapper.setAlerts(restAlerts);
-            alertsWrapper.setTotal(totalNumberOfElements);
-            if (pageNumber != null) {
-                alertsWrapper.setPage(pageNumber);
-            }
-            alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
                 Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
@@ -116,8 +113,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             }
         } else {
             alertsWrapper.setAlerts(new ArrayList());
-            alertsWrapper.setTotal(totalNumberOfElements);
-            alertsWrapper.setPage(pageNumber);
         }
         return alertsWrapper;
     }
@@ -413,7 +408,7 @@ public class RestAlertServiceImpl implements RestAlertService {
         restEvent.putAll(indicatorEvent.getFeatures());
         if (MapUtils.isNotEmpty(indicatorEvent.getScores())) {
             restEvent.setScores(indicatorEvent.getScores());
-            restEvent.put("scores",indicatorEvent.getScores());
+            restEvent.put("scores", indicatorEvent.getScores());
         }
         return restEvent;
     }
