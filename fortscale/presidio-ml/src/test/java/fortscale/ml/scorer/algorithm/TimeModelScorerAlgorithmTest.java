@@ -2,6 +2,7 @@ package fortscale.ml.scorer.algorithm;
 
 import fortscale.ml.model.TimeModel;
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,6 +20,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private static final int MAX_RARE_TIMESTAMP_COUNT = 10;
     private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 5;
     TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
+    TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 
 
     private Double calcScore(List<Long> times, long timeToScore) {
@@ -35,7 +37,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private Double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
         TimeModel model = new TimeModel();
-        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer);
+        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
         TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }

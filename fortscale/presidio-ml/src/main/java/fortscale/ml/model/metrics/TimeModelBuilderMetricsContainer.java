@@ -1,6 +1,5 @@
 package fortscale.ml.model.metrics;
 
-import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.TimeModelBuilderConf;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;

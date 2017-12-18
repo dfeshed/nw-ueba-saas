@@ -7,31 +7,32 @@ import org.springframework.context.annotation.Import;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Configuration
 @Import({CategoryRarityModeBuilderMetricsContainerConfig.class,
-        TimeModeBuilderMetricsContainerConfig.class
+        TimeModeBuilderMetricsContainerConfig.class,
+        TimeModeBuilderMetricsPartitionsContainerConfig.class
 })
 public class ModelingServiceMetricsContainerConfig {
     @Autowired
     private MetricCollectingService metricCollectingService;
     @Autowired
     private MetricsExporter metricsExporter;
-
-    private Map<String, IModelMetricsContainer> modelBuilderMetricsContainers;
+    private Map<String, List<IModelMetricsContainer>> modelMetricsContainers;
 
     @Autowired
     public void setUpModelBuilderMetricsContainers(Set<IModelMetricsContainer> modelBuilderMetricsContainers) {
-        this.modelBuilderMetricsContainers = modelBuilderMetricsContainers.stream()
-                .collect(Collectors.toMap(IModelMetricsContainer::getFactoryName, Function.identity()));
+        this.modelMetricsContainers = modelBuilderMetricsContainers.stream().collect(groupingBy(IModelMetricsContainer::getFactoryName, toList()));
     }
 
     @Bean
     public ModelingServiceMetricsContainer modelingServiceMetricsContainer() {
-        return new ModelingServiceMetricsContainer(metricCollectingService, metricsExporter, modelBuilderMetricsContainers);
+        return new ModelingServiceMetricsContainer(metricCollectingService, metricsExporter, modelMetricsContainers);
     }
 }

@@ -10,6 +10,7 @@ import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,22 +24,21 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
     public static final String METRIC_NAME = "modeling";
     private MetricCollectingService metricCollectingService;
     private MetricsExporter metricsExporter;
-
     // cached map of metrics by tags and logical time
     private Map<ModelingMetricsKey, Metric> modelingMetrics;
-    //Map<factoryName, IModelMetricsContainer>
-    private Map<String, IModelMetricsContainer> modelMetricsContainers;
+    //Map<factoryName, List<IModelMetricsContainer>>
+    private Map<String, List<IModelMetricsContainer>> modelMetricsContainers;
 
     /**
      * @param metricCollectingService
      * @param metricsExporter
      */
     public ModelingServiceMetricsContainer(MetricCollectingService metricCollectingService, MetricsExporter metricsExporter,
-                                           Map<String, IModelMetricsContainer> modelBuilderMetricsContainers) {
+                                           Map<String, List<IModelMetricsContainer>> modelMetricsContainers) {
         this.metricCollectingService = metricCollectingService;
         this.modelingMetrics = new HashMap<>();
         this.metricsExporter = metricsExporter;
-        this.modelMetricsContainers = modelBuilderMetricsContainers;
+        this.modelMetricsContainers = modelMetricsContainers;
     }
 
     /**
@@ -54,12 +54,14 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
         tags.put(MODEL, modelConfName);
 
         factoryNames.forEach(factoryName -> {
-            IModelMetricsContainer modelMetricsContainer = modelMetricsContainers.get(factoryName);
-            if (modelMetricsContainer != null) {
-                modelMetricsContainers.get(factoryName).addTags(tags);
-                modelMetricsContainers.get(factoryName).setLogicalTime(logicalTime);
-                modelMetricsContainers.get(factoryName).setNumOfContexts(numOfContexts);
-            }
+            List<IModelMetricsContainer> modelMetricsContainerList = modelMetricsContainers.get(factoryName);
+            modelMetricsContainerList.forEach(modelMetricsContainer -> {
+                if (modelMetricsContainer != null) {
+                    modelMetricsContainer.addTags(tags);
+                    modelMetricsContainer.setLogicalTime(logicalTime);
+                    modelMetricsContainer.setNumOfContexts(numOfContexts);
+                }
+            });
         });
     }
 
@@ -99,11 +101,13 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
             // export metrics to elastic
             metricsExporter.manualExportMetrics(MetricsExporter.MetricBucketEnum.APPLICATION);
         });
-
         // reset cache
         modelingMetrics = new HashMap<>();
 
-        modelMetricsContainers.values().forEach(metricCollectingService -> metricCollectingService.flush());
+        modelMetricsContainers.values().forEach(modelMetricsContainerList -> {
+                    modelMetricsContainerList.forEach(modelMetricsContainer -> modelMetricsContainer.flush());
+                }
+        );
     }
 
     /**

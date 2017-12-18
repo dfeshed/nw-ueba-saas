@@ -1,6 +1,7 @@
 package fortscale.ml.model;
 
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.ml.scorer.algorithm.AbstractScorerTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import static org.mockito.Mockito.mock;
 public class TimeModelTest extends AbstractScorerTest {
 
 	TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
+	TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 
 	private TimeModel createModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Long... times) {
 		Map<Long, Double> timeToCounter = Stream.of(times).collect(Collectors.groupingBy(
@@ -29,7 +31,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		);
 
 		TimeModel timeModel = new TimeModel();
-		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1, timeModelBuilderMetricsContainer);
+		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
 		return timeModel;
 	}
 

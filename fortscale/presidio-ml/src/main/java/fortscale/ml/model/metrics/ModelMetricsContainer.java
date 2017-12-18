@@ -59,20 +59,27 @@ public abstract class ModelMetricsContainer implements IModelMetricsContainer {
         modelingMetrics = new HashMap<>();
     }
 
-
     /**
+     * Get metric with default tags
      * @return metric
      */
     protected Metric getMetric() {
         Map<MetricEnums.MetricTagKeysEnum, String> metricTags = new HashMap<>(tags);
-        ModelingMetricsKey key = new ModelingMetricsKey(logicalTime, metricTags);
+        return getMetric(metricTags);
+    }
+
+    /**
+     * Get metric by tags
+     * @return metric
+     */
+    protected Metric getMetric(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
+        ModelingMetricsKey key = new ModelingMetricsKey(logicalTime, tags);
         Metric metric = modelingMetrics.get(key);
         if (metric == null) {
-            metric = createNewMetric(metricTags);
+            metric = createNewMetric(tags);
             // cache the metric
             modelingMetrics.put(key, metric);
         }
-
         return metric;
     }
 
