@@ -7,8 +7,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.*;
+import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Indicator;
+import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.IndicatorQuery;
+import presidio.output.domain.records.alerts.IndicatorSummary;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -178,5 +185,10 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     @Override
     public long countAlerts() {
         return alertRepository.count();
+    }
+
+    @Override
+    public Page<Indicator> findIndicatorsByAlertId(IndicatorQuery indicatorQuery) {
+        return indicatorRepository.search(new IndicatorElasticsearchQueryBuilder(indicatorQuery).build());
     }
 }

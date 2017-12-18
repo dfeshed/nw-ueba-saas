@@ -2,13 +2,12 @@ package presidio.output.processor.services.alert;
 
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -18,7 +17,9 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,12 +29,12 @@ public class AlertServiceImpl implements AlertService {
 
     private static final Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    @Value("${output.events.limit}")
-    private Integer eventsLimit;
-
     private final AlertPersistencyService alertPersistencyService;
     private final AlertSeverityService alertSeverityService;
     private final SupportingInformationGeneratorFactory supportingInformationGeneratorFactory;
+    private final double indicatorsContributionLimitForClassification;
+    private final int eventsLimit;
+
 
     private final String FiXED_DURATION_HOURLY = "fixed_duration_hourly";
     private final String HOURLY = "hourly";
@@ -44,11 +45,15 @@ public class AlertServiceImpl implements AlertService {
     public AlertServiceImpl(AlertPersistencyService alertPersistencyService,
                             AlertClassificationService alertClassificationService,
                             AlertSeverityService alertSeverityService,
-                            SupportingInformationGeneratorFactory supportingInformationGeneratorFactory) {
+                            SupportingInformationGeneratorFactory supportingInformationGeneratorFactory,
+                            int eventsLimit,
+                            double indicatorsContributionLimitForClassification) {
         this.alertPersistencyService = alertPersistencyService;
         this.alertClassificationService = alertClassificationService;
         this.alertSeverityService = alertSeverityService;
         this.supportingInformationGeneratorFactory = supportingInformationGeneratorFactory;
+        this.eventsLimit = eventsLimit;
+        this.indicatorsContributionLimitForClassification = indicatorsContributionLimitForClassification;
     }
 
     @Override
@@ -68,7 +73,7 @@ public class AlertServiceImpl implements AlertService {
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit));
+            supportingInfo.addAll(updateIndicatorsContributionScore(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit), smartAggregationRecord.getContribution()));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {
@@ -85,7 +90,7 @@ public class AlertServiceImpl implements AlertService {
                 alert.setIndicators(supportingInfo);
                 alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
                 alert.setIndicatorsNum(supportingInfo.size());
-                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(alert.getIndicatorsNames());
+                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicatorsNamesForClassification(createIndicatorNameToContributionMap(supportingInfo)));
                 alert.setClassifications(classification);
             } else {
                 return null;
@@ -100,6 +105,50 @@ public class AlertServiceImpl implements AlertService {
     @Override
     public void save(List<Alert> alerts) {
         alertPersistencyService.save(alerts);
+    }
+
+    private List<Indicator> updateIndicatorsContributionScore(List<Indicator> indicators, double contributionScore) {
+        indicators.forEach(indicator -> {
+            indicator.setScoreContribution(contributionScore);
+        });
+        return indicators;
+    }
+
+    private Map<String, Number> createIndicatorNameToContributionMap(List<Indicator> indicators) {
+        Map<String, Number> map = new HashMap<>();
+        indicators.forEach(indicator -> {
+            map.put(indicator.getName(), indicator.getScoreContribution());
+        });
+        return map;
+    }
+
+    private List<String> indicatorsNamesForClassification(Map<String, Number> indicatorsMapNameContribution) {
+        List<String> indicatorsNameList = indicatorsNamesByContributionLimit(indicatorsMapNameContribution, indicatorsContributionLimitForClassification);
+        if (indicatorsNameList.size() == 0) {
+            indicatorsNameList = indicatorsNamesByContributionLimit(indicatorsMapNameContribution, maxContribution(indicatorsMapNameContribution).doubleValue());
+        }
+        return indicatorsNameList;
+
+    }
+
+    private List<String> indicatorsNamesByContributionLimit(Map<String, Number> indicatorsMapNameContribution, double contributionLimit) {
+        List<String> indicatorsNameList = new ArrayList<>();
+        for (Map.Entry<String, Number> entry : indicatorsMapNameContribution.entrySet()) {
+            if (entry.getValue().doubleValue() >= contributionLimit) {
+                indicatorsNameList.add(entry.getKey());
+            }
+        }
+        return indicatorsNameList;
+    }
+
+    private Number maxContribution(Map<String, Number> indicatorsMapNameContribution) {
+        double max = 0;
+        for (Map.Entry<String, Number> entry : indicatorsMapNameContribution.entrySet()) {
+            if (entry.getValue().doubleValue() >= max) {
+                max = entry.getValue().doubleValue();
+            }
+        }
+        return max;
     }
 
     @Override
