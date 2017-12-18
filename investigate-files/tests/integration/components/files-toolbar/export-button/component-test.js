@@ -16,5 +16,5 @@ test('it renders export button', function(assert) {
   // Handle any actions with this.on('myAction', function(val) { ... });
 
   this.render(hbs`{{files-toolbar/export-button}}`);
-  assert.equal(this.$('.file-export-button').text().trim(), 'Export to CSV', 'Make sure button is present');
+  assert.equal(this.$('.export-button').text().trim(), 'Export to CSV', 'Make sure button is present');
 });

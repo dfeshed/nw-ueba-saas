@@ -1,37 +1,32 @@
-<box class="filter-zone">
-  <h2>{{t 'investigateFiles.filter.filters'}}</h2>
-  <hr>
-  <section class="favourite-filters">
-    <div class="filter_title">
-      {{t 'investigateFiles.filter.favouriteFilters'}}
-    </div>
-    {{system-filters}}
-    {{custom-filters}}
-  </section>
-  <div class="add-filter">
-    {{#rsa-form-button isFullWidth=true defaultAction=(action 'resetFilters')}}
-      Reset
-    {{/rsa-form-button}}
-  </div>
-</box>
-<vbox class="files-zone">
-  <box fit class="toolbar-zone">
-    {{files-toolbar}}
+{{content-filter}}
+<hbox>
+  <box class="filter-zone">
+    <h2>{{t 'investigateFiles.filter.filters'}}</h2>
+    <section class="favourite-filters">
+      {{system-filters}}
+      {{custom-filters}}
+    </section>
   </box>
-  <box class="files-body">
-    {{#if (eq areFilesLoading 'wait')}}
-      <centered>
-        {{rsa-loader size='larger'}}
-      </centered>
-    {{else}}
-      {{#if isSchemaLoaded}}
-        {{file-list}}
+  <box class="files-zone">
+    <section class="rsa-files-toolbar flexi-fit">
+      {{files-toolbar}}
+    </section>
+    <box class="files-body">
+      {{#if (eq areFilesLoading 'wait')}}
+        <centered>
+          {{rsa-loader size='larger'}}
+        </centered>
+      {{else}}
+        {{#if isSchemaLoaded}}
+          {{file-list}}
+        {{/if}}
       {{/if}}
-    {{/if}}
+    </box>
+    <box class="files-footer">
+      {{file-pager}}
+    </box>
   </box>
-  <box class="files-footer">
-    {{file-pager}}
-  </box>
-</vbox>
+</hbox>
+
 
 

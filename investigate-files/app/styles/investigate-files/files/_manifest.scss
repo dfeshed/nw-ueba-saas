@@ -1,5 +1,5 @@
 $zoneBorderColor: border-color(primary, darker, nearly-transparent);
-$filterPanelMinWidth: 200px;
+$filterPanelMinWidth: 300px;
 
 page.investigate-files-engine {
   min-height: 100vh;
@@ -57,6 +57,7 @@ page.investigate-files-engine {
 
   .toolbar-zone {
     border-bottom: 1px solid $zoneBorderColor;
+    padding: rsa-whitespace();
   }
   .add-filter {
     padding: rsa-whitespace() 0;
@@ -67,21 +68,19 @@ page.investigate-files-engine {
       width: 100%;
     }
     h2 {
-      margin: rsa-whitespace() 0;
-      font-style: normal;
-      font-size: 1.725rem;
-      font-weight: 100;
+      line-height: 2rem;
+      font-size: 1.5rem;
     }
     border-right: 1px solid $zoneBorderColor;
-    max-width: 25%;
-    min-width: $filterPanelMinWidth;
-    padding: rsa-whitespace(less);
+    padding: rsa-whitespace();
     overflow: auto;
     overflow-x: hidden;
     opacity: opacity-value(opaque);
+    max-width: $filterPanelMinWidth - 50px;
     color: text-color(neutral);
     @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
     @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
+    @include border-right(1px, solid, primary, dark);
   }
   .files-zone {
     width: calc(100vw - #{$filterPanelMinWidth});
@@ -121,6 +120,6 @@ page.investigate-files-engine {
     width: fit-content;
     min-width: 98%
   }
-  
+
 }
 

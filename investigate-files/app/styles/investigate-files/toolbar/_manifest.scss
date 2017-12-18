@@ -1,5 +1,8 @@
 .rsa-files-toolbar {
-  background-color: background-color(neutral, dark);
+
+  color: text-color(neutral);
+  padding: rsa-whitespace();
+
   .selection-count {
     padding-right: rsa-whitespace();
   }
@@ -20,7 +23,6 @@
     }
   }
 
-
   &__filters {
     @include rsa-row(left, middle);
     @include rsa-vendor-prefix(flex-shrink, 0);
@@ -38,7 +40,6 @@
     margin-right: rsa-whitespace(more);
   }
 
-
   .ember-power-select-trigger {
     border-bottom: 1px solid transparent;
     .rsa-view-mode-option .text {
@@ -50,19 +51,23 @@
     vertical-align: middle;
     padding-right: 10px;
   }
-}
 
-.rsa-files-toolbar-1 {
-  .title-header{
-    display: inline-block;
-    width: 100%;
-  }
-  .file-export-button {
+
+  .export-button {
     float: right;
   }
+
   .export-files-iframe {
     height: 0;
     display: none;
   }
+
+  .title-header {
+    display: inline-block;
+    line-height: 2rem;
+    font-size: 1.5rem;
+  }
+
 }
+
 

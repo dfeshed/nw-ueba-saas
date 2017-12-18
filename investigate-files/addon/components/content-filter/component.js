@@ -36,7 +36,7 @@ const ContentFilter = Component.extend({
 
   flashMessage: service(),
 
-  classNames: 'content-filter filter-content-holder',
+  classNames: 'files-content-filter flexi-fit',
 
   saveFilterName: null,
 

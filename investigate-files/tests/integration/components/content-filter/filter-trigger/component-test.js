@@ -18,7 +18,7 @@ test('it should render the button with passed label', function(assert) {
   this.render(hbs`{{content-filter/filter-trigger filterLabel=filterLabel}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('.filter-ellipsis').text().trim(), 'size');
+    assert.equal(this.$('.filter-label').text().trim(), 'size');
   });
 });
 
@@ -29,7 +29,7 @@ test('it should show remove button', function(assert) {
   this.render(hbs`{{content-filter/filter-trigger filterLabel=filterLabel showRemoveButton=showRemoveButton removeAction=removeAction}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('.filter-ellipsis').text().trim(), 'size');
+    assert.equal(this.$('.filter-label').text().trim(), 'size');
     const $icon = this.$('.rsa-icon-remove-circle-2-filled');
     assert.ok($icon.length, 'Expected to find close icon in DOM.');
   });

@@ -12,6 +12,7 @@ const dispatchToActions = {
 };
 
 const ExportButton = Component.extend({
+  tagName: '',
   classNames: ['file-export-button']
 });
 

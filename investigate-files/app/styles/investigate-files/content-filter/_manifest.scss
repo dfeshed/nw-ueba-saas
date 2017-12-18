@@ -2,30 +2,29 @@
 @import "number-filter";
 @import "list-filter";
 
-.filter-ellipsis {
-  max-width: 15rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: inline-block;
-}
+.files-content-filter {
+  @include border-bottom(1px, solid, primary, dark);
 
-.content-filter {
+  padding: rsa-whitespace(less);
+  color: text-color(neutral);
+
   .filter-control-extended {
     padding: rsa-whitespace() 0 0;
   }
-  .filter-content-holder {
-    .rsa-button-group {
-      display: inline-table;
-    }
-    width: 80vw;
+  .save-button {
+    padding-right: rsa-whitespace(less);
   }
+  .moreOptions {
+    padding-right: rsa-whitespace();
+  }
+
   .rsa-form-button-wrapper {
     .rsa-form-button {
       padding: rsa-whitespace(less) rsa-whitespace(less);
+      color: text-color(primary);
       &:hover {
         cursor: pointer;
-        @include border(1px, solid, primary);
+        color: text-color(neutral);
       }
       .rsa-icon-remove-circle-2 {
         font-size: .9rem;

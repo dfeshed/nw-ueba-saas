@@ -19,7 +19,6 @@ const dispatchToActions = {
  * @public
  */
 const ToolBar = Component.extend({
-  tagName: 'vbox',
-  classNames: 'rsa-files-toolbar-1 rsa-application-layout-panel-header col-xs-12 flexi-fit'
+  tagName: ''
 });
 export default connect(stateToComputed, dispatchToActions)(ToolBar);

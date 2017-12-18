@@ -8,11 +8,11 @@ import CONFIG from './config';
  */
 const COLUMN_WIDTH = {
   'firstFileName': 200,
-  'firstSeenTime': 140,
+  'firstSeenTime': 170,
   'size': 75,
-  'format': 60,
+  'format': 100,
   'signature.features': 130,
-  'entropy': 55,
+  'entropy': 150,
   'pe.resources.company': 150,
   'checksumMd5': 220,
   'checksumSha1': 275,

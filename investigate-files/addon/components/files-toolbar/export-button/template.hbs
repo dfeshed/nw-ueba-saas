@@ -1,9 +1,9 @@
 {{#if (eq downloadStatus 'completed')}}
-  {{#rsa-form-button click=(action 'exportFileAsCSV')}}
+  {{#rsa-form-button class="export-button" click=(action 'exportFileAsCSV')}}
     {{t 'investigateFiles.button.exportToCSV'}}
   {{/rsa-form-button}}
 {{else}}
-  {{#rsa-form-button isDisabled=true}}
+  {{#rsa-form-button class="export-button" isDisabled=true}}
     {{rsa-loader}} {{t 'investigateFiles.button.downloading'}}
   {{/rsa-form-button}}
 {{/if}}
