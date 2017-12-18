@@ -28,7 +28,7 @@ public class PresidioMetricBucket {
 
     public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
-        if (isMetricExist(metric)) {
+        if (!ObjectUtils.isEmpty(applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())))) {
             accumulateMetricValues(metric, applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())).getValue());
         }
         applicationMetrics.put(Tuple.tuple(metric.getName(), metric.getLogicTime()), metric);
@@ -46,20 +46,6 @@ public class PresidioMetricBucket {
                 metricValues.put(entry.getKey(), entry.getValue());
             }
         }
-    }
-
-    private boolean isMetricExist(Metric metric) {
-        boolean isExist = false;
-        if (!ObjectUtils.isEmpty(applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())))) {
-            Instant logicalTime = applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())).getLogicTime();
-            if (!ObjectUtils.isEmpty(logicalTime) && !ObjectUtils.isEmpty(metric.getLogicTime()) && logicalTime.equals(metric.getLogicTime())) {
-                isExist = true;
-            }
-            if (ObjectUtils.isEmpty(logicalTime) && ObjectUtils.isEmpty(metric.getLogicTime())) {
-                isExist = true;
-            }
-        }
-        return isExist;
     }
 
     private Number operatorAddForNumber(Number number1, Number number2) {
