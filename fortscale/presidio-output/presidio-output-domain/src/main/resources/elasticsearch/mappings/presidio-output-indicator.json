@@ -21,6 +21,10 @@
         "store": true,
         "type": "string"
       },
+      "scoreContribution": {
+        "store": true,
+        "type": "double"
+      },
       "anomalyValue": {
         "store": true,
         "type": "string"
