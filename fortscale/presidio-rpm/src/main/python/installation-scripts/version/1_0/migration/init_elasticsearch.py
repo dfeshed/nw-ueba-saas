@@ -53,14 +53,60 @@ def elastic_put_request(directory, url):
 def create_dashboard(directory, url):
     path = ELASTICSEARCH_PATH + directory
     for indexJson in os.listdir(path):
-        with open(path + '/' + indexJson) as json_data:
-            index = json.load(json_data)
-            name = dict.values(index)[0]
-            index = json.dumps(dict.values(index)[1])
-            responce = requests.put(url + name, data=index, headers=HEADERS)
-            print (url + name)
-            print(index)
-            print(responce)
+        file = path + '/' + indexJson
+        name = get_json_object(file, 0)
+        object = json.dumps(get_json_object(file, 1))
+        put_request(url + name, object)
+    return;
+
+
+def put_request(url, data):
+    print(url)
+    print(data)
+    responce = requests.put(url, data=data, headers=HEADERS)
+    print(responce)
+    return;
+
+
+def get_json_object(file, object_number):
+    with open(file) as json_data:
+        object = json.dumps(dict.values(json.load(json_data))[object_number])
+    return object;
+
+
+def create_settings(folder):
+    for indexJson in os.listdir(folder):
+        file = folder + '/' + indexJson
+        name = get_json_object(file, 0)
+        data = get_json_object(file, 1)
+        put_request(MACHINE_URL + name, data)
+    return;
+
+
+def create_patterns(folder):
+    for indexJson in os.listdir(folder):
+        file = folder + '/' + indexJson
+        name = get_json_object(file, 0)
+        data = get_json_object(file, 1)
+        put_request(URL_KIBANA_PATTERNS + name, data)
+    return;
+
+
+def create_indexes(folder):
+    for indexJson in os.listdir(folder):
+        if not SETTING in indexJson:
+            file = folder + '/' + indexJson
+            url = MACHINE_URL + get_json_object(file, 0) + '/_mappings/' + get_json_object(file, 1)
+            data = get_json_object(file, 2)
+            put_request(url, data)
+    return;
+
+
+def create_aliases(folder):
+    for indexJson in os.listdir(folder):
+        file = folder + '/' + indexJson
+        data = get_json_object(file, 0)
+        put_request(URL_ALIASES, data)
     return;
 
 
@@ -68,8 +114,9 @@ def create_dashboard(directory, url):
 elastic_put_request(SETTINGS, MACHINE_URL)
 elastic_put_request(INDEXES, MACHINE_URL)
 elastic_put_request(ALIASES, URL_ALIASES)
-elastic_put_request(INDEX_PATTERN, URL_KIBANA_PATTERNS)
+
+create_dashboard(INDEX_PATTERN, URL_KIBANA_PATTERNS)
 elastic_put_request(DEFAULT, URL_KIBANA_DEFAULT)
-create_dashboard(DASHBOARDS, URL_KIBANA_DASHBOARDS)
 create_dashboard(SEARCHES, URL_KIBANA_SEARCHES)
 create_dashboard(VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
+create_dashboard(DASHBOARDS, URL_KIBANA_DASHBOARDS)
