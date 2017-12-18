@@ -9,23 +9,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Bucket;
-import presidio.output.domain.records.alerts.CountAggregation;
-import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.TimeAggregation;
-import presidio.output.domain.records.alerts.WeekdayAggregation;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.webapp.model.Alert;
 import presidio.webapp.model.*;
 import presidio.webapp.model.AlertQueryEnums.AlertSeverity;
+import presidio.webapp.model.Indicator;
+import presidio.webapp.model.IndicatorQuery;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -282,7 +276,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             restIndicator = createRestIndicator(indicator);
         } else {
             // workaround - projection doesn't work
-            // presidio.output.domain.records.alerts.IndicatorSummary indicator = alertPersistencyService.findIndicatorSummaryById(indicatorId);
             presidio.output.domain.records.alerts.Indicator indicator = alertPersistencyService.findIndicatorById(indicatorId);
             indicator.setHistoricalData(null);
             restIndicator = createRestIndicator(indicator);
@@ -334,16 +327,11 @@ public class RestAlertServiceImpl implements RestAlertService {
             totalElements = Math.toIntExact(indicators.getTotalElements());
         } else {
             // workaround - projection doesn't work
-            //Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(alertId, new PageRequest(pageNumber, pageSize));
             Page<presidio.output.domain.records.alerts.Indicator> indicators = alertPersistencyService.findIndicatorsByAlertId(createIndicatorQuery(indicatorQuery, alertId));
             for (presidio.output.domain.records.alerts.Indicator indicator : indicators) {
                 indicator.setHistoricalData(null);
                 restIndicators.add(createRestIndicator(indicator));
             }
-            //Page<presidio.output.domain.records.alerts.IndicatorSummary> indicatorsSummary = alertPersistencyService.findIndicatorsSummaryByAlertId(alertId, new PageRequest(pageNumber, pageSize));
-            //for (presidio.output.domain.records.alerts.IndicatorSummary indicatorSummary : indicatorsSummary) {
-            //   restIndicators.add(createRestIndicator(indicatorSummary));
-            //}
             totalElements = Math.toIntExact(indicators.getTotalElements());
         }
         return createIndicatorsWrapper(restIndicators, totalElements, indicatorQuery.getPageNumber());
