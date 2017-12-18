@@ -28,7 +28,7 @@
 .host-table__toolbar {
   background-color: background-color(primary, darkest, somewhat-opaque);
   color: text-color(neutral);
-  padding: rsa-whitespace() 0 0 rsa-whitespace();
+  padding: rsa-whitespace();
   label {
     line-height: 2rem;
     font-size: 1.5rem;
@@ -38,7 +38,7 @@
 .host-table__toolbar-buttons {
   float: right;
   .rsa-form-button-wrapper {
-    margin: rsa-whitespace(less);
+    margin-right: rsa-whitespace(less);
   }
 }
 

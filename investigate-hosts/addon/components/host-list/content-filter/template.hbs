@@ -1,4 +1,4 @@
-<span class='filter-search-icon'> Search:</span>
+<span class='filter-search-icon'> Filter:</span>
 {{#each appliedFilters as |control|}}
   {{component control.filterControl config=control}}
 {{/each}}
@@ -29,13 +29,16 @@
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}
+
+{{#rsa-form-button class='save-button' defaultAction=(action 'showSaveFiltersModal')}}
+  {{t 'investigateHosts.hosts.button.save'}}
+{{/rsa-form-button}}
+
 {{#rsa-form-button defaultAction=(action 'resetFilter')}}
   {{t 'investigateHosts.hosts.button.reset'}}
 {{/rsa-form-button}}
 
-{{#rsa-form-button defaultAction=(action 'showSaveFiltersModal')}}
-  {{t 'investigateHosts.hosts.button.save'}}
-{{/rsa-form-button}}
+
 
 {{#if showSaveFilterModal}}
   {{#rsa-application-modal style=decorator.style eventId='save-search' label=(t decorator.label)}}

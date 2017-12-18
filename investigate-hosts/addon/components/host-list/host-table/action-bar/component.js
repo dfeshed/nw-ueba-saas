@@ -6,7 +6,7 @@ import { noHostsSelected, tooManyHostsSelected, warningClass } from 'investigate
 import { toggleInitiateScanModal, toggleCancelScanModal, toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({
-  selectedHostList: state.endpoint.machines.selectedHostList,
+  totalItems: state.endpoint.machines.totalItems,
   isDisabled: noHostsSelected(state),
   tooManyHostsSelected: tooManyHostsSelected(state),
   warningClass: warningClass(state)

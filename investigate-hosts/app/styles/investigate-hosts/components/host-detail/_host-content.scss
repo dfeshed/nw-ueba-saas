@@ -13,11 +13,13 @@
       text-transform: capitalize;
     }
     &__icon {
+      .rsa-icon.is-larger {
+        font-size: 2.5rem;
+      }
       color: $user-icon-color;
-      margin-top: -0.43rem;
-      margin-right: rsa-whitespace(more)
     }
     &__administrator {
+      padding-top: rsa-whitespace(less);
       font-size:0.8rem;
       color: $user-icon-color;
     }

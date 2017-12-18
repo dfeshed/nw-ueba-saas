@@ -26,27 +26,26 @@
 
 .titlebar {
   padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(more);
-  .heading {
-    .rsa-nav-tab.is-left-aligned-primary {
-      margin: 0 rsa-whitespace(less) 0;
-      padding: rsa-whitespace(less) 0;
-      border-bottom-width: 3px;
+  .rsa-nav-tab.is-left-aligned-primary {
+    margin: 0 rsa-whitespace() 0;
+    padding: rsa-whitespace(less) 0;
+    border-bottom-width: 3px;
+  }
+  .host-title {
+    @include rsa-font(header, larger);
+    color: text-color(primary, lightest);
+    text-transform: capitalize;
+    border-bottom-width: 3px;
+    line-height: 2.25rem;
+    &.seperator {
+      padding: 0;
+      margin: rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace();
+      border-right-width: .1rem;
     }
-    .host-title {
-      @include rsa-font(header, larger);
-      color: text-color(primary, lightest);
-      text-transform: capitalize;
-      border-bottom-width: 3px;
-      &.seperator {
-        padding: 0;
-        margin: rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace();
-        border-right-width: .1rem;
-      }
-    }
-    .host-title-icon {
-      padding: 0 rsa-whitespace(less) 0 0;
-      margin-top: rsa-whitespace(least);
-    }
+  }
+  .host-title-icon {
+    padding: 0 rsa-whitespace(less) 0 0;
+    margin-top: rsa-whitespace(least);
   }
 
   .header-toggle,
@@ -54,7 +53,7 @@
     color: text-color(primary);
     cursor: pointer;
     margin: 0 rsa-whitespace(least);
-    padding: rsa-whitespace(less) rsa-whitespace(least);
+    padding: 0.75rem rsa-whitespace(least);
     &:hover {
       color: text-color(primary, lightest);
     }
@@ -94,8 +93,8 @@
   .host-action-buttons {
     .action-button {
       padding-left: rsa-whitespace(more);
-      &.ecatUI button{
-        width:200px;
+      &.ecatUI button {
+        width: 200px;
       }
     }
     .rsa-form-button {

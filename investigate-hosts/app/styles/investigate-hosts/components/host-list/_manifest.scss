@@ -2,13 +2,16 @@
 $filter-panel-width: 250px;
 
 .host-container {
+  .filters {
+    @include border-bottom(1px, solid, primary, dark);
+    padding: rsa-whitespace(less);
+  }
   .filter-zone {
-    @include border-right(1px, solid, primary, darker);
+    @include border-right(1px, solid, primary, dark);
     max-width: $filter-panel-width;
     overflow: auto;
     overflow-x: hidden;
     opacity: 1;
-    height: 100%;
     color: text-color(neutral);
     float: left;
     padding: rsa-whitespace();
@@ -35,10 +38,6 @@ $filter-panel-width: 250px;
     padding: rsa-whitespace();
   }
 
-  .filter-list {
-    padding: rsa-whitespace() 0 0;
-  }
-
   .filter-list__item {
     cursor: pointer;
     font-weight: 700;
@@ -56,8 +55,6 @@ $filter-panel-width: 250px;
   }
 
   .filter-list__item-label {
-    padding-left: rsa-whitespace();
-    width: 150px;
     display: inline-block;
   }
 

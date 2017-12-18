@@ -1664,13 +1664,14 @@ export default {
     },
     footer: 'ja_{{count}} of {{total}} {{label}}',
     filter: {
-      filters: 'ja_Filters',
+      filter: 'ja_Filter',
+      filters: 'ja_Saved Filters',
       newFilter: 'ja_New Filter',
       windows: 'ja_WINDOWS',
       mac: 'ja_MAC',
       linux: 'ja_LINUX',
       favouriteFilters: 'ja_Favorite Filters',
-      addMore: 'ja_Add More',
+      addMore: 'ja_Add More...',
       restrictionType: {
         moreThan: 'ja_Greater than',
         lessThan: 'ja_Less than',
@@ -1957,9 +1958,9 @@ export default {
     },
     hosts: {
       title: 'ja_Hosts',
-      search: 'search',
+      search: 'ja_Filter',
       button: {
-        addMore: 'Add more +',
+        addMore: 'ja_Add more...',
         loadMore: 'Load More',
         exportCSV: 'ja_Export to CSV',
         export: 'ja_Export to JSON',
@@ -2483,7 +2484,7 @@ export default {
         mac: 'ja_MAC',
         linux: 'ja_LINUX',
         favouriteFilters: 'ja_Favorite Filters',
-        addMore: 'ja_Add More',
+        addMore: 'ja_Add More...',
         restrictionType: {
           moreThan: 'ja_Greater than',
           lessThan: 'ja_Less than',

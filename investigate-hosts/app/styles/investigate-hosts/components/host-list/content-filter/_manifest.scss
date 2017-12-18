@@ -8,15 +8,6 @@ $filterPanelMinWidth: 200px;
   padding: rsa-whitespace(less) rsa-whitespace(less);
 }
 
-.filter-ellipsis {
-  max-width: 15rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: inline-block;
-  height: 16px;
-}
-
 .rsa-content-tethered-panel {
   z-index: 500;
 }
@@ -27,8 +18,15 @@ $filterPanelMinWidth: 200px;
   overflow-y: scroll;
 }
 
+.save-button {
+  padding-right: rsa-whitespace(less);
+}
+
+.hostMoreOptions {
+  padding-right: rsa-whitespace();
+}
+
 .content-filter {
-  padding-left: rsa-whitespace(less);
   color: text-color(neutral);
   width: calc(90vw - 200px);
   div {

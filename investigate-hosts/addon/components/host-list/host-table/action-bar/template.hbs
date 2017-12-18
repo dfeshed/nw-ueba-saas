@@ -1,5 +1,5 @@
 <label>
-  {{t 'investigateHosts.hosts.title'}} {{#if selectedHostList.length }} ({{selectedHostList.length}}) {{/if}}
+  {{t 'investigateHosts.hosts.title'}} {{#if totalItems }} ({{totalItems}}) {{/if}}
 </label>
 <hbox class='host-table__toolbar-buttons'>
   {{#rsa-form-button click=(action 'openInitiateScanModal') style=warningClass isDisabled=isDisabled}}

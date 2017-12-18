@@ -67,7 +67,7 @@ $result-text-color: text-color(primary, light);
   }
 
   .rsa-form-input {
-    width: 93%;
+    width: calc(100% - 24px);
     input {
       border: none;
       background: text-color(neutral, dark);
@@ -99,7 +99,7 @@ $result-text-color: text-color(primary, light);
     &__label {
       margin: rsa-whitespace(least);
       cursor: pointer;
-      
+
     }
   }
 }
@@ -110,9 +110,6 @@ $result-text-color: text-color(primary, light);
   }
 }
 
-.titlebar__buttons-holder {
-  padding-left: rsa-whitespace();
-}
 .label-content {
   width: 93%;
   overflow-x: hidden;

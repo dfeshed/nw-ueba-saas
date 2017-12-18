@@ -1,14 +1,12 @@
 {{#liquid-if hasMachineId use=(if hasMachineId "toLeft" "toRight")}}
   <vbox class="host-container-detail host-detail">
-
     {{host-detail}}
   </vbox>
 {{else}}
 
-<hbox class="host-container-list">
+<vbox class="host-container-list">
   {{host-list}}
-</hbox>
-
+</vbox>
 
 {{/liquid-if}}
 
