@@ -1,19 +1,15 @@
 package presidio.output.domain.spring;
 
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
 @Configuration
 @EnableSpringConfigured
-@Import(ElasticsearchTestConfig.class)
 public class TestConfig {
     @Bean
     public static TestPropertiesPlaceholderConfigurer testPropertiesPlaceholderConfigurer() {
