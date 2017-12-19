@@ -14,7 +14,11 @@
                 {{rsa-form-checkbox
                   checked=column.selected
                   change=(action 'toggleColumn' column)}}
-                {{t column.title}}
+                {{#if translateTitles}}
+                  {{t column.title}}
+                {{else}}
+                  {{column.title}}
+                {{/if}}
               </label>
             </li>
           {{/if}}

@@ -21,7 +21,7 @@ const item = { time: +(new Date()), foo: 'foo', bar: 'bar', 'has.alias': 'raw-va
 const height = 100;
 const relativeIndex = 0;
 const relativeIndexOffset = 0;
-const columns = [
+const visibleColumns = [
   EmberObject.create({ field: 'time', width: 100 }),
   EmberObject.create({ field: 'foo', width: 200 }),
   EmberObject.create({ field: 'bar', width: 300 }),
@@ -33,7 +33,7 @@ const aliases = {
   }
 };
 const table = EmberObject.create({
-  columns,
+  visibleColumns,
   aliases
 });
 const i18n = EmberObject.create({
@@ -49,7 +49,7 @@ function makeClickAction(assert) {
 }
 
 test('it renders a row of cells correctly', function(assert) {
-  assert.expect(7 + 4 * columns.length);
+  assert.expect(7 + 4 * visibleColumns.length);
 
   this.setProperties({
     i18n,
@@ -75,18 +75,18 @@ test('it renders a row of cells correctly', function(assert) {
 
   // Check cells are there.
   let $cells = $root.find('.rsa-data-table-body-cell');
-  assert.equal($cells.length, columns.length, 'Expected cell DOM node for each column');
+  assert.equal($cells.length, visibleColumns.length, 'Expected cell DOM node for each column');
 
   // Check cell widths are correct.
   $cells.each((i, cell) => {
     assert.equal(
       parseInt(cell.style.width, 10),
-      parseInt(get(columns[i], 'width'), 10),
+      parseInt(get(visibleColumns[i], 'width'), 10),
       'Expected cell DOM width to match column model width'
     );
     assert.equal(
       $(cell).attr('data-field'),
-      get(columns[i], 'field'),
+      get(visibleColumns[i], 'field'),
       'Expected cell DOM data-field to match column model field name'
     );
   });
@@ -94,35 +94,35 @@ test('it renders a row of cells correctly', function(assert) {
   // Check that cell widths are updated.
   run(() => {
     set(
-      columns[0],
+      visibleColumns[0],
       'width',
-      get(columns[0], 'width') * 2
+      get(visibleColumns[0], 'width') * 2
     );
   });
   assert.equal(
     parseInt($cells[0].style.width, 10),
-    parseInt(get(columns[0], 'width'), 10),
+    parseInt(get(visibleColumns[0], 'width'), 10),
     'Expected cell DOM width to change after changing column model width'
   );
 
-  // Check that cells are refreshed if columns model is rearranged.
+  // Check that cells are refreshed if visibleColumns model is rearranged.
   run(() => {
-    const column = columns.shiftObject();
-    columns.pushObject(column);
+    const column = visibleColumns.shiftObject();
+    visibleColumns.pushObject(column);
   });
 
   $cells = $root.find('.rsa-data-table-body-cell');
-  assert.equal($cells.length, columns.length, 'Expected cell DOM node for each column');
+  assert.equal($cells.length, visibleColumns.length, 'Expected cell DOM node for each column');
 
   $cells.each((i, cell) => {
     assert.equal(
       parseInt(cell.style.width, 10),
-      parseInt(get(columns[i], 'width'), 10),
+      parseInt(get(visibleColumns[i], 'width'), 10),
       'Expected cell DOM width to match column model width after model rearrange'
     );
     assert.equal(
       $(cell).attr('data-field'),
-      get(columns[i], 'field'),
+      get(visibleColumns[i], 'field'),
       'Expected cell DOM data-field to match column model field name after model rearrange'
     );
   });

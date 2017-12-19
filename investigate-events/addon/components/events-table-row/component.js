@@ -60,7 +60,7 @@ export default Component.extend(RowMixin, {
    * 2. The columns model changes
    * @private
    */
-  _columnsOrDataDidChange: observer('item', 'table.columns.[]', function() {
+  _columnsOrDataDidChange: observer('item', 'table.visibleColumns.[]', function() {
     run.once(this, this._renderCells);
   }),
 
@@ -69,7 +69,7 @@ export default Component.extend(RowMixin, {
    * changes.
    * @private
    */
-  _columnWidthDidChange: observer('table.columns.@each.width', function() {
+  _columnWidthDidChange: observer('table.visibleColumns.@each.width', function() {
     run.once(this, this._repaintCellWidths);
   }),
 
@@ -114,7 +114,7 @@ export default Component.extend(RowMixin, {
     $el.selectAll('.rsa-data-table-body-cell').remove();
 
     // For each column, build a cell DOM element.
-    (this.get('table.columns') || []).forEach((column) => {
+    (this.get('table.visibleColumns') || []).forEach((column) => {
       this._renderCell($el, column, item);
     });
   },
@@ -151,7 +151,7 @@ export default Component.extend(RowMixin, {
     }
     const cells = this.$('.rsa-data-table-body-cell');
     const opts = this.get('_opts');
-    (this.get('table.columns') || []).forEach((column, index) => {
+    (this.get('table.visibleColumns') || []).forEach((column, index) => {
       const $cell = select(cells[index]);
       columnUtil.applyCellWidth($cell, column, opts);
     });

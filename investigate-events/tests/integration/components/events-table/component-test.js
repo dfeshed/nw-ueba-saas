@@ -13,6 +13,19 @@ import RSVP from 'rsvp';
 
 const prefToSave = { eventAnalysisPreferences: { isReconExpanded: false } };
 
+const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, count, selectedOption) => {
+  clickTrigger();
+  selectChoose('.ember-power-select-trigger', selectedOption);
+  return waitFor('.ember-power-select-selected-item').then(() => {
+    assert.equal($('.rsa-data-table-header-cell').length, count, `Should show columns for ${selectedOption}.`);
+    assert.equal($('.ember-power-select-selected-item').text().trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
+    $('.rsa-icon-cog-filled').trigger('mouseover');
+    return waitFor('.rsa-form-checkbox-label', { count }).then(() => {
+      assert.equal($('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);
+    });
+  });
+};
+
 moduleForComponent('events-table', 'Integration | Component | events table', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
@@ -33,7 +46,7 @@ moduleForComponent('events-table', 'Integration | Component | events table', {
     this.render(hbs`{{events-table eventColumnGroups=eventColumnGroups}}`);
     assert.equal(this.$('.rsa-investigate-events-table').length, 1);
     assert.equal(this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 5, 'There should be five columns for Summary List.');
+    assert.equal(this.$('.rsa-icon-cog-filled').length, 1, 'There should be column selector icon.');
   }
 });
 
@@ -47,48 +60,23 @@ test('it provides option to select column groups', function(assert) {
 });
 
 test('it should show columns for Event Analysis', function(assert) {
-  clickTrigger();
-  selectChoose('.ember-power-select-trigger', 'Email Analysis');
-  return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 41, 'Should show columns for event analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Email Analysis', 'Selected column group should be Email Analysis.');
-  });
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 41, 'Email Analysis');
 });
 
 test('it should show columns for Malware Analysis', function(assert) {
-  clickTrigger();
-  selectChoose('.ember-power-select-trigger', 'Malware Analysis');
-  return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 27, 'Should show columns for malware analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Selected column group should be Malware Analysis.');
-  });
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 27, 'Malware Analysis');
 });
 
 test('it should show columns for Threat Analysis', function(assert) {
-  clickTrigger();
-  selectChoose('.ember-power-select-trigger', 'Threat Analysis');
-  return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 57, 'Should show columns for threat analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Threat Analysis', 'Selected column group should be Threat Analysis.');
-  });
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 57, 'Threat Analysis');
 });
 
 test('it should show columns for Web Analysis', function(assert) {
-  clickTrigger();
-  selectChoose('.ember-power-select-trigger', 'Web Analysis');
-  return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 53, 'Should show columns for Web analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Web Analysis', 'Selected column group should be Web Analysis.');
-  });
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 53, 'Web Analysis');
 });
 
 test('it should show columns for Endpoint Analysis', function(assert) {
-  clickTrigger();
-  selectChoose('.ember-power-select-trigger', 'Endpoint Analysis');
-  return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell').length, 32, 'Should show columns for Endpoint analysis.');
-    assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Endpoint Analysis', 'Default Column group is Summary List.');
-  });
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 32, 'Endpoint Analysis');
 });
 
 test('Click on isExpanded toggle button on event page, persist the recon size', function(assert) {

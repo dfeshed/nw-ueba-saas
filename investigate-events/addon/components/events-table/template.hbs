@@ -47,7 +47,7 @@
       loadLogsAction=loadLogsAction
       scrollToInitialSelectedIndex=true
     }}
-      {{#rsa-data-table/header as |column|}}
+      {{#rsa-data-table/header translateTitles=false enableColumnSelector=true as |column|}}
         {{#with (meta-key-alias column.field language) as |names|}}
           <h2 class="title" title="{{if column.title column.title names.bothNames}}">
             <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
