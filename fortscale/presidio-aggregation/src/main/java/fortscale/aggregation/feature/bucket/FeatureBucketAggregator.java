@@ -133,8 +133,6 @@ public class FeatureBucketAggregator {
         String contextId = FeatureBucketUtils.buildContextId(ret.getContextFieldNameToValueMap());
         ret.setContextId(contextId);
 
-        //todo: metrics.buckets++;
-
         return ret;
     }
 }
