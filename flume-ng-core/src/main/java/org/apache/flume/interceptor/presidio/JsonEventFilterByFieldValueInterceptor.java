@@ -24,7 +24,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
     private final List<String> regexList;
     private final Operation operation;
 
-    public JsonEventFilterByFieldValueInterceptor(List<String> fields, List<String> regexList, Operation op, Operation operation) {
+    public JsonEventFilterByFieldValueInterceptor(List<String> fields, List<String> regexList, Operation operation) {
         this.fields = fields;
         this.regexList = regexList;
         this.operation = operation;
@@ -142,7 +142,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation, operation);
+            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation);
             logger.info("Creating JsonFilterByFieldValueInterceptor: {}", jsonFilterByFieldValueInterceptor);
             return jsonFilterByFieldValueInterceptor;
         }
