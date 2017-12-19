@@ -6,6 +6,12 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 
 import java.util.List;
 
+/**
+ * {@link Pageable} implementation with scrolling support
+ *
+ * This class was copied from elasticsearch spring data version 2.0
+ *
+ */
 public class ScrolledPage<T> extends AggregatedPageImpl<T> {
 
     private String scrollId;
