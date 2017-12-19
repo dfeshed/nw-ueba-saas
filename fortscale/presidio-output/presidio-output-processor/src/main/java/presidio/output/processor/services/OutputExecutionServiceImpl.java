@@ -103,11 +103,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
-                    UsersAlertData usersAlertData = new UsersAlertData();
-                    usersAlertData.incrementAlertsCount();
-                    usersAlertData.addClassification(alertEntity.getPreferredClassification());
-                    usersAlertData.addIndicators(alertEntity.getIndicatorsNames());
-                    usersAlertData.incrementUserScore(alertEntity.getContributionToUserScore());
+                    UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(),1,alertEntity.getPreferredClassification(),alertEntity.getIndicatorsNames());
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
                     metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_PREFIX + alertEntity.getSeverity().name()).
