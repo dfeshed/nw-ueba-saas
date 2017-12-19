@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "ed6187a0-a135-11e7-88a9-eda4b6248b9f",
+    "_type": "visualization",
+    "_source": {
+      "title": "Alert severity",
+      "visState": "{\"title\":\"Alert severity\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"top\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"severity\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"HIGH\":\"#E5AC0E\",\"CRITICAL\":\"#E24D42\",\"LOW\":\"#508642\"}}}",
+      "description": "",
+      "savedSearchId": "32b57900-a132-11e7-b962-5703fbc8bd55",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

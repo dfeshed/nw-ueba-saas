@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "a9fabd10-a135-11e7-88a9-eda4b6248b9f",
+    "_type": "visualization",
+    "_source": {
+      "title": "Classfiications",
+      "visState": "{\"title\":\"Classfiications\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"top\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"classifications\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Classifications\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "32b57900-a132-11e7-b962-5703fbc8bd55",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]
