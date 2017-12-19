@@ -1865,7 +1865,7 @@ export default {
           floatingThreadCount: 'Thread Count',
           owner: 'Owner',
           sessionId: 'Session Id',
-          createTime: 'Created',
+          createUtcTime: 'Created',
           imageBase: 'Image Base',
           imageSize: 'Image Size'
         },
