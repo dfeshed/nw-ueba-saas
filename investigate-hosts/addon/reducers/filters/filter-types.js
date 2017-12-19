@@ -10,14 +10,14 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'panelId': 'agentVersion',
     'selected': true,
-    'isDefault': true
+    'isDefault': false
   },
   {
     'propertyName': 'id',
     'label': 'investigateHosts.hosts.column.machine.id',
     'filterControl': 'host-list/content-filter/text-filter',
     'panelId': 'id',
-    'isDefault': true,
+    'isDefault': false,
     'selected': true,
     'showMemUnit': true
   },

@@ -1672,7 +1672,7 @@ export default {
       mac: 'MAC',
       linux: 'LINUX',
       favouriteFilters: 'Favorite Filters',
-      addMore: 'Add More...',
+      addMore: 'Add Filter(s)...',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',
@@ -1959,7 +1959,7 @@ export default {
       title: 'Hosts',
       search: 'Filter',
       button: {
-        addMore: 'Add more...',
+        addMore: 'Add Filter(s)...',
         loadMore: 'Load More',
         exportCSV: 'Export to CSV',
         export: 'Export to JSON',
@@ -2484,7 +2484,6 @@ export default {
         mac: 'MAC',
         linux: 'LINUX',
         favouriteFilters: 'Favorite Filters',
-        addMore: 'Add More...',
         restrictionType: {
           moreThan: 'Greater than',
           lessThan: 'Less than',

@@ -72,5 +72,5 @@ test('appliedFilters', function(assert) {
 });
 test('listWithoutDefault', function(assert) {
   const result = listWithoutDefault(STATE);
-  assert.equal(result.length, 1, ' should be one');
+  assert.equal(result.length, 2, ' should be 2 as there are no defaults');
 });

@@ -10,14 +10,14 @@ const FILTER_TYPES = [
     'filterControl': 'content-filter/text-filter',
     'panelId': 'firstFileName',
     'selected': true,
-    'isDefault': true
+    'isDefault': false
   },
   {
     'propertyName': 'size',
     'label': 'investigateFiles.fields.size',
     'filterControl': 'content-filter/number-filter',
     'panelId': 'size',
-    'isDefault': true,
+    'isDefault': false,
     'selected': true,
     'showMemUnit': true
   },

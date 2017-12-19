@@ -27,6 +27,19 @@ const STATE = Immutable.from({
         searchable: true,
         defaultProjection: false,
         wrapperType: 'STRING'
+      },
+      {
+        name: 'machine.machineOsType',
+        description: 'Operating System',
+        dataType: 'STRING',
+        values: [
+          'windows',
+          'linux',
+          'mac'
+        ],
+        searchable: true,
+        defaultProjection: true,
+        wrapperType: 'STRING'
       }],
       expressionList: [
         {
@@ -58,11 +71,11 @@ const STATE = Immutable.from({
 
 test('searchableColumns', function(assert) {
   const result = searchableColumns(STATE);
-  assert.equal(result.length, 2, 'should give size 2 if searchable columns present');
+  assert.equal(result.length, 3, 'should give size 3 if searchable columns present');
 });
 test('filters', function(assert) {
   const result = filters(STATE);
-  assert.equal(result.length, 2, 'filters result should be 2');
+  assert.equal(result.length, 3, 'filters result should be 3');
 });
 test('appliedFilters', function(assert) {
   const result = appliedFilters(STATE);
@@ -70,5 +83,5 @@ test('appliedFilters', function(assert) {
 });
 test('listWithoutDefault', function(assert) {
   const result = listWithoutDefault(STATE);
-  assert.equal(result.length, 0, ' should be one');
+  assert.equal(result.length, 3, 'should be 3, as there are no defaults');
 });

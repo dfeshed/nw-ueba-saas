@@ -38,6 +38,6 @@ test('host-list content-filter renders default filters', function(assert) {
 
   return wait().then(() => {
     const textFilters = this.$('.content-filter').find('.text-filter');
-    assert.equal(textFilters.length, 2);
+    assert.equal(textFilters.length, 0, 'As there are no default filters');
   });
 });
