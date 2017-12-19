@@ -27,12 +27,12 @@ public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.
 
     @Override
     public Interceptor build() {
-        final AbstractPresidioInterceptor interceptor = doBuild();
+        final AbstractPresidioJsonInterceptor interceptor = doBuild();
         interceptor.applicationName = applicationName;
         return interceptor;
     }
 
-    protected abstract AbstractPresidioInterceptor doBuild();
+    protected abstract AbstractPresidioJsonInterceptor doBuild();
 
     protected abstract void doConfigure(Context context);
 

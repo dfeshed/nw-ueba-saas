@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
  * This interceptor is used to modify the format of the timestamp the received JSON.
  * Returns the same JSON with the updated timestamp (in the dame field  or a new field depends on the configuration)
  */
-public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidioInterceptor {
+public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidioJsonInterceptor {
 
 
     private static final Logger logger = LoggerFactory.getLogger(JsonTimestampWithOffsetFormatterInterceptor.class);
@@ -155,7 +155,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidi
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneOffsetField, destinationField, destinationFormat, removeOriginField, removeTimezoneOffsetField);
             logger.info("Creating JsonTimestampWithOffsetFormatterInterceptor: {}", jsonTimestampWithOffsetFormatterInterceptor);
             return jsonTimestampWithOffsetFormatterInterceptor;

@@ -22,15 +22,15 @@ public class JsonFilterInterceptorTest {
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         builder = InterceptorBuilderFactory.newInstance(
-                InterceptorType.JSON_FILTER.toString());
+                InterceptorType.JSON_ALWAYS_FILTER.toString());
     }
 
     @Test
     public void interceptSingleKey() throws Exception {
 
         Context ctx = new Context();
-        ctx.put(JsonFilterInterceptor.Builder.FIELDS_TO_FILTER_CONF_NAME, "orig1");
-        ctx.put(JsonFilterInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(AbstractPresidioJsonFilterInterceptorBuilder.FIELDS_CONF_NAME, "orig1");
+        ctx.put(AbstractPresidioJsonFilterInterceptorBuilder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -51,8 +51,8 @@ public class JsonFilterInterceptorTest {
     @Test
     public void interceptDoubleKey() throws Exception {
         Context ctx = new Context();
-        ctx.put(JsonFilterInterceptor.Builder.FIELDS_TO_FILTER_CONF_NAME, "orig1;orig2");
-        ctx.put(JsonFilterInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(AbstractPresidioJsonFilterInterceptorBuilder.FIELDS_CONF_NAME, "orig1;orig2");
+        ctx.put(AbstractPresidioJsonFilterInterceptorBuilder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -72,8 +72,8 @@ public class JsonFilterInterceptorTest {
     @Test
     public void interceptNotJsonKey() throws Exception {
         Context ctx = new Context();
-        ctx.put(JsonFilterInterceptor.Builder.FIELDS_TO_FILTER_CONF_NAME, "orig1;orig2");
-        ctx.put(JsonFilterInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(AbstractPresidioJsonFilterInterceptorBuilder.FIELDS_CONF_NAME, "orig1;orig2");
+        ctx.put(AbstractPresidioJsonFilterInterceptorBuilder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 

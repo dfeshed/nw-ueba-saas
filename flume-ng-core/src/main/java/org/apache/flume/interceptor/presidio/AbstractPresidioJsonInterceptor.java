@@ -16,10 +16,13 @@ import java.util.List;
  * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio sink/source must also be used when using a Presidio interceptor.
  * 2) for using a metric service (that needs an application name).
  */
-public abstract class AbstractPresidioInterceptor implements Interceptor {
+public abstract class AbstractPresidioJsonInterceptor implements Interceptor {
 
     private static final Logger logger = LoggerFactory
-            .getLogger(AbstractPresidioInterceptor.class);
+            .getLogger(AbstractPresidioJsonInterceptor.class);
+
+    protected static final String EMPTY_STRING = "EMPTY_STRING";
+
 
     protected String applicationName;
 

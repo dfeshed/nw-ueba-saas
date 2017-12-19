@@ -19,7 +19,7 @@ import java.util.List;
  * This interceptor is used to modify the names of the fields in the received JSON according to the given configuration.
  * Returns the same JSON with the updated values
  */
-public class JsonFieldRenamerInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonFieldRenamerInterceptor.class);
@@ -114,7 +114,7 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioInterceptor {
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             logger.info("Creating JsonFieldRenamerInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
             return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields);

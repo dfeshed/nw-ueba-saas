@@ -1,40 +1,44 @@
 package org.apache.flume.interceptor.presidio;
 
-import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.flume.Context;
+import fortscale.utils.logging.Logger;
 import org.apache.flume.Event;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 
+public class JsonFilterInterceptor extends AbstractPresidioJsonInterceptor {
 
-/**
- * This interceptor is used to remove certain (redundant) fields from the received JSON
- * Returns the same JSON without the aforementioned fields
- */
-public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
+    private static final Logger logger = Logger.getLogger(JsonFilterInterceptor.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
+    private final List<String> fields;
+    private final List<BiPredicate<JsonObject, String>> predicates;
 
-    private final List<String> fieldsToFilter;
-
-    JsonFilterInterceptor(List<String> fieldsToFilter) {
-        this.fieldsToFilter = fieldsToFilter;
+    public JsonFilterInterceptor(List<String> fields, List<BiPredicate<JsonObject, String>> predicates) {
+        this.fields = fields;
+        this.predicates = predicates;
     }
 
     @Override
     public Event doIntercept(Event event) {
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
-        for (String fieldToFilter : fieldsToFilter) {
-            if (eventBodyAsJson.remove(fieldToFilter) != null) {
-                logger.trace("Field {} was removed.", fieldToFilter);
+        for (int i = 0; i < fields.size(); i++) {
+            String currField = fields.get(i);
+            final JsonElement jsonElement = eventBodyAsJson.get(currField);
+            String currFieldValue;
+            if (jsonElement == null || jsonElement.isJsonNull()) {
+                currFieldValue = "";
+            } else {
+                currFieldValue = jsonElement.getAsString();
+            }
+            final BiPredicate<JsonObject, String> currPredicate = predicates.get(i);
+            if (currPredicate.test(eventBodyAsJson, currFieldValue)) {
+                if (eventBodyAsJson.remove(currField) != null) {
+                    logger.trace("Field {} was removed.", currField);
+                }
             }
         }
 
@@ -44,45 +48,10 @@ public class JsonFilterInterceptor extends AbstractPresidioInterceptor {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("fieldsToFilter", fieldsToFilter)
+        return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+                .append("fields", fields)
+                .append("predicates", predicates)
+                .append("applicationName", applicationName)
                 .toString();
-    }
-
-    /**
-     * Builder which builds new instance of the JsonFilterInterceptor.
-     */
-    public static class Builder extends AbstractPresidioInterceptorBuilder {
-
-        static final String FIELDS_TO_FILTER_CONF_NAME = "fields_to_filter";
-        static final String DELIMITER_CONF_NAME = "delimiter";
-        static final String DEFAULT_DELIMITER_VALUE = ",";
-
-        private List<String> fieldsToFilter;
-
-        @Override
-        public void doConfigure(Context context) {
-            String fieldsToFilterArrayAsString = context.getString(FIELDS_TO_FILTER_CONF_NAME);
-            Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsToFilterArrayAsString), FIELDS_TO_FILTER_CONF_NAME + " can not be empty.");
-
-            String delim = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
-
-            final String[] fieldToFilterArray = fieldsToFilterArrayAsString.split(delim);
-            String currFieldToFilter;
-            fieldsToFilter = new ArrayList<>();
-            for (int i = 0; i < fieldToFilterArray.length; i++) {
-                currFieldToFilter = fieldToFilterArray[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currFieldToFilter), "%s(index=%s) can not be empty. %s=%s.", FIELDS_TO_FILTER_CONF_NAME, i, FIELDS_TO_FILTER_CONF_NAME, fieldsToFilterArrayAsString);
-                fieldsToFilter.add(currFieldToFilter);
-            }
-
-        }
-
-        @Override
-        public AbstractPresidioInterceptor doBuild() {
-            final JsonFilterInterceptor jsonFilterInterceptor = new JsonFilterInterceptor(fieldsToFilter);
-            logger.info("Creating JsonFilterInterceptor: {}", jsonFilterInterceptor);
-            return jsonFilterInterceptor;
-        }
     }
 }
