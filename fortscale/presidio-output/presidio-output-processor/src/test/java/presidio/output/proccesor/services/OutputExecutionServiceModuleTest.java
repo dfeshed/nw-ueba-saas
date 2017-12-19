@@ -203,9 +203,11 @@ public class OutputExecutionServiceModuleTest {
             Assert.assertEquals(8, user.getAlertsCount());
             Assert.assertEquals(55, new Double(user.getScore()).intValue());
             outputExecutionService.clean(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            // test alerts cleanup
             Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
             users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
             user = users.iterator().next();
+            // test user score re-calculation
             Assert.assertEquals(0, new Double(user.getScore()).intValue());
         } catch (Exception e) {
             e.printStackTrace();
