@@ -23,10 +23,12 @@ export default Route.extend({
   },
 
   activate() {
+    this.set('contextualHelp.module', this.get('contextualHelp.respondModule'));
     this.set('contextualHelp.topic', this.get('contextualHelp.incRulesDetailVw'));
   },
 
   deactivate() {
+    this.set('contextualHelp.module', null);
     this.set('contextualHelp.topic', null);
   },
 
