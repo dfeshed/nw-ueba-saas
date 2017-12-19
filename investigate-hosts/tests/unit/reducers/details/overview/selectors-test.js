@@ -5,16 +5,13 @@ import Immutable from 'seamless-immutable';
 module('Unit | Selectors | overview');
 
 import {
-  processHost,
   machineOsType,
   isJsonExportCompleted,
-  getNetworkInterfaces } from 'investigate-hosts/reducers/details/overview/selectors';
-
-
-test('processHost', function(assert) {
-  const result = processHost(Immutable.from({ endpoint: { overview: { hostDetails } } }));
-  assert.equal(result.loggedInUsers.length, 2);
-});
+  getNetworkInterfaces,
+  getLoggedInUsers,
+  getSecurityConfigurations,
+  sameConfigStatus,
+  arrangedSecurityConfigs } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostDetails } } }));
@@ -33,4 +30,80 @@ test('getNetworkInferaces', function(assert) {
   assert.equal(result[1], '10.40.15.187,10.40.12.7 / fe80::250:56ff:fe01:2bb5,fe80::250:56ff:fe01:4701 | MAC Address: 00:50:56:01:2B:B5', 'network Interface with multiple ipv4');
 });
 
+test('getLoggedInUsers', function(assert) {
+  const result = getLoggedInUsers(Immutable.from({ endpoint: { overview: { hostDetails } } }));
+  assert.equal(result.length, 2);
+});
+
+test('getSecurityConfigurations', function(assert) {
+  const result = getSecurityConfigurations(Immutable.from({ endpoint: { overview: { hostDetails } } }));
+  assert.equal(result.length, 2);
+});
+
+test('getSecurityConfigurations when machine is undefined', function(assert) {
+  const result = getSecurityConfigurations(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          id: 'aswe1'
+        }
+      }
+    }
+  }));
+  assert.equal(result.length, 0);
+});
+
+test('getSecurityConfigurations when security Configuration is undefined', function(assert) {
+  const result = getSecurityConfigurations(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: {}
+        }
+      }
+    }
+  }));
+  assert.equal(result.length, 0);
+});
+
+test('arrangedSecurityConfigs when arrangeBy is status', function(assert) {
+  const result = arrangedSecurityConfigs(Immutable.from({
+    endpoint: {
+      overview: {
+        arrangeSecurityConfigsBy: 'status',
+        hostDetails: {
+          machine: {
+            machineOsType: 'windows',
+            securityConfigurations: [
+              'uacDisabled',
+              'luaDisabled'
+            ]
+          }
+        }
+      }
+    }
+  }));
+  assert.equal(result[0].value, 'UAC');
+  assert.equal(result[1].value, 'LUA');
+});
+
+test('sameConfigStatus check for same config status for all the security configs', function(assert) {
+  const result = sameConfigStatus(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: {
+            machineOsType: 'windows',
+            securityConfigurations: [
+              'uacDisabled',
+              'luaDisabled'
+            ]
+          }
+        }
+      }
+    }
+  }));
+
+  assert.deepEqual(result, false);
+});
 

@@ -6,7 +6,8 @@ import Immutable from 'seamless-immutable';
 const initialState = Immutable.from({
   hostDetails: null,
   downloadId: null,
-  exportJSONStatus: 'completed'
+  exportJSONStatus: 'completed',
+  arrangeSecurityConfigsBy: 'alphabetical'
 });
 
 const hostDetails = reduxActions.handleActions({
@@ -24,7 +25,9 @@ const hostDetails = reduxActions.handleActions({
       start: (s) => s.set('exportJSONStatus', 'streaming'),
       success: (s) => s.merge({ exportJSONStatus: 'completed', downloadId: action.payload.data.id })
     });
-  }
+  },
+
+  [ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS]: (state, { payload }) => state.set('arrangeSecurityConfigsBy', payload.arrangeBy)
 
 }, initialState);
 

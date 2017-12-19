@@ -15,7 +15,7 @@ const linux = {
           {
             name: 'ens160',
             macAddress: '00:50:56:01:47:01',
-            ipv6: 'fe80::250:56ff:fe01:4701',
+            ipv6: ['fe80::250:56ff:fe01:4701'],
             gateway: [
               '0.0.0.0'
             ],
@@ -24,8 +24,8 @@ const linux = {
           {
             name: 'ens32',
             macAddress: '00:50:56:01:2B:B5',
-            ipv4: '10.40.15.187',
-            ipv6: 'fe80::250:56ff:fe01:2bb5',
+            ipv4: ['10.40.15.187'],
+            ipv6: ['fe80::250:56ff:fe01:2bb5'],
             gateway: [
               '10.40.12.1'
             ],
@@ -33,8 +33,8 @@ const linux = {
           },
           {
             name: 'lo',
-            ipv4: '127.0.0.1',
-            ipv6: '::1',
+            ipv4: ['127.0.0.1'],
+            ipv6: ['::1'],
             gateway: [
               '0.0.0.0'
             ],

@@ -1,22 +1,25 @@
+
 {{#rsa-content-accordion
-    animate=true class='host-content__title'
-    label=(t 'investigateHosts.hosts.summary.body.ipAddresses'
-    count=networkInterfaces.length)}}
+  animate=true
+  class='host-content__title'
+  label=(t 'investigateHosts.hosts.summary.body.ipAddresses'
+  count=networkInterfacesCount)}}
   {{host-detail/overview/summary/ip-addresses}}
 {{/rsa-content-accordion}}
 {{#rsa-content-accordion
-    animate=true class='host-content__title'
-    label=(t 'investigateHosts.hosts.summary.body.loggedUsers'
-    count=machine.loggedInUsers.length)}}
+  animate=true
+  class='host-content__title'
+  label=(t 'investigateHosts.hosts.summary.body.loggedUsers'
+  count=loggedInUsersCount)}}
   {{host-detail/overview/summary/logged-in-users}}
 {{/rsa-content-accordion}}
-{{#if (not-eq machine.machineOsType 'linux')}}
-  {{#rsa-content-accordion animate=true class='host-content__title'
-                           label=(t 'investigateHosts.hosts.summary.body.securityConfig')}}
+{{#if (not-eq machineOsType 'linux')}}
+  {{#rsa-content-accordion
+    animate=true
+    class='host-content__title'
+    label=(t 'investigateHosts.hosts.summary.body.securityConfig')}}
     <box xs='12' class="rsa-p-md host-content__config">
-      {{!--displaying the machine property so passing the data down --}}
-      {{host-detail/overview/summary/security-configuration osType=machine.machineOsType
-                                                            config=machine.securityConfig}}
+      {{host-detail/overview/summary/security-configuration}}
     </box>
   {{/rsa-content-accordion}}
 {{/if}}

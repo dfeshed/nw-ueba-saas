@@ -2,18 +2,18 @@
   <div class='rsa-form-radio-group'>
     <h3 class='rsa-form-radio-group-label'>{{t 'investigateHosts.hosts.summary.securityConfig.arrangeBy'}}</h3>
     <label class="rsa-form-radio-label {{if (eq 'alphabetical' arrangeBy) 'checked'}}">
-      {{radio-button value="alphabetical" groupValue=arrangeBy }}
+      {{radio-button value="alphabetical" groupValue=value changed="arrangeSecurityConfigs"}}
       {{t 'investigateHosts.hosts.summary.securityConfig.alphabetical'}}
     </label>
 
     <label class="rsa-form-radio-label {{if sameConfigStatus 'disabled'}} {{if (eq 'status' arrangeBy) 'checked'}}">
-      {{radio-button value="status" groupValue=arrangeBy disabled=sameConfigStatus}}
+      {{radio-button value="status" groupValue=value disabled=sameConfigStatus changed="arrangeSecurityConfigs"}}
       {{t 'investigateHosts.hosts.summary.securityConfig.status'}}
     </label>
   </div>
 </box>
 <div class="securityConfigWrapper col-xs-12">
-  {{#each osTypeSecurityConfig as |config|}}
+  {{#each sortedSecurityConfigs as |config|}}
     <box class="security-configuration__column">
       <box class="securityConfigIcon">
         {{#if config.disabled}}

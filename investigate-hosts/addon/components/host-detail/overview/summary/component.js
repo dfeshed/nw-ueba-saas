@@ -1,10 +1,11 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { processHost, getNetworkInterfaces } from 'investigate-hosts/reducers/details/overview/selectors';
+import { machineOsType, networkInterfacesCount, loggedInUsersCount } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const stateToComputed = (state) => ({
-  machine: processHost(state),
-  networkInterfaces: getNetworkInterfaces(state)
+  machineOsType: machineOsType(state),
+  loggedInUsersCount: loggedInUsersCount(state),
+  networkInterfacesCount: networkInterfacesCount(state)
 });
 
 const Summary = Component.extend({

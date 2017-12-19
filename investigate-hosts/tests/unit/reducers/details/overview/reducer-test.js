@@ -10,7 +10,8 @@ module('Unit | Reducers | overview');
 const initialState = {
   hostDetails: null,
   downloadId: null,
-  exportJSONStatus: 'completed'
+  exportJSONStatus: 'completed',
+  arrangeSecurityConfigsBy: 'alphabetical'
 };
 
 test('should return the initial state', function(assert) {
@@ -49,4 +50,13 @@ test('The FETCH_DOWNLOAD_FILECONTEXT_JOB_ID download id', function(assert) {
   });
   const newEndState = reducer(previous, newAction);
   assert.equal(newEndState.downloadId, 123123);
+});
+
+test('The ARRANGE_SECURITY_CONFIGURATIONS will set arrangeSecurityConfigsby to either alphabetical or status', function(assert) {
+  const previous = Immutable.from({ arrangeSecurityConfigsBy: null });
+  const result = reducer(previous,
+    { type: ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS,
+      payload: { arrangeBy: 'status' } });
+
+  assert.deepEqual(result.arrangeSecurityConfigsBy, 'status');
 });

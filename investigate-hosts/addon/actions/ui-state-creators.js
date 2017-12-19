@@ -44,6 +44,8 @@ const resetDetailsInputAndContent = () => {
 
 const resetHostDownloadLink = () => ({ type: ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK });
 
+const arrangeSecurityConfigs = (arrangeBy) => ({ type: ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS, payload: { arrangeBy } });
+
 export {
   toggleCustomFilter,
   toggleMachineSelected,
@@ -60,5 +62,6 @@ export {
   toggleShowOnlyWithValues,
   toggleDeleteHostsModal,
   resetDetailsInputAndContent,
-  resetHostDownloadLink
+  resetHostDownloadLink,
+  arrangeSecurityConfigs
 };
