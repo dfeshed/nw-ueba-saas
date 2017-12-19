@@ -226,7 +226,7 @@ const formComponent = Component.extend({
       reader.onload = (e) => {
         try {
           const fileContent = e.target.result;
-          const formContent = JSON.parse(fileContent.substring(0, fileContent.lastIndexOf('}') + 1));
+          const formContent = JSON.parse(fileContent.substring(fileContent.indexOf('{'), fileContent.lastIndexOf('}') + 1));
           formContent.enabled = true;
           this._fetchLogConfigFromServer(formContent);
         } catch (err) {
