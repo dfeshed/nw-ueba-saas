@@ -79,7 +79,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
     }
 
     /**
-     * Builder which builds new instance of the JsonFilterInterceptor.
+     * Builder which builds new instance of the JsonSearchAndReplaceInterceptor.
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 

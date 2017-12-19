@@ -74,7 +74,7 @@ public class JsonCaseInterceptor extends AbstractPresidioJsonInterceptor {
     }
 
     /**
-     * Builder which builds new instance of the JsonFilterInterceptor.
+     * Builder which builds new instance of the JsonCaseInterceptor.
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 

@@ -8,7 +8,7 @@ import java.util.function.BiPredicate;
 
 
 /**
- * Builder which builds new instance of the JsonFilterInterceptor where the predicate always return true (always filter)
+ * Builder which builds new instance of the JsonFieldFilterInterceptor where the predicate always return true (always filter)
  */
 public class PresidioJsonAlwaysFilterInterceptorBuilder extends AbstractPresidioJsonFilterInterceptorBuilder {
 

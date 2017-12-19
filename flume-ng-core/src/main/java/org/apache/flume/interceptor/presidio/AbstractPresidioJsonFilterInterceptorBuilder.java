@@ -68,8 +68,8 @@ public abstract class AbstractPresidioJsonFilterInterceptorBuilder extends Abstr
 
     @Override
     public AbstractPresidioJsonInterceptor doBuild() {
-        final JsonFilterInterceptor jsonFilterInterceptor = new JsonFilterInterceptor(fields, predicates);
-        logger.info("Creating JsonFilterInterceptor: {}", jsonFilterInterceptor);
-        return jsonFilterInterceptor;
+        final JsonFieldFilterInterceptor jsonFieldFilterInterceptor = new JsonFieldFilterInterceptor(fields, predicates);
+        logger.info("Creating JsonFieldFilterInterceptor: {}", jsonFieldFilterInterceptor);
+        return jsonFieldFilterInterceptor;
     }
 }
