@@ -19,7 +19,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         testSubjectBuilder = InterceptorBuilderFactory.newInstance(
-                InterceptorType.JSON_BASE_FILTER.toString());
+                InterceptorType.JSON_ALWAYS_FILTER.toString());
     }
 
     @Test
