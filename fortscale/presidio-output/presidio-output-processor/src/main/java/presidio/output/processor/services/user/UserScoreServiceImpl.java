@@ -32,8 +32,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     public int defaultUsersBatchSize;
 
-    public
-    UserScoreServiceImpl(UserPersistencyService userPersistencyService,
+    public UserScoreServiceImpl(UserPersistencyService userPersistencyService,
                                 AlertPersistencyService alertPersistencyService,
                                 AlertSeverityService alertSeverityService,
                                 int defaultAlertsBatchSize,
