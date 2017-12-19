@@ -27,7 +27,7 @@ public class UserServiceConfig {
     @Value("${alerts.batch.size:2000}")
     private int defaultAlertsBatchSize;
 
-    @Value("${alert.affect.duration.days:1000}")
+    @Value("${alert.affect.duration.days:90}")
     private int alertEffectiveDurationInDays;
 
     @Autowired
@@ -48,7 +48,7 @@ public class UserServiceConfig {
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchSize);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(),userSeverityService, alertEffectiveDurationInDays, defaultAlertsBatchSize);
     }
 
     @Bean

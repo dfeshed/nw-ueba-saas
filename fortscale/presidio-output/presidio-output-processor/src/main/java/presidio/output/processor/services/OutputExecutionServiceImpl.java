@@ -105,7 +105,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 if (alertEntity != null) {
                     UsersAlertData usersAlertData = new UsersAlertData();
                     usersAlertData.incrementAlertsCount();
-                    usersAlertData.addClassifications(alertEntity.getClassifications());
+                    usersAlertData.addClassification(alertEntity.getPreferredClassification());
                     usersAlertData.addIndicators(alertEntity.getIndicatorsNames());
                     usersAlertData.incrementUserScore(alertEntity.getContributionToUserScore());
                     userService.addUserAlertData(userEntity, usersAlertData);

@@ -1,5 +1,7 @@
 package presidio.output.processor.services.user;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +21,12 @@ public class UsersAlertData {
         indicators = new HashSet<String>();
     }
 
-    public UsersAlertData(double userScore, int alertsCount, List<String> classifications, List<String> indicators) {
+    public UsersAlertData(double userScore, int alertsCount, String classification, List<String> indicators) {
         this.userScore = userScore;
         this.alertsCount = alertsCount;
         this.classifications = new HashSet<String>();
         this.indicators = new HashSet<String>();
-        addClassifications(classifications);
+        addClassification(classification);
         addIndicators(indicators);
     }
 
@@ -52,9 +54,9 @@ public class UsersAlertData {
         this.classifications = classifications;
     }
 
-    public void addClassifications(List<String> classifications) {
-        if (classifications!=null) {
-            this.classifications.addAll(classifications);
+    public void addClassification(String classification) {
+        if (StringUtils.isNotEmpty(classification)) {
+            this.classifications.add(classification);
         }
     }
 

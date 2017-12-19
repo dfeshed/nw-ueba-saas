@@ -119,10 +119,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                             UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
                             usersAlertData.incrementUserScore(alert.getContributionToUserScore());
                             usersAlertData.incrementAlertsCount();
-                            usersAlertData.addClassifications(alert.getClassifications());
+                            usersAlertData.addClassification(alert.getPreferredClassification());
                             usersAlertData.addIndicators(alert.getIndicatorsNames());
                         } else {
-                            aggregatedUserScore.put(userId, new UsersAlertData(alert.getContributionToUserScore(), 1, alert.getClassifications(), alert.getIndicatorsNames()));
+                            aggregatedUserScore.put(userId, new UsersAlertData(alert.getContributionToUserScore(), 1, alert.getPreferredClassification(), alert.getIndicatorsNames()));
                         }
 
                     });

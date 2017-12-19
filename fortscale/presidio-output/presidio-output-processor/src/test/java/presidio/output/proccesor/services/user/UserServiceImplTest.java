@@ -89,9 +89,9 @@ public class UserServiceImplTest {
         usersIDForBatch.add(usersWithOldScore.get(2).getId());
 
         Map<String, UsersAlertData> newUsersScore = new HashMap<>();
-        newUsersScore.put(usersWithOldScore.get(0).getId(), new UsersAlertData(80D, 1, new ArrayList<String>(),new ArrayList<String>()));
-        newUsersScore.put(usersWithOldScore.get(1).getId(), new UsersAlertData(50D, 1, new ArrayList<String>(),new ArrayList<String>()));
-        newUsersScore.put(usersWithOldScore.get(2).getId(), new UsersAlertData(30D, 1, new ArrayList<String>(),new ArrayList<String>()));
+        newUsersScore.put(usersWithOldScore.get(0).getId(), new UsersAlertData(80D, 1, null,new ArrayList<String>()));
+        newUsersScore.put(usersWithOldScore.get(1).getId(), new UsersAlertData(50D, 1, null,new ArrayList<String>()));
+        newUsersScore.put(usersWithOldScore.get(2).getId(), new UsersAlertData(30D, 1, null,new ArrayList<String>()));
 
         Mockito.when(this.mockUserPresistency.findByIds(Mockito.any(Set.class), Mockito.any(PageRequest.class))).thenAnswer(new Answer<Page>() {
             @Override
@@ -116,7 +116,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testSetUserAlertData() {
+    public void testAddUserAlertData() {
         User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
         List<String> classification1 = null, classification2, classification3, classification4;
         List<String> indicators1 = null, indicators2, indicators3;
@@ -128,23 +128,28 @@ public class UserServiceImplTest {
         assertEquals(null, user1.getIndicators());
         assertEquals(null, user1.getAlertClassifications());
         // adding empty classification list and empty indicator list
-        userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
+        UsersAlertData usersAlertData1 = new UsersAlertData(0,0,null,indicators1);
+        userService.addUserAlertData(user1, usersAlertData1);
         assertEquals(null, user1.getIndicators());
         assertEquals(null, user1.getAlertClassifications());
         // Adding classification list with 2 classifications but saving only the first one on the user and adding 2 indicators
-        userService.setUserAlertData(user1, classification2, indicators2, AlertEnums.AlertSeverity.CRITICAL);
+        UsersAlertData usersAlertData2 = new UsersAlertData(0,0,classification2.get(0),indicators2);
+        userService.addUserAlertData(user1, usersAlertData2);
         assertEquals(2, user1.getIndicators().size());
         assertEquals(1, user1.getAlertClassifications().size());
         // adding classification list of 2 classifications that the first one already exists on the user and adding 2 indicators one of which already exists
-        userService.setUserAlertData(user1, classification3, indicators3, AlertEnums.AlertSeverity.CRITICAL);
+        UsersAlertData usersAlertData3 = new UsersAlertData(0,0,classification3.get(0),indicators3);
+        userService.addUserAlertData(user1, usersAlertData3);
         assertEquals(3, user1.getIndicators().size());
         assertEquals(1, user1.getAlertClassifications().size());
         // adding existing classifications and indicators
-        userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
+        UsersAlertData usersAlertData4 = new UsersAlertData(0,0,null,indicators1);
+        userService.addUserAlertData(user1,usersAlertData4);
         assertEquals(3, user1.getIndicators().size());
         assertEquals(1, user1.getAlertClassifications().size());
         // adding new classification but existing indicator
-        userService.setUserAlertData(user1, classification4, indicators1, AlertEnums.AlertSeverity.CRITICAL);
+        UsersAlertData usersAlertData5 = new UsersAlertData(0,0,classification4.get(0),indicators1);
+        userService.addUserAlertData(user1, usersAlertData5);
         assertEquals(3, user1.getIndicators().size());
         assertEquals(2, user1.getAlertClassifications().size());
 

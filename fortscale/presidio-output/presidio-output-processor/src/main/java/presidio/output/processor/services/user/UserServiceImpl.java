@@ -109,14 +109,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserAlertData(User user, UsersAlertData usersAlertData) {
-
-        if (CollectionUtils.isNotEmpty(usersAlertData.getClassifications())) {
-            if (CollectionUtils.isEmpty(user.getAlertClassifications())) {
-                user.setAlertClassifications(new ArrayList<>());
-            }
-            // We will take only the first alert classification to the user (the classification are sorted by priority)
-            user.setAlertClassifications(unionOfCollectionsToList(user.getAlertClassifications(), Arrays.asList(usersAlertData.getClassifications().get(0))));
-        }
+        List<String> classificationUnion = unionOfCollectionsToList(user.getAlertClassifications(), usersAlertData.getClassifications());
+        user.setAlertClassifications(classificationUnion);
         List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), usersAlertData.getIndicators());
         user.setIndicators(indicatorsUnion);
         user.incrementAlertsCountByNumber(usersAlertData.getAlertsCount());
@@ -212,7 +206,7 @@ public class UserServiceImpl implements UserService {
             if (CollectionUtils.isEmpty(col1) && CollectionUtils.isEmpty(col2)) {
                 return null;
             } else {
-                return CollectionUtils.isEmpty(col1) ? (List<String>) col2 : (List<String>) col1;
+                return CollectionUtils.isEmpty(col1) ? new ArrayList<String>( col2) : new ArrayList<String>(col1);
             }
         } else {
             return (List<String>) CollectionUtils.union(col1, col2);
@@ -224,10 +218,12 @@ public class UserServiceImpl implements UserService {
         List<Alert> alerts = alertPersistencyService.findByUserId(user.getUserId());
         UsersAlertData usersAlertData = new UsersAlertData();
         alerts.forEach(alert -> {
-            usersAlertData.addClassifications(alert.getClassifications());
-            usersAlertData.addIndicators(alert.getIndicatorsNames());
-            usersAlertData.incrementAlertsCount();
-            usersAlertData.incrementUserScore(alert.getContributionToUserScore());
+            if (alert.getContributionToUserScore() > 0) {
+                usersAlertData.addClassification(alert.getPreferredClassification());
+                usersAlertData.addIndicators(alert.getIndicatorsNames());
+                usersAlertData.incrementAlertsCount();
+                usersAlertData.incrementUserScore(alert.getContributionToUserScore());
+            }
 
         });
         setUserAlertData(user, usersAlertData);

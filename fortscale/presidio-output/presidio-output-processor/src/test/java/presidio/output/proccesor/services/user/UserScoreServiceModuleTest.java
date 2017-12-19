@@ -105,7 +105,7 @@ public class UserScoreServiceModuleTest {
     }
 
     @Test
-    public void testSingleUserScoreCalculationSomeMoreThen30Days() {
+    public void testSingleUserScoreCalculationSomeMoreThen90Days() {
         //Generate one user with 3 alerts
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         user1.setSeverity(null);
@@ -116,9 +116,9 @@ public class UserScoreServiceModuleTest {
 
 
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
-        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
-        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
+        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 15D));
+        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D));
+        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D));
         alertPersistencyService.save(alerts);
 
         //generate percentiles results
@@ -130,25 +130,25 @@ public class UserScoreServiceModuleTest {
         User updatedUser = userPersistencyService.findUserById(userId);
         Assert.assertEquals("userId1", updatedUser.getUserId());
         Assert.assertEquals("userName1", updatedUser.getUserName());
-        Assert.assertEquals(25, updatedUser.getScore(), 0.00001);
+        Assert.assertEquals(20, updatedUser.getScore(), 0.00001);
         Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
 
         UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
-        Assert.assertEquals(percentileDoc.getCeilScoreForHighSeverity(), 25D, 0.01);
-        Assert.assertEquals(percentileDoc.getCeilScoreForMediumSeverity(), 25D, 0.01);
-        Assert.assertEquals(percentileDoc.getCeilScoreForLowSeverity(), 25D, 0.01);
+        Assert.assertEquals(percentileDoc.getCeilScoreForHighSeverity(), 20D, 0.01);
+        Assert.assertEquals(percentileDoc.getCeilScoreForMediumSeverity(), 20D, 0.01);
+        Assert.assertEquals(percentileDoc.getCeilScoreForLowSeverity(), 20D, 0.01);
 
     }
 
     @Test
-    public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
+    public void testSingleUserScoreCalculationAllAlertsMoreThen90Days() {
         //Generate one user with 2 critical alerts
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(60), getMinusDay(59), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(80), getMinusDay(79), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(39), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
+        alerts.add(new Alert(user1.getId(), "smartId", null, "userName1", getMinusDay(105), getMinusDay(104), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
+        alerts.add(new Alert(user1.getId(), "smartId", null, "userName1", getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 10D));
+        alerts.add(new Alert(user1.getId(), "smartId", null, "userName1", getMinusDay(120), getMinusDay(119), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));
 
 
         List<User> userList = new ArrayList<>();
