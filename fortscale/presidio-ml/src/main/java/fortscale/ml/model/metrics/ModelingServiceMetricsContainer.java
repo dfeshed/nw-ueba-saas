@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static fortscale.ml.model.ModelBuilderData.NoDataReason.ALL_DATA_FILTERED;
+import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKeysEnum.GROUP_NAME;
 import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKeysEnum.MODEL;
 
 /**
@@ -28,6 +29,7 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
     private Map<ModelingMetricsKey, Metric> modelingMetrics;
     //Map<factoryName, List<IModelMetricsContainer>>
     private Map<String, List<IModelMetricsContainer>> modelMetricsContainers;
+    private Map<MetricEnums.MetricTagKeysEnum, String> tags;
 
     /**
      * @param metricCollectingService
@@ -39,20 +41,26 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
         this.modelingMetrics = new HashMap<>();
         this.metricsExporter = metricsExporter;
         this.modelMetricsContainers = modelMetricsContainers;
+        this.tags = new HashMap<>();
+    }
+
+    /**
+     * Add default tags
+     */
+    public void addTags(String groupName, String modelConfName){
+		tags.put(GROUP_NAME, groupName);
+        tags.put(MODEL, modelConfName);
+        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MetricEnums.MetricUnitType.NUMBER.toString());
     }
 
     /**
      * Set tags to modelMetricsContainers
      *
-     * @param factoryNames
-     * @param modelConfName
-     * @param logicalTime
-     * @param numOfContexts
+     * @param factoryNames factoryNames
+     * @param logicalTime logicalTime
+     * @param numOfContexts numOfContexts
      */
-    public void init(Set<String> factoryNames, String modelConfName, Instant logicalTime, int numOfContexts) {
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
-        tags.put(MODEL, modelConfName);
-
+    public void init(Set<String> factoryNames, Instant logicalTime, int numOfContexts) {
         factoryNames.forEach(factoryName -> {
             List<IModelMetricsContainer> modelMetricsContainerList = modelMetricsContainers.get(factoryName);
             if (modelMetricsContainerList != null) {
@@ -71,12 +79,11 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
      * Updates modeling metrics by provided data
      *
      * @param logicalStartTime - the logical execution time of the processing (not of the event)
-     * @param modelConfName
-     * @param numOfSuccesses
-     * @param numOfFailures
+     * @param numOfSuccesses numOfSuccesses
+     * @param numOfFailures numOfFailures
      */
-    public void updateMetric(Instant logicalStartTime, String modelConfName, long numOfSuccesses, long numOfFailures) {
-        Metric metric = getMetric(logicalStartTime, modelConfName);
+    public void updateMetric(Instant logicalStartTime, long numOfSuccesses, long numOfFailures) {
+        Metric metric = getMetric(logicalStartTime);
         metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_SUCCEEDED_MODELS, (k, v) -> v.doubleValue() + numOfSuccesses);
         metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_FAILED_MODELS, (k, v) -> v.doubleValue() + numOfFailures);
         metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_CONTEXTS, (k, v) -> v.doubleValue() + numOfSuccesses + numOfFailures);
@@ -85,12 +92,11 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
     /**
      * updates modeling metrics by provided data
      *
-     * @param logicalStartTime
-     * @param modelConfName
+     * @param logicalTime logicalTime
      * @param noDataReason
      */
-    public void updateMetric(Instant logicalStartTime, String modelConfName, ModelBuilderData.NoDataReason noDataReason) {
-        Metric metric = getMetric(logicalStartTime, modelConfName);
+    public void updateMetric(Instant logicalTime, ModelBuilderData.NoDataReason noDataReason) {
+        Metric metric = getMetric(logicalTime);
         if (noDataReason != null && noDataReason.equals(ALL_DATA_FILTERED)) {
             metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_ALL_DATA_FILTERED, (k, v) -> v.doubleValue() + 1);
         }
@@ -113,19 +119,14 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
     }
 
     /**
-     * @param logicalStartTime
-     * @param modelConfName
+     * @param logicalTime
      * @return metric
      */
-    private Metric getMetric(Instant logicalStartTime, String modelConfName) {
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
-        tags.put(MODEL, modelConfName);
-        tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MetricEnums.MetricUnitType.NUMBER.toString());
-
-        ModelingMetricsKey key = new ModelingMetricsKey(logicalStartTime, tags);
+    private Metric getMetric(Instant logicalTime) {
+        ModelingMetricsKey key = new ModelingMetricsKey(logicalTime, tags);
         Metric metric = modelingMetrics.get(key);
         if (metric == null) {
-            metric = createNewMetric(logicalStartTime, tags);
+            metric = createNewMetric(logicalTime);
             // cache the metric
             modelingMetrics.put(key, metric);
         }
@@ -135,10 +136,10 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
 
     /**
      * @param logicalStartTime - the logical execution time of the processing (not of the event)
-     * @param tags             - tags of the metrics
      * @return new Metric object for logical time
      */
-    private Metric createNewMetric(Instant logicalStartTime, Map<MetricEnums.MetricTagKeysEnum, String> tags) {
+    private Metric createNewMetric(Instant logicalStartTime) {
+        Map<MetricEnums.MetricTagKeysEnum, String> metricTags = new HashMap<>(tags);
         Map<MetricEnums.MetricValues, Number> values = new HashMap<>();
         values.put(MetricEnums.MetricValues.AMOUNT_OF_SUCCEEDED_MODELS, 0L);
         values.put(MetricEnums.MetricValues.AMOUNT_OF_FAILED_MODELS, 0L);
@@ -149,7 +150,7 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
                 .setMetricName(METRIC_NAME)
                 .setMetricReportOnce(true)
                 .setMetricUnit(MetricEnums.MetricUnitType.NUMBER)
-                .setMetricTags(tags)
+                .setMetricTags(metricTags)
                 .setMetricLogicTime(logicalStartTime)
                 .setMetricMultipleValues(values)
                 .build();

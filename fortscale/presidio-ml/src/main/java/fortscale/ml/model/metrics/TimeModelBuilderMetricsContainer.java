@@ -39,7 +39,7 @@ public class TimeModelBuilderMetricsContainer extends ModelMetricsContainer {
         metric.getValue().compute(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES, (k, v) -> v.doubleValue() + sizeOfFeatureValues);
         metric.getValue().compute(MetricEnums.MetricValues.MAX_NUM_OF_PARTITIONS, (k, v) -> Math.max(v.doubleValue(), numOfPartitions));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS, (k, v) -> v.longValue() + numOfPartitions);
-        metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_WRITE_DATA, (k, v) -> v.longValue() + 1);
+        metric.getValue().compute(MetricEnums.MetricValues.WRITES, (k, v) -> v.longValue() + 1);
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_OF_BUCKET_HITS, (k, v) -> Math.max(v.doubleValue(), amountOfBucketHits));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_OF_BUCKET_HITS, (k, v) -> v.doubleValue() + amountOfBucketHits);
@@ -71,7 +71,7 @@ public class TimeModelBuilderMetricsContainer extends ModelMetricsContainer {
         values.put(MetricEnums.MetricValues.MAX_NUM_OF_PARTITIONS, 0L);
         values.put(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, 0L);
         values.put(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS, 0L);
-        values.put(MetricEnums.MetricValues.AMOUNT_OF_WRITE_DATA, 0L);
+        values.put(MetricEnums.MetricValues.WRITES, 0L);
 
         values.put(MetricEnums.MetricValues.AVG_OF_BUCKET_HITS, 0L);
         values.put(MetricEnums.MetricValues.SUM_OF_BUCKET_HITS, 0L);

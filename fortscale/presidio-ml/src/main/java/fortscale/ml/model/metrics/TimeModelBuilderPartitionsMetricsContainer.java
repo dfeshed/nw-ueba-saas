@@ -41,7 +41,6 @@ public class TimeModelBuilderPartitionsMetricsContainer extends ModelMetricsCont
         int partitionNumber = calcTimePartitionNumber(Instant.ofEpochSecond(time), floorInstant);
 
         Map<MetricEnums.MetricTagKeysEnum, String> metricTags = new HashMap<>(tags);
-        metricTags.put(MetricEnums.MetricTagKeysEnum.TIME, Instant.ofEpochSecond(time).toString());
         metricTags.put(MetricEnums.MetricTagKeysEnum.TIME, Integer.toString(partitionNumber));
 
         Metric metric = getMetric(metricTags);

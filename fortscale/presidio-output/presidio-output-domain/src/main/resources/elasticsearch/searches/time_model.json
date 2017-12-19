@@ -15,7 +15,7 @@
       ],
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"name:\\\"modeling-service.time_model_builder\\\" OR name:\\\"modeling-service.time_model_retriever\\\"\",\"analyze_wildcard\":true}},\"filter\":[]}"
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:\\\"enriched-record-models\\\" AND (name:\\\"modeling-service.time_model_builder\\\" OR name:\\\"modeling-service.time_model_retriever\\\")\",\"analyze_wildcard\":true}},\"filter\":[]}"
       }
     }
   }

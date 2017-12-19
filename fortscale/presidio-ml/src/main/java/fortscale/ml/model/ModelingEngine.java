@@ -62,7 +62,7 @@ public class ModelingEngine {
 		Set<String> factoryNames = new HashSet<>();
 		factoryNames.add(modelConf.getModelBuilderConf().getFactoryName());
 		factoryNames.add(modelConf.getDataRetrieverConf().getFactoryName());
-		modelingServiceMetricsContainer.init(factoryNames, modelConf.getName(), endInstant, contextIds.size());
+		modelingServiceMetricsContainer.init(factoryNames, endInstant, contextIds.size());
 
 		for (String contextId : contextIds) {
 			boolean success = process(sessionId, endInstant, contextId);
@@ -70,7 +70,7 @@ public class ModelingEngine {
 			else numOfFailures++;
 		}
 
-		modelingServiceMetricsContainer.updateMetric(endInstant, modelConf.getName(), numOfSuccesses, numOfFailures);
+		modelingServiceMetricsContainer.updateMetric(endInstant, numOfSuccesses, numOfFailures);
 
 		logger.info("Process finished: {} successes, {} failures.", numOfSuccesses, numOfFailures);
 	}
@@ -112,7 +112,7 @@ public class ModelingEngine {
 		// Retriever
 		try {
 			modelBuilderData = dataRetriever.retrieve(contextId, Date.from(endInstant));
-			modelingServiceMetricsContainer.updateMetric(endInstant, modelConf.getName(), modelBuilderData.getNoDataReason());
+			modelingServiceMetricsContainer.updateMetric(endInstant, modelBuilderData.getNoDataReason());
 
 		} catch (Exception e) {
 			logger.error("Failed to retrieve data for context ID {}.", contextId, e);

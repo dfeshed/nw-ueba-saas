@@ -31,7 +31,7 @@ public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContain
      */
     public void updateMetric(int featureBucketSize) {
         Metric metric = getMetric();
-        metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_READ_DATA, (k, v) -> v.doubleValue() + featureBucketSize);
+        metric.getValue().compute(MetricEnums.MetricValues.READS, (k, v) -> v.doubleValue() + featureBucketSize);
     }
 
 
@@ -41,7 +41,7 @@ public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContain
      */
     protected Metric createNewMetric(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
         Map<MetricEnums.MetricValues, Number> values = new HashMap<>();
-        values.put(MetricEnums.MetricValues.AMOUNT_OF_READ_DATA, 0L);
+        values.put(MetricEnums.MetricValues.READS, 0L);
         return new Metric.MetricBuilder()
                 .setMetricName(metricName)
                 .setMetricReportOnce(true)

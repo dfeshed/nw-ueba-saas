@@ -39,7 +39,7 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
         metric.getValue().compute(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES, (k, v) -> v.doubleValue() + sizeOfFeatureValues);
         metric.getValue().compute(MetricEnums.MetricValues.MAX_NUM_OF_PARTITIONS, (k, v) -> Math.max(v.doubleValue(), numOfPartitions));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS, (k, v) -> v.longValue() + numOfPartitions);
-        metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_WRITE_DATA, (k, v) -> v.longValue() + 1);
+        metric.getValue().compute(MetricEnums.MetricValues.WRITES, (k, v) -> v.longValue() + 1);
 
         if (numOfContexts != 0) {
             metric.getValue().compute(MetricEnums.MetricValues.AVG_SIZE_OF_FEATURE_VALUES, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES).intValue() / numOfContexts);
@@ -64,7 +64,7 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
         values.put(MetricEnums.MetricValues.MAX_NUM_OF_PARTITIONS, 0L);
         values.put(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, 0L);
         values.put(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS, 0L);
-        values.put(MetricEnums.MetricValues.AMOUNT_OF_WRITE_DATA, 0L);
+        values.put(MetricEnums.MetricValues.WRITES, 0L);
         return new Metric.MetricBuilder()
                 .setMetricName(METRIC_NAME)
                 .setMetricReportOnce(true)

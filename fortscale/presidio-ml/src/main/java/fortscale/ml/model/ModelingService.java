@@ -7,11 +7,14 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.store.StoreManager;
 import org.springframework.core.io.Resource;
 import presidio.monitoring.flush.MetricContainerFlusher;
-import presidio.monitoring.services.MetricCollectingService;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKeysEnum.GROUP_NAME;
 
 /**
  * Given a group name, this service creates the corresponding {@link ModelConfService}, that contains all the
@@ -32,6 +35,7 @@ public class ModelingService {
 	private ModelingEngineFactory modelingEngineFactory;
 	private StoreManager storeManager;
 	private ModelConfServiceBuilder modelConfServiceBuilder;
+	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
 	private  MetricContainerFlusher metricContainerFlusher;
 
 	/**
@@ -45,11 +49,13 @@ public class ModelingService {
 			Collection<AslConfigurationPaths> modelConfigurationPathsCollection,
 			ModelingEngineFactory modelingEngineFactory,
 			AslResourceFactory aslResourceFactory, StoreManager storeManager,
+			ModelingServiceMetricsContainer modelingServiceMetricsContainer,
 			MetricContainerFlusher metricContainerFlusher) {
 		this.modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection,aslResourceFactory);
 		this.modelingEngineFactory = modelingEngineFactory;
 		this.storeManager = storeManager;
 		this.metricContainerFlusher = metricContainerFlusher;
+		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
 	}
 
 	/**
@@ -64,6 +70,9 @@ public class ModelingService {
 
 			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
 			for (ModelConf modelConf : modelConfs) {
+
+				modelingServiceMetricsContainer.addTags(groupName, modelConf.getName());
+
 				ModelingEngine modelingEngine = modelingEngineFactory.getModelingEngine(modelConf);
 				String modelConfName = modelConf.getName();
 				try {

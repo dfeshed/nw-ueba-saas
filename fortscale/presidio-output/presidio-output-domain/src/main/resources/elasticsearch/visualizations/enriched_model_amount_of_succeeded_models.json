@@ -3,11 +3,11 @@
     "_id": "d2f42570-e0ce-11e7-8b0a-935d266d8e2f",
     "_type": "visualization",
     "_source": {
-      "title": "Modeling: amount of succeeded models",
+      "title": "Enriched Model: amount of succeeded models",
       "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"customLabel\":\"Amount of succeeded models\",\"field\":\"value.AMOUNT_OF_SUCCEEDED_MODELS\"},\"schema\":\"metric\",\"type\":\"avg\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"customLabel\":\"Logical Time\",\"extended_bounds\":{},\"field\":\"logicTime\",\"interval\":\"d\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"field\":\"tags.MODEL.keyword\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":50},\"schema\":\"group\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Logical Time\"},\"type\":\"category\"}],\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"interpolate\":\"linear\",\"legendPosition\":\"right\",\"radiusRatio\":9,\"scale\":\"linear\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Amount of succeeded models\"},\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"lineWidth\":2,\"mode\":\"normal\",\"show\":true,\"showCircles\":true,\"type\":\"line\",\"valueAxis\":\"ValueAxis-1\"}],\"setYExtents\":false,\"showCircles\":true,\"times\":[],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Amount of succeeded models\"},\"type\":\"value\"}]},\"title\":\"Modeling: amount of succeeded models\",\"type\":\"line\"}",
       "uiStateJSON": "{}",
       "description": "",
-      "savedSearchId": "f0c8a140-e0cc-11e7-814e-83141739bf17",
+      "savedSearchId": "a7bef560-e4b6-11e7-a858-9f584df7e1df",
       "version": 1,
       "kibanaSavedObjectMeta": {
         "searchSourceJSON": "{\"filter\":[]}"

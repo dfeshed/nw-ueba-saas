@@ -30,8 +30,8 @@ public class MetricEnums {
         AVG_OF_SMOOTHED_BUCKETS("avgOfSmoothedBuckets"),
         SUM_OF_SMOOTHED_BUCKETS("sumOfSmoothedBuckets"),
         MAX_OF_SMOOTHED_BUCKETS("maxOfSmoothedBuckets"),
-        AMOUNT_OF_READ_DATA("amountOfReadData"),
-        AMOUNT_OF_WRITE_DATA("amountOfWriteData"),
+        READS("reads"),
+        WRITES("writes"),
         HIT("modelFromMemory"),
         MISS("modelFromDB"),
         EMPTY_MODEL("emptyModel");
@@ -62,7 +62,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER, MODEL, TIME;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER, MODEL, GROUP_NAME, TIME;
     }
 
     public enum MetricUnitType {

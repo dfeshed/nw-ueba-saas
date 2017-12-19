@@ -8,10 +8,7 @@ import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -26,8 +23,6 @@ public class TimeModel implements PartitionedDataModel {
 	private List<Double> smoothedBuckets;
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
-
-	public TimeModel(){	}
 
 	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions,
 					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer, TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer) {
@@ -56,13 +51,16 @@ public class TimeModel implements PartitionedDataModel {
 		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
 		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions, numDistinctFeatures);
 
-		long numOfDistinctSamples =  timeToCounter.keySet().stream().distinct().count();
-		long numOfSmoothedBuckets = smoothedBuckets.stream().filter(smooth -> smooth > 0).count();
-	    timeModelBuilderMetricsContainer.updateMetric(numOfDistinctSamples, numberOfPartitions, categoryRarityModel.getBuckets(), numDistinctFeatures, numOfSmoothedBuckets);
 
-		timeToCounter.keySet().forEach(time -> {
+		int numOfDistinctSamples = 0;
+		for(Object time : timeToCounter.keySet()){
 			timeModelBuilderPartitionsMetricsContainer.incNumOfUsers(ConversionUtils.convertToLong(time), timeResolution);
-		});
+			numOfDistinctSamples++;
+		}
+
+		long numOfSmoothedBuckets = smoothedBuckets.stream().filter(smooth -> smooth > 0).count();
+		timeModelBuilderMetricsContainer.updateMetric(numOfDistinctSamples, numberOfPartitions, categoryRarityModel.getBuckets(), numDistinctFeatures, numOfSmoothedBuckets);
+
 	}
 
 	private List<Double> createInitializedBuckets() {

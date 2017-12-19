@@ -36,7 +36,6 @@ public abstract class ModelMetricsContainer implements IModelMetricsContainer {
 
     public void addTags(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
         this.tags.putAll(tags);
-        this.tags.put(MetricEnums.MetricTagKeysEnum.UNIT, MetricEnums.MetricUnitType.NUMBER.toString());
     }
 
     public void setLogicalTime(Instant logicalTime) {
