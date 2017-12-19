@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.util.Pair;
@@ -33,6 +32,7 @@ import presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator;
 import presidio.ade.test.utils.generators.ScoredEnrichedFileGeneratorConfig;
 import presidio.data.generators.common.GeneratorException;
 import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -137,6 +137,7 @@ public class AdeManagerSdkTest {
             SystemDateServiceImplForcedConfig.class,
             MockedEnrichedRecordGeneratorConfig.class,
             ScoredEnrichedFileGeneratorConfig.class,
+            PresidioMonitoringConfiguration.class
     })
     public static class springConfig {
         @MockBean

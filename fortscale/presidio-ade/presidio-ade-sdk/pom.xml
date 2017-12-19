@@ -52,10 +52,6 @@
             <type>test-jar</type>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-        </dependency>
-        <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-utils</artifactId>
             <version>${project.version}</version>
