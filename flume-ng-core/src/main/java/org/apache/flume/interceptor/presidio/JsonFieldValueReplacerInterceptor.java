@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(JsonFilterInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonFieldFilterInterceptor.class);
 
     private final List<FieldValueReplacement> replacements;
     private final boolean removeEscapeChars;

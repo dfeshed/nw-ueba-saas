@@ -14,7 +14,7 @@ import org.junit.Test;
 /**
  * Created by tomerd on 8/8/2017.
  */
-public class JsonFilterInterceptorTest {
+public class JsonFieldFilterInterceptorTest {
 
     private Interceptor.Builder builder;
     private Interceptor interceptor;

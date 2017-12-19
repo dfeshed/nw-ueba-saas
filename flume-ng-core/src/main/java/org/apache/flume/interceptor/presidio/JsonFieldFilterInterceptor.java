@@ -9,14 +9,14 @@ import org.apache.flume.Event;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class JsonFilterInterceptor extends AbstractPresidioJsonInterceptor {
+public class JsonFieldFilterInterceptor extends AbstractPresidioJsonInterceptor {
 
-    private static final Logger logger = Logger.getLogger(JsonFilterInterceptor.class);
+    private static final Logger logger = Logger.getLogger(JsonFieldFilterInterceptor.class);
 
     private final List<String> fields;
     private final List<BiPredicate<JsonObject, String>> predicates;
 
-    public JsonFilterInterceptor(List<String> fields, List<BiPredicate<JsonObject, String>> predicates) {
+    public JsonFieldFilterInterceptor(List<String> fields, List<BiPredicate<JsonObject, String>> predicates) {
         this.fields = fields;
         this.predicates = predicates;
     }
