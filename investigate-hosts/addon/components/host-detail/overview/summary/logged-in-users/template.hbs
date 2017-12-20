@@ -15,16 +15,19 @@
     </hbox>
     <hbox class="user-details">
       <vbox xs='2'>
-        <h4 class='label'>{{t 'investigateHosts.hosts.summary.body.user.sessionId'}}</h4>
-        {{user.sessionId}}
+        {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.summary.body.user.sessionId')}}
+          {{user.sessionId}}
+        {{/rsa-content-definition}}
       </vbox>
       <vbox xs='4'>
-        <h4 class='label'>{{t 'investigateHosts.hosts.summary.body.user.sessionType'}}</h4>
-        {{user.sessionType}}
+        {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.summary.body.user.sessionType')}}
+          {{user.sessionType}}
+        {{/rsa-content-definition}}
       </vbox>
       <vbox xs='6'>
-        <h4 class='label'>{{t 'investigateHosts.hosts.summary.body.user.groups'}}</h4>
-        {{user.groups}}
+        {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.summary.body.user.groups')}}
+          {{user.groups}}
+        {{/rsa-content-definition}}
       </vbox>
     </hbox>
   </hbox>

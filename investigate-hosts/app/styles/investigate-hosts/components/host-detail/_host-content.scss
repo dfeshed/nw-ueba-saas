@@ -1,6 +1,7 @@
 .host-content {
   padding: 0 rsa-whitespace();
   &__title {
+    margin-top: rsa-whitespace(more);
     h3 {
       color: text-color(secondary);
       font-weight: bold;
@@ -35,13 +36,14 @@
     }
   }
   &__ip-details {
-    padding: rsa-whitespace(less);
+    padding: rsa-whitespace() rsa-whitespace(less);
     &__icon {
       margin-top: -0.19rem;
       margin-right: rsa-whitespace()
     }
   }
   &__config {
+    padding: rsa-whitespace() rsa-whitespace(less);
       li {
         text-transform: uppercase;
         list-style-type: none;

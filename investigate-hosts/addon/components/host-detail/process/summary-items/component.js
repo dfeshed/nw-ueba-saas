@@ -28,7 +28,7 @@ export default Component.extend({
     assert('Cannot instantiate Summary panel without configuration.', config);
     if (data) {
       const items = config.map((item) => {
-        const value = _.get(data, item.field);
+        const value = _.get(data, item.field) || 'N/A';
         return { ...item, value };
       });
       return items;

@@ -1882,7 +1882,7 @@ export default {
     },
     tabs: {
       overview: 'ja_Overview',
-      process: 'ja_Process',
+      process: 'ja_Processes',
       autoruns: 'ja_Autoruns',
       files: 'ja_Files',
       drivers: 'ja_Drivers',
@@ -1963,7 +1963,7 @@ export default {
         addMore: 'ja_Add more...',
         loadMore: 'Load More',
         exportCSV: 'ja_Export to CSV',
-        export: 'ja_Export to JSON',
+        export: 'ja_Export to JSON...',
         exportTooltip: 'ja_Exports all scan data categories for the host.',
         downloading: 'ja_Downloading',
         initiateScan: 'ja_Start Scan',
@@ -2367,6 +2367,16 @@ export default {
           }
         }
       },
+      propertyPanelTitles: {
+        autoruns: {
+          autorun: 'ja_Autoruns Properties',
+          services: 'ja_Services Properties',
+          tasks: 'ja_Tasks Properties'
+        },
+        files: 'ja_Files Properties',
+        drivers: 'ja_Drivers Properties',
+        libraries: 'ja_Libraries Properties'
+      },
       medium: {
         network: 'ja_Network',
         log: 'ja_Log',
@@ -2453,7 +2463,7 @@ export default {
         error: 'ja_Host(s) deletion failed'
       },
       moreActions: {
-        openIn: 'ja_Open in NWE thick client',
+        openIn: 'ja_Open in NWE Thick Client',
         openInErrorMessage: 'ja_Select at least one host',
         notAnEcatAgent: 'ja_Select only the 4.4 agent(s)',
         cancelScan: 'ja_Stop Scan'

@@ -73,7 +73,7 @@
 }
 
 .actionbar {
-  @include border-bottom(1px, solid, primary, light);
+  @include border-bottom(1px, solid, primary, dark);
   padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
   .snapshot-select {
@@ -92,7 +92,7 @@
 
   .host-action-buttons {
     .action-button {
-      padding-left: rsa-whitespace(more);
+      padding-left: rsa-whitespace(less);
       &.ecatUI button {
         width: 200px;
       }

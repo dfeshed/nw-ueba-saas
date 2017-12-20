@@ -1881,7 +1881,7 @@ export default {
       }
     },
     process: {
-      title: 'Process',
+      title: 'Processes',
       processName: 'Process Name',
       properties: 'Process Properties',
       pid: 'PID',
@@ -1962,7 +1962,7 @@ export default {
         addMore: 'Add Filter(s)...',
         loadMore: 'Load More',
         exportCSV: 'Export to CSV',
-        export: 'Export to JSON',
+        export: 'Export to JSON...',
         exportTooltip: 'Exports all scan data categories for the host.',
         downloading: 'Downloading',
         initiateScan: 'Start Scan',
@@ -2367,6 +2367,16 @@ export default {
           }
         }
       },
+      propertyPanelTitles: {
+        autoruns: {
+          autorun: 'Autoruns Properties',
+          services: 'Services Properties',
+          tasks: 'Tasks Properties'
+        },
+        files: 'Files Properties',
+        drivers: 'Drivers Properties',
+        libraries: 'Libraries Properties'
+      },
       medium: {
         network: 'Network',
         log: 'Log',
@@ -2453,7 +2463,7 @@ export default {
         error: 'Host(s) deletion failed'
       },
       moreActions: {
-        openIn: 'Open in NWE thick client',
+        openIn: 'Open in NWE Thick Client',
         openInErrorMessage: 'Select at least one host',
         notAnEcatAgent: 'Select only the 4.4 agent(s)',
         cancelScan: 'Stop Scan'
