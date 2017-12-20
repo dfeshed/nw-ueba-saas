@@ -19,6 +19,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class InputCoreManager {
     private final String LAST_EVENT_TIME_PROCESSED_METRIC_NAME = "last_event_time_processed";
     private final String TOTAL_EVENTS_PROCESSED_METRIC_NAME = "total_events_processed";
 
-    private final PresidioInputPersistencyService persistencyService;
+    private final PresidioInputPersistencyService inputPersistencyService;
     private final AdeDataService adeDataService;
     private final OutputDataServiceSDK outputDataServiceSDK;
     private final TransformationService transformationService;
@@ -43,9 +44,12 @@ public class InputCoreManager {
     @Value("${page.iterator.page.size}")
     private Integer pageSize;
 
-    public InputCoreManager(PresidioInputPersistencyService persistencyService, AdeDataService adeDataService,
+    @Value("${input.events.retention.in.days}")
+    private Integer retentionInDays;
+
+    public InputCoreManager(PresidioInputPersistencyService inputPersistencyService, AdeDataService adeDataService,
                             OutputDataServiceSDK outputDataServiceSDK, TransformationService transformationService, ConverterService converterService) {
-        this.persistencyService = persistencyService;
+        this.inputPersistencyService = inputPersistencyService;
         this.adeDataService = adeDataService;
         this.outputDataServiceSDK = outputDataServiceSDK;
         this.transformationService = transformationService;
@@ -57,7 +61,7 @@ public class InputCoreManager {
         if (pageSize == null) {
             pageSize = DEFAULT_PAGE_SIZE;
         }
-        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, persistencyService, schema, pageSize);
+        RawEventsPageIterator rawEventsPageIterator = new RawEventsPageIterator(startDate, endDate, inputPersistencyService, schema, pageSize);
         List transformedEvents = null;
         List nextEvents = null;
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap();
@@ -106,8 +110,21 @@ public class InputCoreManager {
         adeDataService.store(schema, startDate, endDate, converterService.convertToAde(transformedEvents, schema));
     }
 
-    public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) {
+    public void cleanup(Schema schema, Instant startDate, Instant endDate) {
         adeDataService.cleanup(schema, startDate, endDate);
         outputDataServiceSDK.clean(schema, startDate, endDate);
+    }
+
+    public void retentionClean(Schema schema, Instant endDate) {
+        Instant cleanFrom = Instant.ofEpochSecond(0);
+        // Calculate the date that we want to clear the data before it
+        Instant cleanTill = endDate.minus(retentionInDays, ChronoUnit.DAYS);
+        try {
+            logger.debug("Cleaning {} events from {} till {}", schema, cleanFrom, cleanTill);
+            // Clear the events data from the beginning till the set date
+            inputPersistencyService.clean(schema, cleanFrom, cleanTill);
+        } catch (Exception e) {
+            logger.error("Error running retention clean for schema {}, from  {} - till {}", schema, cleanFrom, cleanTill, e);
+        }
     }
 }
