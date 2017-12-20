@@ -181,32 +181,33 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 
     @Override
     protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
-
+            logger.warn(this.getClass().getName()+" is not supporting monitoring");
     }
 
     @Override
     protected void monitorNumberOfSavedEvents(int number, Instant logicalHour) {
-
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
     }
 
     @Override
     protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour) {
-
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
     }
 
     @Override
     protected void monitorUnknownError(int number, Instant logicalHour) {
-
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
     }
 
     @Override
     protected Instant getLogicalHour(T event){
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
       return null;
     }
 
     @Override
     protected void stopMonitoring(){
-
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
     }
 
 
