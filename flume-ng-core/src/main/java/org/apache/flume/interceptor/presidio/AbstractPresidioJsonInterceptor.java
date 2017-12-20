@@ -6,15 +6,9 @@ import org.apache.flume.CommonStrings;
 import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.interceptor.Interceptor;
-import org.apache.flume.lifecycle.LifecycleState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
-import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFactory;
 
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,16 +16,15 @@ import java.util.List;
  * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio sink/source must also be used when using a Presidio interceptor.
  * 2) for using a metric service (that needs an application name).
  */
-public abstract class AbstractPresidioInterceptor implements Interceptor {
+public abstract class AbstractPresidioJsonInterceptor implements Interceptor {
+
     private static final Logger logger = LoggerFactory
-            .getLogger(AbstractPresidioInterceptor.class);
+            .getLogger(AbstractPresidioJsonInterceptor.class);
+
+    protected static final String EMPTY_STRING = "EMPTY_STRING";
+
 
     protected String applicationName;
-
-    public static final String ADAPTER = "adapter";
-
-    private static PresidioExternalMonitoringService presidioExternalMonitoringService;
-    private PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory;
 
     @Override
     public List<Event> intercept(List<Event> events) {
@@ -67,21 +60,12 @@ public abstract class AbstractPresidioInterceptor implements Interceptor {
 
     @Override
     public void initialize() {
-        try {
-            presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.
-                    createPresidioExternalMonitoringService(ADAPTER);
 
-            presidioExternalMonitoringService.reportCustomMetric("interceptor."+this.getClass().getName(),1,new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, Instant.now());
-        } catch (Exception e) {
-            final String errorMessage = "Failed to start " + this.getClass().getSimpleName();
-            logger.error(errorMessage, e);
-        }
     }
 
     @Override
     public void close() {
-        logger.info("Closing monitoring service for interceptor {}",this.getClass().getName());
-        presidioExternalMonitoringServiceFactory.close();
+
     }
 
     public String getApplicationName() {

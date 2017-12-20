@@ -18,7 +18,7 @@ import java.util.List;
  * This interceptor is used to modify the case of given fields in the received JSON.
  * Returns the same JSON with the updated case
  */
-public class JsonCaseInterceptor extends AbstractPresidioInterceptor {
+public class JsonCaseInterceptor extends AbstractPresidioJsonInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonCaseInterceptor.class);
@@ -74,7 +74,7 @@ public class JsonCaseInterceptor extends AbstractPresidioInterceptor {
     }
 
     /**
-     * Builder which builds new instance of the JsonFilterInterceptor.
+     * Builder which builds new instance of the JsonCaseInterceptor.
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
@@ -121,7 +121,7 @@ public class JsonCaseInterceptor extends AbstractPresidioInterceptor {
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             logger.info("Creating JsonCaseInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, OPERATIONS_CONF_NAME, operations);
             return new JsonCaseInterceptor(originFields, operations);

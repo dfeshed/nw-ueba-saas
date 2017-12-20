@@ -19,7 +19,7 @@ import java.util.Map;
  * This interceptor is used to join fields from the received JSON into a new object (map)
  * Returns the same JSON with a new map containing the values.
  */
-public class JsonMapCreatorInterceptor extends AbstractPresidioInterceptor {
+public class JsonMapCreatorInterceptor extends AbstractPresidioJsonInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonMapCreatorInterceptor.class);
 
@@ -145,7 +145,7 @@ public class JsonMapCreatorInterceptor extends AbstractPresidioInterceptor {
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToPut, mapKey,
                     deleteFields, defaultValueConfigurations, overrideExistingMap);
             logger.info("Creating JsonMapCreatorInterceptor: {}", jsonMapCreatorInterceptor);

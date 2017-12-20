@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * This interceptor is used to modify the of values in the received JSON according to the given patterns/replace-strings.
  * Returns the same JSON with the updated values
  */
-public class JsonSearchAndReplaceInterceptor extends AbstractPresidioInterceptor {
+public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterceptor {
 
     private static final Logger logger = LoggerFactory
             .getLogger(JsonSearchAndReplaceInterceptor.class);
@@ -79,7 +79,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioInterceptor
     }
 
     /**
-     * Builder which builds new instance of the JsonFilterInterceptor.
+     * Builder which builds new instance of the JsonSearchAndReplaceInterceptor.
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
@@ -136,7 +136,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioInterceptor
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             final JsonSearchAndReplaceInterceptor jsonSearchAndReplaceInterceptor = new JsonSearchAndReplaceInterceptor(fields, searchPatterns, replaceStrings);
             logger.info("Creating JsonSearchAndReplaceInterceptor: {}", jsonSearchAndReplaceInterceptor);
             return jsonSearchAndReplaceInterceptor;

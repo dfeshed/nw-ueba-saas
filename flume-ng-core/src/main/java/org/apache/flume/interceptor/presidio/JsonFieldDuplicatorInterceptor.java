@@ -18,7 +18,7 @@ import java.util.List;
  * This interceptor is used to duplicate certain values  in the received JSON.
  * Returns the same JSON without new keys.
  */
-public class JsonFieldDuplicatorInterceptor extends AbstractPresidioInterceptor {
+public class JsonFieldDuplicatorInterceptor extends AbstractPresidioJsonInterceptor {
     private static final Logger logger = LoggerFactory
             .getLogger(JsonFieldDuplicatorInterceptor.class);
 
@@ -110,7 +110,7 @@ public class JsonFieldDuplicatorInterceptor extends AbstractPresidioInterceptor 
         }
 
         @Override
-        public AbstractPresidioInterceptor doBuild() {
+        public AbstractPresidioJsonInterceptor doBuild() {
             logger.info("Creating JsonFieldDuplicatorInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
             return new JsonFieldDuplicatorInterceptor(originFields, destinationFields, deleteNullFields);
