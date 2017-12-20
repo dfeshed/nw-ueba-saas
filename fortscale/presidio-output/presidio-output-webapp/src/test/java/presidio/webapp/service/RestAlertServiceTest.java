@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.alerts.AlertEnums;
@@ -127,6 +129,25 @@ public class RestAlertServiceTest {
         Assert.assertEquals(1, eventsWrapper.getEvents().size());
         Assert.assertEquals(null,eventsWrapper.getEvents().get(0).getScores());
 
+    }
+
+    @Test
+    public void getAlertsWrongPageNumber() {
+        List<Alert> resultList = new ArrayList<>();
+        long total = 10;
+        Pageable pageable = new PageRequest(3, 10);
+        Page<Alert> page = new PageImpl<>(resultList, pageable, total);
+
+        when(alertPersistencyService.find(anyObject())).thenReturn(page);
+
+        AlertQuery alertQuery = new AlertQuery();
+        alertQuery.setPageNumber(3);
+        alertQuery.setPageSize(10);
+        alertQuery.setUsersId(new ArrayList<>(Arrays.asList("someUserName")));
+        AlertsWrapper alertsWrapper = restAlertService.getAlerts(alertQuery);
+        Assert.assertEquals(0, alertsWrapper.getAlerts().size());
+        Assert.assertEquals(Math.toIntExact(total), alertsWrapper.getTotal().intValue());
+        Assert.assertEquals(Integer.valueOf(3), alertsWrapper.getPage());
     }
 
     private Alert createAlert() {

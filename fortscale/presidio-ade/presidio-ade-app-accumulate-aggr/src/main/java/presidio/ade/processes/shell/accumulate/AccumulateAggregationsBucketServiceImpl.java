@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.FeatureBucketsAggregatorInMemory;
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.PageIterator;
@@ -24,22 +25,24 @@ import java.util.*;
  */
 public class AccumulateAggregationsBucketServiceImpl implements AccumulateAggregationsBucketService {
 
+    private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
     private FeatureBucketAggregator featureBucketAggregator;
     private FeatureBucketsAggregatorInMemory featureBucketsInMemory;
     private AggregationRecordsCreator aggregationsCreator;
     private BucketConfigurationService bucketConfigurationService;
     private RecordReaderFactoryService recordReaderFactoryService;
 
-    public AccumulateAggregationsBucketServiceImpl(AggregationRecordsCreator aggregationsCreator, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
+    public AccumulateAggregationsBucketServiceImpl(AggregationRecordsCreator aggregationsCreator, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService, FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
         this.aggregationsCreator = aggregationsCreator;
         this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
+        this.featureBucketAggregatorMetricsContainer = featureBucketAggregatorMetricsContainer;
         initFeatureBucketAggregator();
     }
 
     private void initFeatureBucketAggregator() {
         this.featureBucketsInMemory = new FeatureBucketsAggregatorInMemory();
-        this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory, bucketConfigurationService, recordReaderFactoryService);
+        this.featureBucketAggregator = new FeatureBucketAggregator(featureBucketsInMemory, bucketConfigurationService, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 
     public void aggregateAndAccumulate(PageIterator<EnrichedRecord> pageIterator, List<String> contextTypes, FixedDurationStrategy featureBucketStrategy, Accumulator accumulatorService) {

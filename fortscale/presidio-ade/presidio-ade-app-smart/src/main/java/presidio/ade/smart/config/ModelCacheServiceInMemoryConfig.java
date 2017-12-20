@@ -5,6 +5,8 @@ import fortscale.ml.model.ModelConfServiceConfig;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelCacheServiceInMemory;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
@@ -23,7 +25,8 @@ import java.time.Duration;
 @Configuration
 @Import({
         ModelConfServiceConfig.class,
-        ModelStoreConfig.class
+        ModelStoreConfig.class,
+        ModelCacheMetricsContainerConfig.class
 })
 public class ModelCacheServiceInMemoryConfig {
     @Autowired
@@ -32,6 +35,8 @@ public class ModelCacheServiceInMemoryConfig {
     public ModelStore modelStore;
     @Autowired
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+    @Autowired
+    public ModelCacheMetricsContainer modelCacheMetricsContainer;
     @Value("#{T(java.time.Duration).parse('${fortscale.model.cache.maxDiffBetweenCachedModelAndEvent}')}")
     public Duration maxDiffBetweenCachedModelAndEvent;
     @Value("${fortscale.model.cache.size}")
@@ -41,7 +46,7 @@ public class ModelCacheServiceInMemoryConfig {
 
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
-        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, numOfModelsPerContextId);
+        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, numOfModelsPerContextId, modelCacheMetricsContainer);
     }
 
     @Bean

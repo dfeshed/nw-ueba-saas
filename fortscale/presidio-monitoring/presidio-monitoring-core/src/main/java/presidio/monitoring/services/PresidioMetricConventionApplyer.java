@@ -63,4 +63,8 @@ public class PresidioMetricConventionApplyer implements MetricConventionApplyer 
         metricTags.put(MetricEnums.MetricTagKeysEnum.PID, pid);
         metricTags.put(MetricEnums.MetricTagKeysEnum.APPLICATION_NAME, applicationName);
     }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
 }

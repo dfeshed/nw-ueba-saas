@@ -2,6 +2,7 @@ package fortscale.ml.model.cache;
 
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.EmptyModelDao;
 import fortscale.ml.model.store.ModelDAO;
@@ -30,6 +31,8 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     private Duration maxDiffBetweenCachedModelAndEvent;
     private LRUMap lruModelsMap;
     private int numOfModelsPerContextId;
+    ModelCacheMetricsContainer modelCacheMetricsContainer;
+    private String modelConfName;
 
     /**
      * @param modelStore                           persistent db containing all models
@@ -37,14 +40,17 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
      * @param retriever                            help to calculates the context id
      * @param maxDiffBetweenCachedModelAndEvent cached model can be older then eventTime by this diff. if bigger, cached model is deleted and the latest model is retrieved from db
      * @param lruModelCacheSize                    the cache size
+     * @param modelCacheMetricsContainer
      */
-    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration maxDiffBetweenCachedModelAndEvent, int lruModelCacheSize, int numOfModelsPerContextId) {
+    public ModelCacheManagerInMemory(ModelStore modelStore, ModelConf modelConf, AbstractDataRetriever retriever, Duration maxDiffBetweenCachedModelAndEvent, int lruModelCacheSize, int numOfModelsPerContextId, ModelCacheMetricsContainer modelCacheMetricsContainer) {
         this.modelStore = modelStore;
         this.modelConf = modelConf;
         this.retriever = retriever;
         this.maxDiffBetweenCachedModelAndEvent = maxDiffBetweenCachedModelAndEvent;
         this.lruModelsMap = new LRUMap(lruModelCacheSize);
         this.numOfModelsPerContextId = numOfModelsPerContextId;
+        this.modelConfName = modelConf.getName();
+        this.modelCacheMetricsContainer = modelCacheMetricsContainer;
     }
 
     @Override
@@ -67,14 +73,16 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
     @Override
     public List<ModelDAO> getModelDAOsSortedByEndTimeDesc(String contextId, Instant eventTime){
         Instant oldestAllowedModelTime = eventTime.minus(maxDiffBetweenCachedModelAndEvent);
+        List<ModelDAO> ret = null;
         if (lruModelsMap.containsKey(contextId)) {
             Object cachedObject = lruModelsMap.get(contextId);
-            List<ModelDAO> ret = (List<ModelDAO>) cachedObject;
+            ret = (List<ModelDAO>) cachedObject;
             logger.debug("found cached models={}", ret);
-            return ret;
+            modelCacheMetricsContainer.incModelCache(modelConfName);
 
         } else{
             logger.debug("no matching model found in cache. retrieving model from db");
+            modelCacheMetricsContainer.incModelFromDb(modelConfName);
             List<ModelDAO> retrievedModelDAOs =
                     modelStore.getLatestBeforeEventTimeAfterOldestAllowedModelDaoSortedByEndTimeDesc(modelConf, contextId, eventTime, oldestAllowedModelTime, numOfModelsPerContextId);
             if (retrievedModelDAOs == null || !retrievedModelDAOs.isEmpty()) {
@@ -85,8 +93,14 @@ public class ModelCacheManagerInMemory implements ModelCacheManager {
             }
             // insert the model into cache
             lruModelsMap.put(contextId, retrievedModelDAOs);
-            return retrievedModelDAOs;
+            ret =  retrievedModelDAOs;
         }
+
+        if(ret!=null && !ret.isEmpty() && ret.get(0).equals(new EmptyModelDao(eventTime)))
+        {
+            modelCacheMetricsContainer.incEmptyModel(modelConfName);
+        }
+        return ret;
     }
 
     @Override

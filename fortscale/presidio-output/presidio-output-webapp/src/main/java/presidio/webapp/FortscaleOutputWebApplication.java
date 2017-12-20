@@ -26,7 +26,7 @@ public class FortscaleOutputWebApplication extends SpringBootServletInitializer 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(new Object[]{FortscaleOutputWebApplication.class,
-                OutputWebappConfiguration.class});
+                OutputWebappProductionConfiguration.class});
     }
 
     public static void main(String[] args) {

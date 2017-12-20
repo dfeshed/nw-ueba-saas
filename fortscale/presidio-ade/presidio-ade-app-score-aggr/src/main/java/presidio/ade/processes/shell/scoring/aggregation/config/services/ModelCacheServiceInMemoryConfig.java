@@ -3,6 +3,8 @@ package presidio.ade.processes.shell.scoring.aggregation.config.services;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.cache.ModelCacheServiceInMemory;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainer;
+import fortscale.ml.model.cache.metrics.ModelCacheMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.model.store.ModelStoreConfig;
@@ -24,7 +26,8 @@ import java.time.Duration;
         ScorersModelConfServiceConfig.class,
         DataRetrieverFactoryServiceConfig.class,
 //        common application confs
-        ModelStoreConfig.class
+        ModelStoreConfig.class,
+        ModelCacheMetricsContainerConfig.class
 
 })
 public class ModelCacheServiceInMemoryConfig {
@@ -38,9 +41,10 @@ public class ModelCacheServiceInMemoryConfig {
     public Duration maxDiffBetweenCachedModelAndEvent;
     @Value("${fortscale.model.cache.size}")
     public int cacheSize;
-
+    @Autowired
+    public ModelCacheMetricsContainer modelCacheMetricsContainer;
     @Bean
     public ModelsCacheService modelCacheServiceInMemory() {
-        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, 1);
+        return new ModelCacheServiceInMemory(modelConfService, modelStore, dataRetrieverFactoryService, maxDiffBetweenCachedModelAndEvent, cacheSize, 1, modelCacheMetricsContainer);
     }
 }

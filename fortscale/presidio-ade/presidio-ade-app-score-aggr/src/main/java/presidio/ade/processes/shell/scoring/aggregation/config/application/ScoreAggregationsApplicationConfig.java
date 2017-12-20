@@ -24,6 +24,8 @@ import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketS
 import presidio.ade.processes.shell.scoring.aggregation.config.services.AggregationRecordsCreatorConfig;
 import presidio.ade.processes.shell.scoring.aggregation.config.services.EnrichedEventsScoringServiceConfig;
 import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAggregationsBucketServiceConfiguration;
+import presidio.monitoring.flush.MetricContainerFlusher;
+import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
 /**
  * Created by barak_schuster on 7/25/17.
@@ -36,10 +38,10 @@ import presidio.ade.processes.shell.scoring.aggregation.config.services.ScoreAgg
         ScoreAggregationsBucketServiceConfiguration.class,
 //        common application confs
         EnrichedDataStoreConfig.class,
-        ScoringServiceMetricsContainerConfig.class,
         AggregatedDataStoreConfig.class,
         BootShimConfig.class,
         StoreManagerConfig.class,
+        MetricContainerFlusherConfig.class,
         NullStatsServiceConfig.class, // todo: remove this
 })
 public class ScoreAggregationsApplicationConfig {
@@ -64,11 +66,11 @@ public class ScoreAggregationsApplicationConfig {
     @Autowired
     private StoreManager storeManager;
     @Autowired
-    private ScoringServiceMetricsContainer scoringServiceMetricsContainer;
+    private MetricContainerFlusher metricContainerFlusher;
 
     @Bean
     public PresidioExecutionService presidioExecutionService() {
         return new ScoreAggregationsExecutionServiceImpl(
-                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, storeManager, pageSize, maxGroupSize, scoringServiceMetricsContainer);
+                enrichedEventsScoringService, enrichedDataStore, scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, storeManager, pageSize, maxGroupSize, metricContainerFlusher);
     }
 }

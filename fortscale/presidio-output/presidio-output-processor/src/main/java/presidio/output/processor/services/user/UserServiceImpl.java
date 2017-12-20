@@ -12,12 +12,7 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -95,9 +90,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity) {
-
-        List<String> classificationUnion = unionOfCollectionsToList(user.getAlertClassifications(), classification);
-        user.setAlertClassifications(classificationUnion);
+        // If there are classifications to add
+        if (CollectionUtils.isNotEmpty(classification)) {
+            if (CollectionUtils.isEmpty(user.getAlertClassifications())) {
+                user.setAlertClassifications(new ArrayList<>());
+            }
+            // We will take only the first alert classification to the user (the classification are sorted by priority)
+            user.setAlertClassifications(unionOfCollectionsToList(user.getAlertClassifications(), Arrays.asList(classification.get(0))));
+        }
         List<String> indicatorsUnion = unionOfCollectionsToList(user.getIndicators(), indicators);
         user.setIndicators(indicatorsUnion);
         user.incrementAlertsCountByOne();
@@ -158,11 +158,11 @@ public class UserServiceImpl implements UserService {
         log.info("Updating user batch (without persistence)- batch contain: " + usersIDForBatch.size() + " users");
         List<User> changedUsers = new ArrayList<>();
 
-        PageRequest pageRequest = new PageRequest(0,usersIDForBatch.size());
-        Page<User> users = userPersistencyService.findByIds(usersIDForBatch,pageRequest);
+        PageRequest pageRequest = new PageRequest(0, usersIDForBatch.size());
+        Page<User> users = userPersistencyService.findByIds(usersIDForBatch, pageRequest);
 
-        if (users.getTotalElements()!=usersIDForBatch.size()){
-            log.error("Need to update {} users, but only {} users exists on elastic search",usersIDForBatch.size(),users.getTotalElements());
+        if (users.getTotalElements() != usersIDForBatch.size()) {
+            log.error("Need to update {} users, but only {} users exists on elastic search", usersIDForBatch.size(), users.getTotalElements());
         }
         users.forEach(user -> {
             double newUserScore = aggregatedUserScore.get(user.getId()).getUserScore();

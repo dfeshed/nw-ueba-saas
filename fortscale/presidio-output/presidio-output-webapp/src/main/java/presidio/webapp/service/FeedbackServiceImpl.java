@@ -1,6 +1,7 @@
-package presidio.output.commons.services.alert;
+package presidio.webapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;

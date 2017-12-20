@@ -1,6 +1,5 @@
-package presidio.output.commons.services.alert;
+package presidio.webapp.service;
 
-import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 
 import java.util.List;
