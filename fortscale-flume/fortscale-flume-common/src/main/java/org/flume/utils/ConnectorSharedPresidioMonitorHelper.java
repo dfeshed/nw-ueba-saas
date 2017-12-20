@@ -15,7 +15,7 @@ import java.util.Map;
  * Static service to share one monitor service instance between all the flume parts (source, sink, interceptor
  */
 public enum ConnectorSharedPresidioMonitorHelper implements PresidioExternalMonitoringService{
-    INSTANCE;
+    COLLECTOR_INSTANCE("collector");
 
 //    private static ConnectorSharedPresidioMonitorHelper connectorSharedPresidioMonitorHelper;
 
@@ -23,9 +23,9 @@ public enum ConnectorSharedPresidioMonitorHelper implements PresidioExternalMoni
     private PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory;
     private PresidioExternalMonitoringService presidioExternalMonitoringService=null;
 
-    ConnectorSharedPresidioMonitorHelper() throws RuntimeException {
+    ConnectorSharedPresidioMonitorHelper(String appName) throws RuntimeException {
         try {
-            init();
+            init(appName);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -34,10 +34,10 @@ public enum ConnectorSharedPresidioMonitorHelper implements PresidioExternalMoni
 
 
 
-    private void init() throws Exception{
+    private void init(String appName) throws Exception{
         presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
         try {
-            presidioExternalMonitoringService= presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService("collector");
+            presidioExternalMonitoringService= presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(appName);
         }
         catch (Exception e){
             logger.error("Cannot load external monitoring service");
