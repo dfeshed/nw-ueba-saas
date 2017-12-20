@@ -6,7 +6,6 @@ import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
-import fortscale.ml.scorer.metrics.ScoringServiceMetricsContainer;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.time.TimeRange;
@@ -65,7 +64,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     }
 
     @Override
-    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
+    public void cleanRetention(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
 

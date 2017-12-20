@@ -23,7 +23,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     }
 
     @Override
-    public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
+    public void cleanRetention(Schema schema, Instant startDate, Instant endDate) throws Exception {
         throw new UnsupportedOperationException("not supported");
     }
 
@@ -44,7 +44,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
             String newFilePath = configureNewFlumeExecution(schema, startDate, endDate);
             runFlumeExecution(schema, startDate, endDate, newFilePath);
         } catch (IOException e) {
-            logger.error("Presidio Adapter run failed (with params: schema:{}, startDate:{}, endDate:{}, fixedDuration:{}).", schema, startDate, endDate, fixedDuration ,e);
+            logger.error("Presidio Adapter run failed (with params: schema:{}, startDate:{}, endDate:{}, fixedDuration:{}).", schema, startDate, endDate, fixedDuration, e);
             throw e;
         }
     }

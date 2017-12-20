@@ -65,10 +65,10 @@ public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionS
 		storeManager.cleanupCollections(startInstant, endInstant);
 	}
 
-	@Override
-	public void clean(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
-		// TODO: Implement
-	}
+    @Override
+    public void cleanRetention(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
+        // TODO: Implement
+    }
 
 	@Override
 	public void cleanAll(Schema schema) throws Exception {

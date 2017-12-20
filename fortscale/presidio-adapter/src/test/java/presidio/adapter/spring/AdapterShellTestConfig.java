@@ -15,7 +15,6 @@ import java.time.Instant;
 public class AdapterShellTestConfig {
 
 
-
     @Bean
     public PresidioExecutionService adapterExecutionService() {
         return new PresidioExecutionService() {
@@ -26,12 +25,12 @@ public class AdapterShellTestConfig {
             }
 
             @Override
-            public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception{
+            public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
 
             }
 
             @Override
-            public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
+            public void cleanRetention(Schema schema, Instant startDate, Instant endDate) throws Exception {
 
             }
 

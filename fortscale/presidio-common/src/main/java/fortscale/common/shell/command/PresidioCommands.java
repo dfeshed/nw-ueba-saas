@@ -59,19 +59,16 @@ public class PresidioCommands implements CommandMarker {
         executionService.cleanup(schema, startTime, endTime, fixedDuration);
     }
 
-    @CliCommand(value = "clean", help = "clean application data for specified time range and data source")
-    public void clean(
-            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema")
-            final Schema schema,
+    @CliCommand(value = "retention", help = "clean retention for application data in specified time range for data source")
+    public void cleanRetention(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed")
-            final Instant startTime,
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed")
-            final Instant endTime
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime
 
     ) throws Exception {
-        executionService.clean(schema, startTime, endTime);
+        executionService.cleanRetention(schema, startTime, endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")

@@ -13,7 +13,7 @@ public interface PresidioExecutionService {
 
     void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception;
 
-    void clean(Schema schema, Instant startDate, Instant endDate) throws Exception;
+    void cleanRetention(Schema schema, Instant startDate, Instant endDate) throws Exception;
 
     void cleanAll(Schema schema) throws Exception;
 }
