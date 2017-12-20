@@ -75,13 +75,12 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
     const key = this.get('landingPage.selected.key');
     const classicRedirect = localStorage.getItem('rsa-post-auth-redirect');
-    const { iframedIntoClassic } = transition.queryParams;
 
     if (classicRedirect) {
       window.location = classicRedirect;
       return localStorage.removeItem('rsa-post-auth-redirect');
     } else {
-      this._checkAccessAndTransition(key, transition.targetName, iframedIntoClassic);
+      this._checkAccessAndTransition(key, transition.targetName);
     }
   },
 
@@ -206,16 +205,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  _checkAccessAndTransition(key, transitionName, iframedIntoClassic) {
+  _checkAccessAndTransition(key, transitionName) {
     if ( // known transition into ember with perms
       (transitionName && transitionName.includes('configure')) ||
       (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
       (transitionName && transitionName.includes('packager')) ||
       (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
     ) {
-      // If route is iframed into classic then don't add the route history.
-      // This is to avoid on redirecting to the ember page on login
-      return (!iframedIntoClassic) ? this.transitionTo(transitionName) : this.replaceWith(transitionName);
+      return this.transitionTo(transitionName);
     } else if ( // classic default landing page transition with perms
       (transitionName && !transitionName.includes('respond') && !transitionName.includes('investigate')) &&
       ((key === this.get('accessControl.adminUrl')) && this.get('accessControl.hasAdminAccess')) ||
