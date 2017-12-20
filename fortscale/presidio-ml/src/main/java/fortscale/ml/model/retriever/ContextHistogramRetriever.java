@@ -7,6 +7,7 @@ import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
+import fortscale.ml.model.metrics.TimeModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimestampUtils;
@@ -24,12 +25,14 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 	protected FeatureBucketConf featureBucketConf;
 	protected String featureName;
+	protected TimeModelRetrieverMetricsContainer timeModelRetrieverMetricsContainer;
 	//	TODO private ContextHistogramRetrieverMetrics metrics;
 
 	public ContextHistogramRetriever(
 			ContextHistogramRetrieverConf config,
 			BucketConfigurationService bucketConfigurationService,
-			FeatureBucketReader featureBucketReader) {
+			FeatureBucketReader featureBucketReader,
+			TimeModelRetrieverMetricsContainer timeModelRetrieverMetricsContainer) {
 
 		super(config);
 		this.bucketConfigurationService = bucketConfigurationService;
@@ -38,6 +41,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		featureBucketConf = this.bucketConfigurationService.getBucketConf(featureBucketConfName);
 		featureName = config.getFeatureName();
 		partitionsResolutionInSeconds = config.getPartitionsResolutionInSeconds();
+		this.timeModelRetrieverMetricsContainer = timeModelRetrieverMetricsContainer;
 //		metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
 		validate(config);
 	}
@@ -80,6 +84,8 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		List<FeatureBucket> featureBuckets = featureBucketReader.getFeatureBuckets(
 				featureBucketConf.getName(), contextId,
 				new TimeRange(startTimeInSeconds, endTimeInSeconds));
+		int featureBucketSize = featureBuckets.size();
+		timeModelRetrieverMetricsContainer.updateMetric(featureBucketSize);
 
 //		metrics.featureBuckets += featureBuckets.size();
 		long numOfPartitionsOfFeatureBuckets = calcNumOfPartitionsOfFeatureBuckets(featureBuckets);

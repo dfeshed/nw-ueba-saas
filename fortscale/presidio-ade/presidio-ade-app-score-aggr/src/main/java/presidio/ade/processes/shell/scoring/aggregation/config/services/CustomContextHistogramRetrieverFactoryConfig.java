@@ -2,6 +2,8 @@ package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketReader;
+import fortscale.ml.model.metrics.TimeModelRetrieverMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelRetrieverMetricsContainerConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * The original {@link ContextHistogramRetrieverFactory} autowires a {@link BucketConfigurationService}, but the score
@@ -23,12 +26,15 @@ import org.springframework.context.annotation.Configuration;
  * @author Lior Govrin
  */
 @Configuration
+@Import(TimeModelRetrieverMetricsContainerConfig.class)
 public class CustomContextHistogramRetrieverFactoryConfig {
     @Autowired
     @Qualifier("modelBucketConfigService")
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private FeatureBucketReader featureBucketReader;
+    @Autowired
+    private TimeModelRetrieverMetricsContainer timeModelRetrieverMetricsContainer;
 
     @Bean
     public AbstractServiceAutowiringFactory<AbstractDataRetriever> customContextHistogramRetrieverFactory() {
@@ -41,7 +47,7 @@ public class CustomContextHistogramRetrieverFactoryConfig {
             @Override
             public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
                 ContextHistogramRetrieverConf config = (ContextHistogramRetrieverConf)factoryConfig;
-                return new ContextHistogramRetriever(config, bucketConfigurationService, featureBucketReader);
+                return new ContextHistogramRetriever(config, bucketConfigurationService, featureBucketReader, timeModelRetrieverMetricsContainer);
             }
         };
     }
