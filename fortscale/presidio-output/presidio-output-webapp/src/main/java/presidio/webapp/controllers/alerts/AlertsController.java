@@ -58,8 +58,7 @@ public class AlertsController implements AlertsApi {
 
         try {
             Indicator indicator = restAlertService.getIndicatorById(indicatorId, expand);
-            HttpStatus httpStatus = indicator != null ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
-            return new ResponseEntity(indicator, httpStatus);
+            return new ResponseEntity(indicator, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Trying the to get indicator by indicatorId:{} , But got internal error {}", indicatorId, ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,8 +71,7 @@ public class AlertsController implements AlertsApi {
                                                                    EventQuery eventQuery) {
         try {
             EventsWrapper eventsWrapper = restAlertService.getIndicatorEventsByIndicatorId(indicatorId, eventQuery);
-            HttpStatus httpStatus = eventsWrapper.getTotal() >= 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-            return new ResponseEntity(eventsWrapper, httpStatus);
+            return new ResponseEntity(eventsWrapper, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Trying the to get events with this eventQuery:{} , But got internal error {}", eventQuery.toString(), ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,8 +83,7 @@ public class AlertsController implements AlertsApi {
                                                                   IndicatorQuery indicatorQuery) {
         try {
             IndicatorsWrapper indicatorsWrapper = restAlertService.getIndicatorsByAlertId(alertId, indicatorQuery);
-            HttpStatus httpStatus = indicatorsWrapper.getTotal() > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-            return new ResponseEntity(indicatorsWrapper, httpStatus);
+            return new ResponseEntity(indicatorsWrapper, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Trying the to get indicators with this indicatorQuery:{} , But got internal error {}", indicatorQuery.toString(), ex);
             return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,7 +96,7 @@ public class AlertsController implements AlertsApi {
             @RequestBody
                     UpdateFeedbackRequest updateFeedbackRequest) {
         restAlertService.updateAlertFeedback(updateFeedbackRequest.getAlertIds(), updateFeedbackRequest.getAlertFeedback());
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

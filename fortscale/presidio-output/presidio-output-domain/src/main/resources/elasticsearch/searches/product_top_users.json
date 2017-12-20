@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "d79e0ee0-a29b-11e7-bf94-db45269a46a7",
+    "_type": "search",
+    "_source": {
+      "title": "Top Users",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "severity",
+        "userName",
+        "userDisplayName",
+        "tags",
+        "score",
+        "alertsCount",
+        "alertClassifications",
+        "indicators",
+        "userId"
+      ],
+      "sort": [
+        "score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-user\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]

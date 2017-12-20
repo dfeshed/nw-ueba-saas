@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "cffe8490-a132-11e7-b962-5703fbc8bd55",
+    "_type": "visualization",
+    "_source": {
+      "title": "Sum of users",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"customLabel\":\"Users\"},\"schema\":\"metric\",\"type\":\"count\"}],\"listeners\":{},\"params\":{\"fontSize\":60,\"handleNoResults\":true},\"title\":\"Sum of users\",\"type\":\"metric\"}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "03fb7f60-a132-11e7-be86-b15614422082",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]
