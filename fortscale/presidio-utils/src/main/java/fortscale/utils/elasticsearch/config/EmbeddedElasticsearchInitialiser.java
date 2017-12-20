@@ -2,14 +2,10 @@ package fortscale.utils.elasticsearch.config;
 
 import fortscale.utils.logging.Logger;
 import org.junit.Assert;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,7 +24,7 @@ public class EmbeddedElasticsearchInitialiser {
 
     private EmbeddedElastic embeddedElastic = null;
 
-    public void start() {
+    public void start() throws IOException, InterruptedException {
         if(embeddedElastic != null) {
             logger.debug("embedded elasticsearch already started, skipping startup");
             return;
@@ -37,7 +33,7 @@ public class EmbeddedElasticsearchInitialiser {
         try {
             embeddedElastic = EmbeddedElastic.builder()
                     .withElasticVersion(EL_TEST_VERSION)
-                    .withStartTimeout(1, TimeUnit.MINUTES)
+                    .withStartTimeout(2, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
                     .withCleanInstallationDirectoryOnStop(true)
@@ -45,7 +41,8 @@ public class EmbeddedElasticsearchInitialiser {
                     .start();
         } catch (Exception e) {
             embeddedElastic = null;
-            Assert.fail("Failed to start elasticsearch");
+            logger.error("Failed to start elasticsearch",e);
+            throw e;
         }
     }
 

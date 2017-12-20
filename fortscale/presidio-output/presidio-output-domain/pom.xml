@@ -80,11 +80,6 @@
             <artifactId>spring-data-commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-output-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>

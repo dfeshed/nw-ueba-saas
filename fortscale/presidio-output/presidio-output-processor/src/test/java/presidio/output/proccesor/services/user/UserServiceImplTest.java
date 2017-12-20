@@ -11,11 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
@@ -62,7 +62,6 @@ public class UserServiceImplTest {
 
     @Test
     public void testUpdateUserScoreBatch() throws Exception {
-        String date = new Date().toString();
         List<User> usersWithOldScore = Arrays.asList(
                 new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
                 new User("user2", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0),
@@ -82,7 +81,7 @@ public class UserServiceImplTest {
         newUsersScore.put(usersWithOldScore.get(1).getId(), new UsersAlertData(50D, 1));
         newUsersScore.put(usersWithOldScore.get(2).getId(), new UsersAlertData(30D, 1));
 
-        Mockito.when(this.mockUserPresistency.findByIds(Mockito.any(Set.class),Mockito.any(PageRequest.class))).thenAnswer(new Answer<Page>() {
+        Mockito.when(this.mockUserPresistency.findByIds(Mockito.any(Set.class), Mockito.any(PageRequest.class))).thenAnswer(new Answer<Page>() {
             @Override
             public Page answer(InvocationOnMock invocation) throws Throwable {
                 Set<String> userIds = (Set<String>) invocation.getArguments()[0];
@@ -106,28 +105,36 @@ public class UserServiceImplTest {
 
     @Test
     public void testSetUserAlertData() {
-        String date = new Date().toString();
         User user1 = new User("user1", null, null, 50, null, null, null, UserSeverity.CRITICAL, 0);
-        List<String> classification1 = null, classification2, classification3;
+        List<String> classification1 = null, classification2, classification3, classification4;
         List<String> indicators1 = null, indicators2, indicators3;
         classification2 = new ArrayList<>(Arrays.asList("a", "b"));
         indicators2 = new ArrayList<>(Arrays.asList("c", "d"));
         classification3 = new ArrayList<>(Arrays.asList("a", "c"));
+        classification4 = new ArrayList<>(Arrays.asList("c"));
         indicators3 = new ArrayList<>(Arrays.asList("c", "e"));
         assertEquals(null, user1.getIndicators());
         assertEquals(null, user1.getAlertClassifications());
+        // adding empty classification list and empty indicator list
         userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
         assertEquals(null, user1.getIndicators());
         assertEquals(null, user1.getAlertClassifications());
+        // Adding classification list with 2 classifications but saving only the first one on the user and adding 2 indicators
         userService.setUserAlertData(user1, classification2, indicators2, AlertEnums.AlertSeverity.CRITICAL);
         assertEquals(2, user1.getIndicators().size());
-        assertEquals(2, user1.getAlertClassifications().size());
+        assertEquals(1, user1.getAlertClassifications().size());
+        // adding classification list of 2 classifications that the first one already exists on the user and adding 2 indicators one of which already exists
         userService.setUserAlertData(user1, classification3, indicators3, AlertEnums.AlertSeverity.CRITICAL);
         assertEquals(3, user1.getIndicators().size());
-        assertEquals(3, user1.getAlertClassifications().size());
+        assertEquals(1, user1.getAlertClassifications().size());
+        // adding existing classifications and indicators
         userService.setUserAlertData(user1, classification1, indicators1, AlertEnums.AlertSeverity.CRITICAL);
         assertEquals(3, user1.getIndicators().size());
-        assertEquals(3, user1.getAlertClassifications().size());
+        assertEquals(1, user1.getAlertClassifications().size());
+        // adding new classification but existing indicator
+        userService.setUserAlertData(user1, classification4, indicators1, AlertEnums.AlertSeverity.CRITICAL);
+        assertEquals(3, user1.getIndicators().size());
+        assertEquals(2, user1.getAlertClassifications().size());
 
     }
 

@@ -2,31 +2,31 @@ package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.output.commons.services.alert.AlertEnums;
+import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.domain.records.UserScorePercentilesDocument;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.commons.services.alert.UserSeverity;
+import presidio.output.domain.records.users.UserSeverity;
+import presidio.output.domain.repositories.UserScorePercentilesRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
-import presidio.output.processor.services.user.UserScoreService;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
 import java.time.Instant;
@@ -39,10 +39,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class})
+@ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserScoreServiceModuleTest {
+
+    @Autowired
+    private UserScorePercentilesRepository percentilesRepository;
 
     @Autowired
     private UserPersistencyService userPersistencyService;
@@ -63,7 +66,7 @@ public class UserScoreServiceModuleTest {
     private AlertSeverityService alertSeverityService;
 
     @Autowired
-    private UserScoreService userScoreService;
+    private UserSeverityService userSeverityService;
 
     @After
     public void cleanTestData() {
@@ -90,7 +93,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -101,46 +104,42 @@ public class UserScoreServiceModuleTest {
 
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculationSomeMoreThen30Days() {
-        //Generate one user with 2 critical alerts
+        //Generate one user with 3 alerts
         User user1 = new User("userId1", "userName1", "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
         user1.setSeverity(null);
+        Iterable<User> userItr = userPersistencyService.save(Arrays.asList(user1));
+        User savedUser = userItr.iterator().next();
+        String userId = savedUser.getId();
+
+
+
         List<Alert> alerts = new ArrayList<>();
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
-        alerts.add(new Alert("userId1", "smartId", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
-
-
-        List<User> userList = new ArrayList<>();
-        userList.add(user1);
-
-        userPersistencyService.save(userList);
+        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 0D));
+        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
+        alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(40), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 0D));
         alertPersistencyService.save(alerts);
 
-
-        UserQuery.UserQueryBuilder queryBuilder = new UserQuery.UserQueryBuilder().pageNumber(0).pageSize(10).filterByUsersIds(Arrays.asList("userId1"));
-        Page<User> usersPageResult = userPersistencyService.find(queryBuilder.build());
-        Assert.assertEquals(1, usersPageResult.getContent().size());
-        Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
-        Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
+        //generate percentiles results
+        percentilesRepository.save(new UserScorePercentilesDocument(150D, 100D, 50D));
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
-        usersPageResult = userPersistencyService.find(queryBuilder.build());
-        Assert.assertEquals(1, usersPageResult.getContent().size());
-        Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
-        Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
-        Assert.assertEquals(20, usersPageResult.getContent().get(0).getScore(), 0.00001);
-        Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getSeverity());
+        User updatedUser = userPersistencyService.findUserById(userId);
+        Assert.assertEquals("userId1", updatedUser.getUserId());
+        Assert.assertEquals("userName1", updatedUser.getUserName());
+        Assert.assertEquals(25, updatedUser.getScore(), 0.00001);
+        Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
+
+        UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
+        Assert.assertEquals(percentileDoc.getCeilScoreForHighSeverity(), 25D, 0.01);
+        Assert.assertEquals(percentileDoc.getCeilScoreForMediumSeverity(), 25D, 0.01);
+        Assert.assertEquals(percentileDoc.getCeilScoreForLowSeverity(), 25D, 0.01);
 
     }
 
-    @Ignore
     @Test
     public void testSingleUserScoreCalculationAllAlertsMoreThen30Days() {
         //Generate one user with 2 critical alerts
@@ -168,7 +167,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
         userService.updateAllUsersAlertData();
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
         Assert.assertEquals(1, usersPageResult.getContent().size());
@@ -179,7 +178,6 @@ public class UserScoreServiceModuleTest {
     }
 
     @Test
-    @Ignore
     public void testBulkUserScore() throws InterruptedException {
         for (int i = 0; i < 100; i++) {
             AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
@@ -197,7 +195,7 @@ public class UserScoreServiceModuleTest {
 
         userService.updateAllUsersAlertData();
 
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
 
 
         User user0 = getUserById("userId0");
@@ -212,22 +210,12 @@ public class UserScoreServiceModuleTest {
         User user99 = getUserById("userId99");
         Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
         Assert.assertEquals(UserSeverity.CRITICAL, user99.getSeverity());
-
-
     }
-
 
     @Test
     public void testBulkUserScoreLargeScale() throws InterruptedException {
         final int DAYS_COUNT = 110;
-        final int USERS_COUNT = 1500;
-        userScoreService = new UserScoreServiceImpl(
-                userPersistencyService,
-                alertPersistencyService,
-                alertSeverityService,
-                500,
-                DAYS_COUNT + 10);
-
+        final int USERS_COUNT = 1000;
 
         List<User> userList = new ArrayList<>();
         List<LocalDateTime> dates = getListOfLastXdays(DAYS_COUNT);
@@ -262,7 +250,7 @@ public class UserScoreServiceModuleTest {
         long timeBefore = System.currentTimeMillis();
         userService.updateAllUsersAlertData();
 
-        userScoreService.updateSeverities();
+        userSeverityService.updateSeverities();
         long timeAfter = System.currentTimeMillis();
         long seconds = (timeAfter - timeBefore) / 1000;
         System.out.println("Total time in seconds: " + seconds);
@@ -293,6 +281,7 @@ public class UserScoreServiceModuleTest {
 
     private void generateUserAndAlerts(String userId, String userName, AlertEnums.AlertSeverity... severities) {
         User user1 = new User(userId, userName, "displayName", 0d, null, null, null, UserSeverity.CRITICAL, 0);
+        user1.setId(userId);
         user1.setSeverity(null);
         List<Alert> alerts = new ArrayList<>();
 

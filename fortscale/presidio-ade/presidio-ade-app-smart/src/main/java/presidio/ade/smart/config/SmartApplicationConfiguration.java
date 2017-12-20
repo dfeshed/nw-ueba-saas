@@ -15,6 +15,8 @@ import presidio.ade.domain.store.smart.SmartDataStoreConfig;
 import presidio.ade.smart.SmartApplicationCommands;
 import presidio.ade.smart.SmartScoringService;
 import presidio.ade.smart.SmartService;
+import presidio.monitoring.flush.MetricContainerFlusher;
+import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
 /**
  * @author Lior Govrin
@@ -31,6 +33,7 @@ import presidio.ade.smart.SmartService;
         SmartApplicationSmartScoringServiceConfig.class,
         SmartDataStoreConfig.class,
         StoreManagerConfig.class,
+        MetricContainerFlusherConfig.class
 })
 public class SmartApplicationConfiguration {
     @Value("${presidio.ade.aggregation.records.threshold:#{null}}")
@@ -46,7 +49,8 @@ public class SmartApplicationConfiguration {
     private SmartDataStore smartDataStore;
     @Autowired
     private StoreManager storeManager;
-
+    @Autowired
+    private MetricContainerFlusher metricContainerFlusher;
 
     @Bean
     public SmartService smartService() {
@@ -56,6 +60,7 @@ public class SmartApplicationConfiguration {
                 aggregatedDataReader,
                 smartScoringService,
                 smartDataStore,
-                storeManager);
+                storeManager,
+                metricContainerFlusher);
     }
 }

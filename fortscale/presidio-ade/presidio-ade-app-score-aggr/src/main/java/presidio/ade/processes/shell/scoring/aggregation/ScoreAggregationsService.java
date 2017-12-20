@@ -16,6 +16,7 @@ import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
     private final AggregationRecordsCreator aggregationRecordsCreator;
     private final EnrichedDataStore enrichedDataStore;
     private final EnrichedEventsScoringService enrichedEventsScoringService;
+    private final MetricContainerFlusher metricsContainer;
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     private Map<String, Set<TimeRange>> storedDataSourceToTimeRanges = new HashMap<>();
@@ -49,7 +51,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
                                     AggregationRecordsCreator aggregationRecordsCreator,
                                     AggregatedDataStore aggregatedDataStore,
                                     AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
-                                    int pageSize, int maxGroupSize) {
+                                    int pageSize, int maxGroupSize, MetricContainerFlusher metricContainerFlusher) {
         super(strategy);
         this.enrichedDataStore = enrichedDataStore;
         this.enrichedEventsScoringService = enrichedEventsScoringService;
@@ -59,6 +61,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
         this.pageSize = pageSize;
         this.maxGroupSize = maxGroupSize;
+        this.metricsContainer = metricContainerFlusher;
     }
 
 
@@ -81,7 +84,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
-                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords);
+                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords,timeRange);
                 scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextTypes, featureBucketStrategyData);
             }
 
@@ -89,6 +92,9 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
             aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
         }
+
+        //Flush stored metrics to elasticsearch
+        metricsContainer.flush();
     }
 
     private boolean isStoreScoredEnrichedRecords(TimeRange timeRange, String dataSource){

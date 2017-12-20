@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,6 +31,8 @@ import presidio.ade.sdk.data_generator.MockedEnrichedRecordGeneratorConfig;
 import presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator;
 import presidio.ade.test.utils.generators.ScoredEnrichedFileGeneratorConfig;
 import presidio.data.generators.common.GeneratorException;
+import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -134,12 +137,17 @@ public class AdeManagerSdkTest {
             SystemDateServiceImplForcedConfig.class,
             MockedEnrichedRecordGeneratorConfig.class,
             ScoredEnrichedFileGeneratorConfig.class,
+            PresidioMonitoringConfiguration.class
     })
     public static class springConfig {
+        @MockBean
+        private MetricRepository metricRepository;
+
         @Bean
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {
             Properties properties = new Properties();
             properties.put("spring.application.name", "test-app-name");
+            properties.put("enable.metrics.export",false);
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

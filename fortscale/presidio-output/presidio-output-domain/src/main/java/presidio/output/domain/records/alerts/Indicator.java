@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-import presidio.output.commons.services.alert.AlertEnums;
 import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
@@ -31,6 +30,7 @@ public class Indicator extends AbstractElasticDocument {
     public static final String SCHEMA = "schema";
     public static final String SCORE = "score";
     public static final String EVENTS_NUM = "eventsNum";
+    public static final String SCORE_CONTRIBUTION = "scoreContribution";
 
     @JsonProperty(NAME)
     private String name;
@@ -56,6 +56,9 @@ public class Indicator extends AbstractElasticDocument {
     @JsonProperty(SCORE)
     private double score;
 
+    @JsonProperty(SCORE_CONTRIBUTION)
+    private double scoreContribution;
+
     @JsonProperty(TYPE)
     @Enumerated(EnumType.STRING)
     private AlertEnums.IndicatorTypes type;
@@ -76,6 +79,14 @@ public class Indicator extends AbstractElasticDocument {
         super();
         events = new ArrayList<IndicatorEvent>();
         this.alertId = alertId;
+    }
+
+    public void setScoreContribution(double scoreContribution) {
+        this.scoreContribution = scoreContribution;
+    }
+
+    public double getScoreContribution() {
+        return scoreContribution;
     }
 
     public String getName() {

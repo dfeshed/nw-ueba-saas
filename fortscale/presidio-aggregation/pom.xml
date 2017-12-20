@@ -153,6 +153,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-monitoring-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

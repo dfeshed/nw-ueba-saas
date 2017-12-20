@@ -1,17 +1,25 @@
 package presidio.ade.processes.shell.feature.aggregation.buckets;
 
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.processes.shell.feature.aggregation.buckets.config.ModelFeatureAggregationBucketsConfiguration;
+import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
 @Configuration
-@Import(MongodbTestConfig.class)
+@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class})
 public class ModelFeatureAggregationBucketsApplicationConfigTest extends ModelFeatureAggregationBucketsConfiguration{
+    @MockBean
+    private MetricRepository metricRepository;
+
+
     @Bean
     public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsApplicationTestProperties() {
         Properties properties = new Properties();
@@ -27,6 +35,12 @@ public class ModelFeatureAggregationBucketsApplicationConfigTest extends ModelFe
         properties.put("presidio.default.cleanup.interval", "PT24H");
         properties.put("model-feature-aggregation.pageIterator.maxGroupSize",1000);
         properties.put("model-feature-aggregation.pageIterator.pageSize",1000);
+
+        properties.put("enable.metrics.export", false);
+        properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
+        properties.put("elasticsearch.host", "localhost");
+        properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
+        properties.put("monitoring.fixed.rate","60000");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

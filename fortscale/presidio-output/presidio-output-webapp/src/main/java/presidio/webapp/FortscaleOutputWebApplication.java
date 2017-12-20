@@ -8,6 +8,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.webapp.spring.OutputWebappConfiguration;
+import presidio.webapp.spring.OutputWebappProductionConfiguration;
 
 /**
  * Output webapp application expose the output REST APIs for retrieving presidio alerts, users, supporting info.
@@ -25,10 +26,10 @@ public class FortscaleOutputWebApplication extends SpringBootServletInitializer 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(new Object[]{FortscaleOutputWebApplication.class,
-                OutputWebappConfiguration.class});
+                OutputWebappProductionConfiguration.class});
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(new Object[]{FortscaleOutputWebApplication.class, OutputWebappConfiguration.class}, args);
+        SpringApplication.run(new Object[]{FortscaleOutputWebApplication.class, OutputWebappProductionConfiguration.class}, args);
     }
 }

@@ -2,15 +2,22 @@ package presidio.ade.modeling.config;
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
 @Configuration
-@Import(MongodbTestConfig.class)
+@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class})
 public class ModelingServiceApplicationModuleTestConfig extends ModelingServiceConfiguration{
+
+    @MockBean
+    private MetricRepository metricRepository;
+
     @Bean
     public static TestPropertiesPlaceholderConfigurer modelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
         Properties properties = new Properties();
@@ -32,6 +39,8 @@ public class ModelingServiceApplicationModuleTestConfig extends ModelingServiceC
         properties.put("presidio.default.ttl.duration", "PT1000H");
         properties.put("presidio.default.cleanup.interval", "PT2000H");
         properties.put("presidio.ade.modeling.expected.path", "classpath:expected/");
+        properties.put("enable.metrics.export", false);
+        properties.put("monitoring.fixed.rate","60000");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }
