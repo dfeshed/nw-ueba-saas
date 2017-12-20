@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -126,6 +127,36 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         }
 
         return eventsToSave;
+    }
+
+    @Override
+    protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
+
+    }
+
+    @Override
+    protected void monitorNumberOfSavedEvents(int number, Instant logicalHour) {
+
+    }
+
+    @Override
+    protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour) {
+
+    }
+
+    @Override
+    protected void monitorUnknownError(int number, Instant logicalHour) {
+
+    }
+
+    @Override
+    protected void stopMonitoring() {
+
+    }
+
+    @Override
+    protected Instant getLogicalHour(T event) {
+        return null;
     }
 
     @Override
