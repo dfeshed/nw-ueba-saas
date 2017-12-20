@@ -9,9 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.services.spring.TestConfig;
@@ -36,6 +38,8 @@ public class OutputDataServiceTest {
     private MongoTemplate mongoTemplate;
     @Autowired
     private ToCollectionNameTranslator<Schema> toCollectionNameTranslator;
+    @MockBean
+    private MetricRepository metricRepository;
 
     @Before
     public void before() {

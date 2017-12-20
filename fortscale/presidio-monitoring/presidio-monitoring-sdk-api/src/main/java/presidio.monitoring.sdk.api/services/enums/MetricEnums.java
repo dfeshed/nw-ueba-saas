@@ -34,7 +34,15 @@ public class MetricEnums {
         WRITES("writes"),
         HIT("modelFromMemory"),
         MISS("modelFromDB"),
+<<<<<<< HEAD
         EMPTY_MODEL("emptyModel");
+=======
+        EMPTY_MODEL("emptyModel"),
+        NULL_FEATURE_BUCKET_ID("nullFeatureBucketId"),
+        FEATURE_BUCKETS("featureBuckets"),
+        FEATURE_BUCKETS_UPDATES("featureBucketsUpdates")
+        ;
+>>>>>>> d91197337410dd20d4c48810d6679a7752bb71ad
 
         private String value;
 
@@ -62,7 +70,11 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
+<<<<<<< HEAD
         HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER, MODEL, GROUP_NAME, TIME;
+=======
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL, FEATURE_BUCKET;
+>>>>>>> d91197337410dd20d4c48810d6679a7752bb71ad
     }
 
     public enum MetricUnitType {

@@ -2,6 +2,8 @@ package presidio.ade.processes.shell.config;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainerConfig;
 import presidio.ade.domain.record.AdeRecordReaderFactoriesConfig;
 import presidio.ade.domain.record.RecordReaderFactoryServiceConfig;
 import presidio.ade.domain.record.TransformationConfig;
@@ -24,7 +26,8 @@ import presidio.ade.processes.shell.accumulate.AccumulateAggregationsBucketServi
         //        common application confs
         TransformationConfig.class,
         RecordReaderFactoryServiceConfig.class,
-        AdeRecordReaderFactoriesConfig.class
+        AdeRecordReaderFactoriesConfig.class,
+        FeatureBucketAggregatorMetricsContainerConfig.class
 })
 public class AccumulateAggregationsBucketServiceConfig {
 
@@ -38,8 +41,11 @@ public class AccumulateAggregationsBucketServiceConfig {
     @Qualifier("bucketConfigurationService")
     private BucketConfigurationService bucketConfigurationService;
 
+    @Autowired
+    private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
+
     @Bean
     public AccumulateAggregationsBucketService accumulateAggregationsBucketService(){
-        return new AccumulateAggregationsBucketServiceImpl(aggregationsCreator,bucketConfigurationService,recordReaderFactoryService);
+        return new AccumulateAggregationsBucketServiceImpl(aggregationsCreator,bucketConfigurationService,recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 }

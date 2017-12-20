@@ -13,6 +13,7 @@ public class TestConfig {
     @Bean
     public static TestPropertiesPlaceholderConfigurer testPropertiesPlaceholderConfigurer() {
         Properties properties = new Properties();
+        properties.put("enable.metrics.export",false);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

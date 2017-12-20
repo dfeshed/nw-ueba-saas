@@ -10,9 +10,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
@@ -34,6 +36,8 @@ public class EventPersistencyServiceTest {
     private OutputToCollectionNameTranslator toCollectionNameTranslator;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @MockBean
+    private MetricRepository metricRepository;
 
     @Before
     public void before() {
