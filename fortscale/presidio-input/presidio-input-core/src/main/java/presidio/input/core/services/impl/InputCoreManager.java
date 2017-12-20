@@ -106,4 +106,8 @@ public class InputCoreManager {
         adeDataService.store(schema, startDate, endDate, converterService.convertToAde(transformedEvents, schema));
     }
 
+    public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) {
+        adeDataService.cleanup(schema, startDate, endDate);
+        outputDataServiceSDK.clean(schema, startDate, endDate);
+    }
 }

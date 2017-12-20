@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface PriorBuilder {
 	Double calcPrior(List<IContinuousDataModel> models, double mean);
+	Double getMinAllowedPrior();
 }

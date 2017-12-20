@@ -1,11 +1,13 @@
 package presidio.monitoring.endPoint;
 
+import org.elasticsearch.common.collect.Tuple;
 import org.springframework.util.ObjectUtils;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,7 +16,7 @@ import java.util.Map;
 
 public class PresidioMetricBucket {
 
-    private Map<String, Metric> applicationMetrics;
+    private Map<Tuple<String, Instant>, Metric> applicationMetrics;
     private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
     private MetricConventionApplyer metricConventionApplyer;
 
@@ -26,17 +28,22 @@ public class PresidioMetricBucket {
 
     public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
-        if (!ObjectUtils.isEmpty(applicationMetrics.get(metric.getName()))) {
-            accumulateMetricValues(metric, applicationMetrics.get(metric.getName()).getValue());
+        if (!ObjectUtils.isEmpty(applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())))) {
+            accumulateMetricValues(metric, applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())).getValue());
         }
-        applicationMetrics.put(metric.getName(), metric);
+        applicationMetrics.put(Tuple.tuple(metric.getName(), metric.getLogicTime()), metric);
     }
 
     private void accumulateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
         Map<MetricEnums.MetricValues, Number> metricValues = metric.getValue();
         for (Map.Entry<MetricEnums.MetricValues, Number> entry : metricValues.entrySet()) {
-            if (value.get(entry.getKey()) != null) {
+            if (!ObjectUtils.isEmpty(value.get(entry.getKey()))) {
                 entry.setValue(operatorAddForNumber(value.get(entry.getKey()), entry.getValue()));
+            }
+        }
+        for (Map.Entry<MetricEnums.MetricValues, Number> entry : value.entrySet()) {
+            if (!metricValues.containsKey(entry.getKey())) {
+                metricValues.put(entry.getKey(), entry.getValue());
             }
         }
     }

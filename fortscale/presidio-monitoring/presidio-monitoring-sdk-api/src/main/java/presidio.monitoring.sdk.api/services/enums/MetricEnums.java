@@ -12,7 +12,10 @@ public class MetricEnums {
         DEFAULT_METRIC_VALUE("metric_value"), SUM("sum"), MAX("max"), AVG("avg"), COUNT("count"),
         AMOUNT_OF_SCORED("amountOfScored"),
         AMOUNT_OF_NON_ZERO_SCORE("amountOfNonZeroScore"),
-        MAX_SCORE("maxScore")
+        MAX_SCORE("maxScore"),
+        HIT("modelFromMemory"),
+        MISS("modelFromDB"),
+        EMPTY_MODEL("emptyModel")
         ;
 
         private String value;
@@ -41,7 +44,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL;
     }
 
     public enum MetricUnitType {

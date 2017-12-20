@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
+import fortscale.ml.model.IContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilder;
 import fortscale.ml.model.builder.gaussian.prior.PriorBuilder;
 import fortscale.ml.model.builder.gaussian.prior.SegmentCenters;
@@ -18,6 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -81,15 +83,11 @@ public class GaussianPriorModelBuilderTest {
 		ContinuousDataModel modelWithoutSuccessfulPrior = new ContinuousDataModel().setParameters(minNumOfSamplesToLearnFrom, meanWithoutSuccessfulPrior, 0, 5);
 		double segmentLeftMean = 0;
 		double segmentRightMean = 100;
+		PriorBuilder priorBuilder = new PriorBuilderTest(meanWithSuccessfulPrior, prior);
 		GaussianPriorModel gaussianPriorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(
 				models -> IteratorUtils.arrayIterator(new double[]{meanWithSuccessfulPrior, meanWithoutSuccessfulPrior}),
 				(sortedModels, segmentCenter) -> new Segmentor.Segment(segmentLeftMean, segmentRightMean, sortedModels),
-				(models, mean) -> {
-					if (mean == meanWithSuccessfulPrior) {
-						return prior;
-					}
-					return null;
-				},
+				priorBuilder,
 				minNumOfSamplesToLearnFrom
 		).build(Arrays.asList(modelWithSuccessfulPrior, modelWithoutSuccessfulPrior));
 
@@ -135,5 +133,28 @@ public class GaussianPriorModelBuilderTest {
 		).build(Arrays.asList(modelInsideTheLearningSegment, modelOutsideTheLearningSegment));
 
 		Mockito.verify(priorBuilder).calcPrior(Collections.singletonList(modelInsideTheLearningSegment), mean);
+	}
+
+	public static class PriorBuilderTest implements PriorBuilder{
+		private double meanWithSuccessfulPrior;
+		private double prior;
+
+		public PriorBuilderTest(double meanWithSuccessfulPrior, double prior){
+			this.meanWithSuccessfulPrior = meanWithSuccessfulPrior;
+			this.prior = prior;
+		}
+
+		@Override
+		public Double calcPrior(List<IContinuousDataModel> models, double mean) {
+			if (mean == meanWithSuccessfulPrior) {
+				return prior;
+			}
+			return null;
+		}
+
+		@Override
+		public Double getMinAllowedPrior() {
+			return null;
+		}
 	}
 }
