@@ -123,10 +123,11 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
      * @return metric
      */
     private Metric getMetric(Instant logicalTime) {
-        ModelingMetricsKey key = new ModelingMetricsKey(logicalTime, tags);
+        Map<MetricEnums.MetricTagKeysEnum, String> metricTags = new HashMap<>(tags);
+        ModelingMetricsKey key = new ModelingMetricsKey(logicalTime, metricTags);
         Metric metric = modelingMetrics.get(key);
         if (metric == null) {
-            metric = createNewMetric(logicalTime);
+            metric = createNewMetric(logicalTime, metricTags);
             // cache the metric
             modelingMetrics.put(key, metric);
         }
@@ -138,8 +139,7 @@ public class ModelingServiceMetricsContainer implements FlushableMetricContainer
      * @param logicalStartTime - the logical execution time of the processing (not of the event)
      * @return new Metric object for logical time
      */
-    private Metric createNewMetric(Instant logicalStartTime) {
-        Map<MetricEnums.MetricTagKeysEnum, String> metricTags = new HashMap<>(tags);
+    private Metric createNewMetric(Instant logicalStartTime,  Map<MetricEnums.MetricTagKeysEnum, String> metricTags) {
         Map<MetricEnums.MetricValues, Number> values = new HashMap<>();
         values.put(MetricEnums.MetricValues.AMOUNT_OF_SUCCEEDED_MODELS, 0L);
         values.put(MetricEnums.MetricValues.AMOUNT_OF_FAILED_MODELS, 0L);
