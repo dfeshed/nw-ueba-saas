@@ -21,6 +21,8 @@ test('autoruns', function(assert) {
         autorun
       },
       explore: {
+      },
+      datatable: {
       }
     }
   }));
@@ -36,6 +38,8 @@ test('services', function(assert) {
         service
       },
       explore: {
+      },
+      datatable: {
       }
     }
 
@@ -52,8 +56,30 @@ test('tasks', function(assert) {
         task
       },
       explore: {
+      },
+      datatable: {
       }
     }
   }));
   assert.equal(result.length, 2);
+});
+
+test('autoruns sorting by fileName', function(assert) {
+  const normalizedData = normalize(autorunsData, fileContextAutorunsSchema);
+  const { autorun } = normalizedData.entities;
+  const result = autoruns(Immutable.from({
+    endpoint: {
+      autoruns: {
+        autorun
+      },
+      explore: {
+      },
+      datatable: {
+        sortConfig: {
+          autoruns: { isDescending: true, field: 'fileName' }
+        }
+      }
+    }
+  }));
+  assert.equal(result[0].fileName, 'vmware-user-suid-wrapper');
 });

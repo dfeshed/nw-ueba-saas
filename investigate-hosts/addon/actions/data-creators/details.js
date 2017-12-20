@@ -171,6 +171,19 @@ const initializeAgentDetails = (input, loadSnapshot) => {
   };
 };
 
+const setHostDetailsDataTableSortConfig = (sortConfig) => {
+  return (dispatch, getState) => {
+    const { endpoint: { visuals: { activeAutorunTab, activeHostDetailTab } } } = getState();
+    dispatch({
+      type: ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG,
+      payload: {
+        ...sortConfig,
+        tabName: activeHostDetailTab !== 'AUTORUNS' ? activeHostDetailTab : activeAutorunTab
+      }
+    });
+  };
+};
+
 export {
   initializeAgentDetails,
   changeDetailTab,
@@ -179,5 +192,6 @@ export {
   setTransition,
   exportFileContext,
   loadDetailsWithExploreInput,
-  setAutorunsTabView
+  setAutorunsTabView,
+  setHostDetailsDataTableSortConfig
 };

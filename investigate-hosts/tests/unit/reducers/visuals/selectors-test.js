@@ -5,8 +5,7 @@ import {
   selectedAutorunTab,
   getAutorunTabs,
   getHostDetailTabs,
-  selectedTabComponent
-} from 'investigate-hosts/reducers/visuals/selectors';
+  selectedTabComponent } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
 

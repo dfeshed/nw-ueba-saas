@@ -1,8 +1,16 @@
 import _ from 'lodash';
 
-export const getValues = (selectedTab, tabName, data) => {
+export const getValues = (selectedTab, tabName, data, sortConfig) => {
   if (data) {
-    const values = _.values(data);
+    let values = _.values(data);
+    const tab = tabName.toLowerCase(); // AUTORUNS -> autoruns
+    if (sortConfig && sortConfig[tab]) {
+      const config = sortConfig[tab];
+      values = values.sortBy(config.field);
+      if (config.isDescending) {
+        values.reverse();
+      }
+    }
     if (selectedTab && selectedTab.tabName === tabName) {
       return values.filter((val) => (selectedTab.checksum === val.checksumSha256));
     } else {

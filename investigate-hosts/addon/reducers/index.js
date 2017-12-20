@@ -12,6 +12,7 @@ import libraries from './details/libraries/reducer';
 import schema from './schema/reducer';
 import filter from './filters/reducer';
 import preferences from 'preferences/reducers';
+import datatable from './details/datatable/reducer';
 
 export default combineReducers({
   endpoint: combineReducers({
@@ -26,7 +27,8 @@ export default combineReducers({
     drivers,
     libraries,
     schema,
-    filter
+    filter,
+    datatable
   }),
   preferences
 });

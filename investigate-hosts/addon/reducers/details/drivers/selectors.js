@@ -6,6 +6,7 @@ const _driverLoadingStatus = (state) => state.endpoint.drivers.driverLoadingStat
 const _driverObject = (state) => state.endpoint.drivers.driver;
 const _selectedRowId = (state) => state.endpoint.drivers.selectedRowId;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
+const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
 
 export const isDataLoading = createSelector(
   _driverLoadingStatus,
@@ -13,8 +14,8 @@ export const isDataLoading = createSelector(
 );
 
 export const drivers = createSelector(
-  [ _driverObject, _selectedTab ],
-  (driverObject, selectedTab) => getValues(selectedTab, 'DRIVERS', driverObject)
+  [ _driverObject, _selectedTab, _sortConfig ],
+  (driverObject, selectedTab, sortConfig) => getValues(selectedTab, 'DRIVERS', driverObject, sortConfig)
 );
 
 /**

@@ -1,16 +1,19 @@
 import Component from 'ember-component';
+import { connect } from 'ember-redux';
 import { alias } from 'ember-computed-decorators';
+import { setHostDetailsDataTableSortConfig } from 'investigate-hosts/actions/data-creators/details';
 
-export default Component.extend({
+const dispatchToActions = {
+  setHostDetailsDataTableSortConfig
+};
+
+const HostDetailsDataTable = Component.extend({
 
   tagName: 'box',
 
   classNames: ['host-detail__datatable'],
 
   columnConfig: null,
-
-  @alias('items')
-  data: null,
 
   @alias('status')
   isDataLoading: true,
@@ -33,17 +36,17 @@ export default Component.extend({
       } else {
         column.set('isDescending', false);
       }
-      const items = this.get('data');
-      const newList = items.sortBy(column.get('field'));
-      if (column.isDescending) {
-        newList.reverse();
-      }
-      this.set('items', newList);
-
+      this.send('setHostDetailsDataTableSortConfig', {
+        isDescending: column.isDescending,
+        field: column.field
+      });
     },
+
     toggleSelectedRow(item, index, e, table) {
       table.set('selectedIndex', index);
       this.sendAction('selectRowAction', item);
     }
   }
 });
+
+export default connect(null, dispatchToActions)(HostDetailsDataTable);

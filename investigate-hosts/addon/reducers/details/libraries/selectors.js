@@ -7,10 +7,11 @@ const _libraryObject = (state) => state.endpoint.libraries.library;
 const _selectedRowId = (state) => state.endpoint.libraries.selectedRowId;
 const _processData = (state) => state.endpoint.libraries.processList;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
+const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
 
 const _libraries = createSelector(
-  [ _libraryObject, _selectedTab ],
-  (libraryObject, selectedTab) => getValues(selectedTab, 'LIBRARIES', libraryObject)
+  [ _libraryObject, _selectedTab, _sortConfig ],
+  (libraryObject, selectedTab, sortConfig) => getValues(selectedTab, 'LIBRARIES', libraryObject, sortConfig)
 );
 
 export const isDataLoading = createSelector(

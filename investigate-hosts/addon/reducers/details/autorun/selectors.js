@@ -10,6 +10,7 @@ const _serviceObject = (state) => state.endpoint.autoruns.service;
 const _taskObject = (state) => state.endpoint.autoruns.task;
 const _selectedRowId = (state) => state.endpoint.autoruns.selectedRowId;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
+const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
 
 export const isAutorunDataLoading = createSelector(
   _autorunLoadingStatus,
@@ -27,18 +28,18 @@ export const isTaskDataLoading = createSelector(
 );
 
 export const autoruns = createSelector(
-  [ _autorunObject, _selectedTab ],
-  (autorunObject, selectedTab) => getValues(selectedTab, 'AUTORUNS', autorunObject)
+  [ _autorunObject, _selectedTab, _sortConfig ],
+  (autorunObject, selectedTab, sortConfig) => getValues(selectedTab, 'AUTORUNS', autorunObject, sortConfig)
 );
 
 export const services = createSelector(
-  [ _serviceObject, _selectedTab ],
-  (serviceObject, selectedTab) => getValues(selectedTab, 'SERVICES', serviceObject)
+  [ _serviceObject, _selectedTab, _sortConfig ],
+  (serviceObject, selectedTab, sortConfig) => getValues(selectedTab, 'SERVICES', serviceObject, sortConfig)
 );
 
 export const tasks = createSelector(
-  [ _taskObject, _selectedTab ],
-  (taskObject, selectedTab) => getValues(selectedTab, 'TASKS', taskObject)
+  [ _taskObject, _selectedTab, _sortConfig ],
+  (taskObject, selectedTab, sortConfig) => getValues(selectedTab, 'TASKS', taskObject, sortConfig)
 );
 
 export const selectedAutorunFileProperties = createSelector([ _selectedRowId, autoruns, _autorunObject], getProperties);

@@ -19,8 +19,29 @@ test('drivers', function(assert) {
       },
       explore: {
 
+      },
+      datatable: {
       }
     }
   }));
   assert.equal(result.length, 4);
+});
+
+test('drivers sort by file name', function(assert) {
+  const normalizedData = normalize(driversData, fileContextListSchema);
+  const result = drivers(Immutable.from({
+    endpoint: {
+      drivers: {
+        driver: normalizedData.entities.driver
+      },
+      explore: {
+      },
+      datatable: {
+        sortConfig: {
+          drivers: { isDescending: false, field: 'fileName' }
+        }
+      }
+    }
+  }));
+  assert.equal(result[0].fileName, 'crc-t10dif.ko');
 });
