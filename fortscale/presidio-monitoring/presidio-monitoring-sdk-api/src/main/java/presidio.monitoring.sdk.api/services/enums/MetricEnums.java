@@ -16,8 +16,9 @@ public class MetricEnums {
         HIT("modelFromMemory"),
         MISS("modelFromDB"),
         EMPTY_MODEL("emptyModel"),
-        READ("readEvents"),
-        WRITE("writeEvents")
+        SUCCESS_EVENTS("successEvents"),
+        TOTAL_EVENTS("totalEvents"),
+        FAILED_EVENTS("failedEvents")
         ;
 
         private String value;
@@ -46,7 +47,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL, SUCCESS_STATUS;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL, FAILURE_REASON;
     }
 
     public enum MetricUnitType {
