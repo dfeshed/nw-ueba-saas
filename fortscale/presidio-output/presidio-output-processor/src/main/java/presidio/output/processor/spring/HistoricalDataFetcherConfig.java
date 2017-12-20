@@ -7,12 +7,13 @@ import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorImpl;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainerConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncServiceConfig;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
-import fortscale.utils.spring.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +39,8 @@ import presidio.output.processor.services.alert.supportinginformation.historical
         RecordReaderFactoryServiceConfig.class,
         AggrFeatureFuncServiceConfig.class,
         AggregatedFeatureEventsConfServiceConfig.class,
-        AccumulationsCacheConfig.class
+        AccumulationsCacheConfig.class,
+        FeatureBucketAggregatorMetricsContainerConfig.class
 
 })
 public class HistoricalDataFetcherConfig {
@@ -67,10 +69,12 @@ public class HistoricalDataFetcherConfig {
     @Autowired
     private AccumulationsCache accumulationsCache;
 
+    @Autowired
+    private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
 
     @Bean
     public InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator() {
-        return new InMemoryFeatureBucketAggregator(bucketConfigurationService, recordReaderFactoryService);
+        return new InMemoryFeatureBucketAggregator(bucketConfigurationService, recordReaderFactoryService,featureBucketAggregatorMetricsContainer );
     }
 
     @Bean

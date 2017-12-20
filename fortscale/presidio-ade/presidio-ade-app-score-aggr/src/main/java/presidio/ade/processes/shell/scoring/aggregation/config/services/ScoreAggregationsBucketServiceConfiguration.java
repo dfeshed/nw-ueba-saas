@@ -1,6 +1,7 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.services;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +17,8 @@ import presidio.ade.processes.shell.scoring.aggregation.ScoreAggregationsBucketS
 @Configuration
 @Import({
         ScoreAggregationBucketConfigurationServiceConfig.class,
-        ScoringAggregationsRecordReaderFactoryServiceConfig.class
+        ScoringAggregationsRecordReaderFactoryServiceConfig.class,
+        FeatureBucketAggregatorMetricsContainer.class
 })
 public class ScoreAggregationsBucketServiceConfiguration {
     @Autowired
@@ -24,9 +26,10 @@ public class ScoreAggregationsBucketServiceConfiguration {
     private BucketConfigurationService bucketConfigurationService;
     @Autowired
     private RecordReaderFactoryService recordReaderFactoryService;
-
+    @Autowired
+    private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
     @Bean
     public ScoreAggregationsBucketService getScoreAggregationsBucketService() {
-        return new ScoreAggregationsBucketServiceImpl(bucketConfigurationService, recordReaderFactoryService);
+        return new ScoreAggregationsBucketServiceImpl(bucketConfigurationService, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 }

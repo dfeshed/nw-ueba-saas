@@ -15,7 +15,10 @@ public class MetricEnums {
         MAX_SCORE("maxScore"),
         HIT("modelFromMemory"),
         MISS("modelFromDB"),
-        EMPTY_MODEL("emptyModel")
+        EMPTY_MODEL("emptyModel"),
+        NULL_FEATURE_BUCKET_ID("nullFeatureBucketId"),
+        FEATURE_BUCKETS("featureBuckets"),
+        FEATURE_BUCKETS_UPDATES("featureBucketsUpdates")
         ;
 
         private String value;
@@ -44,7 +47,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL, FEATURE_BUCKET;
     }
 
     public enum MetricUnitType {
