@@ -47,8 +47,24 @@ export default class DataHelper {
     return this;
   }
 
-  userProjectionChanged(flag) {
-    _set(this.state, 'schema.userProjectionChanged', flag);
+  totalItems(count) {
+    _set(this.state, 'fileList.totalItems', count);
+    return this;
+  }
+
+  isValidExpression(isValid) {
+    if (isValid) {
+      _set(this.state, 'filter.expressionList',
+        [{ propertyName: 'format', propertyValues: [{ value: 'pe' }], restrictionType: 'IN' }]);
+    } else {
+      _set(this.state, 'filter.expressionList', null);
+    }
+    return this;
+  }
+
+  fileCount(count) {
+    const array = new Array(count);
+    _set(this.state, 'fileList.files', array);
     return this;
   }
 }

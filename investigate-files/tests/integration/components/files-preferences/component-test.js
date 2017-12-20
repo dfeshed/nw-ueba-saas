@@ -32,7 +32,6 @@ test('it renders', function(assert) {
   new ReduxDataHelper(setState)
     .schema(schema.fields)
     .visibleColumns([])
-    .userProjectionChanged(false)
     .build();
   this.render(hbs`{{files-preferences}}{{preferences-panel}}`);
   this.$('.rsa-icon-settings-1-filled').trigger('click');

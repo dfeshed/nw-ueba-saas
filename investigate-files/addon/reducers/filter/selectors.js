@@ -15,6 +15,28 @@ export const searchableColumns = createSelector(
 );
 
 /**
+ * Check whether user selected filters have valid conditions. Property can be added for filter and left empty
+ * In such cases, no filter condition is sent to api. Filter is valid, only if at least one property value is added
+ * @param expressionList
+ * @returns boolean
+ * @public
+ */
+export const isValidExpression = createSelector(
+  expressionList,
+  (expressionList) => {
+    let flag = false;
+    if (expressionList && expressionList.length) {
+      const list = expressionList.filterBy('propertyValues');
+      if (list.length) {
+        // If at least one property value are present in the expression, the expression is valid
+        flag = list.some((item) => item.propertyValues.length);
+      }
+    }
+    return flag;
+  }
+);
+
+/**
  * Filters only searchable columns from list of all available filter control configuration. Also it set's the saved
  * expression to the filter configuration if any. For newly added filter setting showFilterOnInsert flag to `true`.
  * @param searchableColumns
