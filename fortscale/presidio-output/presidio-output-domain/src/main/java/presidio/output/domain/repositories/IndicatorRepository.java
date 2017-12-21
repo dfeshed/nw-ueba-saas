@@ -14,6 +14,8 @@ public interface IndicatorRepository extends ElasticsearchRepository<Indicator, 
 
     Page<Indicator> findByAlertId(String alertId, Pageable pageRequest);
 
+    Page<Indicator> findByAlertIdOrderByScoreContributionDesc(String alertId, Pageable pageRequest);
+
     Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, Pageable pageRequest);
 
     Iterable<Indicator> findById(String id);

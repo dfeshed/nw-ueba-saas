@@ -21,8 +21,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums.*;
+import presidio.output.domain.records.alerts.AlertEnums.AlertFeedback;
+import presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
+import presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 import presidio.output.domain.records.alerts.AlertQuery;
+import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.spring.TestConfig;
 
@@ -812,5 +815,42 @@ public class AlertPersistencyServiceTest {
         Assert.assertEquals(1, testAlert.getTotalElements());
         Iterator<Alert> iterator = testAlert.iterator();
         Assert.assertEquals(firstUserName, iterator.next().getUserName());
+    }
+
+    @Test
+    public void findIndicatorsByAlertIsSorted() {
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
+        Alert alert1 = new Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        List<Indicator> indicators = new ArrayList<>();
+        Indicator indicator1 = new Indicator(alert1.getId());
+        indicator1.setScoreContribution(0.5);
+        Indicator indicator3 = new Indicator(alert1.getId());
+        indicator3.setScoreContribution(0.2);
+        Indicator indicator4 = new Indicator(alert1.getId());
+        indicator3.setScoreContribution(0.3);
+        Indicator indicator2 = new Indicator(alert1.getId());
+        indicator2.setScoreContribution(0.3);
+        indicators.add(indicator1);
+        indicators.add(indicator2);
+        indicators.add(indicator3);
+        indicators.add(indicator4);
+        alert1.setIndicators(indicators);
+        alert1.setIndicatorsNames(indicatorNames1);
+        alertPersistencyService.save(alert1);
+        alertPersistencyService.save(indicator1);
+        alertPersistencyService.save(indicator2);
+        alertPersistencyService.save(indicator3);
+        alertPersistencyService.save(indicator4);
+        PageRequest pageRequest = new PageRequest(0, 100);
+        Page<Indicator> returnIndicators = alertPersistencyService.findIndicatorsByAlertId(alert1.getId(), pageRequest);
+        List<Indicator> returnedIndicators = returnIndicators.getContent();
+        Assert.assertEquals(4, returnedIndicators.size(), 0);
+        Assert.assertEquals(0.5, returnedIndicators.get(0).getScoreContribution(), 0);
+        Assert.assertEquals(0.3, returnedIndicators.get(1).getScoreContribution(), 0);
+        Assert.assertEquals(0.3, returnedIndicators.get(2).getScoreContribution(), 0);
+        Assert.assertEquals(0.2, returnedIndicators.get(3).getScoreContribution(), 0);
     }
 }
