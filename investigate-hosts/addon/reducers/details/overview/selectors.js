@@ -72,7 +72,7 @@ export const downloadLink = createSelector(
   [ _downloadId ],
   (downloadId) => {
     if (downloadId) {
-      return `${location.origin}/endpoint/files/download/${downloadId}`;
+      return `${location.origin}/rsa/endpoint/machine/download?id=${downloadId}`;
     }
   }
 );

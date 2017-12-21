@@ -26,7 +26,7 @@ export const hostExportLink = createSelector(
   _hostExportLinkId,
   (hostExportLinkId) => {
     if (hostExportLinkId) {
-      return `${location.origin}/endpoint/machine/download/${hostExportLinkId}`;
+      return `${location.origin}/rsa/endpoint/machine/property/download?id=${hostExportLinkId}`;
     }
     return null;
   }

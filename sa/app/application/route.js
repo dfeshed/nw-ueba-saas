@@ -120,7 +120,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   _isInIframe() {
-    return window.location != window.parent.location;
+    return !!window.frameElement;
   },
 
   sessionAuthenticated() {

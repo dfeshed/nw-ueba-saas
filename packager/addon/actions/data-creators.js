@@ -18,8 +18,8 @@ import {
   getListOfDevices
 } from './fetch';
 
-const downloadURL = '/rsa/nwe/management/packager/download';
-const downloadURLLogConfig = 'rsa/nwe/management/logconfig/download';
+const downloadURL = '/rsa/endpoint/packager/download';
+const downloadURLLogConfig = '/rsa/endpoint/logconfig/download';
 
 /**
  * Action creator for fetching packager config information.

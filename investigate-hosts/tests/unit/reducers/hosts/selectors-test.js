@@ -48,7 +48,7 @@ test('areSomeScanning', function(assert) {
 
 test('hostExportLink', function(assert) {
   const result = hostExportLink(STATE);
-  assert.equal(result, `${location.origin}/endpoint/machine/download/123`, 'should return the export link');
+  assert.equal(result, `${location.origin}/rsa/endpoint/machine/property/download?id=123`, 'should return the export link');
 });
 
 test('isAllHostSelected', function(assert) {

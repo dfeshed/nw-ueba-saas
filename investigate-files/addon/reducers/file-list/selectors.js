@@ -22,7 +22,7 @@ export const fileExportLink = createSelector(
   _fileExportLinkId,
   (fileExportLinkId) => {
     if (fileExportLinkId) {
-      return `${location.origin}/endpoint/file/download/${fileExportLinkId}`;
+      return `${location.origin}/rsa/endpoint/file/property/download?id=${fileExportLinkId}`;
     }
     return null;
   }

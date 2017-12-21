@@ -33,7 +33,7 @@ const STATE = Immutable.from({
 
 test('fileExportLink', function(assert) {
   const result = fileExportLink(STATE);
-  assert.equal(result, `${location.origin}/endpoint/file/download/123`, 'should return the export link');
+  assert.equal(result, `${location.origin}/rsa/endpoint/file/property/download?id=123`, 'should return the export link');
 });
 
 test('fileCount', function(assert) {
