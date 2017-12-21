@@ -35,6 +35,8 @@ import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTransla
 import presidio.ade.domain.store.scored.AdeScoredEnrichedRecordToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.Indicator;
@@ -77,6 +79,11 @@ public class AlertServiceTest {
 
     @MockBean
     private SmartDataReader smartDataReader;
+
+    @MockBean
+    private MetricCollectingService metricCollectingService;
+    @MockBean
+    private MetricsExporter metricsExporter;
 
     @Autowired
     private AlertServiceImpl alertService;

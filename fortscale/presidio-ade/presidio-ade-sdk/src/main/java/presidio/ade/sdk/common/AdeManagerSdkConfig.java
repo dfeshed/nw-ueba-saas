@@ -20,6 +20,7 @@ import presidio.ade.domain.store.smart.SmartDataReaderConfig;
 import presidio.ade.sdk.aggregation_records.AggregatedFeatureEventsConfServiceConfig;
 import presidio.ade.sdk.smart_records.SmartRecordConfServiceConfig;
 import presidio.ade.sdk.store.StoreManagerConfig;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 /**
  * @author Barak Schuster
@@ -33,7 +34,8 @@ import presidio.ade.sdk.store.StoreManagerConfig;
         FeatureBucketStoreMongoConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
         SmartRecordConfServiceConfig.class,
-        StoreManagerConfig.class
+        StoreManagerConfig.class,
+        PresidioMonitoringConfiguration.class
 })
 public class AdeManagerSdkConfig {
     @Autowired

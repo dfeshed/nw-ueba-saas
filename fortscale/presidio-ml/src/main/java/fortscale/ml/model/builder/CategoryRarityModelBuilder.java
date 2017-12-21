@@ -3,6 +3,7 @@ package fortscale.ml.model.builder;
 import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import javafx.util.Pair;
 import org.springframework.util.Assert;
 
@@ -20,11 +21,13 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     private int numOfBuckets;
     private int entriesToSaveInModel;
     private long partitionsResolutionInSeconds;
+    private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
 
-    public CategoryRarityModelBuilder(CategoryRarityModelBuilderConf config) {
+    public CategoryRarityModelBuilder(CategoryRarityModelBuilderConf config, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
         numOfBuckets = config.getNumOfBuckets();
         entriesToSaveInModel = config.getEntriesToSaveInModel();
         partitionsResolutionInSeconds = config.getPartitionsResolutionInSeconds();
+        this.categoryRarityModelBuilderMetricsContainer = categoryRarityModelBuilderMetricsContainer;
     }
 
     @Override
@@ -37,6 +40,7 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         long numDistinctFeatures = featureValueToCountMap.size();
         categoryRarityModel.init(calcOccurrencesToNumOfDistinctPartitions(sequenceReduction), numOfBuckets, numOfPartitions, numDistinctFeatures);
         saveTopEntriesInModel(featureValueToCountMap, categoryRarityModel);
+        categoryRarityModelBuilderMetricsContainer.updateMetric(featureValueToCountMap.size(), numOfPartitions, categoryRarityModel.getBuckets());
         return categoryRarityModel;
     }
 

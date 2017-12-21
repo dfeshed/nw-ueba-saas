@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "ce6db900-e4aa-11e7-9c7c-3bfecd31a061",
+    "_type": "search",
+    "_source": {
+      "title": "Enriched models",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "logicTime",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:\\\"enriched-record-models\\\"\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

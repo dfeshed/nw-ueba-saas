@@ -1,0 +1,1 @@
+SELECT setval(pg_get_serial_sequence('chart', 'id'), max(id)) FROM chart;
