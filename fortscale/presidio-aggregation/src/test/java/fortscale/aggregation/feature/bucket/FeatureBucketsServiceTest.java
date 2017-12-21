@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
@@ -15,6 +16,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -36,6 +38,8 @@ public class FeatureBucketsServiceTest {
 
     @Autowired
     private BucketConfigurationService bucketConfigurationService;
+    @MockBean
+    private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
 
     private FeatureBucketsAggregatorInMemory featureBucketsAggregatorStore;
     private FeatureBucketAggregator featureBucketAggregator;
@@ -75,7 +79,7 @@ public class FeatureBucketsServiceTest {
         Collection<RecordReaderFactory> recordReaderFactories = new ArrayList<>();
         recordReaderFactories.add(new AdeRecordReaderFactory());
         RecordReaderFactoryService recordReaderFactoryService = new RecordReaderFactoryService(recordReaderFactories, transformations);
-        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, recordReaderFactoryService);
+        featureBucketAggregator = new FeatureBucketAggregator(featureBucketsAggregatorStore, bucketConfigurationService, recordReaderFactoryService, featureBucketAggregatorMetricsContainer);
     }
 
     /**

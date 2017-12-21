@@ -3,7 +3,11 @@ package fortscale.ml.model.builder;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.TimeModel;
+import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import org.springframework.util.Assert;
+
+import java.util.Map;
 
 public class TimeModelBuilder implements IModelBuilder {
     private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
@@ -13,11 +17,16 @@ public class TimeModelBuilder implements IModelBuilder {
     private final int timeResolution;
     private final int bucketSize;
     private final int maxRareTimestampCount;
+    private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer;
+    private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer;
 
-    public TimeModelBuilder(TimeModelBuilderConf config) {
+    public TimeModelBuilder(TimeModelBuilderConf config, TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer,
+                            TimeModelBuilderPartitionsMetricsContainer partitionsMetricsContainer) {
         timeResolution = config.getTimeResolution();
         bucketSize = config.getBucketSize();
         maxRareTimestampCount = config.getMaxRareTimestampCount();
+        this.timeModelBuilderMetricsContainer = timeModelBuilderMetricsContainer;
+        this.timeModelBuilderPartitionsMetricsContainer = partitionsMetricsContainer;
     }
 
     @Override
@@ -26,7 +35,7 @@ public class TimeModelBuilder implements IModelBuilder {
         GenericHistogram genericHistogram = castModelBuilderData(modelBuilderData);
         timeModel.init(
                 timeResolution, bucketSize, maxRareTimestampCount,
-                genericHistogram.getHistogramMap(), genericHistogram.getNumberOfPartitions());
+                genericHistogram.getHistogramMap(), genericHistogram.getNumberOfPartitions(), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
         return timeModel;
     }
 

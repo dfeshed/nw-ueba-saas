@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <included>
-    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <logger name="org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver" additivity="false"
             level="warning"/>
     <logger name="org.springframework.data.mongodb" level="INFO"/>
     <logger name="org.springframework.data" level="INFO"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="CONSOLE" />
     </root>
 </included>
 

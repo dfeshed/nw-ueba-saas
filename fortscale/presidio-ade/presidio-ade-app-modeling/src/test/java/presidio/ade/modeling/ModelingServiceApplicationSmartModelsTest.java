@@ -11,6 +11,8 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -24,6 +26,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -43,6 +46,9 @@ import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.StringRegexCyclicValuesGenerator;
 import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Instant;
 import java.time.LocalTime;
@@ -77,6 +83,10 @@ public class ModelingServiceApplicationSmartModelsTest {
     private String smartRecordsBaseConfigurationPath;
     @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
     private String groupName;
+    @MockBean
+    MetricCollectingService metricCollectingService;
+    @MockBean
+    MetricsExporter metricsExporter;
 
     private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name smart-record-models --session_id test-run --end_date %s";
 
@@ -439,6 +449,7 @@ public class ModelingServiceApplicationSmartModelsTest {
             properties.put("fortscale.model.retriever.smart.oldestAllowedModelDurationDiff", "PT48H");
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

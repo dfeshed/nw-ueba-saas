@@ -1,11 +1,14 @@
 package presidio.output.domain.services.alerts;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.UpdateQuery;
+import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -17,9 +20,12 @@ import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AlertPersistencyServiceImpl implements AlertPersistencyService {
@@ -39,8 +45,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     public Alert save(Alert alert) {
-        alert.updateFieldsBeforeSave();
-        return alertRepository.save(alert);
+        save(Collections.singletonList(alert));
+        return alert;
     }
 
     public Iterable<Alert> save(List<Alert> alerts) {
@@ -74,11 +80,18 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     public void delete(Alert alert) {
+        // atomic delete for the entire alert entities
 
         // delete alert
         alertRepository.delete(alert);
 
-        // TODO: delete supporting information
+        // delete indicators
+        List<Indicator> indicators = indicatorRepository.removeByAlertId(alert.getId());
+
+        // delete events
+        indicators.forEach(indicator -> {
+            indicatorEventRepository.removeByIndicatorId(indicator.getId());
+        });
     }
 
     @Override
@@ -144,6 +157,34 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     @Override
     public Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest) {
         return indicatorEventRepository.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
+    }
+
+    @Override
+    public List<Alert> removeByTimeRange(Instant startDate, Instant endDate) {
+        List<Alert> removedAlerts = new ArrayList<Alert>();
+
+        try (Stream<Alert> alerts = alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThan(startDate.toEpochMilli(), endDate.toEpochMilli())) {
+            alerts.forEach(alert -> {
+                delete(alert);
+                removedAlerts.add(alert);
+            });
+        }
+
+        return removedAlerts;
+    }
+
+    @Override
+    public List<Alert> findByUserId(String userId){
+        List<Alert> alerts = new ArrayList<Alert>();
+        try (Stream<Alert> stream = alertRepository.findByUserId(userId)) {
+            alerts = stream.collect(Collectors.toList());
+        }
+        return alerts;
+    }
+
+    @Override
+    public long countAlerts() {
+        return alertRepository.count();
     }
 
     @Override
