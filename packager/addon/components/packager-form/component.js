@@ -10,6 +10,7 @@ import { listOfServices } from '../../reducers/selectors';
 import { getConfiguration } from 'packager/actions/fetch/packager';
 import { validatePackageConfig, validateLogConfigFields } from './validation-utils';
 import columns from './columns';
+import $ from 'jquery';
 
 import {
   setConfig,
@@ -126,6 +127,10 @@ const formComponent = Component.extend({
     return error;
   },
 
+  _scrollTo(target) {
+    $(target)[0].scrollIntoView();
+  },
+
   _validateDestinationFields(primaryDestination, secondaryDestination) {
     const listOfDest = [];
     const flashMessage = this.get('flashMessages');
@@ -173,6 +178,8 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
+        } else {
+          this._scrollTo('.server-input-group');
         }
       } else {
         this.set('configData.logCollectionConfig.enabled', true);
@@ -181,6 +188,8 @@ const formComponent = Component.extend({
         this.setProperties(error);
         if (!error) {
           this.send('setConfig', this.get('configData'), false);
+        } else {
+          this._scrollTo('.server-input-group');
         }
       }
     },
@@ -194,6 +203,8 @@ const formComponent = Component.extend({
         this.set('configData.logCollectionConfig.enabled', true);
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
         this.resetProperties();
+      } else {
+        this._scrollTo('.windows-log-collection');
       }
     },
 
