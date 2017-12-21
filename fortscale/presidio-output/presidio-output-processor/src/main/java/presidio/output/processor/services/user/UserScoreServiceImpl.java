@@ -3,16 +3,11 @@ package presidio.output.processor.services.user;
 import fortscale.utils.logging.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import presidio.output.commons.services.user.UserSeverityService;
-import presidio.output.commons.services.user.UserSeverityServiceImpl;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
-import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
@@ -20,7 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by shays on 27/08/2017.
@@ -46,19 +40,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         this.userPersistencyService = userPersistencyService;
         this.alertPersistencyService = alertPersistencyService;
         this.alertSeverityService = alertSeverityService;
-
         this.defaultAlertsBatchSize = defaultAlertsBatchSize;
         this.defaultUsersBatchSize = defaultUsersBatchSize;
     }
-
-    @Override
-    public void increaseUserScoreWithoutSaving(AlertEnums.AlertSeverity alertSeverity, User user) {
-        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(alertSeverity);
-        double userScore = user.getScore();
-        userScore += userScoreContribution;
-        user.setScore(userScore);
-    }
-
 
 
     /**
@@ -130,14 +114,14 @@ public class UserScoreServiceImpl implements UserScoreService {
                 while (alertsPage != null && alertsPage.hasContent()) {
                     alertsPage.getContent().forEach(alert -> {
                         String userId = alert.getUserId();
-                        AlertEnums.AlertSeverity severity = alert.getSeverity();
-                        double userScoreContribution = alertSeverityService.getUserScoreContributionFromSeverity(severity);
                         if (aggregatedUserScore.containsKey(userId)) {
                             UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
-                            usersAlertData.incrementUserScore(userScoreContribution);
+                            usersAlertData.incrementUserScore(alert.getContributionToUserScore());
                             usersAlertData.incrementAlertsCount();
+                            usersAlertData.addClassification(alert.getPreferredClassification());
+                            usersAlertData.addIndicators(alert.getIndicatorsNames());
                         } else {
-                            aggregatedUserScore.put(userId, new UsersAlertData(userScoreContribution, 1));
+                            aggregatedUserScore.put(userId, new UsersAlertData(alert.getContributionToUserScore(), 1, alert.getPreferredClassification(), alert.getIndicatorsNames()));
                         }
 
                     });

@@ -1,14 +1,15 @@
 import logging
-import os
 import signal
+from copy import copy
+from datetime import datetime
+
+import os
 from airflow.bin import cli
 from airflow.models import DagRun, DAG, DagModel
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
-from copy import copy
-from datetime import datetime
 
 
 @provide_session
@@ -125,7 +126,7 @@ clean_adapter_operator = BashOperator(task_id='clean_adapter',
                                       dag=cleanup_dag)
 
 clean_logs_operator = BashOperator(task_id='clean_logs',
-                                   bash_command="rm -rf /var/log/presidio/3p/airflow/full_flow_* && rm -rf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -f /tmp/spring.log",
+                                   bash_command="rm -rf /var/log/presidio/3p/airflow/full_flow_* && rm -rf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -f /tmp/spring.log*",
                                    dag=cleanup_dag)
 
 pause_dags_operator >> kill_dags_task_instances_operator

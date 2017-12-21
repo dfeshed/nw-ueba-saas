@@ -68,7 +68,15 @@ public class MetricEnums {
         SUM_MAX_CONTINUOUS_MAX_VALUE("sumMaxContinuousMaxValue"),
         MAX_GLOBAL_SD("maxGlobalSd"),
         AVG_GLOBAL_SD("avgGlobalSd"),
-        SUM_GLOBAL_SD("sumGlobalSd");
+        SUM_GLOBAL_SD("sumGlobalSd"),
+        SUCCESS_EVENTS("successEvents"),
+        TOTAL_EVENTS("totalEvents"),
+        FAILED_EVENTS("failedEvents"),
+        SUCCESS_PAGES("successPages"),
+        TOTAL_PAGES("totalPages"),
+        FAILED_PAGES("failedPages"),
+        AVG_PAGE_SIZE("avgPageSize")
+        ;
 
         private String value;
 
@@ -96,7 +104,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER, MODEL, GROUP_NAME, TIME, FEATURE_BUCKET;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON, GROUP_NAME, TIME, FEATURE_BUCKET;
     }
 
     public enum MetricUnitType {
