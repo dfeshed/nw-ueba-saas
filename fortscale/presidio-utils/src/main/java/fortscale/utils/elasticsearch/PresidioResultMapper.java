@@ -97,7 +97,7 @@ public class PresidioResultMapper extends AbstractResultMapper {
             }
         }
 
-        return new AggregatedPageImpl<T>(results, pageable, totalHits, response.getAggregations());
+        return new ScrolledPage<T>(results, pageable, totalHits, response.getAggregations(), response.getScrollId());
     }
 
     private <T> void populateScriptFields(T result, SearchHit hit) {
