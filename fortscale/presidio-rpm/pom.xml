@@ -234,7 +234,7 @@
                         chmod 777 /home/presidio/presidio-core/
                         chmod 777 /home/presidio/
                         chmod 777 /home/
-                        <!--end of post installation -->"
+                        <!--end of post installation -->
                     </script>
                 </postinstallScriptlet>
                 <preremoveScriptlet>
