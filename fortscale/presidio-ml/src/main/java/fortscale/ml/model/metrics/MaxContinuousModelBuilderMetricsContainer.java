@@ -68,15 +68,15 @@ public class MaxContinuousModelBuilderMetricsContainer extends ModelMetricsConta
         metric.getValue().compute(MetricEnums.MetricValues.WRITES, (k, v) -> v.longValue() + 1);
 
         if (numOfContexts != 0) {
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_MEAN, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_MEAN).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_MEAN, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MEAN).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_SD, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_SD).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_SD, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_SD).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_N, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_N).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_N, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_N).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_MAX_VALUE, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_MAX_VALUE).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_MAX_VALUE, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MAX_VALUE).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_MEAN, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_MEAN).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_MEAN, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MEAN).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_SD, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_SD).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_SD, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_SD).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_N, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_N).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_N, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_N).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_CONTINUOUS_MAX_VALUE, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_CONTINUOUS_MAX_VALUE).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_MAX_CONTINUOUS_MAX_VALUE, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MAX_VALUE).intValue() / numOfContexts);
         }
     }
 
