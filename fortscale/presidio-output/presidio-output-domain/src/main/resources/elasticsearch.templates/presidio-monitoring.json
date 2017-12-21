@@ -1,0 +1,92 @@
+{
+  "presidio-monitoring_template": {
+    "template": [
+      "presidio-monitoring_*"
+    ],
+    "settings": {},
+    "aliases": {
+      "presidio-monitoring": {},
+      "presidio-monitoring-logical": {}
+    },
+    "mappings": {
+      "metric": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "logicTime": {
+            "type": "date",
+            "store": true
+          },
+          "name": {
+            "type": "text",
+            "store": true
+          },
+          "tags": {
+            "properties": {
+              "APPLICATION_NAME": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "IS_SYSTEM_METRIC": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "PID": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "SCHEMA": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "UNIT": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "timestamp": {
+            "type": "date",
+            "store": true
+          },
+          "value": {
+            "properties": {
+              "COUNT": {
+                "type": "long"
+              },
+              "DEFAULT_METRIC_VALUE": {
+                "type": "long"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

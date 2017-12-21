@@ -20,7 +20,7 @@ import static presidio.monitoring.records.MetricDocument.TYPE;
 public final class MetricDocument {
 
 
-    public static final String METRIC_INDEX_NAME = "presidio-monitoring";
+    public static final String METRIC_INDEX_NAME = "<presidio-monitoring-{now/d}>";
     public static final String TYPE = "metric";
 
     @Id
