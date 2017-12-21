@@ -52,7 +52,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
     @Override
     public void stop() {
-        stopMonitoring();
+        stopMonitoring();//This is not the place to stop monitoring, its stop process and not shutdown
         super.stop();
     }
 
@@ -75,12 +75,12 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         try {
             transaction.begin();
             eventsToSave = getEvents();
-            eventsToSave.get(0);
+
             if (eventsToSave.isEmpty()) {
                 logger.debug("{} has finished processing 0 events.", getName());
                 result = Status.BACKOFF;
             } else {
-
+                logicalTime = getLogicalHour(eventsToSave.get(0));
                 monitorNumberOfReadEvents(eventsToSave.size(),logicalTime);
 
                 SinkRunner.consecutiveBackoffCounter = 0;

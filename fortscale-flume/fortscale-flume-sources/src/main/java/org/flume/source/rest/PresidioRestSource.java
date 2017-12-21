@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
+import org.flume.source.AbstractPageablePresidioSource;
 import org.flume.source.AbstractPresidioSource;
 import org.flume.utils.DateUtils;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import static org.apache.flume.CommonStrings.START_DATE;
 /**
  * an AbstractPresidioSource that runs a REST query to get the events
  */
-public class PresidioRestSource extends AbstractPresidioSource implements Configurable {
+public class PresidioRestSource extends AbstractPageablePresidioSource implements Configurable {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioRestSource.class);
 

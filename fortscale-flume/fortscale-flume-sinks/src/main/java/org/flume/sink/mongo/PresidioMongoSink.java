@@ -14,30 +14,23 @@ import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepositoryImpl;
 import org.flume.sink.base.AbstractPresidioSink;
-import org.flume.utils.ConnectorSharedPresidioMonitorHelper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.util.ReflectionUtils;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
-import presidio.sdk.api.domain.AbstractInputDocument;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
+
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.*;
 
-import static org.apache.coyote.http11.Constants.a;
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 import static org.apache.flume.CommonStrings.COLLECTION_NAME;
 import static org.apache.flume.CommonStrings.DB_NAME;
@@ -249,7 +242,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         dbName = context.getString(DB_NAME);
         host = context.getString(HOST);
         port = context.getInteger(PORT, 27017);
-        username       = context.getString(USERNAME, "");
+        username  = context.getString(USERNAME, "");
         indexFieldName = context.getString(INDEX_FIELD_NAME, "");
         final String password = context.getString(PASSWORD, "");
         if (sinkMongoRepository == null) {
