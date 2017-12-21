@@ -119,111 +119,114 @@
     </label>
   </div>
   {{#if isLogCollectionEnabled}}
-    <hbox xs="12">
-      <div class="col-xs-8 field">
-        {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName isError=isConfigError errorMessage=(t errorMessage)}}
-      </div>
-      <div class="col-xs-4 field fileContainer">
-        <label for="file-upload" class="custom-file-upload">
-          {{t 'packager.loadExistingLogConfig'}}
+    <div class="log-configuration-container">
+      <hbox xs="12">
+        <div class="col-xs-8 field">
+          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName
+          isError=isConfigError errorMessage=(t errorMessage)}}
+        </div>
+        <div class="col-xs-4 field fileContainer">
+          <label for="file-upload" class="custom-file-upload">
+            {{t 'packager.loadExistingLogConfig'}}
+          </label>
+          <input id="file-upload" type='file' onchange={{action 'uploadConfig'}} accept='.nwelcfg' value='C:\Fakepath'>
+        </div>
+      </hbox>
+
+      <div class="col-xs-12 field">
+        <label class={{className}}>
+          <div class="label-text">
+            {{t 'packager.primaryLogDecoder'}}
+          </div>
+          {{#power-select
+            placeholder=(t 'packager.placeholder')
+            options=listOfService
+            searchField="value"
+            triggerClass=errorClass
+            dropdownClass=errorClass
+            searchPlaceholder=(t 'packager.searchPlaceholder')
+            selected=selectedPrimaryDestination
+            onchange=(action 'setPrimaryDestination' value="id") as |list|}}
+            {{#each list.value as |val|}}
+              <span class="device">{{val}}</span>
+            {{/each}}
+          {{/power-select}}
         </label>
-        <input id="file-upload" type='file' onchange={{action 'uploadConfig'}} accept='.nwelcfg' value='C:\Fakepath'>
       </div>
-    </hbox>
 
-    <div class="col-xs-12 field">
-      <label class={{className}}>
-        <div class="label-text">
-          {{t 'packager.primaryLogDecoder'}}
-        </div>
-        {{#power-select
-          placeholder=(t 'packager.placeholder')
-          options=listOfService
-          searchField="value"
-          triggerClass=errorClass
-          dropdownClass=errorClass
-          searchPlaceholder=(t 'packager.searchPlaceholder')
-          selected=selectedPrimaryDestination
-          onchange=(action 'setPrimaryDestination' value="id") as |list|}}
-          {{#each list.value as |val|}}
-            <span class="device">{{val}}</span>
-          {{/each}}
-        {{/power-select}}
-      </label>
-    </div>
+      <div class="col-xs-12 field">
+        <label class="power-select">
+          <div class="label-text">
+            {{t 'packager.secondaryLogDecoder'}}
+          </div>
+          {{#power-select
+            placeholder=(t 'packager.placeholder')
+            options=listOfSecondaryService
+            searchField="value"
+            searchPlaceholder=(t 'packager.searchPlaceholder')
+            selected=selectedSecondaryDestination
+            onchange=(action 'setSecondaryDestination' value="id") as |list|}}
+            {{#each list.value as |val|}}
+              <span class="device">{{val}}</span>
+            {{/each}}
+          {{/power-select}}
+        </label>
+      </div>
 
-    <div class="col-xs-12 field">
-      <label class="power-select">
-        <div class="label-text">
-          {{t 'packager.secondaryLogDecoder'}}
-        </div>
-        {{#power-select
-          placeholder=(t 'packager.placeholder')
-          options=listOfSecondaryService
-          searchField="value"
-          searchPlaceholder=(t 'packager.searchPlaceholder')
-          selected=selectedSecondaryDestination
-          onchange=(action 'setSecondaryDestination' value="id") as |list|}}
-          {{#each list.value as |val|}}
-            <span class="device">{{val}}</span>
-          {{/each}}
-        {{/power-select}}
-      </label>
-    </div>
+      <div class="col-xs-12 field">
+        <label class="power-select">
+          <div class="label-text">
+            {{t 'packager.channelFilter'}}
+          </div>
+          <div class="icon-align-left add-row">
+            {{#rsa-content-tethered-panel-trigger panel=panelId model=(t 'packager.channel.add')}}
+              {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
+                {{rsa-icon name='add-1' size='small'}}
+              {{/rsa-form-button}}
+            {{/rsa-content-tethered-panel-trigger}}
+            {{#rsa-content-tethered-panel position='top' panelId=panelId as |hide model|}}
+              <section>{{model}}</section>
+            {{/rsa-content-tethered-panel}}
+          </div>
+          <div class="channel-container">
+            {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
+              {{#rsa-data-table/header as |column|}}
+                {{t column.title}}
+              {{/rsa-data-table/header}}
+              {{#rsa-data-table/body as |item index column|}}
+                {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
+              {{/rsa-data-table/body}}
+            {{/rsa-data-table}}
+          </div>
+        </label>
+      </div>
 
-    <div class="col-xs-12 field">
-      <label class="power-select">
-        <div class="label-text">
-          {{t 'packager.channelFilter'}}
-        </div>
-        <div class="icon-align-left add-row">
-          {{#rsa-content-tethered-panel-trigger panel=panelId model=(t 'packager.channel.add')}}
-            {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
-              {{rsa-icon name='add-1' size='small'}}
-            {{/rsa-form-button}}
-          {{/rsa-content-tethered-panel-trigger}}
-          {{#rsa-content-tethered-panel position='top' panelId=panelId as |hide model|}}
-            <section>{{model}}</section>
-          {{/rsa-content-tethered-panel}}
-        </div>
-        <div class="channel-container">
-          {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
-            {{#rsa-data-table/header as |column|}}
-              {{t column.title}}
-            {{/rsa-data-table/header}}
-            {{#rsa-data-table/body as |item index column|}}
-              {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
-            {{/rsa-data-table/body}}
-          {{/rsa-data-table}}
-        </div>
-      </label>
-    </div>
+      <div class="col-xs-5 field protocol-js">
+        <label class={{protocolClassName}}>
+          <div class="label-text">
+            {{t 'packager.protocol'}}
+          </div>
+          {{#power-select
+            classNames='protocol-dropdown'
+            placeholder=(t 'packager.placeholder')
+            options=protocolOptions
+            selected=selectedProtocol
+            searchEnabled=false
+            searchPlaceholder=(t 'packager.searchPlaceholder')
+            onchange=(action 'setSelect' 'protocol' 'selectedProtocol') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
+      </div>
 
-    <div class="col-xs-5 field protocol-js">
-      <label class={{protocolClassName}}>
-        <div class="label-text">
-          {{t 'packager.protocol'}}
-        </div>
-        {{#power-select
-          classNames='protocol-dropdown'
-          placeholder=(t 'packager.placeholder')
-          options=protocolOptions
-          selected=selectedProtocol
-          searchEnabled=false
-          searchPlaceholder=(t 'packager.searchPlaceholder')
-          onchange=(action 'setSelect' 'protocol' 'selectedProtocol') as |option|}}
-          {{option}}
-        {{/power-select}}
-      </label>
-    </div>
-
-    <div class="field">
-      <label class="rsa-form-checkbox-label {{if configData.logCollectionConfig.testLogOnLoad 'checked'}}">
-        {{rsa-form-checkbox
-        checked=configData.logCollectionConfig.testLogOnLoad
-        change=(action 'toggleProperty' "configData.logCollectionConfig.testLogOnLoad")}}
-        {{t 'packager.testLog'}}
-      </label>
+      <div class="field testLog">
+        <label class="rsa-form-checkbox-label {{if testLog 'checked'}}">
+          {{rsa-form-checkbox
+          checked=testLog
+          change=(action 'toggleProperty' "testLog")}}
+          {{t 'packager.testLog'}}
+        </label>
+      </div>
     </div>
   {{/if}}
 </div>

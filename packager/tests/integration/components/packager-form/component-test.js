@@ -225,3 +225,16 @@ test('Protocol resets to default when reset button is clicked', function(assert)
     assert.equal(protocol, 'TCP');
   });
 });
+
+test('Test log is set false on uncheck of checkbox', function(assert) {
+  new ReduxDataHelper(setState)
+    .setData('defaultPackagerConfig', newConfig)
+    .build();
+  this.set('testLog', 'true');
+  this.render(hbs`{{packager-form isLogCollectionEnabled=true testLog=testLog}}`);
+  const $button = this.$('.testLog .rsa-form-checkbox-label');
+  return waitFor(() => $button.trigger('click'))().then(() => {
+    const disableTestLog = this.get('testLog');
+    assert.equal(disableTestLog, false);
+  });
+});

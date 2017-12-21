@@ -65,6 +65,8 @@ const formComponent = Component.extend({
   invalidTableItem: '-999999',
   selectedProtocol: 'TCP',
 
+  testLog: true,
+
 
   @alias('configData.packageConfig.autoUninstall')
   autoUninstall: null,
@@ -115,7 +117,8 @@ const formComponent = Component.extend({
       invalidDisplayNameMessage: null,
       invalidTableItem: null,
       isPasswordError: null,
-      passwordEmptyMessage: null
+      passwordEmptyMessage: null,
+      testLog: true
     });
   },
 
@@ -184,6 +187,7 @@ const formComponent = Component.extend({
       } else {
         this.set('configData.logCollectionConfig.enabled', true);
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
+        this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
         const error = this._validate();
         this.setProperties(error);
         if (!error) {
@@ -200,6 +204,7 @@ const formComponent = Component.extend({
       if (!error) {
         // only log config data need to be send on click of this button.
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
+        this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
         this.set('configData.logCollectionConfig.enabled', true);
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
         this.resetProperties();
