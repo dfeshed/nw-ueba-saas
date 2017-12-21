@@ -195,7 +195,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         // update user scores
         Set<User> usersToUpdate = new HashSet<User>();
         cleanedAlerts.forEach(alert -> {
-            usersToUpdate.add(userService.findUserById(alert.getUserId()));
+            if (!usersToUpdate.contains(alert.getUserId())) {
+                usersToUpdate.add(userService.findUserById(alert.getUserId()));
+            }
         });
         usersToUpdate.forEach(user -> {
             userService.recalculateUserAlertData(user);
