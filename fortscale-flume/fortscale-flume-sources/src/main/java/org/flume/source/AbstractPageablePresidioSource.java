@@ -68,19 +68,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         //TODO: How to pass the application name to enum-singelton
         connectorSharedPresidioExternalMonitoringService = ConnectorSharedPresidioExternalMonitoringService.COLLECTOR_INSTANCE;
         super.start();
-        try {
 
-
-            if (isBatch) {
-                sendDoneControlMessage();
-                setLifecycleState(LifecycleState.DONE);
-                logger.info("Source {} is done. Starting source-is-done flow", getName());
-            }
-        } catch (Exception e) {
-
-            logger.error("Failed to start " + this, e);
-            setLifecycleState(LifecycleState.ERROR);
-        }
     }
 
 
@@ -99,7 +87,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     protected void doPresidioConfigure(Context context){
-        schema = context.getString(CommonStrings.SCHEMA, null);
+        schema = context.getString(CommonStrings.SCHEMA_NAME, null);
     }
 
 
@@ -134,19 +122,41 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             if (isBatch) {
                 sendDoneControlMessage();
             }
-            this.stop();
 
         } catch (Exception e) {
             logger.error("{} has failed to process events for {}: {}, {}: {}.",
                     getName(), START_DATE, startDate, END_DATE, endDate);
             logger.error(e.getMessage());
+
+        }
+        finally {
             this.stop();
+        }
+    }
+
+    @Override
+    public synchronized void stop() {
+
+        logger.info("{} is stopping...", getName());
+        try {
+
+            if (isBatch) {
+                doStop();
+                setLifecycleState(LifecycleState.DONE);
+                logger.info("Source {} is done. Starting source-is-done flow", getName());
+            }
+        } catch (Exception e) {
+
+            logger.error("Failed to start " + this, e);
+            setLifecycleState(LifecycleState.ERROR);
         }
     }
 
     @Override
     protected void doStop() throws FlumeException {
         connectorSharedPresidioExternalMonitoringService.destroy();
+        sendDoneControlMessage();
+
     }
 
     protected abstract List<AbstractDocument> doFetch(int pageNum);
