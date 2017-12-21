@@ -18,10 +18,15 @@ public enum ConnectorSharedPresidioExternalMonitoringService implements Presidio
     COLLECTOR_INSTANCE("collector");
 
 
-//    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(ConnectorSharedPresidioExternalMonitoringService.class);
     private PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory;
     private PresidioExternalMonitoringService presidioExternalMonitoringService=null;
 
+    /**
+     * Init singleton instance of the connector manager
+      * @param appName
+     * @throws RuntimeException
+     */
     ConnectorSharedPresidioExternalMonitoringService(String appName) throws RuntimeException {
         try {
             init(appName);
@@ -31,31 +36,38 @@ public enum ConnectorSharedPresidioExternalMonitoringService implements Presidio
 
     }
 
-
-
+    /**
+     * Inits the presidioExternalMonitoringService
+     * @param appName
+     * @throws Exception
+     */
     private void init(String appName) throws Exception{
         presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
         try {
             presidioExternalMonitoringService= presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(appName);
         }
         catch (Exception e){
-//            logger.error("Cannot load external monitoring service");
+            logger.error("Cannot load external monitoring service");
             throw e;
         }
 
-//        logger.info("New Monitoring Service has initiated");
+        logger.info("New Monitoring Service has initiated");
     }
 
+    /**
+     * Destroy is actual only export the metrics
+     */
     public void destroy(){
-//        logger.info("Monitoring Service is going down");
-//        logger.info("Monitoring Service export metrics before going down");
+        logger.info("Monitoring Service is going down");
+        logger.info("Monitoring Service export metrics before going down");
         presidioExternalMonitoringService.manualExportMetrics();
-//        logger.info("Monitoring Service went down");
+        logger.info("Monitoring Service went down");
 
     }
 
 
 
+     //**************** Expost the original method of the core external monitoring service
 
     @Override
     public void reportCustomMetric(String metricName, Number value, Map<MetricEnums.MetricTagKeysEnum, String> tags, MetricEnums.MetricUnitType valueType, Instant logicTime){

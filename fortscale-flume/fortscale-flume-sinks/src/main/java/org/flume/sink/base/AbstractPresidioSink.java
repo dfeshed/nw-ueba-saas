@@ -50,9 +50,11 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         super.start();
     }
 
+    /**
+     * Stopping single processing cycle
+     */
     @Override
     public void stop() {
-        stopMonitoring();//This is not the place to stop monitoring, its stop process and not shutdown
         super.stop();
     }
 
@@ -110,7 +112,9 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         }
 
         if (isBatch && isDone) {
+            //Batchable work finished, system if moved to done and going to be closed, monitor stopped
             result = Status.DONE;
+            stopMonitoring();
         }
         return result;
     }
