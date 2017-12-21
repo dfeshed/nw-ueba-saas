@@ -1,6 +1,7 @@
 package fortscale.ml.model.metrics;
 
-import fortscale.ml.model.retriever.CategoricalFeatureValueRetrieverConf;
+import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
+import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
@@ -10,29 +11,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Metrics on category rarity model retriever
+ * Metrics on gaussian prior model builder
  */
-public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContainer {
-    private String metricName;
+public class GaussianPriorModelBuilderMetricsContainer extends ModelMetricsContainer {
+    public static final String METRIC_NAME = "gaussian_prior_model_builder";
 
     /**
      * @param metricCollectingService
      * @param metricsExporter
      */
-    public ModelRetrieverMetricsContainer(MetricCollectingService metricCollectingService, MetricsExporter metricsExporter,
-                                          String metricName) {
+    public GaussianPriorModelBuilderMetricsContainer(MetricCollectingService metricCollectingService, MetricsExporter metricsExporter) {
         super(metricCollectingService, metricsExporter);
-        this.metricName = metricName;
     }
+
 
     /**
      * Updates modeling metrics by provided data
-     * @param reads amount of read data
+     * @param sd
      */
-    public void updateMetric(int reads) {
-        Metric metric = getMetric();
-        metric.getValue().compute(MetricEnums.MetricValues.READS, (k, v) -> v.doubleValue() + reads);
+    public void updateMetric(long sd) {
+
     }
+
+
 
 
     /**
@@ -41,9 +42,9 @@ public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContain
      */
     protected Metric createNewMetric(Map<MetricEnums.MetricTagKeysEnum, String> tags) {
         Map<MetricEnums.MetricValues, Number> values = new HashMap<>();
-        values.put(MetricEnums.MetricValues.READS, 0L);
+
         return new Metric.MetricBuilder()
-                .setMetricName(metricName)
+                .setMetricName(METRIC_NAME)
                 .setMetricReportOnce(true)
                 .setMetricUnit(MetricEnums.MetricUnitType.NUMBER)
                 .setMetricTags(tags)
@@ -53,5 +54,7 @@ public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContain
     }
 
     @Override
-    public abstract String getFactoryName();
+    public String getFactoryName() {
+        return GaussianPriorModelBuilderConf.GAUSSIAN_PRIOR_MODEL_BUILDER;
+    }
 }

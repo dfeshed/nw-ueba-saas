@@ -6,6 +6,7 @@ import fortscale.ml.model.AggregatedFeatureValuesData;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.ContinuousMaxDataModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.metrics.MaxContinuousModelBuilderMetricsContainer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeService;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -30,13 +31,16 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
     private int numOfMaxValuesSamples;
     private int minNumOfMaxValuesSamples;
     private long partitionsResolutionInSeconds;
+    private MaxContinuousModelBuilderMetricsContainer maxContinuousModelBuilderMetricsContainer;
 
-    public ContinuousMaxHistogramModelBuilder(ContinuousMaxHistogramModelBuilderConf builderConf) {
+    public ContinuousMaxHistogramModelBuilder(ContinuousMaxHistogramModelBuilderConf builderConf,
+                                              MaxContinuousModelBuilderMetricsContainer maxContinuousModelBuilderMetricsContainer) {
         Assert.isTrue(builderConf.getNumOfMaxValuesSamples() > 0, "numOfMaxValuesSamples should be bigger than zero");
         Assert.isTrue(builderConf.getMinNumOfMaxValuesSamples() > 0, "nimNumOfMaxValuesSamples should be bigger than zero");
         this.numOfMaxValuesSamples = builderConf.getNumOfMaxValuesSamples();
         this.minNumOfMaxValuesSamples = builderConf.getMinNumOfMaxValuesSamples();
         this.partitionsResolutionInSeconds = builderConf.getPartitionsResolutionInSeconds();
+        this.maxContinuousModelBuilderMetricsContainer = maxContinuousModelBuilderMetricsContainer;
     }
 
 
@@ -58,6 +62,12 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         logger.debug("maxValuesResult={} for aggregatedFeatureValuesData={}",maxValuesResult,aggregatedFeatureValuesData);
         List<Double> maxValues = maxValuesResult.getMaxValues();
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
+
+        maxContinuousModelBuilderMetricsContainer.updateMetric(numOfPartitions,
+                continuousDataModel.getMean(), continuousDataModelOfMaxValues.getMean(),
+                continuousDataModel.getSd(), continuousDataModelOfMaxValues.getSd(),
+                continuousDataModel.getN(),  continuousDataModelOfMaxValues.getN(),
+                continuousDataModel.getMaxValue(), continuousDataModelOfMaxValues.getMaxValue());
         return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues,numOfPartitions);
     }
 
@@ -87,6 +97,9 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
             resolutionInSeconds = resolution * instantStep.getSeconds();
             resolution--;
         }
+
+        int metricResolution = resolution + 1;
+        maxContinuousModelBuilderMetricsContainer.incResolution(metricResolution);
 
         return new MaxValuesResult(resolutionInSeconds,maxValues);
     }
