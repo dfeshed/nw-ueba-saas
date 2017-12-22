@@ -15,6 +15,8 @@ const drivers = reduxActions.handleActions({
 
   [ACTION_TYPES.RESET_HOST_DETAILS]: (state) => state.merge(initialState),
 
+  [ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG]: (state) => state.set('selectedRowId', null),
+
   [ACTION_TYPES.SET_DRIVERS_SELECTED_ROW]: (state, { payload: { id } }) => state.set('selectedRowId', id),
 
   [ACTION_TYPES.FETCH_FILE_CONTEXT_DRIVERS]: (state, action) => {

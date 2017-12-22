@@ -6,7 +6,8 @@ import {
   hostExportLink,
   processedHostList,
   isAllHostSelected,
-  noHostsSelected
+  noHostsSelected,
+  serviceList
 } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
@@ -37,7 +38,15 @@ const STATE = Immutable.from({
       selectedHostList: [{
         id: 1,
         version: '4.3.0.0'
-      }]
+      }],
+      listOfServices: [
+        {
+          name: 'broker'
+        },
+        {
+          name: 'endpoint'
+        }
+      ]
     }
   }
 });
@@ -68,4 +77,10 @@ test('processedHostList', function(assert) {
   assert.equal(result[1].canStartScan, true);
   assert.equal(result[0].selected, true);
   assert.equal(result[1].selected, false);
+});
+
+test('serviceList', function(assert) {
+  const result = serviceList(STATE);
+
+  assert.equal(result.length, 1);
 });

@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
 import { getNextMachines, setHostColumnSort } from 'investigate-hosts/actions/data-creators/host';
-import { processedHostList } from 'investigate-hosts/reducers/hosts/selectors';
+import { processedHostList, serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import {
   toggleMachineSelected,
   toggleIconVisibility,
@@ -11,7 +11,7 @@ import {
 
 const stateToComputed = (state) => ({
   hostList: processedHostList(state),
-  serviceList: state.endpoint.machines.listOfServices,
+  serviceList: serviceList(state),
   columns: getHostTableColumns(state),
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
   totalItems: state.endpoint.machines.totalItems,

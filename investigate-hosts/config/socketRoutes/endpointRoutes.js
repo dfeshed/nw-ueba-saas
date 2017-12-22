@@ -11,7 +11,7 @@ const hostsConfigGen = function(env) {
     'endpoint-server-ping': {
       socketUrl
     },
-    'core-service': {
+    'investigate-service': {
       socketUrl,
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/investigate/servers',

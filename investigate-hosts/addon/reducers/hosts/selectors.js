@@ -1,11 +1,25 @@
 import reselect from 'reselect';
 const { createSelector } = reselect;
 
+
+const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
+
 const _hostList = (state) => state.endpoint.machines.hostList || [];
 const _selectedHostList = (state) => state.endpoint.machines.selectedHostList || [];
+const _serviceList = (state) => state.endpoint.machines.listOfServices;
 const _hostExportLinkId = (state) => state.endpoint.machines.hostExportLinkId;
 const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.detailsInput.agentId : null;
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
+
+export const serviceList = createSelector(
+  _serviceList,
+  (serviceList) => {
+    if (serviceList) {
+      return serviceList.filter((service) => SUPPORTED_SERVICES.includes(service.name));
+    }
+    return null;
+  }
+ );
 
 export const areSomeScanning = createSelector(
   [ _hostList, _selectedHostList, _hostDetailId ],

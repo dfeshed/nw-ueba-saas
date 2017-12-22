@@ -16,7 +16,7 @@ const NOOP = () => { };
 const getAllServices = () => {
   return promiseRequest({
     method: 'findAll',
-    modelName: 'core-service',
+    modelName: 'investigate-service',
     query: {}
   });
 };
