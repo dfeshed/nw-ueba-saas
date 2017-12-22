@@ -5,14 +5,18 @@
 {{else if (eq column.field 'analysisData.machineRiskScore')}}
   {{host-list/host-table/risk-score-badge score=item.analysisData.machineRiskScore}}
 {{else if (eq column.field 'machine.machineName')}}
-  <span class="host-name">
-    {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW')}}{{get item column.field}}{{/link-to}}
-  </span>
-  
+  <hbox class="machine-name-holder">
+    <div class="host-name">
+      {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW')}}{{get item column.field}}{{/link-to}}
+    </div>
+    <div class="pivot-to-investigate">
+      {{host-list/host-table/pivot-to-investigate item=item metaName='machine.machineName' serviceList=serviceList}}
+    </div>
+  </hbox>
 {{else if (eq column.field 'agentStatus.lastSeenTime')}}
-  <span title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
+  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
     {{moment-from-now (get item column.field) locale=i18n.locale timeZone=timezone.selected.zoneId allow-empty=true}}
-  </span>
+  </div>
 {{else if (eq column.field 'agentStatus.scanStatus')}}
   <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}}>
     {{host-scan-status  agent=item onButtonClick=onButtonClick}}
@@ -22,5 +26,7 @@
     {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
   </div>
 {{else}}
-  <span title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}"> {{get-field item column timezone dateFormat timeFormat i18n.locale}}</span>
+  <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
+    {{get-field item column timezone dateFormat timeFormat i18n.locale}}
+  </div>
 {{/if}}

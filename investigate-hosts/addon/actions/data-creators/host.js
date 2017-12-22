@@ -8,8 +8,9 @@ import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actio
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
-import Ember from 'ember';
-const { Logger } = Ember;
+
+import { debug } from '@ember/debug';
+
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -50,7 +51,7 @@ const getPageOfMachines = () => {
       promise: Machines.getPageOfMachines(-1, hostColumnSort, systemFilter || expressionList),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.FETCH_ALL_MACHINES, response);
+          debug(`ACTION_TYPES.FETCH_ALL_MACHINES ${_stringifyObject(response)}`);
           dispatch(_notifyAgentStatus());
         },
         onFailure: (response) => {
@@ -74,7 +75,7 @@ const _getAllFilters = () => {
       promise: Machines.getAllFilters(),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.FETCH_ALL_FILTERS, response);
+          debug(`ACTION_TYPES.FETCH_ALL_FILTERS ${_stringifyObject(response)}`);
           dispatch({ type: ACTION_TYPES.EXECUTE_QUERY });
           dispatch(getPageOfMachines());
         },
@@ -98,7 +99,7 @@ const getAllSchemas = () => {
       promise: Machines.getAllSchemas(),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);
+          debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
           dispatch(_getAllFilters());
         },
         onFailure: (response) => {
@@ -124,7 +125,7 @@ const getNextMachines = () => {
       promise: Machines.getPageOfMachines(pageNumber, hostColumnSort, systemFilter || expressionList),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.FETCH_NEXT_MACHINES, response);
+          debug(`ACTION_TYPES.FETCH_NEXT_MACHINES ${_stringifyObject(response)}`);
           dispatch(_notifyAgentStatus());
         },
         onFailure: (response) => {
@@ -149,7 +150,7 @@ const createCustomSearch = (filter, callbacks = callbacksDefault) => {
       promise: Machines.createCustomSearch(filterSelected, visibleSchemas, filter),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.CREATE_CUSTOM_SEARCH, response);
+          debug(`ACTION_TYPES.CREATE_CUSTOM_SEARCH ${_stringifyObject(response)}`);
           callbacks.onSuccess(response);
         },
         onFailure: (response) => {
@@ -177,7 +178,7 @@ const exportAsFile = () => {
       promise: Machines.downloadMachine(filterSelected, schema, hostColumnSort, columns),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID, response);
+          debug(`ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID ${_stringifyObject(response)}`);
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID, response);
@@ -207,7 +208,7 @@ const deleteHosts = (callbacks = callbacksDefault) => {
       promise: Machines.deleteHosts(_.map(selectedHostList, 'id')),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.DELETE_HOSTS, response);
+          debug(`ACTION_TYPES.DELETE_HOSTS ${_stringifyObject(response)}`);
           callbacks.onSuccess(response);
           dispatch(getPageOfMachines());
         },
@@ -218,6 +219,19 @@ const deleteHosts = (callbacks = callbacksDefault) => {
       }
     });
   };
+};
+
+const getAllServices = () => ({
+  type: ACTION_TYPES.GET_LIST_OF_SERVICES,
+  promise: Machines.getAllServices(),
+  meta: {
+    onSuccess: (response) => debug(`${ACTION_TYPES.GET_LIST_OF_SERVICES} ${_stringifyObject(response)}`),
+    onFailure: (response) => handleError(ACTION_TYPES.GET_LIST_OF_SERVICES, response)
+  }
+});
+
+const _stringifyObject = (data) => {
+  return JSON.stringify(data);
 };
 
 const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }) => {
@@ -267,6 +281,7 @@ const initializeHostsPreferences = () => {
 };
 
 export {
+  getAllServices,
   getAllSchemas,
   getPageOfMachines,
   getNextMachines,

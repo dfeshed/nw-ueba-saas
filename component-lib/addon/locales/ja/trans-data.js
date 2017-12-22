@@ -2589,6 +2589,11 @@ export default {
         importedLibraries: 'ja_Imported Libraries',
         size: 'ja_Size'
       }
+    },
+    pivotToInvestigate: {
+      title: 'ja_Select Service',
+      buttonText: 'ja_Navigate',
+      iconTitle: 'ja_Pivot to Investigate'
     }
   },
   hostsScanConfigure: {

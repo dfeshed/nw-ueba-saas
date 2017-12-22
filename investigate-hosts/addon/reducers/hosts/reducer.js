@@ -23,7 +23,9 @@ const initialState = Immutable.from({
 
   totalItems: null,
 
-  pageNumber: null
+  pageNumber: null,
+
+  listOfServices: null
 
 });
 
@@ -147,6 +149,12 @@ const hosts = reduxActions.handleActions({
   [ACTION_TYPES.DELETE_HOSTS]: (state, action) => {
     return handle(state, action, {
       success: (s) => s.set('hostList', [])
+    });
+  },
+
+  [ACTION_TYPES.GET_LIST_OF_SERVICES]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('listOfServices', action.payload.data)
     });
   },
 

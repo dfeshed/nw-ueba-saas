@@ -13,6 +13,7 @@
       {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
         {{host-list/host-table/body-cell
           column=column
+          serviceList=serviceList
           item=item
           onButtonClick=(action 'setSelectedHost' item.id item.machine.agentVersion)
           checkBoxAction=(action 'toggleMachineSelected' item.id item.machine.agentVersion)

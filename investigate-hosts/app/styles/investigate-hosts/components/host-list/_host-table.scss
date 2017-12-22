@@ -3,6 +3,17 @@
   display: none;
 }
 
+.pivot-to-investigate {
+  margin-left: auto;
+  display: none;
+}
+
+.rsa-data-table-body-cell:hover {
+  .pivot-to-investigate {
+    display: block;
+  }
+}
+
 .host-table {
   position: relative;
   height: 100%;
@@ -41,7 +52,6 @@
     margin-right: rsa-whitespace(less);
   }
 }
-
 
 .rsa-initiate-scan-modal, .rsa-delete-hosts-modal {
   padding: rsa-whitespace(more);

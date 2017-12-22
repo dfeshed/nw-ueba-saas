@@ -11,6 +11,7 @@ import {
 
 const stateToComputed = (state) => ({
   hostList: processedHostList(state),
+  serviceList: state.endpoint.machines.listOfServices,
   columns: getHostTableColumns(state),
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
   totalItems: state.endpoint.machines.totalItems,

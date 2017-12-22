@@ -11,6 +11,13 @@ const hostsConfigGen = function(env) {
     'endpoint-server-ping': {
       socketUrl
     },
+    'core-service': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/endpoint/investigate/servers',
+        requestDestination: '/ws/endpoint/investigate/servers'
+      }
+    },
     endpoint: {
       socketUrl,
       export: {

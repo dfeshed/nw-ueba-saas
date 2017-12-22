@@ -41,7 +41,8 @@ test('should return the initial state', function(assert) {
     hostExportStatus: 'completed',
     hostExportLinkId: null,
     totalItems: null,
-    pageNumber: null
+    pageNumber: null,
+    listOfServices: null
   });
 });
 
@@ -212,4 +213,21 @@ test('The RESET_HOST_DOWNLOAD_LINK action reset the HOST download link', functio
   });
   const result = reducer(previous, { type: ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK });
   assert.equal(result.hostExportLinkId, null);
+});
+
+test('The GET_LIST_OF_SERVICES will set all the service to state', function(assert) {
+  const previous = Immutable.from({
+    listOfServices: null
+  });
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_LIST_OF_SERVICES,
+    payload: {
+      data: [
+        { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-concentrator', 'name': 'CONCENTRATOR' },
+        { 'id': 'e90bd2a2-a768-4cb9-a19d-37cd9f47fdcc', 'displayName': 'loki-broker', 'name': 'BROKER' }
+      ]
+    }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.listOfServices.length, 2);
 });

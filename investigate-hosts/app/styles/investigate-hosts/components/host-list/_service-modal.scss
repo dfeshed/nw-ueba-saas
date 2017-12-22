@@ -1,0 +1,52 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 43px;
+
+.rsa-application-modal.service-modal footer {
+  display: none;
+}
+
+.rsa-application-modal-content.service-modal {
+  width: 25%;
+  height: 500px;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+
+    p {
+      @include rsa-font(paragraph);
+      padding: rsa-whitespace();
+    }
+    .rsa-date-table {
+      width: 100%;
+      height:100%;
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, nearly-transparent);
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}
+.service-dropdown {
+  @include rsa-vendor-prefix(flex-grow, 0);
+  margin-right: rsa-whitespace();
+}
+

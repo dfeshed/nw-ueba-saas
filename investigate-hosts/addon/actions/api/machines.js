@@ -6,6 +6,22 @@ import { addFilter } from 'investigate-hosts/actions/utils/query-util';
 const NOOP = () => { };
 
 /**
+ * Executes a websocket fetch call for all services and returns a Promise.
+ *
+ * @method getAllServices
+ * @param data
+ * @public
+ * @returns {Promise}
+ */
+const getAllServices = () => {
+  return promiseRequest({
+    method: 'findAll',
+    modelName: 'core-service',
+    query: {}
+  });
+};
+
+/**
  * Executes a websocket fetch call for all system filters and returns a Promise.
  *
  * @method getAllFilters
@@ -186,6 +202,7 @@ const deleteSearch = (id) => {
 
 
 export default {
+  getAllServices,
   getAllFilters,
   getPageOfMachines,
   downloadMachine,

@@ -2589,6 +2589,11 @@ export default {
         importedLibraries: 'Imported Libraries',
         size: 'Size'
       }
+    },
+    pivotToInvestigate: {
+      title: 'Select Service',
+      buttonText: 'Navigate',
+      iconTitle: 'Pivot to Investigate'
     }
   },
   hostsScanConfigure: {
