@@ -2191,7 +2191,7 @@ export default {
           highestScoringModules: 'Highest Scoring Module'
         },
         machineIdentity: {
-          machineName: 'Machine Name',
+          machineName: 'Host Name',
           group: 'Agent Group',
           agentMode: 'Agent Mode',
           agent: {

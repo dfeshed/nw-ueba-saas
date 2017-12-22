@@ -2192,7 +2192,7 @@ export default {
           highestScoringModules: 'ja_Highest Scoring Module'
         },
         machineIdentity: {
-          machineName: 'ja_Machine Name',
+          machineName: 'ja_Host Name',
           group: 'ja_Agent Group',
           agentMode: 'ja_Agent Mode',
           agent: {
