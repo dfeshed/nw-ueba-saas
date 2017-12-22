@@ -1,14 +1,14 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-
+import { fileCountForDisplay } from 'investigate-files/reducers/file-list/selectors';
 import {
   exportFileAsCSV
 } from 'investigate-files/actions/data-creators';
 
-const stateToComputed = ({ files }) => ({
+const stateToComputed = (state) => ({
   // Total number of files in search result
-  totalItems: files.fileList.totalItems,
-  downloadId: files.fileList.downloadId
+  totalItems: fileCountForDisplay(state),
+  downloadId: state.files.fileList.downloadId
 });
 
 const dispatchToActions = {

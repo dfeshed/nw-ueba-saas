@@ -4,14 +4,19 @@ import Immutable from 'seamless-immutable';
 import {
   fileCount,
   hasFiles,
-  fileExportLink
+  fileExportLink,
+  loadMoreStatus,
+  fileCountForDisplay
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
 
 const STATE = Immutable.from({
   files: {
+    filter: {
+    },
     fileList: {
+      totalItems: 3,
       files: [
         {
           'firstFileName': 'xt_conntrack.ko',
@@ -44,4 +49,36 @@ test('fileCount', function(assert) {
 test('hasFiles', function(assert) {
   const result = hasFiles(STATE);
   assert.equal(result, true, 'hasFiles is true');
+});
+
+test('fileCountForDisplay', function(assert) {
+  const result = fileCountForDisplay(STATE);
+  assert.equal(result, 3, 'expected 3 files');
+  const newDisplay = fileCountForDisplay(Immutable.from({
+    files: {
+      filter: {
+        expressionList: [
+          {
+            propertyName: 'firstFileName',
+            propertyValues: [
+              {
+                value: 'windows'
+              }
+            ],
+            restrictionType: 'IN'
+          }
+        ]
+      },
+      fileList: {
+        totalItems: '1000',
+        files: [...Array(2000)]
+      }
+    }
+  }));
+  assert.equal(newDisplay, '1000+', 'expected 1000+ files');
+});
+
+test('loadMoreStatus', function(assert) {
+  const result = loadMoreStatus(STATE);
+  assert.equal(result, 'completed', 'load more status is completed');
 });

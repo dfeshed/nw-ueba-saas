@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-
+import { loadMoreStatus } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import {
   sortBy,
@@ -9,7 +9,7 @@ import {
 
 const stateToComputed = (state) => ({
   columnConfig: columns(state),
-  loadMoreStatus: state.files.fileList.loadMoreStatus,
+  loadMoreStatus: loadMoreStatus(state),
   areFilesLoading: state.files.fileList.areFilesLoading,
   files: state.files.fileList.files, // All visible files
   totalItems: state.files.fileList.totalItems,

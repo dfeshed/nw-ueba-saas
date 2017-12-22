@@ -112,6 +112,6 @@ test('The FETCH_NEXT_FILES will append the paged response to state', function(as
   });
   const newEndState = reducer(previous, successAction);
 
-  assert.equal(newEndState.loadMoreStatus, 'stopped');
+  assert.equal(newEndState.loadMoreStatus, 'completed');
   assert.equal(newEndState.files.length, 4);
 });
