@@ -34,13 +34,15 @@
           {{#rsa-data-table/body-cell column=column}}
             {{#if (eq column.field 'size')}}
               {{rsa-content-memsize size=(get item column.field)}}
+            {{else if (eq column.field 'pe.imageSize')}}
+              {{rsa-content-memsize size=(get item column.field)}}
             {{else if (eq column.field 'signature.features')}}
               {{#if (get item column.field)}}
                 {{get item column.field}}
               {{else}}
                 unsigned
               {{/if}}
-            {{else if (eq column.field 'firstSeenTime')}}
+            {{else if (eq column.dataType 'DATE')}}
               {{rsa-content-datetime timestamp=(get item column.field)}}
             {{else if (eq column.field 'signature.timeStamp')}}
               {{rsa-content-datetime timestamp=(get item column.field)}}

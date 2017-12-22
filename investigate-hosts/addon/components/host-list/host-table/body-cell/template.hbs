@@ -25,6 +25,8 @@
   <div mouseEnter={{onMouseEnter}} mouseLeave={{onMouseLeave}}>
     {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
   </div>
+{{else if (eq column.field 'machineIdentity.hardware.totalPhysicalMemory')}}
+  {{rsa-content-memsize size=(get item column.field)}}
 {{else}}
   <div title="{{get-field item column timezone dateFormat timeFormat i18n.locale}}">
     {{get-field item column timezone dateFormat timeFormat i18n.locale}}
