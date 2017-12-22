@@ -6,7 +6,8 @@ import injectService from 'ember-service/inject';
 import {
   addSystemFilter,
   resetFilters,
-  deleteSavedSearch
+  deleteSavedSearch,
+  addExternalFilter
 } from 'investigate-hosts/actions/data-creators/filter';
 
 const stateToComputed = ({ endpoint }) => ({
@@ -16,6 +17,7 @@ const stateToComputed = ({ endpoint }) => ({
 
 const dispatchToActions = (dispatch) => ({
   addSystemFilter: (list) => dispatch(addSystemFilter(list)),
+  addExternalFilter: (list) => dispatch(addExternalFilter(list)),
   resetFilters: () => dispatch(resetFilters()),
   deleteSelected(id) {
     dispatch(deleteSavedSearch(id, {
@@ -52,7 +54,7 @@ const FilterList = Component.extend({
       let expressionList = [];
       if (criteria) {
         expressionList = criteria.expressionList;
-        this.send('addSystemFilter', expressionList[0]);
+        this.send('addExternalFilter', expressionList);
       } else if (id === 'all') {
         this.send('resetFilters');
       }

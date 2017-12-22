@@ -56,6 +56,8 @@ const TextFilter = Component.extend(FilterMixin, {
 
   isError: false,
 
+  FILTER_SEPERATOR: '||',
+
   /**
    * List of supported operators
    * @type []
@@ -91,7 +93,7 @@ const TextFilter = Component.extend(FilterMixin, {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
       const values = propertyValues.map((item) => item.value);
-      return `${values.join('||')}`;
+      return `${values.join(this.FILTER_SEPERATOR)}`;
     }
   },
 
@@ -110,6 +112,9 @@ const TextFilter = Component.extend(FilterMixin, {
       if (restrictionType !== 'IN') {
         label = RESTRICTION_TYPES_BY_TYPE[restrictionType].label;
         return `${filterName}: ${this.get('i18n').t(label)} ${inputValue}`;
+      } else if (restrictionType === 'IN') {
+        const values = expression.propertyValues.map((item) => item.value);
+        return `${filterName}: ${values.join(this.FILTER_SEPERATOR)}`;
       }
     }
     return `${filterName}: All`;

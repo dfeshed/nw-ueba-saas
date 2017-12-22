@@ -51,4 +51,18 @@ export default class DataHelper {
     _set(this.state, 'schema.userProjectionChanged', flag);
     return this;
   }
+
+  updateFilterExpressionList(expressionList) {
+    _set(this.state, 'filter.expressionList', expressionList);
+    return this;
+  }
+
+  updateFilterSchems(schema) {
+    _set(this.state, 'filter.schemas', schema);
+    return this;
+  }
+  lastFilterAdded() {
+    _set(this.state, 'filter.lastFilterAdded', null);
+    return this;
+  }
 }

@@ -2014,7 +2014,7 @@ export default {
         hash: 'ja_Hash: ',
         search: {
           minimumtext: {
-            required: 'ja_For file name or path, enter minimum 3 characters. For hash, enter entire hash string'
+            required: 'ja_For file name or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
           }
         }
       },

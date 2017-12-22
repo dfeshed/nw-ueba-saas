@@ -117,6 +117,7 @@ const addSystemFilter = (expression) => {
 const addExternalFilter = (expression) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.ADD_SYSTEM_FILTER, payload: expression });
+    dispatch(getPageOfMachines());
   };
 };
 
