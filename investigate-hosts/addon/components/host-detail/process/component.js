@@ -8,7 +8,7 @@ import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import summaryItems from './summary-item-config';
 
 const stateToComputed = (state) => ({
-  isListView: !state.endpoint.visuals.isTreeView,
+  isTreeView: state.endpoint.visuals.isTreeView,
   animation: state.endpoint.detailsInput.animation,
   process: getProcessData(state),
   isNavigatedFromExplore: isNavigatedFromExplore(state),
