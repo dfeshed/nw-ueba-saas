@@ -101,7 +101,7 @@ test('The FETCH_AGENT_STATUS action will update the agent status', function(asse
   const previous = Immutable.from({
     hostList: HOST_LIST
   });
-  const result = reducer(previous, { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload: { agentId: 2, scanStatus: 'idle' } });
+  const result = reducer(previous, { type: ACTION_TYPES.FETCH_AGENT_STATUS, payload: { 2: { agentId: 2, scanStatus: 'idle' } } });
   assert.equal(result.hostList[1].agentStatus.scanStatus, 'idle');
 });
 

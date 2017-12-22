@@ -70,10 +70,12 @@ const _toggleMachineSelection = (state, payload) => {
 const _updateAgentStatus = (state, { payload }) => {
   const { hostList } = state;
   const list = hostList.map((item) => {
-    if (item.id === payload.agentId) {
+    const agentStatus = payload ? payload[item.id] : null;
+
+    if (agentStatus) {
       return {
         ...item,
-        agentStatus: payload
+        agentStatus
       };
     } else {
       return item;
