@@ -144,8 +144,13 @@ const ContentFilter = Component.extend({
         name: saveFilterName || '',
         description: ''
       };
-      //  checking if any of the added filter fields are empty.
-      if (expressionList.some((item) => !item.propertyValues)) {
+
+      if (!saveFilterName) {
+        this.set('saveFilterName', '');
+        return;
+      }
+      if (!expressionList.length || expressionList.some((item) => !item.propertyValues)) {
+        //  checking if any of the added filter fields are empty.
         this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateHosts.hosts.customFilter.save.filterFieldEmptyMessage'));
         return;
       }
