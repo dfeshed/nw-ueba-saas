@@ -21,6 +21,8 @@ const autoruns = reduxActions.handleActions({
 
   [ACTION_TYPES.CHANGE_AUTORUNS_TAB]: (s) => s.set('selectedRowId', null),
 
+  [ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG]: (s) => s.set('selectedRowId', null),
+
   [ACTION_TYPES.SET_AUTORUN_SELECTED_ROW]: (state, { payload: { id } }) => state.set('selectedRowId', id),
 
   [ACTION_TYPES.FETCH_FILE_CONTEXT_AUTORUNS]: (state, action) => {

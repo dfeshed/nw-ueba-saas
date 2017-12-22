@@ -18,6 +18,8 @@ const libraries = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_DLLS_SELECTED_ROW]: (state, { payload: { id } }) => state.set('selectedRowId', id),
 
+  [ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG]: (s) => s.set('selectedRowId', null),
+
   [ACTION_TYPES.GET_LIBRARY_PROCESS_INFO]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('processList', null),

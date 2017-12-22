@@ -19,6 +19,8 @@ const drivers = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_DRIVERS_SELECTED_ROW]: (state, { payload: { id } }) => state.set('selectedRowId', id),
 
+  [ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG]: (s) => s.set('selectedRowId', null),
+
   [ACTION_TYPES.FETCH_FILE_CONTEXT_DRIVERS]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('driverLoadingStatus', 'wait'),
