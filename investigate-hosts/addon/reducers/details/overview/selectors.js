@@ -155,3 +155,17 @@ export const sameConfigStatus = createSelector(
   _osTypeSecurityConfig,
   (securityConfig) => securityConfig.every((c) => c.disabled) || securityConfig.every((c) => !c.disabled)
 );
+
+/**
+ * selector to check whether the agent is a 4.4 agent or not
+ * @public
+ */
+export const isEcatAgent = createSelector(
+  _hostDetails,
+  (hostDetails) => {
+    if (hostDetails && hostDetails.machine) {
+      return hostDetails.machine.agentVersion.startsWith('4.4');
+    }
+    return false;
+  }
+);

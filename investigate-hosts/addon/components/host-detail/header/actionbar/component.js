@@ -2,7 +2,11 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import moment from 'moment';
-import { isJsonExportCompleted, isSnapshotsAvailable, downloadLink } from 'investigate-hosts/reducers/details/overview/selectors';
+import {
+  isJsonExportCompleted,
+  isSnapshotsAvailable,
+  downloadLink,
+  isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
 import { toggleInitiateScanModal } from 'investigate-hosts/actions/ui-state-creators';
 
 import {
@@ -19,7 +23,8 @@ const stateToComputed = (state) => ({
   snapShots: state.endpoint.detailsInput.snapShots,
   downloadLink: downloadLink(state),
   isExportDisabled: !isSnapshotsAvailable(state),
-  isJsonExportCompleted: isJsonExportCompleted(state)
+  isJsonExportCompleted: isJsonExportCompleted(state),
+  ecatAgent: isEcatAgent(state)
 });
 
 const dispatchToActions = {

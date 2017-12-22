@@ -2,13 +2,17 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
-import _ from 'lodash';
 import { toggleCancelScanModal } from 'investigate-hosts/actions/ui-state-creators';
+import { areAnyEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
+import { getSelectedAgentIds } from 'investigate-hosts/util/util';
+
+const stateToComputed = (state) => ({
+  areAnyEcatAgents: areAnyEcatAgents(state)
+});
 
 const dispatchToActions = {
   toggleCancelScanModal
 };
-
 
 const ActionBar = Component.extend({
 
@@ -21,7 +25,8 @@ const ActionBar = Component.extend({
   actions: {
 
     handleCancelScan() {
-      const agentIds = _.map(this.get('selectedHostList'), 'id');
+      const agentIds = getSelectedAgentIds(this.get('selectedHostList'));
+
       Machines.stopScanRequest(agentIds)
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.cancelScan.success');
@@ -39,4 +44,4 @@ const ActionBar = Component.extend({
   }
 
 });
-export default connect(undefined, dispatchToActions)(ActionBar);
+export default connect(stateToComputed, dispatchToActions)(ActionBar);

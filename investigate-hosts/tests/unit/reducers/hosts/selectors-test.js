@@ -7,8 +7,9 @@ import {
   processedHostList,
   isAllHostSelected,
   noHostsSelected,
-  serviceList
-} from 'investigate-hosts/reducers/hosts/selectors';
+  serviceList,
+  allAreEcatAgents,
+  areAnyEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -84,3 +85,44 @@ test('serviceList', function(assert) {
 
   assert.equal(result.length, 1);
 });
+
+test('allAreEcatAgents, check all are 4.4 agents', function(assert) {
+  const result = allAreEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [
+          {
+            id: '1',
+            version: '4.4.0.0'
+          },
+          {
+            id: '2',
+            version: '4.4.0.1'
+          }
+        ]
+      }
+    }
+  }));
+  assert.equal(result, true);
+});
+
+test('areAnyEcatAgents, check some are 4.4 agents', function(assert) {
+  const result = areAnyEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [
+          {
+            id: '1',
+            version: '4.4.0.0'
+          },
+          {
+            id: '2',
+            version: '4.2.0.1'
+          }
+        ]
+      }
+    }
+  }));
+  assert.equal(result, true);
+});
+

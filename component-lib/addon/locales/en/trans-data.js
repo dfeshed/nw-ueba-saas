@@ -2436,6 +2436,7 @@ export default {
           error1: '*Select at least one host',
           error2: 'Maximum 100 hosts allowed to start scan',
           infoMessage: 'Some of the selected hosts are already being scanned, so a new scan will not be started for them.',
+          ecatAgentMessage: 'Some of the selected hosts are 4.4 agents, this feature is not supported for them.',
           quickScan: {
             label: 'Quick Scan (Default)',
             description: 'Performs a quick scan of all executable modules loaded in memory. Takes approximately 10 minutes.'

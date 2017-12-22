@@ -114,3 +114,13 @@ export const warningClass = createSelector(
     return tooManyHostsSelected ? 'danger' : 'standard';
   },
 );
+
+export const allAreEcatAgents = createSelector(
+  [ _selectedHostList, noHostsSelected ],
+  (selectedHostList, noHost) => noHost || selectedHostList.every((host) => host.version.startsWith('4.4'))
+);
+
+export const areAnyEcatAgents = createSelector(
+  _selectedHostList,
+  (selectedHostList) => selectedHostList.some((host) => host.version.startsWith('4.4'))
+);

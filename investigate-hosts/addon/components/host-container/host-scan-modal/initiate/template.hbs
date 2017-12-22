@@ -9,6 +9,12 @@
           message=(t 'investigateHosts.hosts.initiateScan.modal.infoMessage')}}
       </label>
     {{/if}}
+    {{#if areAnyEcatAgents}}
+      <label class="rsa-form-label">
+        {{host-container/host-scan-modal/initiate/host-message-modal
+          message=(t 'investigateHosts.hosts.initiateScan.modal.ecatAgentMessage')}}
+      </label>
+    {{/if}}
     <div class="rsa-initiate-scan-modal__scan-option">
       <p>
         {{t 'investigateHosts.hosts.initiateScan.modal.quickScan.description'}}

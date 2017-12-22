@@ -2,14 +2,23 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import _ from 'lodash';
-import { noHostsSelected, tooManyHostsSelected, warningClass } from 'investigate-hosts/reducers/hosts/selectors';
-import { toggleInitiateScanModal, toggleCancelScanModal, toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
+import {
+  noHostsSelected,
+  tooManyHostsSelected,
+  warningClass,
+  allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
+import {
+  toggleInitiateScanModal,
+  toggleCancelScanModal,
+  toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({
   totalItems: state.endpoint.machines.totalItems,
-  isDisabled: noHostsSelected(state),
+  noHostsSelected: noHostsSelected(state),
   tooManyHostsSelected: tooManyHostsSelected(state),
-  warningClass: warningClass(state)
+  warningClass: warningClass(state),
+  allAreEcatAgents: allAreEcatAgents(state),
+  selectedHostList: state.endpoint.machines.selectedHostList
 });
 
 const dispatchToActions = {

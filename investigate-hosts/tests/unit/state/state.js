@@ -2,7 +2,7 @@ export const hostDetails = {
   'id': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
   'machine': {
     'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-    'agentVersion': '1.0.0.0',
+    'agentVersion': '4.4.0.0',
     'machineOsType': 'linux',
     'machineName': 'HarpServer',
     'scanStartTime': '2017-07-11T05:42:54.000Z',

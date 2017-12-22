@@ -11,7 +11,8 @@ import {
   getLoggedInUsers,
   getSecurityConfigurations,
   sameConfigStatus,
-  arrangedSecurityConfigs } from 'investigate-hosts/reducers/details/overview/selectors';
+  arrangedSecurityConfigs,
+  isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostDetails } } }));
@@ -107,3 +108,62 @@ test('sameConfigStatus check for same config status for all the security configs
   assert.deepEqual(result, false);
 });
 
+test('isEcatAgent to check the agent is 4.4 agent', function(assert) {
+  const result = isEcatAgent(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: {
+            machineOsType: 'windows',
+            agentVersion: '4.4.0.2'
+          }
+        }
+      }
+    }
+  }));
+
+  assert.deepEqual(result, true);
+});
+
+test('isEcatAgent to check the agent is not 4.4 agent', function(assert) {
+  const result = isEcatAgent(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: {
+            machineOsType: 'windows',
+            agentVersion: '4.1.0.1'
+          }
+        }
+      }
+    }
+  }));
+
+  assert.deepEqual(result, false);
+});
+
+test('isEcatAgent, when hostDetails is null', function(assert) {
+  const result = isEcatAgent(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: null
+      }
+    }
+  }));
+
+  assert.deepEqual(result, false);
+});
+
+test('isEcatAgent, when hostDetails.machine is null', function(assert) {
+  const result = isEcatAgent(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: null
+        }
+      }
+    }
+  }));
+
+  assert.deepEqual(result, false);
+});

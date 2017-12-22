@@ -16,15 +16,26 @@
 <div class="divider"/>
 <hbox class="rsa-button-group host-action-buttons">
   <div class="action-button">
-    {{#rsa-form-button click=(action 'toggleInitiateScanModal')}}{{t 'investigateHosts.hosts.button.initiateScan'}}{{/rsa-form-button}}
+    {{#rsa-form-button
+      click=(action 'toggleInitiateScanModal')
+      isDisabled=ecatAgent}}
+      {{t 'investigateHosts.hosts.button.initiateScan'}}
+    {{/rsa-form-button}}
   </div>
   <div class="action-button ecatUI">
-    {{#rsa-form-button click=(action 'openInAction')}}{{t 'investigateHosts.hosts.moreActions.openIn'}}{{/rsa-form-button}}
+    {{#rsa-form-button
+      click=(action 'openInAction')}}
+      {{t 'investigateHosts.hosts.moreActions.openIn'}}
+    {{/rsa-form-button}}
   </div>
   <div class="action-button">
     {{#if isJsonExportCompleted}}
       <span title="{{t 'investigateHosts.hosts.button.exportTooltip'}}">
-        {{#rsa-form-button click=(action 'export') isDisabled=isExportDisabled}}{{t 'investigateHosts.hosts.button.export'}}{{/rsa-form-button}}
+        {{#rsa-form-button
+          click=(action 'export')
+          isDisabled=isExportDisabled}}
+          {{t 'investigateHosts.hosts.button.export'}}
+        {{/rsa-form-button}}
       </span>
     {{else}}
       {{#rsa-form-button isDisabled=true}}

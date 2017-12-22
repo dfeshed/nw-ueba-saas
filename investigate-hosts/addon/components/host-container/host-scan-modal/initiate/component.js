@@ -3,7 +3,12 @@ import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
 import { toggleInitiateScanModal } from 'investigate-hosts/actions/ui-state-creators';
-import _ from 'lodash';
+import { areAnyEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
+import { getSelectedAgentIds } from 'investigate-hosts/util/util';
+
+const stateToComputed = (state) => ({
+  areAnyEcatAgents: areAnyEcatAgents(state)
+});
 
 const dispatchToActions = {
   toggleInitiateScanModal
@@ -27,12 +32,11 @@ const InitiateModal = Component.extend({
    */
   showScanningMessage: false,
 
-
   actions: {
 
     handleInitiateScan() {
       // Invoking the api to start the scans
-      const agentIds = _.map(this.get('selectedHostList'), 'id');
+      const agentIds = getSelectedAgentIds(this.get('selectedHostList'));
       Machines.startScanRequest(agentIds)
         .then(() => {
           this.get('flashMessage').showFlashMessage('investigateHosts.hosts.initiateScan.success');
@@ -50,4 +54,4 @@ const InitiateModal = Component.extend({
   }
 
 });
-export default connect(undefined, dispatchToActions)(InitiateModal);
+export default connect(stateToComputed, dispatchToActions)(InitiateModal);

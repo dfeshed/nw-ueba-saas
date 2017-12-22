@@ -2,7 +2,7 @@
   {{t 'investigateHosts.hosts.title'}} {{#if totalItems }} ({{totalItems}}) {{/if}}
 </label>
 <hbox class='host-table__toolbar-buttons'>
-  {{#rsa-form-button click=(action 'openInitiateScanModal') style=warningClass isDisabled=isDisabled}}
+  {{#rsa-form-button click=(action 'openInitiateScanModal') style=warningClass isDisabled=allAreEcatAgents}}
     {{t 'investigateHosts.hosts.button.initiateScan'}}
   {{/rsa-form-button}}
   {{#if tooManyHostsSelected}}
@@ -10,17 +10,17 @@
       <p>{{t 'investigateHosts.hosts.initiateScan.modal.error2'}}</p>
     {{/rsa-content-tethered-panel}}
   {{/if}}
-  {{#rsa-form-button click=(action 'openCancelScanModal' ) isDisabled=isDisabled}}
+  {{#rsa-form-button click=(action 'openCancelScanModal' ) isDisabled=allAreEcatAgents}}
     {{t 'investigateHosts.hosts.moreActions.cancelScan'}}
   {{/rsa-form-button}}
 
   {{host-list/host-table/action-bar/export-button}}
 
-  {{#rsa-form-button isDisabled=isDisabled click=(action 'openThickClient')}}
+  {{#rsa-form-button isDisabled=noHostsSelected click=(action 'openThickClient')}}
     {{t 'investigateHosts.hosts.moreActions.openIn'}}
   {{/rsa-form-button}}
 
-  {{#rsa-form-button click=(action 'toggleDeleteHostsModal') isDisabled=isDisabled}}
+  {{#rsa-form-button click=(action 'toggleDeleteHostsModal') isDisabled=noHostsSelected}}
     {{t 'investigateHosts.hosts.button.delete'}}
   {{/rsa-form-button}}
 </hbox>
