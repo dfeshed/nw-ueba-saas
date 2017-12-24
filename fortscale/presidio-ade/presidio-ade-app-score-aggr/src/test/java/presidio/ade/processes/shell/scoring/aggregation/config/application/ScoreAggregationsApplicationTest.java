@@ -12,6 +12,8 @@ import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelConfServiceBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.TimeModelBuilderConf;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.CategoryRarityModeBuilderMetricsContainerConfig;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.ml.scorer.Scorer;
@@ -88,6 +90,8 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     private ModelStore modelStore;
     @Autowired
     private AslResourceFactory aslResourceFactory;
+    @Autowired
+    private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
 
     @Before
     public void beforeTest() {
@@ -196,7 +200,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
                 modelConfs) {
             ModelDaoGenerator modelDaoGenerator = null;
             if (conf.getModelBuilderConf() instanceof CategoryRarityModelBuilderConf) {
-                CategoryRarityModelGenerator categoryRarityModelGenerator = new CategoryRarityModelGenerator((CategoryRarityModelBuilderConf) conf.getModelBuilderConf());
+                CategoryRarityModelGenerator categoryRarityModelGenerator = new CategoryRarityModelGenerator((CategoryRarityModelBuilderConf) conf.getModelBuilderConf(), categoryRarityModelBuilderMetricsContainer);
                 modelDaoGenerator = new ModelDaoGenerator(categoryRarityModelGenerator);
             }
             if (conf.getModelBuilderConf() instanceof TimeModelBuilderConf) {
@@ -212,7 +216,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
     }
 
     @Configuration
-    @Import({EnrichedSourceSpringConfig.class, ScoreAggregationsApplicationConfigTest.class, PresidioCommands.class, EnrichedFileGeneratorConfig.class})
+    @Import({EnrichedSourceSpringConfig.class, ScoreAggregationsApplicationConfigTest.class, PresidioCommands.class, EnrichedFileGeneratorConfig.class, CategoryRarityModeBuilderMetricsContainerConfig.class})
     protected static class springConfigScoreAggregationsApplication {
 
     }

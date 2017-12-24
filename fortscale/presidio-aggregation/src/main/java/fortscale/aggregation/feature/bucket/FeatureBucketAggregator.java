@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
+import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
@@ -10,6 +11,7 @@ import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.AdeRecordReader;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +23,14 @@ public class FeatureBucketAggregator {
     private IAggrFeatureFunctionsService aggrFeatureFunctionsService;
     private RecordReaderFactoryService recordReaderFactoryService;
     private FeatureBucketsAggregatorStore featureBucketsAggregatorStore;
+    private FeatureBucketAggregatorMetricsContainer metricsContainer;
 
-
-    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService) {
+    public FeatureBucketAggregator(FeatureBucketsAggregatorStore featureBucketsAggregatorStore, BucketConfigurationService bucketConfigurationService, RecordReaderFactoryService recordReaderFactoryService, FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer) {
         this.featureBucketsAggregatorStore = featureBucketsAggregatorStore;
         this.bucketConfigurationService = bucketConfigurationService;
         this.recordReaderFactoryService = recordReaderFactoryService;
         this.aggrFeatureFunctionsService = new AggrFeatureFuncService();
+        this.metricsContainer = featureBucketAggregatorMetricsContainer;
     }
 
     /**
@@ -59,8 +62,11 @@ public class FeatureBucketAggregator {
             try {
                 String strategyId = strategyData.getStrategyId();
                 String bucketId = FeatureBucketUtils.buildBucketId(adeRecordReader, featureBucketConf, strategyId);
+                String featureBucketConfName = featureBucketConf.getName();
+                Instant logicalStartTime = strategyData.getTimeRange().getStart();
+
                 if (bucketId == null) {
-                    //todo: metrics.nullBucketIds++;
+                    metricsContainer.incNullFeatureBucketId(featureBucketConfName, logicalStartTime);
                     continue;
                 }
 
@@ -70,13 +76,12 @@ public class FeatureBucketAggregator {
                     featureBucket = createNewFeatureBucket(adeRecordReader, featureBucketConf, strategyData, bucketId);
                 }
 
-                //todo: metrics.featureBucketUpdates++;
+                metricsContainer.incFeatureBucketUpdates(featureBucketConfName,logicalStartTime);
                 updateFeatureBucket(adeRecordReader, featureBucket, featureBucketConf);
                 this.featureBucketsAggregatorStore.storeFeatureBucket(featureBucket);
 
             } catch (Exception e) {
                 logger.error("Got an exception while updating buckets with new event", e);
-                //todo: metrics.exceptionsUpdatingWithNewEvents++;
             }
         }
     }
@@ -104,25 +109,29 @@ public class FeatureBucketAggregator {
      * @return FeatureBucket
      */
     private FeatureBucket createNewFeatureBucket(AdeRecordReader adeRecordReader, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData, String bucketId) {
+
         FeatureBucket ret = new FeatureBucket();
-        ret.setFeatureBucketConfName(featureBucketConf.getName());
+        String featureBucketConfName = featureBucketConf.getName();
+        ret.setFeatureBucketConfName(featureBucketConfName);
         ret.setBucketId(bucketId);
         ret.setStrategyId(strategyData.getStrategyId());
-        ret.setContextFieldNames(featureBucketConf.getContextFieldNames());
+        List<String> contextFieldNames = featureBucketConf.getContextFieldNames();
+        ret.setContextFieldNames(contextFieldNames);
         TimeRange timeRange = strategyData.getTimeRange();
-        ret.setStartTime(timeRange.getStart());
+        Instant logicalStartTime = timeRange.getStart();
+        ret.setStartTime(logicalStartTime);
         ret.setEndTime(timeRange.getEnd());
         ret.setCreatedAt(new Date());
 
-        for (String contextFieldName : featureBucketConf.getContextFieldNames()) {
+        metricsContainer.incFeatureBuckets(featureBucketConfName,logicalStartTime);
+
+        for (String contextFieldName : contextFieldNames) {
             String contextValue = adeRecordReader.getContext(contextFieldName);
             ret.addToContextFieldNameToValueMap(contextFieldName, contextValue);
         }
 
         String contextId = FeatureBucketUtils.buildContextId(ret.getContextFieldNameToValueMap());
         ret.setContextId(contextId);
-
-        //todo: metrics.buckets++;
 
         return ret;
     }

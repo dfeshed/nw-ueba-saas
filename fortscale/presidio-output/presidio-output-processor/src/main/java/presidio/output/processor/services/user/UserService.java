@@ -13,11 +13,13 @@ public interface UserService {
 
     List<User> save(List<User> users);
 
-    void setClassification(User user, List<String> classification);
-
     User findUserById(String userId);
 
-    void setUserAlertData(User user, List<String> classification, List<String> indicators, AlertEnums.AlertSeverity alertSeverity);
+    void addUserAlertData(User user, UsersAlertData usersAlertData);
+
+    void setUserAlertData(User user, UsersAlertData usersAlertData);
+
+    void recalculateUserAlertData(User user);
 
     List<User> findUserByVendorUserIds(List<String> vendorUserId);
 
@@ -28,4 +30,5 @@ public interface UserService {
      * @return
      */
     boolean updateAllUsersAlertData();
+
 }

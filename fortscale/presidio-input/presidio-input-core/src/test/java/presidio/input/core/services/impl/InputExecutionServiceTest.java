@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,6 +18,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTransla
 import presidio.input.core.FortscaleInputCoreApplicationTest;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.spring.InputCoreConfigurationTest;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
@@ -50,6 +52,9 @@ public class InputExecutionServiceTest {
 
     @Autowired
     OutputToCollectionNameTranslator outputToCollectionNameTranslator;
+
+    @MockBean
+    MetricRepository metricRepository;
 
     @Before
     public void before() {

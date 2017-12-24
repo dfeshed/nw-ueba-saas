@@ -7,6 +7,7 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.logging.Logger;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -16,10 +17,12 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
 
     private final ProcessExecutor processExecutor;
     private final FlumeConfigurationUtil flumeConfigurationUtil;
+    private final PresidioInputPersistencyService presidioInputPersistencyService;
 
-    public FlumeAdapterExecutionService(ProcessExecutor processExecutor, FlumeConfigurationUtil flumeConfigurationUtil) {
+    public FlumeAdapterExecutionService(ProcessExecutor processExecutor, FlumeConfigurationUtil flumeConfigurationUtil, PresidioInputPersistencyService presidioInputPersistencyService) {
         this.processExecutor = processExecutor;
         this.flumeConfigurationUtil = flumeConfigurationUtil;
+        this.presidioInputPersistencyService = presidioInputPersistencyService;
     }
 
     @Override
@@ -34,8 +37,10 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
 
     @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
-
+        logger.info("Adapter is cleaning its output for schema {}, startDate {}, endDate {}", schema, startDate, endDate);
+        presidioInputPersistencyService.clean(schema, startDate, endDate);
     }
+
 
     @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
@@ -44,7 +49,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
             String newFilePath = configureNewFlumeExecution(schema, startDate, endDate);
             runFlumeExecution(schema, startDate, endDate, newFilePath);
         } catch (IOException e) {
-            logger.error("Presidio Adapter run failed (with params: schema:{}, startDate:{}, endDate:{}, fixedDuration:{}).", schema, startDate, endDate, fixedDuration ,e);
+            logger.error("Presidio Adapter run failed (with params: schema:{}, startDate:{}, endDate:{}, fixedDuration:{}).", schema, startDate, endDate, fixedDuration, e);
             throw e;
         }
     }

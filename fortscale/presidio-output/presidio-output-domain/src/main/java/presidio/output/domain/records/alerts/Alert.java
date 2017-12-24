@@ -2,6 +2,7 @@ package presidio.output.domain.records.alerts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -129,6 +130,10 @@ public class Alert extends AbstractElasticDocument {
 
     public List<String> getClassifications() {
         return classifications;
+    }
+
+    public String getPreferredClassification() {
+        return CollectionUtils.isNotEmpty(classifications)?classifications.get(0): null;
     }
 
     public void setClassifications(List<String> classifications) {

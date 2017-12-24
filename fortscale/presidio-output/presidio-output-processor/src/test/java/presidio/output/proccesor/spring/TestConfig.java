@@ -22,6 +22,7 @@ public class TestConfig {
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
+        properties.put("enable.metrics.export",false);
         properties.put("number.of.classifications", 19);
         properties.put("output.events.limit", 100);
         properties.put("output.events.page.size", 10);

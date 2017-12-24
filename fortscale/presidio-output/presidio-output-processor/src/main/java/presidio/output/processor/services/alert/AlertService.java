@@ -4,6 +4,7 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -20,4 +21,7 @@ public interface AlertService {
     Alert generateAlert(SmartRecord smart, User user, int smartThresholdScoreForCreatingAlert);
 
     void save(List<Alert> alerts);
+
+    List<Alert> cleanAlerts(Instant startDate, Instant endDate);
+
 }
