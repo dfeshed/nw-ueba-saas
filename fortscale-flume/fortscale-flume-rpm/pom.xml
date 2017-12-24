@@ -80,7 +80,7 @@
                             sed -i -e 's/\r$//' ${FLUME_HOME}/bin/flume-ng
                             chown -v -R presidio:presidio ${FLUME_HOME}
 
-                            <!--end of post installation -->"
+                            <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
                     <preremoveScriptlet>
