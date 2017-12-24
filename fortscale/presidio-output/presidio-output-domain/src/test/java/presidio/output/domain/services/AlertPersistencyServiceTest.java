@@ -850,7 +850,7 @@ public class AlertPersistencyServiceTest {
         Indicator indicator3 = new Indicator(alert1.getId());
         indicator3.setScoreContribution(0.2);
         Indicator indicator4 = new Indicator(alert1.getId());
-        indicator3.setScoreContribution(0.3);
+        indicator4.setScoreContribution(0.3);
         Indicator indicator2 = new Indicator(alert1.getId());
         indicator2.setScoreContribution(0.3);
         indicators.add(indicator1);
