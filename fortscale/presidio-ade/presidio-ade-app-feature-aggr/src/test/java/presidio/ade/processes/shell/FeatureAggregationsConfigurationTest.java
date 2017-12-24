@@ -35,7 +35,7 @@ public class FeatureAggregationsConfigurationTest extends FeatureAggregationsCon
         properties.put("presidio.default.ttl.duration", "PT48H");
         properties.put("presidio.default.cleanup.interval", "PT24H");
 
-        properties.put("enable.metrics.export", true);
+        properties.put("enable.metrics.export", false);
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);

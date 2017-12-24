@@ -5,11 +5,14 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by barak_schuster on 9/10/17.
@@ -19,16 +22,16 @@ public class CategoryRarityModelGenerator implements IModelGenerator<CategoryRar
     private IGenericHistogramGenerator genericHistogramGenerator;
     private int numOfBuckets;
 
-    public CategoryRarityModelGenerator() {
+    public CategoryRarityModelGenerator(CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
         genericHistogramGenerator = new FixedGenericHistogramGenerator();
         numOfBuckets = 30;
-        categoryRarityModelBuilder = new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(numOfBuckets));
+        categoryRarityModelBuilder = new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(numOfBuckets), categoryRarityModelBuilderMetricsContainer);
     }
 
-    public CategoryRarityModelGenerator(CategoryRarityModelBuilderConf conf) {
+    public CategoryRarityModelGenerator(CategoryRarityModelBuilderConf conf, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
         genericHistogramGenerator = new FixedGenericHistogramGenerator();
         numOfBuckets = conf.getNumOfBuckets();
-        categoryRarityModelBuilder = new CategoryRarityModelBuilder(conf);
+        categoryRarityModelBuilder = new CategoryRarityModelBuilder(conf, categoryRarityModelBuilderMetricsContainer);
     }
 
     @Override

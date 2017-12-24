@@ -3,6 +3,7 @@ package fortscale.ml.model.builder;
 import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import javafx.util.Pair;
 import org.junit.Assert;
@@ -14,8 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.DoubleStream;
 
+import static org.mockito.Mockito.mock;
+
 public class CategoryRarityModelBuilderTest {
 	private static final int MAX_RARE_COUNT = 15;
+	private CategoryRarityModelBuilderMetricsContainer categoryRarityMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
 
 	private static CategoryRarityModelBuilderConf getConfig(int maxRareCount) {
 		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(maxRareCount);
@@ -25,18 +29,18 @@ public class CategoryRarityModelBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
-		new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(null);
+		new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenIllegalInputType() {
-		new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build("");
+		new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build("");
 	}
 
 	@Test
 	public void shouldBuildWithTheSpecifiedNumOfBuckets() {
 		Map<String, Long> featureValueToCountMap = new HashMap<>();
-		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
+		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 		Assert.assertEquals(MAX_RARE_COUNT, model.getBuckets().length);
 	}
 
@@ -47,7 +51,7 @@ public class CategoryRarityModelBuilderTest {
 		long featureCount = 1;
 		featureValueToCountMap.put(featureValue, featureCount);
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
@@ -64,7 +68,7 @@ public class CategoryRarityModelBuilderTest {
 		featureValueToCountMap.put(featureValue1, featureCount);
 		featureValueToCountMap.put(featureValue2, featureCount);
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
@@ -82,7 +86,7 @@ public class CategoryRarityModelBuilderTest {
 		countMap.put("value2", 2L);
 		countMap.put("value3", 3L);
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(castModelBuilderData(countMap));
 		Assert.assertEquals(0, model.getNumOfSavedFeatures());
 	}
 
@@ -96,7 +100,7 @@ public class CategoryRarityModelBuilderTest {
 			countMap.put(String.format("value%d", i), i);
 		}
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(castModelBuilderData(countMap));
 		Assert.assertEquals(CategoryRarityModelBuilderConf.DEFAULT_ENTRIES_TO_SAVE_IN_MODEL, model.getNumOfSavedFeatures());
 	}
 
@@ -104,7 +108,7 @@ public class CategoryRarityModelBuilderTest {
 	public void testCalcSequenceReduceData()
 	{
 		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
-		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config);
+		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer);
 		CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
 		Instant startInstant = Instant.parse("2007-12-03T00:00:00.00Z");
 		int amountOfFeatures = 3;
@@ -130,7 +134,7 @@ public class CategoryRarityModelBuilderTest {
 	public void testCalcOccurrencesToNumOfFeatures()
 	{
 		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
-		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config);
+		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer);
 
 		Map<Pair<String, Long>, Double> sequenceReducedData = new HashMap<>();
 		sequenceReducedData.put(new Pair<String, Long>("feature1",1L),1D);
@@ -172,7 +176,7 @@ public class CategoryRarityModelBuilderTest {
 		countMap.put("d", 78L);
 		countMap.put("e", 25L);
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(castModelBuilderData(countMap));
 		Assert.assertEquals(3, model.getNumOfSavedFeatures());
 
 		model.getFeatureOccurrences().values().forEach(value ->Assert.assertEquals(1D,value,0));

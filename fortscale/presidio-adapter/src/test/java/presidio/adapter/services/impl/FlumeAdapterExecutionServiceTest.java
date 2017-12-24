@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -24,6 +25,7 @@ public class FlumeAdapterExecutionServiceTest {
     private PresidioExecutionService flumeAdapterExecutionService;
     private ProcessExecutor mockProcessExecutor;
     private FlumeConfigurationUtil mockFlumeConfigurationUtil;
+    private PresidioInputPersistencyService mockPresidioInputPersistencyService;
     private String mockedFlumeHome;
     private String mockedConfFolder;
     private String mockedPropertiesFile;
@@ -60,8 +62,7 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockFlumeConfigurationUtil.getFlumeExecutionConfFileArgument(mockedAfterTestsFilePath)).thenReturn("--conf-file " + mockedAfterTestsFilePath);
         Mockito.when(mockFlumeConfigurationUtil.createExecutionConfFile(Mockito.any(Schema.class), Mockito.any(Instant.class), Mockito.any(Instant.class))).thenReturn(mockedAfterTestsFilePath);
 
-        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil);
-
+        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, mockPresidioInputPersistencyService);
 
     }
 
