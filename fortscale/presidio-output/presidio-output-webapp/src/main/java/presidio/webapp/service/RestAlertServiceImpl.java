@@ -77,7 +77,7 @@ public class RestAlertServiceImpl implements RestAlertService {
             alerts = new PageImpl<>(null, null, 0);
         }
         List<presidio.webapp.model.Alert> restAlerts = new ArrayList<>();
-        int totalElements = 0;
+        int totalElements = Math.toIntExact(alerts.getTotalElements());
         Map<String, Aggregation> alertAggregations = null;
         if (alerts.getTotalElements() > 0) {
             for (presidio.output.domain.records.alerts.Alert alert : alerts) {
@@ -94,7 +94,7 @@ public class RestAlertServiceImpl implements RestAlertService {
                 }
                 restAlerts.add(restAlert);
             }
-            totalElements = Math.toIntExact(alerts.getTotalElements());
+
             if (CollectionUtils.isNotEmpty(alertQuery.getAggregateBy())) {
                 alertAggregations = ((AggregatedPageImpl<presidio.output.domain.records.alerts.Alert>) alerts).getAggregations().asMap();
             }
@@ -105,13 +105,10 @@ public class RestAlertServiceImpl implements RestAlertService {
 
     private AlertsWrapper createAlertsWrapper(List restAlerts, int totalNumberOfElements, Integer pageNumber, Map<String, Aggregation> alertAggregations) {
         AlertsWrapper alertsWrapper = new AlertsWrapper();
+        alertsWrapper.setTotal(totalNumberOfElements);
+        alertsWrapper.setPage(pageNumber);
         if (CollectionUtils.isNotEmpty(restAlerts)) {
             alertsWrapper.setAlerts(restAlerts);
-            alertsWrapper.setTotal(totalNumberOfElements);
-            if (pageNumber != null) {
-                alertsWrapper.setPage(pageNumber);
-            }
-            alertsWrapper.setPage(pageNumber);
 
             if (MapUtils.isNotEmpty(alertAggregations)) {
                 Map<String, String> aggregationNamesEnumMapping = new HashMap<>();
@@ -123,8 +120,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             }
         } else {
             alertsWrapper.setAlerts(new ArrayList());
-            alertsWrapper.setTotal(0);
-            alertsWrapper.setPage(0);
         }
         return alertsWrapper;
     }
@@ -287,7 +282,6 @@ public class RestAlertServiceImpl implements RestAlertService {
             restIndicator = createRestIndicator(indicator);
         } else {
             // workaround - projection doesn't work
-            // presidio.output.domain.records.alerts.IndicatorSummary indicator = alertPersistencyService.findIndicatorSummaryById(indicatorId);
             presidio.output.domain.records.alerts.Indicator indicator = alertPersistencyService.findIndicatorById(indicatorId);
             indicator.setHistoricalData(null);
             restIndicator = createRestIndicator(indicator);

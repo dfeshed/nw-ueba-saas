@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "6f27b000-e409-11e7-8621-59f5c7525685",
+    "_type": "visualization",
+    "_source": {
+      "title": "Time model: Amount of contexts in partition",
+      "visState": "{\"title\":\"Time model: Amount of contexts in partition\",\"type\":\"heatmap\",\"params\":{\"addLegend\":true,\"addTooltip\":true,\"colorSchema\":\"Greens\",\"colorsNumber\":4,\"colorsRange\":[],\"enableHover\":false,\"invertColors\":false,\"legendPosition\":\"right\",\"percentageMode\":false,\"setColorRange\":false,\"times\":[],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"color\":\"#555\",\"rotate\":0,\"show\":false},\"scale\":{\"defaultYExtents\":false,\"type\":\"linear\"},\"show\":false,\"type\":\"value\"}]},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"value.AMOUNT_OF_CONTEXTS\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"tags.MODEL.keyword\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Model conf\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"split\",\"params\":{\"field\":\"logicTime\",\"interval\":\"d\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Logical time\",\"row\":false}},{\"id\":\"4\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"tags.TIME.keyword\",\"size\":24,\"order\":\"asc\",\"orderBy\":\"_term\",\"customLabel\":\"Hour\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"colors\":{\"0 - 55\":\"#FCE2DE\"},\"defaultColors\":{\"0 - 55\":\"rgb(247,252,245)\",\"55 - 110\":\"rgb(199,233,192)\",\"110 - 165\":\"rgb(116,196,118)\",\"165 - 220\":\"rgb(35,139,69)\"}}}",
+      "description": "",
+      "savedSearchId": "bc4e0530-e3f2-11e7-b0f5-07e25af53574",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

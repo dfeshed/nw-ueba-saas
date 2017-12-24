@@ -114,11 +114,6 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         }
     }
 
-    public void updateSeveritiesForUsersList(List<User> users, boolean persistChanges) {
-        final UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = getSeveritiesMap(false);
-        updateSeveritiesForUsersList(severitiesMap, users, persistChanges);
-
-    }
 
     /**
      * This function load all users' score and store it in a double array

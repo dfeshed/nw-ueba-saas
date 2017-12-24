@@ -1,8 +1,8 @@
 package presidio.ade.processes.shell.config;
 
+import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithmConfig;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +22,11 @@ import java.util.List;
 //        application-specific confs
         FeatureAggregationDataRetrieverFactoryServiceConfig.class,
         ScorersModelConfServiceConfig.class,
-        EventModelsCacheServiceConfig.class
+        EventModelsCacheServiceConfig.class,
 })
 public class ScorersFactoryConfig {
+    @Autowired
+    private CategoryRarityModelRetrieverMetricsContainer categoryRarityModelRetrieverMetricsContainer;
     @Autowired
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
     @Autowired

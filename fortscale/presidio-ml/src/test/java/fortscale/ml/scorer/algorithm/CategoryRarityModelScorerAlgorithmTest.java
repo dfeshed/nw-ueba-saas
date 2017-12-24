@@ -5,6 +5,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimestampUtils;
@@ -19,7 +20,11 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static org.mockito.Mockito.mock;
+
 public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
+
+    private CategoryRarityModelBuilderMetricsContainer categoryRarityMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
 
     private double calcScore(int maxRareCount,
                              int maxNumOfRareFeatures,
@@ -53,7 +58,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
         CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(maxRareCount * 2);
         config.setPartitionsResolutionInSeconds(86400);
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(categoricalFeatureValue);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(categoricalFeatureValue);
         CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }

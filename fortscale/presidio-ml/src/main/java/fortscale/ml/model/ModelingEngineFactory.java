@@ -1,6 +1,7 @@
 package fortscale.ml.model;
 
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
@@ -20,6 +21,7 @@ public class ModelingEngineFactory {
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 	private FactoryService<IModelBuilder> modelBuilderFactoryService;
 	private ModelStore modelStore;
+	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
 
 	/**
 	 * C'tor.
@@ -33,12 +35,13 @@ public class ModelingEngineFactory {
 			FactoryService<IContextSelector> contextSelectorFactoryService,
 			FactoryService<AbstractDataRetriever> dataRetrieverFactoryService,
 			FactoryService<IModelBuilder> modelBuilderFactoryService,
-			ModelStore modelStore) {
+			ModelStore modelStore, ModelingServiceMetricsContainer modelingServiceMetricsContainer) {
 
 		this.contextSelectorFactoryService = contextSelectorFactoryService;
 		this.dataRetrieverFactoryService = dataRetrieverFactoryService;
 		this.modelBuilderFactoryService = modelBuilderFactoryService;
 		this.modelStore = modelStore;
+		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
 	}
 
 	/**
@@ -51,7 +54,7 @@ public class ModelingEngineFactory {
 		Assert.notNull(dataRetriever, String.format("Null data retriever for model conf %s.", modelConf.getName()));
 		IModelBuilder modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
 		Assert.notNull(modelBuilder, String.format("Null model builder for model conf %s.", modelConf.getName()));
-		return new ModelingEngine(modelConf, contextSelector, dataRetriever, modelBuilder, modelStore);
+		return new ModelingEngine(modelConf, contextSelector, dataRetriever, modelBuilder, modelStore, modelingServiceMetricsContainer);
 	}
 
 	// If it's a global modelConf, a context selector is not configured
