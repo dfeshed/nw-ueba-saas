@@ -5,6 +5,8 @@ import fortscale.accumulator.aggregation.AccumulationsCacheConfig;
 import fortscale.accumulator.aggregation.AccumulatorService;
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorImpl;
+import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainer;
+import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainerConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
@@ -40,7 +42,9 @@ import presidio.output.processor.services.alert.supportinginformation.historical
         AggrFeatureFuncServiceConfig.class,
         AggregatedFeatureEventsConfServiceConfig.class,
         AccumulationsCacheConfig.class,
-        FeatureBucketAggregatorMetricsContainerConfig.class
+        FeatureBucketAggregatorMetricsContainerConfig.class,
+        AggregationRecordsCreatorMetricsContainerConfig.class
+
 
 })
 public class HistoricalDataFetcherConfig {
@@ -72,6 +76,9 @@ public class HistoricalDataFetcherConfig {
     @Autowired
     private FeatureBucketAggregatorMetricsContainer featureBucketAggregatorMetricsContainer;
 
+    @Autowired
+    private AggregationRecordsCreatorMetricsContainer aggregationRecordsCreatorMetricsContainer;
+
     @Bean
     public InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator() {
         return new InMemoryFeatureBucketAggregator(bucketConfigurationService, recordReaderFactoryService,featureBucketAggregatorMetricsContainer );
@@ -79,7 +86,7 @@ public class HistoricalDataFetcherConfig {
 
     @Bean
     public AggregationRecordsCreator aggregationRecordsCreator() {
-        return new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService, aggregatedFeatureEventsConfService);
+        return new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService, aggregatedFeatureEventsConfService, aggregationRecordsCreatorMetricsContainer);
     }
 
     @Bean
