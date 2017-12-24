@@ -19,10 +19,12 @@ SEARCHES = ELASTICSEARCH_PATH + '/searches'
 VISUALIZATION = ELASTICSEARCH_PATH + '/visualizations'
 INDEXES = ELASTICSEARCH_PATH + '/mappings'
 SETTINGS = ELASTICSEARCH_PATH + '/settings'
+TEMPLATES = ELASTICSEARCH_PATH + '/templates'
 ALIASES = ELASTICSEARCH_PATH + '/aliases'
 DEFAULT = ELASTICSEARCH_PATH + '/default/kibana-default-pattern.json'
 HEADERS = {"Content-Type": "application/json"}
 URL_ALIASES = MACHINE_URL + "_aliases"
+URL_TEMPLATES = MACHINE_URL + "_template"
 SETTING = "settings"
 
 
@@ -78,8 +80,9 @@ def send_request_to_elastic_from_file(folder, url):
 
 # when creating indexes important to start with the settings than mapping and finish with the aliases
 send_request_to_elastic_from_file(SETTINGS, MACHINE_URL)
+send_request_to_elastic_from_file(TEMPLATES, URL_TEMPLATES)
 create_indexes(INDEXES)
-create_aliases(ALIASES)
+#create_aliases(ALIASES)
 send_request_to_elastic_from_file(INDEX_PATTERN, URL_KIBANA_PATTERNS)
 create_default_pattern(DEFAULT)
 send_request_to_elastic_from_file(SEARCHES, URL_KIBANA_SEARCHES)
