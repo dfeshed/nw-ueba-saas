@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
             } else {
                 SinkRunner.consecutiveBackoffCounter = 0;
                 final int numOfSavedEvents = saveEvents(eventsToSave);
+                LifecycleSupervisor.addToTotalSinkedEvents(numOfSavedEvents);
                 logger.trace("{} has finished processing {} events.", getName(), numOfSavedEvents);
             }
             transaction.commit();
@@ -90,6 +92,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
                 transaction.rollback();
             }
         } finally {
+            logger.info("Presidio sink have sinked ");
             transaction.close();
             this.stop();
         }

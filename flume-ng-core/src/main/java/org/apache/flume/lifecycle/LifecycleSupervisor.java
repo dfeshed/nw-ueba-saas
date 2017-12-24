@@ -38,6 +38,9 @@ import java.util.concurrent.TimeUnit;
 public class LifecycleSupervisor implements LifecycleAware {
 
     private static final Logger logger = LoggerFactory.getLogger(LifecycleSupervisor.class);
+
+    private static volatile long totalSinkedEvents = 0L;
+
     public static Options options = new Options();
 
     private Map<LifecycleAware, Supervisoree> supervisedProcesses;
@@ -62,6 +65,7 @@ public class LifecycleSupervisor implements LifecycleAware {
         purger = new Purger();
         needToPurge = false;
     }
+
 
     @Override
     public synchronized void start() {
@@ -115,6 +119,9 @@ public class LifecycleSupervisor implements LifecycleAware {
         supervisedProcesses.clear();
         monitorFutures.clear();
         logger.debug("Lifecycle supervisor stopped");
+        if (totalSinkedEvents != 0) {
+            logger.info("{} events were sinked in total.", totalSinkedEvents);
+        }
     }
 
     public synchronized void fail() {
@@ -203,6 +210,14 @@ public class LifecycleSupervisor implements LifecycleAware {
     public synchronized boolean isComponentInErrorState(LifecycleAware component) {
         return supervisedProcesses.get(component).status.error;
 
+    }
+
+    public static Long getTotalSinkedEvents() {
+        return new Long(totalSinkedEvents);
+    }
+
+    public static void addToTotalSinkedEvents(long totalSinkedEvents) {
+        LifecycleSupervisor.totalSinkedEvents += totalSinkedEvents;
     }
 
     public static class MonitorRunnable implements Runnable {
