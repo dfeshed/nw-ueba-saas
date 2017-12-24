@@ -2,6 +2,7 @@ package fortscale.ml.model;
 
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
@@ -9,9 +10,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A {@link ModelingEngine} corresponds to a specific {@link ModelConf}. When the {@link #process(String, Instant)}
@@ -28,13 +27,15 @@ public class ModelingEngine {
 	private IModelBuilder modelBuilder;
 	private ModelStore modelStore;
 	private long timeRangeInSeconds;
+	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
 
 	public ModelingEngine(
 			ModelConf modelConf,
 			IContextSelector contextSelector,
 			AbstractDataRetriever dataRetriever,
 			IModelBuilder modelBuilder,
-			ModelStore modelStore) {
+			ModelStore modelStore,
+			ModelingServiceMetricsContainer modelingServiceMetricsContainer) {
 
 		this.modelConf = modelConf;
 		this.contextSelector = contextSelector;
@@ -42,6 +43,7 @@ public class ModelingEngine {
 		this.modelBuilder = modelBuilder;
 		this.modelStore = modelStore;
 		this.timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
+		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
 	}
 
 	/**
@@ -57,11 +59,18 @@ public class ModelingEngine {
 		long numOfSuccesses = 0;
 		long numOfFailures = 0;
 
+		Set<String> factoryNames = new HashSet<>();
+		factoryNames.add(modelConf.getModelBuilderConf().getFactoryName());
+		factoryNames.add(modelConf.getDataRetrieverConf().getFactoryName());
+		modelingServiceMetricsContainer.init(factoryNames, endInstant, contextIds.size());
+
 		for (String contextId : contextIds) {
 			boolean success = process(sessionId, endInstant, contextId);
 			if (success) numOfSuccesses++;
 			else numOfFailures++;
 		}
+
+		modelingServiceMetricsContainer.updateMetric(endInstant, numOfSuccesses, numOfFailures);
 
 		logger.info("Process finished: {} successes, {} failures.", numOfSuccesses, numOfFailures);
 	}
@@ -103,6 +112,8 @@ public class ModelingEngine {
 		// Retriever
 		try {
 			modelBuilderData = dataRetriever.retrieve(contextId, Date.from(endInstant));
+			modelingServiceMetricsContainer.updateMetric(endInstant, modelBuilderData.getNoDataReason());
+
 		} catch (Exception e) {
 			logger.error("Failed to retrieve data for context ID {}.", contextId, e);
 			return false;
