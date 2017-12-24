@@ -114,7 +114,6 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         if (isBatch && isDone) {
             //Batchable work finished, system if moved to done and going to be closed, monitor stopped
             result = Status.DONE;
-            stopMonitoring();
         }
         return result;
     }
@@ -131,39 +130,46 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
      * @param number - number of retried events
      * @param logicalHour - the logical hour - optional.
      */
-    protected abstract void monitorNumberOfReadEvents(int number, Instant logicalHour);
+    protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
+
 
     /**
      * Monitor how many events have been saved successfully into the DB
      * @param number - number of saved events
      * @param logicalHour - the logical hour - optional.
      */
-    protected abstract void monitorNumberOfSavedEvents(int number, Instant logicalHour);
+    protected void monitorNumberOfSavedEvents(int number, Instant logicalHour){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
 
     /**
      * Monitor how many events have been failed because of not existing schema
      * @param number - number of failed events
      * @param logicalHour - the logical hour - optional.
      */
-    protected abstract void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour);
+    protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
     /**
      * Monitor how many events have been failed because any other reason
      * @param number - number of failed vevents
      * @param logicalHour - the logical hour - optional.
      */
-    protected abstract void monitorUnknownError(int number, Instant logicalHour);
-
-    /**
-     * Method which invoked when the system is finished and the monitoring need to be closed
-     */
-    protected abstract void stopMonitoring();
+    protected void monitorUnknownError(int number, Instant logicalHour){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
 
     /**
      * Get logical hour from the event,
      * @param event
      * @return - the time from the event is possible, null if not possible
      */
-    protected abstract Instant getLogicalHour(T event);
+    protected Instant getLogicalHour(T event){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+        return null;
+    }
 
 
     protected boolean isControlDoneMessage(Event flumeEvent) {

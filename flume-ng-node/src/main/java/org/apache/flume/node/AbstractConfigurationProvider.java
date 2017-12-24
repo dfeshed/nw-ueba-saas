@@ -43,15 +43,14 @@ import org.apache.flume.annotations.Disposable;
 import org.apache.flume.channel.ChannelProcessor;
 import org.apache.flume.channel.ChannelSelectorFactory;
 import org.apache.flume.channel.DefaultChannelFactory;
-import org.apache.flume.conf.BasicConfigurationConstants;
-import org.apache.flume.conf.ComponentConfiguration;
-import org.apache.flume.conf.Configurables;
-import org.apache.flume.conf.FlumeConfiguration;
+import org.apache.flume.conf.*;
 import org.apache.flume.conf.FlumeConfiguration.AgentConfiguration;
 import org.apache.flume.conf.channel.ChannelSelectorConfiguration;
 import org.apache.flume.conf.sink.SinkConfiguration;
 import org.apache.flume.conf.sink.SinkGroupConfiguration;
 import org.apache.flume.conf.source.SourceConfiguration;
+import org.apache.flume.marker.MonitorInitiator;
+import org.apache.flume.marker.MonitorUses;
 import org.apache.flume.sink.DefaultSinkFactory;
 import org.apache.flume.sink.DefaultSinkProcessor;
 import org.apache.flume.sink.SinkGroup;
@@ -99,7 +98,10 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
       try {
         loadChannels(agentConf, channelComponentMap);
         loadSources(agentConf, channelComponentMap, sourceRunnerMap);
-        loadSinks(agentConf, channelComponentMap, sinkRunnerMap);
+        MonitorDetails monitorDetails = getMonitorFromSource(sourceRunnerMap);
+        loadSinks(agentConf, channelComponentMap, sinkRunnerMap,monitorDetails);
+
+
         Set<String> channelNames = new HashSet<String>(channelComponentMap.keySet());
         for (String channelName : channelNames) {
           ChannelComponent channelComponent = channelComponentMap.get(channelName);
@@ -135,6 +137,23 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
       LOGGER.warn("No configuration found for this host:{}", getAgentName());
     }
     return conf;
+  }
+
+  /**
+   * Fetch the first monitor deatils
+   * @param sourceRunnerMap
+   * @return
+   */
+  protected MonitorDetails getMonitorFromSource(Map<String, SourceRunner> sourceRunnerMap){
+
+    for (SourceRunner sourceRunner: sourceRunnerMap.values()){
+      if (sourceRunner.getSource() instanceof MonitorInitiator){
+        return ((MonitorInitiator)sourceRunner.getSource()).getMonitorDetails();
+
+      }
+    }
+
+    return null;
   }
 
   public String getAgentName() {
@@ -273,6 +292,7 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
             comp.getType());
         try {
           Configurables.configure(source, config);
+
           Set<String> channelNames = config.getChannels();
           List<Channel> sourceChannels = new ArrayList<Channel>();
           for (String chName : channelNames) {
@@ -323,7 +343,13 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
             sourceFactory.create(sourceName,
                                  context.getString(BasicConfigurationConstants.CONFIG_TYPE));
         try {
+
           Configurables.configure(source, context);
+          if (source instanceof MonitorInitiator){
+            MonitorDetails sourceMonitorDetails = ((MonitorInitiator) source).getMonitorDetails();
+            context = new MonitorableContext(context.getParameters(),sourceMonitorDetails);
+
+          }
           List<Channel> sourceChannels = new ArrayList<Channel>();
           String[] channelNames = context.getString(
               BasicConfigurationConstants.CONFIG_CHANNELS).split("\\s+");
@@ -343,6 +369,8 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
 
           ChannelSelector selector = ChannelSelectorFactory.create(
               sourceChannels, selectorConfig);
+
+
 
           ChannelProcessor channelProcessor = new ChannelProcessor(selector);
           Configurables.configure(channelProcessor, context);
@@ -365,7 +393,7 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
   }
 
   private void loadSinks(AgentConfiguration agentConf,
-      Map<String, ChannelComponent> channelComponentMap, Map<String, SinkRunner> sinkRunnerMap)
+      Map<String, ChannelComponent> channelComponentMap, Map<String, SinkRunner> sinkRunnerMap,MonitorDetails monitorDetails)
       throws InstantiationException {
     Set<String> sinkNames = agentConf.getSinkSet();
     Map<String, ComponentConfiguration> compMap =
@@ -388,6 +416,9 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
             throw new IllegalStateException(msg);
           }
           sink.setChannel(channelComponent.channel);
+          if (sink instanceof MonitorUses){
+            ((MonitorUses)sink).setMonitorDetails(monitorDetails);
+          }
           sinks.put(comp.getComponentName(), sink);
           channelComponent.components.add(sinkName);
         } catch (Exception e) {

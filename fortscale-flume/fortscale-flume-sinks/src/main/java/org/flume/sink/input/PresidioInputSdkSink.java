@@ -7,16 +7,14 @@ import com.mongodb.MongoException;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.flume.Context;
-import org.apache.flume.Event;
-import org.apache.flume.FlumeException;
-import org.apache.flume.Sink;
+import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.conf.MonitorDetails;
+import org.apache.flume.marker.MonitorUses;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
@@ -30,7 +28,7 @@ import static org.apache.flume.CommonStrings.BATCH_SIZE;
 /**
  * an AbstractPresidioSink that uses the InputSDK jar to write events to Presidio-Input's input
  */
-public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
+public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink, MonitorUses {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioInputSdkSink.class);
 
@@ -48,20 +46,14 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     private static String[] mandatoryParams = {SCHEMA, RECORD_TYPE};
 
     private PresidioInputPersistencyService presidioInputPersistencyService;
+    private ConnectorSharedPresidioExternalMonitoringService monitoringService;
     private Class<T> recordType;
     private Schema schema;
     private int batchSize;
 
     @Override
     public synchronized void start() {
-        PresidioInputPersistencyServiceFactory presidioInputPersistencyServiceFactory = new PresidioInputPersistencyServiceFactory();
-        try {
-            presidioInputPersistencyService = presidioInputPersistencyServiceFactory.createPresidioInputPersistencyService();
-        } catch (Exception e) {
-            final String errorMessage = "Failed to start " + getName();
-            logger.error(errorMessage, e);
-            throw new FlumeException(errorMessage, e);
-        }
+
     }
 
 
@@ -103,8 +95,6 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 continue;
             }
 
-
-//            sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;
             final String eventBody = new String(flumeEvent.getBody());
             try {
@@ -131,34 +121,25 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+        monitoringService.reportTotalEventMetric(number);
     }
 
     @Override
     protected void monitorNumberOfSavedEvents(int number, Instant logicalHour) {
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+        monitoringService.reportSuccessEventMetric(number);
     }
 
     @Override
     protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour) {
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+        monitoringService.reportFailedEventMetric("UNASSIGNABLE_EVENTS",number);
     }
 
     @Override
     protected void monitorUnknownError(int number, Instant logicalHour) {
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS",number);
     }
 
-    @Override
-    protected void stopMonitoring() {
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
-    }
 
-    @Override
-    protected Instant getLogicalHour(T event) {
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
-        return null;
-    }
 
     @Override
     protected int saveEvents(List<T> records) {
@@ -184,5 +165,13 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 .append("schema", schema)
                 .append("batchSize", batchSize)
                 .toString();
+    }
+
+    @Override
+    public void setMonitorDetails(MonitorDetails monitorDetails) {
+        if (schema!=null){
+            monitorDetails.setSchema(schema.getName());
+        }
+        monitoringService = new ConnectorSharedPresidioExternalMonitoringService(monitorDetails,this.getName());
     }
 }

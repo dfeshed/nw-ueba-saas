@@ -33,15 +33,15 @@ import static org.apache.flume.CommonStrings.*;
  */
 public class PresidioMongoSource extends AbstractPageablePresidioSource implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
+    protected static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 
-    private static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, START_DATE, END_DATE};
-    private String collectionName;
-    private String dbName;
-    private String host;
-    private int port;
-    private String username;
-    private String dateTimeField;
+    protected static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, START_DATE, END_DATE};
+    protected String collectionName;
+    protected String dbName;
+    protected String host;
+    protected int port;
+    protected String username;
+    protected String dateTimeField;
 
 
     @Override

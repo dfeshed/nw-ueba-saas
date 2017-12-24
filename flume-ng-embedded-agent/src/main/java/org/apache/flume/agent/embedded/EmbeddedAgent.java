@@ -18,6 +18,7 @@
  */
 package org.apache.flume.agent.embedded;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -174,10 +175,15 @@ public class EmbeddedAgent {
       throw new FlumeException("Expected one sink group and got "  +
           sinks.size());
     }
+
     this.sourceRunner = sources.values().iterator().next();
     this.channel = channels.values().iterator().next();
     this.sinkRunner = sinks.values().iterator().next();
+
+
   }
+
+
 
   /**
    * Adds event to the channel owned by the agent. Note however, that the

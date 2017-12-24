@@ -11,13 +11,17 @@ import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
+import org.apache.flume.conf.MonitorDetails;
+import org.apache.flume.conf.MonitorableContext;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.lifecycle.LifecycleState;
-import org.apache.flume.source.AbstractEventDrivenSource;
-import org.flume.utils.ConnectorSharedPresidioExternalMonitoringService;
+import org.apache.flume.ConnectorSharedPresidioExternalMonitoringService;
+import org.apache.flume.marker.MonitorInitiator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
+import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFactory;
 
 import java.nio.charset.Charset;
 import java.time.Instant;
@@ -34,11 +38,11 @@ import static org.apache.flume.CommonStrings.START_DATE;
  * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio sink/interceptors must also be used when using a Presidio source.
  * 2) for using a metric service (that needs an application name).
  */
-public abstract class AbstractPageablePresidioSource extends AbstractPresidioSource {
+public abstract class AbstractPageablePresidioSource extends AbstractPresidioSource implements MonitorInitiator {
 
-    public static final String NUMBER_OF_PROCESSED_PAGES = "number.of.processed.pages";
-    public static final String NUMBER_OF_PROCESSED_EVENTS = "number_of_processed_events";
 
+    private static final String NUMBER_OF_PROCESSED_PAGES = "processed_pages";
+    public static final String INVALID_EVENTS_ERROR_KEY = "INVALID_EVENTS";
     private static Logger logger = LoggerFactory.getLogger(AbstractPageablePresidioSource.class);
     private int totalEvents = 0;
     private int totalPages = 0;
@@ -50,6 +54,8 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     protected Instant startDate;
     protected Instant endDate;
     protected String schema;
+
+    PresidioExternalMonitoringService presidioExternalMonitoringService;
 
     protected ConnectorSharedPresidioExternalMonitoringService connectorSharedPresidioExternalMonitoringService;
     private static ObjectMapper mapper;
@@ -63,15 +69,26 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
 
 
+
     @Override
     public void start() {
-        //TODO: How to pass the application name to enum-singelton
-        connectorSharedPresidioExternalMonitoringService = ConnectorSharedPresidioExternalMonitoringService.COLLECTOR_INSTANCE;
+        PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
+        try {
+            presidioExternalMonitoringService= presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(super.applicationName);
+            connectorSharedPresidioExternalMonitoringService = new ConnectorSharedPresidioExternalMonitoringService(getMonitorDetails(),this.getName());
+
+        }
+        catch (Exception e){
+            logger.error("Cannot load external monitoring service");
+            throw new RuntimeException(e);
+        }
+
+        logger.info("New Monitoring Service has initiated");
+
+
         super.start();
 
     }
-
-
 
 
 
@@ -80,8 +97,6 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         isDoneControlMessage.getHeaders().put(CommonStrings.IS_DONE, Boolean.TRUE.toString());
         logger.debug("Sending control message DONE");
 
-//        connectorSharedPresidioExternalMonitoringService.reportCustomMetric(
-//                NUMBER_OF_DONE_MESSAGES_SENT, 1, new HashMap<>(), MetricEnums.MetricUnitType.NUMBER, null);
         this.getChannelProcessor().processEvent(isDoneControlMessage);
     }
 
@@ -154,7 +169,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     protected void doStop() throws FlumeException {
-        connectorSharedPresidioExternalMonitoringService.destroy();
+        presidioExternalMonitoringService.manualExportMetrics();
         sendDoneControlMessage();
 
     }
@@ -177,33 +192,35 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         }
 
         if (failureReason==null){
-            reportSuccessMetric(NUMBER_OF_PROCESSED_EVENTS,MetricEnums.MetricValues.SUCCESS_EVENTS,1);
+            connectorSharedPresidioExternalMonitoringService.reportSuccessEventMetric(1);
         } else {
-            reportFailedMetric(NUMBER_OF_PROCESSED_EVENTS,failureReason,MetricEnums.MetricValues.FAILED_EVENTS,1);
+
+            connectorSharedPresidioExternalMonitoringService.reportFailedEventMetric(failureReason,1);
         }
 
     }
 
     private void processPage(List<AbstractDocument> pageEvents) throws Exception {
-        reportSuccessMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.TOTAL_PAGES, 1);
+        connectorSharedPresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.TOTAL_PAGES, 1);
         totalPages++;
         if (CollectionUtils.isNotEmpty(pageEvents)) {
-            reportSuccessMetric(NUMBER_OF_PROCESSED_EVENTS, MetricEnums.MetricValues.TOTAL_EVENTS, pageEvents.size());
+            connectorSharedPresidioExternalMonitoringService.reportTotalEventMetric(pageEvents.size());
+
             totalEvents+=pageEvents.size();
         }
-        reportSuccessMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.AVG_PAGE_SIZE, 1);
+        connectorSharedPresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.AVG_PAGE_SIZE, 1);
 
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);
-            reportFailedMetric(NUMBER_OF_PROCESSED_EVENTS,  "INVALID_EVENTS", MetricEnums.MetricValues.FAILED_EVENTS, pageEvents.size());
-            reportFailedMetric(NUMBER_OF_PROCESSED_PAGES,  "INVALID_EVENTS", MetricEnums.MetricValues.FAILED_PAGES, 1 );
+            connectorSharedPresidioExternalMonitoringService.reportFailedEventMetric(INVALID_EVENTS_ERROR_KEY,pageEvents.size());
+            connectorSharedPresidioExternalMonitoringService.reportFailedMetric(NUMBER_OF_PROCESSED_PAGES,  INVALID_EVENTS_ERROR_KEY, MetricEnums.MetricValues.FAILED_PAGES, 1 );
             throw new Exception(errorMessage);
         } else {
             for (AbstractDocument pageEvent : pageEvents) {
                 processEvent(pageEvent);
             }
-            reportSuccessMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.SUCCESS_PAGES, 1 );
+            connectorSharedPresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.SUCCESS_PAGES, 1 );
         }
     }
 
@@ -213,37 +230,10 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     }
 
 
-    private void reportSuccessMetric(String metricName, MetricEnums.MetricValues value, int amount) {
-        reportMetric(metricName,false,null,value,amount);
-    }
 
 
-    private void reportFailedMetric(String metricName, String errorKey, MetricEnums.MetricValues value, int amount) {
-        if (StringUtils.isBlank(errorKey)){
-            throw new RuntimeException("Metric error tag cannot be empty");
-        }
-        reportMetric(metricName,true,errorKey,value,amount);
-    }
-    private void reportMetric(String metricName, boolean isFailure, String statusTag, MetricEnums.MetricValues value, int amount) {
-        if(amount<=0 || value == null){
-            return;
-        }
-
-
-        Map<MetricEnums.MetricValues, Number> values = new HashMap<>();
-        values.put(value,amount);
-
-        Map<MetricEnums.MetricTagKeysEnum, String> tags= new HashMap<>();
-
-        //Set Schema tag if possible
-        if (StringUtils.isNotBlank(schema)){
-            tags.put(MetricEnums.MetricTagKeysEnum.SCHEMA,schema);
-        }
-        //Set Failure Tag if relevant
-        if (isFailure){
-            tags.put(MetricEnums.MetricTagKeysEnum.FAILURE_REASON,statusTag);
-        }
-
-        connectorSharedPresidioExternalMonitoringService.reportCustomMetricMultipleValues(metricName,values,tags, MetricEnums.MetricUnitType.NUMBER,startDate);
+    @Override
+    public MonitorDetails getMonitorDetails() {
+        return new MonitorDetails(this.startDate,this.presidioExternalMonitoringService,this.schema);
     }
 }

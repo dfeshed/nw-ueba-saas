@@ -198,10 +198,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
       return null;
     }
 
-    @Override
-    protected void stopMonitoring(){
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
-    }
+
 
 
 
