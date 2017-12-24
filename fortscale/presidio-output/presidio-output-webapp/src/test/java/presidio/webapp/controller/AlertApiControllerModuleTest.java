@@ -23,18 +23,30 @@ import presidio.output.domain.records.UserScorePercentilesDocument;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.users.*;
 import presidio.output.domain.records.users.User;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.UserRepository;
 import presidio.output.domain.repositories.UserScorePercentilesRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.*;
+import presidio.webapp.model.Alert;
+import presidio.webapp.model.AlertQueryEnums;
+import presidio.webapp.model.AlertsWrapper;
+import presidio.webapp.model.EventsWrapper;
+import presidio.webapp.model.IndicatorsWrapper;
+import presidio.webapp.model.UpdateFeedbackRequest;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,6 +60,7 @@ public class AlertApiControllerModuleTest {
     private static final String ALERTS_URI = "/alerts";
     private static final String ALERT_BY_ID_URI = "/alerts/{alertId}";
     private static final String EVENTS_BY_INDICATOR_ID_URI = "/alerts/{alertId}/indicators/{indicatorId}/events";
+    private static final String INDICATORS_BY_ALERT_ID_URI = "/alerts/{alertId}/indicators";
     private static final String UPDATE_ALERT_FEEDBACK_URI = "/alerts/updateFeedback";
 
     private MockMvc alertsApiMVC;
@@ -126,6 +139,63 @@ public class AlertApiControllerModuleTest {
         Collections.sort(expectedResponse.getAlerts(), defaultAlertComparator);
         Collections.sort(actualResponse.getAlerts(), defaultAlertComparator);
         Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getIndicatorsSortedWithCorectPage() throws Exception {
+        //save alerts in elastic
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
+        presidio.output.domain.records.alerts.Alert alert1 = new presidio.output.domain.records.alerts.Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+        List<Indicator> indicators = new ArrayList<>();
+        Indicator indicator1 = createIndicator(alert1.getId(), 0.5, "0.5", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator3 = createIndicator(alert1.getId(), 0.1, "0.1", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator4 = createIndicator(alert1.getId(), 0.2, "0.2", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        Indicator indicator2 = createIndicator(alert1.getId(), 0.2, "0.2", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
+        indicators.add(indicator1);
+        indicators.add(indicator2);
+        indicators.add(indicator3);
+        indicators.add(indicator4);
+        alert1.setIndicators(indicators);
+        alert1.setIndicatorsNames(indicatorNames1);
+        alertPersistencyService.save(alert1);
+        alertPersistencyService.save(indicator1);
+        alertPersistencyService.save(indicator2);
+        alertPersistencyService.save(indicator3);
+        alertPersistencyService.save(indicator4);
+        alertRepository.save(Arrays.asList(alert1));
+
+        // init expected response
+        IndicatorsWrapper expectedResponse = new IndicatorsWrapper();
+        expectedResponse.setTotal(4);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(INDICATORS_BY_ALERT_ID_URI, alert1.getId()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        IndicatorsWrapper actualResponse = objectMapper.readValue(actualResponseStr, IndicatorsWrapper.class);
+        Assert.assertEquals(expectedResponse.getPage(), actualResponse.getPage());
+        Assert.assertEquals(expectedResponse.getTotal(), actualResponse.getTotal());
+        Assert.assertEquals(actualResponse.getIndicators().get(0).getScoreContribution().doubleValue(), 0.5, 0);
+    }
+
+    private Indicator createIndicator(String alertId, double scoreContribution, String anomalyValue, Date startDate,
+                                      Date endDate, Schema schema, double score, int envetsNum, AlertEnums.IndicatorTypes indicatorTypes) {
+        Indicator indicator = new Indicator(alertId);
+        indicator.setAnomalyValue(anomalyValue);
+        indicator.setScoreContribution(scoreContribution);
+        indicator.setStartDate(startDate);
+        indicator.setEndDate(endDate);
+        indicator.setSchema(schema);
+        indicator.setScore(score);
+        indicator.setEventsNum(envetsNum);
+        indicator.setHistoricalData(null);
+        indicator.setType(indicatorTypes);
+        return indicator;
     }
 
     @Test
