@@ -27,7 +27,7 @@ import java.time.Duration;
         FeatureAggregationDataRetrieverFactoryServiceConfig.class,
 //        common application confs
         ModelStoreConfig.class,
-        ModelCacheMetricsContainerConfig.class
+        ModelCacheMetricsContainerConfig.class,
 })
 public class ModelCacheServiceInMemoryConfig {
     @Autowired

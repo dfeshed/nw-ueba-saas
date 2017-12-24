@@ -3,6 +3,7 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -84,6 +85,8 @@ public class CategoricalFeatureValueRetrieverTest {
         private BucketConfigurationService bucketConfigurationService;
         @MockBean
         private FeatureBucketReader featureBucketReader;
+        @MockBean
+        private CategoryRarityModelRetrieverMetricsContainer categoryRarityMetricsContainer;
 
         @Bean
         public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService() {

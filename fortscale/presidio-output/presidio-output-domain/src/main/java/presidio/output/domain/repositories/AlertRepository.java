@@ -6,6 +6,8 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import presidio.output.domain.records.alerts.Alert;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
 public interface AlertRepository extends ElasticsearchRepository<Alert, String> {
 
@@ -16,4 +18,9 @@ public interface AlertRepository extends ElasticsearchRepository<Alert, String> 
     Page<Alert> findById(String Id, Pageable pageable);
 
     Page<Alert> findByUserIdIn(Collection<String> ids, Pageable pageable);
+
+    Stream<Alert> findByStartDateGreaterThanEqualAndEndDateLessThan(long startDate, long endDate); // the stream must be closed after usage
+
+    Stream<Alert> findByUserId(String userId); // the stream must be closed after usage
+
 }

@@ -165,6 +165,10 @@ public class User extends AbstractElasticDocument {
         this.alertsCount = alertsCount + number;
     }
 
+    public void incrementUserScoreByNumber(double number) {
+        this.score += number;
+    }
+
     public void setAlertClassifications(List<String> alertClassifications) {
         this.alertClassifications = alertClassifications;
     }

@@ -1,6 +1,8 @@
 package fortscale.ml.model;
 
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.builder.IModelBuilderConf;
+import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
@@ -8,6 +10,11 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Instant;
 import java.util.*;
@@ -24,6 +31,8 @@ public class ModelingEngineTest {
 	private AbstractDataRetriever retriever;
 	private IModelBuilder builder;
 	private ModelStore store;
+	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+	private IModelBuilderConf modelBuilderConf;
 
 	@Before
 	public void before() {
@@ -33,6 +42,11 @@ public class ModelingEngineTest {
 		builder = mock(IModelBuilder.class);
 		store = mock(ModelStore.class);
 		when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
+		modelBuilderConf = mock(IModelBuilderConf.class);
+		when(modelConf.getModelBuilderConf()).thenReturn(modelBuilderConf);
+		when(modelConf.getModelBuilderConf().getFactoryName()).thenReturn("testFactoryName");
+		when(modelConf.getName()).thenReturn("testName");
+		modelingServiceMetricsContainer = mock(ModelingServiceMetricsContainer.class);
 	}
 
 	@Test
@@ -153,6 +167,6 @@ public class ModelingEngineTest {
 			}
 		}
 
-		return new ModelingEngine(modelConf, selector, retriever, builder, store);
+		return new ModelingEngine(modelConf, selector, retriever, builder, store, modelingServiceMetricsContainer);
 	}
 }
