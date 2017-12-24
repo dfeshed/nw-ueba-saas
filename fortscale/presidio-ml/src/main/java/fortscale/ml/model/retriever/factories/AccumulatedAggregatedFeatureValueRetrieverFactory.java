@@ -1,7 +1,6 @@
 package fortscale.ml.model.retriever.factories;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainerConfig;
 import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AccumulatedAggregatedFeatureValueRetriever;
@@ -9,13 +8,11 @@ import fortscale.ml.model.retriever.AccumulatedAggregatedFeatureValueRetrieverCo
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
 @SuppressWarnings("unused")
 @Component
-@Import(MaxContinuousModelRetrieverMetricsContainerConfig.class)
 public class AccumulatedAggregatedFeatureValueRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
 
 	@Autowired

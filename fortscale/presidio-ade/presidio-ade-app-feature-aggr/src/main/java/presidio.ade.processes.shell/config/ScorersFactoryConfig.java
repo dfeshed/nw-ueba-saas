@@ -1,6 +1,5 @@
 package presidio.ade.processes.shell.config;
 
-import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
@@ -25,8 +24,6 @@ import java.util.List;
         EventModelsCacheServiceConfig.class,
 })
 public class ScorersFactoryConfig {
-    @Autowired
-    private CategoryRarityModelRetrieverMetricsContainer categoryRarityModelRetrieverMetricsContainer;
     @Autowired
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
     @Autowired

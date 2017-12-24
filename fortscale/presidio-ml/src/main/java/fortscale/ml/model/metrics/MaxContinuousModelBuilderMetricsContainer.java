@@ -1,6 +1,5 @@
 package fortscale.ml.model.metrics;
 
-import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
@@ -30,16 +29,16 @@ public class MaxContinuousModelBuilderMetricsContainer extends ModelMetricsConta
      * Updates modeling metrics by provided data
      * @param numOfPartitions
      * @param continuousMean
-     * @param MaxContinuousMean
+     * @param maxContinuousMean
      * @param continuousSd
-     * @param MaxContinuousSd
+     * @param maxContinuousSd
      * @param continuousN
-     * @param MaxContinuousN
+     * @param maxContinuousN
      * @param continuousMaxValue
-     * @param MaxContinuousMaxValue
+     * @param maxContinuousMaxValue
      */
-    public void updateMetric(long numOfPartitions, double continuousMean, double MaxContinuousMean,
-                             double continuousSd, double MaxContinuousSd, double continuousN, long MaxContinuousN, double continuousMaxValue, double MaxContinuousMaxValue) {
+    public void updateMetric(long numOfPartitions, double continuousMean, double maxContinuousMean,
+                             double continuousSd, double maxContinuousSd, double continuousN, long maxContinuousN, double continuousMaxValue, double maxContinuousMaxValue) {
         Metric metric = getMetric();
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_NUM_OF_PARTITIONS, (k, v) -> Math.max(v.doubleValue(), numOfPartitions));
@@ -47,23 +46,23 @@ public class MaxContinuousModelBuilderMetricsContainer extends ModelMetricsConta
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_CONTINUOUS_MEAN, (k, v) -> Math.max(v.doubleValue(), continuousMean));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_CONTINUOUS_MEAN, (k, v) -> v.doubleValue() + continuousMean);
-        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_MEAN, (k, v) -> Math.max(v.doubleValue(), MaxContinuousMean));
-        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MEAN, (k, v) -> v.doubleValue() + MaxContinuousMean);
+        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_MEAN, (k, v) -> Math.max(v.doubleValue(), maxContinuousMean));
+        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MEAN, (k, v) -> v.doubleValue() + maxContinuousMean);
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_CONTINUOUS_SD, (k, v) -> Math.max(v.doubleValue(), continuousSd));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_CONTINUOUS_SD, (k, v) -> v.doubleValue() + continuousSd);
-        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_SD, (k, v) -> Math.max(v.doubleValue(), MaxContinuousSd));
-        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_SD, (k, v) -> v.doubleValue() + MaxContinuousSd);
+        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_SD, (k, v) -> Math.max(v.doubleValue(), maxContinuousSd));
+        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_SD, (k, v) -> v.doubleValue() + maxContinuousSd);
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_CONTINUOUS_N, (k, v) -> Math.max(v.doubleValue(), continuousN));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_CONTINUOUS_N, (k, v) -> v.doubleValue() + continuousN);
-        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_N, (k, v) -> Math.max(v.doubleValue(), MaxContinuousN));
-        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_N, (k, v) -> v.doubleValue() + MaxContinuousN);
+        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_N, (k, v) -> Math.max(v.doubleValue(), maxContinuousN));
+        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_N, (k, v) -> v.doubleValue() + maxContinuousN);
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_CONTINUOUS_MAX_VALUE, (k, v) -> Math.max(v.doubleValue(), continuousMaxValue));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_CONTINUOUS_MAX_VALUE, (k, v) -> v.doubleValue() + continuousMaxValue);
-        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_MAX_VALUE, (k, v) -> Math.max(v.doubleValue(), MaxContinuousMaxValue));
-        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MAX_VALUE, (k, v) -> v.doubleValue() + MaxContinuousMaxValue);
+        metric.getValue().compute(MetricEnums.MetricValues.MAX_MAX_CONTINUOUS_MAX_VALUE, (k, v) -> Math.max(v.doubleValue(), maxContinuousMaxValue));
+        metric.getValue().compute(MetricEnums.MetricValues.SUM_MAX_CONTINUOUS_MAX_VALUE, (k, v) -> v.doubleValue() + maxContinuousMaxValue);
 
         metric.getValue().compute(MetricEnums.MetricValues.WRITES, (k, v) -> v.longValue() + 1);
 
