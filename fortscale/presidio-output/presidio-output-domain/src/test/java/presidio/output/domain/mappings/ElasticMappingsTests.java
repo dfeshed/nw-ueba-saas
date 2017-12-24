@@ -15,7 +15,7 @@ import java.io.IOException;
 @RunWith(SpringRunner.class)
 public class ElasticMappingsTests {
 
-    private final String PATH = "C:\\workspace\\presidio-core\\presidio-core\\fortscale\\presidio-output\\presidio-output-domain\\src\\main\\resources\\elasticsearch\\mappings\\";
+    private final String PATH = "/home/presidio/presidio-core/el-extensions/mappings/";
 
 
     @Test
