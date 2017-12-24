@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.lifecycle.LifecycleSupervisor;
 import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,13 +83,15 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
                 logger.debug("{} has finished processing 0 events.", getName());
                 result = Status.BACKOFF;
             } else {
-                logicalTime = getLogicalHour(eventsToSave.get(0));
-                monitorNumberOfReadEvents(eventsToSave.size(),logicalTime);
+
+                monitorNumberOfReadEvents(eventsToSave.size(),null);
 
                 SinkRunner.consecutiveBackoffCounter = 0;
 
                 final int numOfSavedEvents = saveEvents(eventsToSave);
-                monitorNumberOfSavedEvents(numOfSavedEvents,logicalTime);
+                LifecycleSupervisor.addToTotalSinkedEvents(numOfSavedEvents);
+                monitorNumberOfSavedEvents(numOfSavedEvents,null);
+
                 logger.trace("{} has finished processing {} events.", getName(), numOfSavedEvents);
             }
             transaction.commit();
@@ -105,14 +108,13 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
 
                 transaction.rollback();
             }
-
         } finally {
+            logger.info("Presidio sink have sinked ");
             transaction.close();
             this.stop();
         }
 
         if (isBatch && isDone) {
-            //Batchable work finished, system if moved to done and going to be closed, monitor stopped
             result = Status.DONE;
         }
         return result;
