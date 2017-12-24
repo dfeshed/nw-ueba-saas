@@ -40,7 +40,11 @@ public class MetricEnums {
         FEATURE_BUCKETS_UPDATES("featureBucketsUpdates"),
         SUCCESS_EVENTS("successEvents"),
         TOTAL_EVENTS("totalEvents"),
-        FAILED_EVENTS("failedEvents")
+        FAILED_EVENTS("failedEvents"),
+        SUCCESS_PAGES("successPages"),
+        TOTAL_PAGES("totalPages"),
+        FAILED_PAGES("failedPages"),
+        AVG_PAGE_SIZE("avgPageSize")
         ;
 
         private String value;
