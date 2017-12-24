@@ -82,7 +82,7 @@ def send_request_to_elastic_from_file(folder, url):
 send_request_to_elastic_from_file(SETTINGS, MACHINE_URL)
 send_request_to_elastic_from_file(TEMPLATES, URL_TEMPLATES)
 create_indexes(INDEXES)
-create_aliases(ALIASES)
+#create_aliases(ALIASES)
 send_request_to_elastic_from_file(INDEX_PATTERN, URL_KIBANA_PATTERNS)
 create_default_pattern(DEFAULT)
 send_request_to_elastic_from_file(SEARCHES, URL_KIBANA_SEARCHES)
