@@ -47,7 +47,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         presidioInputPersistencyService.clean(schema, startDate, endDate);
-        logger.info("Finished enrich processing .");
+        logger.info("Finished enrich processing.");
     }
 
     @Override

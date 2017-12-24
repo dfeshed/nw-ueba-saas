@@ -4,6 +4,10 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.TimeModel;
 import fortscale.ml.model.builder.TimeModelBuilder;
 import fortscale.ml.model.builder.TimeModelBuilderConf;
+import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by barak_schuster on 9/11/17.
@@ -12,10 +16,12 @@ public class TimeModelGenerator implements IModelGenerator<TimeModel> {
     private TimeModelBuilder timeModelBuilder;
     private TimeModelBuilderConf timeModelBuilderConf;
     private IGenericHistogramGenerator genericHistogramGenerator;
+    private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
+    private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 
     public TimeModelGenerator(TimeModelBuilderConf conf) {
         timeModelBuilderConf = conf;
-        timeModelBuilder = new TimeModelBuilder(conf);
+        timeModelBuilder = new TimeModelBuilder(conf, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
         GenericHistogram genericHistogram = new GenericHistogram();
         for (int i = 0; i < 40; i++) {
             genericHistogram.add(i,0D);

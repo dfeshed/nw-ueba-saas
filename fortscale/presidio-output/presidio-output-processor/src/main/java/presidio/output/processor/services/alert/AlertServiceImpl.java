@@ -14,6 +14,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGenerator;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class AlertServiceImpl implements AlertService {
                 alert.setIndicators(supportingInfo);
                 alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
                 alert.setIndicatorsNum(supportingInfo.size());
-                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicatorsNamesForClassification(createIndicatorNameToContributionMap(supportingInfo)));
+                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(getIndicatorsForClassification(createIndicatorNameToContributionMap(supportingInfo)));
                 alert.setClassifications(classification);
             } else {
                 return null;
@@ -121,16 +122,16 @@ public class AlertServiceImpl implements AlertService {
         return map;
     }
 
-    private List<String> indicatorsNamesForClassification(Map<String, Number> indicatorsMapNameContribution) {
-        List<String> indicatorsNameList = indicatorsNamesByContributionLimit(indicatorsMapNameContribution, indicatorsContributionLimitForClassification);
+    private List<String> getIndicatorsForClassification(Map<String, Number> indicatorsMapNameContribution) {
+        List<String> indicatorsNameList = filterIndicatorsByContribution(indicatorsMapNameContribution, indicatorsContributionLimitForClassification);
         if (indicatorsNameList.size() == 0) {
-            indicatorsNameList = indicatorsNamesByContributionLimit(indicatorsMapNameContribution, maxContribution(indicatorsMapNameContribution).doubleValue());
+            indicatorsNameList = filterIndicatorsByContribution(indicatorsMapNameContribution, getMaxContributionScore(indicatorsMapNameContribution).doubleValue());
         }
         return indicatorsNameList;
 
     }
 
-    private List<String> indicatorsNamesByContributionLimit(Map<String, Number> indicatorsMapNameContribution, double contributionLimit) {
+    private List<String> filterIndicatorsByContribution(Map<String, Number> indicatorsMapNameContribution, double contributionLimit) {
         List<String> indicatorsNameList = new ArrayList<>();
         for (Map.Entry<String, Number> entry : indicatorsMapNameContribution.entrySet()) {
             if (entry.getValue().doubleValue() >= contributionLimit) {
@@ -140,7 +141,7 @@ public class AlertServiceImpl implements AlertService {
         return indicatorsNameList;
     }
 
-    private Number maxContribution(Map<String, Number> indicatorsMapNameContribution) {
+    private Number getMaxContributionScore(Map<String, Number> indicatorsMapNameContribution) {
         double max = 0;
         for (Map.Entry<String, Number> entry : indicatorsMapNameContribution.entrySet()) {
             if (entry.getValue().doubleValue() >= max) {
@@ -150,11 +151,14 @@ public class AlertServiceImpl implements AlertService {
         return max;
     }
 
+    @Override
+    public List<Alert> cleanAlerts(Instant startDate, Instant endDate) {
+        return alertPersistencyService.removeByTimeRange(startDate, endDate);
+    }
+
     private AlertEnums.AlertTimeframe getStrategyFromSmart(SmartRecord smart) {
         String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;
         return AlertEnums.AlertTimeframe.getAlertTimeframe(strategy);
-
-
     }
 
     private List<String> extractIndicatorsNames(SmartRecord smart) {

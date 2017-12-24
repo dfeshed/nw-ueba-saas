@@ -6,15 +6,17 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.IndicatorQuery;
 import presidio.output.domain.records.alerts.IndicatorSummary;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
 public interface AlertPersistencyService {
 
     Alert save(Alert alert);
+
+    Indicator save(Indicator indicator);
 
     Iterable<Alert> save(List<Alert> alerts);
 
@@ -30,6 +32,8 @@ public interface AlertPersistencyService {
 
     Page<Alert> findByUserId(String userId, PageRequest pageRequest);
 
+    List<Alert> findByUserId(String userId);
+
     Page<Alert> findByUserIdIn(Collection<String> userId, PageRequest pageRequest);
 
     Page<Alert> findById(String id, PageRequest pageRequest);
@@ -42,10 +46,12 @@ public interface AlertPersistencyService {
 
     Page<Indicator> findIndicatorsByAlertId(String alertId, PageRequest pageRequest);
 
-    Page<Indicator> findIndicatorsByAlertId(IndicatorQuery indicatorQuery);
-
     Page<IndicatorSummary> findIndicatorsSummaryByAlertId(String alertId, PageRequest pageRequest);
 
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
+
+    List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
+
+    long countAlerts();
 
 }

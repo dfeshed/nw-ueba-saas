@@ -9,6 +9,8 @@ import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderCon
 import fortscale.ml.model.selector.AggregatedEventContextSelectorConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
@@ -22,6 +24,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -34,6 +37,9 @@ import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataSt
 import presidio.ade.modeling.config.ModelingServiceConfiguration;
 import presidio.ade.test.utils.generators.AccumulatedAggregationFeatureRecordHourlyGenerator;
 import presidio.data.generators.common.GeneratorException;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.services.export.MetricsExporter;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -68,6 +74,10 @@ public class ModelingServiceApplicationContinuousModelsTest {
     private String featureAggrRecordsBaseConfigurationPath;
     @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
     private String groupName;
+    @MockBean
+    MetricCollectingService metricCollectingService;
+    @MockBean
+    MetricsExporter metricsExporter;
 
     private static final String FEATURE_AGGREGATION_RECORDS_LINE_FORMAT = "process --group_name feature-aggregation-record-models.file --session_id test-run --end_date %s";
 
@@ -196,6 +206,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
             properties.put("presidio.default.ttl.duration", "PT1000H");
             properties.put("presidio.default.cleanup.interval", "PT2000H");
             properties.put("presidio.model.store.query.pagination.size", "5");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

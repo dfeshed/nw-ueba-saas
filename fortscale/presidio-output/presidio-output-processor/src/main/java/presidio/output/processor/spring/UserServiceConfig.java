@@ -7,13 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.commons.services.spring.UserSeverityServiceConfig;
+import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.processor.services.user.UserScoreService;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
-import presidio.output.processor.services.user.UserService;
-import presidio.output.processor.services.user.UserServiceImpl;
+import presidio.output.processor.services.user.*;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -29,7 +27,7 @@ public class UserServiceConfig {
     @Value("${alerts.batch.size:2000}")
     private int defaultAlertsBatchSize;
 
-    @Value("${alert.affect.duration.days:1000}")
+    @Value("${alert.affect.duration.days:90}")
     private int alertEffectiveDurationInDays;
 
     @Autowired
@@ -42,11 +40,15 @@ public class UserServiceConfig {
     private UserPersistencyService userPersistencyService;
 
     @Autowired
+    private UserSeverityService userSeverityService;
+
+    @Autowired
     private AlertPersistencyService alertPersistencyService;
+
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, userScoreService(), alertEffectiveDurationInDays, defaultAlertsBatchSize);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(),userSeverityService, alertEffectiveDurationInDays, defaultAlertsBatchSize);
     }
 
     @Bean
