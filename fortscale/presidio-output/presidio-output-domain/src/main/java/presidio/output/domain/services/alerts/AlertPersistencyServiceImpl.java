@@ -7,14 +7,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.IndicatorQuery;
 import presidio.output.domain.records.alerts.IndicatorSummary;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
@@ -146,7 +143,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public Page<Indicator> findIndicatorsByAlertId(String alertId, PageRequest pageRequest) {
-        return indicatorRepository.findByAlertId(alertId, pageRequest);
+        return indicatorRepository.findByAlertIdOrderByScoreContributionDesc(alertId, pageRequest);
     }
 
     @Override
@@ -174,7 +171,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<Alert> findByUserId(String userId){
+    public List<Alert> findByUserId(String userId) {
         List<Alert> alerts = new ArrayList<Alert>();
         try (Stream<Alert> stream = alertRepository.findByUserId(userId)) {
             alerts = stream.collect(Collectors.toList());
@@ -188,7 +185,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Page<Indicator> findIndicatorsByAlertId(IndicatorQuery indicatorQuery) {
-        return indicatorRepository.search(new IndicatorElasticsearchQueryBuilder(indicatorQuery).build());
+    public Indicator save(Indicator indicator) {
+        return indicatorRepository.save(indicator);
     }
 }

@@ -90,7 +90,7 @@ public class AlertServiceImpl implements AlertService {
                 alert.setIndicators(supportingInfo);
                 alert.setIndicatorsNames(supportingInfo.stream().map(i -> i.getName()).collect(Collectors.toList()));
                 alert.setIndicatorsNum(supportingInfo.size());
-                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(indicatorsNamesForClassification(createIndicatorNameToContributionMap(supportingInfo)));
+                List<String> classification = alertClassificationService.getAlertClassificationsFromIndicatorsByPriority(getIndicatorsForClassification(createIndicatorNameToContributionMap(supportingInfo)));
                 alert.setClassifications(classification);
             } else {
                 return null;
@@ -122,16 +122,16 @@ public class AlertServiceImpl implements AlertService {
         return map;
     }
 
-    private List<String> indicatorsNamesForClassification(Map<String, Number> indicatorsMapNameContribution) {
-        List<String> indicatorsNameList = indicatorsNamesByContributionLimit(indicatorsMapNameContribution, indicatorsContributionLimitForClassification);
+    private List<String> getIndicatorsForClassification(Map<String, Number> indicatorsMapNameContribution) {
+        List<String> indicatorsNameList = filterIndicatorsByContribution(indicatorsMapNameContribution, indicatorsContributionLimitForClassification);
         if (indicatorsNameList.size() == 0) {
-            indicatorsNameList = indicatorsNamesByContributionLimit(indicatorsMapNameContribution, maxContribution(indicatorsMapNameContribution).doubleValue());
+            indicatorsNameList = filterIndicatorsByContribution(indicatorsMapNameContribution, getMaxContributionScore(indicatorsMapNameContribution).doubleValue());
         }
         return indicatorsNameList;
 
     }
 
-    private List<String> indicatorsNamesByContributionLimit(Map<String, Number> indicatorsMapNameContribution, double contributionLimit) {
+    private List<String> filterIndicatorsByContribution(Map<String, Number> indicatorsMapNameContribution, double contributionLimit) {
         List<String> indicatorsNameList = new ArrayList<>();
         for (Map.Entry<String, Number> entry : indicatorsMapNameContribution.entrySet()) {
             if (entry.getValue().doubleValue() >= contributionLimit) {
@@ -141,7 +141,7 @@ public class AlertServiceImpl implements AlertService {
         return indicatorsNameList;
     }
 
-    private Number maxContribution(Map<String, Number> indicatorsMapNameContribution) {
+    private Number getMaxContributionScore(Map<String, Number> indicatorsMapNameContribution) {
         double max = 0;
         for (Map.Entry<String, Number> entry : indicatorsMapNameContribution.entrySet()) {
             if (entry.getValue().doubleValue() >= max) {

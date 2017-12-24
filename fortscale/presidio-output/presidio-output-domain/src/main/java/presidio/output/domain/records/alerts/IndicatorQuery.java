@@ -74,7 +74,7 @@ public class IndicatorQuery {
         }
 
 
-        public IndicatorQuery builde() {
+        public IndicatorQuery build() {
             return new IndicatorQuery(this);
         }
     }
