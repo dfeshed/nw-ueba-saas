@@ -35,6 +35,12 @@ public class DataSourceRepositoryImpl implements DataSourceRepository {
         return removeResult.getN();
     }
 
+    @Override
+    public int cleanDataSourceDataUntilDate(String collectionName, Instant endTime) {
+        final Query query = new Query(Criteria.where(AbstractAuditableDocument.DATE_TIME_FIELD_NAME).lt(endTime));
+        WriteResult removeResult = mongoTemplate.remove(query, AbstractAuditableDocument.class, collectionName);
+        return removeResult.getN();
+    }
 
     @Override
     public void insertDataSource(String collectionName, List<? extends AbstractAuditableDocument> documents) {

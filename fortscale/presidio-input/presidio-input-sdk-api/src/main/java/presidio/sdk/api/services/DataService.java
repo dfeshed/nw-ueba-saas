@@ -18,6 +18,8 @@ public interface DataService {
 
     int clean(Instant startDate, Instant endDate, Schema schema);
 
+    int cleanUntil(Instant endDate, Schema schema);
+
     void cleanAll(Schema schema);
 
     <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);

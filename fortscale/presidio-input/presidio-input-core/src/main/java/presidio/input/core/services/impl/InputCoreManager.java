@@ -116,15 +116,14 @@ public class InputCoreManager {
     }
 
     public void retentionClean(Schema schema, Instant endDate) {
-        Instant cleanFrom = Instant.ofEpochSecond(0);
         // Calculate the date that we want to clear the data before it
-        Instant cleanTill = endDate.minus(retentionInDays, ChronoUnit.DAYS);
+        Instant cleanUntil = endDate.minus(retentionInDays, ChronoUnit.DAYS);
         try {
-            logger.debug("Cleaning {} events from {} till {}", schema, cleanFrom, cleanTill);
+            logger.debug("Cleaning {} until {}", schema, cleanUntil);
             // Clear the events data from the beginning till the set date
-            inputPersistencyService.clean(schema, cleanFrom, cleanTill);
+            inputPersistencyService.cleanUntil(schema, cleanUntil);
         } catch (Exception e) {
-            logger.error("Error running retention clean for schema {}, from  {} - till {}", schema, cleanFrom, cleanTill, e);
+            logger.error("Error running retention clean for schema {}, until {}", schema, cleanUntil, e);
         }
     }
 }
