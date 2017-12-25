@@ -67,6 +67,12 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         doPresidioConfigure(context);
     }
 
+    /**
+     * process read batch of events from the channel (if there is staff in the channel) and process it
+     * The AbstractPresidioSink is not require monitoring, but it allow inherited sinks to use monitoring with override supported built-in  methods
+     * @return
+     * @throws EventDeliveryException
+     */
     @Override
     public Status process() throws EventDeliveryException {
         logger.trace("{} is starting...", getName());

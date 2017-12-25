@@ -140,7 +140,7 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
   }
 
   /**
-   * Fetch the first monitor deatils
+   * Fetch the first monitor details. I assume that we always have one source.
    * @param sourceRunnerMap
    * @return
    */
@@ -391,6 +391,7 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
       }
     }
   }
+
 
   private void loadSinks(AgentConfiguration agentConf,
       Map<String, ChannelComponent> channelComponentMap, Map<String, SinkRunner> sinkRunnerMap,MonitorDetails monitorDetails)

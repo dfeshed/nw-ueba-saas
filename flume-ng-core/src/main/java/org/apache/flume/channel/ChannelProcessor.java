@@ -113,6 +113,7 @@ public class ChannelProcessor implements Configurable {
         Interceptor.Builder builder = factory.newInstance(type);
         builder.configure(interceptorContext);
         Interceptor interceptor = builder.build();
+        //If relevant, add monitoring item to interceptor
         configureMonitor(context, interceptor);
         interceptors.add(interceptor);
       } catch (ClassNotFoundException e) {
@@ -130,6 +131,11 @@ public class ChannelProcessor implements Configurable {
     interceptorChain.setInterceptors(interceptors);
   }
 
+  /**
+   * Get context and interceptor, if both support monitoring, the intercepter will retrive the monitoring details
+   * @param context
+   * @param interceptor
+   */
   private void configureMonitor(Context context, Interceptor interceptor) {
     if (context instanceof MonitorableContext && interceptor instanceof MonitorUses){
       ((MonitorUses)interceptor).setMonitorDetails(((MonitorableContext)context).getMonitorDetails());

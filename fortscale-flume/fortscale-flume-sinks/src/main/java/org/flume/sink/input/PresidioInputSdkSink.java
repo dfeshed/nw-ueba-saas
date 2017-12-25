@@ -46,7 +46,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     private static String[] mandatoryParams = {SCHEMA, RECORD_TYPE};
 
     private PresidioInputPersistencyService presidioInputPersistencyService;
-    private ConnectorSharedPresidioExternalMonitoringService monitoringService;
+    private FlumePresidioExternalMonitoringService monitoringService;
     private Class<T> recordType;
     private Schema schema;
     private int batchSize;
@@ -172,6 +172,6 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         if (schema!=null){
             monitorDetails.setSchema(schema.getName());
         }
-        monitoringService = new ConnectorSharedPresidioExternalMonitoringService(monitorDetails,this.getName());
+        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,this.getName());
     }
 }

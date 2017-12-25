@@ -5,7 +5,8 @@ import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import java.time.Instant;
 
 /**
- * Created by shays on 24/12/2017.
+ * Context to contain single instance of presidioExternalMonitoringService
+ * In addition, this context will contain the schema and logical hour (if relevant, the adapter always contain schema and logical hour, the collector is not)
  */
 public class MonitorDetails {
 
@@ -23,17 +24,11 @@ public class MonitorDetails {
         return logicalhour;
     }
 
-    public void setLogicalhour(Instant logicalhour) {
-        this.logicalhour = logicalhour;
-    }
 
     public PresidioExternalMonitoringService getPresidioExternalMonitoringService() {
         return presidioExternalMonitoringService;
     }
 
-    public void setPresidioExternalMonitoringService(PresidioExternalMonitoringService presidioExternalMonitoringService) {
-        this.presidioExternalMonitoringService = presidioExternalMonitoringService;
-    }
 
     public String getSchema() {
         return schema;

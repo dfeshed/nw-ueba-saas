@@ -14,35 +14,29 @@ import java.util.Map;
 
 
 /**
- * Static service to share one monitor service instance between all the flume parts (source, sink, interceptor
+ * Wrapper for presidioExternalMonitoringService to handle monitoring of single events processed by flume
  */
-public class ConnectorSharedPresidioExternalMonitoringService{
+public class FlumePresidioExternalMonitoringService {
 
-
+    private static Logger logger = LoggerFactory.getLogger(FlumePresidioExternalMonitoringService.class);
     public static final String NUMBER_OF_PROCESSED_EVENTS = "events_processed";
     private PresidioExternalMonitoringService presidioExternalMonitoringService;
     private Instant logicalHour;
     private String defaultSchema;
-    private String origin;
+    private String reporterComponentName;
 
     /**
      *
      * @param monitorDetails  - initiated instance of monitoring service, logicalHour, and default schema
-     * @param origin - the "reporter" - source, interceptor, sink - usually the class name
+     * @param reporterComponentName - the "reporter component" - source, interceptor, sink - usually the class name
      */
-    public ConnectorSharedPresidioExternalMonitoringService(MonitorDetails monitorDetails, String origin) {
+    public FlumePresidioExternalMonitoringService(MonitorDetails monitorDetails, String reporterComponentName) {
         this.presidioExternalMonitoringService = monitorDetails.getPresidioExternalMonitoringService();
         this.logicalHour = monitorDetails.getLogicalhour();
         this.defaultSchema = monitorDetails.getSchema();
 
-        this.origin = origin;
-
-
+        this.reporterComponentName = reporterComponentName;
     }
-
-    private static Logger logger = LoggerFactory.getLogger(ConnectorSharedPresidioExternalMonitoringService.class);
-
-
 
 
      //**************** Expost the original method of the core external monitoring service
@@ -58,15 +52,21 @@ public class ConnectorSharedPresidioExternalMonitoringService{
         presidioExternalMonitoringService.manualExportMetrics();
     }
 
-    /**
-     * Single event metric - the most common:
-     */
 
+    /**
+     * Single event metric success
+     * @param amount -  number of events to update
+     */
     public void reportSuccessEventMetric(int amount) {
         reportMetric(NUMBER_OF_PROCESSED_EVENTS,false,null, MetricEnums.MetricValues.SUCCESS_EVENTS,amount);
     }
 
 
+    /**
+     * * @param amount -  number of events to update
+     * @param errorKey - the reason of failure
+     * @param amount -  number of events to update
+     */
     public  void reportFailedEventMetric(String errorKey, int amount) {
         if (StringUtils.isBlank(errorKey)){
             throw new RuntimeException("Metric error tag cannot be empty");
@@ -74,13 +74,17 @@ public class ConnectorSharedPresidioExternalMonitoringService{
         reportMetric(NUMBER_OF_PROCESSED_EVENTS,true,errorKey, MetricEnums.MetricValues.FAILED_EVENTS,amount);
     }
 
+    /**
+     * Update total retrieved events
+     * @param amount -  number of events to update
+     */
     public  void reportTotalEventMetric(int amount) {
 
         reportMetric(NUMBER_OF_PROCESSED_EVENTS,true,null, MetricEnums.MetricValues.TOTAL_EVENTS,amount);
     }
 
     /**
-     * Report event metrics which are not single event
+     * Report event metrics which are not single event (Page, webhook, etc...)
      * @param metricName
      * @param value
      * @param amount
@@ -89,7 +93,13 @@ public class ConnectorSharedPresidioExternalMonitoringService{
         reportMetric(metricName,false,null,value,amount);
     }
 
-
+    /**
+     * Report event metrics which are not single event (Page, webhook, etc...)
+     * @param metricName
+     * @param errorKey - error reason
+     * @param value
+     * @param amount
+     */
     public void reportFailedMetric(String metricName, String errorKey, MetricEnums.MetricValues value, int amount) {
         if (StringUtils.isBlank(errorKey)){
             throw new RuntimeException("Metric error tag cannot be empty");
@@ -97,10 +107,29 @@ public class ConnectorSharedPresidioExternalMonitoringService{
         reportMetric(metricName,true,errorKey,value,amount);
     }
 
+    /**
+     * Report metric - use process schema and logicalHour
+     * @param metricName
+     * @param isFailure
+     * @param statusTag
+     * @param value
+     * @param amount
+     */
+
     protected void reportMetric(String metricName, boolean isFailure, String statusTag, MetricEnums.MetricValues value, int amount){
         reportMetric(metricName,isFailure,statusTag,value,amount,null,null);
     }
 
+    /**
+     * Report metric - can get specific logical hour and schema
+     * @param metricName
+     * @param isFailure
+     * @param statusTag
+     * @param value
+     * @param amount
+     * @param schema
+     * @param logicalHour
+     */
     protected void reportMetric(String metricName, boolean isFailure, String statusTag, MetricEnums.MetricValues value, int amount, String schema, Instant logicalHour) {
         if(amount<=0 || value == null){
             return;
@@ -115,6 +144,14 @@ public class ConnectorSharedPresidioExternalMonitoringService{
         this.reportCustomMetricMultipleValues(metricName,values,tags, MetricEnums.MetricUnitType.NUMBER,logicalHour);
     }
 
+
+    /**
+     * Build tag with schema, status, and component name so we will be able to filter by any of them
+     * @param isFailure - if this monitoring item represent failure to read or write page or events. If ture- the resason must be supplied in the status tag
+     * @param statusTag
+     * @param schema
+     * @return
+     */
     protected Map<MetricEnums.MetricTagKeysEnum, String> getBasicTags(boolean isFailure, String statusTag, String schema) {
         Map<MetricEnums.MetricTagKeysEnum, String> tags= new HashMap<>();
 
@@ -131,8 +168,8 @@ public class ConnectorSharedPresidioExternalMonitoringService{
         }
 
 
-        if (StringUtils.isNotBlank(origin)){
-            tags.put(MetricEnums.MetricTagKeysEnum.GROUP_NAME,origin);
+        if (StringUtils.isNotBlank(reporterComponentName)){
+            tags.put(MetricEnums.MetricTagKeysEnum.GROUP_NAME,reporterComponentName);
         }
         return tags;
     }

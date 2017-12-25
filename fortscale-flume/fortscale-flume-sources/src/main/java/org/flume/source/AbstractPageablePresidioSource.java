@@ -6,16 +6,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.MonitorDetails;
-import org.apache.flume.conf.MonitorableContext;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.lifecycle.LifecycleState;
-import org.apache.flume.ConnectorSharedPresidioExternalMonitoringService;
+import org.apache.flume.FlumePresidioExternalMonitoringService;
 import org.apache.flume.marker.MonitorInitiator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +23,7 @@ import presidio.monitoring.sdk.impl.factory.PresidioExternalMonitoringServiceFac
 
 import java.nio.charset.Charset;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.apache.flume.CommonStrings.END_DATE;
 import static org.apache.flume.CommonStrings.START_DATE;
@@ -57,7 +53,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     PresidioExternalMonitoringService presidioExternalMonitoringService;
 
-    protected ConnectorSharedPresidioExternalMonitoringService connectorSharedPresidioExternalMonitoringService;
+    protected FlumePresidioExternalMonitoringService flumePresidioExternalMonitoringService;
     private static ObjectMapper mapper;
 
     static {
@@ -180,35 +176,35 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         }
 
         if (failureReason==null){
-            connectorSharedPresidioExternalMonitoringService.reportSuccessEventMetric(1);
+            flumePresidioExternalMonitoringService.reportSuccessEventMetric(1);
         } else {
 
-            connectorSharedPresidioExternalMonitoringService.reportFailedEventMetric(failureReason,1);
+            flumePresidioExternalMonitoringService.reportFailedEventMetric(failureReason,1);
         }
 
     }
 
     private void processPage(List<AbstractDocument> pageEvents) throws Exception {
-        connectorSharedPresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.TOTAL_PAGES, 1);
+        flumePresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.TOTAL_PAGES, 1);
         totalPages++;
         if (CollectionUtils.isNotEmpty(pageEvents)) {
-            connectorSharedPresidioExternalMonitoringService.reportTotalEventMetric(pageEvents.size());
+            flumePresidioExternalMonitoringService.reportTotalEventMetric(pageEvents.size());
 
             totalEvents+=pageEvents.size();
         }
-        connectorSharedPresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.AVG_PAGE_SIZE, 1);
+        flumePresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.AVG_PAGE_SIZE, 1);
 
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);
-            connectorSharedPresidioExternalMonitoringService.reportFailedEventMetric(INVALID_EVENTS_ERROR_KEY,pageEvents.size());
-            connectorSharedPresidioExternalMonitoringService.reportFailedMetric(NUMBER_OF_PROCESSED_PAGES,  INVALID_EVENTS_ERROR_KEY, MetricEnums.MetricValues.FAILED_PAGES, 1 );
+            flumePresidioExternalMonitoringService.reportFailedEventMetric(INVALID_EVENTS_ERROR_KEY,pageEvents.size());
+            flumePresidioExternalMonitoringService.reportFailedMetric(NUMBER_OF_PROCESSED_PAGES,  INVALID_EVENTS_ERROR_KEY, MetricEnums.MetricValues.FAILED_PAGES, 1 );
             throw new Exception(errorMessage);
         } else {
             for (AbstractDocument pageEvent : pageEvents) {
                 processEvent(pageEvent);
             }
-            connectorSharedPresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.SUCCESS_PAGES, 1 );
+            flumePresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.SUCCESS_PAGES, 1 );
         }
     }
 
@@ -228,7 +224,8 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             try {
                 PresidioExternalMonitoringService presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
                 logger.info("New Monitoring Service has initiated");
-                monitorDetails = new MonitorDetails(null,presidioExternalMonitoringService , null);
+                monitorDetails = new MonitorDetails(this.startDate,presidioExternalMonitoringService , this.schema);
+                this.flumePresidioExternalMonitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,this.getName());
             } catch (Exception e) {
                 logger.error("Cannot load external monitoring service");
                 throw new RuntimeException(e);

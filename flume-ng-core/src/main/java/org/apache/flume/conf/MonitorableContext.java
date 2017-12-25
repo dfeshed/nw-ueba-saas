@@ -2,14 +2,12 @@ package org.apache.flume.conf;
 
 import org.apache.flume.Context;
 import org.apache.flume.marker.MonitorInitiator;
-import org.apache.flume.marker.MonitorUses;
-import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 
-import java.time.Instant;
 import java.util.Map;
 
 /**
- * Created by shays on 24/12/2017.
+ * Flume Context supports only string-string proverties (string key, string value)
+ * This context is adding the monitor details to the context
  */
 public class MonitorableContext extends Context implements MonitorInitiator{
 

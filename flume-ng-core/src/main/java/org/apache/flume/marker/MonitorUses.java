@@ -6,7 +6,8 @@ import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 import java.time.Instant;
 
 /**
- * Created by shays on 24/12/2017.
+ * A marker interfaces.
+ * Sinks, and interceptors which implement this interface state that they need to get monitor details instance from the context
  */
 public interface MonitorUses {
 

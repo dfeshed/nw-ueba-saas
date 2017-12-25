@@ -3,7 +3,7 @@ package org.apache.flume.interceptor.presidio;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.CommonStrings;
-import org.apache.flume.ConnectorSharedPresidioExternalMonitoringService;
+import org.apache.flume.FlumePresidioExternalMonitoringService;
 import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.conf.MonitorDetails;
@@ -25,12 +25,8 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor,Mon
             .getLogger(AbstractPresidioJsonInterceptor.class);
 
     protected static final String EMPTY_STRING = "EMPTY_STRING";
-    protected ConnectorSharedPresidioExternalMonitoringService monitoringService;
-
-
+    protected FlumePresidioExternalMonitoringService monitoringService;
     protected String applicationName;
-
-
 
     @Override
     public List<Event> intercept(List<Event> events) {
@@ -96,6 +92,6 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor,Mon
 
     @Override
     public void setMonitorDetails(MonitorDetails monitorDetails) {
-        monitoringService = new ConnectorSharedPresidioExternalMonitoringService(monitorDetails,this.getClass().getName());
+        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,this.getClass().getName());
     }
 }
