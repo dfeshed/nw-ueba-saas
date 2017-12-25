@@ -66,26 +66,14 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-
-
+    protected MonitorDetails monitorDetails;
 
 
     @Override
     public void start() {
-        PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
-        try {
-            presidioExternalMonitoringService= presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(super.applicationName);
-            connectorSharedPresidioExternalMonitoringService = new ConnectorSharedPresidioExternalMonitoringService(getMonitorDetails(),this.getName());
-
+        if (this.monitorDetails == null){
+            throw new RuntimeException("Monitor should be already initiated in this phase");
         }
-        catch (Exception e){
-            logger.error("Cannot load external monitoring service");
-            throw new RuntimeException(e);
-        }
-
-        logger.info("New Monitoring Service has initiated");
-
-
         super.start();
 
     }
@@ -234,6 +222,19 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     public MonitorDetails getMonitorDetails() {
-        return new MonitorDetails(this.startDate,this.presidioExternalMonitoringService,this.schema);
+        if (monitorDetails == null) {
+            PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
+
+            try {
+                PresidioExternalMonitoringService presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
+                logger.info("New Monitoring Service has initiated");
+                monitorDetails = new MonitorDetails(null,presidioExternalMonitoringService , null);
+            } catch (Exception e) {
+                logger.error("Cannot load external monitoring service");
+                throw new RuntimeException(e);
+            }
+
+        }
+        return monitorDetails;
     }
 }
