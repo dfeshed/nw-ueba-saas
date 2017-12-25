@@ -50,7 +50,7 @@ public class PresidioCommands implements CommandMarker {
         executionService.cleanup(schema, startTime, endTime, fixedDuration);
     }
 
-    @CliCommand(value = "retention", help = "Run the retention clean for application data in specified time range for data source")
+    @CliCommand(value = "retentionClean", help = "Run the retention clean for application data in specified time range for data source")
     public void retentionClean(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema,
 
