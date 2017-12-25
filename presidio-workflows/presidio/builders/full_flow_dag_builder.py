@@ -5,7 +5,7 @@ from datetime import timedelta
 from presidio.builders.adapter.adapter_dag_builder import AdapterDagBuilder
 from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.builders.retention import RetentionDagBuilder
+from presidio.builders.retention.retention_dag_builder import RetentionDagBuilder
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
