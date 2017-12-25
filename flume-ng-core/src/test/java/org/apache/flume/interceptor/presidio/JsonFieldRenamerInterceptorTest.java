@@ -31,7 +31,30 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1;dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
+
+        builder.configure(ctx);
+
+        interceptor = builder.build();
+
+        final String EVENT_SIGNLE_KEY = "{\"orig1\":\"value\"}";
+
+        Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
+
+        event = interceptor.intercept(event);
+        String interceptValue = new String(event.getBody());
+        Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
+
+
+        Assert.assertEquals("{\"dest1\":\"value\"}", interceptValue);
+    }
+
+    @Test
+    public void interceptSingleKeyMulti() throws Exception {
+
+        Context ctx = new Context();
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "[orig3;orig1],[orig2;orig3]");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1,dest2");
 
         builder.configure(ctx);
 
@@ -54,7 +77,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1;dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -77,7 +100,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1;dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -97,7 +120,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -116,7 +139,7 @@ public class JsonFieldRenamerInterceptorTest {
 
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "dest1");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
 
         builder.configure(ctx);
 
