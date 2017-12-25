@@ -12,9 +12,9 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
+import presidio.output.domain.repositories.EventMongoPageIterator;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.config.AnomalyFiltersConfig;
 import presidio.output.processor.config.IndicatorConfig;
@@ -24,7 +24,10 @@ import presidio.output.processor.services.alert.supportinginformation.historical
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Supporting information (indicators, events and historical data) for FEATURE_AGGREGATION events (AKA 'F')
@@ -50,8 +53,8 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit) throws Exception {
-        List<Indicator> indicators = new ArrayList<Indicator>();
+    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) throws Exception {
+        List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
 
@@ -69,7 +72,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
 
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
@@ -78,39 +81,44 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         if (indicatorConfig.getAnomalyDescriptior() != null &&
                 StringUtils.isNoneEmpty(indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
                         indicatorConfig.getAnomalyDescriptior().getAnomalyValue())) {
-            String[] values = StringUtils.split(indicatorConfig.getAnomalyDescriptior().getAnomalyValue(),",");
-            for (String value: values) {
+            String[] values = StringUtils.split(indicatorConfig.getAnomalyDescriptior().getAnomalyValue(), ",");
+            for (String value : values) {
                 features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), value));
             }
         }
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
-        if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
+        if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
             Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
             features.add(Pair.of(fieldName, featureValue));
         }
 
-        List<? extends EnrichedEvent> rawEvents = eventPersistencyService.findEvents(indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
+        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
+        List<IndicatorEvent> events = new ArrayList<>();
 
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        while (eventMongoPageIterator.hasNext()) {
+            List<? extends EnrichedEvent> rawEvents = eventMongoPageIterator.next();
 
-        for (EnrichedEvent rawEvent : rawEvents) {
 
-            Map<String, Object> rawEventFeatures = objectMapper.convertValue(rawEvent, Map.class);
-            IndicatorEvent event = new IndicatorEvent();
-            event.setFeatures(rawEventFeatures);
-            event.setIndicatorId(indicator.getId());
-            event.setEventTime(Date.from(rawEvent.getEventDate()));
-            event.setSchema(indicatorConfig.getSchema());
-            events.add(event);
+            for (EnrichedEvent rawEvent : rawEvents) {
 
+                Map<String, Object> rawEventFeatures = objectMapper.convertValue(rawEvent, Map.class);
+                IndicatorEvent event = new IndicatorEvent();
+                event.setFeatures(rawEventFeatures);
+                event.setIndicatorId(indicator.getId());
+                event.setEventTime(Date.from(rawEvent.getEventDate()));
+                event.setSchema(indicatorConfig.getSchema());
+                events.add(event);
+
+            }
         }
         return events;
     }
 
     @Override
-    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception {
+    public HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws
+            Exception {
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
 
         HistoricalDataPopulator historicalDataPopulator;
