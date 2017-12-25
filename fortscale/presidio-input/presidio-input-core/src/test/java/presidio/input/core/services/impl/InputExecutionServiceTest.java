@@ -28,11 +28,9 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {FortscaleInputCoreApplicationTest.springConfig.class, InputCoreConfigurationTest.class})
