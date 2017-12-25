@@ -416,9 +416,7 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
             throw new IllegalStateException(msg);
           }
           sink.setChannel(channelComponent.channel);
-          if (sink instanceof MonitorUses){
-            ((MonitorUses)sink).setMonitorDetails(monitorDetails);
-          }
+          setSinkMonitoring(monitorDetails, sink);
           sinks.put(comp.getComponentName(), sink);
           channelComponent.components.add(sinkName);
         } catch (Exception e) {
@@ -449,6 +447,7 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
             throw new IllegalStateException(msg);
           }
           sink.setChannel(channelComponent.channel);
+          setSinkMonitoring(monitorDetails, sink);
           sinks.put(sinkName, sink);
           channelComponent.components.add(sinkName);
         } catch (Exception e) {
@@ -460,6 +459,15 @@ public abstract class AbstractConfigurationProvider implements ConfigurationProv
     }
 
     loadSinkGroups(agentConf, sinks, sinkRunnerMap);
+  }
+
+  private void setSinkMonitoring(MonitorDetails monitorDetails, Sink sink) {
+    if (monitorDetails!=null && sink instanceof MonitorUses){
+      LOGGER.info("Set monitoring service to sink {}",sink.getName());
+      ((MonitorUses)sink).setMonitorDetails(monitorDetails);
+    }else {
+      LOGGER.info("sink  doesn't has monitoring{}",sink.getName());
+    }
   }
 
   private void loadSinkGroups(AgentConfiguration agentConf,
