@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
-	<modelVersion>4.0.0</modelVersion>
+
+    <modelVersion>4.0.0</modelVersion>
     <properties>
         <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation</rpm-maven-plugin.directory>
         <rpm-maven-plugin.script>
@@ -38,7 +38,7 @@
         <groupId>fortscale</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    
+
 
     <artifactId>${rpm_name}</artifactId>
 <build>
@@ -224,16 +224,16 @@
                         echo "Running upgrading presidio workflows"
                         bash ${rpm-maven-plugin.workflows-upgrade-script-path}
 
-                        echo "Running Python migration project"
-                        <!-- post installation commands: -->
-                        ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                            echo "Running Python migration project"
+                            <!-- post installation commands: -->
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
 
-                        <!-- It takes 15 seconds for the config server to initialize -->
-                        sleep 20
+                            <!-- It takes 15 seconds for the config server to initialize -->
+                            sleep 20
 
-                        <!--changing ownership of project main folder -->
-                        #echo "Changing ownership of /project main repository"
-                        chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
+                            <!--changing ownership of project main folder -->
+                            #echo "Changing ownership of /project main repository"
+                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
 
                         #echo "Removing temporary files"
                         rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
@@ -259,20 +259,17 @@
                         if [ "$1" = 0 ] ; then
                             echo "pre remove condition passed"
                             ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
-                        fi
+                            fi
 
-                    </script>
-                </preremoveScriptlet>
-                <postremoveScriptlet>
-                    <script>
-                        <!-- post remove commands -->
-                        <!-- remove presidio-core main folder -->
-                        
-
-                    </script>
-                </postremoveScriptlet>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
+                        </script>
+                    </preremoveScriptlet>
+                    <postremoveScriptlet>
+                        <script>
+                            <!-- post remove commands -->
+                        </script>
+                    </postremoveScriptlet>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
