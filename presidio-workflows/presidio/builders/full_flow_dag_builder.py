@@ -1,13 +1,13 @@
 
+import logging
 from datetime import timedelta
 
 from presidio.builders.adapter.adapter_dag_builder import AdapterDagBuilder
-from presidio.builders.presidio_core_dag_builder import PresidioCoreDagBuilder
+from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
+from presidio.builders.retention import RetentionDagBuilder
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
-
-import logging
+from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
 class FullFlowDagBuilder(PresidioDagBuilder):
@@ -39,7 +39,9 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         task_sensor_service.add_task_sequential_sensor(adapter_sub_dag)
         presidio_core_sub_dag = self._get_presidio_core_sub_dag_operator(data_sources, full_flow_dag)
 
-        root_dag_gap_sensor_operator >> adapter_sub_dag >> presidio_core_sub_dag
+        retention_sub_dag = self._get_presidio_retention_sub_dag_operator(data_sources, full_flow_dag)
+
+        root_dag_gap_sensor_operator >> adapter_sub_dag >> presidio_core_sub_dag >> retention_sub_dag
         logging.debug("Finished creating dag - %s", full_flow_dag.dag_id)
 
         return full_flow_dag
@@ -53,4 +55,11 @@ class FullFlowDagBuilder(PresidioDagBuilder):
         presidio_core_dag_id = 'presidio_core_dag'
 
         return self._create_sub_dag_operator(PresidioCoreDagBuilder(data_sources), presidio_core_dag_id, full_flow_dag)
+
+    def _get_presidio_retention_sub_dag_operator(self, data_sources, full_flow_dag):
+        retention_dag_id = 'retention_dag'
+
+        return self._create_sub_dag_operator(RetentionDagBuilder(data_sources), retention_dag_id, full_flow_dag)
+
+
 
