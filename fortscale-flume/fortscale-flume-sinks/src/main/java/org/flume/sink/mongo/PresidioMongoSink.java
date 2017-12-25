@@ -192,16 +192,6 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         logger.warn(this.getClass().getName()+" is not supporting monitoring");
     }
 
-    @Override
-    protected Instant getLogicalHour(T event){
-        logger.warn(this.getClass().getName()+" is not supporting monitoring");
-      return null;
-    }
-
-
-
-
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -211,10 +201,8 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
             sinkMongoRepository.save(eventsToSave.get(0), collectionName);
             numOfSavedEvents = 1;
-//                sinkCounter.incrementEventDrainSuccessCount();
         } else {
             numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
-//                sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
         }
 
         if (StringUtils.isNotEmpty(indexFieldName)) {

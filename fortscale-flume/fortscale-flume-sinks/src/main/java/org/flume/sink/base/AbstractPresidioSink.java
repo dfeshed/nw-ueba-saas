@@ -89,8 +89,8 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
                 logger.debug("{} has finished processing 0 events.", getName());
                 result = Status.BACKOFF;
             } else {
-
-                monitorNumberOfReadEvents(eventsToSave.size(),null);
+                logicalTime = this.getLogicalHour(eventsToSave.get(0));
+                monitorNumberOfReadEvents(eventsToSave.size(),logicalTime);
 
                 SinkRunner.consecutiveBackoffCounter = 0;
 
