@@ -108,14 +108,14 @@ public class InputExecutionServiceTest {
         rawEvents.add(createAuthenticationRawEvent(Instant.parse("2017-12-11T14:00:00.000Z")));
         inputPersistencyService.store(Schema.AUTHENTICATION, rawEvents);
 
-        executionService.cleanRetention(Schema.AUTHENTICATION, startTime, endTime);
+        executionService.retentionClean(Schema.AUTHENTICATION, startTime, endTime);
 
         List<AuthenticationRawEvent> remainingRawEvents = mongoTemplate.findAll(AuthenticationRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
         Assert.assertEquals(1, remainingRawEvents.size());
     }
 
     private EnrichedEvent createOutputAuthenticationEvent(Instant time) {
-        return new AuthenticationEnrichedEvent(time, time.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
+        return new AuthenticationEnrichedEvent(time, time, "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
     }
 
     private AuthenticationRawEvent createAuthenticationRawEvent(Instant eventTime) {

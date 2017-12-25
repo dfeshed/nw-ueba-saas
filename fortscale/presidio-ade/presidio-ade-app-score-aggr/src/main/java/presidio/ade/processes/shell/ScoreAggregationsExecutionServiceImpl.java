@@ -17,61 +17,61 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 import java.time.Instant;
 
 public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionService {
-	private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-	private final int maxGroupSize;
-	private final int pageSize;
-	private final MetricContainerFlusher metricContainerFlusher;
-	private EnrichedEventsScoringService enrichedEventsScoringService;
-	private EnrichedDataStore enrichedDataStore;
-	private ScoreAggregationsBucketService scoreAggregationsBucketService;
-	private AggregationRecordsCreator aggregationRecordsCreator;
-	private AggregatedDataStore aggregatedDataStore;
-	private StoreManager storeManager;
+    private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    private final int maxGroupSize;
+    private final int pageSize;
+    private final MetricContainerFlusher metricContainerFlusher;
+    private EnrichedEventsScoringService enrichedEventsScoringService;
+    private EnrichedDataStore enrichedDataStore;
+    private ScoreAggregationsBucketService scoreAggregationsBucketService;
+    private AggregationRecordsCreator aggregationRecordsCreator;
+    private AggregatedDataStore aggregatedDataStore;
+    private StoreManager storeManager;
 
-	public ScoreAggregationsExecutionServiceImpl(
-			EnrichedEventsScoringService enrichedEventsScoringService,
-			EnrichedDataStore enrichedDataStore,
-			ScoreAggregationsBucketService scoreAggregationsBucketService,
-			AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
-			AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, StoreManager storeManager, int pageSize, int maxGroupSize,
-			MetricContainerFlusher metricContainerFlusher) {
+    public ScoreAggregationsExecutionServiceImpl(
+            EnrichedEventsScoringService enrichedEventsScoringService,
+            EnrichedDataStore enrichedDataStore,
+            ScoreAggregationsBucketService scoreAggregationsBucketService,
+            AggregationRecordsCreator aggregationRecordsCreator, AggregatedDataStore aggregatedDataStore,
+            AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, StoreManager storeManager, int pageSize, int maxGroupSize,
+            MetricContainerFlusher metricContainerFlusher) {
 
 
-		this.enrichedEventsScoringService = enrichedEventsScoringService;
-		this.enrichedDataStore = enrichedDataStore;
-		this.scoreAggregationsBucketService = scoreAggregationsBucketService;
-		this.aggregationRecordsCreator = aggregationRecordsCreator;
-		this.aggregatedDataStore = aggregatedDataStore;
-		this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
-		this.storeManager = storeManager;
-		this.pageSize = pageSize;
-		this.maxGroupSize = maxGroupSize;
-		this.metricContainerFlusher = metricContainerFlusher;
-	}
-
-	@Override
-	public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
-		FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
-		ScoreAggregationsService service = new ScoreAggregationsService(
-				strategy, enrichedDataStore, enrichedEventsScoringService,
-				scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize, metricContainerFlusher);
-
-		service.execute(new TimeRange(startInstant, endInstant), schema.getName());
-		storeManager.cleanupCollections(startInstant);
-	}
-
-	@Override
-	public void cleanup(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
-		storeManager.cleanupCollections(startInstant, endInstant);
-	}
+        this.enrichedEventsScoringService = enrichedEventsScoringService;
+        this.enrichedDataStore = enrichedDataStore;
+        this.scoreAggregationsBucketService = scoreAggregationsBucketService;
+        this.aggregationRecordsCreator = aggregationRecordsCreator;
+        this.aggregatedDataStore = aggregatedDataStore;
+        this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+        this.storeManager = storeManager;
+        this.pageSize = pageSize;
+        this.maxGroupSize = maxGroupSize;
+        this.metricContainerFlusher = metricContainerFlusher;
+    }
 
     @Override
-    public void cleanRetention(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
+    public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
+        FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
+        ScoreAggregationsService service = new ScoreAggregationsService(
+                strategy, enrichedDataStore, enrichedEventsScoringService,
+                scoreAggregationsBucketService, aggregationRecordsCreator, aggregatedDataStore, aggregatedFeatureEventsConfService, pageSize, maxGroupSize, metricContainerFlusher);
+
+        service.execute(new TimeRange(startInstant, endInstant), schema.getName());
+        storeManager.cleanupCollections(startInstant);
+    }
+
+    @Override
+    public void cleanup(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
+        storeManager.cleanupCollections(startInstant, endInstant);
+    }
+
+    @Override
+    public void retentionClean(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
         // TODO: Implement
     }
 
-	@Override
-	public void cleanAll(Schema schema) throws Exception {
-		// TODO: Implement
-	}
+    @Override
+    public void cleanAll(Schema schema) throws Exception {
+        // TODO: Implement
+    }
 }

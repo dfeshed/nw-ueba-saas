@@ -41,7 +41,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
     }
 
     @Override
-    public void cleanRetention(Schema schema, Instant startDate, Instant endDate) throws Exception {
+    public void retentionClean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean retention for data source:{}, from {}:{}, until {}:{}."
                 , schema,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,

@@ -64,7 +64,7 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     }
 
     @Override
-    public void cleanRetention(Schema schema, Instant startDate, Instant endDate) throws Exception {
+    public void retentionClean(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
 
