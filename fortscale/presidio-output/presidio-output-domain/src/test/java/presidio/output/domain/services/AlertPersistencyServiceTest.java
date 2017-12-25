@@ -22,7 +22,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
 import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertEnums.*;
+import presidio.output.domain.records.alerts.AlertEnums.AlertFeedback;
+import presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
+import presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -34,7 +36,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -188,7 +196,7 @@ public class AlertPersistencyServiceTest {
         alert.setIndicators(Collections.singletonList(indicator));
         indicator.setEvents(Collections.singletonList(event));
         alertPersistencyService.save(alert);
-        Page<Indicator> testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0,1));
+        Page<Indicator> testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
         assertEquals(1, testIndicator.getTotalElements());
         alertPersistencyService.delete(alert);
         elasticsearchTemplate.refresh(Alert.class);
@@ -196,8 +204,8 @@ public class AlertPersistencyServiceTest {
         elasticsearchTemplate.refresh(IndicatorEvent.class);
         Alert testAlert = alertPersistencyService.findOne(alert.getId());
         assertNull(testAlert);
-        testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0,1));
-        assertEquals(0,testIndicator.getTotalElements());
+        testIndicator = alertPersistencyService.findIndicatorsByAlertId(alert.getId(), new PageRequest(0, 1));
+        assertEquals(0, testIndicator.getTotalElements());
     }
 
     @Test
@@ -830,12 +838,49 @@ public class AlertPersistencyServiceTest {
     }
 
     @Test
+    public void findIndicatorsByAlertIsSorted() {
+        Date startDate = new Date();
+        Date endDate = new Date();
+        List<String> indicatorNames1 = Arrays.asList("a");
+        String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
+        Alert alert1 = new Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        List<Indicator> indicators = new ArrayList<>();
+        Indicator indicator1 = new Indicator(alert1.getId());
+        indicator1.setScoreContribution(0.5);
+        Indicator indicator3 = new Indicator(alert1.getId());
+        indicator3.setScoreContribution(0.2);
+        Indicator indicator4 = new Indicator(alert1.getId());
+        indicator4.setScoreContribution(0.3);
+        Indicator indicator2 = new Indicator(alert1.getId());
+        indicator2.setScoreContribution(0.3);
+        indicators.add(indicator1);
+        indicators.add(indicator2);
+        indicators.add(indicator3);
+        indicators.add(indicator4);
+        alert1.setIndicators(indicators);
+        alert1.setIndicatorsNames(indicatorNames1);
+        alertPersistencyService.save(alert1);
+        alertPersistencyService.save(indicator1);
+        alertPersistencyService.save(indicator2);
+        alertPersistencyService.save(indicator3);
+        alertPersistencyService.save(indicator4);
+        PageRequest pageRequest = new PageRequest(0, 100);
+        Page<Indicator> returnIndicators = alertPersistencyService.findIndicatorsByAlertId(alert1.getId(), pageRequest);
+        List<Indicator> returnedIndicators = returnIndicators.getContent();
+        Assert.assertEquals(4, returnedIndicators.size(), 0);
+        Assert.assertEquals(0.5, returnedIndicators.get(0).getScoreContribution(), 0);
+        Assert.assertEquals(0.3, returnedIndicators.get(1).getScoreContribution(), 0);
+        Assert.assertEquals(0.3, returnedIndicators.get(2).getScoreContribution(), 0);
+        Assert.assertEquals(0.2, returnedIndicators.get(3).getScoreContribution(), 0);
+    }
+
+    @Test
     public void testRemoveByTimeRange() {
 
         Instant startDate = Instant.parse("2017-11-10T15:00:00.000Z");
         Instant endDate = Instant.parse("2017-11-10T16:00:00.000Z");
-        Alert alert1 = new Alert("userIdpre", "smartId", classifications1, "user1", Date.from(startDate.plus(10, ChronoUnit.MINUTES)), Date.from(endDate.minus(10,ChronoUnit.MINUTES)), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
-        Alert alert2 = new Alert("userIdpre", "smartId", classifications1, "user1", Date.from(endDate.plus(30, ChronoUnit.MINUTES)), Date.from(endDate.plus(40,ChronoUnit.MINUTES)), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        Alert alert1 = new Alert("userIdpre", "smartId", classifications1, "user1", Date.from(startDate.plus(10, ChronoUnit.MINUTES)), Date.from(endDate.minus(10, ChronoUnit.MINUTES)), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        Alert alert2 = new Alert("userIdpre", "smartId", classifications1, "user1", Date.from(endDate.plus(30, ChronoUnit.MINUTES)), Date.from(endDate.plus(40, ChronoUnit.MINUTES)), 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
 
         alertPersistencyService.save(alert1);
         alertPersistencyService.save(alert2);
@@ -844,8 +889,8 @@ public class AlertPersistencyServiceTest {
         alertPersistencyService.removeByTimeRange(startDate, endDate);
         elasticsearchTemplate.refresh(Alert.class);
         AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByStartDate(startDate.toEpochMilli()).filterByEndDate(endDate.toEpochMilli()).build();
-        Assert.assertEquals(0,alertPersistencyService.find(alertQuery).getTotalElements());
-        Assert.assertEquals(count - 1 ,alertPersistencyService.countAlerts());
+        Assert.assertEquals(0, alertPersistencyService.find(alertQuery).getTotalElements());
+        Assert.assertEquals(count - 1, alertPersistencyService.countAlerts());
 
     }
 
