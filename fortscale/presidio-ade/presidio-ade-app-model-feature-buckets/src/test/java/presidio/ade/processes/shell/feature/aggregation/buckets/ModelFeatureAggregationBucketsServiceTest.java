@@ -7,6 +7,7 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
+import org.junit.Ignore;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
@@ -42,6 +43,7 @@ import java.util.Properties;
 /**
  * Created by YaronDL on 7/5/2017.
  */
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
 public class ModelFeatureAggregationBucketsServiceTest {
