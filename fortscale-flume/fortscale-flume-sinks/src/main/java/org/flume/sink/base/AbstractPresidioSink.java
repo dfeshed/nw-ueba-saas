@@ -92,7 +92,9 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
                 transaction.rollback();
             }
         } finally {
-            logger.info("Presidio sink have sinked ");
+            if (LifecycleSupervisor.getTotalSinkedEvents() != 0) {
+                logger.info("Presidio sink have sinked {} events", LifecycleSupervisor.getTotalSinkedEvents());
+            }
             transaction.close();
             this.stop();
         }
