@@ -12,5 +12,7 @@ public interface OutputExecutionService {
 
     void clean(Instant startDate, Instant endDate) throws Exception;
 
+    void cleanRetention(Instant endDate) throws Exception;
+
     void cleanAll() throws Exception;
 }

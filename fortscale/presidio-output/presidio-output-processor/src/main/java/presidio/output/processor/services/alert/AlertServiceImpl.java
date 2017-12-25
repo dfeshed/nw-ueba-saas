@@ -156,6 +156,12 @@ public class AlertServiceImpl implements AlertService {
         return alertPersistencyService.removeByTimeRange(startDate, endDate);
     }
 
+    @Override
+    public List<Alert> cleanAlertsForRetention(Instant endDate) {
+        return alertPersistencyService.removeByEndDAte(endDate);
+
+    }
+
     private AlertEnums.AlertTimeframe getStrategyFromSmart(SmartRecord smart) {
         String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;
         return AlertEnums.AlertTimeframe.getAlertTimeframe(strategy);

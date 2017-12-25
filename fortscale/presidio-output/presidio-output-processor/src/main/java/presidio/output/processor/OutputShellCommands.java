@@ -54,6 +54,15 @@ public class OutputShellCommands implements CommandMarker {
         executionService.clean(startTime, endTime);
     }
 
+    @CliCommand(value = "cleanRetention", help = "clean application data from start of time to specified endTime minus configured time  ")
+    public void cleanRetention(
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime
+
+    ) throws Exception {
+        executionService.cleanRetention(endTime);
+    }
+
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")
     public void cleanAll() throws Exception {
         executionService.cleanAll();

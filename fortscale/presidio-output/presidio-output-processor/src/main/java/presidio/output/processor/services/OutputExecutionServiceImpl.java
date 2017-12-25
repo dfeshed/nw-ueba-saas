@@ -1,6 +1,7 @@
 package presidio.output.processor.services;
 
 import fortscale.common.general.CommonStrings;
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
@@ -15,12 +16,20 @@ import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
+import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by shays on 17/05/2017.
@@ -33,8 +42,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
+    private final EventPersistencyService eventPersistencyService;
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
+    private final long retentionEnrichedEventsDays;
+    private final long retentionResultEventsDays;
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
@@ -48,14 +60,17 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
-                                      UserSeverityService userSeverityService,
-                                      int smartThresholdScoreForCreatingAlert, int smartPageSize) {
+                                      UserSeverityService userSeverityService, EventPersistencyService eventPersistencyService,
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionResultEventsDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
         this.userSeverityService = userSeverityService;
+        this.eventPersistencyService = eventPersistencyService;
         this.smartPageSize = smartPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
+        this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
+        this.retentionResultEventsDays = retentionResultEventsDays;
     }
 
     /**
@@ -103,7 +118,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
-                    UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(),1,alertEntity.getPreferredClassification(),alertEntity.getIndicatorsNames());
+                    UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(), 1, alertEntity.getPreferredClassification(), alertEntity.getIndicatorsNames());
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
                     metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_PREFIX + alertEntity.getSeverity().name()).
@@ -193,6 +208,26 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
 
         // update user scores
+        updateUsersScoreFromDeletedAlerts(cleanedAlerts);
+
+    }
+
+
+    @Override
+    public void cleanRetention(Instant endDate) throws Exception {
+        List<Schema> schemas = Schema.createListOfSchema();
+        //enriched events delete
+        schemas.forEach(schema -> {
+            eventPersistencyService.retention(schema, endDate.minusSeconds(retentionDaysInSeconds(retentionEnrichedEventsDays)));
+        });
+        // delete alerts
+        List<Alert> cleanedAlerts = alertService.cleanAlertsForRetention(endDate.minusSeconds(retentionDaysInSeconds(retentionResultEventsDays)));
+
+        // update user scores
+        updateUsersScoreFromDeletedAlerts(cleanedAlerts);
+    }
+
+    private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
         Set<User> usersToUpdate = new HashSet<User>();
         cleanedAlerts.forEach(alert -> {
             if (!usersToUpdate.contains(alert.getUserId())) {
@@ -203,7 +238,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             userService.recalculateUserAlertData(user);
         });
         userService.save(new ArrayList<User>(usersToUpdate));
+    }
 
+
+    private long retentionDaysInSeconds(long retentionDays) {
+        return retentionDays * 24 * 60 * 60;
     }
 
     @Override

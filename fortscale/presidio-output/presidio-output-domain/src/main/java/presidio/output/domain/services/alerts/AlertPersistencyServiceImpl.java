@@ -7,8 +7,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.query.UpdateQuery;
-import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import org.springframework.stereotype.Service;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertQuery;
@@ -174,7 +172,22 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<Alert> findByUserId(String userId){
+    public List<Alert> removeByEndDAte(Instant endDate) {
+        List<Alert> removedAlerts = new ArrayList<Alert>();
+
+        try (Stream<Alert> alerts = alertRepository.findByEndDateLessThan(endDate.toEpochMilli())) {
+            alerts.forEach(alert -> {
+                delete(alert);
+                removedAlerts.add(alert);
+            });
+        }
+
+        return removedAlerts;
+    }
+
+
+    @Override
+    public List<Alert> findByUserId(String userId) {
         List<Alert> alerts = new ArrayList<Alert>();
         try (Stream<Alert> stream = alertRepository.findByUserId(userId)) {
             alerts = stream.collect(Collectors.toList());

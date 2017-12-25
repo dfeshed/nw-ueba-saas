@@ -16,6 +16,8 @@ import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
@@ -27,7 +29,7 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({
+@Import({EventPersistencyServiceConfig.class,
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,
         BootShimConfig.class})
@@ -69,17 +71,26 @@ public class OutputProcessorTestConfiguration {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EventPersistencyService eventPersistencyService;
+
     @Value("${smart.threshold.score}")
     private int smartThreshold;
 
     @Value("${smart.page.size}")
     private int smartPageSize;
 
+    @Value("${output.enriched.events.retention.in.days}")
+    private long retentionEnrichedEventsDays;
+
+    @Value("${output.result.events.retention.in.days}")
+    private long retentionResultEventsDays;
+
     @Autowired
     private UserSeverityService userSeverityService;
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, smartThreshold, smartPageSize);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, smartPageSize, smartThreshold, retentionEnrichedEventsDays, retentionResultEventsDays);
     }
 }

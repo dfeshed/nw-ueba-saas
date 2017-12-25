@@ -24,4 +24,6 @@ public interface AlertService {
 
     List<Alert> cleanAlerts(Instant startDate, Instant endDate);
 
+    List<Alert> cleanAlertsForRetention(Instant endDate);
+
 }

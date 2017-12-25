@@ -53,6 +53,8 @@ public interface AlertPersistencyService {
 
     List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
 
+    List<Alert> removeByEndDAte(Instant endDate);
+
     long countAlerts();
 
 }

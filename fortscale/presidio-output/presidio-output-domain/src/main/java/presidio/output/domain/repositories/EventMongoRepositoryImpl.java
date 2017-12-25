@@ -88,4 +88,12 @@ public class EventMongoRepositoryImpl implements EventRepository {
                 .lt(endDate));
         mongoTemplate.remove(query, collectionName);
     }
+
+    @Override
+    public void retention(String collectionName, Instant endDate) {
+        Query query = new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+                .lt(endDate));
+        mongoTemplate.remove(query, collectionName);
+
+    }
 }
