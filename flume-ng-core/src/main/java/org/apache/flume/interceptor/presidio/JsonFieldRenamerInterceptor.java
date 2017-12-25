@@ -27,11 +27,13 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
     private final List<String> originFields;
     private final List<String> destinationFields;
     private final Boolean deleteNullFields;
+    private String originFieldsDelim;
 
-    JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields, Boolean deleteMissingFields) {
+    JsonFieldRenamerInterceptor(List<String> originFields, List<String> destinationFields, Boolean deleteMissingFields, String originFieldsDelim) {
         this.originFields = originFields;
         this.destinationFields = destinationFields;
         this.deleteNullFields = deleteMissingFields;
+        this.originFieldsDelim = originFieldsDelim;
     }
 
     @Override
@@ -42,24 +44,36 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
         eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
 
-        String currField;
+        String currFieldsString;
         for (int i = 0; i < originFields.size(); i++) {
-            currField = originFields.get(i);
-            JsonElement jsonElement = eventBodyAsJson.get(currField);
-            if (eventBodyAsJson.has(currField)) {
-                if (jsonElement == null || jsonElement.isJsonNull()) {
-                    if (deleteNullFields) {
-                        eventBodyAsJson.remove(currField);
-                    }
-                } else {
-                    eventBodyAsJson.add(destinationFields.get(i), jsonElement);
-                    eventBodyAsJson.remove(currField);
+            currFieldsString = originFields.get(i);
+            if (currFieldsString.startsWith("[") && currFieldsString.endsWith("]")) {
+                currFieldsString = currFieldsString.substring(1, currFieldsString.length() - 1);
+                final String[] currFields = currFieldsString.split(originFieldsDelim);
+                for (String field : currFields) {
+                    handleField(eventBodyAsJson, i, field);
                 }
+            } else {
+                handleField(eventBodyAsJson, i, currFieldsString);
             }
         }
 
         event.setBody(eventBodyAsJson.toString().getBytes());
         return event;
+    }
+
+    private void handleField(JsonObject eventBodyAsJson, int i, String field) {
+        JsonElement jsonElement = eventBodyAsJson.get(field);
+        if (eventBodyAsJson.has(field)) {
+            if (jsonElement == null || jsonElement.isJsonNull()) {
+                if (deleteNullFields) {
+                    eventBodyAsJson.remove(field);
+                }
+            } else {
+                eventBodyAsJson.add(destinationFields.get(i), jsonElement);
+                eventBodyAsJson.remove(field);
+            }
+        }
     }
 
 
@@ -72,13 +86,16 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
         static final String DESTINATION_FIELDS_CONF_NAME = "destinationFieldsList";
         static final String DELETE_NULL_FIELDS = "deleteNullFields";
         static final String DELIMITER_CONF_NAME = "delimiter";
+        static final String ORIGIN_FIELDS_DELIM_CONF_NAME = "originFieldsDelim";
 
         private static final String DEFAULT_DELIMITER_VALUE = ",";
+        private static final String DEFAULT_ORIGIN_FIELDS_DELIM_VALUE = ";";
         private static final Boolean DEFAULT_DELETE_NULL_FIELDS_VALUE = true;
 
         private List<String> originFields;
         private List<String> destinationFields;
         private Boolean deleteNullFields;
+        private String originFieldsDelim;
 
 
         @Override
@@ -86,6 +103,7 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
             deleteNullFields = context.getBoolean(DELETE_NULL_FIELDS, DEFAULT_DELETE_NULL_FIELDS_VALUE);
 
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
+            originFieldsDelim = context.getString(ORIGIN_FIELDS_DELIM_CONF_NAME, DEFAULT_ORIGIN_FIELDS_DELIM_VALUE);
 
             final String[] originFields = getStringArrayFromConfiguration(context, ORIGIN_FIELDS_CONF_NAME, delimiter);
             final String[] destinationFields = getStringArrayFromConfiguration(context, DESTINATION_FIELDS_CONF_NAME, delimiter);
@@ -117,7 +135,7 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
         public AbstractPresidioJsonInterceptor doBuild() {
             logger.info("Creating JsonFieldRenamerInterceptor: {}={}, {}={}",
                     ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
-            return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields);
+            return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields, originFieldsDelim);
         }
 
     }
