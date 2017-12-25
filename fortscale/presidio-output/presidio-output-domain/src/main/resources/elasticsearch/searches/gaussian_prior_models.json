@@ -1,0 +1,24 @@
+[
+  [
+    {
+      "_id": "bd4d2cd0-e970-11e7-a05c-27ead45ab382",
+      "_type": "search",
+      "_source": {
+        "title": "Feature aggregation models: gaussian prior models",
+        "description": "",
+        "hits": 0,
+        "columns": [
+          "_source"
+        ],
+        "sort": [
+          "logicTime",
+          "desc"
+        ],
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:\\\"feature-aggregation-record-models\\\" AND name:\\\"modeling-service.gaussian_prior_model_builder\\\"\",\"analyze_wildcard\":true}}}"
+        }
+      }
+    }
+  ]
+]

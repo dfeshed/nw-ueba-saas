@@ -75,7 +75,9 @@ public class MetricEnums {
         SUCCESS_PAGES("successPages"),
         TOTAL_PAGES("totalPages"),
         FAILED_PAGES("failedPages"),
-        AVG_PAGE_SIZE("avgPageSize")
+        AVG_PAGE_SIZE("avgPageSize"),
+        MAX_MEAN("maxMean"),
+        AMOUNT_OF_SEGMENT_PRIORS("amountOfSegmentPriors"),
         ;
 
         private String value;

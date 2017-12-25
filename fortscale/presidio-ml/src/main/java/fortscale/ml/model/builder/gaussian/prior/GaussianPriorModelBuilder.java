@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.*;
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.metrics.GaussianPriorModelBuilderMetricsContainer;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -23,11 +24,13 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 	private Segmentor segmentor;
 	private PriorBuilder priorBuilder;
 	private int minNumOfSamplesToLearnFrom;
+	private GaussianPriorModelBuilderMetricsContainer gaussianPriorModelBuilderMetricsContainer;
 
 	public GaussianPriorModelBuilder(SegmentCenters segmentCenters,
 									 Segmentor segmentor,
 									 PriorBuilder priorBuilder,
-									 int minNumOfSamplesToLearnFrom) {
+									 int minNumOfSamplesToLearnFrom,
+									 GaussianPriorModelBuilderMetricsContainer gaussianPriorModelBuilderMetricsContainer) {
 		Assert.notNull(segmentCenters);
 		Assert.notNull(priorBuilder);
 		Assert.notNull(segmentor);
@@ -36,6 +39,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		this.segmentor = segmentor;
 		this.priorBuilder = priorBuilder;
 		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
+		this.gaussianPriorModelBuilderMetricsContainer = gaussianPriorModelBuilderMetricsContainer;
 	}
 
 	@Override
@@ -44,6 +48,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		models = getModelsWithEnoughSamples(models);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		LearningSegments segments = new LearningSegments(models, segmentCenters, segmentor);
+		double maxPriorAtMean = 0;
 		for (LearningSegments.Segment segment : segments) {
 			Double priorAtMean = priorBuilder.calcPrior(
 					segment.getModels(),
@@ -56,8 +61,11 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 						segment.getCenter() - segment.getLeftMean(),
 						segment.getRightMean() - segment.getCenter())
 				);
+				maxPriorAtMean = priorAtMean > maxPriorAtMean ? priorAtMean : maxPriorAtMean;
 			}
 		}
+
+		gaussianPriorModelBuilderMetricsContainer.updateMetric(maxPriorAtMean, segmentPriors.size());
 
 		if(segmentPriors.isEmpty()){
 			return new GaussianPriorModel().initMinPrior(priorBuilder.getMinAllowedPrior());

@@ -21,7 +21,8 @@ import static java.util.stream.Collectors.toList;
         TimeModeBuilderMetricsPartitionsContainerConfig.class,
         CategoryRarityModelRetrieverMetricsContainerConfig.class,
         TimeModelRetrieverMetricsContainerConfig.class,
-        MaxContinuousModelRetrieverMetricsContainerConfig.class
+        MaxContinuousModelRetrieverMetricsContainerConfig.class,
+        GaussianPriorModeBuilderMetricsContainerConfig.class
 })
 public class ModelingServiceMetricsContainerConfig {
     @Autowired
