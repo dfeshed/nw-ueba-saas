@@ -40,6 +40,13 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     @Override
     public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception {
+        Query query = buildQuery(userId, timeRange, features);
+        query.limit(limitEvents);
+
+        return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
+    }
+
+    private Query buildQuery(String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD)
                         .is(userId))
@@ -58,7 +65,13 @@ public class EventMongoRepositoryImpl implements EventRepository {
         if (CollectionUtils.isNotEmpty(criterias)) {
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
-        query.limit(limitEvents);
+        return query;
+    }
+
+    @Override
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+        Query query = buildQuery(userId, timeRange, features);
+        query.skip(numOfItemsToSkip).limit(pageSize);
 
         return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }

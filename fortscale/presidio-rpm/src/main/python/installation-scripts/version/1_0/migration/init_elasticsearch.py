@@ -24,7 +24,7 @@ ALIASES = ELASTICSEARCH_PATH + '/aliases'
 DEFAULT = ELASTICSEARCH_PATH + '/default/kibana-default-pattern.json'
 HEADERS = {"Content-Type": "application/json"}
 URL_ALIASES = MACHINE_URL + "_aliases"
-URL_TEMPLATES = MACHINE_URL + "_template"
+URL_TEMPLATES = MACHINE_URL + "_template/"
 SETTING = "settings"
 
 

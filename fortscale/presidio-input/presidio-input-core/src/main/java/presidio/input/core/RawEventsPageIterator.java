@@ -20,7 +20,7 @@ public class RawEventsPageIterator<U extends AbstractInputDocument> implements P
 
     /**
      * @param presidioInputPersistencyService
-     * @param schema                          ade evnet type
+     * @param schema                          event type
      * @param pageSize                        num of events in each page
      */
     public RawEventsPageIterator(Instant startDate, Instant endDate, PresidioInputPersistencyService presidioInputPersistencyService, Schema schema, int pageSize) {

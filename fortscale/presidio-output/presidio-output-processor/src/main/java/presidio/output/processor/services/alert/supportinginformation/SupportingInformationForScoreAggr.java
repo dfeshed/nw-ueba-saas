@@ -14,11 +14,7 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.sdk.common.AdeManagerSdk;
-import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.HistoricalData;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -75,12 +71,12 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
 
     @Override
-    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit) {
-        List<Indicator> indicators = new ArrayList<Indicator>();
+    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
+        List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         Pair<String, String> contextFieldAndValue = Pair.of(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
-        List<String> distinctFeatureValues = getDistinctFeatureValues(adeAggregationRecord, indicatorConfig, contextFieldAndValue, timeRange, eventsLimit);
+        List<String> distinctFeatureValues = getDistinctFeatureValues(adeAggregationRecord, indicatorConfig, contextFieldAndValue, timeRange, eventsLimit, eventsPageSize);
         for (String featureValue : distinctFeatureValues) {
 
             Indicator indicator = new Indicator(alert.getId());
@@ -97,16 +93,16 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
 
     @Override
-    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit) throws Exception {
+    public List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception {
 
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        List<IndicatorEvent> events = new ArrayList<>();
 
         // get raw events from the output (output_ collections)
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
-        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
+        List<Pair<String, Object>> features = new ArrayList<>();
         String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
         if (StringUtils.isNoneEmpty(anomalyValue, anomalyField)) {
@@ -114,17 +110,17 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             features.add(Pair.of(anomalyField, featureValue));
         }
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
-        if (anomalyFiltersConfig!= null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
+        if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
-            String[] values = StringUtils.split(fieldValue,",");
-            for (String value: values) {
+            String[] values = StringUtils.split(fieldValue, ",");
+            for (String value : values) {
                 Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
                 features.add(Pair.of(fieldName, featureValue));
             }
         }
 
-        List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit);
+        List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit, eventsPageSize);
 
         if (CollectionUtils.isNotEmpty(rawEvents)) {
 
@@ -138,7 +134,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                 event.setEventTime(Date.from(rawEvent.getEnrichedEvent().getEventDate()));
                 event.setSchema(indicatorConfig.getSchema());
                 if (rawEvent.getScore() > 0) {
-                    Map<String, Double> scores = new HashMap<String, Double>();
+                    Map<String, Double> scores = new HashMap<>();
                     scores.put(anomalyField, rawEvent.getScore());
                     event.setScores(scores);
                     indicator.setScore(rawEvent.getScore());
@@ -193,8 +189,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         return StringUtils.isNotEmpty(indicator.getAnomalyValue()) ? indicator.getAnomalyValue() : indicatorConfig.getAnomalyDescriptior().getAnomalyValue();
     }
 
-    private List<String> getDistinctFeatureValues(AdeAggregationRecord adeAggregationRecord, IndicatorConfig indicatorConfig, Pair<String, String> contextFieldAndValue, TimeRange timeRange, int eventsLimit) {
-        List<String> distinctFeatureValues = new ArrayList<String>();
+    private List<String> getDistinctFeatureValues(AdeAggregationRecord adeAggregationRecord, IndicatorConfig indicatorConfig, Pair<String, String> contextFieldAndValue, TimeRange timeRange, int eventsLimit, int eventsPageSize) {
+        List<String> distinctFeatureValues = new ArrayList<>();
 
         // static indicator -> one empty value
         if (AlertEnums.IndicatorTypes.STATIC_INDICATOR.name().equals(indicatorConfig.getType())) {
@@ -203,7 +199,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         }
 
         // get distinct values of all the scored events
-        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
+        List<Pair<String, Object>> features = new ArrayList<>();
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
@@ -216,7 +212,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
                         indicatorConfig.getAdeEventType(),
                         contextFieldAndValue,
                         timeRange,
-                        indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features, eventsLimit);
+                        indicatorConfig.getAnomalyDescriptior().getAnomalyField(), 0.0, features, eventsLimit, eventsPageSize);
 
         if (CollectionUtils.isNotEmpty(featureValues)) {
             if (EnrichedEvent.START_INSTANT_FIELD.equals(indicatorConfig.getAnomalyDescriptior().getAnomalyField())) {

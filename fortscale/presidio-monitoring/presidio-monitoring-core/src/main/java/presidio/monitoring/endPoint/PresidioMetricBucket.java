@@ -1,13 +1,11 @@
 package presidio.monitoring.endPoint;
 
-import org.elasticsearch.common.collect.Tuple;
 import org.springframework.util.ObjectUtils;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,7 +14,7 @@ import java.util.Map;
 
 public class PresidioMetricBucket {
 
-    private Map<Tuple<String, Instant>, Metric> applicationMetrics;
+    private Map<MetricUniqueKey, Metric> applicationMetrics;
     private PresidioSystemMetricsFactory presidioSystemMetricsFactory;
     private MetricConventionApplyer metricConventionApplyer;
 
@@ -28,10 +26,11 @@ public class PresidioMetricBucket {
 
     public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
-        if (!ObjectUtils.isEmpty(applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())))) {
-            accumulateMetricValues(metric, applicationMetrics.get(Tuple.tuple(metric.getName(), metric.getLogicTime())).getValue());
+        MetricUniqueKey metricUniqueKey = new MetricUniqueKey(metric.getName(), metric.getLogicTime(), metric.getTags());
+        if (applicationMetrics.containsKey(metricUniqueKey)) {
+            accumulateMetricValues(metric, applicationMetrics.get(metricUniqueKey).getValue());
         }
-        applicationMetrics.put(Tuple.tuple(metric.getName(), metric.getLogicTime()), metric);
+        applicationMetrics.put(metricUniqueKey, metric);
     }
 
     private void accumulateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
