@@ -14,14 +14,12 @@ const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _agentVersion = createSelector(
   [ _hostDetailId, _hostList ],
   (hostDetailId, hostList) => {
-    let agentVersion = null;
     if (hostDetailId) {
       const host = hostList.find((host) => host.id === hostDetailId);
-      if (host) {
-        agentVersion = host.machine.agentVersion;
+      if (host && host.machine) {
+        return host.machine.agentVersion;
       }
     }
-    return agentVersion;
   }
 );
 

@@ -6,6 +6,7 @@ import { getFileContextAutoruns, getFileContextServices, getFileContextTasks } f
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
+import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 
 import Ember from 'ember';
 const { Logger } = Ember;
@@ -152,6 +153,7 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
       dispatch(setAutorunsTabView(secondaryTab));
     }
     dispatch(_getHostDetails(true));
+    dispatch(toggleExploreSearchResults(false));
   };
 };
 
