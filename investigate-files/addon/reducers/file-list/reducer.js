@@ -63,7 +63,8 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.RESET_FILES]: (state) => state.merge({
     files: [],
-    pageNumber: -1
+    pageNumber: -1,
+    totalItems: 0
   }),
 
   [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
