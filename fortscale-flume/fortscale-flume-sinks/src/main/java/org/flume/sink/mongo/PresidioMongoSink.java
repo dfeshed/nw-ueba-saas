@@ -67,7 +67,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private String dbName;
     private String host;
     private int port;
-    private String collectionName;
+    protected String collectionName;
     private String username;
     private int batchSize;
     private Class<T> recordType;
