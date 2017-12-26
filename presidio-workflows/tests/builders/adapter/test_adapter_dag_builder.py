@@ -39,3 +39,4 @@ def test_valid_build():
     dag = AdapterDagBuilder(['dlpfile']).build(dag)
 
     assert dag.task_count == 2
+

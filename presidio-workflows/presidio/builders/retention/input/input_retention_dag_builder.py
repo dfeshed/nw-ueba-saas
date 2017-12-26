@@ -7,8 +7,8 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
 
-class AdapterRetentionDagBuilder(PresidioDagBuilder):
-    ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
+class InputRetentionDagBuilder(PresidioDagBuilder):
+    ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.input.jvm_args'
     RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention'
 
@@ -21,21 +21,21 @@ class AdapterRetentionDagBuilder(PresidioDagBuilder):
         conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
         self.data_sources = data_sources
-        self._retention_command = conf_reader.read(AdapterRetentionDagBuilder.RETENTION_COMMAND_CONFIG_PATH,
-                                                   AdapterRetentionDagBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
-        self.jvm_args = AdapterRetentionDagBuilder.conf_reader.read(
-            conf_key=AdapterRetentionDagBuilder.ADAPTER_JVM_ARGS_CONFIG_PATH)
+        self._retention_command = conf_reader.read(InputRetentionDagBuilder.RETENTION_COMMAND_CONFIG_PATH,
+                                                   InputRetentionDagBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
+        self.jvm_args = InputRetentionDagBuilder.conf_reader.read(
+            conf_key=InputRetentionDagBuilder.ADAPTER_JVM_ARGS_CONFIG_PATH)
 
-    def build(self, adapter_retention_dag):
+    def build(self, input_retention_dag):
         """
         Builds jar operators that do retention for each data source and adds them to the given DAG.
-        :param adapter_retention_dag: The DAG to which all relevant retention operators should be added
-        :type adapter_retention_dag: airflow.models.DAG
+        :param input_retention_dag: The DAG to which all relevant retention operators should be added
+        :type input_retention_dag: airflow.models.DAG
         :return: The input DAG, after the retention operators were added
         :rtype: airflow.models.DAG
         """
 
-        logging.debug("populating the retention dag, dag_id=%s ", adapter_retention_dag.dag_id)
+        logging.debug("populating the retention dag, dag_id=%s ", input_retention_dag.dag_id)
 
         # Iterate all configured data sources
         for data_source in self.data_sources:
@@ -45,14 +45,14 @@ class AdapterRetentionDagBuilder(PresidioDagBuilder):
             }
 
             jar_operator = FixedDurationJarOperator(
-                task_id='retention_adapter_{}'.format(data_source),
+                task_id='retention_input_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
                 command=PresidioDagBuilder.presidio_command,
                 jvm_args=self.jvm_args,
                 java_args=java_args,
                 run_clean_command_before_retry=False,
-                dag=adapter_retention_dag)
+                dag=input_retention_dag)
 
             jar_operator
 
-        return adapter_retention_dag
+        return input_retention_dag

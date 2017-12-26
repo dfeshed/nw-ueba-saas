@@ -1,6 +1,8 @@
 import logging
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.retention.input.input_retention_dag_builder import InputRetentionDagBuilder
+from presidio.builders.retention.output.output_retention_dag_builder import OutputRetentionDagBuilder
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 from presidio.builders.retention.adapter.adapter_retention_dag_builder import AdapterRetentionDagBuilder
@@ -62,7 +64,13 @@ class RetentionDagBuilder(PresidioDagBuilder):
         adapter_retention_sub_dag = self._get_presidio_adapter_retention_sub_dag_operator(self.data_sources,
                                                                                           retention_dag)
 
+        input_retention_sub_dag = self._get_presidio_input_retention_sub_dag_operator(self.data_sources, retention_dag)
+        output_retention_sub_dag = self._get_presidio_output_retention_sub_dag_operator(self.data_sources,
+                                                                                        retention_dag)
+
         retention_short_circuit_operator >> adapter_retention_sub_dag
+        retention_short_circuit_operator >> input_retention_sub_dag
+        retention_short_circuit_operator >> output_retention_sub_dag
 
         return retention_dag
 
@@ -70,4 +78,16 @@ class RetentionDagBuilder(PresidioDagBuilder):
         adapter_retention_dag_id = 'adapter_retention_dag'
 
         return self._create_sub_dag_operator(AdapterRetentionDagBuilder(data_sources), adapter_retention_dag_id,
+                                             retention_dag)
+
+    def _get_presidio_input_retention_sub_dag_operator(self, data_sources, retention_dag):
+        input_retention_dag_id = 'input_retention_dag'
+
+        return self._create_sub_dag_operator(InputRetentionDagBuilder(data_sources), input_retention_dag_id,
+                                             retention_dag)
+
+    def _get_presidio_output_retention_sub_dag_operator(self, data_sources, retention_dag):
+        output_retention_dag_id = 'output_retention_dag'
+
+        return self._create_sub_dag_operator(OutputRetentionDagBuilder(data_sources), output_retention_dag_id,
                                              retention_dag)
