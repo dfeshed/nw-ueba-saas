@@ -572,7 +572,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
 
     @Configuration
     @Import({FeatureAggregationsConfigurationTest.class, PresidioCommands.class, BaseAppTest.springConfig.class, ModelStoreConfig.class,
-            GaussianPriorModeBuilderMetricsContainerConfig.class})
+            GaussianPriorModelBuilderMetricsContainerConfig.class})
     protected static class featureAggregationsTestConfig {
         @MockBean
         private GaussianPriorModelBuilderMetricsContainer gaussianPriorModelBuilderMetricsContainer;

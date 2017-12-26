@@ -7,7 +7,7 @@ import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
 @Configuration
-public class GaussianPriorModeBuilderMetricsContainerConfig {
+public class GaussianPriorModelBuilderMetricsContainerConfig {
     @Autowired
     private MetricCollectingService metricCollectingService;
     @Autowired
