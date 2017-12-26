@@ -53,8 +53,8 @@ public class JsonFieldRenamerInterceptorTest {
     public void interceptSingleKeyMulti() throws Exception {
 
         Context ctx = new Context();
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "[notexist;orig1],[orig3;notexist],[orig4;orig5],[notexist;notexist]");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1,dest3,dest4,dest999");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "[notexist;orig1],[orig3;notexist],[orig4;orig5],[notexist;notexist],[orig3;notexist]");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1,dest3,dest4,dest999,dest3");
 
         builder.configure(ctx);
 
