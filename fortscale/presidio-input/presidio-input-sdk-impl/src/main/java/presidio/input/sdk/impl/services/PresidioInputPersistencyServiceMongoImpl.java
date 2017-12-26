@@ -47,6 +47,14 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
+    public int cleanUntil(Schema schema, Instant endDate) throws Exception {
+        logger.info("Deleting records for data source:{}, until {}:{}."
+                , schema,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return dataService.cleanUntil(endDate, schema);
+    }
+
+    @Override
     public void cleanAll(Schema schema) throws Exception {
         dataService.cleanAll(schema);
     }
