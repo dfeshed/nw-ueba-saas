@@ -51,7 +51,10 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
                 currFieldsString = currFieldsString.substring(1, currFieldsString.length() - 1);
                 final String[] currFields = currFieldsString.split(originFieldsDelim);
                 for (String field : currFields) {
-                    handleField(eventBodyAsJson, i, field);
+                    final boolean isRenameDone = handleField(eventBodyAsJson, i, field);
+                    if (isRenameDone) {
+                        break;
+                    }
                 }
             } else {
                 handleField(eventBodyAsJson, i, currFieldsString);
@@ -62,9 +65,10 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
         return event;
     }
 
-    private void handleField(JsonObject eventBodyAsJson, int i, String field) {
+    private boolean handleField(JsonObject eventBodyAsJson, int i, String field) {
         JsonElement jsonElement = eventBodyAsJson.get(field);
-        if (eventBodyAsJson.has(field)) {
+        final boolean fieldExists = eventBodyAsJson.has(field);
+        if (fieldExists) {
             if (jsonElement == null || jsonElement.isJsonNull()) {
                 if (deleteNullFields) {
                     eventBodyAsJson.remove(field);
@@ -74,6 +78,8 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
                 eventBodyAsJson.remove(field);
             }
         }
+
+        return fieldExists;
     }
 
 

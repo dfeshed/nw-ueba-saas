@@ -53,14 +53,14 @@ public class JsonFieldRenamerInterceptorTest {
     public void interceptSingleKeyMulti() throws Exception {
 
         Context ctx = new Context();
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "[orig3;orig1],[orig2;orig3]");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1,dest2");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "[notexist;orig1],[orig3;notexist],[orig4;orig5],[notexist;notexist]");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1,dest3,dest4,dest999");
 
         builder.configure(ctx);
 
         interceptor = builder.build();
 
-        final String EVENT_SIGNLE_KEY = "{\"orig1\":\"value\"}";
+        final String EVENT_SIGNLE_KEY = "{\"orig1\":\"value1\",\"orig2\":\"value2\",\"orig3\":\"value3\",\"orig4\":\"value4\",\"orig5\":\"value5\"}";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
 
@@ -69,7 +69,7 @@ public class JsonFieldRenamerInterceptorTest {
         Assert.assertNotSame(EVENT_SIGNLE_KEY, interceptValue);
 
 
-        Assert.assertEquals("{\"dest1\":\"value\"}", interceptValue);
+        Assert.assertEquals("{\"orig2\":\"value2\",\"orig5\":\"value5\",\"dest1\":\"value1\",\"dest3\":\"value3\",\"dest4\":\"value4\"}", interceptValue);
     }
 
     @Test
