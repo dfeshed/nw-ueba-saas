@@ -50,6 +50,7 @@ class AdapterRetentionDagBuilder(PresidioDagBuilder):
                 command=PresidioDagBuilder.presidio_command,
                 jvm_args=self.jvm_args,
                 java_args=java_args,
+                run_clean_command_before_retry=True,
                 dag=adapter_retention_dag)
 
             jar_operator
