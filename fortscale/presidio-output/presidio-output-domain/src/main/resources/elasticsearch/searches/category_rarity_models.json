@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "da370df0-e0d0-11e7-9b58-8d87121d9d7e",
+    "_type": "search",
+    "_source": {
+      "title": "Enriched models: category rarity models",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "logicTime",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:\\\"enriched-record-models\\\" AND (name:\\\"modeling-service.category_rarity_model_retriever\\\" OR name:\\\"modeling-service.category_rarity_model_builder\\\")\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

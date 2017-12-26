@@ -2,6 +2,8 @@ package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.ml.model.metrics.MaxContinuousModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainer;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
 
@@ -13,11 +15,16 @@ import java.util.*;
 public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregatedFeatureValueRetriever {
 
     private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
+    private MaxContinuousModelRetrieverMetricsContainer maxContinuousModelRetrieverMetricsContainer;
 
 
-    public AccumulatedAggregatedFeatureValueRetriever(AccumulatedAggregatedFeatureValueRetrieverConf config, AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
+    public AccumulatedAggregatedFeatureValueRetriever(AccumulatedAggregatedFeatureValueRetrieverConf config,
+                                                      AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader,
+                                                      AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService,
+                                                      MaxContinuousModelRetrieverMetricsContainer maxContinuousModelRetrieverMetricsContainer) {
         super(config, aggregatedFeatureEventsConfService, true);
         this.aggregationEventsAccumulationDataReader = aggregationEventsAccumulationDataReader;
+        this.maxContinuousModelRetrieverMetricsContainer = maxContinuousModelRetrieverMetricsContainer;
     }
 
     @Override
@@ -32,6 +39,7 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()
         );
+        maxContinuousModelRetrieverMetricsContainer.updateMetric(accumulatedAggregationFeatureRecords.size());
 
         TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
 

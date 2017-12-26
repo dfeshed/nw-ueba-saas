@@ -42,8 +42,8 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
         metric.getValue().compute(MetricEnums.MetricValues.WRITES, (k, v) -> v.longValue() + 1);
 
         if (numOfContexts != 0) {
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_SIZE_OF_FEATURE_VALUES, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_SIZE_OF_FEATURE_VALUES, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
         }
 
         if (Arrays.stream(buckets).limit(5).sum() > 0.0) {

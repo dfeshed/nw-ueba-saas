@@ -3,7 +3,7 @@
     "_id": "bc4e0530-e3f2-11e7-b0f5-07e25af53574",
     "_type": "search",
     "_source": {
-      "title": "Time model partitions",
+      "title": "Enriched models: time model partitions",
       "description": "",
       "hits": 0,
       "columns": [
@@ -15,8 +15,9 @@
       ],
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"name:\\\"modeling-service.time_model_builder_partitions\\\" AND tags.GROUP_NAME:\\\"enriched-record-models\\\"\",\"analyze_wildcard\":true}}}"
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"name:\\\"modeling-service.time_model_builder_partitions\\\" AND tags.GROUP_NAME:\\\"enriched-record-models\\\"\",\"analyze_wildcard\":true}}}"
       }
     }
   }
+
 ]

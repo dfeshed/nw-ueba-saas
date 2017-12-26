@@ -1,6 +1,7 @@
 package fortscale.ml.model.retriever.factories;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AccumulatedAggregatedFeatureValueRetriever;
 import fortscale.ml.model.retriever.AccumulatedAggregatedFeatureValueRetrieverConf;
@@ -18,6 +19,8 @@ public class AccumulatedAggregatedFeatureValueRetrieverFactory extends AbstractS
 	private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+	@Autowired
+	private MaxContinuousModelRetrieverMetricsContainer maxContinuousModelRetrieverMetricsContainer;
 
 	@Override
 	public String getFactoryName() {
@@ -27,6 +30,6 @@ public class AccumulatedAggregatedFeatureValueRetrieverFactory extends AbstractS
 	@Override
 	public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
 		AccumulatedAggregatedFeatureValueRetrieverConf config = (AccumulatedAggregatedFeatureValueRetrieverConf)factoryConfig;
-		return new AccumulatedAggregatedFeatureValueRetriever(config, aggregationEventsAccumulationDataReader, aggregatedFeatureEventsConfService);
+		return new AccumulatedAggregatedFeatureValueRetriever(config, aggregationEventsAccumulationDataReader, aggregatedFeatureEventsConfService, maxContinuousModelRetrieverMetricsContainer);
 	}
 }
