@@ -8,8 +8,9 @@ import fortscale.ml.model.*;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.builder.factories.GaussianPriorModelBuilderFactory;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
-import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
+import fortscale.ml.model.builder.gaussian.prior.*;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.metrics.*;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.utils.test.category.ModuleTestCategory;
@@ -22,9 +23,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
@@ -57,7 +59,8 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
 
     private static final Schema ADE_EVENT_TYPE = Schema.FILE;
     public static final String COMMAND = "run --schema %s --start_date %s --end_date %s --fixed_duration_strategy %s";
-
+    @Autowired
+    public GaussianPriorModelBuilderFactory gaussianPriorModelBuilderFactory;
     @Autowired
     private AggregatedDataReader scoredFeatureAggregatedReader;
     @Autowired
@@ -525,7 +528,6 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
                 }
             } else if (modelConf.getModelBuilderConf() instanceof GaussianPriorModelBuilderConf) {
                 GaussianPriorModelBuilderConf config = (GaussianPriorModelBuilderConf) modelConf.getModelBuilderConf();
-                GaussianPriorModelBuilderFactory gaussianPriorModelBuilderFactory = new GaussianPriorModelBuilderFactory();
                 IModelBuilder modelBuilder = gaussianPriorModelBuilderFactory.getProduct(modelConf.getModelBuilderConf());
                 Model model = modelBuilder.build(models);
                 ModelDAO modelDao = new ModelDAO("test-session-id", null, model, endDate.minus(Duration.ofDays(90)), endDate);
@@ -569,8 +571,17 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
 
 
     @Configuration
-    @Import({FeatureAggregationsConfigurationTest.class, PresidioCommands.class, BaseAppTest.springConfig.class, ModelStoreConfig.class})
+    @Import({FeatureAggregationsConfigurationTest.class, PresidioCommands.class, BaseAppTest.springConfig.class, ModelStoreConfig.class,
+            GaussianPriorModeBuilderMetricsContainerConfig.class})
     protected static class featureAggregationsTestConfig {
+        @MockBean
+        private GaussianPriorModelBuilderMetricsContainer gaussianPriorModelBuilderMetricsContainer;
+        @Autowired
+        public GaussianPriorModelBuilderFactory gaussianPriorModelBuilderFactory;
+        @Bean
+        public GaussianPriorModelBuilderFactory modelBuilderFactoryService() {
+            return new GaussianPriorModelBuilderFactory();
+        }
     }
 
 
