@@ -11,6 +11,20 @@ const _hostExportLinkId = (state) => state.endpoint.machines.hostExportLinkId;
 const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.detailsInput.agentId : null;
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 
+const _agentVersion = createSelector(
+  [ _hostDetailId, _hostList ],
+  (hostDetailId, hostList) => {
+    let agentVersion = null;
+    if (hostDetailId) {
+      const host = hostList.find((host) => host.id === hostDetailId);
+      if (host) {
+        agentVersion = host.machine.agentVersion;
+      }
+    }
+    return agentVersion;
+  }
+);
+
 export const serviceList = createSelector(
   _serviceList,
   (serviceList) => {
@@ -85,10 +99,10 @@ export const noHostsSelected = createSelector(
 );
 
 export const hostListForScanning = createSelector(
-  [_selectedHostList, _hostDetailId],
-  (selectedHostList, hostDetailId) => {
+  [ _selectedHostList, _hostDetailId, _agentVersion ],
+  (selectedHostList, hostDetailId, agentVersion) => {
     if (hostDetailId) {
-      return [{ id: hostDetailId }];
+      return [{ id: hostDetailId, version: agentVersion }];
     }
     return selectedHostList;
   }
@@ -116,11 +130,11 @@ export const warningClass = createSelector(
 );
 
 export const allAreEcatAgents = createSelector(
-  [ _selectedHostList, noHostsSelected ],
+  [ hostListForScanning, noHostsSelected ],
   (selectedHostList, noHost) => noHost || selectedHostList.every((host) => host.version.startsWith('4.4'))
 );
 
 export const areAnyEcatAgents = createSelector(
-  _selectedHostList,
+  hostListForScanning,
   (selectedHostList) => selectedHostList.some((host) => host.version.startsWith('4.4'))
 );
