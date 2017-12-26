@@ -103,6 +103,7 @@ public class FortscaleInputCoreApplicationTest {
             Properties properties = new Properties();
             properties.put("page.iterator.page.size", "1000");
             properties.put("enable.metrics.export", "false");
+            properties.put("input.events.retention.in.days", "2");
             properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }

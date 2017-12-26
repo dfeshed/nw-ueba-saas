@@ -11,6 +11,8 @@ public interface DataSourceRepository {
 
     int cleanDataSourceDataBetweenDates(String collectionName, Instant startTime, Instant endTime);
 
+    int cleanDataSourceDataUntilDate(String collectionName, Instant endTime);
+
     void insertDataSource(String collectionName, List<? extends AbstractAuditableDocument> documents);
 
     void cleanCollection(String collectionName);
