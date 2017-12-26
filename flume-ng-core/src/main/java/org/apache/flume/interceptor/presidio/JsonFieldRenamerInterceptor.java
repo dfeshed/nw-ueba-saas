@@ -47,17 +47,18 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
         String currFieldsString;
         for (int i = 0; i < originFields.size(); i++) {
             currFieldsString = originFields.get(i);
+            final String currDestField = destinationFields.get(i);
             if (currFieldsString.startsWith("[") && currFieldsString.endsWith("]")) {
                 currFieldsString = currFieldsString.substring(1, currFieldsString.length() - 1);
-                final String[] currFields = currFieldsString.split(originFieldsDelim);
-                for (String field : currFields) {
-                    final boolean isRenameDone = handleField(eventBodyAsJson, i, field);
+                final String[] currOriginFields = currFieldsString.split(originFieldsDelim);
+                for (String currOriginField : currOriginFields) {
+                    final boolean isRenameDone = handleField(eventBodyAsJson, currOriginField, currDestField);
                     if (isRenameDone) {
                         break;
                     }
                 }
             } else {
-                handleField(eventBodyAsJson, i, currFieldsString);
+                handleField(eventBodyAsJson, currFieldsString, currDestField);
             }
         }
 
@@ -65,21 +66,25 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
         return event;
     }
 
-    private boolean handleField(JsonObject eventBodyAsJson, int i, String field) {
-        JsonElement jsonElement = eventBodyAsJson.get(field);
-        final boolean fieldExists = eventBodyAsJson.has(field);
-        if (fieldExists) {
+    private boolean handleField(JsonObject eventBodyAsJson, String originField, String destField) {
+        JsonElement jsonElement = eventBodyAsJson.get(originField);
+        final boolean originFieldExists = eventBodyAsJson.has(originField);
+        if (originFieldExists) {
             if (jsonElement == null || jsonElement.isJsonNull()) {
                 if (deleteNullFields) {
-                    eventBodyAsJson.remove(field);
+                    eventBodyAsJson.remove(originField);
                 }
             } else {
-                eventBodyAsJson.add(destinationFields.get(i), jsonElement);
-                eventBodyAsJson.remove(field);
+                if (!originField.equals(destField)) { //when we use the multi orig field option(with []), sometimes the original field can be identical to the dest field
+                    eventBodyAsJson.add(destField, jsonElement);
+                    eventBodyAsJson.remove(originField);
+                } else {
+                    logger.trace("Rename for field {} was not done since original field name and dest field name are identical.", originField);
+                }
             }
         }
 
-        return fieldExists;
+        return originFieldExists;
     }
 
 
@@ -119,20 +124,20 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
                     originFields, destinationFields);
 
 
-            String currOriginFilter;
-            String currDestinationFilter;
+            String currOriginField;
+            String currDestinationField;
             this.originFields = new ArrayList<>();
             this.destinationFields = new ArrayList<>();
             for (int i = 0; i < originFields.length; i++) {
-                currOriginFilter = originFields[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginFilter), "originFieldsList(index=%s) can not be empty. %s=%s.",
+                currOriginField = originFields[i];
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currOriginField), "originFieldsList(index=%s) can not be empty. %s=%s.",
                         i, ORIGIN_FIELDS_CONF_NAME, Arrays.toString(originFields));
-                this.originFields.add(currOriginFilter);
+                this.originFields.add(currOriginField);
 
-                currDestinationFilter = destinationFields[i];
-                Preconditions.checkArgument(StringUtils.isNotEmpty(currDestinationFilter), "currDestinationFilter(index=%s) can not be empty. %s=%s.",
+                currDestinationField = destinationFields[i];
+                Preconditions.checkArgument(StringUtils.isNotEmpty(currDestinationField), "currDestinationField(index=%s) can not be empty. %s=%s.",
                         i, DESTINATION_FIELDS_CONF_NAME, Arrays.toString(destinationFields));
-                this.destinationFields.add(currDestinationFilter);
+                this.destinationFields.add(currDestinationField);
             }
 
         }

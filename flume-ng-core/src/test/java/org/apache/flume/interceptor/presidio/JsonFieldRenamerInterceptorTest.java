@@ -31,7 +31,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1;dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -77,7 +77,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1;dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -100,7 +100,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1;orig2");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1;dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -120,7 +120,7 @@ public class JsonFieldRenamerInterceptorTest {
         Context ctx = new Context();
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "orig1");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest1");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
@@ -139,7 +139,7 @@ public class JsonFieldRenamerInterceptorTest {
 
         ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_CONF_NAME, "dest1");
         ctx.put(JsonFieldRenamerInterceptor.Builder.DESTINATION_FIELDS_CONF_NAME, "dest2");
-        ctx.put(JsonFieldRenamerInterceptor.Builder.ORIGIN_FIELDS_DELIM_CONF_NAME, ";");
+        ctx.put(JsonFieldRenamerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
 
         builder.configure(ctx);
 
