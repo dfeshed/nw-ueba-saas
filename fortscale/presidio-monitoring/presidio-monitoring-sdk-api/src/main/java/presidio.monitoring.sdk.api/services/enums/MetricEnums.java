@@ -3,8 +3,6 @@ package presidio.monitoring.sdk.api.services.enums;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MetricEnums {
 
@@ -76,9 +74,15 @@ public class MetricEnums {
         TOTAL_PAGES("totalPages"),
         FAILED_PAGES("failedPages"),
         AVG_PAGE_SIZE("avgPageSize"),
+<<<<<<< HEAD
         MAX_MEAN("maxMean"),
         AMOUNT_OF_SEGMENT_PRIORS("amountOfSegmentPriors"),
         ;
+=======
+        AGGREGATIONS("aggregations"),
+        AMOUNT_OF_NON_ZERO_FEATURE_VALUES("amountOfNonZeroFeatureValue"),
+        MAX_FEATURE_VALUE("maxFeatureValue");
+>>>>>>> a55c07ae6f434b5da08dba80e154a3c87069ac15
 
         private String value;
 
@@ -106,7 +110,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON, GROUP_NAME, TIME, FEATURE_BUCKET;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON, FEATURE_NAME, AGGREGATED_FEATURE_TYPE,GROUP_NAME, TIME, FEATURE_BUCKET;
     }
 
     public enum MetricUnitType {

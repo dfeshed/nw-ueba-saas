@@ -31,23 +31,59 @@ public class MetricBucketTest {
 
     @Test
     public void addingMetricToMetricBucketTest() {
+        Instant logicalTime = Instant.EPOCH;
+        Instant logicalTime2 = logicalTime.plusMillis(10000);
+        Map<MetricEnums.MetricTagKeysEnum, String> tags1 = new HashMap<>();
+        tags1.put(MetricEnums.MetricTagKeysEnum.FEATURE_NAME, "feature1");
+        Map<MetricEnums.MetricTagKeysEnum, String> tags2 = new HashMap<>();
+        tags2.put(MetricEnums.MetricTagKeysEnum.FEATURE_NAME, "feature2");
         presidioMetricBucket.addMetric(new Metric.MetricBuilder().
-                setMetricName("test1").
+                setMetricName("testValue").
                 setMetricValue(1).
+                setMetricTags(tags1).
+                setMetricLogicTime(logicalTime).
+                build());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("testValue").
+                setMetricValue(1).
+                setMetricTags(tags1).
+                setMetricLogicTime(logicalTime).
                 build());
         presidioMetricBucket.addMetric(new Metric.MetricBuilder().
                 setMetricName("test1").
                 setMetricValue(1).
+                setMetricTags(tags1).
+                setMetricLogicTime(logicalTime).
+                build());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("test1").
+                setMetricValue(1).
+                setMetricTags(tags1).
+                setMetricLogicTime(logicalTime).
+                build());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("test1").
+                setMetricValue(1).
+                setMetricTags(tags2).
+                setMetricLogicTime(logicalTime).
                 build());
         presidioMetricBucket.addMetric(new Metric.MetricBuilder().
                 setMetricName("test2").
                 setMetricValue(1).
+                setMetricTags(tags1).
+                setMetricLogicTime(logicalTime).
+                build());
+        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                setMetricName("test1").
+                setMetricValue(1).
+                setMetricTags(tags1).
+                setMetricLogicTime(logicalTime2).
                 build());
         List<MetricDocument> metricList = presidioMetricBucket.getApplicationMetricsAndResetApplicationMetrics();
         metricList.size();
-        Assert.assertEquals(2, metricList.size());
+        Assert.assertEquals(5, metricList.size());
         metricList.forEach(metric -> {
-            if (metric.getName().equals("metricGeneratorTest.test1")) {
+            if (metric.getName().equals("metricGeneratorTest.testValue") && metric.getLogicTime().equals(logicalTime)) {
                 Assert.assertEquals(2, metric.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE));
             }
         });

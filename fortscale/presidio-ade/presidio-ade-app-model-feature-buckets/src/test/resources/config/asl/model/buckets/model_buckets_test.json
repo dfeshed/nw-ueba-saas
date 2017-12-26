@@ -7,37 +7,26 @@
         "userId"
       ],
       "adeEventTypes": [
-        "dlpfile"
+        "file"
       ],
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
-          "name": "date_time_unix_histogram",
+          "name": "copied_to_shared_drive_src_paths_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "two_minute_resolution_epochtime"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
-          "name": "src_network_folder_paths_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "sourcePath"
+              "absoluteSrcFilePath"
             ]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?(@.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'FILE_COPY' && @.srcDriveShared == false && @.dstDriveShared == true)]"
           }
         },
         {
-          "name": "sum_of_moved_files_to_removable_device_size",
+          "name": "sum_of_moved_files_to_shared_drive_size",
           "featureNamesMap": {
             "sum": [
               "fileSize"
@@ -47,41 +36,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
-          }
-        },
-        {
-          "name": "moved_files_to_removable_device_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'move' && @.destinationDriveType == 'removable')]"
-          }
-        },
-        {
-          "name": "sum_of_copied_files_to_removable_device_size",
-          "featureNamesMap": {
-            "sum": [
-              "fileSize"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
-          }
-        },
-        {
-          "name": "copied_files_to_removable_device_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'copy' && @.destinationDriveType == 'removable')]"
+            "jsonPath": "[?(@.operationType == 'FILE_MOVE' && @.dstDriveShared == true)]"
           }
         },
         {
@@ -99,17 +54,7 @@
           }
         },
         {
-          "name": "moved_files_from_remote_device_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
-          }
-        },
-        {
-          "name": "sum_of_copied_files_from_remote_device_size",
+          "name": "sum_of_copied_files_to_shared_drive_size",
           "featureNamesMap": {
             "sum": [
               "fileSize"
@@ -119,48 +64,17 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
+            "jsonPath": "[?(@.operationType == 'FILE_COPY' && @.dstDriveShared == true)]"
           }
         },
         {
-          "name": "copied_files_from_remote_device_counter",
+          "name": "copied_files_to_shared_drive_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'copy' && @.sourceDriveType == 'remote')]"
-          }
-        },
-        {
-          "name": "recycled_or_deleted_files_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'recycle' || @.operationType == 'delete')]"
-          }
-        },
-        {
-          "name": "opened_files_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.operationType == 'open')]"
-          }
-        },
-        {
-          "name": "normalized_src_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "srcMachineId"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "jsonPath": "[?(@.operationType == 'FILE_COPY' && @.dstDriveShared == true)]"
           }
         },
         {
@@ -168,16 +82,6 @@
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
-          }
-        },
-        {
-          "name": "classified_files_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          },
-          "filter": {
-            "jsonPath": "[?(@.wasClassified == true)]"
           }
         }
       ]

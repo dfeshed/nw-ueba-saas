@@ -25,11 +25,9 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {FortscaleInputCoreApplicationTest.springConfig.class, InputCoreConfigurationTest.class})
@@ -88,6 +86,6 @@ public class InputExecutionServiceTest {
     }
 
     private EnrichedEvent createAuthenticationEvent(Instant time) {
-        return new AuthenticationEnrichedEvent(time, time.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
+        return new AuthenticationEnrichedEvent(time, time, "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
     }
 }

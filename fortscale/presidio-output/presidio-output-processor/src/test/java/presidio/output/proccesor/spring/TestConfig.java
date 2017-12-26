@@ -25,6 +25,7 @@ public class TestConfig {
         properties.put("enable.metrics.export",false);
         properties.put("number.of.classifications", 19);
         properties.put("output.events.limit", 100);
+        properties.put("output.events.page.size", 10);
         properties.put("user.severities.percent.threshold.critical", 75);
         properties.put("user.severities.percent.threshold.high", 50);
         properties.put("user.severities.percent.threshold.medium", 25);

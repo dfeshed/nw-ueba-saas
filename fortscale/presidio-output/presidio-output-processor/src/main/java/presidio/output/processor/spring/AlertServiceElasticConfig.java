@@ -27,6 +27,9 @@ public class AlertServiceElasticConfig {
     @Value("${output.events.limit}")
     private int eventsLimit;
 
+    @Value("${output.events.page.size}")
+    private int eventsPageSize;
+
     @Value("${indicators.contribution.limit.to.classification.percent}")
     private double contributionLimit;
 
@@ -50,6 +53,7 @@ public class AlertServiceElasticConfig {
                 alertSeverityService,
                 supportingInformationGeneratorFactory,
                 eventsLimit,
+                eventsPageSize,
                 contributionLimit
         );
     }
