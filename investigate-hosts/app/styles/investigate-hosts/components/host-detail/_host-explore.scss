@@ -8,7 +8,8 @@ $result-text-color: text-color(primary, light);
 .host-explore {
   @include border(1px, solid, primary, dark);
   min-width: $host-explore-min-width;
-  flex: 5;
+  max-width: 30%;
+  margin-left: auto;
   background: $background-color;
   height: 2.5rem;
 

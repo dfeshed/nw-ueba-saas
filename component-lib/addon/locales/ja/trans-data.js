@@ -1784,6 +1784,7 @@ export default {
     loading: 'ja_Loading',
     loadMore: 'ja_Load More',
     deleteTitle: 'ja_Confirm Delete',
+    noSnapshotMessage: 'ja_No scan history were found.',
     common: {
       save: 'ja_Save',
       enable: 'ja_Enable',

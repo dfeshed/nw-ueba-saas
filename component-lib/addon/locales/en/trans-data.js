@@ -1784,6 +1784,7 @@ export default {
     loading: 'Loading',
     loadMore: 'Load More',
     deleteTitle: 'Confirm Delete',
+    noSnapshotMessage: 'No scan history were found.',
     common: {
       save: 'Save',
       enable: 'Enable',

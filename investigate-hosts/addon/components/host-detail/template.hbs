@@ -1,4 +1,8 @@
 {{host-detail/header}}
 <box class="host-detail-wrapper">
-  {{component selectedTabComponent}}
+  {{#if showSnapshotEmptyMessage}}
+    {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
+  {{else}}
+    {{component selectedTabComponent}}
+  {{/if}}
 </box>
