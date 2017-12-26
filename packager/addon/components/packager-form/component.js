@@ -41,7 +41,7 @@ const formComponent = Component.extend({
 
   flashMessages: service(),
 
-  minDate: new Date(),
+  minDate: 'today',
 
   errorClass: null,
 

@@ -15,7 +15,7 @@ $filter-panel-width: 250px;
     opacity: 1;
     color: text-color(neutral);
     float: left;
-    padding: rsa-whitespace();
+    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
 
     .body {
       max-width: none;
@@ -36,7 +36,9 @@ $filter-panel-width: 250px;
   }
 
   .favourite-filters {
-    padding: rsa-whitespace();
+    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    overflow-y: scroll;
+    overflow: auto
   }
 
   .filter-list__item {

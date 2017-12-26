@@ -22,15 +22,13 @@ page.investigate-files-engine {
   }
 
   .favourite-filters {
-    padding: 0 0 rsa-whitespace() 0;
+    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    overflow-y: scroll;
+    overflow: auto
   }
 
   .filter_title {
     padding: 0 0 rsa-whitespace() 0;
-  }
-
-  .filter-list {
-    padding: rsa-whitespace() 0 0;
   }
 
   .filter-list__item {
@@ -50,7 +48,6 @@ page.investigate-files-engine {
   }
 
   .filter-list__item-label {
-    padding-left: rsa-whitespace();
     width: 150px;
     display: inline-block;
   }
@@ -72,7 +69,7 @@ page.investigate-files-engine {
       font-size: 1.5rem;
     }
     border-right: 1px solid $zoneBorderColor;
-    padding: rsa-whitespace();
+    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
     overflow: auto;
     overflow-x: hidden;
     opacity: opacity-value(opaque);

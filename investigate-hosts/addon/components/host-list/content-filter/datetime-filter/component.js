@@ -170,24 +170,16 @@ const DateTimeFilter = Component.extend(FilterMixin, {
 
   actions: {
 
-    /**
-     * On check box selection sends all the selected options to parent
-     * @param option
-     * @public
-     */
     onTimeSelection(option) {
       const { selected } = option;
       set(option, 'selected', !selected);
-      const {
-        config: { propertyName },
-        restrictionType: { type }
-      } = this.getProperties('config', 'restrictionType');
+      const { propertyName } = this.get('config');
 
       if (option.id === 'Custom') {
         this.set('showListOptions', false);
       } else {
         const propertyValues = [{ value: convertToTimeFormat(option), displayValue: option.name }];
-        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues });
+        this.send('updateFilter', { propertyName, restrictionType: 'LESS_THAN', isCustom: false, propertyValues });
       }
     },
 
