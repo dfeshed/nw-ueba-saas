@@ -6,8 +6,8 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
     ConfigServerConfigurationReaderSingleton
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 
-class AdapterRetentionDagBuilder(PresidioDagBuilder):
 
+class AdapterRetentionDagBuilder(PresidioDagBuilder):
     ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
     RETENTION_COMMAND_CONFIG_PATH = 'retention.command'
     RETENTION_COMMAND_DEFAULT_VALUE = 'retention.command'
@@ -23,7 +23,8 @@ class AdapterRetentionDagBuilder(PresidioDagBuilder):
         self.data_sources = data_sources
         self._retention_command = conf_reader.read(AdapterRetentionDagBuilder.RETENTION_COMMAND_CONFIG_PATH,
                                                    AdapterRetentionDagBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
-        self.jvm_args = AdapterRetentionDagBuilder.conf_reader.read(conf_key=ADAPTER_JVM_ARGS_CONFIG_PATH)
+        self.jvm_args = AdapterRetentionDagBuilder.conf_reader.read(
+            conf_key=AdapterRetentionDagBuilder.ADAPTER_JVM_ARGS_CONFIG_PATH)
 
     def build(self, adapter_retention_dag):
         """
