@@ -15,13 +15,16 @@ import java.io.IOException;
 @RunWith(SpringRunner.class)
 public class ElasticMappingsTests {
 
-    private final String PATH = "/home/presidio/presidio-core/el-extensions/mappings/";
-
 
     @Test
     public void IsMappingValidJsonFile() throws IOException {
-
-        File folder = new File(PATH);
+        String path;
+        if (System.getProperty("os.name").startsWith("Linux")) {
+            path = "/home/presidio/presidio-core/el-extensions/mappings/";
+        } else {
+            path = "C:\\workspace\\presidio-core\\presidio-core\\fortscale\\presidio-output\\presidio-output-domain\\src\\main\\resources\\elasticsearch\\mappings";
+        }
+        File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
         for (int i = 0; i < listOfFiles.length; i++) {
             BufferedReader br = new BufferedReader(new FileReader(listOfFiles[i].getAbsoluteFile()));

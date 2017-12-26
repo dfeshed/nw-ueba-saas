@@ -22,6 +22,7 @@ import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -204,7 +205,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void clean(Instant startDate, Instant endDate) throws Exception {
 
-        // delete alerts
+        // deleteAlertAndIndicators alerts
         List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
 
         // update user scores
@@ -214,14 +215,14 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
 
     @Override
-    public void cleanRetention(Instant endDate) throws Exception {
+    public void retentionClean(Instant endDate) throws Exception {
         List<Schema> schemas = Schema.createListOfSchema();
-        //enriched events delete
+        //enriched events deleteAlertAndIndicators
         schemas.forEach(schema -> {
-            eventPersistencyService.retention(schema, endDate.minusSeconds(retentionDaysInSeconds(retentionEnrichedEventsDays)));
+            eventPersistencyService.doRetention(schema, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
         });
-        // delete alerts
-        List<Alert> cleanedAlerts = alertService.cleanAlertsForRetention(endDate.minusSeconds(retentionDaysInSeconds(retentionResultEventsDays)));
+        // deleteAlertAndIndicators alerts
+        List<Alert> cleanedAlerts = alertService.cleanAlertsForRetention(endDate.minus(retentionResultEventsDays, ChronoUnit.DAYS));
 
         // update user scores
         updateUsersScoreFromDeletedAlerts(cleanedAlerts);
@@ -238,11 +239,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             userService.recalculateUserAlertData(user);
         });
         userService.save(new ArrayList<User>(usersToUpdate));
-    }
-
-
-    private long retentionDaysInSeconds(long retentionDays) {
-        return retentionDays * 24 * 60 * 60;
     }
 
     @Override

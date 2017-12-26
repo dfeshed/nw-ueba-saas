@@ -1,5 +1,6 @@
 package presidio.output.domain.repositories;
 
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,6 +20,8 @@ import java.util.List;
  * Created by efratn on 02/08/2017.
  */
 public class EventMongoRepositoryImpl implements EventRepository {
+
+    private static final Logger logger = Logger.getLogger(EventMongoRepositoryImpl.class);
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -96,6 +99,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     @Override
     public void remove(String collectionName, Instant startDate, Instant endDate) {
+        logger.debug("Deleting events of collection {}, from {} until date {}", collectionName, startDate, endDate);
         Query query = new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
                 .gte(startDate)
                 .lt(endDate));
@@ -103,7 +107,8 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public void retention(String collectionName, Instant endDate) {
+    public void cleanForRetention(String collectionName, Instant endDate) {
+        logger.debug("Deleting events from collection {} until date {}", collectionName, endDate);
         Query query = new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
                 .lt(endDate));
         mongoTemplate.remove(query, collectionName);

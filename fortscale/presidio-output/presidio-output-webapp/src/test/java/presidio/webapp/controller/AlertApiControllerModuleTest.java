@@ -101,14 +101,14 @@ public class AlertApiControllerModuleTest {
 
     @After
     public void cleanTestData() {
-        //delete the created alerts
+        //deleteAlertAndIndicators the created alerts
         Iterable<presidio.output.domain.records.alerts.Alert> allAlerts = alertRepository.findAll();
         alertRepository.delete(allAlerts);
 
-        //delete the created users
+        //deleteAlertAndIndicators the created users
         userRepository.delete(userRepository.findAll());
 
-        //delete the created user score percentile documents
+        //deleteAlertAndIndicators the created user score percentile documents
         userScorePercentilesRepository.delete(userScorePercentilesRepository.findAll());
     }
 

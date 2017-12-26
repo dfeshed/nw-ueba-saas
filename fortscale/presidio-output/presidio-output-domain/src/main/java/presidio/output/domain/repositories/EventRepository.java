@@ -29,5 +29,5 @@ public interface EventRepository {
 
     void remove(String collectionName, Instant startDate, Instant endDate);
 
-    void retention(String collectionName, Instant endDate);
+    void cleanForRetention(String collectionName, Instant endDate);
 }

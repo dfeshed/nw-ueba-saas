@@ -20,7 +20,7 @@ public interface AlertPersistencyService {
 
     Iterable<Alert> save(List<Alert> alerts);
 
-    void delete(Alert alert);
+    void deleteAlertAndIndicators(Alert alert);
 
     Alert findOne(String id);
 
@@ -52,7 +52,7 @@ public interface AlertPersistencyService {
 
     List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
 
-    List<Alert> removeByEndDAte(Instant endDate);
+    List<Alert> deleteAlertsForRetention(Instant endDate);
 
     long countAlerts();
 

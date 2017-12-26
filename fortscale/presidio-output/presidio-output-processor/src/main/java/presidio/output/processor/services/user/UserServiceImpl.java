@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         user.setIndicators(null);
         user.setAlertsCount(0);
         user.setScore(0);
-        UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(0);
+        UserSeverity newSeverity = UserSeverity.LOW;
         user.setSeverity(newSeverity);
     }
 
@@ -243,8 +243,9 @@ public class UserServiceImpl implements UserService {
 
             });
             setUserAlertData(user, usersAlertData);
+        } else {
+            setUserAlertDataToDefault(user);
         }
-        setUserAlertDataToDefault(user);
     }
 
 }

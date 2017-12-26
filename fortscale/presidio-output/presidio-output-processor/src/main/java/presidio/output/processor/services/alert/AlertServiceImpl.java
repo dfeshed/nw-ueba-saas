@@ -15,7 +15,11 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -157,7 +161,7 @@ public class AlertServiceImpl implements AlertService {
 
     @Override
     public List<Alert> cleanAlertsForRetention(Instant endDate) {
-        return alertPersistencyService.removeByEndDAte(endDate);
+        return alertPersistencyService.deleteAlertsForRetention(endDate);
 
     }
 

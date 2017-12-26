@@ -77,7 +77,7 @@ public class UserApiControllerModuleTest {
 
     @After
     public void cleanTestData() {
-        //delete the created users
+        //deleteAlertAndIndicators the created users
         userRepository.delete(user1);
         userRepository.delete(user2);
     }

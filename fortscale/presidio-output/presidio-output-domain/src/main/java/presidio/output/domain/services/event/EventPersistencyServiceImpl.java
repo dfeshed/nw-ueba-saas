@@ -103,8 +103,9 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
-    public void retention(Schema schema, Instant endDate) {
-        eventRepository.retention(toCollectionNameTranslator.toCollectionName(schema), endDate);
+    public void doRetention(Schema schema, Instant endDate) {
+        logger.debug("Deleting events of schema {} until date {}", schema, endDate);
+        eventRepository.cleanForRetention(toCollectionNameTranslator.toCollectionName(schema), endDate);
 
     }
 }

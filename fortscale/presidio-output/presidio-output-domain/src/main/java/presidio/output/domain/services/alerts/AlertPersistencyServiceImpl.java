@@ -76,16 +76,16 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         return savedAlerts;
     }
 
-    public void delete(Alert alert) {
-        // atomic delete for the entire alert entities
+    public void deleteAlertAndIndicators(Alert alert) {
+        // atomic deleteAlertAndIndicators for the entire alert entities
 
-        // delete alert
+        // deleteAlertAndIndicators alert
         alertRepository.delete(alert);
 
-        // delete indicators
+        // deleteAlertAndIndicators indicators
         List<Indicator> indicators = indicatorRepository.removeByAlertId(alert.getId());
 
-        // delete events
+        // deleteAlertAndIndicators events
         indicators.forEach(indicator -> {
             indicatorEventRepository.removeByIndicatorId(indicator.getId());
         });
@@ -162,7 +162,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
         try (Stream<Alert> alerts = alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThan(startDate.toEpochMilli(), endDate.toEpochMilli())) {
             alerts.forEach(alert -> {
-                delete(alert);
+                deleteAlertAndIndicators(alert);
                 removedAlerts.add(alert);
             });
         }
@@ -171,17 +171,17 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public List<Alert> removeByEndDAte(Instant endDate) {
-        List<Alert> removedAlerts = new ArrayList<Alert>();
-
+    public List<Alert> deleteAlertsForRetention(Instant endDate) {
+        logger.debug("going to delete alerts that where created until date {}", endDate);
+        List<Alert> deletedAlerts = new ArrayList<Alert>();
         try (Stream<Alert> alerts = alertRepository.findByEndDateLessThan(endDate.toEpochMilli())) {
             alerts.forEach(alert -> {
-                delete(alert);
-                removedAlerts.add(alert);
+                deleteAlertAndIndicators(alert);
+                deletedAlerts.add(alert);
             });
         }
-
-        return removedAlerts;
+        logger.debug("{} alerts where deleted", deletedAlerts.size());
+        return deletedAlerts;
     }
 
 
