@@ -214,4 +214,29 @@ public class OutputExecutionServiceModuleTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void testRetentionClean() {
+
+        try {
+            outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
+            Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
+            Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
+            Assert.assertEquals(1, users.getNumberOfElements());
+            User user = users.iterator().next();
+            Assert.assertEquals(8, user.getAlertsCount());
+            Assert.assertEquals(55, new Double(user.getScore()).intValue());
+            outputExecutionService.retentionClean(Instant.now().plus(Duration.ofDays(2)));
+            // test alerts cleanup
+            Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
+            users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
+            user = users.iterator().next();
+            // test user score re-calculation
+            Assert.assertEquals(0, new Double(user.getScore()).intValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
 }
