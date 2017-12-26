@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 
-from presidio.builders.presidio_core_dag_builder import PresidioCoreDagBuilder
+from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)

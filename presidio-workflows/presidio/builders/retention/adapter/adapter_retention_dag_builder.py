@@ -23,6 +23,7 @@ class AdapterRetentionDagBuilder(PresidioDagBuilder):
         self.data_sources = data_sources
         self._retention_command = conf_reader.read(AdapterRetentionDagBuilder.RETENTION_COMMAND_CONFIG_PATH,
                                                    AdapterRetentionDagBuilder.RETENTION_COMMAND_DEFAULT_VALUE)
+        self.jvm_args = AdapterRetentionDagBuilder.conf_reader.read(conf_key=ADAPTER_JVM_ARGS_CONFIG_PATH)
 
     def build(self, adapter_retention_dag):
         """
