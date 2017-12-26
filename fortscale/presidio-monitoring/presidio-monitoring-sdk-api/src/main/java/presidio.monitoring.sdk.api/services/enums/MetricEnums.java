@@ -74,15 +74,11 @@ public class MetricEnums {
         TOTAL_PAGES("totalPages"),
         FAILED_PAGES("failedPages"),
         AVG_PAGE_SIZE("avgPageSize"),
-<<<<<<< HEAD
         MAX_MEAN("maxMean"),
         AMOUNT_OF_SEGMENT_PRIORS("amountOfSegmentPriors"),
-        ;
-=======
         AGGREGATIONS("aggregations"),
         AMOUNT_OF_NON_ZERO_FEATURE_VALUES("amountOfNonZeroFeatureValue"),
         MAX_FEATURE_VALUE("maxFeatureValue");
->>>>>>> a55c07ae6f434b5da08dba80e154a3c87069ac15
 
         private String value;
 
