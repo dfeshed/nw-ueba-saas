@@ -47,5 +47,5 @@ public interface EventPersistencyService {
 
     void remove(Schema schema, Instant startDate, Instant endDate);
 
-    void doRetention(Schema schema, Instant endDate);
+
 }

@@ -204,7 +204,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     @Override
     public void clean(Instant startDate, Instant endDate) throws Exception {
-
+        logger.debug("Start deleting alerts and updating users score.");
         // deleteAlertAndIndicators alerts
         List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
 
@@ -216,16 +216,14 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     @Override
     public void retentionClean(Instant endDate) throws Exception {
-        List<Schema> schemas = Schema.createListOfSchema();
+        List<Schema> schemas = createListOfSchema();
         //enriched events deleteAlertAndIndicators
-        schemas.forEach(schema -> {
-            eventPersistencyService.doRetention(schema, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
-        });
-        // deleteAlertAndIndicators alerts
-        List<Alert> cleanedAlerts = alertService.cleanAlertsForRetention(endDate.minus(retentionResultEventsDays, ChronoUnit.DAYS));
 
-        // update user scores
-        updateUsersScoreFromDeletedAlerts(cleanedAlerts);
+        schemas.forEach(schema -> {
+            logger.debug("Start retention clean to mongo for schema {}", schema);
+            eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
+        });
+        clean(Instant.EPOCH, endDate.minus(retentionResultEventsDays, ChronoUnit.DAYS));
     }
 
     private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
@@ -235,10 +233,19 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 usersToUpdate.add(userService.findUserById(alert.getUserId()));
             }
         });
+        logger.debug("{} users are going to update score", usersToUpdate.size());
         usersToUpdate.forEach(user -> {
             userService.recalculateUserAlertData(user);
         });
         userService.save(new ArrayList<User>(usersToUpdate));
+    }
+
+    private List<Schema> createListOfSchema() {
+        List<Schema> schemas = new ArrayList<>();
+        schemas.add(Schema.AUTHENTICATION);
+        schemas.add(Schema.FILE);
+        schemas.add(Schema.ACTIVE_DIRECTORY);
+        return schemas;
     }
 
     @Override
