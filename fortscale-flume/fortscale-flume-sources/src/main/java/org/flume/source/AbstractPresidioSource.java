@@ -44,4 +44,14 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
      * @throws FlumeException
      */
     protected abstract void doPresidioConfigure(Context context) throws FlumeException;
+
+    @Override
+    protected void doStart() throws FlumeException {
+
+    }
+
+    @Override
+    protected void doStop() throws FlumeException {
+
+    }
 }
