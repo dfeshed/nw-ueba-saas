@@ -88,7 +88,7 @@
                             <sources>
                                 <source>
                                     <location>
-                                        ${project.basedir}/src/main/resources/encryption_util.sh
+                                        ${project.basedir}/src/main/resources/encryption/encryption_util.sh
                                     </location>
                                 </source>
                             </sources>
@@ -99,8 +99,8 @@
                             <!-- post installation commands: -->
 
                             <!-- allow only root to execute encryption_util.sh -->
-                            chmod -v 700 ${project.basedir}/src/main/resources/encryption_util.sh
-                            
+                            chmod -v 700 ${manager.security.securityConfPath}/encryption_util.sh
+
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
