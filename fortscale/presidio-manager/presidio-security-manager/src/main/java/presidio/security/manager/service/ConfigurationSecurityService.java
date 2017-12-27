@@ -124,7 +124,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         }
     }
 
-    private String encrypt(String plainPassword) {
+    private String encrypt(String plainPassword) throws Exception {
         StringBuilder output = new StringBuilder();
         String[] cmd = {
                 "/bin/sh",
@@ -143,7 +143,9 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            final String msg = "Can't encrypt httpd password using openssl enc -aes-256-cbc!";
+            logger.error(msg, e);
+            throw new Exception(msg, e);
         }
 
         return output.toString();
