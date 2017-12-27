@@ -15,6 +15,8 @@ public interface PresidioInputPersistencyService {
 
     int clean(Schema schema, Instant startTime, Instant endTime) throws Exception;
 
+    int cleanUntil(Schema schema, Instant endTime) throws Exception;
+
     void cleanAll(Schema schema) throws Exception;
 
     <U extends AbstractInputDocument> List<U> readRecords(Schema schema, Instant startDate, Instant endDate, int numOfItemsToSkip, int pageSize);

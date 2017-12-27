@@ -26,6 +26,7 @@ import java.util.Collection;
         // common application confs
         FeatureBucketReaderConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
+        RetrieverMetricsContainerConfig.class
 })
 @ComponentScan(
         value = "fortscale.ml.model.retriever.factories",

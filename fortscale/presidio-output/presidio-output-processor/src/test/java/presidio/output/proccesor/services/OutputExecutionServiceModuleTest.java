@@ -76,7 +76,7 @@ public class OutputExecutionServiceModuleTest {
     public void setup() {
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
         String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
-        String adeFileEnrichedEventCollectionName = new  EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.FILE.getName().toLowerCase());
+        String adeFileEnrichedEventCollectionName = new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.FILE.getName().toLowerCase());
 
         mongoTemplate.dropCollection(smartUserIdHourlyCollectionName);
         mongoTemplate.dropCollection(outputFileEnrichedEventCollectionName);
@@ -215,7 +215,7 @@ public class OutputExecutionServiceModuleTest {
         }
     }
 
-    @Test
+    //@Test
     public void testRetentionClean() {
 
         try {

@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("unused")
 @Component
 public class CategoryRarityModelBuilderFactory extends AbstractServiceAutowiringFactory<IModelBuilder> {
+	@Autowired
+	private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
+
 	@Override
 	public String getFactoryName() {
 		return CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER;
 	}
-
-	@Autowired
-	private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
 
 
 	@Override

@@ -64,21 +64,17 @@ public class FlumeAdapterExecutionServiceTest {
 
         flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, mockPresidioInputPersistencyService);
 
-
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void clean() throws Exception {
-        flumeAdapterExecutionService.clean(null, null, null);
-
+        flumeAdapterExecutionService.retentionClean(null, null, null);
     }
-
 
     @Test(expected = UnsupportedOperationException.class)
     public void cleanAll() throws Exception {
         flumeAdapterExecutionService.cleanAll(null);
     }
-
 
     @Test
     public void run() throws Exception {

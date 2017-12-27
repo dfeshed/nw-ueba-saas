@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
@@ -42,11 +42,10 @@ import java.util.Properties;
 /**
  * Created by YaronDL on 7/5/2017.
  */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @Category(ModuleTestCategory.class)
 public class ModelFeatureAggregationBucketsServiceTest {
-    private static final String ADE_EVENT_TYPE = "dlpfile";
+    private static final String ADE_EVENT_TYPE = "file";
 
     @Autowired
     private EnrichedDataStore enrichedDataStore;
@@ -65,31 +64,30 @@ public class ModelFeatureAggregationBucketsServiceTest {
         generateAndPersistAdeEnrichedRecords(timeRange, username);
         CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
         Assert.assertTrue(commandResult.isSuccess());
-//        modelFeatureAggregationBucketsService.execute(timeRange, ADE_EVENT_TYPE);
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("userId", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
                 "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
         Assert.assertEquals(1, featureBucketList.size());
         FeatureBucket featureBucket = featureBucketList.get(0);
 
-        Feature feature = featureBucket.getAggregatedFeatures().get("sum_of_moved_files_to_removable_device_size");
+        Feature feature = featureBucket.getAggregatedFeatures().get("sum_of_moved_files_to_shared_drive_size");
         Assert.assertNull(feature);
 
 
-        feature = featureBucket.getAggregatedFeatures().get("src_network_folder_paths_histogram");
+        feature = featureBucket.getAggregatedFeatures().get("copied_to_shared_drive_src_paths_histogram");
         Assert.assertNotNull(feature);
         Assert.assertTrue(feature.getValue() instanceof GenericHistogram);
         GenericHistogram genericHistogram = (GenericHistogram) feature.getValue();
         Assert.assertEquals(1, genericHistogram.getHistogramMap().size());
         Assert.assertEquals(1, genericHistogram.get("/home/test_source_path"), 0.0);
 
-        feature = featureBucket.getAggregatedFeatures().get("copied_files_from_remote_device_counter");
+        feature = featureBucket.getAggregatedFeatures().get("copied_files_to_shared_drive_counter");
         Assert.assertNotNull(featureBucket.getAggregatedFeatures().toString(), feature);
         Assert.assertTrue(feature.getValue() instanceof AggrFeatureValue);
         AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) feature.getValue();
         Assert.assertEquals(1.0D, aggrFeatureValue.getValue());
 
-        feature = featureBucket.getAggregatedFeatures().get("sum_of_copied_files_from_remote_device_size");
+        feature = featureBucket.getAggregatedFeatures().get("sum_of_copied_files_to_shared_drive_size");
         Assert.assertNotNull(feature);
         Assert.assertTrue(feature.getValue() instanceof AggrFeatureValue);
         aggrFeatureValue = (AggrFeatureValue) feature.getValue();
@@ -105,18 +103,17 @@ public class ModelFeatureAggregationBucketsServiceTest {
         AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(), timeRange.getEnd(), ADE_EVENT_TYPE);
         enrichedDataStore.cleanup(cleanupParams);
         Instant startTime = timeRange.getStart();
-        EnrichedDlpFileRecord enrichedDlpFileRecord = new EnrichedDlpFileRecord(startTime);
-        enrichedDlpFileRecord.setUserId(username);
-        enrichedDlpFileRecord.setWasClassified(false);
-        enrichedDlpFileRecord.setSrcMachineId(String.format("%s_pc", username));
-        enrichedDlpFileRecord.setOperationType("copy");
-        enrichedDlpFileRecord.setSourceDriveType("remote");
-        enrichedDlpFileRecord.setFileSize(1000);
-        enrichedDlpFileRecord.setSourcePath("/home/test_source_path");
+        EnrichedFileRecord enrichedFileRecord = new EnrichedFileRecord(startTime);
+        enrichedFileRecord.setUserId(username);
+        enrichedFileRecord.setOperationType("FILE_COPY");
+        enrichedFileRecord.setDstDriveShared(true);
+        enrichedFileRecord.setSrcDriveShared(false);
+        enrichedFileRecord.setFileSize(1000L);
+        enrichedFileRecord.setAbsoluteSrcFilePath("/home/test_source_path");
 
-        List<EnrichedDlpFileRecord> enrichedDlpFileRecordList = Collections.singletonList(enrichedDlpFileRecord);
+        List<EnrichedFileRecord> enrichedFileRecordList = Collections.singletonList(enrichedFileRecord);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
-        enrichedDataStore.store(enrichedRecordsMetadata, enrichedDlpFileRecordList);
+        enrichedDataStore.store(enrichedRecordsMetadata, enrichedFileRecordList);
         List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "userId");
         Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }
