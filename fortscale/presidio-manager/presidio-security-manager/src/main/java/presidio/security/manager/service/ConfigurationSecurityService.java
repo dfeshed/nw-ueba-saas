@@ -71,7 +71,8 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
             // Handle httpd conf
-            Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), new TypeReference<Map<String, Object>>(){});
+            Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), new TypeReference<Map<String, Object>>() {
+            });
 
             final String plainPassword = (String) securityConfiguration.get(PASSWORD);
             final String encryptedPassword = EncryptionUtils.encrypt(plainPassword);
@@ -106,7 +107,9 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             if (fileWriter != null) {
                 try {
                     fileWriter.close();
-                    krb5ConfFileWriter.close();
+                    if (krb5ConfFileWriter != null) {
+                        krb5ConfFileWriter.close();
+                    }
                 } catch (IOException e) {
                     logger.error("Failed to close filewriter.", e);
                 }
@@ -148,7 +151,6 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         String s;
         Process p = null;
         logger.info("Reload apache httpd");
-//        String command = "/bin/sh -c sudo service " + webService  + " start";
         String command = "sudo /usr/bin/systemctl reload httpd";
 
         try {
