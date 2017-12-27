@@ -177,9 +177,13 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     public void setMonitorDetails(MonitorDetails monitorDetails) {
+        FlumePresidioExternalMonitoringService.FlumeComponentType sink = FlumePresidioExternalMonitoringService.FlumeComponentType.SINK;
+        String componentInstanceId = sink.name();
         if (schema!=null){
             monitorDetails.setSchema(schema.getName());
+            componentInstanceId = componentInstanceId+"_"+schema.getName();
         }
-        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,this.getName());
+
+        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,sink ,componentInstanceId);
     }
 }

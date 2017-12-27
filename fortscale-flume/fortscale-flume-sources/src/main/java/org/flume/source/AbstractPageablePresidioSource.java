@@ -14,6 +14,7 @@ import org.apache.flume.conf.MonitorDetails;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.lifecycle.LifecycleState;
 import org.apache.flume.FlumePresidioExternalMonitoringService;
+import org.apache.flume.FlumePresidioExternalMonitoringService.FlumeComponentType;
 import org.apache.flume.marker.MonitorInitiator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     private static final String NUMBER_OF_PROCESSED_PAGES = "processed_pages";
     public static final String INVALID_EVENTS_ERROR_KEY = "INVALID_EVENTS";
+    private static final String COLLECTOR_SOURCE_NAME = "CollectorSource";
     private static Logger logger = LoggerFactory.getLogger(AbstractPageablePresidioSource.class);
     private int totalEvents = 0;
     private int totalPages = 0;
@@ -225,7 +227,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
                 presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
                 logger.info("New Monitoring Service has initiated");
                 monitorDetails = new MonitorDetails(this.startDate,presidioExternalMonitoringService , this.schema);
-                this.flumePresidioExternalMonitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,this.getName());
+                this.flumePresidioExternalMonitoringService = new FlumePresidioExternalMonitoringService(monitorDetails, FlumeComponentType.SOURCE, COLLECTOR_SOURCE_NAME);
             } catch (Exception e) {
                 logger.error("Cannot load external monitoring service");
                 throw new RuntimeException(e);

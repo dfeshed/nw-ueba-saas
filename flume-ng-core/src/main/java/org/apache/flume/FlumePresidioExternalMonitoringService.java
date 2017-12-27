@@ -23,19 +23,21 @@ public class FlumePresidioExternalMonitoringService {
     private PresidioExternalMonitoringService presidioExternalMonitoringService;
     private Instant logicalHour;
     private String defaultSchema;
-    private String reporterComponentName;
+    private String flumeComponentType;
+    private String flumeComponentInstannceId;
 
     /**
      *
      * @param monitorDetails  - initiated instance of monitoring service, logicalHour, and default schema
-     * @param reporterComponentName - the "reporter component" - source, interceptor, sink - usually the class name
+     * @param flumeComponentType - The type of flume component - I.E. SOURCE
+     * @param flumeComponentInstannceId - the flume instance - instance name or other representive name
      */
-    public FlumePresidioExternalMonitoringService(MonitorDetails monitorDetails, String reporterComponentName) {
+    public FlumePresidioExternalMonitoringService(MonitorDetails monitorDetails, FlumeComponentType flumeComponentType, String flumeComponentInstannceId) {
         this.presidioExternalMonitoringService = monitorDetails.getPresidioExternalMonitoringService();
         this.logicalHour = monitorDetails.getLogicalhour();
         this.defaultSchema = monitorDetails.getSchema();
 
-        this.reporterComponentName = reporterComponentName;
+        this.flumeComponentType = flumeComponentType.name();
     }
 
 
@@ -141,6 +143,10 @@ public class FlumePresidioExternalMonitoringService {
 
         Map<MetricEnums.MetricTagKeysEnum, String> tags = getBasicTags(isFailure, statusTag, schema);
 
+        if (logicalHour == null){
+            logicalHour = this.logicalHour;
+        }
+
         this.reportCustomMetricMultipleValues(metricName,values,tags, MetricEnums.MetricUnitType.NUMBER,logicalHour);
     }
 
@@ -168,9 +174,19 @@ public class FlumePresidioExternalMonitoringService {
         }
 
 
-        if (StringUtils.isNotBlank(reporterComponentName)){
-            tags.put(MetricEnums.MetricTagKeysEnum.GROUP_NAME,reporterComponentName);
+        if (StringUtils.isNotBlank(flumeComponentType)){
+            tags.put(MetricEnums.MetricTagKeysEnum.FLUME_COMPONENT_TYPE, flumeComponentType);
+        }
+
+        if (StringUtils.isNotBlank(flumeComponentInstannceId)){
+            tags.put(MetricEnums.MetricTagKeysEnum.FLUME_COMPONENT_INSTANCE_ID, flumeComponentInstannceId);
         }
         return tags;
+    }
+
+
+
+    public enum FlumeComponentType{
+        SOURCE, SINK, INTERCEPTOR
     }
 }
