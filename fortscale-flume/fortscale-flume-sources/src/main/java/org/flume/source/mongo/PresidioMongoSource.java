@@ -6,6 +6,7 @@ import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.persistency.mongo.MongoUtils;
+import org.flume.source.AbstractPageablePresidioSource;
 import org.flume.source.AbstractPresidioSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
@@ -30,9 +31,9 @@ import static org.apache.flume.CommonStrings.*;
 /**
  * an AbstractPresidioSource that reads events from MongoDB
  */
-public class PresidioMongoSource extends AbstractPresidioSource implements Configurable {
+public class PresidioMongoSource extends AbstractPageablePresidioSource implements Configurable {
 
-    private static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
+    protected static Logger logger = LoggerFactory.getLogger(PresidioMongoSource.class);
 
     protected static String[] mandatoryParams = {COLLECTION_NAME, DB_NAME, HOST, HAS_AUTHENTICATION, START_DATE, END_DATE};
     protected String collectionName;

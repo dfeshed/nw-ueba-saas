@@ -32,11 +32,13 @@ import org.apache.flume.ChannelSelector;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
+import org.apache.flume.conf.MonitorableContext;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorChain;
 import org.apache.flume.Transaction;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
+import org.apache.flume.marker.MonitorUses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +112,10 @@ public class ChannelProcessor implements Configurable {
       try {
         Interceptor.Builder builder = factory.newInstance(type);
         builder.configure(interceptorContext);
-        interceptors.add(builder.build());
+        Interceptor interceptor = builder.build();
+        //If relevant, add monitoring item to interceptor
+        configureMonitor(context, interceptor);
+        interceptors.add(interceptor);
       } catch (ClassNotFoundException e) {
         LOG.error("Builder class not found. Exception follows.", e);
         throw new FlumeException("Interceptor.Builder not found.", e);
@@ -124,6 +129,17 @@ public class ChannelProcessor implements Configurable {
     }
 
     interceptorChain.setInterceptors(interceptors);
+  }
+
+  /**
+   * Get context and interceptor, if both support monitoring, the intercepter will retrive the monitoring details
+   * @param context
+   * @param interceptor
+   */
+  private void configureMonitor(Context context, Interceptor interceptor) {
+    if (context instanceof MonitorableContext && interceptor instanceof MonitorUses){
+      ((MonitorUses)interceptor).setMonitorDetails(((MonitorableContext)context).getMonitorDetails());
+    }
   }
 
   public ChannelSelector getSelector() {

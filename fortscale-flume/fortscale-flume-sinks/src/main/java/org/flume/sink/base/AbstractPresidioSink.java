@@ -9,6 +9,7 @@ import org.apache.flume.sink.AbstractSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.apache.flume.CommonStrings.APPLICATION_NAME;
@@ -50,6 +51,9 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         super.start();
     }
 
+    /**
+     * Stopping single processing cycle
+     */
     @Override
     public void stop() {
         super.stop();
@@ -63,23 +67,37 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
         doPresidioConfigure(context);
     }
 
+    /**
+     * process read batch of events from the channel (if there is staff in the channel) and process it
+     * The AbstractPresidioSink is not require monitoring, but it allow inherited sinks to use monitoring with override supported built-in  methods
+     * @return
+     * @throws EventDeliveryException
+     */
     @Override
     public Status process() throws EventDeliveryException {
         logger.trace("{} is starting...", getName());
         Status result = Status.READY;
         Channel channel = getChannel();
         Transaction transaction = channel.getTransaction();
+        List<T> eventsToSave=null;
+        Instant logicalTime=null;
         try {
             transaction.begin();
-            final List<T> eventsToSave = getEvents();
+            eventsToSave = getEvents();
 
             if (eventsToSave.isEmpty()) {
                 logger.debug("{} has finished processing 0 events.", getName());
                 result = Status.BACKOFF;
             } else {
+                logicalTime = this.getLogicalHour(eventsToSave.get(0));
+                monitorNumberOfReadEvents(eventsToSave.size(),logicalTime);
+
                 SinkRunner.consecutiveBackoffCounter = 0;
+
                 final int numOfSavedEvents = saveEvents(eventsToSave);
                 LifecycleSupervisor.addToTotalSinkedEvents(numOfSavedEvents);
+                monitorNumberOfSavedEvents(numOfSavedEvents,null);
+
                 logger.trace("{} has finished processing {} events.", getName(), numOfSavedEvents);
             }
             transaction.commit();
@@ -87,8 +105,13 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
             if (!ex.getClass().isAssignableFrom(MongoException.class)) {
                 logger.warn("Exception is probably not recoverable. Not performing rollback.", ex);
                 transaction.commit();
+                monitorUnknownError(eventsToSave.size(),logicalTime);
+
             } else {
                 logger.warn("Performing rollback.");
+
+                 monitorNumberOfUnassignableEvents(eventsToSave.size() ,channel.getName(),logicalTime);
+
                 transaction.rollback();
             }
         } finally {
@@ -111,6 +134,53 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
     protected abstract int saveEvents(List<T> eventsToSave) throws Exception;
 
     protected abstract List<T> getEvents() throws Exception;
+
+    /**
+     * Monitor how many events have been retrieved in the sink and need to be saved to the DB
+     * @param number - number of retried events
+     * @param logicalHour - the logical hour - optional.
+     */
+    protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
+
+
+    /**
+     * Monitor how many events have been saved successfully into the DB
+     * @param number - number of saved events
+     * @param logicalHour - the logical hour - optional.
+     */
+    protected void monitorNumberOfSavedEvents(int number, Instant logicalHour){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
+
+    /**
+     * Monitor how many events have been failed because of not existing schema
+     * @param number - number of failed events
+     * @param logicalHour - the logical hour - optional.
+     */
+    protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
+    /**
+     * Monitor how many events have been failed because any other reason
+     * @param number - number of failed vevents
+     * @param logicalHour - the logical hour - optional.
+     */
+    protected void monitorUnknownError(int number, Instant logicalHour){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+    }
+
+    /**
+     * Get logical hour from the event,
+     * @param event
+     * @return - the time from the event is possible, null if not possible
+     */
+    protected Instant getLogicalHour(T event){
+        logger.warn(this.getClass().getName()+" does not support monitoring");
+        return null;
+    }
+
 
     protected boolean isControlDoneMessage(Event flumeEvent) {
         final boolean isControlDoneMessage = BooleanUtils.toBoolean(flumeEvent.getHeaders().get(CommonStrings.IS_DONE));

@@ -33,7 +33,6 @@
         <stagingDirectory>${project.basedir}/target/docs</stagingDirectory>
 
         <avro.version>1.7.4</avro.version>
-        <elasticsearch.version>0.90.1</elasticsearch.version>
         <hadoop2.version>2.4.0</hadoop2.version>
         <thrift.version>0.7.0</thrift.version>
         <kafka.version>0.9.0.1</kafka.version>
@@ -916,21 +915,6 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop</artifactId>
                 <version>${hadoop.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-                <optional>true</optional>
-            </dependency>
-
-            <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-                <classifier>tests</classifier>
-                <scope>test</scope>
             </dependency>
 
             <dependency>

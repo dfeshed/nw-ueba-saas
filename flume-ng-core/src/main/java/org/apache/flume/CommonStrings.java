@@ -18,6 +18,7 @@ public class CommonStrings {
     public static final String START_DATE = "startDate";
     public static final String DATE_FORMAT = "dateFormat";
     public static final String DATE_TIME_FIELD = "dateTimeField";
+    public static final String SCHEMA_NAME = "schema";
     public static String DEFAULT_DATE_TIME_FIELD_NAME = "dateTime";
     public static String APPLICATION_NAME = "applicationName";
 }

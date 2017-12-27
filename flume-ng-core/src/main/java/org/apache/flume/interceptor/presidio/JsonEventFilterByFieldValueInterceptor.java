@@ -64,6 +64,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
             if (matcher.matches()) {
                 if (operation == Operation.OR) {
                     logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
+                    monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION",1);
                     return null;
                 }
             } else {
@@ -78,6 +79,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
             event.setBody(eventBodyAsJson.toString().getBytes());
             return event;
         } else {  /* we got here and couldn't NOT-filter? - we should filter */
+            monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2",1);
             return null;
         }
     }

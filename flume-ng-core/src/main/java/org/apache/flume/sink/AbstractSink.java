@@ -68,6 +68,10 @@ public abstract class AbstractSink implements Sink, LifecycleAware {
     return lifecycleState;
   }
 
+  public synchronized void setLifecycleState(LifecycleState lifecycleState) {
+    this.lifecycleState = lifecycleState;
+  }
+
   @Override
   public synchronized void setName(String name) {
     this.name = name;

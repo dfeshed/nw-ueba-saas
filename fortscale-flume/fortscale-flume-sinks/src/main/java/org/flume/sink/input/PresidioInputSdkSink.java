@@ -7,11 +7,10 @@ import com.mongodb.MongoException;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.flume.Context;
-import org.apache.flume.Event;
-import org.apache.flume.FlumeException;
-import org.apache.flume.Sink;
+import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
+import org.apache.flume.conf.MonitorDetails;
+import org.apache.flume.marker.MonitorUses;
 import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
@@ -19,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,7 @@ import static org.apache.flume.CommonStrings.BATCH_SIZE;
 /**
  * an AbstractPresidioSink that uses the InputSDK jar to write events to Presidio-Input's input
  */
-public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink {
+public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends AbstractPresidioSink<T> implements Configurable, Sink, MonitorUses {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioInputSdkSink.class);
 
@@ -47,6 +47,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     private static String[] mandatoryParams = {SCHEMA, RECORD_TYPE};
 
     private PresidioInputPersistencyService presidioInputPersistencyService;
+    private FlumePresidioExternalMonitoringService monitoringService;
     private Class<T> recordType;
     private Schema schema;
     private int batchSize;
@@ -102,8 +103,6 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 continue;
             }
 
-
-//            sinkCounter.incrementEventDrainAttemptCount();
             final T parsedEvent;
             final String eventBody = new String(flumeEvent.getBody());
             try {
@@ -129,6 +128,28 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     }
 
     @Override
+    protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
+        monitoringService.reportTotalEventMetric(number);
+    }
+
+    @Override
+    protected void monitorNumberOfSavedEvents(int number, Instant logicalHour) {
+        monitoringService.reportSuccessEventMetric(number);
+    }
+
+    @Override
+    protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour) {
+        monitoringService.reportFailedEventMetric("UNASSIGNABLE_EVENTS",number);
+    }
+
+    @Override
+    protected void monitorUnknownError(int number, Instant logicalHour) {
+        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS",number);
+    }
+
+
+
+    @Override
     protected int saveEvents(List<T> records) {
         if (records.isEmpty()) {
             logger.trace("0 events were saved successfully.");
@@ -152,5 +173,17 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
                 .append("schema", schema)
                 .append("batchSize", batchSize)
                 .toString();
+    }
+
+    @Override
+    public void setMonitorDetails(MonitorDetails monitorDetails) {
+        FlumePresidioExternalMonitoringService.FlumeComponentType sink = FlumePresidioExternalMonitoringService.FlumeComponentType.SINK;
+        String componentInstanceId = sink.name();
+        if (schema!=null){
+            monitorDetails.setSchema(schema.getName());
+            componentInstanceId = componentInstanceId+"_"+schema.getName();
+        }
+
+        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,sink ,componentInstanceId);
     }
 }

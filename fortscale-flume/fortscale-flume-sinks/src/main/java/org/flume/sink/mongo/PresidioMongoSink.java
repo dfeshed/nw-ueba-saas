@@ -14,6 +14,7 @@ import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepository;
 import org.apache.flume.persistency.mongo.SinkMongoRepositoryImpl;
 import org.flume.sink.base.AbstractPresidioSink;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,14 +22,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
 import java.io.UnsupportedEncodingException;
+
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 
 import static org.apache.flume.CommonStrings.BATCH_SIZE;
 import static org.apache.flume.CommonStrings.COLLECTION_NAME;
@@ -46,6 +47,7 @@ import static org.apache.flume.CommonStrings.USERNAME;
 public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresidioSink<T> {
 
     private static Logger logger = LoggerFactory.getLogger(PresidioMongoSink.class);
+
 
     private static ObjectMapper mapper;
     private static final String RECORD_TYPE = "recordType";
@@ -65,11 +67,14 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     private String dbName;
     private String host;
     private int port;
-    private String collectionName;
+    protected String collectionName;
     private String username;
     private int batchSize;
     private Class<T> recordType;
     private String indexFieldName;
+    private String timeFieldName;
+
+
 
 
     public PresidioMongoSink() {
@@ -78,6 +83,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
 
     public PresidioMongoSink(SinkMongoRepository sinkMongoRepository) {
         this.sinkMongoRepository = sinkMongoRepository;
+
     }
 
     @Override
@@ -113,6 +119,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
             collectionName = context.getString(COLLECTION_NAME);
 
             initRepository(context);
+
         } catch (Exception e) {
             final String errorMessage = "Failed to configure " + getName();
             logger.error(errorMessage, e);
@@ -166,6 +173,27 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
     }
 
     @Override
+    protected void monitorNumberOfReadEvents(int number, Instant logicalHour) {
+            logger.warn(this.getClass().getName()+" is not supporting monitoring");
+    }
+
+    @Override
+    protected void monitorNumberOfSavedEvents(int number, Instant logicalHour) {
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+    }
+
+    @Override
+    protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour) {
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+    }
+
+    @Override
+    protected void monitorUnknownError(int number, Instant logicalHour) {
+        logger.warn(this.getClass().getName()+" is not supporting monitoring");
+    }
+
+
+    @Override
     @SuppressWarnings("unchecked")
     protected int saveEvents(List<T> eventsToSave) throws Exception {
         final int numOfEventsToSave = eventsToSave.size();
@@ -173,10 +201,8 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         if (numOfEventsToSave == 1) { // or in other words if batchSize == 1
             sinkMongoRepository.save(eventsToSave.get(0), collectionName);
             numOfSavedEvents = 1;
-//                sinkCounter.incrementEventDrainSuccessCount();
         } else {
             numOfSavedEvents = sinkMongoRepository.bulkSave(eventsToSave, collectionName);
-//                sinkCounter.addToEventDrainSuccessCount(numOfSavedEvents);
         }
 
         if (StringUtils.isNotEmpty(indexFieldName)) {
@@ -201,7 +227,7 @@ public class PresidioMongoSink<T extends AbstractDocument> extends AbstractPresi
         dbName = context.getString(DB_NAME);
         host = context.getString(HOST);
         port = context.getInteger(PORT, 27017);
-        username = context.getString(USERNAME, "");
+        username  = context.getString(USERNAME, "");
         indexFieldName = context.getString(INDEX_FIELD_NAME, "");
         final String password = context.getString(PASSWORD, "");
         if (sinkMongoRepository == null) {
