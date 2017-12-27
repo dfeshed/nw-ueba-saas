@@ -10,10 +10,9 @@ from airflow.utils.state import State
 from copy import copy
 from datetime import datetime
 from elasticsearch import Elasticsearch
-from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 
 
-class RerunFullFlowDagBuilder(PresidioDagBuilder):
+class RerunFullFlowDagBuilder():
     """
     The "rerun full flow run" DAG consists of all the actions needed in order to delete all presidio data
     """
@@ -103,13 +102,11 @@ def cleanup_dags_from_postgres(dag_ids, session=None):
             session.execute(sql)
 
 
-def build(self, rerun_full_flow_dag, is_remove_ca_tables):
+def build(is_remove_ca_tables):
     """
     Receives a rerun full flow DAG, creates the operators, links them to the DAG and
     configures the dependencies between them.
-    :param rerun_full_flow_dag: The full flow DAG to populate
-    :type rerun_full_flow_dag: airflow.models.DAG
-    :return: The given DAG, after it has been populated
+    :return: The DAG, after it has been populated
     :rtype: airflow.models.DAG
     """
 
@@ -118,21 +115,21 @@ def build(self, rerun_full_flow_dag, is_remove_ca_tables):
     dag_models = get_dag_models_by_prefix("full_flow")
     dag_ids_to_clean = map(lambda x: x.dag_id, dag_models)
 
-    cleanup_dag = DAG(dag_id="rerun_full_flow", schedule_interval=None, start_date=datetime(2015, 6, 1))
+    rerun_full_flow_dag = DAG(dag_id="rerun_full_flow", schedule_interval=None, start_date=datetime(2015, 6, 1))
 
-    pause_dags_operator = build_pause_dags_operator(cleanup_dag, dag_models)
+    pause_dags_operator = build_pause_dags_operator(rerun_full_flow_dag, dag_models)
 
-    kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean)
+    kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(rerun_full_flow_dag, dag_ids_to_clean)
 
-    clean_mongo_operator = build_mongo_clean_bash_operator(cleanup_dag, is_remove_ca_tables)
+    clean_mongo_operator = build_mongo_clean_bash_operator(rerun_full_flow_dag, is_remove_ca_tables)
 
-    clean_elastic_operator = build_clean_elastic_operator(cleanup_dag)
+    clean_elastic_operator = build_clean_elastic_operator(rerun_full_flow_dag)
 
-    clean_adapter_operator = build_clean_adapter_operator(cleanup_dag)
+    clean_adapter_operator = build_clean_adapter_operator(rerun_full_flow_dag)
 
-    clean_dags_from_db_operator = build_clean_dags_from_db_operator(cleanup_dag, dag_ids_to_clean)
+    clean_dags_from_db_operator = build_clean_dags_from_db_operator(rerun_full_flow_dag, dag_ids_to_clean)
 
-    clean_logs_operator = build_clean_logs_operator(cleanup_dag)
+    clean_logs_operator = build_clean_logs_operator(rerun_full_flow_dag)
 
     pause_dags_operator >> kill_dags_task_instances_operator
     kill_dags_task_instances_operator >> clean_mongo_operator
