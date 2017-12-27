@@ -23,14 +23,16 @@
       {{#each filterList as |column|}}
         {{#if (not-eq column.dataType "checkbox")}}
           {{#if (not-eq column.field "machine.machineName") }}
-            <li>
-              <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
-                {{rsa-form-checkbox
-                  checked=column.selected
-                  change=(action 'toggleColumn' column)}}
-                {{t column.title}}
-              </label>
-            </li>
+            {{#if (not-eq column.field "machineIdentity.machineName") }}
+              <li>
+                <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
+                  {{rsa-form-checkbox
+                    checked=column.selected
+                    change=(action 'toggleColumn' column)}}
+                  {{t column.title}}
+                </label>
+              </li>
+            {{/if}}
           {{/if}}
         {{/if}}
       {{/each}}

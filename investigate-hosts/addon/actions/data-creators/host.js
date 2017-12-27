@@ -172,7 +172,7 @@ const exportAsFile = () => {
   return (dispatch, getState) => {
     const { filterSelected, hostColumnSort } = getState().endpoint.machines;
     const { schema } = getState().endpoint.schema;
-    const columns = schema.filterBy('defaultProjection', true).mapBy('name');
+    const columns = schema.filterBy('visible', true).mapBy('name');
     dispatch({
       type: ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID,
       promise: Machines.downloadMachine(filterSelected, schema, hostColumnSort, columns),

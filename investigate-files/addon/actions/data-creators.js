@@ -239,8 +239,7 @@ const exportFileAsCSV = () => {
     const { sortField, isSortDescending } = files.fileList;
     const { schema } = files.schema;
     const { expressionList } = files.filter;
-    const columns = schema.filter((field) => field.defaultProjection)
-      .map((field) => field.name);
+    const columns = schema.filter((field) => field.visible).map((field) => field.name);
     dispatch({
       type: ACTION_TYPES.DOWNLOAD_FILE_AS_CSV,
       promise: File.fileExport({ sortField, isSortDescending }, expressionList, columns),
