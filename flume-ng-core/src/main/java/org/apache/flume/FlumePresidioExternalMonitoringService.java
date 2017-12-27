@@ -36,8 +36,8 @@ public class FlumePresidioExternalMonitoringService {
         this.presidioExternalMonitoringService = monitorDetails.getPresidioExternalMonitoringService();
         this.logicalHour = monitorDetails.getLogicalhour();
         this.defaultSchema = monitorDetails.getSchema();
-
         this.flumeComponentType = flumeComponentType.name();
+        this.flumeComponentInstannceId = flumeComponentInstannceId;
     }
 
 
