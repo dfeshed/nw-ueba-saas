@@ -10,9 +10,6 @@
     </parent>
     <artifactId>presidio-security-manager</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <properties>
-        <manager.security.securityConfPath>/etc/httpd/conf/httpd.conf/</manager.security.securityConfPath>
-    </properties>
     <build>
         <plugins>
             <plugin>
@@ -61,50 +58,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>rpm-maven-plugin</artifactId>
-                <version>${rpm-maven-plugin.version}</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>generate-rpm</id>
-                        <goals>
-                            <goal>rpm</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <group>Application/Collectors</group>
-                    <release>${rpm.version.build}</release>
-                    <needarch>true</needarch>
-                    <mappings>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>${manager.security.securityConfPath}</directory>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>
-                                        ${project.basedir}/src/main/resources/encryption/encryption_util.sh
-                                    </location>
-                                </source>
-                            </sources>
-                        </mapping>
-                    </mappings>
-                    <postinstallScriptlet>
-                        <script>
-                            <!-- post installation commands: -->
-
-                            <!-- allow only root to execute encryption_util.sh -->
-                            chmod -v 700 ${manager.security.securityConfPath}/encryption_util.sh
-
-                            <!--end of post installation -->
-                        </script>
-                    </postinstallScriptlet>
-                </configuration>
             </plugin>
         </plugins>
     </build>
