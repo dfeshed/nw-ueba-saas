@@ -1,4 +1,8 @@
+[
   {
+    "_id": "  c3a2e1e0-d347-11e7-a22e-a5eb4f1bcb69",
+    "_type": "dashboard",
+    "_source": {
       "title": "System host overview",
       "hits": 0,
       "description": "",
@@ -17,4 +21,6 @@
       "kibanaSavedObjectMeta": {
         "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}],\"highlightAll\":true,\"version\":true}"
       }
+    }
   }
+]
