@@ -9,23 +9,19 @@ import java.util.List;
 public interface DataPipelineSDK {
 
     /**
-     *
      * @return cursor for currently running hours. null if not running on any hour.
      */
     List<PipelineStateDataProcessingCursor> getCurrentlyRunningCursor();
 
     /**
-     *
      * @return current status of a component.
      */
     PipelineState.StatusEnum getStatus();
 
     /**
-     *
      * @return a merged result of {@link this#getStatus()} & {@link this#getCurrentlyRunningCursor()}
      */
-    default PipelineState getPipelineState()
-    {
+    default PipelineState getPipelineState() {
         List<PipelineStateDataProcessingCursor> currentlyRunningCursor = getCurrentlyRunningCursor();
         PipelineState.StatusEnum status = getStatus();
         PipelineState pipelineState = new PipelineState();
@@ -44,4 +40,6 @@ public interface DataPipelineSDK {
      * stops the component
      */
     void stop();
+
+    void cleanAndRerun();
 }
