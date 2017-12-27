@@ -172,9 +172,9 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     private Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate) {
         if (startDate.equals(Instant.EPOCH)) {
-            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThan(startDate.toEpochMilli(), endDate.toEpochMilli());
-        } else {
             return alertRepository.findByEndDateLessThan(endDate.toEpochMilli());
+        } else {
+            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThan(startDate.toEpochMilli(), endDate.toEpochMilli());
         }
     }
 
