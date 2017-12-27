@@ -229,7 +229,7 @@ public class OutputExecutionServiceModuleTest {
             Assert.assertEquals(8, user.getAlertsCount());
             Assert.assertEquals(55, new Double(user.getScore()).intValue());
             Assert.assertNotEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputExecutionService.retentionClean(Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.retentionClean(Instant.now().plus(Duration.ofDays(4)));
             // test alerts cleanup
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());

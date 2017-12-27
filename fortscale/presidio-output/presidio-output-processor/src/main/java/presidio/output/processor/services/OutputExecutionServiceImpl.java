@@ -205,7 +205,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void clean(Instant startDate, Instant endDate) throws Exception {
         logger.debug("Start deleting alerts and updating users score.");
-        // deleteAlertAndIndicators alerts
+        // delete alerts
         List<Alert> cleanedAlerts = alertService.cleanAlerts(startDate, endDate);
 
         // update user scores
@@ -217,7 +217,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     @Override
     public void retentionClean(Instant endDate) throws Exception {
         List<Schema> schemas = createListOfSchema();
-        //enriched events deleteAlertAndIndicators
 
         schemas.forEach(schema -> {
             logger.debug("Start retention clean to mongo for schema {}", schema);

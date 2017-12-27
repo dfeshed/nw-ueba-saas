@@ -3,7 +3,10 @@ package presidio.webapp.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +80,7 @@ public class UserApiControllerModuleTest {
 
     @After
     public void cleanTestData() {
-        //deleteAlertAndIndicators the created users
+        //delete the created users
         userRepository.delete(user1);
         userRepository.delete(user2);
     }

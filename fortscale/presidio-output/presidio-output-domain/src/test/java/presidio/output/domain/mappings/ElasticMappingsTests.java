@@ -1,28 +1,39 @@
 package presidio.output.domain.mappings;
 
 
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Properties;
 
 @RunWith(SpringRunner.class)
 public class ElasticMappingsTests {
 
+    @Value("${linux.mapping.path}")
+    private String linuxMapping;
+
+    @Value("${windos.mapping.path}")
+    private String windosMapping;
 
     @Test
     public void IsMappingValidJsonFile() throws IOException {
         String path;
         if (System.getProperty("os.name").startsWith("Linux")) {
-            path = "/home/presidio/presidio-core/el-extensions/mappings/";
+            path = linuxMapping;
         } else {
-            path = "C:\\workspace\\presidio-core\\presidio-core\\fortscale\\presidio-output\\presidio-output-domain\\src\\main\\resources\\elasticsearch\\mappings";
+            path = windosMapping;
         }
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
@@ -45,6 +56,18 @@ public class ElasticMappingsTests {
             } finally {
                 br.close();
             }
+        }
+    }
+
+    @Configuration
+    @EnableSpringConfigured
+    public static class SpringConfig {
+        @Bean
+        public static TestPropertiesPlaceholderConfigurer mappingsTestPropertiesConfigurer() {
+            Properties properties = new Properties();
+            properties.put("linux.mapping.path", "presidio/presidio-core/el-extensions/mappings/");
+            properties.put("windos.mapping.path", "\\presidio-core\\presidio-core\\fortscale\\presidio-output\\presidio-output-domain\\src\\main\\resources\\elasticsearch\\mappings");
+            return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
 

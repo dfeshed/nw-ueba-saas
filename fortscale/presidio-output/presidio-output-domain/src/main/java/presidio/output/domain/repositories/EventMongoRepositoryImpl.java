@@ -100,12 +100,12 @@ public class EventMongoRepositoryImpl implements EventRepository {
     @Override
     public void remove(String collectionName, Instant startDate, Instant endDate) {
         logger.debug("Deleting events of collection {}, from {} until date {}", collectionName, startDate, endDate);
-        Query query = createQuery(startDate, endDate);
+        Query query = createDateRangeQuery(startDate, endDate);
         mongoTemplate.remove(query, collectionName);
     }
 
 
-    private Query createQuery(Instant startDate, Instant endDate) {
+    private Query createDateRangeQuery(Instant startDate, Instant endDate) {
         if (startDate.equals(Instant.EPOCH)) {
             return new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
                     .lt(endDate));

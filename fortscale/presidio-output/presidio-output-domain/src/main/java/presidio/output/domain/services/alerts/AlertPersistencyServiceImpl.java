@@ -77,15 +77,15 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     public void deleteAlertAndIndicators(Alert alert) {
-        // atomic deleteAlertAndIndicators for the entire alert entities
+        // atomic delete for the entire alert entities
 
-        // deleteAlertAndIndicators alert
+        // delete alert
         alertRepository.delete(alert);
 
-        // deleteAlertAndIndicators indicators
+        // delete indicators
         List<Indicator> indicators = indicatorRepository.removeByAlertId(alert.getId());
 
-        // deleteAlertAndIndicators events
+        // delete Indicators events
         indicators.forEach(indicator -> {
             indicatorEventRepository.removeByIndicatorId(indicator.getId());
         });
