@@ -5,8 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation
-        </rpm-maven-plugin.directory>
+        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation</rpm-maven-plugin.directory>
         <rpm-maven-plugin.script>
             ${rpm-maven-plugin.directory}/installation-scripts/infrastructure/deploy/manager/deploy_manager.py
         </rpm-maven-plugin.script>
@@ -23,8 +22,7 @@
         </rpm-maven-plugin.workflows_packages_directory>
         <rpm-maven-plugin.workflows-build-script-path>${project.basedir}/build-scripts/build-workflows.sh
         </rpm-maven-plugin.workflows-build-script-path>
-        <rpm-maven-plugin.workflows-upgrade-script-path>
-            ${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
+        <rpm-maven-plugin.workflows-upgrade-script-path>${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
         </rpm-maven-plugin.workflows-upgrade-script-path>
         <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
         <airflow.deployment_target_directory>${rpm-maven-plugin.deployment_target_directory}/airflow
@@ -33,9 +31,7 @@
         </presidio-workflows-src.location>
         <common-conf-path>/home/presidio/presidio-core/configurations/airflow/</common-conf-path>
         <presidio-conf-group>presidio-conf</presidio-conf-group>
-        <env_var_profile_script>
-            ${project.parent.build.directory}/../presidio-rpm/src/main/python/installation-scripts/version/1_0/utils/presidio_profile.sh
-        </env_var_profile_script>
+        <env_var_profile_script>${project.parent.build.directory}/../presidio-rpm/src/main/python/installation-scripts/version/1_0/utils/presidio_profile.sh</env_var_profile_script>
         <manager.security.securityConfPath>/etc/httpd/conf/</manager.security.securityConfPath>
     </properties>
     <parent>
@@ -100,6 +96,7 @@
                                 </source>
                             </sources>
                         </mapping>
+
                         <mapping>
                             <!-- El extensions mapping-->
                             <directoryIncluded>false</directoryIncluded>
@@ -108,9 +105,7 @@
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
-                                    <location>
-                                        ${project.parent.build.directory}/../presidio-output/presidio-output-domain/src/main/resources/elasticsearch
-                                    </location>
+                                    <location>${project.parent.build.directory}/../presidio-output/presidio-output-domain/src/main/resources/elasticsearch</location>
                                 </source>
                             </sources>
                         </mapping>
@@ -246,16 +241,14 @@
 
                             echo "Running Python migration project"
                             <!-- post installation commands: -->
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
-                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
 
                             <!-- It takes 15 seconds for the config server to initialize -->
                             sleep 20
 
                             <!--changing ownership of project main folder -->
                             #echo "Changing ownership of /project main repository"
-                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user}
-                            ${rpm-maven-plugin.deployment_target_directory}
+                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
 
                             #echo "Removing temporary files"
                             rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
@@ -275,6 +268,7 @@
 
                             <!-- allow only root to execute encryption_util.sh -->
                             chmod -v 700 ${manager.security.securityConfPath}/encryption_util.sh
+
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
@@ -283,8 +277,7 @@
                             <!-- pre remove commands -->
                             if [ "$1" = 0 ] ; then
                             echo "pre remove condition passed"
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
-                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
                             fi
 
                         </script>
