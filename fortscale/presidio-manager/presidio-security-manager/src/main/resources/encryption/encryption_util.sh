@@ -1,3 +1,3 @@
 #!/bin/bash
 
-exec java -jar /home/presidio/presidio-core/bin/presidio-security-manager-1.0.0-SNAPSHOT.jar "$@"
+echo $1  |  openssl enc -d -base64   | openssl enc -d -aes-256-cbc  -salt -pass pass:mj23

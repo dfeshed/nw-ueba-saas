@@ -75,7 +75,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             });
 
             final String plainPassword = (String) securityConfiguration.get(PASSWORD);
-            final String encryptedPassword = EncryptionUtils.encrypt(plainPassword);
+            final String encryptedPassword = encrypt(plainPassword);
             securityConfiguration.put(PASSWORD, encryptedPassword);
 
             String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE_FILENAME), securityConfiguration);
@@ -122,6 +122,31 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             logger.warn("not reloading httpd config. you must be running a unit test... right?");
             return true;
         }
+    }
+
+    private String encrypt(String plainPassword) {
+        StringBuilder output = new StringBuilder();
+        String[] cmd = {
+                "/bin/sh",
+                "-c",
+                "echo -n " + plainPassword + " | openssl enc  -aes-256-cbc  -salt -pass pass:mj23 |  openssl enc -base64 -A"
+        };
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            p.waitFor();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine())!= null) {
+                output.append(line).append("\n");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return output.toString();
     }
 
     private ValidationResults validateSystemConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {

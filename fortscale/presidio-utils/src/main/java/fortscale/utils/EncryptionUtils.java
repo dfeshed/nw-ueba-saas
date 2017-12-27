@@ -49,11 +49,6 @@ public class EncryptionUtils {
             System.out.println("Usage: <encrypt/decrypt> <value>");
             return;
         }
-        final String user = System.getProperty("user.name");
-        if (!user.equalsIgnoreCase("root")) {
-            System.out.println("Must be run as root!");
-            return;
-        }
 
         String mode = args[0];
         String value = args[1];
