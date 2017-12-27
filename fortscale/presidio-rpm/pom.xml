@@ -36,7 +36,7 @@
         <env_var_profile_script>
             ${project.parent.build.directory}/../presidio-rpm/src/main/python/installation-scripts/version/1_0/utils/presidio_profile.sh
         </env_var_profile_script>
-        <manager.security.securityConfPath>/etc/httpd/conf/httpd.conf/</manager.security.securityConfPath>
+        <manager.security.securityConfPath>/etc/httpd/conf/</manager.security.securityConfPath>
     </properties>
     <parent>
         <artifactId>fortscale</artifactId>
