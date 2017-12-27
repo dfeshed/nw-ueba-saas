@@ -89,8 +89,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void cleanAndRun() {
-
         // TODO: call the relevant dag
-        airflowApiClient.unpauseDAG("cleanDag");
+        airflowApiClient.triggerDag("dagId");
     }
 }
