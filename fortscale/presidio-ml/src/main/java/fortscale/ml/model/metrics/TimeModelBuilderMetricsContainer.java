@@ -47,10 +47,10 @@ public class TimeModelBuilderMetricsContainer extends ModelMetricsContainer {
         metric.getValue().compute(MetricEnums.MetricValues.SUM_OF_SMOOTHED_BUCKETS, (k, v) -> v.longValue() + amountOfSmoothedBuckets);
 
         if (numOfContexts != 0) {
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_SIZE_OF_FEATURE_VALUES, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_OF_BUCKET_HITS, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
-            metric.getValue().compute(MetricEnums.MetricValues.AVG_OF_SMOOTHED_BUCKETS, (k, v) -> metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_SIZE_OF_FEATURE_VALUES, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_OF_BUCKET_HITS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
+            metric.getValue().compute(MetricEnums.MetricValues.AVG_OF_SMOOTHED_BUCKETS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
         }
 
         if (Arrays.stream(buckets).limit(5).sum() > 0.0) {

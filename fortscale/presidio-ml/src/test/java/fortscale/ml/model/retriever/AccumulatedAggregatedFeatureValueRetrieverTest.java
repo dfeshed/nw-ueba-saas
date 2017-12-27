@@ -2,6 +2,7 @@ package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.factories.AccumulatedAggregatedFeatureValueRetrieverFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
@@ -47,6 +48,8 @@ public class AccumulatedAggregatedFeatureValueRetrieverTest {
         private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
         @Autowired
         private AccumulatedAggregatedFeatureValueRetrieverFactory accumulatedAggregatedFeatureValueRetrieverFactory;
+        @MockBean
+        private MaxContinuousModelRetrieverMetricsContainer maxContinuousModelRetrieverMetricsContainer;
 
         @Bean
         public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService() {
