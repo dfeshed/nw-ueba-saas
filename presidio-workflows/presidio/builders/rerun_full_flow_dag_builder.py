@@ -161,9 +161,17 @@ def build_clean_logs_operator(cleanup_dag):
     return clean_logs_operator
 
 
-def build_clean_adapter_operator(cleanup_dag):
+def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
+    adapter_clean_bash_command = "rm -rf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rf /data/presidio/3p/flume/data/adapter/ "
+
+    if is_remove_ca_tables:
+        # we want to delete the adapter files since we won't delete the ca tables
+        adapter_clean_bash_command = adapter_clean_bash_command % "&& rm -rf $PRESIDIO_HOME/flume/counters/source"
+    else:
+        adapter_clean_bash_command = adapter_clean_bash_command % ""
+
     clean_adapter_operator = BashOperator(task_id='clean_adapter',
-                                          bash_command="rm -rf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rf /data/presidio/3p/flume/data/adapter/ && rm -rf $PRESIDIO_HOME/flume/counters/source",
+                                          bash_command= adapter_clean_bash_command,
                                           dag=cleanup_dag)
     return clean_adapter_operator
 
