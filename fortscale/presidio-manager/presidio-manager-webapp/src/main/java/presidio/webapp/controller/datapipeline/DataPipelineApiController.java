@@ -20,8 +20,8 @@ public class DataPipelineApiController implements DataPipelineApi {
         this.managerService = managerService;
     }
 
-    public ResponseEntity<Void> dataPipelineCleanAndRerunPost() {
-        managerService.cleanAndRerun();
+    public ResponseEntity<Void> dataPipelineCleanAndRunPost() {
+        managerService.cleanAndRun();
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

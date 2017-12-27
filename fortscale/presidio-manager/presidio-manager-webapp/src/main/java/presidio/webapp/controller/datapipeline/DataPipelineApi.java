@@ -18,10 +18,10 @@ public interface DataPipelineApi {
             @ApiResponse(code = 200, message = "OK", response = Void.class),
             @ApiResponse(code = 401, message = "Authentication information is missing or invalid", response = Void.class),
             @ApiResponse(code = 500, message = "Operation failed", response = Void.class)})
-    @RequestMapping(value = "/data-pipeline/cleanAndRerun",
+    @RequestMapping(value = "/data-pipeline/cleanAndRun",
             produces = {"application/json"},
             method = RequestMethod.POST)
-    ResponseEntity<Void> dataPipelineCleanAndRerunPost();
+    ResponseEntity<Void> dataPipelineCleanAndRunPost();
 
     @ApiOperation(value = "Report the data pipeline state", notes = "", response = PipelineState.class, authorizations = {
             @Authorization(value = "basicAuth")
