@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getCurrentPreferences, isDataEmpty, shouldShowStatus } from 'investigate-events/reducers/investigate/data-selectors';
+import { getCurrentPreferences, isDataEmpty, shouldShowStatus, getSelectedColumnGroup, getColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 
 module('Unit | Selectors | data-selectors');
 
@@ -91,3 +92,62 @@ test('no need to show status', function(assert) {
   assert.equal(showStatus, false);
 });
 
+test('Should get default column group as Summary', function(assert) {
+  const state = {
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups: EventColumnGroups
+      }
+    }
+  };
+  const selectedColumnGroup = getSelectedColumnGroup(state);
+  assert.equal(selectedColumnGroup.name, 'Summary List');
+  assert.equal(selectedColumnGroup.columns.length, 5);
+  assert.deepEqual(EventColumnGroups[2], selectedColumnGroup);
+});
+
+test('Should fall back to Summary for wrong column group', function(assert) {
+  const state = {
+    investigate: {
+      data: {
+        columnGroup: 'XYZ',
+        columnGroups: EventColumnGroups
+      }
+    }
+  };
+  const selectedColumnGroup = getSelectedColumnGroup(state);
+  assert.equal(selectedColumnGroup.name, 'Summary List');
+  assert.equal(selectedColumnGroup.columns.length, 5);
+
+  assert.deepEqual(EventColumnGroups[2], selectedColumnGroup);
+});
+
+test('Should get selected column groups', function(assert) {
+  const state = {
+    investigate: {
+      data: {
+        columnGroup: 'WEB',
+        columnGroups: EventColumnGroups
+      }
+    }
+  };
+  const selectedColumnGroup = getSelectedColumnGroup(state);
+  assert.equal(selectedColumnGroup.name, 'Web Analysis');
+  assert.equal(selectedColumnGroup.columns.length, 53);
+  assert.deepEqual(EventColumnGroups[6], selectedColumnGroup);
+});
+
+test('Should get mutable columns for data table', function(assert) {
+  const state = Immutable.from({
+    investigate: {
+      data: {
+        columnGroup: 'SUMMARY',
+        columnGroups: EventColumnGroups
+      }
+    }
+  });
+  const columns = getColumns(state);
+  assert.equal(columns.length, 5);
+  assert.notOk(columns.isMutable, 'Columns should not be a mutable object.');
+});

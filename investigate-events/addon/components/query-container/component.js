@@ -9,7 +9,6 @@ import {
 } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { setReconPanelSize } from 'investigate-events/actions/interaction-creators';
 import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
-import EventColumnGroups from 'investigate-events/helpers/event-column-config';
 import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
@@ -42,11 +41,6 @@ const QueryContainerComponent = Component.extend({
   metaPanelSizes: META_PANEL_SIZES,
   reconPanelSizes: RECON_PANEL_SIZES,
   showFutureFeatures: config.featureFlags.future,
-
-  init() {
-    this._super(...arguments);
-    this.set('eventColumnGroups', EventColumnGroups.create());
-  },
 
   @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter.conditions', 'queryNode.serviceId')
   queryInputs(startTime, endTime, queryConditions, endpointId) {

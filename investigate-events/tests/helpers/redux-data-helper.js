@@ -43,7 +43,21 @@ export default class DataHelper {
     return this;
   }
 
-  // event-count
+  columnGroup(columnGroup) {
+    _set(this.state, 'data.columnGroup', columnGroup);
+    return this;
+  }
+
+  columnGroups(columnGroups) {
+    _set(this.state, 'data.columnGroups', columnGroups);
+    return this;
+  }
+
+  reconSize(reconSize) {
+    _set(this.state, 'data.reconSize', reconSize);
+    return this;
+  }
+
   eventThreshold(threshold) {
     _set(this.state, 'eventCount.threshold', threshold);
     return this;

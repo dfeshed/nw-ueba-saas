@@ -7,6 +7,12 @@
     @include border-bottom(1px, solid, primary, darker);
     align-items: baseline;
     justify-content: space-between;
+    &__columns{
+      @include rsa-font(light);
+    }
+    &__ootb-columns{
+      @include rsa-font(bolder);
+    }
     h2 {
       @include rsa-font(header, large);
       padding: rsa-whitespace();

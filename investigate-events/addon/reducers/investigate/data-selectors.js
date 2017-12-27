@@ -1,11 +1,7 @@
 import reselect from 'reselect';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import $ from 'jquery';
-import EventColumnGroups from 'investigate-events/helpers/event-column-config';
-
 const { createSelector } = reselect;
-
-const allColumnGroups = EventColumnGroups.create().all;
 
 // ACCESSOR FUNCTIONS
 const _reconSize = (state) => state.investigate.data.reconSize;
@@ -13,6 +9,7 @@ const _isReconOpen = (state) => state.investigate.data.isReconOpen;
 const _metaPanelSize = (state) => state.investigate.data.metaPanelSize;
 const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
+export const getColumnGroups = (state) => state.investigate.data.columnGroups;
 const _columnGroup = (state) => state.investigate.data.columnGroup;
 const _visuals = (state) => state.recon.visuals;
 
@@ -60,8 +57,20 @@ export const getCurrentPreferences = createSelector(
 );
 
 export const getSelectedColumnGroup = createSelector(
-  [_columnGroup],
-  (columnGroupId) => {
-    return allColumnGroups.find(({ id }) => id === columnGroupId);
+  [_columnGroup, getColumnGroups],
+  (columnGroupId, allColumnGroups) => {
+    if (allColumnGroups) {
+      return allColumnGroups.find(({ id }) => id === columnGroupId) || allColumnGroups.find(({ id }) => id === 'SUMMARY');
+    }
+    return null;
+  }
+);
+
+export const getColumns = createSelector(
+  [getSelectedColumnGroup],
+  (selectedColumns) => {
+    if (selectedColumns) {
+      return selectedColumns.columns.asMutable();
+    }
   }
 );

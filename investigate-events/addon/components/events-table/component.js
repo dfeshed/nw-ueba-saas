@@ -3,13 +3,15 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
-import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
+import { getSelectedColumnGroup, getColumnGroups, getColumns } from 'investigate-events/reducers/investigate/data-selectors';
 
 const stateToComputed = (state) => ({
   aliases: state.investigate.dictionaries.aliases,
   language: state.investigate.dictionaries.language,
   reconSize: state.investigate.data.reconSize,
-  selectedColumnGroup: getSelectedColumnGroup(state)
+  columnGroups: getColumnGroups(state),
+  selectedColumnGroup: getSelectedColumnGroup(state),
+  columns: getColumns(state)
 });
 
 const dispatchToActions = {
@@ -25,7 +27,6 @@ const EventsTable = Component.extend({
 
   // Passed along to data table.
   items: undefined,
-  eventColumnGroups: undefined,
   rowClickAction: undefined,
   loadLogsAction: undefined,
 

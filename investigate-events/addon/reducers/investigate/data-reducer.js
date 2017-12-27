@@ -1,5 +1,7 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
+import { handle } from 'redux-pack';
+import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import {
@@ -17,6 +19,7 @@ const _initialState = Immutable.from({
   metaPanelSize: META_PANEL_SIZES.DEFAULT,
   reconSize: RECON_PANEL_SIZES.MAX,
   eventsPreferencesConfig: CONFIG,
+  columnGroups: null,
   columnGroup: null // null avoids rendering the events table before fetching the persisted column group from backend
 });
 
@@ -43,6 +46,13 @@ export default handleActions({
       // TODO: reconSize should have a default value from prefs being set above.
       // need to refactor this.
       reconSize: payload.reconSize || RECON_PANEL_SIZES.MAX
+    });
+  },
+
+  [ACTION_TYPES.COLUMNS_RETRIEVE]: (state, action) => {
+    return handle(state, action, {
+      failure: (s) => s.merge({ columnGroups: EventColumnGroups }),
+      success: (s) => s.merge({ columnGroups: action.payload.data ? action.payload.data : EventColumnGroups })
     });
   },
 

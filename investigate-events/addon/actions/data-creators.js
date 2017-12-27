@@ -2,6 +2,7 @@ import RSVP from 'rsvp';
 import config from 'ember-get-config';
 import * as ACTION_TYPES from './types';
 import { fetchServices, fetchSummary } from './fetch/services';
+import { fetchColumnGroups } from './fetch/column-groups';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
@@ -165,6 +166,29 @@ export const _initializeQuery = () => {
   };
 };
 
+
+/**
+ * Redux thunk to get all column groups.
+ * @return {function} A Redux thunk
+ * @public
+ */
+export const getColumnGroups = () => {
+  return (dispatch, getState) => {
+    const { columnGroups } = getState().investigate.data;
+    if (!columnGroups) {
+      dispatch({
+        type: ACTION_TYPES.COLUMNS_RETRIEVE,
+        promise: fetchColumnGroups(),
+        meta: {
+          onFailure(response) {
+            log('getColumnGroups, onFailure', response);
+          }
+        }
+      });
+    }
+  };
+};
+
 /**
  * Redux thunk to get services. This is the same as `_initializeServices`, but
  * is not wrapped in a promise.
@@ -240,6 +264,8 @@ export const initializeInvestigate = (params) => {
       type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
       payload: parsedQueryParams
     });
+
+    dispatch(getColumnGroups());
     // Get data
     _getPreferences(dispatch, modelName).then(() => {
       _initializeServices(dispatch, getState);
@@ -272,6 +298,7 @@ export const initializeInvestigate = (params) => {
 export const initializeIndexRoute = () => {
   return (dispatch, getState) => {
     const { modelName } = getState().investigate.data.eventsPreferencesConfig;
+    getColumnGroups(dispatch, getState);
     _getPreferences(dispatch, modelName).then(() => {
       _initializeServices(dispatch, getState);
       _initializeQuery(dispatch, getState);
