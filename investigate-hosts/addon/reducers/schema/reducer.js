@@ -7,7 +7,7 @@ import CONFIG from './config';
 const schemaInitialState = Immutable.from({
   schema: null,
   schemaLoading: true,
-  visibleColumns: []
+  preferences: { machinePreference: null, filePreference: null }
 });
 
 const _handleGetPreferences = (action) => {
@@ -15,7 +15,15 @@ const _handleGetPreferences = (action) => {
     const { payload } = action;
     const visibleColumns = payload && payload.machinePreference ?
       action.payload.machinePreference.visibleColumns : CONFIG.defaultPreferences.machinePreference.visibleColumns;
-    return state.set('visibleColumns', visibleColumns);
+    return state.merge({ schema:
+      state.schema.map((field) => {
+        return {
+          ...field,
+          visible: visibleColumns.includes(field.name)
+        };
+      }),
+      preferences: payload ? payload : state.preferences
+    });
   };
 };
 

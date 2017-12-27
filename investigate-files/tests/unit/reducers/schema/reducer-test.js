@@ -6,26 +6,31 @@ import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 
 module('Unit | Reducers | schema');
+const SCHEMA = [
+  {
+    name: 'entropy'
+  },
+  {
+    name: 'firstFileName'
+  },
+  {
+    name: 'firstSeenTime'
+  },
+  {
+    name: 'machineOsType'
+  },
+  {
+    name: 'signature.features'
+  },
+  {
+    name: 'size'
+  }
+];
 
 const schemaResponse = {
   data: {
     'type': 'files',
-    'fields': [
-      {
-        'name': 'entropy',
-        'dataType': 'DOUBLE',
-        'searchable': true,
-        'defaultProjection': false,
-        'wrapperType': 'NUMBER'
-      },
-      {
-        'name': 'firstFileName',
-        'dataType': 'STRING',
-        'searchable': true,
-        'defaultProjection': true,
-        'wrapperType': 'STRING'
-      }
-    ]
+    'fields': SCHEMA
   }
 };
 
@@ -34,7 +39,7 @@ test('should return the initial state', function(assert) {
   assert.deepEqual(result, {
     schema: null,
     schemaLoading: true,
-    visibleColumns: []
+    preferences: { machinePreference: null, filePreference: null }
   });
 });
 
@@ -55,39 +60,24 @@ test('The SCHEMA_RETRIEVE action sets all the schema to the state', function(ass
   });
   const newEndState = reducer(previous, newAction);
 
-  assert.equal(newEndState.schema.length, 2, 'expected two schema fields');
+  assert.equal(newEndState.schema.length, 6, 'expected schema fields present');
 
 });
 
 test('The UPDATE_COLUMN_VISIBILITY action will toggle the defaultProjection property', function(assert) {
   const previous = Immutable.from({
-    schema: [
-      {
-        'name': 'entropy',
-        'dataType': 'DOUBLE',
-        'searchable': true,
-        'visible': false,
-        'wrapperType': 'NUMBER'
-      },
-      {
-        'name': 'firstFileName',
-        'dataType': 'STRING',
-        'searchable': true,
-        'visible': true,
-        'wrapperType': 'STRING'
-      }
-    ],
+    schema: SCHEMA,
     schemaLoading: false
   });
 
   const result = reducer(previous, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'entropy', visible: false } });
 
-  assert.equal(result.schema[1].visible, true, 'expected toggle the property');
+  assert.equal(result.schema[0].visible, true, 'expected toggle the property');
 });
 
 test('The GET_PREFERENCES action will set visibleColumns', function(assert) {
   const previous = Immutable.from({
-    visibleColumns: []
+    schema: SCHEMA
   });
   const response = {
     filePreference: {
@@ -100,12 +90,12 @@ test('The GET_PREFERENCES action will set visibleColumns', function(assert) {
   });
 
   const result = reducer(previous, newAction);
-  assert.equal(result.visibleColumns.length, 2, 'visible columns length is properly set');
+  assert.equal(result.schema.filter((item) => item.visible).length, 2, 'visible columns length is set');
 });
 
 test('The GET_PREFERENCES action will set default visibleColumns first time', function(assert) {
   const previous = Immutable.from({
-    visibleColumns: []
+    schema: SCHEMA
   });
   const response = {};
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
@@ -113,5 +103,5 @@ test('The GET_PREFERENCES action will set default visibleColumns first time', fu
     payload: response
   });
   const result = reducer(previous, newAction);
-  assert.equal(result.visibleColumns.length, 7, 'Default visible columns length is properly set');
+  assert.equal(result.schema.filter((item) => item.visible).length, 6, 'Default visible columns length is set');
 });

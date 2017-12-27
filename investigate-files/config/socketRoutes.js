@@ -39,6 +39,17 @@ const filesConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
       }
+    },
+    filesPreferences: {
+      socketUrl,
+      getPreferences: {
+        subscriptionDestination: '/user/queue/endpoint/preferences/get',
+        requestDestination: '/ws/endpoint/preferences/get'
+      },
+      setPreferences: {
+        subscriptionDestination: '/user/queue/endpoint/preferences/set',
+        requestDestination: '/ws/endpoint/preferences/set'
+      }
     }
   };
 };

@@ -30,31 +30,17 @@ const SUPPORTED_SORT_TYPES = [
   'mac.resources.company'
 ];
 
-const DEFAULT_COLUMNS = Immutable.from(['firstFileName']);
-
 const schema = (state) => state.files.schema.schema || Immutable.from([]);
-const _visibleColumns = (state) => state.files.schema.visibleColumns;
-
-
-const _userSelectedColumns = createSelector(
-  _visibleColumns,
-  (visibleColumns) => {
-    return visibleColumns && visibleColumns.length ? [...visibleColumns, ...DEFAULT_COLUMNS] : Immutable.from(DEFAULT_COLUMNS);
-  }
-);
 
 export const columns = createSelector(
-  [schema, _userSelectedColumns],
-  (schema, visibleColumns) => {
+  [schema],
+  (schema) => {
     const updatedSchema = schema.map((item) => {
       const { dataType, name: field, searchable, values, visible } = item;
-
-      const updatedVisibility = visible || visibleColumns.includes(field);
-
       const disableSort = !SUPPORTED_SORT_TYPES.includes(field);
 
       return {
-        visible: updatedVisibility,
+        visible,
         dataType,
         field,
         searchable,

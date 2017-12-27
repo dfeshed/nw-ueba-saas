@@ -13,17 +13,11 @@ const SCHEMA = Immutable.from({
       schema: [
         {
           'name': 'entropy',
-          'dataType': 'DOUBLE',
-          'searchable': true,
-          'defaultProjection': false,
-          'wrapperType': 'NUMBER'
+          'visible': false
         },
         {
           'name': 'firstFileName',
-          'dataType': 'STRING',
-          'searchable': true,
-          'defaultProjection': true,
-          'wrapperType': 'STRING'
+          'visible': true
         }
       ],
       visibleColumns: ['firstFileName']
@@ -33,7 +27,7 @@ const SCHEMA = Immutable.from({
 test('columns', function(assert) {
   const result = columns(SCHEMA);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 2, 'should return 2 columns including checkbox column');
+  assert.equal(result.length, 2, 'should return 2 columns + checkbox column');
   assert.equal(result[0].visible, false, 'entropy field is not visible');
   assert.equal(result[1].visible, true, 'firstFileName field is visible');
 });

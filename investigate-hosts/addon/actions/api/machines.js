@@ -200,6 +200,24 @@ const deleteSearch = (id) => {
   });
 };
 
+const getPreferences = () => {
+  return promiseRequest({
+    method: 'getPreferences',
+    modelName: 'hostsPreferences',
+    query: {}
+  });
+};
+
+const setPreferences = (preferences) => {
+  return promiseRequest({
+    method: 'setPreferences',
+    modelName: 'hostsPreferences',
+    query: {
+      data: preferences
+    }
+  });
+};
+
 
 export default {
   getAllServices,
@@ -212,5 +230,7 @@ export default {
   stopScanRequest,
   deleteHosts,
   notifyAgentStatus,
-  deleteSearch
+  deleteSearch,
+  getPreferences,
+  setPreferences
 };

@@ -24,31 +24,18 @@ const CHECKBOX_COLUMN = Immutable.from([{
   headerComponentClass: 'rsa-form-checkbox'
 }]);
 
-const DEFAULT_COLUMNS = Immutable.from(['machine.machineName']);
-
-
 const { createSelector } = reselect;
 const _schema = (state) => state.endpoint.schema.schema || [];
-const _visibleColumns = (state) => state.endpoint.schema.visibleColumns;
-
-
-const _userSelectedColumns = createSelector(
-  _visibleColumns,
-  (visibleColumns) => {
-    return visibleColumns && visibleColumns.length ? [...visibleColumns, ...DEFAULT_COLUMNS] : Immutable.from(DEFAULT_COLUMNS);
-  }
-);
 
 export const getHostTableColumns = createSelector(
-  [_schema, _userSelectedColumns],
-  (schema, visibleColumns) => {
+  [_schema],
+  (schema) => {
     let finalSchema = [];
     if (schema && schema.length) {
       const updatedSchema = schema.map((item) => {
         const { dataType, name: field, searchable, values, visible } = item;
-        const updatedVisibility = visible || visibleColumns.includes(field);
         return {
-          visible: updatedVisibility,
+          visible,
           dataType,
           field,
           searchable,

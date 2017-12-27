@@ -10,7 +10,6 @@
  */
 
 import Ember from 'ember';
-import { lookup } from 'ember-dependency-lookup';
 
 import * as ACTION_TYPES from './types';
 import {
@@ -78,21 +77,25 @@ const _getFirstPageOfFiles = () => {
  * @returns {Object}
  */
 const fetchSchemaInfo = () => {
-  return {
-    type: ACTION_TYPES.SCHEMA_RETRIEVE,
-    promise: Schema.fetchSchema(),
-    meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.SCHEMA_RETRIEVE, response)
-    }
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SCHEMA_RETRIEVE,
+      promise: Schema.fetchSchema(),
+      meta: {
+        onSuccess: (response) => {
+          dispatch(initializeFilesPreferences());
+          Logger.debug(ACTION_TYPES.SCHEMA_RETRIEVE, response);
+        }
+      }
+    });
   };
 };
 
 const initializeFilesPreferences = () => {
   return (dispatch) => {
-    const prefService = lookup('service:preferences');
     dispatch({
       type: ACTION_TYPES.GET_PREFERENCES,
-      promise: prefService.getPreferences('endpoint-preferences'),
+      promise: File.getPreferences('endpoint-preferences'),
       meta: {
         onSuccess: (data) => {
           if (data && data.filePreference) {
@@ -262,7 +265,20 @@ const setActiveFilter = (filter) => ({ type: ACTION_TYPES.SET_ACTIVE_FILTER, pay
  * @returns {function(*)}
  * @public
  */
-const updateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+const updateColumnVisibility = (column) => {
+  return (dispatch, getState) => {
+    const { schema, preferences } = getState().files.schema;
+    const columns = schema.filterBy('visible', true).mapBy('name');
+    const payload = preferences.asMutable();
+    const visibleColumns = column.visible ? columns.filter((item) => item !== column.field) : [ ...columns, column.field ];
+    payload.filePreference = { visibleColumns };
+
+    dispatch({
+      type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column,
+      promise: File.setPreferences(payload)
+    });
+  };
+};
 
 /**
  * Action creator for for resetting the download link.

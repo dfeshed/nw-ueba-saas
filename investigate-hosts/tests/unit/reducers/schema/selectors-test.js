@@ -14,22 +14,13 @@ const SCHEMA = Immutable.from({
       schema: [
         {
           'name': 'id',
-          'description': 'Agent Id',
-          'dataType': 'STRING',
-          'searchable': true,
-          'defaultProjection': true,
-          'wrapperType': 'STRING'
+          'visible': true
         },
         {
           'name': 'machine.agentVersion',
-          'description': 'Agent Version',
-          'dataType': 'STRING',
-          'searchable': true,
-          'defaultProjection': true,
-          'wrapperType': 'STRING'
+          'visible': false
         }
-      ],
-      visibleColumns: ['machine.agentVersion']
+      ]
     }
   }
 });
@@ -37,9 +28,9 @@ test('getHostTableColumns', function(assert) {
   const result = getHostTableColumns(SCHEMA);
   // length = total size + 1 checkbox column
   assert.equal(result.length, 3, 'should return 3 columns including checkbox column');
-  // 0th field is a checkbox. visibleColumns overrides defaultProjection
-  assert.equal(result[1].visible, false, 'Agent Id field is not visible');
-  assert.equal(result[2].visible, true, 'Agent Version field is visible');
+  // 0th field is a checkbox.
+  assert.equal(result[1].visible, true, 'Agent Id field is not visible');
+  assert.equal(result[2].visible, false, 'Agent Version field is visible');
 });
 
 

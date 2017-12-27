@@ -6,7 +6,6 @@ import { setAppliedHostFilter, resetDetailsInputAndContent, resetHostDownloadLin
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
-import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 
 import { debug } from '@ember/debug';
@@ -101,6 +100,7 @@ const getAllSchemas = () => {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
           dispatch(_getAllFilters());
+          dispatch(initializeHostsPreferences());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);
@@ -188,7 +188,20 @@ const exportAsFile = () => {
   };
 };
 
-const updateColumnVisibility = (column) => ({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+const updateColumnVisibility = (column) => {
+  return (dispatch, getState) => {
+    const { schema, preferences } = getState().endpoint.schema;
+    const columns = schema.filterBy('visible', true).mapBy('name');
+    const payload = preferences.asMutable();
+    const visibleColumns = column.visible ? columns.filter((item) => item !== column.field) : [ ...columns, column.field ];
+    payload.machinePreference = { visibleColumns };
+
+    dispatch({
+      type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column,
+      promise: Machines.setPreferences(payload)
+    });
+  };
+};
 
 const setHostColumnSort = (columnSort) => {
   return (dispatch) => {
@@ -257,10 +270,9 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
 
 const initializeHostsPreferences = () => {
   return (dispatch) => {
-    const prefService = lookup('service:preferences');
     dispatch({
       type: ACTION_TYPES.GET_PREFERENCES,
-      promise: prefService.getPreferences('endpoint-preferences'),
+      promise: Machines.getPreferences('endpoint-preferences'),
       meta: {
         onSuccess: (data) => {
           if (data && data.machinePreference) {
