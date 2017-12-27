@@ -153,7 +153,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     protected void doStop() throws FlumeException {
-        presidioExternalMonitoringService.manualExportMetrics();
+        flumePresidioExternalMonitoringService.manualExportMetrics();
         sendDoneControlMessage();
 
     }
@@ -222,7 +222,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             PresidioExternalMonitoringServiceFactory presidioExternalMonitoringServiceFactory = new PresidioExternalMonitoringServiceFactory();
 
             try {
-                PresidioExternalMonitoringService presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
+                presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
                 logger.info("New Monitoring Service has initiated");
                 monitorDetails = new MonitorDetails(this.startDate,presidioExternalMonitoringService , this.schema);
                 this.flumePresidioExternalMonitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,this.getName());
