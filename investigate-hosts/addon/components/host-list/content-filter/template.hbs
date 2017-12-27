@@ -50,6 +50,7 @@
         {{rsa-form-input
           label=(t 'investigateHosts.hosts.customFilter.save.name')
           isError=decorator.isError
+          maxLength=255
           value=saveFilterName }}
       </div>
       {{#if isNameEmpty}}
@@ -63,7 +64,7 @@
         </label>
       {{/if}}
       <div class="rsa-btn-group align-right rsa-m-md">
-        {{#rsa-form-button style='primary' class= "rsa-m-r-md" isDisabled=isError click=(action 'saveFilter')}}
+        {{#rsa-form-button style='primary' class= "rsa-m-r-md" isDisabled=decorator.isError click=(action 'saveFilter')}}
           {{t 'investigateHosts.hosts.button.save'}}
         {{/rsa-form-button}}
         {{#rsa-form-button click=(action 'closeSaveFilterModal')}}

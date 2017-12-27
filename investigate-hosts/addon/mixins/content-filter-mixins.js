@@ -26,7 +26,7 @@ export default Mixin.create({
         const height = $el.height();
         const width = $el.width();
         const panelId = `rsa-content-tethered-panel-toggle-${this.get('config.panelId')}`;
-        this.get('eventBus').trigger(panelId, height, width, $el.id);
+        this.get('eventBus').trigger(panelId, height, width, $el.attr('id'));
         this.set('config.showFilterOnInsert', false);
       });
     }
