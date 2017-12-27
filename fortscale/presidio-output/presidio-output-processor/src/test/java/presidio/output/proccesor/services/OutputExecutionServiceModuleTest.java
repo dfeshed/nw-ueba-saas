@@ -215,7 +215,7 @@ public class OutputExecutionServiceModuleTest {
         }
     }
 
-    //@Test
+    @Test
     public void testRetentionClean() {
 
         try {

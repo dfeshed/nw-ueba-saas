@@ -91,6 +91,6 @@ public class OutputProcessorTestConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, smartPageSize, smartThreshold, retentionEnrichedEventsDays, retentionResultEventsDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
     }
 }
