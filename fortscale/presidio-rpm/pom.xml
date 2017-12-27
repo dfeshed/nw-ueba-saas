@@ -221,12 +221,9 @@
                         <script>
                             echo "Creating temp version file"
                             <!-- pre installation commands: -->
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 >
-                            ${rpm-maven-plugin.script.version_temp_file}
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >>
-                            ${rpm-maven-plugin.script.version_temp_file}
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >>
-                            ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                             <!-- end of post installation -->
                         </script>
                     </preinstallScriptlet>
