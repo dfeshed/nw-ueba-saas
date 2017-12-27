@@ -25,11 +25,6 @@ public class DataPipelineApiController implements DataPipelineApi {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> dataPipelineStartPost() {
-        // do some magic!
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
     public ResponseEntity<PipelineState> dataPipelineStatusGet() {
         try {
             return new ResponseEntity<PipelineState>(managerService.getPipelineState(), HttpStatus.OK);
@@ -38,10 +33,4 @@ public class DataPipelineApiController implements DataPipelineApi {
             return new ResponseEntity<PipelineState>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    public ResponseEntity<Void> dataPipelineStopPost() {
-        // do some magic!
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
-
 }

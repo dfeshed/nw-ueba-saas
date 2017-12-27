@@ -31,15 +31,5 @@ public interface DataPipelineSDK {
         return pipelineState;
     }
 
-    /**
-     * starts the component
-     */
-    void start();
-
-    /**
-     * stops the component
-     */
-    void stop();
-
     void cleanAndRerun();
 }
