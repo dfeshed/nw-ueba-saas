@@ -15,6 +15,7 @@ import org.apache.flume.persistency.mongo.PresidioFilteredEventsMongoRepository;
 import org.flume.sink.base.AbstractPresidioSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
@@ -53,7 +54,14 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     public synchronized void start() {
-
+        PresidioInputPersistencyServiceFactory presidioInputPersistencyServiceFactory = new PresidioInputPersistencyServiceFactory();
+        try {
+            presidioInputPersistencyService = presidioInputPersistencyServiceFactory.createPresidioInputPersistencyService();
+        } catch (Exception e) {
+            final String errorMessage = "Failed to start " + getName();
+            logger.error(errorMessage, e);
+            throw new FlumeException(errorMessage, e);
+        }
     }
 
 
