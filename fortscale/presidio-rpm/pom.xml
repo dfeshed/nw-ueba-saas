@@ -88,6 +88,7 @@
                             <directory>${manager.security.securityConfPath}</directory>
                             <username>root</username>
                             <groupname>root</groupname>
+                            <filemode>700</filemode>
                             <sources>
                                 <source>
                                     <location>
@@ -265,9 +266,6 @@
                             chmod 777 /home/presidio/presidio-core/
                             chmod 777 /home/presidio/
                             chmod 777 /home/
-
-                            <!-- allow only root to execute encryption_util.sh -->
-                            chmod -v 700 ${manager.security.securityConfPath}/encryption_util.sh
 
                             <!--end of post installation -->
                         </script>
