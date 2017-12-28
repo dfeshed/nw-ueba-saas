@@ -15,7 +15,11 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -154,6 +158,7 @@ public class AlertServiceImpl implements AlertService {
     public List<Alert> cleanAlerts(Instant startDate, Instant endDate) {
         return alertPersistencyService.removeByTimeRange(startDate, endDate);
     }
+
 
     private AlertEnums.AlertTimeframe getStrategyFromSmart(SmartRecord smart) {
         String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;

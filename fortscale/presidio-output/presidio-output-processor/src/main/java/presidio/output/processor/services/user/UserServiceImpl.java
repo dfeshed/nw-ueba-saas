@@ -15,7 +15,12 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -104,6 +109,16 @@ public class UserServiceImpl implements UserService {
         user.setAlertsCount(usersAlertData.getAlertsCount());
         user.setScore(usersAlertData.getUserScore());
         UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
+        user.setSeverity(newSeverity);
+    }
+
+    @Override
+    public void setUserAlertDataToDefault(User user) {
+        user.setAlertClassifications(null);
+        user.setIndicators(null);
+        user.setAlertsCount(0);
+        user.setScore(0);
+        UserSeverity newSeverity = UserSeverity.LOW;
         user.setSeverity(newSeverity);
     }
 
@@ -206,7 +221,7 @@ public class UserServiceImpl implements UserService {
             if (CollectionUtils.isEmpty(col1) && CollectionUtils.isEmpty(col2)) {
                 return null;
             } else {
-                return CollectionUtils.isEmpty(col1) ? new ArrayList<String>( col2) : new ArrayList<String>(col1);
+                return CollectionUtils.isEmpty(col1) ? new ArrayList<String>(col2) : new ArrayList<String>(col1);
             }
         } else {
             return (List<String>) CollectionUtils.union(col1, col2);
@@ -217,16 +232,20 @@ public class UserServiceImpl implements UserService {
     public void recalculateUserAlertData(User user) {
         List<Alert> alerts = alertPersistencyService.findByUserId(user.getUserId());
         UsersAlertData usersAlertData = new UsersAlertData();
-        alerts.forEach(alert -> {
-            if (alert.getContributionToUserScore() > 0) {
-                usersAlertData.addClassification(alert.getPreferredClassification());
-                usersAlertData.addIndicators(alert.getIndicatorsNames());
-                usersAlertData.incrementAlertsCount();
-                usersAlertData.incrementUserScore(alert.getContributionToUserScore());
-            }
+        if (CollectionUtils.isNotEmpty(alerts)) {
+            alerts.forEach(alert -> {
+                if (alert.getContributionToUserScore() > 0) {
+                    usersAlertData.addClassification(alert.getPreferredClassification());
+                    usersAlertData.addIndicators(alert.getIndicatorsNames());
+                    usersAlertData.incrementAlertsCount();
+                    usersAlertData.incrementUserScore(alert.getContributionToUserScore());
+                }
 
-        });
-        setUserAlertData(user, usersAlertData);
+            });
+            setUserAlertData(user, usersAlertData);
+        } else {
+            setUserAlertDataToDefault(user);
+        }
     }
 
 }

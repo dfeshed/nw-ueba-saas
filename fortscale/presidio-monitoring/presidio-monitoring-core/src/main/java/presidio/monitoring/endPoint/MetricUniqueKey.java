@@ -5,9 +5,7 @@ import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import java.time.Instant;
 import java.util.Map;
 
-/**
- * Created by maors on 12/25/2017.
- */
+
 public class MetricUniqueKey {
 
     private final String name;

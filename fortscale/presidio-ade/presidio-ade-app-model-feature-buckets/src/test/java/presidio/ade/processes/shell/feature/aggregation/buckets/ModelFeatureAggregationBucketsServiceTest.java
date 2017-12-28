@@ -7,9 +7,6 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.shell.command.PresidioCommands;
 import fortscale.common.util.GenericHistogram;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
-import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
@@ -22,14 +19,16 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.shell.core.CommandResult;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import presidio.ade.domain.record.enriched.dlpfile.EnrichedDlpFileRecord;
+import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
+import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.processes.shell.feature.aggregation.buckets.config.ModelFeatureAggregationBucketsConfiguration;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
@@ -57,18 +56,18 @@ public class ModelFeatureAggregationBucketsServiceTest {
 
 
     @Test
-    public void sanityTest(){
+    public void sanityTest() {
         Instant startTime = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        Instant endTime = startTime.plus(1,ChronoUnit.DAYS);
-        TimeRange timeRange = new TimeRange(startTime,endTime);
+        Instant endTime = startTime.plus(1, ChronoUnit.DAYS);
+        TimeRange timeRange = new TimeRange(startTime, endTime);
         String username = "sanityTestUser";
-        generateAndPersistAdeEnrichedRecords(timeRange,username);
+        generateAndPersistAdeEnrichedRecords(timeRange, username);
         CommandResult commandResult = bootShim.getShell().executeCommand(String.format("run --schema %s --start_date %s --end_date %s --fixed_duration_strategy 3600", ADE_EVENT_TYPE.toUpperCase(), startTime.toString(), endTime.toString()));
         Assert.assertTrue(commandResult.isSuccess());
         String contextId = FeatureBucketUtils.buildContextId(Collections.singletonMap("userId", username));
         List<FeatureBucket> featureBucketList = featureBucketStore.getFeatureBuckets(
                 "normalized_username_dlpfile_daily", Collections.singleton(contextId), timeRange);
-        Assert.assertEquals(1,featureBucketList.size());
+        Assert.assertEquals(1, featureBucketList.size());
         FeatureBucket featureBucket = featureBucketList.get(0);
 
         Feature feature = featureBucket.getAggregatedFeatures().get("sum_of_moved_files_to_shared_drive_size");
@@ -79,20 +78,20 @@ public class ModelFeatureAggregationBucketsServiceTest {
         Assert.assertNotNull(feature);
         Assert.assertTrue(feature.getValue() instanceof GenericHistogram);
         GenericHistogram genericHistogram = (GenericHistogram) feature.getValue();
-        Assert.assertEquals(1,genericHistogram.getHistogramMap().size());
-        Assert.assertEquals(1,genericHistogram.get("/home/test_source_path"),0.0);
+        Assert.assertEquals(1, genericHistogram.getHistogramMap().size());
+        Assert.assertEquals(1, genericHistogram.get("/home/test_source_path"), 0.0);
 
         feature = featureBucket.getAggregatedFeatures().get("copied_files_to_shared_drive_counter");
-        Assert.assertNotNull(featureBucket.getAggregatedFeatures().toString(),feature);
+        Assert.assertNotNull(featureBucket.getAggregatedFeatures().toString(), feature);
         Assert.assertTrue(feature.getValue() instanceof AggrFeatureValue);
         AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) feature.getValue();
-        Assert.assertEquals(1.0D,aggrFeatureValue.getValue());
+        Assert.assertEquals(1.0D, aggrFeatureValue.getValue());
 
         feature = featureBucket.getAggregatedFeatures().get("sum_of_copied_files_to_shared_drive_size");
         Assert.assertNotNull(feature);
         Assert.assertTrue(feature.getValue() instanceof AggrFeatureValue);
         aggrFeatureValue = (AggrFeatureValue) feature.getValue();
-        Assert.assertEquals(1000D,aggrFeatureValue.getValue());
+        Assert.assertEquals(1000D, aggrFeatureValue.getValue());
 
     }
 
@@ -100,8 +99,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
     /**
      * Create adeRecords
      */
-    public void generateAndPersistAdeEnrichedRecords(TimeRange timeRange,String username) {
-        AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(),timeRange.getEnd(), ADE_EVENT_TYPE);
+    public void generateAndPersistAdeEnrichedRecords(TimeRange timeRange, String username) {
+        AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(timeRange.getStart(), timeRange.getEnd(), ADE_EVENT_TYPE);
         enrichedDataStore.cleanup(cleanupParams);
         Instant startTime = timeRange.getStart();
         EnrichedFileRecord enrichedFileRecord = new EnrichedFileRecord(startTime);
@@ -129,6 +128,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
         MetricCollectingService metricCollectingService;
         @MockBean
         MetricsExporter metricsExporter;
+
         @Bean
         public static TestPropertiesPlaceholderConfigurer modelFeatureAggregationBucketsServiceTestProp() {
             Properties properties = new Properties();
@@ -136,8 +136,8 @@ public class ModelFeatureAggregationBucketsServiceTest {
             properties.put("spring.application.name", "test-app-name");
             properties.put("presidio.default.ttl.duration", "PT48H");
             properties.put("presidio.default.cleanup.interval", "PT24H");
-            properties.put("model-feature-aggregation.pageIterator.pageSize",1000);
-            properties.put("model-feature-aggregation.pageIterator.maxGroupSize",1000);
+            properties.put("model-feature-aggregation.pageIterator.pageSize", 1000);
+            properties.put("model-feature-aggregation.pageIterator.maxGroupSize", 1000);
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
