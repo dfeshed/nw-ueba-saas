@@ -5,7 +5,10 @@ import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.logging.Logger;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import presidio.adapter.util.AdapterConfigurationUtil;
 import presidio.adapter.util.FlumeConfigurationUtil;
+import presidio.adapter.util.MongoUtil;
 import presidio.adapter.util.ProcessExecutor;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
@@ -17,17 +20,33 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
 
     private final ProcessExecutor processExecutor;
     private final FlumeConfigurationUtil flumeConfigurationUtil;
+    private final AdapterConfigurationUtil adapterConfigurationUtil;
     private final PresidioInputPersistencyService presidioInputPersistencyService;
+    private final MongoTemplate mongoTemplate;
 
-    public FlumeAdapterExecutionService(ProcessExecutor processExecutor, FlumeConfigurationUtil flumeConfigurationUtil, PresidioInputPersistencyService presidioInputPersistencyService) {
+
+    public FlumeAdapterExecutionService(ProcessExecutor processExecutor, FlumeConfigurationUtil flumeConfigurationUtil,
+                                        AdapterConfigurationUtil adapterConfigurationUtil,
+                                        PresidioInputPersistencyService presidioInputPersistencyService, MongoTemplate mongoTemplate) {
         this.processExecutor = processExecutor;
         this.flumeConfigurationUtil = flumeConfigurationUtil;
+        this.adapterConfigurationUtil = adapterConfigurationUtil;
         this.presidioInputPersistencyService = presidioInputPersistencyService;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
     public void retentionClean(Schema schema, Instant startDate, Instant endDate) throws Exception {
-        throw new UnsupportedOperationException("not supported");
+        logger.info("Starting Adapter retention process with params: schema: {}, {} : {}, {} : {}.", schema,
+                CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        try {
+            deleteRetainedData(schema, startDate, endDate);
+        } catch (Exception e) {
+            logger.error("Presidio Adapter retentionClean failed (with params: schema:{}, startDate:{}, endDate:{}).",
+                    schema, startDate, endDate, e);
+            throw e;
+        }
     }
 
     @Override
@@ -41,7 +60,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         presidioInputPersistencyService.clean(schema, startDate, endDate);
     }
 
-
     @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Starting Adapter with params: schema: {}, {} : {}, {} : {}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
@@ -54,6 +72,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         }
     }
 
+
     private void runFlumeExecution(Schema schema, Instant startDate, Instant endDate, String newFilePath) {
         String jobName = flumeConfigurationUtil.createJobName(schema, startDate, endDate);
         runAdapterInstance(schema, jobName, newFilePath);
@@ -65,7 +84,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         logger.info("finished configuring adapter. Configuration file path: {}", newFilePath);
         return newFilePath;
     }
-
 
     private void runAdapterInstance(Schema schema, String jobName, String newFilePath) {
         final String flumeExecutionScriptPath = flumeConfigurationUtil.getFlumeExecutionScriptPath();
@@ -90,6 +108,17 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
                 confFileFlagValue);
 
         processExecutor.executeProcess(jobName, args, flumeConfigurationUtil.getFlumeHome());
+    }
+
+
+    private void deleteRetainedData(Schema schema, Instant startDate, Instant endDate) {
+        adapterConfigurationUtil.loadConfiguration(schema);
+        String collectionName = adapterConfigurationUtil.getCollectionName();
+        String timestampField = adapterConfigurationUtil.getTimestampField();
+        int numberOfRetainedDays = adapterConfigurationUtil.getNumberOfRetainedDays();
+        startDate.plusSeconds(numberOfRetainedDays * 24 * 60);
+
+        MongoUtil.deleteOlderThan(mongoTemplate, collectionName, timestampField, startDate);
     }
 }
 

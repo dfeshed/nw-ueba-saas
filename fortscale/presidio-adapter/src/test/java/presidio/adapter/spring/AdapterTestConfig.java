@@ -20,7 +20,7 @@ public class AdapterTestConfig {
     public PresidioExecutionService adapterExecutionService() throws Exception {
         PresidioInputPersistencyServiceFactory inputPersistencyServiceFactory = new PresidioInputPersistencyServiceFactory();
         final PresidioInputPersistencyService presidioInputPersistencyService = inputPersistencyServiceFactory.createPresidioInputPersistencyServiceForTests();
-        return new FlumeAdapterExecutionService(new ProcessExecutor(), new FlumeConfigurationUtil("adapter", "ca"), presidioInputPersistencyService);
+        return new FlumeAdapterExecutionService(new ProcessExecutor(), new FlumeConfigurationUtil("adapter", "ca"), new AdapterConfigurationUtil(), presidioInputPersistencyService, mongoTemplate);
     }
 
 }

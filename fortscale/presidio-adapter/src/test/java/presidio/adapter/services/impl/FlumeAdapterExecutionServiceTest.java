@@ -62,7 +62,7 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockFlumeConfigurationUtil.getFlumeExecutionConfFileArgument(mockedAfterTestsFilePath)).thenReturn("--conf-file " + mockedAfterTestsFilePath);
         Mockito.when(mockFlumeConfigurationUtil.createExecutionConfFile(Mockito.any(Schema.class), Mockito.any(Instant.class), Mockito.any(Instant.class))).thenReturn(mockedAfterTestsFilePath);
 
-        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, mockPresidioInputPersistencyService);
+        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, new AdapterConfigurationUtil(), mockPresidioInputPersistencyService, mongoTemplate);
 
     }
 
