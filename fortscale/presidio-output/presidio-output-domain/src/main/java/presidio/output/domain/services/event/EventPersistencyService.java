@@ -32,6 +32,8 @@ public interface EventPersistencyService {
      */
     List<? extends EnrichedEvent> findEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int eventsLimit);
 
+    List<? extends EnrichedEvent> readRecords(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
+
     EnrichedEvent findLatestEventForUser(String userId);
 
     /**
@@ -44,4 +46,6 @@ public interface EventPersistencyService {
     Class findFeatureType(Schema schema, String feature);
 
     void remove(Schema schema, Instant startDate, Instant endDate);
+
+
 }

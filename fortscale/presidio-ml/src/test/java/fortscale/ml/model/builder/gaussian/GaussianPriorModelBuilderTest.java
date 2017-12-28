@@ -7,6 +7,7 @@ import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilder;
 import fortscale.ml.model.builder.gaussian.prior.PriorBuilder;
 import fortscale.ml.model.builder.gaussian.prior.SegmentCenters;
 import fortscale.ml.model.builder.gaussian.prior.Segmentor;
+import fortscale.ml.model.metrics.GaussianPriorModelBuilderMetricsContainer;
 import org.apache.commons.collections.IteratorUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,10 +22,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GaussianPriorModelBuilderTest {
+	private GaussianPriorModelBuilderMetricsContainer gaussianPriorModelBuilderMetricsContainer = mock(GaussianPriorModelBuilderMetricsContainer.class);
 	@Mock
 	private Segmentor segmentor;
 	@Mock
@@ -40,34 +43,34 @@ public class GaussianPriorModelBuilderTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsSegmentCenters() {
-		new GaussianPriorModelBuilder(null, segmentor, priorBuilder, minNumOfSamplesToLearnFrom);
+		new GaussianPriorModelBuilder(null, segmentor, priorBuilder, minNumOfSamplesToLearnFrom, gaussianPriorModelBuilderMetricsContainer);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsSegmentor() {
-		new GaussianPriorModelBuilder(segmentCenters, null, priorBuilder, minNumOfSamplesToLearnFrom);
+		new GaussianPriorModelBuilder(segmentCenters, null, priorBuilder, minNumOfSamplesToLearnFrom, gaussianPriorModelBuilderMetricsContainer);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsGaussianPrior() {
-		new GaussianPriorModelBuilder(segmentCenters, segmentor, null, minNumOfSamplesToLearnFrom);
+		new GaussianPriorModelBuilder(segmentCenters, segmentor, null, minNumOfSamplesToLearnFrom, gaussianPriorModelBuilderMetricsContainer);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNegativeAsMinNumOfSamplesToLearnFrom() {
-		new GaussianPriorModelBuilder(segmentCenters, segmentor, priorBuilder, -1);
+		new GaussianPriorModelBuilder(segmentCenters, segmentor, priorBuilder, -1, gaussianPriorModelBuilderMetricsContainer);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenDataOfTheWrongType() {
-		new GaussianPriorModelBuilder(segmentCenters, segmentor, priorBuilder, minNumOfSamplesToLearnFrom)
+		new GaussianPriorModelBuilder(segmentCenters, segmentor, priorBuilder, minNumOfSamplesToLearnFrom, gaussianPriorModelBuilderMetricsContainer)
 				.build("bad data");
 	}
 
 	@Test
 	public void shouldBuildNoPriorIfGivenNoData() {
 		when(segmentCenters.iterate(Collections.emptyList())).thenReturn(IteratorUtils.emptyIterator());
-		GaussianPriorModel priorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(segmentCenters, segmentor, priorBuilder, minNumOfSamplesToLearnFrom)
+		GaussianPriorModel priorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(segmentCenters, segmentor, priorBuilder, minNumOfSamplesToLearnFrom, gaussianPriorModelBuilderMetricsContainer)
 				.build(Collections.emptyList());
 
 		Assert.assertEquals(0, priorModel.getSegmentPriors().length);
@@ -88,7 +91,8 @@ public class GaussianPriorModelBuilderTest {
 				models -> IteratorUtils.arrayIterator(new double[]{meanWithSuccessfulPrior, meanWithoutSuccessfulPrior}),
 				(sortedModels, segmentCenter) -> new Segmentor.Segment(segmentLeftMean, segmentRightMean, sortedModels),
 				priorBuilder,
-				minNumOfSamplesToLearnFrom
+				minNumOfSamplesToLearnFrom,
+				gaussianPriorModelBuilderMetricsContainer
 		).build(Arrays.asList(modelWithSuccessfulPrior, modelWithoutSuccessfulPrior));
 
 		GaussianPriorModel.SegmentPrior[] segmentPriors = gaussianPriorModel.getSegmentPriors();
@@ -113,7 +117,8 @@ public class GaussianPriorModelBuilderTest {
 						sortedModels
 				),
 				priorBuilder,
-				minNumOfSamplesToLearnFrom
+				minNumOfSamplesToLearnFrom,
+				gaussianPriorModelBuilderMetricsContainer
 		).build(Arrays.asList(modelWithEnoughSamples, modelWithouEnoughSamples));
 
 		Mockito.verify(priorBuilder).calcPrior(Collections.singletonList(modelWithEnoughSamples), mean);
@@ -129,7 +134,8 @@ public class GaussianPriorModelBuilderTest {
 				models -> IteratorUtils.singletonIterator(mean),
 				(sortedModels, segmentCenter) -> new Segmentor.Segment(sortedModels.get(0).getMean(), sortedModels.get(0).getMean(), sortedModels.subList(0, 1)),
 				priorBuilder,
-				minNumOfSamplesToLearnFrom
+				minNumOfSamplesToLearnFrom,
+				gaussianPriorModelBuilderMetricsContainer
 		).build(Arrays.asList(modelInsideTheLearningSegment, modelOutsideTheLearningSegment));
 
 		Mockito.verify(priorBuilder).calcPrior(Collections.singletonList(modelInsideTheLearningSegment), mean);

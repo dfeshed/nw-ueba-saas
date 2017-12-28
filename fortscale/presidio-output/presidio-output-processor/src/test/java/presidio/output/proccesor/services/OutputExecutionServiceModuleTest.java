@@ -76,7 +76,7 @@ public class OutputExecutionServiceModuleTest {
     public void setup() {
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
         String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
-        String adeFileEnrichedEventCollectionName = new  EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.FILE.getName().toLowerCase());
+        String adeFileEnrichedEventCollectionName = new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.FILE.getName().toLowerCase());
 
         mongoTemplate.dropCollection(smartUserIdHourlyCollectionName);
         mongoTemplate.dropCollection(outputFileEnrichedEventCollectionName);
@@ -85,6 +85,7 @@ public class OutputExecutionServiceModuleTest {
         List<SmartRecord> smartRecords = new ArrayList<>();
 
         TimeRange timeRange = new TimeRange(Instant.now().minus(Duration.ofDays(1)), Instant.now().plus(Duration.ofDays(1)));
+        TimeRange timeRange2 = new TimeRange(Instant.now().minus(Duration.ofDays(100)), Instant.now().minus(Duration.ofDays(95)));
         List<Pair<String, Double>> usersToScoreList = new ArrayList<>();
         usersToScoreList.add(new Pair<>("userTest1", 90.0));
         usersToScoreList.add(new Pair<>("userTest2", 50.0));
@@ -101,6 +102,11 @@ public class OutputExecutionServiceModuleTest {
                 USER_ID_TEST_USER, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
                 EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        EnrichedEvent event2 = new FileEnrichedEvent(Instant.now().minus(Duration.ofDays(5)), Instant.now().minus(Duration.ofDays(3)), "eventId", Schema.FILE.toString(),
+                USER_ID_TEST_USER, "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
+                EventResult.FAILURE, "resultCode", new HashMap<>(), "absoluteSrcFilePath", "absoluteDstFilePath",
+                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+
 
         EnrichedFileRecord enrichedFileRecord = new EnrichedFileRecord(event.getEventDate());
         enrichedFileRecord.setUserId("userId");
@@ -120,8 +126,14 @@ public class OutputExecutionServiceModuleTest {
             smartRecords.add(smartRecord);
         }
 
+        smartRecords.add(new SmartRecord(timeRange2, "userTest9", "featureName", FixedDurationStrategy.HOURLY,
+                90, 75, Collections.emptyList(), Collections.singletonList(smartAggregationRecord), context));
+        smartRecords.add(new SmartRecord(timeRange2, "userTest10", "featureName", FixedDurationStrategy.HOURLY,
+                90, 85, Collections.emptyList(), Collections.singletonList(smartAggregationRecord), context));
+
         mongoTemplate.insert(smartRecords, smartUserIdHourlyCollectionName);
         mongoTemplate.insert(event, outputFileEnrichedEventCollectionName);
+        mongoTemplate.insert(event2, outputFileEnrichedEventCollectionName);
         mongoTemplate.insert(enrichedFileRecord, adeFileEnrichedEventCollectionName);
     }
 
@@ -209,6 +221,23 @@ public class OutputExecutionServiceModuleTest {
             user = users.iterator().next();
             // test user score re-calculation
             Assert.assertEquals(0, new Double(user.getScore()).intValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testRetentionClean() {
+        try {
+            String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
+            outputExecutionService.run(Instant.now().minus(Duration.ofDays(101)), Instant.now().plus(Duration.ofDays(2)));
+            Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
+            Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
+            outputExecutionService.retentionClean(Instant.now().plus(Duration.ofDays(1)));
+            // 2 alerts and 1 enriched event should have been deleted by retention
+            Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
+            Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

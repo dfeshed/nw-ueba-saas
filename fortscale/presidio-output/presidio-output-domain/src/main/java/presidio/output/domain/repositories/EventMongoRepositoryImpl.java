@@ -1,5 +1,6 @@
 package presidio.output.domain.repositories;
 
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,6 +20,8 @@ import java.util.List;
  * Created by efratn on 02/08/2017.
  */
 public class EventMongoRepositoryImpl implements EventRepository {
+
+    private static final Logger logger = Logger.getLogger(EventMongoRepositoryImpl.class);
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -40,6 +43,13 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     @Override
     public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int limitEvents) throws Exception {
+        Query query = buildQuery(userId, timeRange, features);
+        query.limit(limitEvents);
+
+        return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
+    }
+
+    private Query buildQuery(String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD)
                         .is(userId))
@@ -58,7 +68,13 @@ public class EventMongoRepositoryImpl implements EventRepository {
         if (CollectionUtils.isNotEmpty(criterias)) {
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
-        query.limit(limitEvents);
+        return query;
+    }
+
+    @Override
+    public List<? extends EnrichedEvent> findEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize) {
+        Query query = buildQuery(userId, timeRange, features);
+        query.skip(numOfItemsToSkip).limit(pageSize);
 
         return mongoTemplate.find(query, EnrichedEvent.class, collectionName);
     }
@@ -83,9 +99,21 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     @Override
     public void remove(String collectionName, Instant startDate, Instant endDate) {
-        Query query = new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
-                .gte(startDate)
-                .lt(endDate));
+        logger.debug("Deleting events of collection {}, from {} until date {}", collectionName, startDate, endDate);
+        Query query = createDateRangeQuery(startDate, endDate);
         mongoTemplate.remove(query, collectionName);
+    }
+
+
+    private Query createDateRangeQuery(Instant startDate, Instant endDate) {
+        if (startDate.equals(Instant.EPOCH)) {
+            return new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+                    .lt(endDate));
+        } else {
+            return new Query().addCriteria(Criteria.where(EnrichedEvent.START_INSTANT_FIELD)
+                    .gte(startDate)
+                    .lt(endDate));
+        }
+
     }
 }

@@ -16,14 +16,14 @@ public interface SupportingInformationGenerator {
 
     Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    default List<Indicator> generateSupportingInformation(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit) {
+    default List<Indicator> generateSupportingInformation(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
 
         logger.debug("starting building supporting info for feature {}, indicator with ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
         List<Indicator> indicators = new ArrayList<>();
 
         try {
             // generate indicators
-            indicators = generateIndicators(adeAggregationRecord, alert, eventsLimit);
+            indicators = generateIndicators(adeAggregationRecord, alert, eventsLimit, eventsPageSize);
             if (CollectionUtils.isEmpty(indicators)) {
                 logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
             }
@@ -31,7 +31,7 @@ public interface SupportingInformationGenerator {
             for (Indicator indicator : indicators) {
                 indicator.setAlertId(alert.getId());
                 // generate events
-                List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit);
+                List<IndicatorEvent> events = generateEvents(adeAggregationRecord, indicator, eventsLimit, eventsPageSize);
                 if (CollectionUtils.isNotEmpty(events)) {
                     indicator.setEvents(events);
                     indicator.setEventsNum(events.size());
@@ -54,9 +54,9 @@ public interface SupportingInformationGenerator {
         return indicators;
     }
 
-    List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit) throws Exception;
+    List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) throws Exception;
 
-    List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit) throws Exception;
+    List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception;
 
     HistoricalData generateHistoricalData(AdeAggregationRecord adeAggregationRecord, Indicator indicator) throws Exception;
 

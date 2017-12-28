@@ -16,8 +16,13 @@ import static java.util.stream.Collectors.toList;
 
 @Configuration
 @Import({CategoryRarityModeBuilderMetricsContainerConfig.class,
+        MaxContinuousModeBuilderMetricsContainerConfig.class,
         TimeModeBuilderMetricsContainerConfig.class,
-        TimeModeBuilderMetricsPartitionsContainerConfig.class
+        TimeModeBuilderMetricsPartitionsContainerConfig.class,
+        CategoryRarityModelRetrieverMetricsContainerConfig.class,
+        TimeModelRetrieverMetricsContainerConfig.class,
+        MaxContinuousModelRetrieverMetricsContainerConfig.class,
+        GaussianPriorModelBuilderMetricsContainerConfig.class
 })
 public class ModelingServiceMetricsContainerConfig {
     @Autowired
