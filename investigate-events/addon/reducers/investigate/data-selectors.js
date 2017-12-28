@@ -11,7 +11,7 @@ const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
 export const getColumnGroups = (state) => state.investigate.data.columnGroups;
 const _columnGroup = (state) => state.investigate.data.columnGroup;
-const _visuals = (state) => state.recon.visuals;
+export const getDefaultPreferences = (state) => state.investigate.data.eventsPreferencesConfig.defaultPreferences.asMutable();
 
 // SELECTOR FUNCTIONS
 export const queryBodyClass = createSelector(
@@ -45,12 +45,9 @@ export const shouldShowStatus = createSelector(
 );
 
 export const getCurrentPreferences = createSelector(
-  [_reconSize, _visuals, _columnGroup],
-  (reconSize, visuals, columnGroup) => {
-    const isReconExpanded = (reconSize === RECON_PANEL_SIZES.MAX);
-    const filterVal = visuals.without('defaultReconView', 'currentReconView', 'defaultLogFormat', 'defaultPacketFormat');
+  [_columnGroup],
+  (columnGroup) => {
     return {
-      eventAnalysisPreferences: { ...filterVal, isReconExpanded },
       eventPreferences: { columnGroup }
     };
   }

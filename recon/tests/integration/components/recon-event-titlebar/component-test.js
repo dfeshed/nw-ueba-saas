@@ -7,7 +7,6 @@ import sinon from 'sinon';
 
 import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
-import { patchSocket } from '../../../helpers/patch-socket';
 import startApp from '../../../helpers/start-app';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import * as VisualCreators from 'recon/actions/visual-creators';
@@ -143,21 +142,16 @@ test('clicking header toggles header icon being active', function(assert) {
 // TODO, move this to a integration/unit test on the action creator, just call the function with a new settting
 // and verify the setting gets sent
 test('isHeaderOpen toggle should result in call to setPreferences with new setting for flag', function(assert) {
-  assert.expect(5);
-  const done = assert.async();
+  assert.expect(4);
   new ReduxDataHelper(setState).isTextView().isHeaderOpen(true).build();
 
   this.render(hbs`{{recon-event-titlebar}}`);
   assert.equal(this.$('.rsa-icon-layout-6-filled').length, 1, 'icon is displayed');
   assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 1, 'icon is active');
   this.$('.rsa-icon-layout-6-filled.active').click();
-  patchSocket((method, modelName, query) => {
-    assert.equal(method, 'setPreferences');
-    assert.equal(modelName, 'investigate-events-preferences');
-    assert.equal(query.data.eventAnalysisPreferences.isHeaderOpen, false,
-      'preference call is made with preference set to false');
-    done();
-  });
+  assert.equal(this.$('.rsa-icon-layout-6-filled').length, 1, 'icon is displayed');
+  assert.equal(this.$('.rsa-icon-layout-6-filled.active').length, 0, 'icon is not active');
+
 });
 
 // request/response toggle

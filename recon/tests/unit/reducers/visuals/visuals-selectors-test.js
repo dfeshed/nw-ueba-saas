@@ -8,8 +8,7 @@ import {
   isPacketView,
   lacksPackets,
   hasReconView,
-  allDataHidden,
-  getReconPreferences
+  allDataHidden
 } from 'recon/reducers/visuals/selectors';
 
 module('Unit | selector | visuals');
@@ -140,27 +139,4 @@ test('allDataHidden', function(assert) {
   assert.equal(tests.responseShown, false, 'allDataHidden should return false, when response shown');
   assert.equal(tests.bothHidden, true, 'allDataHidden should return true, when both hidden');
   assert.equal(tests.missing, false, 'allDataHidden should return false, when data absent');
-});
-
-test('getReconPreferences', function(assert) {
-  const result = getReconPreferences(Immutable.from({
-    recon: {
-      data: {
-        endpointId: '1234'
-      },
-      visuals: {
-        isHeaderOpen: true,
-        isMetaShown: true,
-        isReconExpanded: true,
-        isReconOpen: false,
-        isRequestShown: true,
-        isResponseShown: true
-      },
-      packets: {
-        packetsPageSize: 100
-      }
-    }
-  }));
-  assert.deepEqual(result, {
-    eventAnalysisPreferences: { isHeaderOpen: true, isMetaShown: true, isReconExpanded: true, isReconOpen: false, isRequestShown: true, isResponseShown: true, packetsPageSize: 100 } });
 });

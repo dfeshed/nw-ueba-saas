@@ -7,9 +7,6 @@ module('Unit | Selectors | data-selectors');
 
 test('get the current preferences to save', function(assert) {
   const response = {
-    eventAnalysisPreferences: {
-      isReconExpanded: true
-    },
     eventPreferences: {
       columnGroup: 'EMAIL'
     }
@@ -19,6 +16,9 @@ test('get the current preferences to save', function(assert) {
       data: {
         reconSize: 'max',
         columnGroup: 'EMAIL'
+      },
+      queryNode: {
+        queryTimeFormat: 'DB'
       }
     },
     recon: {
@@ -27,11 +27,16 @@ test('get the current preferences to save', function(assert) {
         defaultLogFormat: 'LOG',
         defaultPacketFormat: 'PCAP',
         isReconExpanded: false
+      },
+      packets: {
+        packetsPageSize: 100
+      },
+      files: {
+        isAutoDownloadFile: true
       }
     }
   });
   const preferences = getCurrentPreferences(state);
-  assert.equal(preferences.eventAnalysisPreferences.isReconExpanded, true);
   assert.deepEqual(preferences, response);
 });
 

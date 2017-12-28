@@ -2,7 +2,6 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
-import { patchSocket } from '../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
@@ -93,10 +92,6 @@ test('it renders proper label when export pcap data', function(assert) {
 */
 test('Recon should pick default Packet format set by user', function(assert) {
   new DataHelper(this.get('redux')).initializeData().setDownloadFormatToPayload();
-  patchSocket((method, modelName) => {
-    assert.equal(method, 'getPreferences');
-    assert.equal(modelName, 'investigate-events-preferences');
-  });
   this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
   return wait().then(() => {
     const str = this.$()[0].innerText.trim();

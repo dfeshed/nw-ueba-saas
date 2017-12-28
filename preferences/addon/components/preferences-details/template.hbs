@@ -1,4 +1,4 @@
-{{#if preferencesSchema}}
+{{#if (and preferencesSchema preferences)}}
   {{#each preferencesSchema as |item index|}}
     <div class="rsa-preferences-field-content">
       {{#if (eq item.type 'dropdown')}}

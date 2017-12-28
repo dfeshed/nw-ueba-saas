@@ -11,16 +11,6 @@
  */
 
 import * as ACTION_TYPES from './types';
-import Ember from 'ember';
-import { lookup } from 'ember-dependency-lookup';
-import { getReconPreferences } from 'recon/reducers/visuals/selectors';
-
-const {
-  Logger
-} = Ember;
-
-const _needToPersist = (type) => [ACTION_TYPES.TOGGLE_HEADER,
-  ACTION_TYPES.TOGGLE_REQUEST, ACTION_TYPES.TOGGLE_RESPONSE, ACTION_TYPES.TOGGLE_EXPANDED].includes(type);
 
 const createToggleActionCreator = (type) => {
   return (setTo) => {
@@ -34,20 +24,10 @@ const createToggleActionCreator = (type) => {
       };
     }
 
-    return (dispatch, getState) => {
+    return (dispatch) => {
       dispatch(returnVal);
-      if (_needToPersist(type)) {
-        persistPreferences(getState);
-      }
     };
   };
-};
-
-const persistPreferences = (getState) => {
-  const prefService = lookup('service:preferences');
-  prefService.setPreferences('investigate-events-preferences', null, getReconPreferences(getState())).then(() => {
-    Logger.info('Successfully persisted Value');
-  });
 };
 
 /**
@@ -73,7 +53,6 @@ const closeRecon = () => ({ type: ACTION_TYPES.CLOSE_RECON });
 export {
   closeRecon,
   createToggleActionCreator,
-  persistPreferences,
   toggleByteStyling,
   toggleKnownSignatures,
   toggleReconExpanded,

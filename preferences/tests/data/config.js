@@ -68,15 +68,12 @@ export default {
     queryTimeFormat: 'DB',
     eventAnalysisPreferences: {
       currentReconView: 'TEXT',
-      isHeaderOpen: true,
-      isMetaShown: true,
-      isReconExpanded: true,
-      isReconOpen: true,
-      isRequestShown: true,
-      isResponseShown: true,
       defaultLogFormat: 'LOG',
       defaultPacketFormat: 'PCAP',
       autoDownloadExtractedFiles: true
+    },
+    eventPreferences: {
+      columnGroup: 'SUMMARY'
     }
   }
 };

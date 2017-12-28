@@ -12,7 +12,7 @@ import { setQueryTimeRange } from 'investigate-events/actions/interaction-creato
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { lookup } from 'ember-dependency-lookup';
 import { SET_PREFERENCES } from 'recon/actions/types';
-import { getCurrentPreferences } from 'investigate-events/reducers/investigate/data-selectors';
+import { getCurrentPreferences, getDefaultPreferences } from 'investigate-events/reducers/investigate/data-selectors';
 import Ember from 'ember';
 
 const { Logger } = Ember;
@@ -145,9 +145,10 @@ const _getPreferences = (dispatch, modelName) => {
  * @public
  */
 export const savePreferences = (state) => {
-  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state)).then(() => {
-    Logger.info('Successfully persisted Value');
-  });
+  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state),
+    getDefaultPreferences(state)).then(() => {
+      Logger.info('Successfully persisted Value');
+    });
 };
 
 /**

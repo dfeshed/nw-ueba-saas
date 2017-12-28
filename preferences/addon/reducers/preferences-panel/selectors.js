@@ -3,7 +3,6 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
-const _preferences = (state) => state.preferences;
 const _preferencesConfiguration = (state) => state.preferencesConfig;
 
 export const getDbEndTime = (state) => state.investigate.services.summaryData.endTime;
@@ -11,9 +10,9 @@ export const getDbStartTime = (state) => state.investigate.services.summaryData.
 
 // SELECTOR FUNCTIONS
 export const getPreferencesSchema = createSelector(
-  [_preferences, _preferencesConfiguration],
-  (preferences, preferencesConfiguration) => {
-    if (preferencesConfiguration && preferences) {
+  [_preferencesConfiguration],
+  (preferencesConfiguration) => {
+    if (preferencesConfiguration) {
       return preferencesConfiguration.items;
     }
     return null;

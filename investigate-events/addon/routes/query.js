@@ -2,8 +2,7 @@ import Route from 'ember-route';
 import service from 'ember-service/inject';
 
 import {
-  initializeInvestigate,
-  savePreferences
+  initializeInvestigate
 } from 'investigate-events/actions/data-creators';
 
 import {
@@ -187,8 +186,6 @@ export default Route.extend({
       } = this.get('redux').getState().investigate.data;
       if (isReconOpen) {
         this.send('reconSize', (reconSize === RECON_PANEL_SIZES.MAX) ? RECON_PANEL_SIZES.MIN : RECON_PANEL_SIZES.MAX);
-        // Persisting the recon panel size through expand/shrink toggle button on events page
-        savePreferences(this.get('redux').getState());
       }
     },
 
