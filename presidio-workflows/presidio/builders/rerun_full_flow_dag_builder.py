@@ -176,14 +176,13 @@ def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
     return clean_adapter_operator
 
 
-def clean_elastic_data(args):
-    es = Elasticsearch(
-        [
-            'http://localhost:9200/'
-        ],
-        verify_certs=True
-    )
-    # TODO: get all the indexes and delete the data from each index
+def clean_elastic_data():
+    es = Elasticsearch(hosts=["localhost"])
+    indexes = es.cat.indices(h="index").encode("utf-8").split("\n")
+
+    for index in indexes:
+        if index not in [".kibana", ""]:
+            es.delete_by_query(index=index, body="{\"query\": {\"match_all\": {}}}")
 
 
 def build_clean_elastic_operator(cleanup_dag):
