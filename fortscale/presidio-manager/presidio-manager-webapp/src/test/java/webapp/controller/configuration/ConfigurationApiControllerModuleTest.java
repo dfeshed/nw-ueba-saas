@@ -66,13 +66,13 @@ public class ConfigurationApiControllerModuleTest {
     private final String AIRFLOW_CONFIGURATION_RESPONSE =
             "{\"dataPipeline\":{\"schemas\":[],\"startTime\":\"2017-01-01T10:00:00Z\"},\"system\":{\"analystGroup\":\"presidio-soc-team-somecompany\",\"ldapUrl\":\"ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName\",\"password\":\"password\",\"smtpHost\":\"name.of-server.com:25\",\"username\":\"presidio@somecompany.dom\",\"realmName\":\"EXAMPLE.COM\",\"krbServiceName\":\"HTTP/presidiod3.fortscale.dom@FORTSCALE.DOM\"}}";
     private final String CONFIGURATION_PATCH_REQUEST =
-            "[\n" +
+            "{\"operations\":[\n" +
                     "  {\n" +
                     "    \"op\": \"add\",\n" +
                     "    \"path\": \"/dataPipeline/schemas\",\n" +
                     "    \"value\": [\"AUTHENTICATION\"]\n" +
                     "  }\n" +
-                    "]";
+                    "]}";
     private final String WORKFLOWS_CONFIG_RESPONSE = "{\"components\":{\"adapter\":{\"jvm_args\":{\"jar_path\":\"/home/presidio/presidio-core/bin/presidio-adapter-1.0.0-SNAPSHOT.jar\",\"main_class\":\"presidio.adapter.FortscaleAdapterApplication\"}},\"input\":{\"jvm_args\":{\"jar_path\":\"/home/presidio/presidio-core/bin/presidio-input-core-1.0.0-SNAPSHOT.jar\",\"main_class\":\"presidio.input.core.FortscaleInputCoreApplication\",\"xms\":70,\"xmx\":500}},\"output\":{\"jvm_args\":{\"jar_path\":\"/home/presidio/presidio-core/bin/presidio-output-processor-1.0.0-SNAPSHOT.jar\",\"main_class\":\"presidio.output.processor.FortscaleOutputProcessorApplication\",\"xms\":70,\"xmx\":500}}},\"dags\":{\"dags_configs\":[{\"args\":{\"command\":\"run\",\"data_sources\":\"\",\"hourly_smart_events_confs\":[\"userId_hourly\"]},\"dag_id\":\"full_flow\",\"schedule_interval\":\"timedelta(hours=1)\",\"start_date\":\"2017-01-01 08:00:00\"}],\"operators\":{\"default_jar_values\":{\"java_path\":\"/usr/bin/java\",\"jvm_args\":{\"jmx_enabled\":false,\"remote_debug_enabled\":false,\"remote_debug_suspend\":false,\"timezone\":\"-Duser.timezone=UTC\",\"xms\":100,\"xmx\":2048}}},\"tasks_instances\":{}},\"elasticsearch\":{\"clustername\":\"fortscale\",\"host\":\"localhost\",\"port\":\"9300\"},\"general\":{\"deployment\":{\"bins\":{\"base_path\":\"/home/presidio/presidio-core/bin\"}}},\"mongo\":{\"db\":{\"name\":\"presidio\",\"password\":\"iYTLjyA0VryKhpkvBrMMLQ==\",\"user\":\"presidio\"},\"host\":{\"name\":\"localhost\",\"port\":\"27017\"},\"map\":{\"dollar\":{\"replacement\":\"#dlr#\"},\"dot\":{\"replacement\":\"#dot#\"}}},\"monitoring\":{\"fixed\":{\"rate\":\"60000\"}},\"spring\":{\"aop\":{\"proxy\":{\"target\":{\"class\":\"true\"}}},\"autoconfigure\":{\"exclude\":\"org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration\"}}}";
 
     private ObjectMapper objectMapper;
