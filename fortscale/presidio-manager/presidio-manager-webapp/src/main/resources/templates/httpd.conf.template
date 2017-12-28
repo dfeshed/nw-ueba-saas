@@ -391,7 +391,7 @@ SSLSessionCacheTimeout  300
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword ${password}
+    AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
@@ -415,7 +415,7 @@ SSLSessionCacheTimeout  300
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword ${password}
+    AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
