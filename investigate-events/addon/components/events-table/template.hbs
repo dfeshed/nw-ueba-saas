@@ -11,7 +11,7 @@
           selected=selectedColumnGroup
           searchEnabled=false
           onchange=(action 'setColumnGroup') as |option|}}
-          <span class="{{concat 'rsa-investigate-events-table__header__' (if option.ootb 'ootb-columns' 'columns')}}">{{option.name}}</span>
+          <span class="{{concat 'rsa-investigate-events-table__header__' (if option.ootb 'ootb-columns' 'columns')}}" title="{{option.name}}">{{option.name}}</span>
         {{/power-select}}
       </label>
     </div>

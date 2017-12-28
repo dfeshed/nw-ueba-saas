@@ -35,6 +35,7 @@
       .ember-power-select-trigger {
         // Need to use important to override from-select style.
         border: 1px solid border-color(primary, light) !important;
+        width: 200px;
         overflow: hidden;
         .ember-power-select-status-icon {
           right: rsa-whitespace(least)

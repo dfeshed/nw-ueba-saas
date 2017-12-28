@@ -131,6 +131,10 @@ test('Check for OOTB column groups style', function(assert) {
   this.render(hbs`{{events-table}}`);
   clickTrigger();
   return waitFor('.ember-power-select-options').then(() => {
+    // To check fixed width for column group dropdown.
+    assert.equal($('.ember-power-select-trigger').get(0).clientWidth, 216);
+    // To check tooltip for column group options.
+    assert.equal($('.rsa-investigate-events-table__header__columns').first().attr('title'), 'Custom 1');
     assert.equal($('.rsa-investigate-events-table__header__columns').length, 3);
     assert.equal($('.rsa-investigate-events-table__header__ootb-columns').length, 7);
   });
