@@ -42,7 +42,8 @@ test('should return the initial state', function(assert) {
     hostExportLinkId: null,
     totalItems: null,
     pageNumber: null,
-    listOfServices: null
+    listOfServices: null,
+    hasNext: false
   });
 });
 
@@ -199,11 +200,11 @@ test('The FETCH_NEXT_MACHINES will set the paged response to state', function(as
 
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_NEXT_MACHINES,
-    payload: { data: { hasNext: false, items: [ { id: 11 }] } }
+    payload: { data: { hasNext: false, totalItems: 1, items: [ { id: 11 }] } }
   });
   const newEndState = reducer(previous, successAction);
 
-  assert.equal(newEndState.loadMoreHostStatus, '');
+  assert.equal(newEndState.loadMoreHostStatus, 'completed');
   assert.equal(newEndState.hostList.length, 4);
 });
 

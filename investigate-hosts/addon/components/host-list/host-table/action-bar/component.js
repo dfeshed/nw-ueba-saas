@@ -6,6 +6,7 @@ import {
   noHostsSelected,
   tooManyHostsSelected,
   warningClass,
+  hostCountForDisplay,
   allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 import {
   toggleInitiateScanModal,
@@ -13,7 +14,7 @@ import {
   toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({
-  totalItems: state.endpoint.machines.totalItems,
+  totalItems: hostCountForDisplay(state),
   noHostsSelected: noHostsSelected(state),
   tooManyHostsSelected: tooManyHostsSelected(state),
   warningClass: warningClass(state),

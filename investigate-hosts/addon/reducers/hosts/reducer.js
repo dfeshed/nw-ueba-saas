@@ -23,6 +23,8 @@ const initialState = Immutable.from({
 
   totalItems: null,
 
+  hasNext: false,
+
   pageNumber: null,
 
   listOfServices: null
@@ -36,7 +38,8 @@ const _handleAppendMachines = (action) => {
     return state.merge({
       hostList: [...hostList, ...data.items],
       pageNumber: data.pageNumber,
-      loadMoreHostStatus: (data.hasNext) ? 'stopped' : ''
+      loadMoreHostStatus: data.totalItems >= 1000 ? 'stopped' : 'completed',
+      hasNext: data.hasNext
     });
   };
 };

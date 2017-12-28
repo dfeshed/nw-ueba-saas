@@ -1,4 +1,6 @@
 import reselect from 'reselect';
+import { isValidExpression } from 'investigate-hosts/reducers/filters/selectors';
+
 const { createSelector } = reselect;
 
 
@@ -10,6 +12,8 @@ const _serviceList = (state) => state.endpoint.machines.listOfServices;
 const _hostExportLinkId = (state) => state.endpoint.machines.hostExportLinkId;
 const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.detailsInput.agentId : null;
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
+const _totalItems = (state) => state.endpoint.machines.totalItems;
+const _hasNext = (state) => state.endpoint.machines.hasNext;
 
 const _agentVersion = createSelector(
   [ _hostDetailId, _hostList ],
@@ -135,4 +139,23 @@ export const allAreEcatAgents = createSelector(
 export const areAnyEcatAgents = createSelector(
   hostListForScanning,
   (selectedHostList) => selectedHostList.some((host) => host.version.startsWith('4.4'))
+);
+
+export const hostCountForDisplay = createSelector(
+  [ _totalItems, isValidExpression],
+  (totalItems, isValidExpression) => {
+    // For performance reasons api returns 1000 as totalItems when filter is applied, even if result is more than 1000
+    // Make sure we append '+' to indicate user that more machines are present
+    if (isValidExpression && totalItems >= 1000) {
+      return `${totalItems}+`;
+    }
+    return `${totalItems}`;
+  }
+);
+
+export const loadMoreHostStatus = createSelector(
+  [_hasNext, hostCountForDisplay],
+  (hasNext, hostCountForDisplay) => {
+    return hostCountForDisplay.includes('+') || hasNext ? 'stopped' : 'completed';
+  }
 );

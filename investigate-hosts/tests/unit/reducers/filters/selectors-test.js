@@ -4,7 +4,8 @@ import {
     searchableColumns,
     filters,
     appliedFilters,
-    listWithoutDefault
+    listWithoutDefault,
+    isValidExpression
 } from 'investigate-hosts/reducers/filters/selectors';
 
 module('Unit | selectors | filters');
@@ -85,3 +86,21 @@ test('listWithoutDefault', function(assert) {
   const result = listWithoutDefault(STATE);
   assert.equal(result.length, 3, 'should be 3, as there are no defaults');
 });
+test('isValidExpression true', function(assert) {
+  const result = isValidExpression(STATE);
+  assert.equal(result, true, 'valid expression');
+});
+
+test('isValidExpression false', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      schema: {
+        schema: []
+      },
+      filter: { }
+    }
+  });
+  const result = isValidExpression(state);
+  assert.equal(result, false, 'invalid expression');
+});
+

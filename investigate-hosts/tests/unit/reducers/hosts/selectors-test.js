@@ -9,12 +9,16 @@ import {
   noHostsSelected,
   serviceList,
   allAreEcatAgents,
-  areAnyEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
+  areAnyEcatAgents,
+  hostCountForDisplay,
+  loadMoreHostStatus } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
   endpoint: {
+    filter: {},
     machines: {
+      totalItems: 2,
       hostList: [
         {
           id: 1,
@@ -125,4 +129,41 @@ test('areAnyEcatAgents, check some are 4.4 agents', function(assert) {
   }));
   assert.equal(result, true);
 });
+test('hostCountForDisplay', function(assert) {
+  const result = hostCountForDisplay(STATE);
+  assert.equal(result, 2, 'expected 2 machines');
+  const newDisplay = hostCountForDisplay(Immutable.from({
+    endpoint: {
+      filter: {
+        expressionList: [
+          {
+            propertyName: 'machine.machineOsType',
+            propertyValues: [
+              {
+                value: 'windows'
+              }
+            ],
+            restrictionType: 'IN'
+          },
+          {
+            restrictionType: 'IN',
+            propertyName: 'machine.agentVersion',
+            propertyValues: null
+          }
+        ]
+      },
+      machines: {
+        totalItems: '1000',
+        hostList: [...Array(2000)]
+      }
+    }
+  }));
+  assert.equal(newDisplay, '1000+', 'expected 1000+ files');
+});
+
+test('loadMoreHostStatus', function(assert) {
+  const result = loadMoreHostStatus(STATE);
+  assert.equal(result, 'completed', 'load more status is completed');
+});
+
 

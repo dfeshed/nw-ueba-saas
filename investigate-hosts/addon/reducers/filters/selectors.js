@@ -74,3 +74,25 @@ export const listWithoutDefault = createSelector(
     return filters.filter((item) => !item.isDefault);
   }
 );
+
+/**
+ * Check whether user selected filters have valid conditions. Property can be added for filter and left empty
+ * In such cases, no filter condition is sent to api. Filter is valid, only if at least one property value is added
+ * @param expressionList
+ * @returns boolean
+ * @public
+ */
+export const isValidExpression = createSelector(
+  expressionList,
+  (expressionList) => {
+    let flag = false;
+    if (expressionList && expressionList.length) {
+      const list = expressionList.filterBy('propertyValues');
+      if (list.length) {
+        // If at least one property value are present in the expression, the expression is valid
+        flag = list.some((item) => item.propertyValues.length);
+      }
+    }
+    return flag;
+  }
+);
