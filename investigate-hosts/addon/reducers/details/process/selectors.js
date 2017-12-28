@@ -12,20 +12,49 @@ const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
-    return data.filter((d) => {
+    return data.map((d) => {
       if (d.checksumSha256 === selectedTab.checksum) {
-        return true;
-      } else {
-        if (d.childProcesses) {
-          const childList = _.flatten(d.childProcesses.map(convertTreeToList));
-          return childList.some((child) => child.checksumSha256 === selectedTab.checksum);
+        return d;
+      }
+      if (d.childProcesses) {
+        const children = _getChildProcesses(d, selectedTab.checksum);
+        if (children.length) {
+          return {
+            ...d,
+            childProcesses: children
+          };
         }
       }
-    });
+    }).filter((d) => d);
   } else {
     return data;
   }
 };
+
+/**
+ * get the matching child processess for a parent process.
+ * @private
+ * @param {Object} d
+ * @param {String} checksum
+ */
+const _getChildProcesses = (d, checksum) => {
+  return d.childProcesses.map((child) => {
+    if (child.checksumSha256 === checksum) {
+      return child;
+    } else {
+      if (child.childProcesses) {
+        const children = _getChildProcesses(child, checksum);
+        if (children.length) {
+          return {
+            ...child,
+            childProcesses: children
+          };
+        }
+      }
+    }
+  }).filter((d) => d);
+};
+
 export const getProcessData = createSelector(
   [ _processData ],
   (processData) => {
