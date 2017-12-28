@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.BufferedReader;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 @RunWith(SpringRunner.class)
+@ContextConfiguration(classes = ElasticMappingsTests.SpringConfig.class)
 public class ElasticMappingsTests {
 
     @Value("${linux.mapping.path}")
@@ -66,7 +68,7 @@ public class ElasticMappingsTests {
         public static TestPropertiesPlaceholderConfigurer mappingsTestPropertiesConfigurer() {
             Properties properties = new Properties();
             properties.put("linux.mapping.path", "presidio/presidio-core/el-extensions/mappings/");
-            properties.put("windos.mapping.path", "\\presidio-core\\presidio-core\\fortscale\\presidio-output\\presidio-output-domain\\src\\main\\resources\\elasticsearch\\mappings");
+            properties.put("windos.mapping.path", "src\\main\\resources\\elasticsearch\\mappings");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }
