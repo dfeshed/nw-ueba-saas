@@ -1,6 +1,7 @@
 import logging
 import os
 import signal
+import shutil
 from airflow.bin import cli
 from airflow.models import DagRun, DAG, DagModel
 from airflow.operators.bash_operator import BashOperator
@@ -10,13 +11,16 @@ from airflow.utils.state import State
 from copy import copy
 from datetime import datetime
 from elasticsearch import Elasticsearch
+from pymongo import MongoClient
 
 
 class RerunFullFlowDagBuilder():
     """
     The "rerun full flow run" DAG consists of all the actions needed in order to delete all presidio data
     """
-
+CHECKPOINT_ADAPTER_PATH = "/data/presidio/3p/flume/checkpoint/adapter/"
+DATA_ADAPTER_PATH = "/data/presidio/3p/flume/data/adapter/"
+FLUME_PATH = "$PRESIDIO_HOME/flume/counters/source"
 
 @provide_session
 def find_non_subdag_dags(session=None):
@@ -88,6 +92,29 @@ def kill_dags_task_instances(dag_ids):
         for dag_run in dag_runs:
             stop_kill_dag_run_task_instances(dag_run=dag_run)
 
+def mongo_data_clean(delete_ca):
+    client = MongoClient("localhost", 27017)
+    db = client.presidio
+    for collection in db.collection_names():
+        if not collection.startswith('system'):
+            collection.drop()
+        if delete_ca :
+            if collection.startswith('ca_'):
+                collection.drop()
+
+
+def clean_adapter(ds, **kwargs):
+
+    delete_ca = kwargs['dag_run'].conf['message']
+    shutil.rmtree(CHECKPOINT_ADAPTER_PATH)
+    shutil.rmtree(DATA_ADAPTER_PATH)
+    if delete_ca :
+        shutil.rmtree(FLUME_PATH)
+
+
+
+
+
 
 @provide_session
 def cleanup_dags_from_postgres(dag_ids, session=None):
@@ -121,7 +148,7 @@ def build(is_remove_ca_tables):
 
     kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(rerun_full_flow_dag, dag_ids_to_clean)
 
-    clean_mongo_operator = build_mongo_clean_bash_operator(rerun_full_flow_dag, is_remove_ca_tables)
+    clean_mongo_operator = build_mongo_clean_task_instances_operator(rerun_full_flow_dag, is_remove_ca_tables)
 
     clean_elastic_operator = build_clean_elastic_operator(rerun_full_flow_dag)
 
@@ -162,16 +189,9 @@ def build_clean_logs_operator(cleanup_dag):
 
 
 def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
-    adapter_clean_bash_command = "rm -rf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rf /data/presidio/3p/flume/data/adapter/ "
-
-    if is_remove_ca_tables:
-        # we want to delete the adapter files since we won't delete the ca tables
-        adapter_clean_bash_command = adapter_clean_bash_command % "&& rm -rf $PRESIDIO_HOME/flume/counters/source"
-    else:
-        adapter_clean_bash_command = adapter_clean_bash_command % ""
-
-    clean_adapter_operator = BashOperator(task_id='clean_adapter',
-                                          bash_command= adapter_clean_bash_command,
+    clean_adapter_operator = PythonOperator(task_id='clean_adapter',
+                                          python_callable=clean_adapter,
+                                          provide_context=True,
                                           dag=cleanup_dag)
     return clean_adapter_operator
 
@@ -209,15 +229,9 @@ def build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean):
     return kill_dags_task_instances_operator
 
 
-def build_mongo_clean_bash_operator(cleanup_dag, is_remove_ca_tables):
-    # build the mongo clean bash command
-    mongo_clean_bash_command = "mongo presidio -u presidio -p P@ssw0rd --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system') %s)  {print('dropping: ' +t); db.getCollection(t).drop();}});\""
-    if not is_remove_ca_tables:
-        # we want to keep the ca tables
-        mongo_clean_bash_command = mongo_clean_bash_command % "&& 0==t.startsWith('ca_')"
-    else:
-        mongo_clean_bash_command = mongo_clean_bash_command % ""
-    clean_mongo_operator = BashOperator(task_id='clean_mongo',
-                                        bash_command=mongo_clean_bash_command,
-                                        dag=cleanup_dag)
+def build_mongo_clean_task_instances_operator(cleanup_dag, is_remove_ca_tables):
+    clean_mongo_operator = PythonOperator(task_id='clean_mongo',
+                                          python_callable=mongo_data_clean,
+                                          op_kwargs={'delete_ca': is_remove_ca_tables},
+                                          dag=cleanup_dag)
     return clean_mongo_operator
