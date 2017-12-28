@@ -10,15 +10,9 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import presidio.monitoring.services.MetricCollectingService;
-import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 
@@ -62,7 +56,7 @@ public class ModelingEngineTest {
 		ModelingEngine modelingEngine = prepareMocks(latestEndTime, contextIds, modelTimeRange, models, successes);
 		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
 
-		verify(store).getLatestEndTime(eq(modelConf), eq(DEFAULT_SESSION_ID));
+		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(new TimeRange(latestEndTime, modelTimeRange.getEnd())));
 		Date endTime = Date.from(modelTimeRange.getEnd());
 
@@ -108,7 +102,7 @@ public class ModelingEngineTest {
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
 		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
 
-		verify(store).getLatestEndTime(eq(modelConf), eq(DEFAULT_SESSION_ID));
+		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(modelTimeRange));
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq("contextId1"), eq(endTime));
@@ -144,8 +138,9 @@ public class ModelingEngineTest {
 			List<Boolean> successes) {
 
 		if (selector != null) {
-			when(store.getLatestEndTime(eq(modelConf), eq(DEFAULT_SESSION_ID))).thenReturn(latestEndTime);
-			Set<String> setOfContextIds = contextIds.stream().collect(Collectors.toSet());
+			when(store.getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd())))
+					.thenReturn(latestEndTime);
+			Set<String> setOfContextIds = new HashSet<>(contextIds);
 			when(selector.getContexts(any(TimeRange.class))).thenReturn(setOfContextIds);
 		}
 
