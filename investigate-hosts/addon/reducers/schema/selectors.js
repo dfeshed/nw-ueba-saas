@@ -4,7 +4,6 @@ import Immutable from 'seamless-immutable';
 import CONFIG from './config';
 
 const COLUMN_WIDTH = {
-  'machine.machineName': 180,
   'agentStatus.scanStatus': 130,
   'machine.scanStartTime': 150,
   'agentStatus.lastSeenTime': 150,
@@ -14,15 +13,26 @@ const COLUMN_WIDTH = {
   'machine.users.name': 130
 };
 
-const CHECKBOX_COLUMN = Immutable.from([{
-  dataType: 'checkbox',
-  width: '22',
-  class: 'rsa-form-row-checkbox',
-  componentClass: 'rsa-form-checkbox',
-  visible: true,
-  disableSort: true,
-  headerComponentClass: 'rsa-form-checkbox'
-}]);
+const DEFAULT_COLUMN = Immutable.from([
+  {
+    dataType: 'checkbox',
+    width: '22',
+    class: 'rsa-form-row-checkbox',
+    componentClass: 'rsa-form-checkbox',
+    visible: true,
+    disableSort: true,
+    headerComponentClass: 'rsa-form-checkbox'
+  },
+  {
+    dataType: 'string',
+    width: '180',
+    visible: true,
+    field: 'machine.machineName',
+    searchable: true,
+    title: 'investigateHosts.hosts.column.machine.machineName'
+  }
+
+]);
 
 const { createSelector } = reselect;
 const _schema = (state) => state.endpoint.schema.schema || [];
@@ -49,7 +59,7 @@ export const getHostTableColumns = createSelector(
 
       if (visibleList) {
         // Making it as mutable as schema is passed down to data-table component and data-table component expecting simple array/ember array
-        finalSchema = CHECKBOX_COLUMN.concat(updatedSchema).asMutable();
+        finalSchema = DEFAULT_COLUMN.concat(updatedSchema).asMutable();
       }
     }
     return finalSchema;

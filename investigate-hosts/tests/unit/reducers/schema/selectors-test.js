@@ -27,10 +27,10 @@ const SCHEMA = Immutable.from({
 test('getHostTableColumns', function(assert) {
   const result = getHostTableColumns(SCHEMA);
   // length = total size + 1 checkbox column
-  assert.equal(result.length, 3, 'should return 3 columns including checkbox column');
+  assert.equal(result.length, 4, 'should return 4 columns including checkbox column');
   // 0th field is a checkbox.
   assert.equal(result[1].visible, true, 'Agent Id field is not visible');
-  assert.equal(result[2].visible, false, 'Agent Version field is visible');
+  assert.equal(result[3].visible, false, 'Agent Version field is visible');
 });
 
 

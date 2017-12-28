@@ -21,14 +21,14 @@
   background-color: $host-detail-background;
 }
 .host-overview {
-  padding-left: rsa-whitespace(less);
+  padding-left: rsa-whitespace();
   .host-item {
     background-color: transparent;
     padding: 0;
     overflow: auto;
   }
   .host-action {
-    padding: rsa-whitespace(least);
+    padding-right: rsa-whitespace(most);
     text-transform: uppercase;
     height: 4rem;
     &.rsa-content-definition {

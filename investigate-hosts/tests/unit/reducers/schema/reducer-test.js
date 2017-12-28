@@ -109,7 +109,7 @@ test('The GET_PREFERENCES action will set default visibleColumns first time', fu
     payload: response
   });
   const result = reducer(previous, newAction);
-  assert.equal(result.schema.filter((item) => item.visible).length, 6, 'Default visible columns length is set');
+  assert.equal(result.schema.filter((item) => item.visible).length, 5, 'Default visible columns length is set');
 });
 
 
