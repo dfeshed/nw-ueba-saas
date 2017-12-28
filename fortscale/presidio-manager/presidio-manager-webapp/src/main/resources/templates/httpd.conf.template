@@ -398,6 +398,8 @@ SSLSessionCacheTimeout  300
     RewriteEngine on
 
     RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+
+    RequestHeader set Authenticated_User %{REMOTE_USER}s
   </Location> 
   
   <Location /kibana>
