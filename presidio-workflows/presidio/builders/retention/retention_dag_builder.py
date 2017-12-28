@@ -70,7 +70,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         logging.debug("populating the retention dag, dag_id=%s ", retention_dag.dag_id)
 
         adapter_retention_short_circuit_operator = ShortCircuitOperator(
-            task_id='retention_short_circuit',
+            task_id='adapter_retention_short_circuit',
             dag=retention_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._adapter_retention_interval_in_hours,
@@ -84,7 +84,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         )
 
         input_retention_short_circuit_operator = ShortCircuitOperator(
-            task_id='retention_short_circuit',
+            task_id='input_retention_short_circuit',
             dag=retention_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._input_retention_interval_in_hours,
@@ -98,7 +98,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         )
 
         output_retention_short_circuit_operator = ShortCircuitOperator(
-            task_id='retention_short_circuit',
+            task_id='output_retention_short_circuit',
             dag=retention_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._output_retention_interval_in_hours,
