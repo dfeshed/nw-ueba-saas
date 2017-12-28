@@ -1,8 +1,6 @@
 {
   "presidio-monitoring_template": {
-    "template": [
-      "presidio-monitoring_*"
-    ],
+    "template": "presidio-monitoring-*",
     "settings": {},
     "aliases": {
       "presidio-monitoring": {},

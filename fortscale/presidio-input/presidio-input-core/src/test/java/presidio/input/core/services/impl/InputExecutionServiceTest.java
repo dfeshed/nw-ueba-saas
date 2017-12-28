@@ -23,13 +23,14 @@ import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.sdk.api.OutputDataServiceSDK;
+import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
+import presidio.sdk.api.services.PresidioInputPersistencyService;
+import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {FortscaleInputCoreApplicationTest.springConfig.class, InputCoreConfigurationTest.class})
@@ -56,10 +57,18 @@ public class InputExecutionServiceTest {
     @MockBean
     MetricRepository metricRepository;
 
+    @Autowired
+    PresidioInputPersistencyService inputPersistencyService;
+
+    @Autowired
+    InputToCollectionNameTranslator inputToCollectionNameTranslator;
+
+
     @Before
     public void before() {
         mongoTemplate.dropCollection(outputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
         mongoTemplate.dropCollection(adeToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION.toString().toLowerCase()));
+        mongoTemplate.dropCollection(inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
     }
 
     @Test
@@ -75,8 +84,8 @@ public class InputExecutionServiceTest {
 
         // output records
         List<EnrichedEvent> events = new ArrayList<>();
-        events.add(createAuthenticationEvent(Instant.parse("2017-12-12T14:15:29.975Z")));
-        events.add(createAuthenticationEvent(Instant.parse("2017-12-12T10:15:29.975Z")));
+        events.add(createOutputAuthenticationEvent(Instant.parse("2017-12-12T14:15:29.975Z")));
+        events.add(createOutputAuthenticationEvent(Instant.parse("2017-12-12T10:15:29.975Z")));
         outputDataServiceSDK.store(Schema.AUTHENTICATION, events);
 
         executionService.cleanup(Schema.AUTHENTICATION, startTime, endTime, 1d);
@@ -87,7 +96,35 @@ public class InputExecutionServiceTest {
         Assert.assertEquals(1, allOutputDocuments.size());
     }
 
-    private EnrichedEvent createAuthenticationEvent(Instant time) {
-        return new AuthenticationEnrichedEvent(time, time.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
+
+    @Test
+    public void testRetentionClean() throws Exception {
+        Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
+        Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
+
+        List<AuthenticationRawEvent> rawEvents = new ArrayList<>();
+        rawEvents.add(createAuthenticationRawEvent(Instant.parse("2017-12-10T14:00:00.000Z")));
+        rawEvents.add(createAuthenticationRawEvent(Instant.parse("2017-12-09T14:00:00.000Z")));
+        rawEvents.add(createAuthenticationRawEvent(Instant.parse("2017-12-11T14:00:00.000Z")));
+        inputPersistencyService.store(Schema.AUTHENTICATION, rawEvents);
+
+        executionService.retentionClean(Schema.AUTHENTICATION, startTime, endTime);
+
+        List<AuthenticationRawEvent> remainingRawEvents = mongoTemplate.findAll(AuthenticationRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
+        Assert.assertEquals(1, remainingRawEvents.size());
+    }
+
+    private EnrichedEvent createOutputAuthenticationEvent(Instant time) {
+        return new AuthenticationEnrichedEvent(time, time, "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
+    }
+
+    private AuthenticationRawEvent createAuthenticationRawEvent(Instant eventTime) {
+        AuthenticationRawEvent authenticationRawEvent = new AuthenticationRawEvent(eventTime, "eventId",
+                "dataSource", "userId", "operationType", null,
+                EventResult.SUCCESS, "userName", "userDisplayName", null,
+                "srcMachineId", "srcMachineName", "dstMachineId",
+                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+
+        return authenticationRawEvent;
     }
 }

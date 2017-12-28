@@ -1,7 +1,6 @@
 package presidio.input.core.spring;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import org.springframework.beans.factory.FactoryBean;
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.ActiveDirectoryInputToAdeConverter;
@@ -33,7 +31,6 @@ import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,16 +48,7 @@ public class InputCoreConfigurationTest {
 
     @Bean
     public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
-        ObjectMapper mapper = new ObjectMapper();
-        Map operationTypeToCategoryMapping = new HashMap();
-        try {
-            Resource resource = applicationContext.getResources(operationTypeCategoryMappingFilePath)[0];
-            operationTypeToCategoryMapping = mapper.readValue(resource.getFile(), Map.class);
-            return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return operationTypeToCategoryMapping;
-        }
+        return new HashMap<>();
     }
 
     @Autowired

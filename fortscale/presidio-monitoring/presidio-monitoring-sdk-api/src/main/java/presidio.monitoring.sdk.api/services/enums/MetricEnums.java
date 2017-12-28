@@ -3,8 +3,6 @@ package presidio.monitoring.sdk.api.services.enums;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MetricEnums {
 
@@ -38,14 +36,49 @@ public class MetricEnums {
         NULL_FEATURE_BUCKET_ID("nullFeatureBucketId"),
         FEATURE_BUCKETS("featureBuckets"),
         FEATURE_BUCKETS_UPDATES("featureBucketsUpdates"),
+        MIN_RESOLUTION("minResolution"),
+        MAX_RESOLUTION("maxResolution"),
+        AVG_RESOLUTION("avgResolution"),
+        SUM_RESOLUTION("sumResolution"),
+        MAX_CONTINUOUS_MEAN("maxContinuousMean"),
+        AVG_CONTINUOUS_MEAN("avgContinuousMean"),
+        SUM_CONTINUOUS_MEAN("sumContinuousMean"),
+        MAX_MAX_CONTINUOUS_MEAN("maxMaxContinuousMean"),
+        AVG_MAX_CONTINUOUS_MEAN("avgMaxContinuousMea"),
+        SUM_MAX_CONTINUOUS_MEAN("sumMaxContinuousMea"),
+        MAX_MAX_CONTINUOUS_SD("maxMaxContinuousSd"),
+        AVG_MAX_CONTINUOUS_SD("avgMaxContinuousSd"),
+        SUM_MAX_CONTINUOUS_SD("sumMaxContinuousSd"),
+        MAX_CONTINUOUS_SD("maxContinuousSd"),
+        AVG_CONTINUOUS_SD("avgContinuousSd"),
+        SUM_CONTINUOUS_SD("sumContinuousSd"),
+        MAX_CONTINUOUS_N("maxContinuousN"),
+        AVG_CONTINUOUS_N("avgContinuousN"),
+        SUM_CONTINUOUS_N("sumContinuousN"),
+        MAX_MAX_CONTINUOUS_N("maxMaxContinuousN"),
+        AVG_MAX_CONTINUOUS_N("avgMaxContinuousN"),
+        SUM_MAX_CONTINUOUS_N("sumMaxContinuousN"),
+        MAX_CONTINUOUS_MAX_VALUE("maxContinuousMaxValue"),
+        AVG_CONTINUOUS_MAX_VALUE("avgContinuousMaxValue"),
+        SUM_CONTINUOUS_MAX_VALUE("sumContinuousMaxValue"),
+        MAX_MAX_CONTINUOUS_MAX_VALUE("maxMaxContinuousMaxValue"),
+        AVG_MAX_CONTINUOUS_MAX_VALUE("avgMaxContinuousMaxValue"),
+        SUM_MAX_CONTINUOUS_MAX_VALUE("sumMaxContinuousMaxValue"),
+        MAX_GLOBAL_SD("maxGlobalSd"),
+        AVG_GLOBAL_SD("avgGlobalSd"),
+        SUM_GLOBAL_SD("sumGlobalSd"),
         SUCCESS_EVENTS("successEvents"),
         TOTAL_EVENTS("totalEvents"),
         FAILED_EVENTS("failedEvents"),
         SUCCESS_PAGES("successPages"),
         TOTAL_PAGES("totalPages"),
         FAILED_PAGES("failedPages"),
-        AVG_PAGE_SIZE("avgPageSize")
-        ;
+        AVG_PAGE_SIZE("avgPageSize"),
+        MAX_MEAN("maxMean"),
+        AMOUNT_OF_SEGMENT_PRIORS("amountOfSegmentPriors"),
+        AGGREGATIONS("aggregations"),
+        AMOUNT_OF_NON_ZERO_FEATURE_VALUES("amountOfNonZeroFeatureValue"),
+        MAX_FEATURE_VALUE("maxFeatureValue");
 
         private String value;
 
@@ -73,7 +106,7 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON, GROUP_NAME, TIME, FEATURE_BUCKET;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON, FEATURE_NAME, AGGREGATED_FEATURE_TYPE,GROUP_NAME, TIME, FEATURE_BUCKET,FLUME_COMPONENT_TYPE,FLUME_COMPONENT_INSTANCE_ID;
     }
 
     public enum MetricUnitType {

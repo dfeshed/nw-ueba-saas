@@ -1,5 +1,6 @@
 package fortscale.aggregation.creator;
 
+import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
@@ -22,10 +23,12 @@ import java.util.Map;
 public class AggregationRecordsCreatorImpl implements AggregationRecordsCreator {
     private final IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
     private final AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    private final AggregationRecordsCreatorMetricsContainer metricsContainer;
 
-    public AggregationRecordsCreatorImpl(IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService) {
+    public AggregationRecordsCreatorImpl(IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService, AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService, AggregationRecordsCreatorMetricsContainer aggregationRecordsCreatorMetricsContainer) {
         this.aggrFeatureEventFunctionsService = aggrFeatureEventFunctionsService;
         this.aggregatedFeatureEventsConfService = aggregatedFeatureEventsConfService;
+        this.metricsContainer = aggregationRecordsCreatorMetricsContainer;
     }
 
     @Override
@@ -57,9 +60,9 @@ public class AggregationRecordsCreatorImpl implements AggregationRecordsCreator 
                         throw new IllegalArgumentException(String.format("Feature value doesn't contain a 'value' element: %s", featureValue));
                     }
                     String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-
                     AggregatedFeatureType aggregatedFeatureType = AggregatedFeatureType.fromCodeRepresentation(aggregatedFeatureEventConf.getType());
                     AdeAggregationRecord adeAggregationRecord = new AdeAggregationRecord(startTime, endTime, aggregatedFeatureName, aggregatedFeatureValue, featureBucketConfName, contextFieldNameToValueMap, aggregatedFeatureType);
+                    metricsContainer.updateMetrics(adeAggregationRecord);
                     aggrRecords.add(adeAggregationRecord);
                 }
             }

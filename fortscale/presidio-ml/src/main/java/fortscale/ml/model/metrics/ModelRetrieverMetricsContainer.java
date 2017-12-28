@@ -27,11 +27,11 @@ public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContain
 
     /**
      * Updates modeling metrics by provided data
-     * @param featureBucketSize
+     * @param reads amount of read data
      */
-    public void updateMetric(int featureBucketSize) {
+    public void updateMetric(int reads) {
         Metric metric = getMetric();
-        metric.getValue().compute(MetricEnums.MetricValues.READS, (k, v) -> v.doubleValue() + featureBucketSize);
+        metric.getValue().compute(MetricEnums.MetricValues.READS, (k, v) -> v.doubleValue() + reads);
     }
 
 

@@ -22,13 +22,16 @@ public class TestConfig {
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-        properties.put("enable.metrics.export",false);
+        properties.put("enable.metrics.export", false);
         properties.put("number.of.classifications", 19);
         properties.put("output.events.limit", 100);
+        properties.put("output.events.page.size", 10);
         properties.put("user.severities.percent.threshold.critical", 75);
         properties.put("user.severities.percent.threshold.high", 50);
         properties.put("user.severities.percent.threshold.medium", 25);
         properties.put("indicators.contribution.limit.to.classification.percent", 0.3);
+        properties.put("output.enriched.events.retention.in.days", 2);
+        properties.put("output.result.events.retention.in.days", 90);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

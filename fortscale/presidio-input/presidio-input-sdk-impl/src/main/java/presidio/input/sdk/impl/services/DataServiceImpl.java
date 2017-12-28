@@ -39,7 +39,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate, Schema schema) {
-        logger.debug("Finding dlpfile records between {}:{} and {}:{}.",
+        logger.debug("Finding records between {}:{} and {}:{}.",
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         return dataSourceRepository.getDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
@@ -47,10 +47,17 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public int clean(Instant startDate, Instant endDate, Schema schema) {
-        logger.debug("Deleting dlpfile records between {}:{} and {}:{}.",
+        logger.debug("Deleting records between {}:{} and {}:{}.",
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         return dataSourceRepository.cleanDataSourceDataBetweenDates(toCollectionNameTranslator.toCollectionName(schema), startDate, endDate);
+    }
+
+    @Override
+    public int cleanUntil(Instant endDate, Schema schema) {
+        logger.debug("Deleting records until {}:{}.",
+                CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+        return dataSourceRepository.cleanDataSourceDataUntilDate(toCollectionNameTranslator.toCollectionName(schema), endDate);
     }
 
     @Override

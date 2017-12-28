@@ -18,11 +18,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.record.aggregated.*;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.activedirectory.AdeScoredActiveDirectoryRecord;
@@ -53,19 +49,9 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 
@@ -354,14 +340,14 @@ public class AlertServiceTest {
     private void generateFileEvents(int eventsNum, Instant startEventTime) {
         Instant now = Instant.now();
         String schema = Schema.FILE.toString();
-        HashMap<String, String> additionalnfo = new HashMap<>();
+        HashMap<String, String> additionalInfo = new HashMap<>();
         List<String> file_permission_change = Arrays.asList("FILE_PERMISSION_CHANGE");
 
         for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
             EnrichedEvent fileEvent = new FileEnrichedEvent(now, startEventTime.plus(new Random().nextInt(50), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", "FOLDER_OWNERSHIP_CHANGED", file_permission_change,
-                    EventResult.FAILURE, "FAILURE", additionalnfo, "absoluteSrcFilePath", "absoluteDstFilePath",
+                    EventResult.FAILURE, "FAILURE", additionalInfo, "absoluteSrcFilePath", "absoluteDstFilePath",
                     "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
             mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE));
 

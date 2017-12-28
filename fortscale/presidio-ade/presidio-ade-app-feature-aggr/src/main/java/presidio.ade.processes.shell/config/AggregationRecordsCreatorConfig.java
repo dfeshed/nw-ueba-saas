@@ -2,6 +2,8 @@ package presidio.ade.processes.shell.config;
 
 import fortscale.aggregation.creator.AggregationRecordsCreator;
 import fortscale.aggregation.creator.AggregationRecordsCreatorImpl;
+import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainer;
+import fortscale.aggregation.creator.metrics.AggregationRecordsCreatorMetricsContainerConfig;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.functions.AggrFeatureFuncServiceConfig;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
@@ -16,7 +18,9 @@ import org.springframework.context.annotation.Import;
 //        application-specific confs
         AggregatedFeatureEventsConfServiceConfig.class,
 //        common application confs
-        AggrFeatureFuncServiceConfig.class
+        AggrFeatureFuncServiceConfig.class,
+        AggregationRecordsCreatorMetricsContainerConfig.class
+
 })
 public class AggregationRecordsCreatorConfig {
 
@@ -24,10 +28,12 @@ public class AggregationRecordsCreatorConfig {
     private IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+    @Autowired
+    private AggregationRecordsCreatorMetricsContainer aggregationRecordsCreatorMetricsContainer;
 
     @Bean
     public AggregationRecordsCreator aggregationRecordssCreator()
     {
-        return new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService,aggregatedFeatureEventsConfService);
+        return new AggregationRecordsCreatorImpl(aggrFeatureEventFunctionsService,aggregatedFeatureEventsConfService, aggregationRecordsCreatorMetricsContainer);
     }
 }

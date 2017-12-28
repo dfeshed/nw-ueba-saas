@@ -391,13 +391,15 @@ SSLSessionCacheTimeout  300
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword ${password}
+    AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
     RewriteEngine on
 
     RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+
+    RequestHeader set Authenticated_User %{REMOTE_USER}s
   </Location> 
   
   <Location /kibana>
@@ -415,7 +417,7 @@ SSLSessionCacheTimeout  300
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
     AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword ${password}
+    AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
     AuthLDAPMaxSubGroupDepth 2
     Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
