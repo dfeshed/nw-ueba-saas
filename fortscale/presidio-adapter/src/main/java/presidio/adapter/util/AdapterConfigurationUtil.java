@@ -3,6 +3,8 @@ package presidio.adapter.util;
 import fortscale.common.general.Schema;
 import presidio.config.server.client.ConfigurationServerClientService;
 
+import java.util.Properties;
+
 /**
  * Created by tomerd on 12/27/2017.
  */
@@ -18,8 +20,9 @@ public class AdapterConfigurationUtil {
         this.configurationServerClientService = configurationServerClientService;
     }
 
-    public void loadConfiguration(Schema schema) {
-
+    public void loadConfiguration(Schema schema) throws Exception {
+        final Properties properties = configurationServerClientService.readConfigurationAsProperties("collector-properties");
+        properties.getProperty()
     }
 
     public String getCollectionName() {
