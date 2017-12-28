@@ -1,6 +1,5 @@
 package presidio.output.processor.services.user;
 
-import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.users.User;
 
 import java.util.List;
@@ -18,6 +17,8 @@ public interface UserService {
     void addUserAlertData(User user, UsersAlertData usersAlertData);
 
     void setUserAlertData(User user, UsersAlertData usersAlertData);
+
+    void setUserAlertDataToDefault(User user);
 
     void recalculateUserAlertData(User user);
 

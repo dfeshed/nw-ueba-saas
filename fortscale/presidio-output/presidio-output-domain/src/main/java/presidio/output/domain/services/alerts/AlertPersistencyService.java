@@ -20,7 +20,7 @@ public interface AlertPersistencyService {
 
     Iterable<Alert> save(List<Alert> alerts);
 
-    void delete(Alert alert);
+    void deleteAlertAndIndicators(Alert alert);
 
     Alert findOne(String id);
 
