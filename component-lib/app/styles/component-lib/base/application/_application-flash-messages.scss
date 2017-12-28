@@ -36,6 +36,7 @@
     .message {
       @include rsa-font(paragraph);
       color: text-color(primary, lightest);
+      word-wrap: break-word;
     }
 
     .rsa-icon {
