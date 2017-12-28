@@ -110,7 +110,7 @@ def build(is_remove_ca_tables):
     :rtype: airflow.models.DAG
     """
 
-    logging.debug("populating the rerun full flow dag, dag_id=%s", rerun_full_flow_dag.dag_id)
+    logging.debug("populating the rerun full flow dag")
 
     dag_models = get_dag_models_by_prefix("full_flow")
     dag_ids_to_clean = map(lambda x: x.dag_id, dag_models)
