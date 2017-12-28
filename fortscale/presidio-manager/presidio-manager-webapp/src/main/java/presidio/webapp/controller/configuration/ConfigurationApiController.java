@@ -40,7 +40,7 @@ public class ConfigurationApiController implements ConfigurationApi {
     private static final Logger logger = Logger.getLogger(ConfigurationApiController.class);
 
     private String keytabFileLocation;
-    private List<String> activeProfiles;
+    private List<String> activeProfilesactiveProfiles;
 
     private static String PRESIDO_CONFIGURATION_FILE_NAME = "application-presidio";
 

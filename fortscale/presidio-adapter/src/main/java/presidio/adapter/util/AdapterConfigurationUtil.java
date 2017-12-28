@@ -1,15 +1,16 @@
 package presidio.adapter.util;
 
-import fortscale.common.general.Schema;
+import fortscale.domain.adapter.CollectorProperties;
+import fortscale.domain.adapter.SchemaMapping;
 import presidio.config.server.client.ConfigurationServerClientService;
-
-import java.util.Properties;
 
 /**
  * Created by tomerd on 12/27/2017.
  */
 public class AdapterConfigurationUtil {
 
+    public static final String MOUDLE_NAME = "collector-properties";
+    public static final String PROFILE = "";
     private final ConfigurationServerClientService configurationServerClientService;
 
     private String collectionName;
@@ -20,9 +21,14 @@ public class AdapterConfigurationUtil {
         this.configurationServerClientService = configurationServerClientService;
     }
 
-    public void loadConfiguration(Schema schema) throws Exception {
-        final Properties properties = configurationServerClientService.readConfigurationAsProperties("collector-properties");
-        properties.getProperty()
+    public void loadConfiguration(String schemaName) throws Exception {
+        final CollectorProperties properties = (CollectorProperties) configurationServerClientService.readConfiguration(CollectorProperties.class, MOUDLE_NAME, PROFILE).getBody();
+        final SchemaMapping schema = properties.getSchema(schemaName);
+        if (schema != null) {
+            this.collectionName = schema.getCollectionName();
+            this.timestampField = schema.getTimeFieldName();
+            this.numberOfRetainedDays = schema.getNumberOfRetainedDays();
+        }
     }
 
     public String getCollectionName() {

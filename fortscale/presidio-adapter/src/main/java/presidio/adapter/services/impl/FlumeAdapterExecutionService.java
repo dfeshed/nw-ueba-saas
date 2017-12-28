@@ -111,8 +111,9 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     }
 
 
-    private void deleteRetainedData(Schema schema, Instant startDate, Instant endDate) {
-        adapterConfigurationUtil.loadConfiguration(schema);
+    private void deleteRetainedData(Schema schema, Instant startDate, Instant endDate) throws Exception {
+        adapterConfigurationUtil.loadConfiguration(schema.getName());
+
         String collectionName = adapterConfigurationUtil.getCollectionName();
         String timestampField = adapterConfigurationUtil.getTimestampField();
         int numberOfRetainedDays = adapterConfigurationUtil.getNumberOfRetainedDays();

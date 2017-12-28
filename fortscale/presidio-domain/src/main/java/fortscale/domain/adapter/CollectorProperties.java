@@ -13,6 +13,16 @@ public class CollectorProperties {
         this.schemaMappings = schemaMappings;
     }
 
+    public SchemaMapping getSchema(String schemaName) {
+        for (SchemaMapping schemaMapping : schemaMappings) {
+            if (schemaMapping.getSchemaName().equals(schemaName)) {
+                return schemaMapping;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         return "CollectorProperties{" +
