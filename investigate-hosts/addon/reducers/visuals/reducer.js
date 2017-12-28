@@ -8,7 +8,8 @@ const visualsInitialState = Immutable.from({
   isTreeView: true,
   showInitiateScanModal: false,
   showCancelScanModal: false,
-  showDeleteHostsModal: false
+  showDeleteHostsModal: false,
+  hostDetailsLoading: false
 });
 
 const visuals = handleActions({
@@ -31,6 +32,10 @@ const visuals = handleActions({
 
   [ACTION_TYPES.TOGGLE_CANCEL_SCAN_MODAL]: (state) => {
     return state.set('showCancelScanModal', !state.showCancelScanModal);
+  },
+
+  [ACTION_TYPES.TOGGLE_HOST_DETAILS_LOADING_INDICATOR]: (state, { payload }) => {
+    return state.set('hostDetailsLoading', payload);
   }
 
 }, visualsInitialState);

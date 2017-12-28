@@ -12,7 +12,8 @@ const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
   process: getProcessData(state),
   isNavigatedFromExplore: isNavigatedFromExplore(state),
-  summaryConfig: getColumnsConfig(state, summaryItems)
+  summaryConfig: getColumnsConfig(state, summaryItems),
+  processDetailsLoading: state.endpoint.process.processDetailsLoading
 });
 
 const dispatchToActions = {

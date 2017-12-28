@@ -2,6 +2,10 @@
 <box class="host-detail-wrapper">
   {{#if showSnapshotEmptyMessage}}
     {{rsa-panel-message message=(t 'investigateHosts.noSnapshotMessage')}}
+  {{else if hostDetailsLoading}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
   {{else}}
     {{component selectedTabComponent}}
   {{/if}}

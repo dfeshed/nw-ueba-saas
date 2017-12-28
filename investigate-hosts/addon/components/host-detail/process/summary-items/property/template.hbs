@@ -2,12 +2,7 @@
   {{yield label item.value}}
 {{else}}
   {{#rsa-content-definition label=(t item.label) value=item.value}}
-    {{#host-detail/base-property-panel/host-text value=item.value format=item.format as |eText|}}
-      {{#eText.tipContent as |contentText|}}
-        <div>{{contentText}}</div>
-        {{host-copy-content text=contentText}}
-      {{/eText.tipContent}}
-    {{/host-detail/base-property-panel/host-text}}
+    {{host-detail/base-property-panel/host-text value=item.value format=item.format}}
   {{/rsa-content-definition}}
 {{/if}}
 

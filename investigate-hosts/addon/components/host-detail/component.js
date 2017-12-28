@@ -6,7 +6,8 @@ import { isSnapshotsAvailable } from 'investigate-hosts/reducers/details/overvie
 
 const stateToComputed = (state) => ({
   selectedTabComponent: selectedTabComponent(state),
-  isSnapshotsAvailable: isSnapshotsAvailable(state)
+  isSnapshotsAvailable: isSnapshotsAvailable(state),
+  hostDetailsLoading: state.endpoint.visuals.hostDetailsLoading
 });
 
 const DetailComponent = Component.extend({

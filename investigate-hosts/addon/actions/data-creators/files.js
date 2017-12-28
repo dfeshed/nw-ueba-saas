@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from '../types';
 import { HostFiles } from '../api';
-import Ember from 'ember';
-const { Logger } = Ember;
+import { toggleDetailsLoadingIndicator } from 'investigate-hosts/actions/ui-state-creators';
+import { handleError } from '../creator-utils';
 
 const sortBy = (sortOption) => {
   return (dispatch) => {
@@ -31,8 +31,10 @@ const _fetchHostFiles = () => {
       type: ACTION_TYPES.GET_HOST_FILES,
       promise: HostFiles.getHostFiles(pageNumber, agentId, scanTime, checksumSha256, key, descending),
       meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.GET_HOST_FILES, response),
-        onFailure: (response) => _handleFilesError(ACTION_TYPES.GET_HOST_FILES, response)
+        onSuccess: () => {
+          dispatch(toggleDetailsLoadingIndicator());
+        },
+        onFailure: (response) => handleError(ACTION_TYPES.GET_HOST_FILES, response)
       }
     });
   };
@@ -40,9 +42,6 @@ const _fetchHostFiles = () => {
 
 const setSelectedFile = (fileHash) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: fileHash });
 
-const _handleFilesError = (type, response) => {
-  Logger.error(type, response);
-};
 
 export {
   sortBy,

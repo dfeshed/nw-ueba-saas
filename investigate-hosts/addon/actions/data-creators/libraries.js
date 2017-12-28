@@ -1,9 +1,7 @@
 import { HostDetails, Process } from '../api';
 import { handleError } from '../creator-utils';
 import * as ACTION_TYPES from '../types';
-import Ember from 'ember';
-const { Logger } = Ember;
-
+import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
 
 const getProcessAndLib = () => {
   return (dispatch, getState) => {
@@ -40,7 +38,9 @@ const getFileContextDLLS = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS, response),
+        onSuccess: () => {
+          dispatch(isDetailsLoading(false));
+        },
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS, response)
       }
     });

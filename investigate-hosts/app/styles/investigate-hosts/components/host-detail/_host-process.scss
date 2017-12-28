@@ -63,7 +63,11 @@
   .process-dll-note {
     padding: 0 0 rsa-whitespace() 0;
   }
-
+  .rsa-content-definition {
+    span {
+      display: block;
+    }
+  }
   &__accordion-content {
     .rsa-data-table {
       background-color: $host-details-table-row-color;

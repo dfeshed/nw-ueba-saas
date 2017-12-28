@@ -13,7 +13,8 @@ test('should return the initial state', function(assert) {
     isTreeView: true,
     showInitiateScanModal: false,
     showCancelScanModal: false,
-    showDeleteHostsModal: false
+    showDeleteHostsModal: false,
+    hostDetailsLoading: false
   });
 });
 
@@ -24,7 +25,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showInitiateScanModal: false,
     showCancelScanModal: false,
-    showDeleteHostsModal: false
+    showDeleteHostsModal: false,
+    hostDetailsLoading: true
   });
 
   const expectedEndState = {
@@ -33,7 +35,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showInitiateScanModal: false,
     showCancelScanModal: false,
-    showDeleteHostsModal: false
+    showDeleteHostsModal: false,
+    hostDetailsLoading: false
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });

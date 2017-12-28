@@ -1,13 +1,9 @@
 import * as ACTION_TYPES from '../types';
 import { Process } from '../api';
-import Ember from 'ember';
-const { Logger } = Ember;
+import { handleError } from '../creator-utils';
+import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
 
 const toggleProcessView = () => ({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
-
-const _handleProcessError = (type, response) => {
-  Logger.error(type, response);
-};
 
 const _getList = (shouldGetFirstRecord) => {
   return (dispatch, getState) => {
@@ -22,7 +18,7 @@ const _getList = (shouldGetFirstRecord) => {
             dispatch(getProcessDetails(response.data[0].pid));
           }
         },
-        onFailure: (response) => _handleProcessError(ACTION_TYPES.GET_PROCESS_LIST, response)
+        onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_LIST, response)
       }
     });
   };
@@ -35,10 +31,10 @@ const _getTree = () => {
       type: ACTION_TYPES.GET_PROCESS_TREE,
       promise: Process.getProcessTree({ agentId, scanTime }),
       meta: {
-        onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.GET_PROCESS_TREE, response);
+        onSuccess: () => {
+          dispatch(isDetailsLoading(false));
         },
-        onFailure: (response) => _handleProcessError(ACTION_TYPES.GET_PROCESS_TREE, response)
+        onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
       }
     });
   };
@@ -77,11 +73,10 @@ const getProcessDetails = (processId) => {
       type: ACTION_TYPES.GET_PROCESS,
       promise: Process.getProcess({ agentId, scanTime, pid: processId }),
       meta: {
-        onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.GET_PROCESS, response);
+        onSuccess: () => {
           dispatch(_getProcessFileContext(processId));
         },
-        onFailure: (response) => _handleProcessError(ACTION_TYPES.GET_PROCESS, response)
+        onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS, response)
       }
     });
   };
@@ -94,10 +89,7 @@ const _getProcessFileContext = (processId) => {
       type: ACTION_TYPES.GET_PROCESS_FILE_CONTEXT,
       promise: Process.getProcessFileContext({ agentId, scanTime, pid: processId, categories: [ 'LOADED_LIBRARIES' ] }),
       meta: {
-        onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.GET_PROCESS_FILE_CONTEXT, response);
-        },
-        onFailure: (response) => _handleProcessError(ACTION_TYPES.GET_PROCESS_FILE_CONTEXT, response)
+        onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_FILE_CONTEXT, response)
       }
     });
   };
