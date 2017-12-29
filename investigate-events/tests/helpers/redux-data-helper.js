@@ -1,4 +1,5 @@
 import Immutable from 'seamless-immutable';
+import CONFIG from 'investigate-events/reducers/investigate/config';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -55,6 +56,11 @@ export default class DataHelper {
 
   reconSize(reconSize) {
     _set(this.state, 'data.reconSize', reconSize);
+    return this;
+  }
+
+  eventsPreferencesConfig() {
+    _set(this.state, 'data.eventsPreferencesConfig', CONFIG);
     return this;
   }
 

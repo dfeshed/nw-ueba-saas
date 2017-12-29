@@ -28,7 +28,7 @@ const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCoun
   });
 };
 const renderDefaultEventTable = (assert, _this) => {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').columnGroups(EventColumnGroups).build();
+  new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventsPreferencesConfig().columnGroups(EventColumnGroups).build();
   _this.render(hbs`{{events-table}}`);
   assert.equal(_this.$('.rsa-investigate-events-table').length, 1);
   assert.equal(_this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
