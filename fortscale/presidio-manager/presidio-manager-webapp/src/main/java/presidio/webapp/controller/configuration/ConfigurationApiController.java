@@ -2,10 +2,10 @@ package presidio.webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.rest.jsonpatch.JsonPatch;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;

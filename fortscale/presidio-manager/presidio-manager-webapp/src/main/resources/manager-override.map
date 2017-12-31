@@ -1,1 +1,1 @@
-com.github.fge.jsonpatch.JsonPatchOperation:presidio.webapp.model.configuration.PatchOperation
+fortscale.utils.rest.jsonpatch.JsonPatchOperation:fortscale.utils.swagger.PatchOperation

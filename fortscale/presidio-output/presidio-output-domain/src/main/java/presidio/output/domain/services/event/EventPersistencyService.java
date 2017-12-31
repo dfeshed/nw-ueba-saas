@@ -46,4 +46,6 @@ public interface EventPersistencyService {
     Class findFeatureType(Schema schema, String feature);
 
     void remove(Schema schema, Instant startDate, Instant endDate);
+
+
 }

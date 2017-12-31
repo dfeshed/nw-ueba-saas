@@ -76,7 +76,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         return savedAlerts;
     }
 
-    public void delete(Alert alert) {
+    public void deleteAlertAndIndicators(Alert alert) {
         // atomic delete for the entire alert entities
 
         // delete alert
@@ -85,7 +85,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         // delete indicators
         List<Indicator> indicators = indicatorRepository.removeByAlertId(alert.getId());
 
-        // delete events
+        // delete Indicators events
         indicators.forEach(indicator -> {
             indicatorEventRepository.removeByIndicatorId(indicator.getId());
         });
@@ -158,17 +158,26 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public List<Alert> removeByTimeRange(Instant startDate, Instant endDate) {
+        logger.debug("Going to delete alerts that where created from date {} until date {}", startDate, endDate);
         List<Alert> removedAlerts = new ArrayList<Alert>();
-
-        try (Stream<Alert> alerts = alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThan(startDate.toEpochMilli(), endDate.toEpochMilli())) {
+        try (Stream<Alert> alerts = findAlertsByDate(startDate, endDate)) {
             alerts.forEach(alert -> {
-                delete(alert);
+                deleteAlertAndIndicators(alert);
                 removedAlerts.add(alert);
             });
         }
-
+        logger.debug("{} alerts where deleted", removedAlerts.size());
         return removedAlerts;
     }
+
+    private Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate) {
+        if (startDate.equals(Instant.EPOCH)) {
+            return alertRepository.findByEndDateLessThan(endDate.toEpochMilli());
+        } else {
+            return alertRepository.findByStartDateGreaterThanEqualAndEndDateLessThan(startDate.toEpochMilli(), endDate.toEpochMilli());
+        }
+    }
+
 
     @Override
     public List<Alert> findByUserId(String userId) {
