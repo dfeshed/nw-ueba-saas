@@ -26,7 +26,6 @@ public class ModelingEngineTest {
 	private IModelBuilder builder;
 	private ModelStore store;
 	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
-	private IModelBuilderConf modelBuilderConf;
 
 	@Before
 	public void before() {
@@ -36,8 +35,7 @@ public class ModelingEngineTest {
 		builder = mock(IModelBuilder.class);
 		store = mock(ModelStore.class);
 		when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-		modelBuilderConf = mock(IModelBuilderConf.class);
-		when(modelConf.getModelBuilderConf()).thenReturn(modelBuilderConf);
+		when(modelConf.getModelBuilderConf()).thenReturn(mock(IModelBuilderConf.class));
 		when(modelConf.getModelBuilderConf().getFactoryName()).thenReturn("testFactoryName");
 		when(modelConf.getName()).thenReturn("testName");
 		modelingServiceMetricsContainer = mock(ModelingServiceMetricsContainer.class);
@@ -68,6 +66,7 @@ public class ModelingEngineTest {
 		}
 
 		verify(builder, times(contextIds.size())).build(any());
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(selector, retriever, builder, store);
 	}
 
@@ -87,6 +86,7 @@ public class ModelingEngineTest {
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
 		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange));
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
 
@@ -108,6 +108,7 @@ public class ModelingEngineTest {
 		verify(retriever).retrieve(eq("contextId1"), eq(endTime));
 		verify(builder).build(any());
 		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq("contextId1"), eq(models.get(0)), eq(modelTimeRange));
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(selector, retriever, builder, store);
 	}
 
@@ -127,6 +128,7 @@ public class ModelingEngineTest {
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
 		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange));
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
 
