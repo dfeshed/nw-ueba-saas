@@ -3,7 +3,7 @@
     "_id": "7355c020-c48a-11e7-aeff-b71609887d3e",
     "_type": "dashboard",
     "_source": {
-      "title": "system dashboard",
+      "title": "Support Dashboard",
       "hits": 0,
       "description": "",
       "panelsJSON": "[{\"size_x\":6,\"size_y\":3,\"panelIndex\":1,\"type\":\"visualization\",\"id\":\"7e270300-be4b-11e7-be57-9981ad1928ac\",\"col\":1,\"row\":1},{\"size_x\":6,\"size_y\":3,\"panelIndex\":2,\"type\":\"visualization\",\"id\":\"f8afc2f0-bef6-11e7-8914-f7229c100bdd\",\"col\":7,\"row\":1},{\"size_x\":6,\"size_y\":3,\"panelIndex\":3,\"type\":\"visualization\",\"id\":\"cd415560-bef7-11e7-aea9-c534db9cec31\",\"col\":1,\"row\":4}]",
