@@ -5,7 +5,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation</rpm-maven-plugin.directory>
+        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation
+        </rpm-maven-plugin.directory>
         <rpm-maven-plugin.script>
             ${rpm-maven-plugin.directory}/installation-scripts/infrastructure/deploy/manager/deploy_manager.py
         </rpm-maven-plugin.script>
@@ -22,7 +23,8 @@
         </rpm-maven-plugin.workflows_packages_directory>
         <rpm-maven-plugin.workflows-build-script-path>${project.basedir}/build-scripts/build-workflows.sh
         </rpm-maven-plugin.workflows-build-script-path>
-        <rpm-maven-plugin.workflows-upgrade-script-path>${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
+        <rpm-maven-plugin.workflows-upgrade-script-path>
+            ${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
         </rpm-maven-plugin.workflows-upgrade-script-path>
         <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
         <airflow.deployment_target_directory>${rpm-maven-plugin.deployment_target_directory}/airflow
@@ -31,7 +33,9 @@
         </presidio-workflows-src.location>
         <common-conf-path>/home/presidio/presidio-core/configurations/airflow/</common-conf-path>
         <presidio-conf-group>presidio-conf</presidio-conf-group>
-        <env_var_profile_script>${project.parent.build.directory}/../presidio-rpm/src/main/python/installation-scripts/version/1_0/utils/presidio_profile.sh</env_var_profile_script>
+        <env_var_profile_script>
+            ${project.parent.build.directory}/../presidio-rpm/src/main/python/installation-scripts/version/1_0/utils/presidio_profile.sh
+        </env_var_profile_script>
         <manager.security.securityConfPath>/etc/httpd/conf/</manager.security.securityConfPath>
     </properties>
     <parent>
@@ -106,7 +110,9 @@
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.parent.build.directory}/../presidio-output/presidio-output-domain/src/main/resources/elasticsearch</location>
+                                    <location>
+                                        ${project.parent.build.directory}/../presidio-output/presidio-output-domain/src/main/resources/elasticsearch
+                                    </location>
                                 </source>
                             </sources>
                         </mapping>
@@ -232,17 +238,18 @@
                             export PRESIDIO_HOME=${rpm-maven-plugin.deployment_target_directory}
                             echo "Writing env variable PRESIDIO_HOME to /etc/profile"
                             echo "export PRESIDIO_HOME=/home/presidio/presidio-core/" >> /etc/profile -->
-                            <!--always upgrade presidio-workflows python package-->
 
                             echo "Executing Presidio Environment variables profile script"
                             bash ${env_var_profile_script}
 
-                            echo "Running upgrading presidio workflows"
+                            <!--always upgrade presidio-workflows python package-->
+                            echo "Running presidio workflows upgrade"
                             bash ${rpm-maven-plugin.workflows-upgrade-script-path}
 
                             echo "Running Python migration project"
                             <!-- post installation commands: -->
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
+                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
 
                             <!-- It takes 15 seconds for the config server to initialize -->
                             sleep 20
@@ -266,7 +273,6 @@
                             chmod 777 /home/presidio/presidio-core/
                             chmod 777 /home/presidio/
                             chmod 777 /home/
-
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
