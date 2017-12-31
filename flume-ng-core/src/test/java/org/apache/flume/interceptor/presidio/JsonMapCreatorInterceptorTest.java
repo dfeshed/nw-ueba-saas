@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class JsonMapCreatorInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\"}";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
@@ -63,7 +64,7 @@ public class JsonMapCreatorInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\"}";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
@@ -91,7 +92,7 @@ public class JsonMapCreatorInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\",\"isUserAdmin\":\"true\"}";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
@@ -119,7 +120,7 @@ public class JsonMapCreatorInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SIGNLE_KEY = "{\"name\": \"user\", \"ip\": \"127.0.0.1\",\"isUserAdmin\":\"true\", \"additionalInfo\" : { \"operationType\" : \"USER_AUTHENTICATED_THROUGH_KERBEROS\" } }";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);

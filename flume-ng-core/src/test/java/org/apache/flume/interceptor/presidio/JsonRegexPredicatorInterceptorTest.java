@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class JsonRegexPredicatorInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SINGLE_KEY = "{\"path\": \"\\\\ISILON8\\ifs\\3.68.11.1.txt\", \"ip\": \"127.0.0.1\"}";
 
         Event event = EventBuilder.withBody(EVENT_SINGLE_KEY, Charsets.UTF_8);

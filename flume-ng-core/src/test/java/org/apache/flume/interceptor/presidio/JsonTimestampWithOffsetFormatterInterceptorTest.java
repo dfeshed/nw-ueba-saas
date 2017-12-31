@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class JsonTimestampWithOffsetFormatterInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SIGNLE_KEY = "{\"origTime\": \"7/25/2017 5:34:35 PM\", \"offset\": \"1\"}";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);

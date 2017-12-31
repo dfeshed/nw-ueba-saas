@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SIGNLE_KEY = "{\"orig1\":\"old value\"}";
 
         Event event = EventBuilder.withBody(EVENT_SIGNLE_KEY, Charsets.UTF_8);
@@ -61,7 +62,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_MULTIPLE_KEY = "{\"orig1\": \"old value\", \"orig2\": \"old value\", \"orig3\": \"some prefix(old value) some suffix(old value)\"}";
 
         Event event = EventBuilder.withBody(EVENT_MULTIPLE_KEY, Charsets.UTF_8);
@@ -84,7 +85,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_NOT_JSON = "orig1";
 
         Event event = EventBuilder.withBody(EVENT_NOT_JSON, Charsets.UTF_8);

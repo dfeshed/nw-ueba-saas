@@ -26,6 +26,8 @@ public class SourceMongoRepositoryImpl implements SourceMongoRepository {
         final Query timeQuery = new Query(
                 Criteria.where(dateTimeField).gte(startDate).lt(endDate))
                 .with(new PageRequest(pageNum, pageSize));
+
+
         return mongoTemplate.find(timeQuery, AbstractDocument.class, collectionName);
     }
 }
