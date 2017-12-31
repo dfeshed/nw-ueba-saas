@@ -101,6 +101,7 @@ limitations under the License.
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <includes>
                         <include>${test.include.pattern}</include>
+                        <include>**/*Test.java</include>
                     </includes>
                     <excludes>
                         <exclude>**/*$*</exclude>
