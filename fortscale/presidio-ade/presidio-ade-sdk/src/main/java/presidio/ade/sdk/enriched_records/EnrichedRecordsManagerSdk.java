@@ -1,6 +1,7 @@
 package presidio.ade.sdk.enriched_records;
 
 import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.common.RunId;
 import presidio.ade.sdk.historical_runs.HistoricalRunsManagerSdk;
@@ -25,4 +26,10 @@ public interface EnrichedRecordsManagerSdk {
 	 */
 	void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records);
 
+	/**
+	 * Cleanup {@link EnrichedRecord}s that match the given parameters from the database.
+	 *
+	 * @param adeDataStoreCleanupParams the cleanup parameters
+	 */
+	void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams);
 }

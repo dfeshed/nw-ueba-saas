@@ -1,13 +1,13 @@
-package presidio.webapp.model.configuration;
+package fortscale.utils.swagger;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A JSONPatch document as defined by RFC 6902 (http://jsonpatch.com/)
@@ -20,11 +20,11 @@ public class PatchOperation {
      * The operation to be performed
      */
     public enum OpEnum {
-        ADD("add"),
-
-        REMOVE("remove"),
-
-        REPLACE("replace");
+        add("add"),
+        remove("remove"),
+        replace("replace"),
+        copy("copy"),
+        move("move");
 
         private String value;
 
@@ -56,7 +56,7 @@ public class PatchOperation {
     private String path = null;
 
     @JsonProperty("value")
-    private List<String> value = new ArrayList<String>();
+    private Object value = null;
 
     public PatchOperation op(OpEnum op) {
         this.op = op;
@@ -65,6 +65,7 @@ public class PatchOperation {
 
     /**
      * The operation to be performed
+     *
      * @return op
      **/
     @ApiModelProperty(required = true, value = "The operation to be performed")
@@ -83,6 +84,7 @@ public class PatchOperation {
 
     /**
      * Get path
+     *
      * @return path
      **/
     @ApiModelProperty(required = true, value = "")
@@ -94,22 +96,18 @@ public class PatchOperation {
         this.path = path;
     }
 
-    public PatchOperation value(List<String> value) {
+    public PatchOperation value(Object value) {
         this.value = value;
-        return this;
-    }
-
-    public PatchOperation addValueItem(String valueItem) {
-        this.value.add(valueItem);
         return this;
     }
 
     /**
      * Get value
+     *
      * @return value
      **/
     @ApiModelProperty(value = "")
-    public List<String> getValue() {
+    public Object getValue() {
         return value;
     }
 
@@ -119,7 +117,7 @@ public class PatchOperation {
 
 
     @Override
-    public boolean equals(java.lang.Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -153,12 +151,11 @@ public class PatchOperation {
      * Convert the given object to string with each line indented by 4 spaces
      * (except the first line).
      */
-    private String toIndentedString(java.lang.Object o) {
+    private String toIndentedString(Object o) {
         if (o == null) {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
     }
 }
-
 

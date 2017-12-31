@@ -1,7 +1,9 @@
 package presidio.security.manager.service;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import freemarker.template.Configuration;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -24,6 +26,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     public static final String KDC = "kdc";
     public static final String UPPER_CASE_REALM = "upperCaseRealmsName";
     public static final String REALM = "realmName";
+    public static final String PASSWORD = "password";
     private static final Logger logger = Logger.getLogger(ConfigurationSecurityService.class);
 
     private static final String LOCATION_TYPE = "jsonPath";
@@ -38,7 +41,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
     private final ConfigurationServerClientService configurationServerClientService;
 
     private final Configuration freeMakerConfiguration;
-    
+
     private final ObjectMapper mapper;
     private final String securityConfPath;
     private final String krb5ConfPath;
@@ -68,11 +71,16 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             final PresidioManagerConfiguration presidioManagerConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", PresidioManagerConfiguration.class);
 
             // Handle httpd conf
-            Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), Map.class);
+            Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), new TypeReference<Map<String, Object>>() {
+            });
+
+            final String password = (String) securityConfiguration.get(PASSWORD);
+            securityConfiguration.put(PASSWORD, password);
+
             String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE_FILENAME), securityConfiguration);
 
             File file = new File(securityConfPath);
-            fileWriter = new FileWriter(file,false);
+            fileWriter = new FileWriter(file, false);
             fileWriter.write(httpdConf);
 
             URI uri = new URI((String) securityConfiguration.get(LDAP_URL));
@@ -86,36 +94,35 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             String krb5Conf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(KRB5_CONF_TEMPLATE_FILENAME), securityConfiguration);
 
             File krb5ConfFile = new File(krb5ConfPath);
-            krb5ConfFileWriter = new FileWriter(krb5ConfFile,false);
+            krb5ConfFileWriter = new FileWriter(krb5ConfFile, false);
             krb5ConfFileWriter.write(krb5Conf);
 
 
         } catch (Exception e) {
             String msg = "failed to apply configuration";
-            logger.error(msg,e);
+            logger.error(msg, e);
             return false;
-        }
-
-        finally {
+        } finally {
             if (fileWriter != null) {
                 try {
                     fileWriter.close();
-                    krb5ConfFileWriter.close();
+                    if (krb5ConfFileWriter != null) {
+                        krb5ConfFileWriter.close();
+                    }
                 } catch (IOException e) {
                     logger.error("Failed to close filewriter.", e);
                 }
             }
         }
 
-        if(shouldReloadHttpd) {
+        if (shouldReloadHttpd) {
             return reloadHttpConfig();
-        }
-        else
-        {
+        } else {
             logger.warn("not reloading httpd config. you must be running a unit test... right?");
             return true;
         }
     }
+
 
     private ValidationResults validateSystemConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         ValidationResults validationResults = new ValidationResults();
@@ -142,9 +149,8 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
 
     private boolean reloadHttpConfig() {
         String s;
-        Process p=null;
+        Process p = null;
         logger.info("Reload apache httpd");
-//        String command = "/bin/sh -c sudo service " + webService  + " start";
         String command = "sudo /usr/bin/systemctl reload httpd";
 
         try {
@@ -156,7 +162,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
                 System.out.println("line: " + s);
             p.waitFor();
             // get the exit code
-            if (p.exitValue()==0){
+            if (p.exitValue() == 0) {
                 logger.info("HTTPD reloaded successfully");
                 return true;
             } else {
@@ -168,7 +174,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             logger.info("HTTPD restart failed");
             return false;
         } finally {
-            if (p!=null) {
+            if (p != null) {
                 p.destroy();
             }
         }

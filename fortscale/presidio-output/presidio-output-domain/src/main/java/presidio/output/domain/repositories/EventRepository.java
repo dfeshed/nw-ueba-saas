@@ -28,4 +28,5 @@ public interface EventRepository {
     EnrichedEvent findLatestEventForUser(String userId);
 
     void remove(String collectionName, Instant startDate, Instant endDate);
+
 }

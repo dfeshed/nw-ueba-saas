@@ -1,9 +1,7 @@
 from abc import ABCMeta, abstractmethod
-from airflow.utils.decorators import apply_defaults
 from presidio.utils.airflow.operators.spring_boot_jar_operator import SpringBootJarOperator
 from presidio.utils.airflow.context_wrapper import ContextWrapper
 from presidio.utils.services.time_service import convert_to_utc
-
 
 
 class ModelOperator(SpringBootJarOperator):
@@ -33,8 +31,8 @@ class ModelOperator(SpringBootJarOperator):
             'session_id': session_id
         }
 
-        retry_extra_params = {}
-        retry_extra_params['schedule_interval'] = self.interval
+        retry_extra_params = {'schedule_interval': self.interval}
+        kwargs['retry_callback'] = ModelOperator.handle_retry
 
         super(ModelOperator, self).__init__(
             task_id=self.task_id,
@@ -66,7 +64,6 @@ class ModelOperator(SpringBootJarOperator):
 
     @staticmethod
     def add_java_args(context):
-
         params = context['params']
         interval = params['retry_extra_params']['schedule_interval']
         context_wrapper = ContextWrapper(context)
@@ -76,7 +73,9 @@ class ModelOperator(SpringBootJarOperator):
         java_args = {
             'end_date': convert_to_utc(end_date)
         }
-        java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in java_args.iteritems())
+        java_args = ' '.join(
+            SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in java_args.iteritems()
+        )
         return java_args
 
     @abstractmethod
@@ -86,3 +85,11 @@ class ModelOperator(SpringBootJarOperator):
         """
         pass
 
+    @staticmethod
+    def handle_retry(context):
+        """
+        The modeling application does not need retries, as the "process" command itself builds models only for context
+        IDs that do not have models with the specified end instant - There is no need to rebuild models for context IDs
+        that do have models with the specified end instant.
+        """
+        pass
