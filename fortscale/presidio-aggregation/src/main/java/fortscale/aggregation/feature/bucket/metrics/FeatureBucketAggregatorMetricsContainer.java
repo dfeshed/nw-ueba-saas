@@ -70,7 +70,7 @@ public class FeatureBucketAggregatorMetricsContainer implements FlushableMetricC
     }
 
     public void incNullFeatureBucketId(String featureBucket, Instant logicalStartTime) {
-        incValue(featureBucket, MetricEnums.MetricValues.HIT, logicalStartTime);
+        incValue(featureBucket, MetricEnums.MetricValues.NULL_FEATURE_BUCKET_ID, logicalStartTime);
     }
 
     public void incFeatureBuckets(String featureBucket, Instant logicalStartTime) {
