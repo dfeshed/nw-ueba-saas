@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"value\"}";
 
@@ -56,7 +57,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"not-value\"}";
 
@@ -80,7 +81,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"ValUe\"}";
 
@@ -104,7 +105,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"XvalueX\"}";
 
@@ -128,7 +129,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"valueX\"}";
 
@@ -152,7 +153,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"Xvalue\"}";
 
@@ -176,7 +177,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"value\"}";
 
@@ -200,7 +201,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"Xvalue\"}";
 
@@ -224,7 +225,7 @@ public class PresidioJsonFieldComparisonFilterInterceptorBuilderTest {
         testSubjectBuilder.configure(ctx);
 
         final Interceptor interceptor = testSubjectBuilder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
 
         final String EVENT_SINGLE_KEY = "{\"orig1\":\"Xvalue\",\"orig2\":\"XXsome-valueXX\",\"orig3\":\"some-value\"}";
 

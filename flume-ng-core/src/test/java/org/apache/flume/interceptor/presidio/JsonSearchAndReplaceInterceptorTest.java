@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class JsonSearchAndReplaceInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_MULTIPLE_KEY = "{\"field1\": \"old value\", \"field2\": \"some-value\"}";
 
         Event event = EventBuilder.withBody(EVENT_MULTIPLE_KEY, Charsets.UTF_8);

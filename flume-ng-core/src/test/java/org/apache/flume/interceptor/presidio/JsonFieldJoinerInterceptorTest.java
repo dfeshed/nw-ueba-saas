@@ -7,6 +7,7 @@ import org.apache.flume.event.EventBuilder;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.tools.MockMonitorInitiator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class JsonFieldJoinerInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_SINGLE_KEY = "{\"folderName\":\"folder\",\"fileName\":\"file.txt\"}";
 
         Event event = EventBuilder.withBody(EVENT_SINGLE_KEY, Charsets.UTF_8);
@@ -64,7 +65,7 @@ public class JsonFieldJoinerInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_DOUBLE_KEY = "{\"folderName\":\"folder\",\"fileName\":\"file.txt\",\"fullPath\":\"file.txt\"}";
 
         Event event = EventBuilder.withBody(EVENT_DOUBLE_KEY, Charsets.UTF_8);
@@ -88,7 +89,7 @@ public class JsonFieldJoinerInterceptorTest {
         builder.configure(ctx);
 
         interceptor = builder.build();
-
+        MockMonitorInitiator.setMockMonitor(interceptor);
         final String EVENT_NOT_JSON = "orig1";
 
         Event event = EventBuilder.withBody(EVENT_NOT_JSON, Charsets.UTF_8);
