@@ -30,6 +30,6 @@ public class AdeDataServiceImpl implements AdeDataService {
     public void cleanup(Schema schema, Instant startDate, Instant endDate) {
         AdeDataStoreCleanupParams cleanupParams = new AdeDataStoreCleanupParams(startDate, endDate, schema.getName().toLowerCase());
         logger.info("Calling ADE SDK cleanup with cleanup params {}", cleanupParams);
-        adeManagerSdk.cleanup(cleanupParams);
+        adeManagerSdk.cleanupEnrichedRecords(cleanupParams);
     }
 }

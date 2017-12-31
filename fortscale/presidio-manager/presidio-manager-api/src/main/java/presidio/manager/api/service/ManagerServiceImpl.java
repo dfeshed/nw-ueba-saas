@@ -22,8 +22,9 @@ public class ManagerServiceImpl implements ManagerService {
 
     /**
      * C'tor
-     * @param managerDagIdPrefix dagId is construct from prefix and a hash of it's configuration. this is the prefix
-     * @param airflowApiClient client to preform queries on DAGs
+     *
+     * @param managerDagIdPrefix       dagId is construct from prefix and a hash of it's configuration. this is the prefix
+     * @param airflowApiClient         client to preform queries on DAGs
      * @param buildingBaselineDuration Duration used to determine weather we are still building baseline or not
      */
     public ManagerServiceImpl(String managerDagIdPrefix, AirflowApiClient airflowApiClient, Duration buildingBaselineDuration) {
@@ -35,19 +36,18 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     /**
-     *
      * ideally the manager should ask each component of it's cursor and give an accumulated response.
      * for simplicity reasons we currently ask only the full flow dag.
      */
     @Override
     public List<PipelineStateDataProcessingCursor> getCurrentlyRunningCursor() {
-        Map<String, DagExecutionStatus> dagStatusByState = airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(DagState.RUNNING,managerDagIdPrefix);
-        Set <PipelineStateDataProcessingCursor> resultSet = new HashSet<>();
-        for (String dagId: dagStatusByState.keySet()) {
+        Map<String, DagExecutionStatus> dagStatusByState = airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(DagState.RUNNING, managerDagIdPrefix);
+        Set<PipelineStateDataProcessingCursor> resultSet = new HashSet<>();
+        for (String dagId : dagStatusByState.keySet()) {
             // todo: instead of asking only the airflow client we should ask all the components
             List<TimeRange> timeRanges = dagStatusByState.get(dagId).getExecutionDates();
 
-            if(timeRanges !=null && !timeRanges.isEmpty()) {
+            if (timeRanges != null && !timeRanges.isEmpty()) {
                 List<PipelineStateDataProcessingCursor> timeCursors =
                         timeRanges.stream().map(PipelineStateDataProcessingCursor::new).collect(Collectors.toList());
 
@@ -58,7 +58,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     /**
-     *
      * ideally the manager should ask each component of it's cursor and give an accumulated response.
      * for simplicity reasons we currently ask only the full flow dag.
      * since control api is not implemented yet, we only return status of stopping&cleaning and running without asking the components, relying on the main dag.
@@ -70,7 +69,7 @@ public class ManagerServiceImpl implements ManagerService {
         Map<String, DagExecutionStatus> response = airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(DagState.RUNNING, managerDagIdPrefix);
 
         // stopped is a viable response only on system startup
-        if (response!=null && !response.isEmpty()) {
+        if (response != null && !response.isEmpty()) {
             TimeRange firstTimeRange = response.values().stream().map(DagExecutionStatus::getExecutionDates).flatMap(Collection::stream).min(TimeRange::compareTimeRange).get();
             // it's almost like assuming that there is only one dag. not error prune, but simple enough for the moment
             DagExecutionStatus firstRunningDag = response.values().stream().min(Comparator.comparing(DagExecutionStatus::getStartInstant)).get();
@@ -80,8 +79,7 @@ public class ManagerServiceImpl implements ManagerService {
             // todo: this logic should be given by ade manager sdk
             if (Duration.between(firstRunningDag.getStartInstant(), firstTimeRange.getStart()).compareTo(buildingBaselineDuration) < 0) {
                 statusEnum = PipelineState.StatusEnum.BUILDING_BASELINE;
-            }
-            else {
+            } else {
                 statusEnum = PipelineState.StatusEnum.RUNNING;
             }
         }
@@ -90,12 +88,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
+    public void cleanAndRun() {
+        // TODO: call the relevant dag
+        airflowApiClient.triggerDag("dagId");
     }
 }

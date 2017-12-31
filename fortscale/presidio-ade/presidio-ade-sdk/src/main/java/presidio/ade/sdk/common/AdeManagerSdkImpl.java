@@ -195,6 +195,11 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
+    public void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams) {
+        storeManagerAwareEnrichedDataStore.cleanup(adeDataStoreCleanupParams);
+    }
+
+    @Override
     public List<AdeScoredEnrichedRecord> findScoredEnrichedRecords(List<String> eventIds, String adeEventType, Double scoreThreshold) {
         return scoredEnrichedDataStore.findScoredEnrichedRecords(eventIds, adeEventType, scoreThreshold);
     }
@@ -206,7 +211,6 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
      * @param timeRange time line filtering param
      * @param distinctFieldName field to retrieve distinct values on
      * @param scoreThreshold distinct values would be fetched only for records having score greater then this value
-     * @return
      */
     @Override
     public List<String> findScoredEnrichedRecordsDistinctFeatureValues(String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold) {

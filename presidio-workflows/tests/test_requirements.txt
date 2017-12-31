@@ -5,3 +5,4 @@ requests
 pytz
 mock
 apache-airflow[devel]==1.8.2
+/home/presidio/.tox/distshare/presidio-workflows-extension-1.0.zip
