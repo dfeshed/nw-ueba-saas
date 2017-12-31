@@ -223,12 +223,9 @@
                         <script>
                             echo "Creating temp version file"
                             <!-- pre installation commands: -->
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 >
-                            ${rpm-maven-plugin.script.version_temp_file}
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >>
-                            ${rpm-maven-plugin.script.version_temp_file}
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >>
-                            ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                             <!-- end of post installation -->
                         </script>
                     </preinstallScriptlet>
@@ -259,8 +256,7 @@
 
                             <!--changing ownership of project main folder -->
                             #echo "Changing ownership of /project main repository"
-                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user}
-                            ${rpm-maven-plugin.deployment_target_directory}
+                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
 
                             #echo "Removing temporary files"
                             rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
@@ -285,8 +281,7 @@
                             <!-- pre remove commands -->
                             if [ "$1" = 0 ] ; then
                             echo "pre remove condition passed"
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
-                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
                             fi
 
                         </script>

@@ -51,6 +51,15 @@ public interface AirflowApiClient {
      *
      * @see this#triggerDag(String, String, JSONObject)
      */
+    default void triggerDag(String dagId) {
+        triggerDag(dagId, null, null);
+    }
+
+    /**
+     * syntactic sugar
+     *
+     * @see this#triggerDag(String, String, JSONObject)
+     */
     default void triggerDag(String dagId, String runId) {
         triggerDag(dagId, runId, null);
     }
@@ -73,13 +82,11 @@ public interface AirflowApiClient {
 
 
     /**
-     *
-     * @param state desired dags state
+     * @param state       desired dags state
      * @param dagIdPrefix prefix to filter dag id's by
      * @return {@link this#getDagExecutionDatesByState} only filtered by {@param dagIdPrefix} my return an empty response if scheduler has not started executing from task queue
-     *
      */
     default Map<String, DagExecutionStatus> getDagExecutionDatesByStateAndDagIdPrefix(DagState state, String dagIdPrefix) {
-        return getDagExecutionDatesByState(state).entrySet().stream().filter(entry -> entry.getKey().startsWith(dagIdPrefix)).collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+        return getDagExecutionDatesByState(state).entrySet().stream().filter(entry -> entry.getKey().startsWith(dagIdPrefix)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }
