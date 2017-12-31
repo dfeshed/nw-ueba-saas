@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.adapter.util.AdapterConfigurationUtil;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -25,6 +27,8 @@ public class FlumeAdapterExecutionServiceTest {
     private PresidioExecutionService flumeAdapterExecutionService;
     private ProcessExecutor mockProcessExecutor;
     private FlumeConfigurationUtil mockFlumeConfigurationUtil;
+    private AdapterConfigurationUtil mockAdapterConfigurationUtil;
+    private MongoTemplate mockedMongoTemplate;
     private PresidioInputPersistencyService mockPresidioInputPersistencyService;
     private String mockedFlumeHome;
     private String mockedConfFolder;
@@ -42,6 +46,8 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(0);
 
         mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
+        mockAdapterConfigurationUtil = Mockito.mock(AdapterConfigurationUtil.class);
+        mockedMongoTemplate = Mockito.mock(MongoTemplate.class);
         mockedFlumeHome = "some_flume_home" + File.separator;
         mockedConfFolder = mockedFlumeHome + "conf" + File.separator;
         mockedPropertiesFile = Paths.get("active_directory.properties").normalize().toString();
@@ -62,7 +68,7 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockFlumeConfigurationUtil.getFlumeExecutionConfFileArgument(mockedAfterTestsFilePath)).thenReturn("--conf-file " + mockedAfterTestsFilePath);
         Mockito.when(mockFlumeConfigurationUtil.createExecutionConfFile(Mockito.any(Schema.class), Mockito.any(Instant.class), Mockito.any(Instant.class))).thenReturn(mockedAfterTestsFilePath);
 
-        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, new AdapterConfigurationUtil(), mockPresidioInputPersistencyService, mongoTemplate);
+        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, mockAdapterConfigurationUtil, mockPresidioInputPersistencyService, mockedMongoTemplate);
 
     }
 
