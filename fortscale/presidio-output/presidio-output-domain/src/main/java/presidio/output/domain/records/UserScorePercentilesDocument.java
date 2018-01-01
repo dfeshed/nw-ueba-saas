@@ -12,7 +12,7 @@ import presidio.output.domain.records.users.User;
  *
  * Created by Efrat Noam on 12/5/17.
  */
-@Document(indexName = User.INDEX_NAME, type = User.USER_SCORE_THRESHOLDS_DOC_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_SCORE_THRESHOLDS_DOC_TYPE)
 public class UserScorePercentilesDocument extends AbstractElasticDocument {
 
     public static final String USER_SCORE_PERCENTILES_DOC_ID = "user-score-percentile-doc-id";
@@ -26,7 +26,9 @@ public class UserScorePercentilesDocument extends AbstractElasticDocument {
     @Field(type = FieldType.Double)
     private double ceilScoreForHighSeverity;
 
-    public UserScorePercentilesDocument() {}
+    public UserScorePercentilesDocument() {
+        super(USER_SCORE_PERCENTILES_DOC_ID);
+    }
 
     public UserScorePercentilesDocument(double ceilScoreForHighSeverity, double ceilScoreForMediumSeverity, double ceilScoreForLowSeverity) {
         setId(USER_SCORE_PERCENTILES_DOC_ID);
