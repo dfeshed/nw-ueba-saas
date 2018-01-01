@@ -3,6 +3,7 @@ package presidio.output.processor.services.alert.supportinginformation;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.domain.records.alerts.Indicator;
@@ -16,14 +17,15 @@ public interface SupportingInformationGenerator {
 
     Logger logger = Logger.getLogger(AlertServiceImpl.class);
 
-    default List<Indicator> generateSupportingInformation(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
+    default List<Indicator> generateSupportingInformation(SmartAggregationRecord smartAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
 
+        AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
         logger.debug("starting building supporting info for feature {}, indicator with ID {}", adeAggregationRecord.getFeatureName(), adeAggregationRecord.getId());
         List<Indicator> indicators = new ArrayList<>();
 
         try {
             // generate indicators
-            indicators = generateIndicators(adeAggregationRecord, alert, eventsLimit, eventsPageSize);
+            indicators = generateIndicators(smartAggregationRecord, alert, eventsLimit, eventsPageSize);
             if (CollectionUtils.isEmpty(indicators)) {
                 logger.warn("failed to generate indicators for adeAggregationRecord ID {}, feature {}", adeAggregationRecord.getId(), adeAggregationRecord.getFeatureName());
             }
@@ -54,7 +56,7 @@ public interface SupportingInformationGenerator {
         return indicators;
     }
 
-    List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) throws Exception;
+    List<Indicator> generateIndicators(SmartAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) throws Exception;
 
     List<IndicatorEvent> generateEvents(AdeAggregationRecord adeAggregationRecord, Indicator indicator, int eventsLimit, int eventsPageSize) throws Exception;
 

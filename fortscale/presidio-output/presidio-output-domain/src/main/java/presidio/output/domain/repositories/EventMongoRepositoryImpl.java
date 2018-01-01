@@ -5,6 +5,7 @@ import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -68,6 +69,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
         if (CollectionUtils.isNotEmpty(criterias)) {
             query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[criterias.size()])));
         }
+        query.with(new Sort(EnrichedEvent.START_INSTANT_FIELD));
         return query;
     }
 
