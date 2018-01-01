@@ -40,7 +40,7 @@ test('should return the initial state', function(assert) {
     loadMoreHostStatus: 'stopped',
     hostExportStatus: 'completed',
     hostExportLinkId: null,
-    totalItems: null,
+    totalItems: 0,
     pageNumber: null,
     listOfServices: null,
     hasNext: false

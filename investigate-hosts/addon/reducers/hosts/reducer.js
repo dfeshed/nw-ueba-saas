@@ -21,7 +21,7 @@ const initialState = Immutable.from({
   hostExportStatus: 'completed',
   hostExportLinkId: null,
 
-  totalItems: null,
+  totalItems: 0,
 
   hasNext: false,
 
@@ -106,7 +106,7 @@ const hosts = reduxActions.handleActions({
   },
   [ACTION_TYPES.FETCH_ALL_MACHINES]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', selectedHostList: [] }),
+      start: (s) => s.merge({ hostList: [], hostFetchStatus: 'wait', totalItems: 0, selectedHostList: [] }),
       failure: (s) => s.set('hostFetchStatus', 'error'),
       success: (s) => s.merge({
         hostList: action.payload.data.items,
