@@ -76,7 +76,7 @@ public class AlertServiceImpl implements AlertService {
         for (SmartAggregationRecord smartAggregationRecord : smart.getSmartAggregationRecords()) {
             AdeAggregationRecord aggregationRecord = smartAggregationRecord.getAggregationRecord();
             SupportingInformationGenerator supportingInformationGenerator = supportingInformationGeneratorFactory.getSupportingInformationGenerator(aggregationRecord.getAggregatedFeatureType().name());
-            supportingInfo.addAll(updateIndicatorsContributionScore(supportingInformationGenerator.generateSupportingInformation(aggregationRecord, alert, eventsLimit, eventsPageSize), smartAggregationRecord.getContribution()));
+            supportingInfo.addAll(supportingInformationGenerator.generateSupportingInformation(smartAggregationRecord, alert, eventsLimit, eventsPageSize));
         }
 
         if (CollectionUtils.isNotEmpty(supportingInfo)) {
@@ -110,12 +110,6 @@ public class AlertServiceImpl implements AlertService {
         alertPersistencyService.save(alerts);
     }
 
-    private List<Indicator> updateIndicatorsContributionScore(List<Indicator> indicators, double contributionScore) {
-        indicators.forEach(indicator -> {
-            indicator.setScoreContribution(contributionScore);
-        });
-        return indicators;
-    }
 
     private Map<String, Number> createIndicatorNameToContributionMap(List<Indicator> indicators) {
         Map<String, Number> map = new HashMap<>();
@@ -163,12 +157,5 @@ public class AlertServiceImpl implements AlertService {
     private AlertEnums.AlertTimeframe getStrategyFromSmart(SmartRecord smart) {
         String strategy = smart.getFixedDurationStrategy().toStrategyName().equals(FiXED_DURATION_HOURLY) ? HOURLY : DAILY;
         return AlertEnums.AlertTimeframe.getAlertTimeframe(strategy);
-    }
-
-    private List<String> extractIndicatorsNames(SmartRecord smart) {
-        return smart.getSmartAggregationRecords().stream()
-                .map(SmartAggregationRecord::getAggregationRecord)
-                .map(AdeAggregationRecord::getFeatureName)
-                .collect(Collectors.toList());
     }
 }
