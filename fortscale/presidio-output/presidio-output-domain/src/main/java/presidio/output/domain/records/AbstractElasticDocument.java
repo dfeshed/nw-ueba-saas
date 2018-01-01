@@ -42,6 +42,14 @@ public abstract class AbstractElasticDocument {
         this.updatedBy = Thread.currentThread().getName();
     }
 
+    public AbstractElasticDocument(String id) {
+        this.id = id;
+        Date date = new Date();
+        this.createdDate = date;
+        this.updatedDate = date;
+        this.updatedBy = Thread.currentThread().getName();
+    }
+
     public String getId() {
         return id;
     }
