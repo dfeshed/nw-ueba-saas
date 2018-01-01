@@ -74,6 +74,9 @@ public class UserScoreServiceModuleTest {
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
                 .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
                 .get();
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + UserScorePercentilesDocument.USER_SEVERITY_THRESHOLDS_DOC_TYPE)
+                .get();
     }
 
     @Test

@@ -19,7 +19,6 @@ import java.util.Set;
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
-    public static final String USER_SCORE_THRESHOLDS_DOC_TYPE = "userScoreThreshold";
 
     public static final String ALERT_CLASSIFICATIONS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";

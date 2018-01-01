@@ -4,7 +4,6 @@ package presidio.output.domain.records;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import presidio.output.domain.records.users.User;
 
 /**
  * Holds the user score threshold for high\medium\low score according to the
@@ -12,10 +11,11 @@ import presidio.output.domain.records.users.User;
  *
  * Created by Efrat Noam on 12/5/17.
  */
-@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_SCORE_THRESHOLDS_DOC_TYPE)
+@Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + UserScorePercentilesDocument.USER_SEVERITY_THRESHOLDS_DOC_TYPE, type = UserScorePercentilesDocument.USER_SEVERITY_THRESHOLDS_DOC_TYPE)
 public class UserScorePercentilesDocument extends AbstractElasticDocument {
 
     public static final String USER_SCORE_PERCENTILES_DOC_ID = "user-score-percentile-doc-id";
+    public static final String USER_SEVERITY_THRESHOLDS_DOC_TYPE = "user-severity-threshold";
 
     @Field(type = FieldType.Double)
     private double ceilScoreForLowSeverity;
