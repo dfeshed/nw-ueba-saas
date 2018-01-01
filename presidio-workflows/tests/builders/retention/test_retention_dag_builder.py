@@ -38,4 +38,4 @@ def test_valid_build():
 
     dag = RetentionDagBuilder('retention').build(dag)
 
-    assert dag.task_count == 4
+    assert dag.task_count == 6
