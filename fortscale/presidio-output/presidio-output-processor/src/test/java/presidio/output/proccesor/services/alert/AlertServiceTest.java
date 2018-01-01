@@ -413,8 +413,8 @@ public class AlertServiceTest {
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
         assertEquals(0.5d,alert.getIndicators().get(0).getScoreContribution(),0);
-        assertEquals(0.25,alert.getIndicators().get(0).getScoreContribution(),0);
-        assertEquals(0.5,alert.getIndicators().get(0).getScoreContribution(),0);
+        assertEquals(0.25d,alert.getIndicators().get(1).getScoreContribution(),0);
+        assertEquals(0.25d,alert.getIndicators().get(2).getScoreContribution(),0);
 
     }
 
