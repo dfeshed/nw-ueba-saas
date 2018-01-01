@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -72,12 +73,14 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
 
     @Override
-    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
+    public List<Indicator> generateIndicators(SmartAggregationRecord smartAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
+        AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
         List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         Pair<String, String> contextFieldAndValue = Pair.of(CommonStrings.CONTEXT_USERID, adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID));
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
         List<ScoredEnrichedEvent> distinctScoredEnrichedEvent = getDistinctScoredEnrichedEvent(adeAggregationRecord, indicatorConfig, contextFieldAndValue, timeRange, eventsLimit, eventsPageSize);
+        double eventsScore = distinctScoredEnrichedEvent.stream().mapToDouble(scoredEnrichedEvent -> scoredEnrichedEvent.getScore()).sum();
         for (ScoredEnrichedEvent scoredEnrichedEvent : distinctScoredEnrichedEvent) {
 
             Indicator indicator = new Indicator(alert.getId());
@@ -90,6 +93,7 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
             indicator.setAnomalyValue(featureValue);
             indicator.setSchema(indicatorConfig.getSchema());
             indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
+            indicator.setScoreContribution(scoredEnrichedEvent.getScore()/eventsScore*smartAggregationRecord.getContribution());
             indicators.add(indicator);
         }
         return indicators;
