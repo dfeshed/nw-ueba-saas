@@ -39,6 +39,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
     }
 
     private static final String SCHEMA = "schema";
@@ -139,14 +140,13 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     protected void monitorNumberOfUnassignableEvents(int number, String schema, Instant logicalHour) {
-        monitoringService.reportFailedEventMetric("UNASSIGNABLE_EVENTS",number);
+        monitoringService.reportFailedEventMetric("UNASSIGNABLE_EVENTS", number);
     }
 
     @Override
     protected void monitorUnknownError(int number, Instant logicalHour) {
-        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS",number);
+        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS", number);
     }
-
 
 
     @Override
@@ -179,11 +179,11 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
     public void setMonitorDetails(MonitorDetails monitorDetails) {
         FlumePresidioExternalMonitoringService.FlumeComponentType sink = FlumePresidioExternalMonitoringService.FlumeComponentType.SINK;
         String componentInstanceId = sink.name();
-        if (schema!=null){
+        if (schema != null) {
             monitorDetails.setSchema(schema.getName());
-            componentInstanceId = componentInstanceId+"_"+schema.getName();
+            componentInstanceId = componentInstanceId + "_" + schema.getName();
         }
 
-        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails,sink ,componentInstanceId);
+        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails, sink, componentInstanceId);
     }
 }
