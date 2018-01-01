@@ -3,9 +3,9 @@ package org.apache.flume.interceptor.presidio;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.CommonStrings;
+import org.apache.flume.Event;
 import org.apache.flume.FlumePresidioExternalMonitoringService;
 import org.apache.flume.FlumePresidioExternalMonitoringService.FlumeComponentType;
-import org.apache.flume.Event;
 import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.conf.MonitorDetails;
 import org.apache.flume.interceptor.Interceptor;
@@ -20,12 +20,13 @@ import java.util.List;
  * 1) for running flume as a batch process (init, run, stop) and not as a stream process (which is the default behaviour). A Presidio sink/source must also be used when using a Presidio interceptor.
  * 2) for using a metric service (that needs an application name).
  */
-public abstract class AbstractPresidioJsonInterceptor implements Interceptor,MonitorUses {
+public abstract class AbstractPresidioJsonInterceptor implements Interceptor, MonitorUses {
 
     private static final Logger logger = LoggerFactory
             .getLogger(AbstractPresidioJsonInterceptor.class);
 
     protected static final String EMPTY_STRING = "EMPTY_STRING";
+    protected static final String NULL_STRING = "NULL";
     protected FlumePresidioExternalMonitoringService monitoringService;
     protected String applicationName;
     protected String interceptorName;
@@ -51,7 +52,7 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor,Mon
         monitoringService.reportTotalEventMetric(1);
         try {
             Event eventResult = doIntercept(event);
-            if (eventResult==null){
+            if (eventResult == null) {
                 //Do nothing, expected from the implementation to report why the events filtered.
             } else {
                 monitoringService.reportSuccessEventMetric(1);
@@ -60,12 +61,12 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor,Mon
         } catch (ConfigurationException e) {
             logger.error("Bad configuration in {}. Dropping event. Exception: ",
                     this.getClass().getName(), e);
-            monitoringService.reportFailedEventMetric("FAILED_CONFIGURATION",1);
+            monitoringService.reportFailedEventMetric("FAILED_CONFIGURATION", 1);
             return null;
         } catch (Exception e) {
             logger.error("{} interception has failed. Dropping event. Exception: ",
                     this.getClass().getName(), e);
-            monitoringService.reportFailedEventMetric("INTERCEPTION_FAILED",1);
+            monitoringService.reportFailedEventMetric("INTERCEPTION_FAILED", 1);
             return null;
         }
     }
@@ -95,6 +96,6 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor,Mon
     @Override
     public void setMonitorDetails(MonitorDetails monitorDetails) {
 
-        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails, FlumeComponentType.INTERCEPTOR,this.interceptorName);
+        monitoringService = new FlumePresidioExternalMonitoringService(monitorDetails, FlumeComponentType.INTERCEPTOR, this.interceptorName);
     }
 }

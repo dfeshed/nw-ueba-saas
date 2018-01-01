@@ -54,7 +54,7 @@ public class JsonFieldValueReplacerInterceptorTest {
     @Test
     public void interceptMultipleKey() throws Exception {
         Context ctx = new Context();
-        ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value;orig3#[(].*?[)]>EMPTY_STRING;");
+        ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value;orig3#[(].*?[)]>EMPTY_STRING;orig4#.*>NULL");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.FIELD_DELIMITER_CONF_NAME, "#");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.VALUES_DELIMITER_CONF_NAME, ">");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
@@ -63,7 +63,7 @@ public class JsonFieldValueReplacerInterceptorTest {
 
         interceptor = builder.build();
         MockMonitorInitiator.setMockMonitor(interceptor);
-        final String EVENT_MULTIPLE_KEY = "{\"orig1\": \"old value\", \"orig2\": \"old value\", \"orig3\": \"some prefix(old value) some suffix(old value)\"}";
+        final String EVENT_MULTIPLE_KEY = "{\"orig1\": \"old value\", \"orig2\": \"old value\", \"orig3\": \"some prefix(old value) some suffix(old value)\", \"orig4\": \"notSUCCESSorFAILURE\"}";
 
         Event event = EventBuilder.withBody(EVENT_MULTIPLE_KEY, Charsets.UTF_8);
 
@@ -71,7 +71,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         String interceptValue = new String(event.getBody());
         Assert.assertNotSame(EVENT_MULTIPLE_KEY, interceptValue);
 
-        Assert.assertEquals("{\"orig1\":\"new value\",\"orig2\":\"new value\",\"orig3\":\"some prefix some suffix\"}", interceptValue);
+        Assert.assertEquals("{\"orig1\":\"new value\",\"orig2\":\"new value\",\"orig3\":\"some prefix some suffix\",\"orig4\":null}", interceptValue);
     }
 
     @Test

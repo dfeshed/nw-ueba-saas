@@ -53,6 +53,8 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInter
             currNewValue = replacement.newValue;
             if (currNewValue.equals(EMPTY_STRING)) {
                 currNewValue = "";
+            } else if (currNewValue.equals(NULL_STRING)) {
+                currNewValue = null;
             }
             final JsonElement realValueForField = eventBodyAsJson.get(currField);
             if (realValueForField != null && !realValueForField.isJsonNull()) {
@@ -60,8 +62,13 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInter
                 final Pattern compile = Pattern.compile(currValueToReplaceRegexValue);
                 Matcher matcher = compile.matcher(currRealValueAsString);
                 while (matcher.find()) {
-                    currRealValueAsString = currRealValueAsString.replaceFirst(currValueToReplaceRegexValue, currNewValue);
-                    matcher = compile.matcher(currRealValueAsString);
+                    if (currNewValue == null) {
+                        currRealValueAsString = null;
+                    } else {
+
+                        currRealValueAsString = currRealValueAsString.replaceFirst(currValueToReplaceRegexValue, currNewValue);
+                        matcher = compile.matcher(currRealValueAsString);
+                    }
                 }
                 eventBodyAsJson.addProperty(currField, currRealValueAsString);
             } else {
