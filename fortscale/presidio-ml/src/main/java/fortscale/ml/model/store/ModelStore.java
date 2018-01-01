@@ -43,14 +43,27 @@ public class ModelStore implements StoreManagerAware {
     /**
      * @param modelConf the {@link ModelConf}
      * @param sessionId the session ID
-     * @return the latest end time across all models created from the given model conf with the given session ID
+     * @param instant   the {@link Instant}
+     * @return the latest end instant across all models created from the given model
+     *         conf with the given session ID that is less than the given instant
      */
-    public Instant getLatestEndTime(ModelConf modelConf, String sessionId) {
+    public Instant getLatestEndInstantLt(ModelConf modelConf, String sessionId, Instant instant) {
         Query query = new Query()
                 .addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId))
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).lt(instant))
                 .with(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD));
         ModelDAO modelDao = mongoTemplate.findOne(query, ModelDAO.class, getCollectionName(modelConf));
         return modelDao == null ? null : modelDao.getEndTime();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getContextIdsWithModels(ModelConf modelConf, String sessionId, Instant endInstant) {
+        Query query = new Query()
+                .addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId))
+                .addCriteria(Criteria.where(ModelDAO.END_TIME_FIELD).is(Date.from(endInstant)));
+        return mongoTemplate
+                .getCollection(getCollectionName(modelConf))
+                .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
     }
 
     public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange) {
@@ -66,7 +79,7 @@ public class ModelStore implements StoreManagerAware {
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {
         String collectionName = getCollectionName(modelConf);
-        List<ModelDAO> queryResults = null;
+        List<ModelDAO> queryResults;
         Map<String, ModelDAO> contextIdToModelDaoMap = new HashMap<>();
         int pageIndex = 0;
         Date latestEndDate = Date.from(eventEpochtime);
@@ -82,7 +95,7 @@ public class ModelStore implements StoreManagerAware {
                 contextIdToModelDaoMap.put(modelDAO.getContextId(), modelDAO);
             }
             pageIndex++;
-        } while(queryResults != null && queryResults.size() == modelQueryPaginationSize);
+        } while (queryResults.size() == modelQueryPaginationSize);
         return contextIdToModelDaoMap.values();
     }
 
@@ -96,9 +109,7 @@ public class ModelStore implements StoreManagerAware {
                 .with(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD))
                 .limit(limit);
         logger.debug("Fetching latest model DAO for contextId = {} eventTime = {} collection = {}.", contextId, eventTime, collectionName);
-        List<ModelDAO> queryResult = mongoTemplate.find(query, ModelDAO.class, collectionName);
-
-        return queryResult;
+        return mongoTemplate.find(query, ModelDAO.class, collectionName);
     }
 
     public static String getCollectionName(ModelConf modelConf) {
