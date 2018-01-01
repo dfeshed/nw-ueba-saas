@@ -7,7 +7,7 @@ import { handleSetTo, handlePreference } from 'recon/reducers/util';
 
 const visualsInitialState = Immutable.from({
   defaultReconView: RECON_VIEW_TYPES_BY_NAME.TEXT, // view defaults to Text Analysis,
-  currentReconView: 'TEXT',
+  currentReconView: RECON_VIEW_TYPES_BY_NAME.TEXT,
   isHeaderOpen: true,
   isMetaShown: true,
   isReconExpanded: true,
@@ -40,26 +40,31 @@ const visuals = handleActions({
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
-    const isMetaShown = handlePreference(eventAnalysisPreferences, 'isMetaShown', state);
-    const isHeaderOpen = handlePreference(eventAnalysisPreferences, 'isHeaderOpen', state);
-    const isReconExpanded = handlePreference(eventAnalysisPreferences, 'isReconExpanded', state);
-    const isRequestShown = handlePreference(eventAnalysisPreferences, 'isRequestShown', state);
-    const isResponseShown = handlePreference(eventAnalysisPreferences, 'isResponseShown', state);
     const defaultLogFormat = handlePreference(eventAnalysisPreferences, 'defaultLogFormat', state);
     const defaultPacketFormat = handlePreference(eventAnalysisPreferences, 'defaultPacketFormat', state);
-    const reconView = handlePreference(eventAnalysisPreferences, 'currentReconView', state);
-
-    const defaultReconView = RECON_VIEW_TYPES_BY_NAME[reconView];
-
+    let currentReconView = handlePreference(eventAnalysisPreferences, 'currentReconView', state);
+    if (typeof currentReconView === 'string') {
+      currentReconView = RECON_VIEW_TYPES_BY_NAME[currentReconView];
+    }
     return state.merge({
-      isMetaShown,
-      isHeaderOpen,
-      isReconExpanded,
-      isRequestShown,
-      isResponseShown,
-      defaultReconView,
+      currentReconView,
       defaultLogFormat,
       defaultPacketFormat
+    });
+  },
+
+  [ACTION_TYPES.RESET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+    const defaultLogFormat = handlePreference(eventAnalysisPreferences, 'defaultLogFormat', visualsInitialState);
+    const defaultPacketFormat = handlePreference(eventAnalysisPreferences, 'defaultPacketFormat', visualsInitialState);
+    let currentReconView = handlePreference(eventAnalysisPreferences, 'currentReconView', visualsInitialState);
+    if (typeof currentReconView === 'string') {
+      currentReconView = RECON_VIEW_TYPES_BY_NAME[currentReconView];
+    }
+    return visualsInitialState.merge({
+      defaultLogFormat,
+      defaultPacketFormat,
+      currentReconView,
+      isReconOpen: state.isReconOpen
     });
   },
 

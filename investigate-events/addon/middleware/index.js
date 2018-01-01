@@ -27,7 +27,17 @@ if (config.environment !== 'test') {
       'packets.isPayloadOnly',
       'packets.hasStyledBytes',
       'packets.hasSignaturesHighlighted',
-      'text.decode'
+      'packets.packetsPageSize',
+      'text.decode',
+      'visuals.defaultReconView',
+      'visuals.currentReconView',
+      'visuals.isReconExpanded',
+      'visuals.isRequestShown',
+      'visuals.isResponseShown',
+      'visuals.isHeaderOpen',
+      'visuals.isMetaShown',
+      'visuals.defaultLogFormat',
+      'visuals.defaultPacketFormat'
     ]
   );
 

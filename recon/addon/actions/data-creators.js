@@ -31,8 +31,10 @@ import {
   batchTextData
 } from './fetch';
 import { packetTotal } from 'recon/reducers/header/selectors';
+import CookieStore from 'component-lib/session-stores/application';
+import { getStoredState } from 'redux-persist';
 
-let isPreferencesInitializedOnce = false;
+const cookieStore = CookieStore.create();
 
 /**
  * Will fetch and dispatch event meta
@@ -49,7 +51,7 @@ const _retrieveMeta = (dataState) => {
         onSuccess(data) {
           // have new meta, now need to possibly set to new recon view
           // and fetch data for that view
-          dispatch(_determineReconView(data, dataState.size));
+          dispatch(determineReconView(data));
         },
         onFailure() {
           warn('Could not retrieve event meta');
@@ -356,7 +358,7 @@ const initializeRecon = (reconInputs) => {
       if (!reconInputs.meta) {
         dispatch(_retrieveMeta(reconInputs));
       } else {
-        dispatch(_determineReconView(reconInputs.meta, reconInputs.size));
+        dispatch(determineReconView(reconInputs.meta));
       }
     }
   };
@@ -386,41 +388,39 @@ const _checkForFatalApiError = (code) => {
  * or when it is retrieved
  * @private
  */
-const _determineReconView = (meta, size) => {
+const determineReconView = (meta) => {
   return (dispatch, getState) => {
     const { forcedView } = eventTypeFromMetaArray(meta);
-    /*
-    * For the first time, default preferences should be picked from backend
-    * Also only for the packet event,default analysis view should be picked from backend
-    * Hence if condition is evaluated for the first time
-    * and for subsequent calls of Network events
-    */
-    if (!isPreferencesInitializedOnce || !forcedView) {
-      isPreferencesInitializedOnce = true;
-      const prefService = lookup('service:preferences');
-      prefService.getPreferences('investigate-events-preferences').then((data) => {
-        if (data) {
+    /* Check the flag in authenticated cookie */
+    let authObj = {};
+    cookieStore.restore().then(({ authenticated = {} }) => {
+      authObj = authenticated;
+    }).finally(() => {
+      if (!authObj.reconPrefInitialized) {
+        const prefService = lookup('service:preferences');
+        /* For the first time after login, get default prefs from backend and override */
+        prefService.getPreferences('investigate-events-preferences').then((data) => {
           dispatch({
-            type: ACTION_TYPES.SET_PREFERENCES,
-            payload: data
+            type: ACTION_TYPES.RESET_PREFERENCES,
+            payload: data || {}
           });
-          // We need to set default value of packetsPageSize
-          dispatch(changePacketsPerPage(data.eventAnalysisPreferences.packetsPageSize));
-        }
-        // it should be called after the value for 'isMetaShown' is fetched from the backend
-        if (size !== 'full') {
-          dispatch({
-            type: ACTION_TYPES.TOGGLE_EXPANDED,
-            payload: { setTo: size === 'max' }
-          });
-        }
-        const newView = forcedView || getState().recon.visuals.defaultReconView;
-        dispatch(setNewReconView(newView));
-      });
-    } else {
-      // For log event default analysis view should be text always so it comes to else part
-      dispatch(setNewReconView(forcedView));
-    }
+          authObj.reconPrefInitialized = true;
+          cookieStore.persist({ authenticated: authObj });
+          const newView = forcedView || getState().recon.visuals.currentReconView;
+          dispatch(setNewReconView(newView));
+        });
+      } else if (forcedView) {
+        dispatch(setNewReconView(forcedView));
+      } else {
+        getStoredState({}, (err, storedState) => {
+          let newView = getState().recon.visuals.defaultReconView;
+          if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
+            newView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
+          }
+          dispatch(setNewReconView(newView));
+        });
+      }
+    });
   };
 };
 
@@ -559,5 +559,6 @@ export {
   teardownNotifications,
   toggleMetaData,
   togglePayloadOnly,
-  jumpToPage
+  jumpToPage,
+  determineReconView
 };
