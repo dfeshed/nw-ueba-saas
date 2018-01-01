@@ -202,8 +202,11 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
             String fieldValue = anomalyFiltersConfig.getFieldValue();
-            Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.add(Pair.of(anomalyFiltersConfig.getFieldName(), featureValue));
+            String[] values = StringUtils.split(fieldValue, ",");
+            for (String value : values) {
+                Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
+                features.add(Pair.of(anomalyFiltersConfig.getFieldName(), featureValue));
+            }
         }
         Collection<ScoredEnrichedEvent> featureValues =
                 scoredEventService.findDistinctScoredEnrichedEvent(indicatorConfig.getSchema(),

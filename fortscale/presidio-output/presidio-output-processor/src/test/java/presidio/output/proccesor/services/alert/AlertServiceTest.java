@@ -227,7 +227,7 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
-        generateAuthenticationEvents(2, eventTime);
+        generateAuthenticationEvents(2, eventTime,"scored_enriched.authentication.srcMachine.userId.authentication.score");
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
@@ -235,6 +235,33 @@ public class AlertServiceTest {
         assertEquals(1, alert.getIndicatorsNum());
         assertTrue(alert.getIndicators().get(0).getStartDate().toInstant().isAfter(startDate));
         assertTrue(alert.getIndicators().get(0).getStartDate().toInstant().isBefore(endDate));
+    }
+
+
+    @Test
+    public void testIndicatorWithMultipleAnomalyFilters() {
+        User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
+        SmartRecord smart = generateSingleSmart(60);
+        Instant eventTime = Instant.now();
+        Instant startDate = eventTime.minus(10, ChronoUnit.MINUTES);
+        Instant endDate = eventTime.plus(10, ChronoUnit.MINUTES);
+
+
+        // indicator
+        AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(startDate, endDate, "sumOfHighestOperationTypeScoresUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
+                +10d, "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
+
+        List<String> categories = Arrays.asList("GROUP_MEMBERSHIP","SECURITY_SENSITIVE_OPERATION");
+        generateActiveDirectoryEvents(2, eventTime,"scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score","PASSWORD_CHANGED",categories);
+
+        Alert alert = alertService.generateAlert(smart, userEntity, 50);
+
+        assertNotNull(alert);
+        assertEquals(1, alert.getIndicatorsNum());
+        assertEquals(2, alert.getIndicators().get(0).getEventsNum());
     }
 
     @Test
@@ -338,7 +365,7 @@ public class AlertServiceTest {
                 100.0, "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
         // raw event
-        generateAuthenticationEvents(1, aggregationRecord.getStartInstant());
+        generateAuthenticationEvents(1, aggregationRecord.getStartInstant(),"scored_enriched.authentication.srcMachine.userId.authentication.score");
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
@@ -401,7 +428,7 @@ public class AlertServiceTest {
     }
 
 
-    private void generateAuthenticationEvents(int eventsNum, Instant startEventTime) {
+    private void generateAuthenticationEvents(int eventsNum, Instant startEventTime, String adeEventType) {
         Instant now = Instant.now();
         String schema = Schema.AUTHENTICATION.toString();
 
@@ -422,8 +449,33 @@ public class AlertServiceTest {
             mongoTemplate.save(enrichedAuthenticationEventRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.AUTHENTICATION.getName().toLowerCase()));
 
             // generate scored ade events
-            AdeScoredEnrichedRecord authenticationScoredEnrichedEvent = new AdeScoredAuthenticationRecord(enrichedAuthenticationEventRecord.getStartInstant(), "scored_enriched.authentication.srcMachine.userId.authentication.score", "authentication", 10.0d, new ArrayList<FeatureScore>(), enrichedAuthenticationEventRecord);
-            mongoTemplate.save(authenticationScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName("scored_enriched.authentication.srcMachine.userId.authentication.score"));
+            AdeScoredEnrichedRecord authenticationScoredEnrichedEvent = new AdeScoredAuthenticationRecord(enrichedAuthenticationEventRecord.getStartInstant(), adeEventType, "authentication", 10.0d, new ArrayList<FeatureScore>(), enrichedAuthenticationEventRecord);
+            mongoTemplate.save(authenticationScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName(adeEventType));
+        }
+    }
+
+    private void generateActiveDirectoryEvents(int eventsNum, Instant startEventTime, String adeEventType, String opertaionType, List<String> operationTypeCategories) {
+        Instant now = Instant.now();
+        String schema = Schema.ACTIVE_DIRECTORY.toString();
+
+        for (int i = 1; i <= eventsNum; i++) {
+
+            // generate output events
+            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), false,"");
+            mongoTemplate.save(activeDirectoryEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
+
+            // generate ade events
+            EnrichedActiveDirectoryRecord enrichedActiveDirectoryRecord = new EnrichedActiveDirectoryRecord(activeDirectoryEvent.getEventDate());
+            enrichedActiveDirectoryRecord.setUserId("userId");
+            enrichedActiveDirectoryRecord.setEventId(activeDirectoryEvent.getEventId());
+            enrichedActiveDirectoryRecord.setOperationType(activeDirectoryEvent.getOperationType());
+            enrichedActiveDirectoryRecord.setOperationTypeCategories(activeDirectoryEvent.getOperationTypeCategories());
+            enrichedActiveDirectoryRecord.setResult(activeDirectoryEvent.getResult());
+            mongoTemplate.save(enrichedActiveDirectoryRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY.getName().toLowerCase()));
+
+            // generate scored ade events
+            AdeScoredEnrichedRecord activeDirectoryScoredEnrichedEvent = new AdeScoredActiveDirectoryRecord(enrichedActiveDirectoryRecord.getStartInstant(), adeEventType, "active_directory", 10.0d, new ArrayList<FeatureScore>(), enrichedActiveDirectoryRecord);
+            mongoTemplate.save(activeDirectoryScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName(adeEventType));
         }
     }
 
