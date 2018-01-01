@@ -71,6 +71,10 @@ public class InputExecutionServiceTest {
         mongoTemplate.dropCollection(outputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
         mongoTemplate.dropCollection(adeToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION.toString().toLowerCase()));
         mongoTemplate.dropCollection(inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
+
+        mongoTemplate.dropCollection(outputToCollectionNameTranslator.toCollectionName(Schema.FILE));
+        mongoTemplate.dropCollection(adeToCollectionNameTranslator.toCollectionName(Schema.FILE.toString().toLowerCase()));
+        mongoTemplate.dropCollection(inputToCollectionNameTranslator.toCollectionName(Schema.FILE));
     }
 
     @Test
