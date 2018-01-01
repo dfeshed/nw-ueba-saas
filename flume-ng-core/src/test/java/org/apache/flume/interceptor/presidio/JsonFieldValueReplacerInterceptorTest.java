@@ -54,7 +54,7 @@ public class JsonFieldValueReplacerInterceptorTest {
     @Test
     public void interceptMultipleKey() throws Exception {
         Context ctx = new Context();
-        ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>new value;orig2#old value>new value;orig3#[(].*?[)]>EMPTY_STRING;orig4#.*>NULL");
+        ctx.put(JsonFieldValueReplacerInterceptor.Builder.REPLACEMENTS_CONF_NAME, "orig1#old value>SUCCESS;orig2#old value>new value;orig3#[(].*?[)]>EMPTY_STRING;orig4#.*>NULL;orig1#^(?!.*(^SUCCESS$|^FAILURE$)).*$>NULL;orig2#^(?!.*(^SUCCESS$|^FAILURE$)).*$>NULL");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.FIELD_DELIMITER_CONF_NAME, "#");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.VALUES_DELIMITER_CONF_NAME, ">");
         ctx.put(JsonFieldValueReplacerInterceptor.Builder.DELIMITER_CONF_NAME, ";");
@@ -71,7 +71,7 @@ public class JsonFieldValueReplacerInterceptorTest {
         String interceptValue = new String(event.getBody());
         Assert.assertNotSame(EVENT_MULTIPLE_KEY, interceptValue);
 
-        Assert.assertEquals("{\"orig1\":\"new value\",\"orig2\":\"new value\",\"orig3\":\"some prefix some suffix\",\"orig4\":null}", interceptValue);
+        Assert.assertEquals("{\"orig1\":\"SUCCESS\",\"orig2\":null,\"orig3\":\"some prefix some suffix\",\"orig4\":null}", interceptValue);
     }
 
     @Test
