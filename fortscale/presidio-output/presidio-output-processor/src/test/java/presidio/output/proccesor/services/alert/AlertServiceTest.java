@@ -358,25 +358,18 @@ public class AlertServiceTest {
     public void testAlertWithSourceMachineTransformer() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
+        Instant startDate = Instant.parse("2017-05-23T15:00:00.000Z");
+        Instant endDate = Instant.parse("2017-05-23T16:00:00.000Z");
 
-        Instant startDate = Instant.parse("2010-01-23T15:00:00.000Z");
-        Instant endDate = Instant.parse("2010-01-23T16:00:00.000Z");
-
-        // score aggr indicator
-        AdeAggregationRecord scoreAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
+        // indicator
+        AdeAggregationRecord aggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
                 100.0, "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
-        generateFileEvents(2, scoreAggregationRecord.getStartInstant(),"scored_enriched.file.operationType.userIdFileAction.file.score","FOLDER_OWNERSHIP_CHANGED",Arrays.asList("FILE_PERMISSION_CHANGE"));
 
-        // feature aggr indicator
-        AdeAggregationRecord featureAggregationRecord = new ScoredFeatureAggregationRecord(10.0, new ArrayList<>(), startDate, endDate, "numberOfSuccessfulFilePermissionChangesUserIdFileHourly",
-                +2000d, "numberOfSuccessfulFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
-
-
-        SmartAggregationRecord smartScoreAggregationRecord = new SmartAggregationRecord(scoreAggregationRecord);
-        smartScoreAggregationRecord.setContribution(0.5);
-        SmartAggregationRecord smartFeatureAggregationRecord = new SmartAggregationRecord(scoreAggregationRecord);
-        smartFeatureAggregationRecord.setContribution(0.5);
-        smart.setSmartAggregationRecords(Arrays.asList(smartScoreAggregationRecord, smartFeatureAggregationRecord));
+        // raw event
+        generateAuthenticationEvents(1, aggregationRecord.getStartInstant(),"scored_enriched.authentication.srcMachine.userId.authentication.score");
+        SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
+        smartAggregationRecord.setContribution(0.3);
+        smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
         assertNotNull(alert);
