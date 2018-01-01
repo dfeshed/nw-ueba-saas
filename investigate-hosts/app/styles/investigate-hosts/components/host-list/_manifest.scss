@@ -37,8 +37,6 @@ $filter-panel-width: 250px;
 
   .favourite-filters {
     padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-    overflow-y: scroll;
-    overflow: auto
   }
 
   .filter-list__item {
@@ -59,6 +57,7 @@ $filter-panel-width: 250px;
 
   .filter-list__item-label {
     display: inline-block;
+    width: 160px;
   }
 
   .host-table{
