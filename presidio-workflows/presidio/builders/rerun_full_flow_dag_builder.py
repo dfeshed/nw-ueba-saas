@@ -210,7 +210,7 @@ def build_mongo_clean_bash_operator(cleanup_dag, is_remove_ca_tables):
     mongo_clean_bash_command = "mongo presidio -u presidio -p P@ssw0rd --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system') %s)  {print('dropping: ' +t); db.getCollection(t).drop();}});\""
     if not is_remove_ca_tables:
         # we want to keep the ca tables
-        mongo_clean_bash_command = mongo_clean_bash_command % "|| 0==t.startsWith('ca_')"
+        mongo_clean_bash_command = mongo_clean_bash_command % "&& 0==t.startsWith('ca_')"
     else:
         mongo_clean_bash_command = mongo_clean_bash_command % ""
     clean_mongo_operator = BashOperator(task_id='clean_mongo',
