@@ -19,7 +19,6 @@ import java.util.Set;
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
-    public static final String USER_SCORE_THRESHOLDS_DOC_TYPE = "userScoreThreshold";
 
     public static final String ALERT_CLASSIFICATIONS_FIELD_NAME = "alertClassifications";
     public static final String INDICATORS_FIELD_NAME = "indicators";
@@ -31,7 +30,6 @@ public class User extends AbstractElasticDocument {
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
-    public static final String ID_FIELD_NAME = "id";
 
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
