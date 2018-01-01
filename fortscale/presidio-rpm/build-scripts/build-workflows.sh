@@ -5,7 +5,7 @@
 echo "Current location: $PWD"
 
 echo "building presidio_extension"
-cd ../../../presidio-workflows-extension/
+cd ../../presidio-workflows-extension/
 python setup.py bdist_egg --dist-dir ../fortscale/target/eggs --build_number=$1
 echo "finished building presidio_extension"
 
