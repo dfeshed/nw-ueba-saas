@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
 
-from presidio.builders.presidio_core_dag_builder import PresidioCoreDagBuilder
+from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuilder
 from presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator import RootDagGapSensorOperator
 
 def get_presidio_core_sub_dag_operator(dag, data_sources):

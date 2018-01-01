@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 
-from presidio.builders.core.presidio_core_dag_builder import PresidioCoreDagBuilder
+from presidio.builders.retention.retention_dag_builder import RetentionDagBuilder
 from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
 
 FIX_DURATION_STRATEGY_HOURLY = timedelta(hours=1)
@@ -13,11 +13,11 @@ FIX_DURATION_STRATEGY_DAILY = timedelta(days=1)
 def test_valid_build():
     """
 
-    Test valid presidio core dag build
+    Test valid adapter dag build
     :return:
     """
 
-    logging.info('Test valid presidio core dag build')
+    logging.info('Test valid retention dag build')
     ConfigServerConfigurationReaderTestBuilder().build()
 
     default = datetime(2014, 5, 13, 13, 00, 2)
@@ -31,13 +31,11 @@ def test_valid_build():
         'email_on_retry': False,
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
-        'hourly_smart_events_confs': '',
-        'daily_smart_events_confs': '',
     }
 
     dag = DAG(
-        "presidio_core_test_dag", default_args=default_args, schedule_interval=timedelta(minutes=5), start_date=default)
+        "retention_test_dag", default_args=default_args, schedule_interval=timedelta(minutes=5))
 
-    dag = PresidioCoreDagBuilder(['dlpfile']).build(dag)
+    dag = RetentionDagBuilder('retention').build(dag)
 
     assert dag.task_count == 6
