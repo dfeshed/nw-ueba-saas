@@ -1,6 +1,7 @@
 package presidio.input.sdk.impl.services;
 
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.core.EventResult;
@@ -108,6 +109,21 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         List<FileRawEvent> all = mongoTemplate.findAll(FileRawEvent.class, ((InputToCollectionNameTranslator) toCollectionNameTranslator).toCollectionName(Schema.FILE));
         Assert.assertEquals(1, numberOfEventsDeleted);
         Assert.assertEquals(1, all.size());
+    }
+
+    @Test
+    public void storeFileEvent_isDriveSharedIsNull_shouldKeepNullValue() {
+        FileRawEvent event = createEvent(Instant.now());
+        event.setIsDstDriveShared(null);
+        event.setIsSrcDriveShared(null);
+        List<AbstractAuditableDocument> eventsList = new ArrayList<>();
+        eventsList.add(event);
+        presidioInputPersistencyService.store(Schema.FILE, eventsList);
+
+        List<FileRawEvent> storedEvetns = mongoTemplate.findAll(FileRawEvent.class, ((InputToCollectionNameTranslator) toCollectionNameTranslator).toCollectionName(Schema.FILE));
+        Assert.assertEquals(1, storedEvetns.size());
+        Assert.assertEquals(null, storedEvetns.get(0).getIsDstDriveShared());
+        Assert.assertEquals(null, storedEvetns.get(0).getIsSrcDriveShared());
     }
 
     public FileRawEvent createEvent(Instant time) {

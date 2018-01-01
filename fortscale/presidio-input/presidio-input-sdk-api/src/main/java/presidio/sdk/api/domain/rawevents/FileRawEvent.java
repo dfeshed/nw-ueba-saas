@@ -23,13 +23,13 @@ public class FileRawEvent extends AbstractInputDocument {
     private String srcFilePath;
 
     @Field(IS_SRC_DRIVE_SHARED_FIELD_NAME)
-    private boolean isSrcDriveShared;
+    private Boolean isSrcDriveShared;
 
     @Field(DST_FILE_PATH_FIELD_NAME)
     private String dstFilePath;
 
     @Field(IS_DST_DRIVE_SHARED_FIELD_NAME)
-    private boolean isDstDriveShared;
+    private Boolean isDstDriveShared;
 
     @Field(FILE_SIZE_FIELD_NAME)
     private Long fileSize;
@@ -48,8 +48,8 @@ public class FileRawEvent extends AbstractInputDocument {
 
     public FileRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                         List<String> operationTypeCategory, EventResult result, String userName, String userDisplayName,
-                        Map<String, String> additionalInfo, String srcFilePath, boolean isSrcDriveShared,
-                        String dstFilePath, boolean isDstDriveShared, Long fileSize, String resultCode) {
+                        Map<String, String> additionalInfo, String srcFilePath, Boolean isSrcDriveShared,
+                        String dstFilePath, Boolean isDstDriveShared, Long fileSize, String resultCode) {
         super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.srcFilePath = srcFilePath;
         this.isSrcDriveShared = isSrcDriveShared;
@@ -82,38 +82,21 @@ public class FileRawEvent extends AbstractInputDocument {
         this.fileSize = fileSize;
     }
 
-    public boolean getIsSrcDriveShared() {
+    public Boolean getIsSrcDriveShared() {
         return isSrcDriveShared;
     }
 
-    public void setIsSrcDriveShared(boolean srcDriveShared) {
+    public void setIsSrcDriveShared(Boolean srcDriveShared) {
         isSrcDriveShared = srcDriveShared;
     }
 
-    public boolean getIsDstDriveShared() {
+    public Boolean getIsDstDriveShared() {
         return isDstDriveShared;
     }
 
-    public void setIsDstDriveShared(boolean dstDriveShared) {
+    public void setIsDstDriveShared(Boolean dstDriveShared) {
         isDstDriveShared = dstDriveShared;
     }
-
-    public boolean isSrcDriveShared() {
-        return isSrcDriveShared;
-    }
-
-    public void setSrcDriveShared(boolean srcDriveShared) {
-        isSrcDriveShared = srcDriveShared;
-    }
-
-    public boolean isDstDriveShared() {
-        return isDstDriveShared;
-    }
-
-    public void setDstDriveShared(boolean dstDriveShared) {
-        isDstDriveShared = dstDriveShared;
-    }
-
 
     @Override
     public String toString() {
