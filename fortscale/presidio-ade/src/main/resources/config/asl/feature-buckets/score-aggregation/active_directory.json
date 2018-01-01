@@ -295,30 +295,6 @@
       ]
     },
     {
-      "name": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "userId"
-      ],
-      "adeEventTypes": [
-        "scored_enriched.active_directory.nestedMemberAddedToCriticalGroup.userId.activeDirectory.score"
-      ],
-      "strategyName": "fixed_duration_hourly",
-      "aggrFeatureConfs": [
-        {
-          "name": "nestedMemberAddedToCriticalEnterpriseGroupScore",
-          "featureNamesMap": {
-            "maximize": [
-              "score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        }
-      ]
-    },
-    {
       "name": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [

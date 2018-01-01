@@ -225,25 +225,6 @@
       }
     },
     {
-      "name": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
-      "type": "P",
-      "bucketConfName": "nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
-      "aggregatedFeatureNamesMap": {
-        "pick": [
-          "nestedMemberAddedToCriticalEnterpriseGroupScore"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
-      }
-    },
-    {
       "name": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",

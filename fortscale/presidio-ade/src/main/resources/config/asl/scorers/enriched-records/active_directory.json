@@ -166,13 +166,6 @@
             },
             {
               "type": "constant-regex-scorer",
-              "name": "nestedMemberAddedToCriticalGroup.userId.activeDirectory.score",
-              "regex": "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
               "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
               "regex": "MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP",
               "regex-field-name": "operationType",

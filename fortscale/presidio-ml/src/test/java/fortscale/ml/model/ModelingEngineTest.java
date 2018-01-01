@@ -10,15 +10,9 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import presidio.monitoring.services.MetricCollectingService;
-import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 
@@ -32,7 +26,6 @@ public class ModelingEngineTest {
 	private IModelBuilder builder;
 	private ModelStore store;
 	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
-	private IModelBuilderConf modelBuilderConf;
 
 	@Before
 	public void before() {
@@ -42,8 +35,7 @@ public class ModelingEngineTest {
 		builder = mock(IModelBuilder.class);
 		store = mock(ModelStore.class);
 		when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-		modelBuilderConf = mock(IModelBuilderConf.class);
-		when(modelConf.getModelBuilderConf()).thenReturn(modelBuilderConf);
+		when(modelConf.getModelBuilderConf()).thenReturn(mock(IModelBuilderConf.class));
 		when(modelConf.getModelBuilderConf().getFactoryName()).thenReturn("testFactoryName");
 		when(modelConf.getName()).thenReturn("testName");
 		modelingServiceMetricsContainer = mock(ModelingServiceMetricsContainer.class);
@@ -62,7 +54,7 @@ public class ModelingEngineTest {
 		ModelingEngine modelingEngine = prepareMocks(latestEndTime, contextIds, modelTimeRange, models, successes);
 		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
 
-		verify(store).getLatestEndTime(eq(modelConf), eq(DEFAULT_SESSION_ID));
+		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(new TimeRange(latestEndTime, modelTimeRange.getEnd())));
 		Date endTime = Date.from(modelTimeRange.getEnd());
 
@@ -74,6 +66,7 @@ public class ModelingEngineTest {
 		}
 
 		verify(builder, times(contextIds.size())).build(any());
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(selector, retriever, builder, store);
 	}
 
@@ -93,6 +86,7 @@ public class ModelingEngineTest {
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
 		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange));
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
 
@@ -108,12 +102,13 @@ public class ModelingEngineTest {
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
 		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
 
-		verify(store).getLatestEndTime(eq(modelConf), eq(DEFAULT_SESSION_ID));
+		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(modelTimeRange));
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq("contextId1"), eq(endTime));
 		verify(builder).build(any());
 		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq("contextId1"), eq(models.get(0)), eq(modelTimeRange));
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(selector, retriever, builder, store);
 	}
 
@@ -133,6 +128,7 @@ public class ModelingEngineTest {
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
 		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange));
+		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
 
@@ -144,8 +140,9 @@ public class ModelingEngineTest {
 			List<Boolean> successes) {
 
 		if (selector != null) {
-			when(store.getLatestEndTime(eq(modelConf), eq(DEFAULT_SESSION_ID))).thenReturn(latestEndTime);
-			Set<String> setOfContextIds = contextIds.stream().collect(Collectors.toSet());
+			when(store.getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd())))
+					.thenReturn(latestEndTime);
+			Set<String> setOfContextIds = new HashSet<>(contextIds);
 			when(selector.getContexts(any(TimeRange.class))).thenReturn(setOfContextIds);
 		}
 
