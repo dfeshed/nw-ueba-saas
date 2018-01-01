@@ -8,7 +8,6 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from copy import copy
-from datetime import datetime
 from elasticsearch import Elasticsearch
 
 
@@ -18,7 +17,7 @@ class RerunFullFlowDagBuilder(object):
     """
 
     @classmethod
-    def build(cls, is_remove_ca_tables, dag_id):
+    def build(cls, dag ,is_remove_ca_tables):
         """
         Receives a rerun full flow DAG, creates the operators, links them to the DAG and
         configures the dependencies between them.
@@ -31,21 +30,19 @@ class RerunFullFlowDagBuilder(object):
         dag_models = get_dag_models_by_prefix("full_flow")
         dag_ids_to_clean = map(lambda x: x.dag_id, dag_models)
 
-        rerun_full_flow_dag = DAG(dag_id=dag_id, schedule_interval=None, start_date=datetime(2015, 6, 1))
+        pause_dags_operator = build_pause_dags_operator(dag, dag_models)
 
-        pause_dags_operator = build_pause_dags_operator(rerun_full_flow_dag, dag_models)
+        kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(dag, dag_ids_to_clean)
 
-        kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(rerun_full_flow_dag, dag_ids_to_clean)
+        clean_mongo_operator = build_mongo_clean_bash_operator(dag, is_remove_ca_tables)
 
-        clean_mongo_operator = build_mongo_clean_bash_operator(rerun_full_flow_dag, is_remove_ca_tables)
+        clean_elastic_operator = build_clean_elastic_operator(dag)
 
-        clean_elastic_operator = build_clean_elastic_operator(rerun_full_flow_dag)
+        clean_adapter_operator = build_clean_adapter_operator(dag, is_remove_ca_tables)
 
-        clean_adapter_operator = build_clean_adapter_operator(rerun_full_flow_dag, is_remove_ca_tables)
+        clean_dags_from_db_operator = build_clean_dags_from_db_operator(dag, dag_ids_to_clean)
 
-        clean_dags_from_db_operator = build_clean_dags_from_db_operator(rerun_full_flow_dag, dag_ids_to_clean)
-
-        clean_logs_operator = build_clean_logs_operator(rerun_full_flow_dag)
+        clean_logs_operator = build_clean_logs_operator(dag)
 
         pause_dags_operator >> kill_dags_task_instances_operator
         kill_dags_task_instances_operator >> clean_mongo_operator
@@ -57,9 +54,9 @@ class RerunFullFlowDagBuilder(object):
         clean_adapter_operator >> clean_dags_from_db_operator
         clean_dags_from_db_operator >> clean_logs_operator
 
-        logging.debug("Finished creating dag - %s", rerun_full_flow_dag.dag_id)
+        logging.debug("Finished creating dag - %s", dag.dag_id)
 
-        return rerun_full_flow_dag
+        return dag
 
 
 @provide_session
@@ -213,7 +210,7 @@ def build_mongo_clean_bash_operator(cleanup_dag, is_remove_ca_tables):
     mongo_clean_bash_command = "mongo presidio -u presidio -p P@ssw0rd --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system') %s)  {print('dropping: ' +t); db.getCollection(t).drop();}});\""
     if not is_remove_ca_tables:
         # we want to keep the ca tables
-        mongo_clean_bash_command = mongo_clean_bash_command % "&& 0==t.startsWith('ca_')"
+        mongo_clean_bash_command = mongo_clean_bash_command % "|| 0==t.startsWith('ca_')"
     else:
         mongo_clean_bash_command = mongo_clean_bash_command % ""
     clean_mongo_operator = BashOperator(task_id='clean_mongo',
