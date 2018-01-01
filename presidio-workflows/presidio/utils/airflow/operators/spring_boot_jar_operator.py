@@ -500,7 +500,7 @@ class SpringBootJarOperator(BashOperator):
     @staticmethod
     def get_task_retry_key(context):
         ti = context['task_instance']
-        return '%s_%s_%s' % (ti.dag_id, ti.task_id, ti.execution_date)
+        return 'retry_state_%s_%s_%s' % (ti.dag_id, ti.task_id, ti.execution_date)
 
     @staticmethod
     def clean_before_retry(context):
