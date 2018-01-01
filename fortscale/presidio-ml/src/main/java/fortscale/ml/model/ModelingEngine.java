@@ -76,30 +76,39 @@ public class ModelingEngine {
 	}
 
 	/*
-	 * Run the selector step. If this is not a global model, the engine checks with the store what is the latest end
-	 * time across all models that have the given session ID. Then the selector uses the latest end time as the starting
-	 * point when looking for distinct context IDs. If there are no models in the store with the given session ID, the
-	 * starting point is the given end instant minus the time range configured in the data retriever configuration. If
-	 * this is a global model, a singleton containing null is returned.
+	 * Run the selector step. If this is not a global model, the engine checks with the store what is the previous end
+	 * instant across all models that have the given session ID. Then the selector uses the previous end instant as the
+	 * starting point when looking for distinct context IDs. If there are no models in the store with the given session
+	 * ID and a previous end instant, the starting point is the given end instant minus the time range configured in the
+	 * data retriever configuration. Context IDs that already have a model with the given session ID and end instant are
+	 * filtered out. If this is a global model, a singleton containing null is returned.
 	 */
 	private Set<String> getContextIds(String sessionId, Instant endInstant) {
+		Set<String> contextIds;
+
 		if (contextSelector != null) {
-			Instant latestModelEndTimeInStore = modelStore.getLatestEndTime(modelConf, sessionId);
+			Instant previousEndInstant = modelStore.getLatestEndInstantLt(modelConf, sessionId, endInstant);
 			TimeRange timeRange;
 
-			if (latestModelEndTimeInStore == null) {
+			if (previousEndInstant == null) {
 				timeRange = new TimeRange(endInstant.minusSeconds(timeRangeInSeconds), endInstant);
 			} else {
-				timeRange = new TimeRange(latestModelEndTimeInStore, endInstant);
+				timeRange = new TimeRange(previousEndInstant, endInstant);
 			}
 
-			Set<String> contextIds = contextSelector.getContexts(timeRange);
-			logger.info("Selected {} context IDs.", contextIds.size());
-			return contextIds;
+			contextIds = contextSelector.getContexts(timeRange);
+			logger.info("Contextual model: Selected {} context IDs.", contextIds.size());
 		} else {
-			logger.info("Global model: Returning a single context ID, null.");
-			return Collections.singleton(null);
+			contextIds = new HashSet<>();
+			contextIds.add(null);
+			logger.info("Global model: Selected 1 context ID (null).");
 		}
+
+		List<String> contextIdsWithModels = modelStore.getContextIdsWithModels(modelConf, sessionId, endInstant);
+		contextIds.removeAll(contextIdsWithModels);
+		logger.info("Filtered out {} context IDs that already have a model with session ID {} and end instant {}.",
+				contextIdsWithModels.size(), sessionId, endInstant);
+		return contextIds;
 	}
 
 	/*

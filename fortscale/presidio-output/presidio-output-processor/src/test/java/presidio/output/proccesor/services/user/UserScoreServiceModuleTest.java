@@ -1,6 +1,7 @@
 package presidio.output.proccesor.services.user;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.ScrolledPage;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
@@ -13,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.commons.services.user.UserSeverityService;
+import presidio.output.commons.services.user.UserSeverityServiceImpl;
 import presidio.output.domain.records.UserScorePercentilesDocument;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.commons.services.alert.AlertSeverityService;
@@ -33,11 +35,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
@@ -75,6 +73,9 @@ public class UserScoreServiceModuleTest {
                 .get();
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
                 .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
+                .get();
+        DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + UserScorePercentilesDocument.USER_SEVERITY_THRESHOLDS_DOC_TYPE)
                 .get();
     }
 
@@ -255,6 +256,31 @@ public class UserScoreServiceModuleTest {
         long seconds = (timeAfter - timeBefore) / 1000;
         System.out.println("Total time in seconds: " + seconds);
         Assert.assertTrue(seconds < 120);
+
+    }
+
+    @Test
+    public void calculateScorePercentilesTwice_shouldCreatePercentilesDocOnce() {
+        //calculate percentiles with 0 users (all users should get low severity)
+        userSeverityService.updateSeverities();
+        Iterable<UserScorePercentilesDocument> all = percentilesRepository.findAll();
+        Assert.assertEquals(1, ((ScrolledPage<UserScorePercentilesDocument>) all).getNumberOfElements());
+
+        //creating new users
+        for (int i = 0; i < 100; i++) {
+            AlertEnums.AlertSeverity[] severities = new AlertEnums.AlertSeverity[i + 1];
+            for (int j = 0; j <= i; j++) {
+                severities[j] = AlertEnums.AlertSeverity.HIGH;
+            }
+            generateUserAndAlerts("userId" + i, "username" + i, severities);
+        }
+
+        //re-calculate percentiles with new users
+        userSeverityService.updateSeverities();
+
+        UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = userSeverityService.getSeveritiesMap(false);
+        all = percentilesRepository.findAll();
+        Assert.assertEquals(1, ((ScrolledPage<UserScorePercentilesDocument>) all).getNumberOfElements());
 
     }
 

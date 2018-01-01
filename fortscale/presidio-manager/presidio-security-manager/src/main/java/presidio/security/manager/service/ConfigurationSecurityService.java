@@ -74,9 +74,8 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
             Map<String, Object> securityConfiguration = mapper.convertValue(presidioManagerConfiguration.getSystemConfiguration(), new TypeReference<Map<String, Object>>() {
             });
 
-            final String plainPassword = (String) securityConfiguration.get(PASSWORD);
-            final String encryptedPassword = encrypt(plainPassword);
-            securityConfiguration.put(PASSWORD, encryptedPassword);
+            final String password = (String) securityConfiguration.get(PASSWORD);
+            securityConfiguration.put(PASSWORD, password);
 
             String httpdConf = FreeMarkerTemplateUtils.processTemplateIntoString(freeMakerConfiguration.getTemplate(HTTPD_CONF_TEMPLATE_FILENAME), securityConfiguration);
 
@@ -124,32 +123,6 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         }
     }
 
-    private String encrypt(String plainPassword) throws Exception {
-        StringBuilder output = new StringBuilder();
-        String[] cmd = {
-                "/bin/sh",
-                "-c",
-                "echo -n " + plainPassword + " | openssl enc  -aes-256-cbc  -salt -pass pass:mj23 |  openssl enc -base64 -A"
-        };
-        try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line;
-            while ((line = reader.readLine())!= null) {
-                output.append(line).append("\n");
-            }
-
-        } catch (Exception e) {
-            final String msg = "Can't encrypt httpd password using openssl enc -aes-256-cbc!";
-            logger.error(msg, e);
-            throw new Exception(msg, e);
-        }
-
-        return output.toString();
-    }
 
     private ValidationResults validateSystemConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         ValidationResults validationResults = new ValidationResults();

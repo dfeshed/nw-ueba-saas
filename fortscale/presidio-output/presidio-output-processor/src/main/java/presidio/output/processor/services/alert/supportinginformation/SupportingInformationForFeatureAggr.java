@@ -12,6 +12,7 @@ import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
+import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
 import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
@@ -53,10 +54,10 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     }
 
     @Override
-    public List<Indicator> generateIndicators(AdeAggregationRecord adeAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) throws Exception {
+    public List<Indicator> generateIndicators(SmartAggregationRecord smartAggregationRecord, Alert alert, int eventsLimit, int eventsPageSize) {
+        AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();
         List<Indicator> indicators = new ArrayList<>();
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
-
 
         Indicator indicator = new Indicator(alert.getId());
         indicator.setName(indicatorConfig.getName());
@@ -66,6 +67,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         indicator.setSchema(indicatorConfig.getSchema());
         indicator.setType(AlertEnums.IndicatorTypes.valueOf(indicatorConfig.getType()));
         indicator.setScore(((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore());
+        indicator.setScoreContribution(smartAggregationRecord.getContribution());
         indicators.add(indicator);
 
         return indicators;

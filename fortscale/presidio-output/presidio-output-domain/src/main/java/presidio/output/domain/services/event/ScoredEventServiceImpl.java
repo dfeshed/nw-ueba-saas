@@ -11,10 +11,7 @@ import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.repositories.EventMongoPageIterator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ScoredEventServiceImpl implements ScoredEventService {
@@ -29,27 +26,36 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     }
 
     @Override
-    public List<Object> findDistinctScoredFeatureValue(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
+    public Collection<ScoredEnrichedEvent> findDistinctScoredEnrichedEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
 
-        List<Object> distinctValues = new ArrayList<>();
+        Map<Object, ScoredEnrichedEvent> scoredEnrichedEvent = new HashMap<Object, ScoredEnrichedEvent>();
         EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, eventsLimit);
 
         while (eventMongoPageIterator.hasNext()) {
             List<? extends EnrichedEvent> events = eventMongoPageIterator.next();
 
-            // filter by score (change to join within mongo once the performance is stable)
+            // retrieve events score (change to join within mongo once the performance is stable)
             List<String> eventsIds = events.stream().map(e -> e.getEventId()).collect(Collectors.toList());
             List<AdeScoredEnrichedRecord> adeScoredEnrichedRecords = adeManagerSdk.findScoredEnrichedRecords(eventsIds, adeEventType, 0d);
-            Set<String> scoredEventIDs = adeScoredEnrichedRecords.stream().map(e -> e.getContext().getEventId()).collect(Collectors.toSet());
+            Map<String, Double> scoredEvents = adeScoredEnrichedRecords.stream().collect(Collectors.toMap(e -> e.getContext().getEventId(), e -> e.getScore(),  (p1, p2) -> p1));
 
-            // get distinct values
-            distinctValues.addAll(events
-                    .stream()
-                    .filter(e -> scoredEventIDs.contains(e.getEventId()))
-                    .map(e -> new ReflectionRecordReader(e).get(distinctFieldName))
-                    .collect(Collectors.toSet()));
+            // get distinct scored enriched
+            for (EnrichedEvent e: events) {
+
+                if (!scoredEvents.containsKey(e.getEventId())) {// skip events with zero score
+                    continue;
+                }
+
+                Object feature = new ReflectionRecordReader(e).get(distinctFieldName);
+                if (scoredEnrichedEvent.containsKey(feature)) {// get distinct features
+                    continue;
+                }
+
+                scoredEnrichedEvent.put(feature, new ScoredEnrichedEvent(e, scoredEvents.get(e.getEventId())));
+            }
         }
-        return distinctValues;
+
+        return scoredEnrichedEvent.values();
     }
 
 
