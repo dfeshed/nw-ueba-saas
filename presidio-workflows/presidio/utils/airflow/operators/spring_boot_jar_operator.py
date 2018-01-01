@@ -60,11 +60,11 @@ class SpringBootJarOperator(BashOperator):
     #     self.conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     @apply_defaults
-    def __init__(self, command,jvm_args={}, java_args={}, *args, **kwargs):
-        logging.debug("creating operator %s" % str(self.__class__ ))
+    def __init__(self, command, jvm_args={}, java_args={}, *args, **kwargs):
+        logging.debug("creating operator %s" % str(self.__class__))
         self.task_id = kwargs['task_id']
         logging.debug("task %s" % str(kwargs['task_id']))
-        self.final_conf_path=""
+        self.final_conf_path = ""
         self._calc_jvm_args(jvm_args)
         self.java_args = java_args
         self.validate_mandatory_fields()
@@ -84,7 +84,8 @@ class SpringBootJarOperator(BashOperator):
         else:
             retry_fn = SpringBootJarOperator.clean_before_retry
         retry_callback = functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
-        kwargs['params']['retry_command'] = self.get_retry_command()
+        if self._should_run_clean_command_before_retry(kwargs):
+            kwargs['params']['retry_command'] = self.get_retry_command()
 
         super(SpringBootJarOperator, self).__init__(retries=retry_args['retries'],
                                                     retry_delay=timedelta(seconds=int(retry_args['retry_delay'])),
@@ -94,8 +95,25 @@ class SpringBootJarOperator(BashOperator):
                                                     bash_command=bash_command, on_retry_callback=retry_callback,
                                                     *args, **kwargs)
 
+    def execute(self, context):
+        retry_task_state = SpringBootJarOperator.get_task_retry_value(context,RETRY_SUCCESS_STATE)
+        if(retry_task_state == RETRY_SUCCESS_STATE):
+            logging.info("going to execute the bash command")
+            super(SpringBootJarOperator, self).execute(context)
+        else:
+            ti = context['task_instance']
+            skip_msg = 'skipping try attempt %s: last retry did not succeed. retry state: %s' % (ti.try_number, retry_task_state)
+            logging.info(skip_msg)
+            raise AirflowException(skip_msg)
+
+    def _should_run_clean_command_before_retry(self, kwargs):
+        if 'run_clean_command_before_retry' in kwargs and not kwargs['run_clean_command_before_retry']:
+            return False
+
+        return True
+
     def _calc_retry_args(self):
-        retry_args={}
+        retry_args = {}
         if self.task_id:
             # read task jvm args
             retry_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_retry_args_task_instance_conf_key_prefix())
@@ -104,7 +122,7 @@ class SpringBootJarOperator(BashOperator):
             logging.debug((
                 "did not found task retry configuration for task_id=%s. settling for operator=%s configuration" % (
                     self.task_id, self.__class__.__name__)))
-            retry_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_retry_args_operator_conf_key_prefix())
+            retry_args = SpringBootJarOperator.conf_reader.read(conf_key = self.get_retry_args_operator_conf_key_prefix())
         if not retry_args:
             # read default jvm args
             logging.debug((
@@ -192,7 +210,7 @@ class SpringBootJarOperator(BashOperator):
 
         self.jmx(bash_command)
 
-        self.jar_path(bash_command,self.command)
+        self.jar_path(bash_command, self.command)
 
         self.extra_args(bash_command)
 
@@ -200,7 +218,7 @@ class SpringBootJarOperator(BashOperator):
         bash_command = ' '.join(bash_command)
         return bash_command
 
-    def java_path(self,bash_command):
+    def java_path(self, bash_command):
         """
         
         Java location e.g: /usr/bin/java
@@ -261,7 +279,7 @@ class SpringBootJarOperator(BashOperator):
         if not is_blank(extra_args):
             bash_command.extend(extra_args.split(' '))
 
-    def jar_path(self, bash_command,command):
+    def jar_path(self, bash_command, command):
         """
         
         Validate that main_class, jar_path or class_path exist in merged_args, 
@@ -269,6 +287,7 @@ class SpringBootJarOperator(BashOperator):
         
         :param bash_command: list of bash comments
         :type bash_command: []
+        :param command:
         :raise ValueError: main_class, class path or jar path were not defined
         :return: 
         """
@@ -304,7 +323,7 @@ class SpringBootJarOperator(BashOperator):
         :return: 
         """
 
-        jmx_enabled = self.merged_args.get(JVM_ARGS_CONF_KEY).get('jmx_enabled' )
+        jmx_enabled = self.merged_args.get(JVM_ARGS_CONF_KEY).get('jmx_enabled')
         if not is_blank(jmx_enabled) and jmx_enabled is True:
             jmx_port = self.merged_args.get(JVM_ARGS_CONF_KEY).get('jmx_port')
             if not is_blank('jmx_port'):
@@ -326,7 +345,7 @@ class SpringBootJarOperator(BashOperator):
         :type bash_command list
         :return: 
         """
-        timezone = self.merged_args.get(JVM_ARGS_CONF_KEY).get('timezone' )
+        timezone = self.merged_args.get(JVM_ARGS_CONF_KEY).get('timezone')
         if not is_blank(timezone):
             bash_command.append(timezone)
 
@@ -353,13 +372,13 @@ class SpringBootJarOperator(BashOperator):
         remote_debug_conf_key = 'remote_debug_enabled'
         remote_debug_enabled = self.merged_args.get(JVM_ARGS_CONF_KEY).get(remote_debug_conf_key)
         if not is_blank(remote_debug_enabled) and remote_debug_enabled is True:
-            remote_debug_suspend = self.merged_args.get(JVM_ARGS_CONF_KEY).get('remote_debug_suspend' )
+            remote_debug_suspend = self.merged_args.get(JVM_ARGS_CONF_KEY).get('remote_debug_suspend')
             if not is_blank(remote_debug_suspend) and remote_debug_suspend is True:
                 remote_debug_suspend = 'y'
             else:
                 remote_debug_suspend = 'n'
             remote_debug = '-agentlib:jdwp=transport=dt_socket,address=%s,server=y,suspend=%s' % (
-                self.merged_args.get(JVM_ARGS_CONF_KEY).get('remote_debug_port' ), remote_debug_suspend)
+                self.merged_args.get(JVM_ARGS_CONF_KEY).get('remote_debug_port'), remote_debug_suspend)
             bash_command.append(remote_debug)
 
     def logback(self, bash_command):
@@ -410,7 +429,7 @@ class SpringBootJarOperator(BashOperator):
         return "%s.operators.%s" % (DAGS_CONF_KEY, self.__class__.__name__)
 
     def get_default_jvm_args_conf_key(self):
-        return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY,JVM_ARGS_CONF_KEY)
+        return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY, JVM_ARGS_CONF_KEY)
 
     def get_jvm_args_operator_conf_key_prefix(self):
         return "%s.%s" % (self.get_operator_conf_key_prefix(), JVM_ARGS_CONF_KEY)
@@ -422,7 +441,7 @@ class SpringBootJarOperator(BashOperator):
         return "%s.%s.%s" % (self.get_task_instance_conf_key_prefix(), self.task_id, JVM_ARGS_CONF_KEY)
 
     def get_default_retry_args_conf_key(self):
-        return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY,RETRY_ARGS_CONF_KEY)
+        return "%s.operators.default_jar_values.%s" % (DAGS_CONF_KEY, RETRY_ARGS_CONF_KEY)
 
     def get_retry_args_operator_conf_key_prefix(self):
         return "%s.%s" % (self.get_operator_conf_key_prefix(), RETRY_ARGS_CONF_KEY)
@@ -444,7 +463,7 @@ class SpringBootJarOperator(BashOperator):
 
         self.logback(bash_command)
 
-        self.jar_path(bash_command=bash_command,command="cleanup")
+        self.jar_path(bash_command=bash_command, command="cleanup")
 
         bash_command = [elem for elem in bash_command if (elem != "''" and elem != "")]
 
@@ -461,7 +480,7 @@ class SpringBootJarOperator(BashOperator):
             logging.info("move to success state")
             SpringBootJarOperator.set_task_retry_value(context, RETRY_SUCCESS_STATE)
         except Exception as e:
-            logging.exception("failed running retry function")
+            logging.exception("failed running retry function moving to failed state")
             SpringBootJarOperator.set_task_retry_value(context, RETRY_FAIL_STATE)
             raise AirflowException("Retry function failed")
 
