@@ -230,7 +230,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void recalculateUserAlertData(User user) {
-        List<Alert> alerts = alertPersistencyService.findByUserId(user.getUserId());
+        List<Alert> alerts = alertPersistencyService.findByUserId(user.getId());
         UsersAlertData usersAlertData = new UsersAlertData();
         if (CollectionUtils.isNotEmpty(alerts)) {
             alerts.forEach(alert -> {
