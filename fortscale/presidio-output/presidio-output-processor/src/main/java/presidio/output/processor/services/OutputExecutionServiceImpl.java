@@ -215,7 +215,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
 
     @Override
-    public void retentionClean(Instant endDate) throws Exception {
+    public void applyRetentionPolicy(Instant endDate) throws Exception {
         List<Schema> schemas = createListOfSchema();
 
         schemas.forEach(schema -> {

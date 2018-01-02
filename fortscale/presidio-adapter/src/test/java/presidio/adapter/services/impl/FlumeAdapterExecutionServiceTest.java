@@ -68,7 +68,7 @@ public class FlumeAdapterExecutionServiceTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void clean() throws Exception {
-        flumeAdapterExecutionService.retentionClean(null, null, null);
+        flumeAdapterExecutionService.applyRetentionPolicy(null, null, null);
     }
 
     @Test(expected = UnsupportedOperationException.class)

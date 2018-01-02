@@ -26,7 +26,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     }
 
     @Override
-    public void retentionClean(Schema schema, Instant startDate, Instant endDate) throws Exception {
+    public void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
         throw new UnsupportedOperationException("not supported");
     }
 

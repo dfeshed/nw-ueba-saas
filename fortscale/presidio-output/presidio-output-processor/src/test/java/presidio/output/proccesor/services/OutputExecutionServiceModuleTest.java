@@ -228,13 +228,13 @@ public class OutputExecutionServiceModuleTest {
     }
 
     @Test
-    public void testRetentionClean() {
+    public void testApplyRetentionPolicy() {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
             outputExecutionService.run(Instant.now().minus(Duration.ofDays(101)), Instant.now().plus(Duration.ofDays(2)));
             Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputExecutionService.retentionClean(Instant.now().plus(Duration.ofDays(1)));
+            outputExecutionService.applyRetentionPolicy(Instant.now().plus(Duration.ofDays(1)));
             // 2 alerts and 1 enriched event should have been deleted by retention
             Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
