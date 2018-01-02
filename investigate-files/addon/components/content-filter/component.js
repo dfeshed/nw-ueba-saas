@@ -119,8 +119,12 @@ const ContentFilter = Component.extend({
         description: filterSelected.description
       };
 
+      if (!saveFilterName) {
+        this.set('saveFilterName', '');
+        return;
+      }
       //  checking if any of the added filter fields are empty.
-      if (expressionList.some((item) => !item.propertyValues)) {
+      if (!expressionList.length || expressionList.some((item) => !item.propertyValues)) {
         this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage'));
         return;
       }
