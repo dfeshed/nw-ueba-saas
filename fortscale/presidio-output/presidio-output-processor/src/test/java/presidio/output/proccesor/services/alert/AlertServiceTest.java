@@ -381,8 +381,8 @@ public class AlertServiceTest {
     public void testScoreIndicatorsContribution() {
         User userEntity = new User("userId", "userName", "displayName", 0d, new ArrayList<String>(), new ArrayList<String>(), null, UserSeverity.CRITICAL, 0);
         SmartRecord smart = generateSingleSmart(60);
-        Instant startDate = Instant.parse("2017-10-24T15:00:00.000Z");
-        Instant endDate = Instant.parse("2017-10-24T16:00:00.000Z");
+        Instant startDate = Instant.parse("2016-10-24T15:00:00.000Z");
+        Instant endDate = Instant.parse("2016-10-24T16:00:00.000Z");
 
         // indicator1 - score aggr
         AdeAggregationRecord scoreAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "sumOfHighestOperationTypeScoresUserIdFileActionFileHourly",

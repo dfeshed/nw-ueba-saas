@@ -232,7 +232,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 usersToUpdate.add(userService.findUserById(alert.getUserId()));
             }
         });
-        logger.debug("{} users are going to update score", usersToUpdate.size());
+        logger.info("{} users are going to update score", usersToUpdate.size());
         usersToUpdate.forEach(user -> {
             userService.recalculateUserAlertData(user);
         });

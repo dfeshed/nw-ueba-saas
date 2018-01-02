@@ -56,7 +56,8 @@ public enum Unpaged  implements Pageable {
      */
     @Override
     public int getPageSize() {
-        throw new UnsupportedOperationException();
+        return 0;
+        //throw new UnsupportedOperationException();
     }
 
     /*
@@ -74,7 +75,8 @@ public enum Unpaged  implements Pageable {
      */
     @Override
     public int getOffset() {
-        throw new UnsupportedOperationException();
+        return 0;
+        //throw new UnsupportedOperationException();
     }
 
     /*
