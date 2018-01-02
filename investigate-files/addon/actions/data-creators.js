@@ -107,6 +107,7 @@ const initializeFilesPreferences = () => {
               });
             }
           }
+          dispatch(getFilter());
         }
       }
     });

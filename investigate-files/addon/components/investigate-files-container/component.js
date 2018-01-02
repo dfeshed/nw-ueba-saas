@@ -8,7 +8,6 @@ import {
   addSystemFilter,
   resetFilters,
   getPageOfFiles,
-  getFilter,
   fetchSchemaInfo,
   resetDownloadId
 } from 'investigate-files/actions/data-creators';
@@ -23,7 +22,6 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   addSystemFilter,
   resetFilters,
-  getFilter,
   getPageOfFiles,
   fetchSchemaInfo,
   resetDownloadId
@@ -55,7 +53,6 @@ const Files = Component.extend({
     this._super(...arguments);
     if (!this.get('hasFiles')) {
       this.send('fetchSchemaInfo');
-      this.send('getFilter');
     }
   }
 });
