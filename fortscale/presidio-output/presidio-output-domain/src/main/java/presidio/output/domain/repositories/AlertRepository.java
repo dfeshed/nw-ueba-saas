@@ -18,7 +18,7 @@ public interface AlertRepository extends ElasticsearchRepository<Alert, String> 
 
     Page<Alert> findByUserIdIn(Collection<String> ids, Pageable pageable);
 
-    Stream<Alert> findByStartDateGreaterThanEqualAndEndDateLessThan(long startDate, long endDate); // the stream must be closed after usage
+    Stream<Alert> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(long startDate, long endDate); // the stream must be closed after usage
 
     Stream<Alert> findByEndDateLessThan(long endDate); // the stream must be closed after usage
 
