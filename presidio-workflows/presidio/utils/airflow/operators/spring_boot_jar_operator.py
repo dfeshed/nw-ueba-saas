@@ -56,8 +56,7 @@ class SpringBootJarOperator(BashOperator):
     java_args_prefix = '--'
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-# def __init__(self):
-    #     self.conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
+
 
     @apply_defaults
     def __init__(self, command, jvm_args={}, java_args={}, *args, **kwargs):
@@ -98,7 +97,6 @@ class SpringBootJarOperator(BashOperator):
     def execute(self, context):
         retry_task_state = SpringBootJarOperator.get_task_retry_value(context,RETRY_SUCCESS_STATE)
         if(retry_task_state == RETRY_SUCCESS_STATE):
-            logging.info("going to execute the bash command")
             super(SpringBootJarOperator, self).execute(context)
         else:
             ti = context['task_instance']
@@ -471,16 +469,14 @@ class SpringBootJarOperator(BashOperator):
 
     @staticmethod
     def handle_retry(context, retry_fn):
-        logging.info("move to running state")
         SpringBootJarOperator.set_task_retry_value(context, RETRY_RUNNING_STATE)
 
         logging.info("running retry_fn")
         try:
             retry_fn(context)
-            logging.info("move to success state")
             SpringBootJarOperator.set_task_retry_value(context, RETRY_SUCCESS_STATE)
         except Exception as e:
-            logging.exception("failed running retry function moving to failed state")
+            logging.exception("failed running retry function")
             SpringBootJarOperator.set_task_retry_value(context, RETRY_FAIL_STATE)
             raise AirflowException("Retry function failed")
 
@@ -495,6 +491,7 @@ class SpringBootJarOperator(BashOperator):
     @staticmethod
     def set_task_retry_value(context, value):
         task_retry_key = SpringBootJarOperator.get_task_retry_key(context)
+        logging.info('Setting task retry key %s with value %s' % (task_retry_key, value))
         Variable.set(task_retry_key, value)
 
     @staticmethod
