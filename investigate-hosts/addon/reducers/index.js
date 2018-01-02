@@ -11,7 +11,7 @@ import drivers from './details/drivers/reducer';
 import libraries from './details/libraries/reducer';
 import schema from './schema/reducer';
 import filter from './filters/reducer';
-import preferences from 'preferences/reducers';
+import preferences from './preferences/reducer';
 import datatable from './details/datatable/reducer';
 
 export default combineReducers({

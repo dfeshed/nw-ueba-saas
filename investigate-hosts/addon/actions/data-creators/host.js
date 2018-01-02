@@ -7,6 +7,7 @@ import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filte
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
 import _ from 'lodash';
+import { next } from 'ember-runloop';
 
 import { debug } from '@ember/debug';
 
@@ -99,8 +100,8 @@ const getAllSchemas = () => {
       meta: {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_ALL_SCHEMAS ${_stringifyObject(response)}`);
-          dispatch(_getAllFilters());
           dispatch(initializeHostsPreferences());
+          dispatch(_getAllFilters());
         },
         onFailure: (response) => {
           handleError(ACTION_TYPES.FETCH_ALL_SCHEMAS, response);
@@ -188,30 +189,31 @@ const exportAsFile = () => {
   };
 };
 
+
+const _setPreferences = (getState) => {
+  const { preferences } = getState().preferences;
+  Machines.setPreferences({ ...preferences });
+};
+
 const updateColumnVisibility = (column) => {
   return (dispatch, getState) => {
-    const { schema, preferences } = getState().endpoint.schema;
-    const columns = schema.filterBy('visible', true).mapBy('name');
-    const payload = preferences.asMutable();
-    const visibleColumns = column.visible ? columns.filter((item) => item !== column.field) : [ ...columns, column.field ];
-    payload.machinePreference = { visibleColumns };
-
-    dispatch({
-      type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column,
-      promise: Machines.setPreferences(payload)
+    dispatch({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+    next(() => {
+      _setPreferences(getState);
     });
   };
 };
 
 const setHostColumnSort = (columnSort) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     // dispatch the actions to set selected sort
     dispatch({ type: ACTION_TYPES.SET_HOST_COLUMN_SORT, payload: columnSort });
-
     // reload the list with applied sort
     dispatch(getPageOfMachines());
+    _setPreferences(getState);
   };
 };
+
 
 const deleteHosts = (callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
@@ -274,7 +276,7 @@ const initializeHostsPreferences = () => {
       type: ACTION_TYPES.GET_PREFERENCES,
       promise: Machines.getPreferences('endpoint-preferences'),
       meta: {
-        onSuccess: (data) => {
+        onSuccess: ({ data }) => {
           if (data && data.machinePreference) {
             // Only if preferences is sent from api, set the preference state.
             // Otherwise, initial state will be used.
@@ -282,7 +284,7 @@ const initializeHostsPreferences = () => {
             if (sortField) {
               dispatch({
                 type: ACTION_TYPES.SET_HOST_COLUMN_SORT,
-                payload: { key: sortField, descending: false }
+                payload: JSON.parse(sortField)
               });
             }
           }

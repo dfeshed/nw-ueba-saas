@@ -3,8 +3,7 @@ import Immutable from 'seamless-immutable';
 
 import {
   getHostTableColumns,
-  prepareSchema,
-  preferencesConfig
+  prepareSchema
 } from 'investigate-hosts/reducers/schema/selectors';
 
 module('Unit | selectors | schema');
@@ -22,6 +21,9 @@ const SCHEMA = Immutable.from({
         }
       ]
     }
+  },
+  preferences: {
+    preferences: {}
   }
 });
 test('getHostTableColumns', function(assert) {
@@ -40,7 +42,4 @@ test('prepareSchema', function(assert) {
   assert.equal(result[0].title, 'investigateHosts.hosts.column.id', 'should return the added title property');
 });
 
-test('preferenceConfig', function(assert) {
-  const result = preferencesConfig(SCHEMA);
-  assert.equal(result.items[0].options.length, 2, '2 options are set from columns');
-});
+

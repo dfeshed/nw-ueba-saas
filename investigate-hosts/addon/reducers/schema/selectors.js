@@ -1,7 +1,6 @@
 import reselect from 'reselect';
 import { RESTRICTION_TYPE } from './restriction-type';
 import Immutable from 'seamless-immutable';
-import CONFIG from './config';
 
 const COLUMN_WIDTH = {
   'agentStatus.scanStatus': 130,
@@ -36,14 +35,26 @@ const DEFAULT_COLUMN = Immutable.from([
 
 const { createSelector } = reselect;
 const _schema = (state) => state.endpoint.schema.schema || [];
+const _preferences = (state) => state.preferences.preferences;
+
+const _visibleColumns = createSelector(
+  _preferences,
+  (preferences) => {
+    if (preferences.machinePreference) {
+      return preferences.machinePreference.visibleColumns;
+    }
+    return [];
+  }
+);
 
 export const getHostTableColumns = createSelector(
-  [_schema],
-  (schema) => {
+  [_schema, _visibleColumns],
+  (schema, _visibleColumns) => {
     let finalSchema = [];
     if (schema && schema.length) {
       const updatedSchema = schema.map((item) => {
-        const { dataType, name: field, searchable, values, visible } = item;
+        const { dataType, name: field, searchable, values } = item;
+        const visible = _visibleColumns.includes(field);
         return {
           visible,
           dataType,
@@ -89,26 +100,4 @@ export const prepareSchema = createSelector(
   }
 );
 
-export const isSchemaLoaded = createSelector(
-  getHostTableColumns,
-  (columns) => {
-    return !!columns.length;
-  }
-);
-
-export const preferencesConfig = createSelector(
-  [isSchemaLoaded, _schema],
-  (isSchemaLoaded, columns) => {
-    const fileConfig = { ...CONFIG };
-    if (isSchemaLoaded) {
-      // Set options of the dropdown from column schema
-      const visibleColumns = fileConfig.items.find((item) => item.field === 'machinePreference.visibleColumns');
-      const sortColumns = fileConfig.items.find((item) => item.field === 'machinePreference.sortField');
-      const options = columns.map((column) => column.name);
-      visibleColumns.options = options;
-      sortColumns.options = options;
-      return fileConfig;
-    }
-    return fileConfig;
-  });
 
