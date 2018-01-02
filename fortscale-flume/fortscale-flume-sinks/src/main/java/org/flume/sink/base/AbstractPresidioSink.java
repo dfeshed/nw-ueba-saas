@@ -116,7 +116,7 @@ public abstract class AbstractPresidioSink<T> extends AbstractSink implements Co
             }
         } finally {
             if (LifecycleSupervisor.getTotalSinkedEvents() != 0) {
-                logger.info("Presidio sink have sinked {} events", LifecycleSupervisor.getTotalSinkedEvents());
+                logger.debug("Presidio sink have sinked {} events", LifecycleSupervisor.getTotalSinkedEvents());
             }
             transaction.close();
             this.stop();
