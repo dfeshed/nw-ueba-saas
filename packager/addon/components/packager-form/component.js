@@ -175,7 +175,7 @@ const formComponent = Component.extend({
         this._validateDestinationFields(responseConfiguration.primaryDestination, responseConfiguration.secondaryDestination);
       }).catch(({ meta: { message } }) => {
         const i18nMessage = `packager.errorMessages.${message}`;
-        this.get('flashMessage').error(this.get('i18n').t(i18nMessage));
+        this.get('flashMessages').error(this.get('i18n').t(i18nMessage));
       });
   },
 
