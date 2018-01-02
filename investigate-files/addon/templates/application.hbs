@@ -1,13 +1,7 @@
 {{#rsa-investigate-header activeTab='protected.investigate.investigate-files' as |section| }}
-  {{#if (and section.isIconBar accessControl.hasInvestigateFilesAccess)}}
-    {{files-preferences}}
-  {{/if}}
-
   {{#if section.isMain}}
     {{outlet}}
   {{/if}}
 {{/rsa-investigate-header}}
 
-{{#if accessControl.hasInvestigateFilesAccess}}
-  {{preferences-panel}}
-{{/if}}
+

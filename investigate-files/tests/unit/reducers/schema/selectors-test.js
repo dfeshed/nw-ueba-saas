@@ -2,8 +2,7 @@ import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
 import {
-  columns,
-  preferenceConfig
+  columns
 } from 'investigate-files/reducers/schema/selectors';
 
 module('Unit | selectors | schema');
@@ -19,8 +18,15 @@ const SCHEMA = Immutable.from({
           'name': 'firstFileName',
           'visible': true
         }
-      ],
-      visibleColumns: ['firstFileName']
+      ]
+
+    }
+  },
+  preferences: {
+    preferences: {
+      filePreference: {
+        visibleColumns: ['firstFileName']
+      }
     }
   }
 });
@@ -32,8 +38,4 @@ test('columns', function(assert) {
   assert.equal(result[1].visible, true, 'firstFileName field is visible');
 });
 
-test('preferenceConfig', function(assert) {
-  const result = preferenceConfig(SCHEMA);
-  assert.equal(result.items[0].options.length, 2, '2 options are set from columns');
-});
 

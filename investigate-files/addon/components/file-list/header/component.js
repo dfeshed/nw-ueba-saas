@@ -9,7 +9,8 @@ const tableHeader = RSADataTableHeader.extend({
   actions: {
     toggleColumn(column) {
       column.toggleProperty('selected');
-      this.send('updateColumnVisibility', column);
+      const { field, selected } = column.getProperties('field', 'selected');
+      this.send('updateColumnVisibility', { field, selected });
     }
   }
 });

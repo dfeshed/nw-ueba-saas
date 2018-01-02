@@ -12,10 +12,8 @@
 import Ember from 'ember';
 
 import * as ACTION_TYPES from './types';
-import {
-  Schema,
-  File
-} from './fetch';
+import { next } from 'ember-runloop';
+import { Schema, File } from './fetch';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -94,10 +92,10 @@ const fetchSchemaInfo = () => {
 const initializeFilesPreferences = () => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.GET_PREFERENCES,
+      type: ACTION_TYPES.GET_FILE_PREFERENCES,
       promise: File.getPreferences('endpoint-preferences'),
       meta: {
-        onSuccess: (data) => {
+        onSuccess: ({ data }) => {
           if (data && data.filePreference) {
             // Only if preferences is sent from api, set the preference state.
             // Otherwise, initial state will be used.
@@ -105,7 +103,7 @@ const initializeFilesPreferences = () => {
             if (sortField) {
               dispatch({
                 type: ACTION_TYPES.SET_SORT_BY,
-                payload: { sortField, isSortDescending: false }
+                payload: JSON.parse(sortField)
               });
             }
           }
@@ -204,17 +202,6 @@ const resetFilters = () => {
   };
 };
 
-/**
- * Action Creator to sort the files.
- * @return {function} redux-thunk
- * @public
- */
-const sortBy = (sortField, isSortDescending) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_SORT_BY, payload: { sortField, isSortDescending } });
-    dispatch(_getFirstPageOfFiles());
-  };
-};
 
 /**
  * Action creator for adding the system filters (mac, linux and windows)
@@ -258,24 +245,32 @@ const exportFileAsCSV = () => {
  */
 const setActiveFilter = (filter) => ({ type: ACTION_TYPES.SET_ACTIVE_FILTER, payload: filter });
 
-/**
- * Action creator for updating the visible columns in schema
- * @param column
- * @returns {function(*)}
- * @public
- */
+
+const _setPreferences = (getState) => {
+  const { preferences } = getState().preferences;
+  File.setPreferences({ ...preferences });
+};
+
 const updateColumnVisibility = (column) => {
   return (dispatch, getState) => {
-    const { schema, preferences } = getState().files.schema;
-    const columns = schema.filterBy('visible', true).mapBy('name');
-    const payload = preferences.asMutable();
-    const visibleColumns = column.visible ? columns.filter((item) => item !== column.field) : [ ...columns, column.field ];
-    payload.filePreference = { visibleColumns };
-
-    dispatch({
-      type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column,
-      promise: File.setPreferences(payload)
+    dispatch({ type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: column });
+    next(() => {
+      _setPreferences(getState);
     });
+  };
+};
+
+
+/**
+ * Action Creator to sort the files.
+ * @return {function} redux-thunk
+ * @public
+ */
+const sortBy = (sortField, isSortDescending) => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.SET_SORT_BY, payload: { sortField, isSortDescending } });
+    dispatch(_getFirstPageOfFiles());
+    _setPreferences(getState);
   };
 };
 
@@ -297,7 +292,6 @@ const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDe
       promise: File.createCustomSearch(filter, schemas, filterType),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.UPDATE_FILTER_LIST, response);
           callbacks.onSuccess(response);
         },
         onFailure: (response) => {

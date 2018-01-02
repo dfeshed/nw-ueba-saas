@@ -1,4 +1,4 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
@@ -26,7 +26,7 @@ test('should initially load files', function(assert) {
   });
 });
 
-test('should show loading indicator on sorting', function(assert) {
+skip('should show loading indicator on sorting', function(assert) {
   new DataHelper(this.get('redux')).initializeData().setSortBy();
   this.render(hbs`{{file-list}}`);
   return wait().then(() => {

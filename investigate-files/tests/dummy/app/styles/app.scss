@@ -6,8 +6,6 @@
 /* putting the engines styles */
 @import "investigate-files/manifest";
 
-@import 'preferences/manifest';
-
 // Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
 body.investigate-files-engine-dummy {
   color: text-color(primary, light);

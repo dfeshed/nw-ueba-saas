@@ -38,8 +38,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     schema: null,
-    schemaLoading: true,
-    preferences: { machinePreference: null, filePreference: null }
+    schemaLoading: true
   });
 });
 
@@ -62,46 +61,4 @@ test('The SCHEMA_RETRIEVE action sets all the schema to the state', function(ass
 
   assert.equal(newEndState.schema.length, 6, 'expected schema fields present');
 
-});
-
-test('The UPDATE_COLUMN_VISIBILITY action will toggle the defaultProjection property', function(assert) {
-  const previous = Immutable.from({
-    schema: SCHEMA,
-    schemaLoading: false
-  });
-
-  const result = reducer(previous, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'entropy', visible: false } });
-
-  assert.equal(result.schema[0].visible, true, 'expected toggle the property');
-});
-
-test('The GET_PREFERENCES action will set visibleColumns', function(assert) {
-  const previous = Immutable.from({
-    schema: SCHEMA
-  });
-  const response = {
-    filePreference: {
-      visibleColumns: ['firstFileName', 'entropy']
-    }
-  };
-  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_PREFERENCES,
-    payload: response
-  });
-
-  const result = reducer(previous, newAction);
-  assert.equal(result.schema.filter((item) => item.visible).length, 2, 'visible columns length is set');
-});
-
-test('The GET_PREFERENCES action will set default visibleColumns first time', function(assert) {
-  const previous = Immutable.from({
-    schema: SCHEMA
-  });
-  const response = {};
-  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_PREFERENCES,
-    payload: response
-  });
-  const result = reducer(previous, newAction);
-  assert.equal(result.schema.filter((item) => item.visible).length, 6, 'Default visible columns length is set');
 });

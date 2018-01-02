@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import Immutable from 'seamless-immutable';
-import CONFIG from './config';
 
 /**
  * Files table column width
@@ -31,16 +30,28 @@ const SUPPORTED_SORT_TYPES = [
 ];
 
 const schema = (state) => state.files.schema.schema || Immutable.from([]);
+const _preferences = (state) => state.preferences.preferences;
+
+const _visibleColumns = createSelector(
+  _preferences,
+  (preferences) => {
+    if (preferences.filePreference) {
+      return preferences.filePreference.visibleColumns;
+    }
+    return [];
+  }
+);
+
 
 export const columns = createSelector(
-  [schema],
-  (schema) => {
+  [schema, _visibleColumns],
+  (schema, _visibleColumns) => {
     const updatedSchema = schema.map((item) => {
-      const { dataType, name: field, searchable, values, visible } = item;
+      const { dataType, name: field, searchable, values } = item;
       const disableSort = !SUPPORTED_SORT_TYPES.includes(field);
 
       return {
-        visible,
+        visible: _visibleColumns.includes(field),
         dataType,
         field,
         searchable,
@@ -64,16 +75,3 @@ export const isSchemaLoaded = createSelector(
   }
 );
 
-export const preferenceConfig = createSelector(
-  [isSchemaLoaded, columns],
-  (isSchemaLoaded, columns) => {
-    const fileConfig = { ...CONFIG };
-    if (isSchemaLoaded) {
-      // Set options of the dropdown from column schema
-      const visibleColumns = fileConfig.items.find((item) => item.field === 'filePreference.visibleColumns');
-      visibleColumns.options = columns.map((column) => column.field);
-      return fileConfig;
-    }
-    return fileConfig;
-  }
-);
