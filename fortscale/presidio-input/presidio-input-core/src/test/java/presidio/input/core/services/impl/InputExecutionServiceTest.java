@@ -32,7 +32,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {FortscaleInputCoreApplicationTest.springConfig.class, InputCoreConfigurationTest.class})
@@ -103,7 +102,7 @@ public class InputExecutionServiceTest {
 
 
     @Test
-    public void testRetentionClean() throws Exception {
+    public void testApplyRetentionPolicy() throws Exception {
         Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
         Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
 
@@ -113,7 +112,7 @@ public class InputExecutionServiceTest {
         rawEvents.add(createAuthenticationRawEvent(Instant.parse("2017-12-11T14:00:00.000Z")));
         inputPersistencyService.store(Schema.AUTHENTICATION, rawEvents);
 
-        executionService.retentionClean(Schema.AUTHENTICATION, startTime, endTime);
+        executionService.applyRetentionPolicy(Schema.AUTHENTICATION, startTime, endTime);
 
         List<AuthenticationRawEvent> remainingRawEvents = mongoTemplate.findAll(AuthenticationRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
         Assert.assertEquals(1, remainingRawEvents.size());

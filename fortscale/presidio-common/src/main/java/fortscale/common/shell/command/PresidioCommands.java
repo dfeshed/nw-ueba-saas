@@ -50,8 +50,8 @@ public class PresidioCommands implements CommandMarker {
         executionService.cleanup(schema, startTime, endTime, fixedDuration);
     }
 
-    @CliCommand(value = "retentionClean", help = "Run the retention clean for application data in specified time range for data source")
-    public void retentionClean(
+    @CliCommand(value = "applyRetentionPolicy", help = "Run the retention clean for application data in specified time range for data source")
+    public void applyRetentionPolicy(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
@@ -59,7 +59,7 @@ public class PresidioCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime
 
     ) throws Exception {
-        executionService.retentionClean(schema, startTime, endTime);
+        executionService.applyRetentionPolicy(schema, startTime, endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")

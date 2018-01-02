@@ -1,12 +1,14 @@
 import logging
+from datetime import timedelta
+
+from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.builders.retention.adapter.adapter_retention_dag_builder import AdapterRetentionDagBuilder
 from presidio.builders.retention.input.input_retention_dag_builder import InputRetentionDagBuilder
 from presidio.builders.retention.output.output_retention_dag_builder import OutputRetentionDagBuilder
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
-from presidio.builders.retention.adapter.adapter_retention_dag_builder import AdapterRetentionDagBuilder
-from airflow.operators.python_operator import ShortCircuitOperator
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 
 ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
@@ -42,22 +44,22 @@ class RetentionDagBuilder(PresidioDagBuilder):
             RetentionDagBuilder.adapter_min_time_to_start_retention_in_days_conf_key,
             RetentionDagBuilder.adapter_min_time_to_start_retention_in_days_default_value)
 
-        self._adapter_retention_interval_in_hours = conf_reader.read(RetentionDagBuilder.adapter_retention_interval_in_hours_conf_key,
-                                                             RetentionDagBuilder.adapter_retention_interval_in_hours_default_value)
+        self._adapter_retention_interval_in_hours = timedelta(hours=conf_reader.read(RetentionDagBuilder.adapter_retention_interval_in_hours_conf_key,
+                                                             RetentionDagBuilder.adapter_retention_interval_in_hours_default_value))
 
         self._input_min_time_to_start_retention_in_days = conf_reader.read(
             RetentionDagBuilder.input_min_time_to_start_retention_in_days_conf_key,
             RetentionDagBuilder.input_min_time_to_start_retention_in_days_default_value)
 
-        self._input_retention_interval_in_hours = conf_reader.read(RetentionDagBuilder.input_retention_interval_in_hours_conf_key,
-                                                                 RetentionDagBuilder.input_retention_interval_in_hours_default_value)
+        self._input_retention_interval_in_hours = timedelta(hours=conf_reader.read(RetentionDagBuilder.input_retention_interval_in_hours_conf_key,
+                                                                 RetentionDagBuilder.input_retention_interval_in_hours_default_value))
 
         self._output_min_time_to_start_retention_in_days = conf_reader.read(
             RetentionDagBuilder.output_min_time_to_start_retention_in_days_conf_key,
             RetentionDagBuilder.output_min_time_to_start_retention_in_days_default_value)
 
-        self._output_retention_interval_in_hours = conf_reader.read(RetentionDagBuilder.output_retention_interval_in_hours_conf_key,
-                                                             RetentionDagBuilder.output_retention_interval_in_hours_default_value)
+        self._output_retention_interval_in_hours = timedelta(hours=conf_reader.read(RetentionDagBuilder.output_retention_interval_in_hours_conf_key,
+                                                             RetentionDagBuilder.output_retention_interval_in_hours_default_value))
     def build(self, retention_dag):
         """
         Builds jar operators for each data source and adds them to the given DAG.
@@ -77,7 +79,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                                      retention_dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  retention_dag,
-                                                 self._adapter_min_time_to_start_retention_in_days,
+                                                 timedelta(days=self._adapter_min_time_to_start_retention_in_days),
                                                  kwargs['execution_date'],
                                                  retention_dag.schedule_interval),
             provide_context=True
@@ -91,7 +93,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                                      retention_dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  retention_dag,
-                                                 self._input_min_time_to_start_retention_in_days,
+                                                 timedelta(days=self._input_min_time_to_start_retention_in_days),
                                                  kwargs['execution_date'],
                                                  retention_dag.schedule_interval),
             provide_context=True
@@ -105,7 +107,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                                      retention_dag.schedule_interval) &
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(
                                                  retention_dag,
-                                                 self._output_min_time_to_start_retention_in_days,
+                                                 timedelta(days=self._output_min_time_to_start_retention_in_days),
                                                  kwargs['execution_date'],
                                                  retention_dag.schedule_interval),
             provide_context=True

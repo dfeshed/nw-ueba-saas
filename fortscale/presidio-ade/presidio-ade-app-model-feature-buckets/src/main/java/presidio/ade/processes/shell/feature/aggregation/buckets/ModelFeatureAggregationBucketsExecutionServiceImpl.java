@@ -44,7 +44,7 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
     }
 
     @Override
-    public void retentionClean(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
+    public void applyRetentionPolicy(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
         // TODO: Implement
     }
 

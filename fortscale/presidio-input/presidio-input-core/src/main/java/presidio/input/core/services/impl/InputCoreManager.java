@@ -115,7 +115,7 @@ public class InputCoreManager {
         outputDataServiceSDK.clean(schema, startDate, endDate);
     }
 
-    public void retentionClean(Schema schema, Instant endDate) throws Exception {
+    public void applyRetentionPolicy(Schema schema, Instant endDate) throws Exception {
         // Calculate the date that we want to clear the data before it
         Instant cleanUntil = endDate.minus(retentionInDays, ChronoUnit.DAYS);
         try {

@@ -30,7 +30,7 @@ public class AdapterShellTestConfig {
             }
 
             @Override
-            public void retentionClean(Schema schema, Instant startDate, Instant endDate) throws Exception {
+            public void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
 
             }
 
