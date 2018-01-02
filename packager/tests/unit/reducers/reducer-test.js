@@ -3,6 +3,7 @@ import { test, module } from 'qunit';
 import reducer from 'packager/reducers/packager';
 import * as ACTION_TYPES from 'packager/actions/types';
 import data from '../../data/subscriptions/packageconfig/get/data';
+import fieldsData from '../../data/subscriptions/packageconfig/updateFields/data';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
 module('Unit | Reducers | Packager');
@@ -13,6 +14,7 @@ const initialState = Immutable.from({
   loading: false,
   downloadLink: null,
   updating: false,
+  initialState: {},
   devices: {}
 });
 
@@ -50,4 +52,18 @@ test('Get defaultPackagerConfig ', function(assert) {
 
   const endState = reducer(previous, action);
   assert.deepEqual(endState.defaultPackagerConfig, data);
+});
+
+test('Update Redux state with UI state ', function(assert) {
+  const previous = Immutable.from({
+    defaultPackagerConfig: {},
+    initialState: {}
+  });
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.UPDATE_FIELDS,
+    payload: { fieldsData }
+  });
+  const endState = reducer(previous, action);
+  assert.deepEqual(endState.initialState, previous.defaultPackagerConfig);
+ // assert.deepEqual(endState.defaultPackagerConfig, fieldsData);
 });

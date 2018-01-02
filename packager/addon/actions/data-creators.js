@@ -46,7 +46,7 @@ const getConfig = () => {
  * @public
  * @returns {Object}
  */
-const setConfig = (configData, configType) => {
+const setConfig = (configData, configType, callback) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SAVE_INFO,
@@ -62,11 +62,18 @@ const setConfig = (configData, configType) => {
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
         },
-        onFailure: (response) => dispatch(_handleFilesError(response))
+        onFailure: (response) => {
+          callback.onFailure(response);
+        }
       }
     });
   };
 };
+
+const saveUIState = (fieldValues) => ({
+  type: ACTION_TYPES.UPDATE_FIELDS,
+  payload: fieldValues
+});
 
 /**
  * Action creator for fetching list of devices available.
@@ -104,5 +111,6 @@ export {
   setConfig,
   getConfig,
   getDevices,
-  resetForm
+  resetForm,
+  saveUIState
 };

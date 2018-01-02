@@ -1593,7 +1593,13 @@ export default {
       invalidIP: 'Please enter valid IP address',
       invalidPort: 'Please enter valid port number',
       invalidName: 'Please enter a valid name without special characters',
-      passwordEmptyMessage: 'Please enter certificate password'
+      passwordEmptyMessage: 'Please enter certificate password',
+      NAME_EMPTY: 'Could not load configuration. Configuration name is empty.',
+      SERVERS_EMPTY: 'Could not load configuration. No Servers found.',
+      EVENT_ID_INVALID: 'Could not load configuration. Invalid Event ID found.',
+      CHANNEL_EMPTY: 'Could not load configuration. Channel is empty.',
+      FILTER_EMPTY: 'Could not load configuration. Filter is empty.',
+      FILTER_INVALID: 'Could not load configuration. Invalid Filter found.'
     },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',

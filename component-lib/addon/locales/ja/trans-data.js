@@ -1592,7 +1592,13 @@ export default {
       invalidIP: 'ja_Please enter valid IP address',
       invalidPort: 'ja_Please enter valid port number',
       invalidName: 'ja_Please enter a valid name without special characters',
-      passwordEmptyMessage: 'ja_Please enter certificate password'
+      passwordEmptyMessage: 'ja_Please enter certificate password',
+      NAME_EMPTY: 'ja_Could not load configuration. Configuration name is empty.',
+      SERVERS_EMPTY: 'ja_Could not load configuration. No Servers found.',
+      EVENT_ID_INVALID: 'ja_Could not load configuration. Invalid Event ID found.',
+      CHANNEL_EMPTY: 'ja_Could not load configuration. Channel is empty.',
+      FILTER_EMPTY: 'ja_Could not load configuration. Filter is empty.',
+      FILTER_INVALID: 'ja_Could not load configuration. Invalid Filter found.'
     },
     packagerTitle: 'ja_Packager',
     serviceName: 'ja_Service Name*',

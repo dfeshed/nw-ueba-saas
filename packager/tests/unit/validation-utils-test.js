@@ -79,3 +79,21 @@ test('validateLogConfigFields - invalid config name', function(assert) {
     'isConfigError': true
   });
 });
+
+test('validateLogConfigFields - eventId out of range', function(assert) {
+  const formData = {
+    configName: 'TEST@!',
+    primaryDestination: 'aa',
+    protocol: 'Test',
+    channels: [{ channel: 'Security', filter: 'Include', eventId: '123456789012' }]
+  };
+  const errorObj = {
+    identifier: 1,
+    cause: 'EVENT_ID_INVALID'
+  };
+  const error = validateLogConfigFields(formData, errorObj);
+  assert.deepEqual(error, {
+    'errorMessage': 'packager.specialCharacter',
+    'isConfigError': true
+  });
+});

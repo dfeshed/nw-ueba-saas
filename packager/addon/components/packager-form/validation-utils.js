@@ -44,7 +44,66 @@ export const validatePackageConfig = (formData) => {
   return null;
 };
 
-export const validateLogConfigFields = (formData) => {
+function _checkForServerErrors(index, eventId, errorObj) {
+  let error = null;
+  if (errorObj) {
+    if (errorObj.identifier === index + 1 && errorObj.cause.toUpperCase() === 'EVENT_ID_INVALID') {
+      error = {
+        invalidTableItem: eventId,
+        isError: true
+      };
+    }
+  }
+  if (errorObj && errorObj.identifier == index + 1) {
+    if (errorObj.cause.toUpperCase() === 'FILTER_INVALID' || errorObj.cause.toUpperCase() === 'CHANNEL_EMPTY') {
+      error = {
+        invalidTableItem: '',
+        isError: true
+      };
+    }
+  }
+  return error;
+}
+
+function _validateChannels(channels, errorObj) {
+  let error = null;
+  channels.every((obj, index) => {
+    const { eventId, filter, channel } = obj;
+    const isEventIdString = typeof eventId === 'string';
+    let hasInvalidEventId = false;
+    if (isEmpty(channel) || isEmpty(filter) || isEmpty(eventId)) {
+      error = {
+        invalidTableItem: '',
+        isError: true
+      };
+      return false;
+    }
+    if (eventId && isEventIdString && eventId.trim().toUpperCase() === 'ALL') {
+      return true;
+    }
+    if (isEventIdString) {
+      const arrayOfEvents = eventId.split(',');
+      hasInvalidEventId = arrayOfEvents.some((event) => {
+        return !VALID_EVENT_PATTERN.test(event.trim());
+      });
+    }
+    if (hasInvalidEventId) {
+      error = {
+        invalidTableItem: eventId,
+        isError: true
+      };
+      return false;
+    }
+    error = _checkForServerErrors(index, eventId, errorObj);
+    if (error) {
+      return false;
+    }
+    return true;
+  });
+  return error;
+}
+
+export const validateLogConfigFields = (formData, errorObj) => {
   const { configName, primaryDestination, channels } = formData;
   let error = null;
 
@@ -67,29 +126,6 @@ export const validateLogConfigFields = (formData) => {
     };
   }
 
-  channels.every((obj) => {
-    const { eventId, filter, channel } = obj;
-    if (isEmpty(channel) || isEmpty(filter) || isEmpty(eventId)) {
-      error = {
-        invalidTableItem: '',
-        isError: true
-      };
-      return false;
-    }
-    if (eventId.trim().toUpperCase() === 'ALL') {
-      return true;
-    }
-    const arrayOfEvents = eventId.split(',');
-    const hasInvalidEventId = arrayOfEvents.some((event) => {
-      return !VALID_EVENT_PATTERN.test(event.trim());
-    });
-    if (hasInvalidEventId) {
-      error = {
-        invalidTableItem: eventId,
-        isError: true
-      };
-      return false;
-    }
-  });
+  error = _validateChannels(channels, errorObj);
   return error;
 };

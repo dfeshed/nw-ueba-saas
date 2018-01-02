@@ -14,7 +14,8 @@ import $ from 'jquery';
 
 import {
   setConfig,
-  resetForm
+  resetForm,
+  saveUIState
 } from '../../actions/data-creators';
 
 
@@ -29,7 +30,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   setConfig,
-  resetForm
+  resetForm,
+  saveUIState
 };
 
 const formComponent = Component.extend({
@@ -155,6 +157,15 @@ const formComponent = Component.extend({
     }
   },
 
+  _getCallbackFunction() {
+    return {
+      onFailure: (response) => {
+        const error = validateLogConfigFields(this.get('configData.logCollectionConfig'), response.meta);
+        this.setProperties(error);
+      }
+    };
+  },
+
   _fetchLogConfigFromServer(formContent) {
     getConfiguration(formContent)
       .then((response) => {
@@ -162,8 +173,9 @@ const formComponent = Component.extend({
         this.set('selectedProtocol', responseConfiguration.protocol);
         this.set('configData.logCollectionConfig', responseConfiguration);
         this._validateDestinationFields(responseConfiguration.primaryDestination, responseConfiguration.secondaryDestination);
-      }).catch(({ meta: message }) => {
-        this.get('flashMessage').error(message.message);
+      }).catch(({ meta: { message } }) => {
+        const i18nMessage = `packager.errorMessages.${message}`;
+        this.get('flashMessage').error(this.get('i18n').t(i18nMessage));
       });
   },
 
@@ -180,7 +192,8 @@ const formComponent = Component.extend({
         const error = validatePackageConfig(this.get('configData.packageConfig'));
         this.setProperties(error);
         if (!error) {
-          this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG');
+          this.send('saveUIState', this.get('configData'));
+          this.send('setConfig', { packageConfig: this.get('configData.packageConfig') }, 'PACKAGE_CONFIG', this._getCallbackFunction());
         } else {
           this._scrollTo('.server-input-group');
         }
@@ -191,7 +204,8 @@ const formComponent = Component.extend({
         const error = this._validate();
         this.setProperties(error);
         if (!error) {
-          this.send('setConfig', this.get('configData'), false);
+          this.send('saveUIState', this.get('configData'));
+          this.send('setConfig', this.get('configData'), false, this._getCallbackFunction());
         } else {
           this._scrollTo('.server-input-group');
         }
@@ -203,11 +217,12 @@ const formComponent = Component.extend({
       this.setProperties(error);
       if (!error) {
         // only log config data need to be send on click of this button.
-        this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
+        this.send('saveUIState', this.get('configData'));
         this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
         this.set('configData.logCollectionConfig.enabled', true);
-        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG');
-        this.resetProperties();
+        this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
+        this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG', this._getCallbackFunction());
+      //  this.resetProperties();
       } else {
         this._scrollTo('.windows-log-collection');
       }
@@ -243,7 +258,7 @@ const formComponent = Component.extend({
         try {
           const fileContent = e.target.result;
           const formContent = JSON.parse(fileContent.substring(fileContent.indexOf('{'), fileContent.lastIndexOf('}') + 1));
-          formContent.enabled = true;
+          formContent.enabled = this.get('isLogCollectionEnabled');
           this._fetchLogConfigFromServer(formContent);
         } catch (err) {
           this.get('flashMessages').warning(this.get('i18n').t('packager.upload.failure'));

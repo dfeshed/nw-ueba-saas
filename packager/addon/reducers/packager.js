@@ -10,7 +10,8 @@ const initialState = Immutable.from({
   loading: false,
   downloadLink: null,
   updating: false,
-  devices: {}
+  devices: {},
+  initialState: {}
 });
 
 const packagerReducer = handleActions({
@@ -27,7 +28,7 @@ const packagerReducer = handleActions({
     return handle(state, action, {
       start: () => state.merge({ updating: true, error: false, downloadLink: null }),
       finish: (s) => s.set('updating', false),
-      failure: (s) => s.set('error', true)
+      failure: (s) => s
     });
   },
 
@@ -38,11 +39,18 @@ const packagerReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.DOWNLOAD_PACKAGE]: (state, { payload }) => state.set('downloadLink', payload),
+  [ACTION_TYPES.UPDATE_FIELDS]: (state, { payload }) => {
+    state.set({ 'initialState': { ...state.defaultPackagerConfig } });
+    return state.set('defaultPackagerConfig', payload);
+  },
+
+  [ACTION_TYPES.DOWNLOAD_PACKAGE]: (state, { payload }) => {
+    return state.set('downloadLink', payload);
+  },
 
   [ACTION_TYPES.RETRIEVE_FAILURE]: (state) => state.merge({ error: true, loading: false }),
 
-  [ACTION_TYPES.RESET_FORM]: (state) => state.set('defaultPackagerConfig', { ...state.defaultPackagerConfig })
+  [ACTION_TYPES.RESET_FORM]: (state) => state.set('defaultPackagerConfig', { ...state.initialState })
 
 }, initialState);
 
