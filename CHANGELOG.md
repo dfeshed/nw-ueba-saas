@@ -1,3 +1,10 @@
+# [7.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.6.0)
+## Features
+* [ASOC-46101](https://bedfordjira.na.rsa.net/browse/ASOC-46101):&emsp;Create context-sensitive HELP for Incident Rules List and Detail pages
+* [ASOC-47426](https://bedfordjira.na.rsa.net/browse/ASOC-47426):&emsp;Respond Context-Sensive Help is opening to the default page
+* [ASOC-46379](https://bedfordjira.na.rsa.net/browse/ASOC-46379):&emsp;Regression test Audit_Logs/Logstash
+
+
 # [7.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.5.0)
 ## Features
 * More preferences support for investigate events
