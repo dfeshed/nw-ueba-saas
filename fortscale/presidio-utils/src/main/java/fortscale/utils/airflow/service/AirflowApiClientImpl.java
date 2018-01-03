@@ -1,6 +1,7 @@
 package fortscale.utils.airflow.service;
 
 import fortscale.utils.airflow.message.AirflowDagExecutionDatesApiResponse;
+import fortscale.utils.airflow.message.AirflowDagGeneralResponse;
 import fortscale.utils.airflow.message.DagState;
 import fortscale.utils.logging.Logger;
 import org.json.JSONObject;
@@ -48,7 +49,7 @@ public class AirflowApiClientImpl implements AirflowApiClient {
         urlVariables.put(DAG_ID_URL_VARIABLE, dagId);
 
         String url = String.format("%s?%s={api}&%s={dag_id}", airflowRestApiBaseUrl, API_URL_VARIABLE, DAG_ID_URL_VARIABLE);
-        restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
+        restTemplate.getForObject(url, AirflowDagGeneralResponse.class, urlVariables);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class AirflowApiClientImpl implements AirflowApiClient {
         urlVariables.put(DAG_ID_URL_VARIABLE, dagId);
 
         String url = String.format("%s?%s={api}&%s={dag_id}", airflowRestApiBaseUrl, API_URL_VARIABLE, DAG_ID_URL_VARIABLE);
-        restTemplate.getForObject(url, AirflowDagExecutionDatesApiResponse.class, urlVariables);
+        restTemplate.getForObject(url, AirflowDagGeneralResponse.class, urlVariables);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class AirflowApiClientImpl implements AirflowApiClient {
             urlBuilder.append("&").append(CONF_VARIABLE).append("={conf}");
             urlVariables.put(CONF_VARIABLE, conf.toString());
         }
-        restTemplate.getForObject(urlBuilder.toString(), AirflowDagExecutionDatesApiResponse.class, urlVariables);
+        restTemplate.getForObject(urlBuilder.toString(), AirflowDagGeneralResponse.class, urlVariables);
     }
 
     @Override
