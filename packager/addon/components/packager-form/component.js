@@ -51,9 +51,9 @@ const formComponent = Component.extend({
 
   protocolOptions: ['UDP', 'TCP', 'TLS'],
 
-  className: 'rsa-form-label power-select',
+  className: 'power-select',
 
-  protocolClassName: 'rsa-form-label power-select',
+  protocolClassName: 'power-select',
 
   isGenerateLogDisabled: true,
 
@@ -106,8 +106,8 @@ const formComponent = Component.extend({
       errorMessage: null,
       isError: false,
       errorClass: null,
-      className: 'rsa-form-label power-select',
-      protocolClassName: 'rsa-form-label power-select',
+      className: 'power-select',
+      protocolClassName: 'power-select',
       isPortError: false,
       isConfigError: false,
       isServerError: false,
