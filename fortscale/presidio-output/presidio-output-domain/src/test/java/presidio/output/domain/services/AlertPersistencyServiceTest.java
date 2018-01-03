@@ -21,14 +21,14 @@ import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPa
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.AbstractElasticDocument;
-import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.records.alerts.AlertEnums.AlertFeedback;
 import presidio.output.domain.records.alerts.AlertEnums.AlertSeverity;
 import presidio.output.domain.records.alerts.AlertEnums.AlertTimeframe;
-import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
+import presidio.output.domain.records.users.User;
+import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
+import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.TestConfig;
 
 import java.time.Instant;
@@ -57,6 +57,9 @@ public class AlertPersistencyServiceTest {
 
     @Autowired
     private AlertPersistencyService alertPersistencyService;
+
+    @Autowired
+    private UserPersistencyService userPersistencyService;
 
     @Autowired
     ElasticsearchOperations elasticsearchTemplate;
@@ -894,4 +897,23 @@ public class AlertPersistencyServiceTest {
 
     }
 
+    @Test
+    public void testAlertIdIsKeyword_shouldFindAlertByExactIdString() {
+
+        User user1 = new User("userId1", "Donald Duck", "displayName", 5d, null, null, null, UserSeverity.CRITICAL, 0);
+        user1.setId("123-456-789");
+        User user2 = new User("userId2", "Mini Mous", "displayName", 10d, null, null, null, UserSeverity.MEDIUM, 0);
+        user1.setId("123-000");
+        List<User> userList = Arrays.asList(user1, user2);
+        userPersistencyService.save(userList);
+
+        Alert alert1 = new Alert("123-456-789", "smartId", classifications1, "user1", Date.from(Instant.parse("2017-11-10T15:00:00.000Z")), Date.from(Instant.parse("2017-11-10T15:00:00.000Z")), 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+        Alert alert2 = new Alert("123-000", "smartId", classifications1, "user1", Date.from(Instant.parse("2017-11-10T15:00:00.000Z")), Date.from(Instant.parse("2017-11-10T15:00:00.000Z")), 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+        alertPersistencyService.save(Arrays.asList(alert1, alert2));
+
+
+        AlertQuery alertQuery = new AlertQuery.AlertQueryBuilder().filterByUserId(Arrays.asList("123-000")).build();
+        Page<Alert> alertsResult = alertPersistencyService.find(alertQuery);
+        Assert.assertEquals(1, alertsResult.getTotalElements());
+    }
 }
