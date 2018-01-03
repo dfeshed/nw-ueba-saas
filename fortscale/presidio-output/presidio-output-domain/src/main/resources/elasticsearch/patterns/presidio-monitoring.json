@@ -2,7 +2,7 @@
   "_index": ".kibana",
   "_type": "index-pattern",
   "_id": "presidio-monitoring",
-  "_version": 5,
+  "_version": 1,
   "found": true,
   "_source": {
     "title": "presidio-monitoring",
