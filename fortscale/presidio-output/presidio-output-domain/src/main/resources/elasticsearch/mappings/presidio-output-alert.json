@@ -38,7 +38,8 @@
       },
       "userId": {
         "store": true,
-        "type": "string"
+        "type": "string",
+        "index": "not_analyzed"
       },
       "startDate": {
         "store": true,
