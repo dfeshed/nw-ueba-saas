@@ -9,7 +9,7 @@
       "description": "",
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"name=number.of.alerts.created\"}},\"filter\":[]}"
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"name=output-processor.number_of_alerts_created\"}},\"filter\":[]}"
       }
     }
   }
