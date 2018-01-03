@@ -18,6 +18,7 @@
           },
           "name": {
             "type": "text",
+            "index": "not_analyzed",
             "store": true
           },
           "tags": {
