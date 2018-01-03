@@ -37,16 +37,11 @@ class OutputRetentionDagBuilder(PresidioDagBuilder):
 
         logging.debug("populating the retention dag, dag_id=%s ", output_retention_dag.dag_id)
 
-        java_args = {
-            'command': self._retention_command
-        }
-
         jar_operator = FixedDurationJarOperator(
             task_id='retention_output',
             fixed_duration_strategy=timedelta(hours=1),
-            command=PresidioDagBuilder.presidio_command,
+            command=self._retention_command,
             jvm_args=self.jvm_args,
-            java_args=java_args,
             run_clean_command_before_retry=False,
             dag=output_retention_dag)
 

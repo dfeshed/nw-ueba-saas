@@ -40,14 +40,13 @@ class AdapterRetentionDagBuilder(PresidioDagBuilder):
         # Iterate all configured data sources
         for data_source in self.data_sources:
             java_args = {
-                'schema': data_source,
-                'command': self._retention_command
+                'schema': data_source
             }
 
             jar_operator = FixedDurationJarOperator(
                 task_id='retention_adapter_{}'.format(data_source),
                 fixed_duration_strategy=timedelta(hours=1),
-                command=PresidioDagBuilder.presidio_command,
+                command=self._retention_command,
                 jvm_args=self.jvm_args,
                 java_args=java_args,
                 run_clean_command_before_retry=False,
