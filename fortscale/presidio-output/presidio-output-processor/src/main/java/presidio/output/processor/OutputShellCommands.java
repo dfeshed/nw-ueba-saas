@@ -62,7 +62,7 @@ public class OutputShellCommands implements CommandMarker {
             //TODO: Remove the COMMAND_LINE_FIXED_DURATION_FIELD_NAME  when fixing the JarOpertaor (Currently this is mandatory in the JarOperator)
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
     ) throws Exception {
-        executionService.applyRetentionPolicy(startTime);
+        executionService.applyRetentionPolicy(endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")

@@ -46,7 +46,7 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
                 , schema,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        inputCoreManager.applyRetentionPolicy(schema, startDate);
+        inputCoreManager.applyRetentionPolicy(schema, endDate);
         logger.info("Finished clean retention processing .");
     }
 
