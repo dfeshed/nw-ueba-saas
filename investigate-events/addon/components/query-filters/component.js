@@ -93,19 +93,20 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
     }
   },
 
-  @computed('filters', 'filters.length', 'processedPreloadedFilters', 'processedPreloadedFilters.length')
-  queryable(filters, filtersLength, processedPreloadedFilters, processedPreloadedFiltersLength) {
+  @computed('filters', 'filters.length', 'preloadedFilters', 'preloadedFilters.length', 'filters.@each.meta', 'filters.@each.operator', 'filters.@each.value')
+  queryable(filters, filtersLength, preloadedFilters, preloadedFiltersLength) {
     let queryable = false;
 
-    if (isEmpty(filters) || (processedPreloadedFiltersLength === 0 && (filtersLength - 1) === 0)) {
+    if (isEmpty(filters) || (preloadedFiltersLength === 0 && (filtersLength - 1) === 0)) {
       return queryable;
     }
 
     filters = filters.filterBy('editActive', false);
-    if (processedPreloadedFiltersLength && processedPreloadedFiltersLength === filters.get('length')) {
+    if (preloadedFiltersLength && preloadedFiltersLength === filters.get('length')) {
 
-      processedPreloadedFilters.forEach((filter, i) => {
-        const filterAStr = `${filter.get('meta')} ${filter.get('operator')} ${filter.get('value')}`;
+      preloadedFilters.forEach((filter, i) => {
+
+        const filterAStr = `${filter.meta} ${filter.operator} ${filter.value}`;
         const filterB = filters.objectAt(i);
         const filterBStr = `${filterB.get('meta')} ${filterB.get('operator')} ${filterB.get('value')}`;
 
@@ -272,7 +273,6 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
 
     if (selectedList.get('length') && !withEditActive) {
       filters.removeObjects(selectedList);
-      this.$('input').last().focus();
     }
   }),
 
@@ -290,7 +290,8 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
           value: filter.value,
           filterIndex: index,
           editActive: false,
-          selected: false
+          selected: false,
+          saved: true
         });
 
         filters.pushObject(obj);

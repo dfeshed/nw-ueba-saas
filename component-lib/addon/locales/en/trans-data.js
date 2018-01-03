@@ -134,7 +134,17 @@ export default {
     placeholder: 'Enter a Meta Key and Value (optional)',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
-    expensive: 'Performing this operation might take more time.'
+    expensive: 'Performing this operation might take more time.',
+    validationMessages: {
+      time: 'You must enter a valid date.',
+      text: 'Strings must be quoted with "',
+      ipv4: 'You must enter an IPv4 address.',
+      ipv6: 'You must enter an IPv6 address.',
+      uint8: 'You must enter an 8 bit Integer.',
+      uint16: 'You must enter a 16 bit Integer.',
+      uint32: 'You must enter a 32 bit Integer.',
+      float32: 'You must enter a 32 bit Float.'
+    }
   },
 
   ipConnections: {

@@ -51,14 +51,14 @@ test('it works', function(assert) {
   result = eventQueryUri([ query, drillMetaKey, drillOperator, drillValue ]);
   assert.equal(
     result,
-    [ serviceId, startTime, endTime, `${drillMetaKey}%20${encodedDrillOperator}%20${drillValue}` ].join('/'),
+    [ serviceId, startTime, endTime, `${drillMetaKey}${encodedDrillOperator}${drillValue}` ].join('/'),
     'Expected URI string with service id, start & end time, and 1 drill condition in meta filter.'
   );
 
   result = eventQueryUri([ drillQuery, drillMetaKey2, drillOperator2, drillValue2 ]);
   assert.equal(
     result,
-    [ serviceId, startTime, endTime, `${drillMetaKey}%20${encodedDrillOperator}%20${drillValue}`, `${drillMetaKey2}%20${encodedDrillOperator2}%20${drillValue2}` ].join('/'),
+    [ serviceId, startTime, endTime, `${drillMetaKey}${encodedDrillOperator}${drillValue}`, `${drillMetaKey2}${encodedDrillOperator2}${drillValue2}` ].join('/'),
     'Expected URI string with service id, start & end time, and 2 drill conditions in meta filter.'
   );
 

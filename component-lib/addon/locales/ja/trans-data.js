@@ -134,7 +134,17 @@ export default {
     placeholder: 'ja_Enter a Meta Key and Value (optional)',
     querySelected: 'ja_Query with selected filters',
     querySelectedNewTab: 'ja_Query with selected filters in a new tab',
-    expensive: 'ja_Performing this operation might take more time.'
+    expensive: 'ja_Performing this operation might take more time.',
+    validationMessages: {
+      time: 'ja_You must enter a valid date.',
+      text: 'ja_Strings must be quoted with "',
+      ipv4: 'ja_You must enter an IPv4 address.',
+      ipv6: 'ja_You must enter an IPv6 address.',
+      uint8: 'ja_You must enter an 8 bit Integer.',
+      uint16: 'ja_You must enter a 16 bit Integer.',
+      uint32: 'ja_You must enter a 32 bit Integer.',
+      float32: 'ja_You must enter a 32 bit Float.'
+    }
   },
   ipConnections: {
     ipCount: '(ja_{{count}} IPs)',

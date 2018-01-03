@@ -149,10 +149,8 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
 export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
     .map((condition) => {
-      const { meta, value, operator, metaFormat } = condition;
-      const useQuotes = String(metaFormat).toLowerCase() === 'text';
-      const valueEncoded = useQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
-      return `${meta}${operator}${valueEncoded}`;
+      const { meta, value, operator } = condition;
+      return `${meta}${operator}${value}`;
     })
     .join(' && ');
 };

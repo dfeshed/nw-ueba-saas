@@ -8,12 +8,12 @@ const baseUri = '123/0/1484157289';
 const simpleUriMeta = 'service';
 const simpleUriOperator = '=';
 const simpleUriValue = '21';
-const simpleUri = `${baseUri}/${simpleUriMeta}%20${simpleUriOperator}%20${simpleUriValue}`;
+const simpleUri = `${baseUri}/${simpleUriMeta}${simpleUriOperator}${simpleUriValue}`;
 
 const simpleUriMeta2 = 'tld';
 const simpleUriOperator2 = '>';
 const simpleUriValue2 = 'com';
-const simpleUri2 = `${simpleUriMeta2}%20${simpleUriOperator2}%20${simpleUriValue2}`;
+const simpleUri2 = `${simpleUriMeta2}${simpleUriOperator2}${simpleUriValue2}`;
 
 const emptyMetaUri = `${simpleUri}//`;
 

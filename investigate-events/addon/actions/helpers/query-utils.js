@@ -179,13 +179,29 @@ function _parseMetaFilterUri(uri) {
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
     return [];
   }
+  const operators = [
+    '=', '!=', '<', '<=', '>', '>=', 'exists', '!exists', 'contains', 'begins', 'ends'
+  ];
   return uri.split('/')
     .filter((segment) => !!segment)
     .map((queryString) => {
-      const [ meta, operator, ...valuePieces ] = decodeURIComponent(queryString).split(' ');
-      const value = valuePieces.join(' ');
+      const decodedQuery = decodeURIComponent(queryString);
 
-      return { meta, value, operator };
+      const operator = operators.find((option) => {
+        if (decodedQuery.includes('!exists')) {
+          return option === '!exists';
+        } else if (decodedQuery.includes('<=')) {
+          return option === '<=';
+        } else if (decodedQuery.includes('>=')) {
+          return option === '>=';
+        } else {
+          return decodedQuery.includes(option);
+        }
+      });
+
+      const [ meta, value ] = decodedQuery.split(operator);
+
+      return { meta, operator, value };
     });
 }
 
@@ -223,7 +239,7 @@ function _uriEncodeMetaFilterConditions(conditions = []) {
         return encodeURIComponent(`${condition.meta} ${condition.operator}`);
       } else {
         if (condition.meta && condition.operator && condition.value) {
-          return encodeURIComponent(`${condition.meta} ${condition.operator} ${condition.value}`);
+          return encodeURIComponent(`${condition.meta}${condition.operator}${condition.value}`);
         }
       }
     })

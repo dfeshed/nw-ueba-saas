@@ -8,29 +8,7 @@ import contextMenuMixin from 'ember-context-menu';
 import service from 'ember-service/inject';
 import { validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 import { connect } from 'ember-redux';
-
-const insertEmptyFilter = (list, index) => {
-  const emptyFilter = EmberObject.create({
-    meta: null,
-    operator: null,
-    value: null,
-    filter: null,
-    filterIndex: index,
-    editActive: true,
-    selected: false
-  });
-
-  list.addObject(emptyFilter);
-};
-
-const resetFilter = (filter) => {
-  filter.setProperties({
-    meta: null,
-    operator: null,
-    value: null,
-    selected: null
-  });
-};
+import validator from 'validator';
 
 const dispatchToActions = {
   validateIndividualQuery
@@ -43,7 +21,11 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
   classNames: ['rsa-query-fragment'],
 
-  classNameBindings: ['editActive', 'selected', 'empty', 'typing', 'prevIsEditing', 'isExpensive', 'queryFragmentInvalid', 'metaIndex'],
+  classNameBindings: [
+    'editActive', 'selected', 'empty',
+    'typing', 'prevIsEditing', 'isExpensive',
+    'queryFragmentInvalid', 'metaIndex'
+  ],
 
   type: 'meta',
 
@@ -64,6 +46,12 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   isExpensive: false,
 
   apiMetaMessage: null,
+
+  wasValidated: false,
+
+  saved: false,
+
+  validateWithServer: true,
 
   @equal('type', 'meta') onMeta: false,
   @equal('type', 'operator') onOperator: false,
@@ -131,27 +119,19 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     }
   },
 
-  @computed('meta', 'withMeta', 'operator', 'withOperator', 'value', 'withValue', 'empty', 'completed')
-  filter(meta, withMeta, operator, withOperator, value, withValue, empty, completed) {
-    if (completed) {
-      if (operator === 'exists' || operator === '!exists') {
-        return `${meta} ${operator}`;
-      } else {
-        return `${meta} ${operator} ${value}`;
-      }
-    } else if (empty) {
-      return '';
-    } else if (withMeta && withOperator && !withValue) {
-      return `${meta} ${operator} `;
-    } else if (withMeta && !withOperator && !withValue) {
-      return `${meta} `;
-    }
+  @computed('meta', 'operator', 'value')
+  filter(meta, operator, value) {
+    return `${meta || ''} ${operator || ''} ${value || ''}`.trim();
   },
 
   @computed('metaOptions', 'metaOptions.length')
   sortedMetaOptions(metaOptions) {
     if (!isEmpty(metaOptions)) {
-      return metaOptions.asMutable().sort((a, b) => {
+      if (metaOptions.asMutable) {
+        metaOptions = metaOptions.asMutable();
+      }
+
+      return metaOptions.sort((a, b) => {
         a = a.metaName.replace(' ', '').replace('.', '').toLowerCase();
         b = b.metaName.replace(' ', '').replace('.', '').toLowerCase();
 
@@ -202,15 +182,112 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     if (meta != null && operator != null && value != null) {
       // api needs a string instead of object
       const filterText = `${meta} ${operator} ${value}`;
-      this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
+      if (this.get('validateWithServer') && (!this.get('wasValidated') || filterText != this.get('filter'))) {
+        this._prevalidation();
+        if (!this.get('queryFragmentInvalid')) {
+          this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
+        }
+      }
     }
   },
 
   _validateComplete(isValid, apiMetaMessage) {
     if (!isValid) {
       this.set('queryFragmentInvalid', true);
-      this.set('apiMetaMessage', apiMetaMessage.message);
+      this.set('wasValidated', true);
+
+      if (apiMetaMessage.message) {
+        this.set('apiMetaMessage', apiMetaMessage.message);
+      }
     }
+  },
+
+  _prevalidation() {
+    let isValid = true;
+    let message = '';
+    const i18n = this.get('i18n');
+    const value = this.get('value');
+    const format = this.get('metaFormat');
+
+    if (isEmpty(value)) {
+      return;
+    }
+
+    switch (format) {
+      case 'TimeT':
+        isValid = new Date(value) != 'Invalid Date';
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.time');
+        }
+        break;
+      case 'Text':
+        isValid = value.slice(0) != '"' || value.slice(-1) != '"';
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.text');
+        }
+        break;
+      case 'IPv4':
+        isValid = validator.isIP(value, 4);
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.ipv4');
+        }
+        break;
+      case 'IPv6':
+        isValid = validator.isIP(value, 6);
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.ipv6');
+        }
+        break;
+      case 'UInt8':
+        isValid = validator.isInt(value);
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.uint8');
+        }
+        break;
+      case 'UInt16':
+        isValid = validator.isInt(value);
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.uint16');
+        }
+        break;
+      case 'UInt32':
+        isValid = validator.isInt(value);
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.uint32');
+        }
+        break;
+      case 'Float32':
+        isValid = validator.isFloat(value);
+        if (!isValid) {
+          message = i18n.t('queryBuilder.validationMessages.float32');
+        }
+        break;
+    }
+    this._validateComplete(isValid, { message });
+  },
+
+  _insertEmptyFilter(index) {
+    const list = this.get('filterList');
+    const filter = EmberObject.create({
+      meta: null,
+      operator: null,
+      value: null,
+      filter: null,
+      filterIndex: index || list.get('length'),
+      editActive: true,
+      selected: false
+    });
+
+    !isEmpty(index) ? list.addObject(filter) : list.insertAt(index, filter);
+  },
+
+  _resetFilter() {
+    this.setProperties({
+      meta: null,
+      operator: null,
+      value: null,
+      selected: null
+    });
   },
 
   actions: {
@@ -223,207 +300,224 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     onblur() {
       this.setKeyboardPriority(0);
 
-      let list = this.get('filterList');
-      list = list.without(list.get('lastObject'));
-      list = list.without(list.get('filterRecord'));
+      if (!this.get('completed') && !this.get('saved')) {
+        const list = this.get('filterList');
+        const prunedList = list
+          .without(list.get('lastObject'))
+          .without(list.get('filterRecord'));
 
-      const toDelete = list.filterBy('editActive', true);
-      this.deleteFilter(toDelete);
+        const toDelete = prunedList.filterBy('editActive', true);
+        this.deleteFilter(toDelete);
+      }
     },
 
     onfocus(select) {
       this.setKeyboardPriority(1);
 
-      this.get('filterList').setEach('selected', false);
+      const list = this.get('filterList');
+      const prunedList = list
+        .without(list.get('lastObject'))
+        .without(this.get('filterRecord'));
+
+      prunedList.setEach('selected', false);
+      prunedList.setEach('editActive', false);
+
       this.$('input').prop('type', 'text').prop('spellcheck', false);
       select.actions.open();
     },
 
     // User takes action via keyboard
     parseInput(select, event) {
-      run.next(() => {
-        if (this.isDestroyed || this.isDestroying) {
-          return;
+      const input = this.$('input');
+      const inputVal = this.$('input').val();
+      const cursorPosition = input.get(0).selectionStart;
+      const {
+        filter, filterRecord, filterList, type, filterIndex,
+        meta, operator, completed, saved
+      } = this.getProperties(
+        'filter', 'filterRecord', 'type', 'filterList', 'filterIndex',
+        'meta', 'operator', 'completed', 'saved'
+      );
+
+      if (isEmpty(input.get(0))) {
+        return;
+      }
+
+      if (isEmpty(inputVal)) {
+        this.setProperties({
+          type: 'meta',
+          meta: null,
+          operator: null,
+          value: null,
+          typing: false
+        });
+      } else {
+        this.set('typing', true);
+
+        if (filterRecord != filterList.get('lastObject')) {
+          input.width(inputVal.length * 8);
         }
-        const input = this.$('input');
-        const {
-          filter, filterRecord, filterList, type, filterIndex, empty, meta, operator, value, completed, withMeta, withOperator, withValue
-        } = this.getProperties('filter', 'filterRecord', 'type', 'filterList', 'filterIndex', 'empty', 'meta', 'operator', 'value', 'completed', 'withMeta', 'withOperator', 'withValue');
+      }
 
-        if (!isEmpty(input[0])) {
-          const cursorPosition = input[0].selectionStart;
+      if (event.code === 'ArrowLeft') {
+        if (cursorPosition === 0 && isEmpty(inputVal)) {
+          if (filterIndex !== 0) {
+            select.actions.close();
 
-          if (!isEmpty(input.val())) {
-            this.set('typing', true);
+            if (!completed && !saved) {
+              this._resetFilter();
+            }
+          }
+        }
+      }
 
-            if (filterRecord != filterList.get('lastObject')) {
-              input.width(input.val().length * 8);
+      if (event.code === 'Escape') {
+        select.actions.close();
+        input.blur();
+
+        if (!saved) {
+          this._resetFilter();
+          this.set('type', 'meta');
+
+          if (filterRecord != filterList.get('lastObject')) {
+            filterList.removeObject(filterRecord);
+          }
+        } else {
+          this.set('type', 'value');
+          this.set('editActive', false);
+        }
+      }
+
+      if (event.code === 'Space') {
+        if (type != 'value') {
+          if (select.results.length === 1) {
+            select.actions.select(select.results[0]);
+
+            if (type === 'meta') {
+              this.set('type', 'operator');
+            } else if (type === 'operator') {
+              this.set('type', 'value');
             }
           } else {
-            this.set('type', 'meta');
-            this.set('meta', null);
-            this.set('typing', false);
+            const match = select.results.find((result) => {
+              if (type === 'meta') {
+                return result.metaName === select.searchText.toLowerCase();
+              } else {
+                const valueToMatch = select.searchText.slice(filter.length, select.searchText.length);
+                return result.displayName === valueToMatch;
+              }
+            });
+
+            if (!isEmpty(match)) {
+              select.actions.select(match);
+            }
           }
+        }
+      }
 
-          let metaLength, operatorLength, valueLength;
+      if (event.code === 'Enter') {
+        if (isEmpty(select.highlighted) && isEmpty(inputVal) && (filterRecord === filterList.get('lastObject'))) {
+          return this.executeQuery(filterList);
+        }
 
-          if (withMeta) {
+        if (!isEmpty(inputVal)) {
+          if (this.get('complete') && (filter === inputVal)) {
+            this.set('editActive', false);
+          } else {
+            let updatedValue;
+
+            const updatedMeta = this.get('metaOptions').find((option) => {
+              return inputVal.includes(option.metaName) && inputVal.charAt(option.metaName.length) != '.';
+            });
+
+            if (updatedMeta) {
+              const keyIndexes = ['none', 'key', 'value'];
+              const keyIndexType = updatedMeta.flags & '0xF';
+
+              this.setProperties({
+                meta: updatedMeta.metaName,
+                metaFormat: updatedMeta.format,
+                metaIndex: keyIndexes[keyIndexType - 1]
+              });
+            }
+
+            const updatedOperator = this.get('operatorOptions').find((option) => {
+              if (inputVal.includes('!exists')) {
+                return option.displayName === '!exists';
+              } else if (inputVal.includes('<=')) {
+                return option.displayName === '<=';
+              } else if (inputVal.includes('>=')) {
+                return option.displayName === '>=';
+              } else {
+                return inputVal.includes(option.displayName);
+              }
+            });
+
+            if (updatedOperator) {
+              const operatorIndex = inputVal.indexOf(updatedOperator.displayName);
+              const textLength = inputVal.length;
+              updatedValue = inputVal.slice(operatorIndex + updatedOperator.displayName.length, textLength).trim();
+              this.set('operator', updatedOperator.displayName);
+              this.set('isExpensive', updatedOperator.isExpensive);
+            }
+
+            const isExistsOperator = inputVal.includes('exists');
+            if (!isEmpty(updatedMeta) && !isEmpty(updatedOperator) && (!isEmpty(updatedValue) || isExistsOperator)) {
+              if (this.get('metaFormat') === 'Text' && !isExistsOperator) {
+                updatedValue = `"${updatedValue.replace(/['"]/g, '')}"`;
+              }
+
+              // set query validation properties to default if editing
+              // this is required apart from the other api call made in didInsertAttrs
+              // as user can edit a invalid pill
+              this.setProperties({
+                value: updatedValue,
+                editActive: false,
+                wasValidated: true,
+                queryFragmentInvalid: false,
+                apiMetaMessage: null,
+                saved: true
+              });
+
+              this._prevalidation();
+              if (this.get('validateWithServer') && !this.get('queryFragmentInvalid')) {
+                this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
+              }
+
+              this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
+
+              run.next(() => {
+                this.$().next('.rsa-query-fragment').find('input').focus();
+              });
+            }
+          }
+        }
+      }
+
+      if (['ArrowLeft', 'ArrowRight', 'Delete', 'Backspace'].includes(event.code)) {
+        run.next(() => {
+          let metaLength = 0;
+          let operatorLength = 0;
+          if (!isEmpty(meta)) {
             metaLength = meta.length;
           }
 
-          if (withOperator) {
+          if (!isEmpty(operator)) {
             operatorLength = operator.length;
           }
 
-          if (valueLength) {
-            valueLength = value.length;
+          const updatedCursorPosition = input.get(0).selectionStart;
+          const metaAndOperatorLength = metaLength + operatorLength;
+
+          if (updatedCursorPosition <= metaLength) {
+            this.set('type', 'meta');
+          } else if (updatedCursorPosition > metaLength && updatedCursorPosition <= metaAndOperatorLength + 1) {
+            this.set('type', 'operator');
+          } else if (updatedCursorPosition > metaAndOperatorLength) {
+            this.set('type', 'value');
           }
-
-          if (event.code === 'Escape') {
-            select.actions.close();
-            input.blur();
-
-            if (!completed) {
-              resetFilter(this);
-              this.set('type', 'meta');
-
-              if (filterIndex === (filterList.get('length') - 1)) {
-                return this.set('editActive', true);
-              } else {
-                filterList.removeObject(filterRecord);
-                this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
-              }
-            } else {
-              this.set('type', 'value');
-              this.set('editActive', false);
-
-              return run.next(() => {
-                if (this.isDestroyed || this.isDestroying) {
-                  return;
-                }
-                this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
-              });
-            }
-          }
-
-          if (event.code === 'Space') {
-            if (select.results.length === 1) {
-              select.actions.select(select.results[0]);
-
-              run.next(() => {
-                if (this.isDestroyed || this.isDestroying) {
-                  return;
-                }
-                if (type === 'meta') {
-                  this.set('type', 'operator');
-                } else if (type === 'operator') {
-                  this.set('type', 'value');
-                }
-              });
-            } else {
-              if (type != 'value') {
-                const match = select.results.find((result) => {
-                  if (type === 'meta') {
-                    return result.metaName === select.searchText.toLowerCase();
-                  } else {
-                    const valueToMatch = select.searchText.slice(filter.length, select.searchText.length);
-                    return result.displayName === valueToMatch;
-                  }
-                });
-
-                if (!isEmpty(match)) {
-                  select.actions.select(match);
-
-                  if (type === 'operator') {
-                    select.actions.close();
-                  }
-                }
-              }
-            }
-          }
-
-          if (event.code === 'ArrowLeft') {
-            if (cursorPosition === 0 && isEmpty(input.val())) {
-              if (filterIndex !== 0) {
-                select.actions.close();
-
-                if (!completed) {
-                  resetFilter(this);
-                }
-              }
-            }
-          }
-
-          if (event.code === 'Enter') {
-            if (isEmpty(input.val())) {
-              select.actions.close();
-              input.blur();
-            }
-
-            if (type === 'value') {
-              if (completed || select.searchText.length > filter.length) {
-                const currentFilter = meta.length + operator.length + 2;
-                let valueToSet = select.searchText.slice(currentFilter, select.searchText.length);
-
-                if (this.get('metaFormat') === 'Text') {
-                  valueToSet = `"${valueToSet.replace(/['"]/g, '')}"`;
-                }
-
-                this.set('value', valueToSet);
-                this.set('editActive', false);
-
-                // set query validation properties to default if editing
-                // this is required apart from the other api call made in didInsertAttrs
-                // as user can edit a invalid pill
-                this.set('queryFragmentInvalid', false);
-                this.set('apiMetaMessage', null);
-                this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
-
-                if (filterRecord === filterList.get('lastObject')) {
-                  insertEmptyFilter(filterList, filterList.get('length'));
-                }
-
-                return run.schedule('afterRender', () => {
-                  this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
-                });
-              }
-            }
-
-            if (cursorPosition === 0 && isEmpty(filter) && (filterRecord === filterList.get('lastObject'))) {
-              this.executeQuery(filterList);
-            }
-          }
-
-          if (completed) {
-            if (cursorPosition >= (metaLength + operatorLength + 2)) {
-              this.set('type', 'value');
-            } else if (cursorPosition >= (metaLength + 1)) {
-              this.set('type', 'operator');
-            } else {
-              this.set('type', 'meta');
-            }
-          } else {
-            if (withMeta && withOperator && !withValue) {
-              if (cursorPosition >= (metaLength + operatorLength + 2)) {
-                this.set('type', 'value');
-              } else if (cursorPosition >= (metaLength + 1)) {
-                this.set('type', 'operator');
-              } else {
-                this.set('type', 'meta');
-              }
-            } else if (withMeta && !withOperator && !withValue) {
-
-              if (cursorPosition >= metaLength) {
-                this.set('type', 'operator');
-              } else {
-                this.set('type', 'meta');
-              }
-            } else if (empty) {
-              this.set('type', 'meta');
-            }
-          }
-        }
-      });
+        });
+      }
     },
 
     // Filter displayed options
@@ -431,8 +525,12 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
       searchTerm = searchTerm.toLowerCase();
 
       const {
-        completed, options, type, onMeta, meta, operator, value, onOperator, withMeta, withOperator, withValue
-      } = this.getProperties('completed', 'options', 'type', 'onOperator', 'meta', 'operator', 'value', 'onMeta', 'withMeta', 'withOperator', 'withValue');
+        options, type, onMeta, meta, operator, completed,
+        value, onOperator, withMeta, withOperator, withValue
+      } = this.getProperties(
+        'options', 'type', 'onOperator', 'meta', 'operator', 'completed',
+        'value', 'onMeta', 'withMeta', 'withOperator', 'withValue'
+      );
 
       if (isEmpty(options) || isEmpty(searchTerm)) {
         return;
@@ -453,85 +551,67 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           }
         }
 
-        searchTerm = searchTerm.trim();
         if (type === 'meta') {
           return option.metaName.indexOf(searchTerm) !== -1 || option.displayName.indexOf(searchTerm) !== -1;
         } else {
-          return option.displayName.indexOf(searchTerm) !== -1;
+          return isEmpty(searchTerm) || option.displayName.slice(0, searchTerm.length) === searchTerm;
         }
       });
     },
 
     // User makes selection via typeahead
     updateFilter(selection, select) {
-      if (isEmpty(selection)) {
-        return select.actions.open();
+      const { filterList, type, filterRecord } = this.getProperties('filterList', 'type', 'filterRecord');
+
+      if (isEmpty(selection) && select.results.length === 1) {
+        selection = select.results[0];
+      } else if (isEmpty(selection)) {
+        return;
       }
 
-      const { type, completed, filterRecord, filterList } = this.getProperties('completed', 'type', 'filterRecord', 'filterList');
-
       if (type === 'meta') {
-        const keyIndexType = selection.flags & '0xF';
         const keyIndexes = ['none', 'key', 'value'];
+        const keyIndexType = selection.flags & '0xF';
 
-        this.set('meta', selection.metaName);
-        this.set('metaIndex', keyIndexes[keyIndexType - 1]);
-        this.set('metaFormat', selection.format);
-        this.set('type', 'operator');
+        this.setProperties({
+          meta: selection.metaName,
+          metaFormat: selection.format,
+          metaIndex: keyIndexes[keyIndexType - 1],
+          type: 'operator'
+        });
       } else if (type === 'operator') {
-        this.set('isExpensive', selection.isExpensive);
-        this.set('operator', selection.displayName);
+        this.setProperties({
+          isExpensive: selection.isExpensive,
+          operator: selection.displayName
+        });
 
         if (selection.displayName === 'exists' || selection.displayName === '!exists') {
-          this.set('value', '_STUB_VALUE_');
-          this.set('editActive', false);
+          this.setProperties({
+            editActive: false
+          });
 
-          if (filterRecord === filterList.get('lastObject')) {
-            insertEmptyFilter(filterList, filterList.get('length') + 1);
-          }
+          this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
 
           run.next(() => {
-            if (this.isDestroyed || this.isDestroying) {
-              return;
-            }
-            this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
+            this.$().next('.rsa-query-fragment').find('input').focus();
           });
         } else {
           this.set('type', 'value');
         }
       }
-
-      if (completed) {
-        this.set('editActive', false);
-        this.set('type', 'value');
-        this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
-      }
-
-      run.next(() => {
-        if (this.isDestroyed || this.isDestroying) {
-          return;
-        }
-        const filterLength = this.get('filter').length;
-        const fragment = this.$().closest('.rsa-query-meta').find('.rsa-query-fragment').eq(this.get('filterIndex'));
-        fragment.find('input').focus()[0].setSelectionRange(filterLength, filterLength);
-        select.actions.open();
-      });
     },
 
     editFilter() {
       this.toggleProperty('editActive');
+      this.set('type', 'value');
 
       run.next(() => {
-        if (this.isDestroyed || this.isDestroying) {
-          return;
-        }
         this.$('input').prop('type', 'text').prop('spellcheck', false).focus();
       });
     },
 
     deleteFilter() {
       this.deleteFilter(this.get('filterRecord'));
-      this.$().closest('.rsa-query-meta').find('.rsa-query-fragment.edit-active input').focus();
     }
   }
 
