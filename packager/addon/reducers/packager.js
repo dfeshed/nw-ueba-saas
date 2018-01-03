@@ -40,8 +40,8 @@ const packagerReducer = handleActions({
   },
 
   [ACTION_TYPES.UPDATE_FIELDS]: (state, { payload }) => {
-    state.set({ 'initialState': { ...state.defaultPackagerConfig } });
-    return state.set('defaultPackagerConfig', payload);
+    return state.set('initialState', state.defaultPackagerConfig)
+                .set('defaultPackagerConfig', payload);
   },
 
   [ACTION_TYPES.DOWNLOAD_PACKAGE]: (state, { payload }) => {

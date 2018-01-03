@@ -59,11 +59,11 @@ test('Update Redux state with UI state ', function(assert) {
     defaultPackagerConfig: {},
     initialState: {}
   });
-  const action = makePackAction(LIFECYCLE.SUCCESS, {
+  const action = {
     type: ACTION_TYPES.UPDATE_FIELDS,
-    payload: { fieldsData }
-  });
+    payload: fieldsData
+  };
   const endState = reducer(previous, action);
   assert.deepEqual(endState.initialState, previous.defaultPackagerConfig);
- // assert.deepEqual(endState.defaultPackagerConfig, fieldsData);
+  assert.deepEqual(endState.defaultPackagerConfig, fieldsData);
 });

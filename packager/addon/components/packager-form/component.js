@@ -222,7 +222,6 @@ const formComponent = Component.extend({
         this.set('configData.logCollectionConfig.enabled', true);
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG', this._getCallbackFunction());
-      //  this.resetProperties();
       } else {
         this._scrollTo('.windows-log-collection');
       }
