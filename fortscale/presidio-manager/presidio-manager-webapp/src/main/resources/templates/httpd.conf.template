@@ -481,6 +481,17 @@ SSLSessionCacheTimeout  300
        RewriteRule / "http://localhost:8080/presidio-manager/data-pipeline/status/" [P,L]
     </Location>
 
+  <Location /data-pipeline/cleanAndRun>
+     #Deny from all
+     AuthName Configuration
+     AuthType Basic
+     #Satisfy Any
+     AuthUserFile /etc/httpd/conf/.htpasswd
+     require valid-user
+     RewriteEngine on
+     RewriteRule / "http://localhost:8080/presidio-manager/data-pipeline/cleanAndRun/" [P,L]
+  </Location>
+
   <Location /control>
      #Deny from all
      AuthName Configuration
