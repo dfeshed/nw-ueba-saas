@@ -140,6 +140,26 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   },
 
   @computed('metaOptions', 'metaOptions.length')
+  filteredMetaOptions(metaOptions) {
+    if (!isEmpty(metaOptions)) {
+      if (metaOptions.asMutable) {
+        metaOptions = metaOptions.asMutable();
+      }
+
+      return metaOptions.filter((option) => {
+        const keyIndexes = ['none', 'key', 'value'];
+        const keyIndexType = option.flags & '0xF';
+
+        const withIndex = keyIndexes[keyIndexType - 1] != 'none';
+        const isTime = option.metaName === 'time';
+        const isSessionId = option.metaName === 'sessionId';
+
+        return withIndex || isTime || isSessionId;
+      });
+    }
+  },
+
+  @computed('filteredMetaOptions', 'filteredMetaOptions.length')
   sortedMetaOptions(metaOptions) {
     if (!isEmpty(metaOptions)) {
       if (metaOptions.asMutable) {
@@ -159,14 +179,14 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     }
   },
 
-  @computed('type', 'sortedMetaOptions', 'sortedMetaOptions.length', 'valueOptions', 'valueOptions.length', 'operatorOptions', 'operatorOptions.length')
-  options(type) {
+  @computed('type', 'sortedMetaOptions', 'operatorOptions', 'sortedMetaOptions.length', 'valueOptions', 'valueOptions.length', 'operatorOptions.length')
+  options(type, sortedMetaOptions, operatorOptions) {
     if (type == 'value') {
       return [];
     } else if (type === 'meta') {
-      return this.get('sortedMetaOptions');
+      return sortedMetaOptions;
     } else {
-      return this.get('operatorOptions');
+      return operatorOptions;
     }
   },
 
@@ -374,7 +394,15 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
       }
 
-      if (event.code === 'ArrowLeft') {
+      const pressedSpace = event.keyCode === 32 || event.which === 32 || event.code === 'Space';
+      const pressedEnter = event.keyCode === 13 || event.which === 13 || event.code === 'Enter';
+      const pressedEscape = event.keyCode === 27 || event.which === 27 || event.code === 'Escape';
+      const pressedLeft = event.keyCode === 37 || event.which === 37 || event.code === 'ArrowLeft';
+      const pressedRight = event.keyCode === 39 || event.which === 39 || event.code === 'ArrowRight';
+      const pressedBackspace = event.keyCode === 8 || event.which === 8 || event.code === 'Backspace';
+      const pressedDelete = event.keyCode === 46 || event.which === 46 || event.code === 'Delete';
+
+      if (pressedLeft) {
         if (cursorPosition === 0 && isEmpty(inputVal)) {
           if (filterIndex !== 0) {
             select.actions.close();
@@ -386,7 +414,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
       }
 
-      if (event.code === 'Escape') {
+      if (pressedEscape) {
         select.actions.close();
         input.blur();
 
@@ -403,7 +431,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
       }
 
-      if (event.code === 'Space') {
+      if (pressedSpace) {
         if (type != 'value') {
           if (select.results.length === 1) {
             select.actions.select(select.results[0]);
@@ -430,7 +458,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
       }
 
-      if (event.code === 'Enter') {
+      if (pressedEnter) {
         if (isEmpty(select.highlighted) && isEmpty(inputVal) && (filterRecord === filterList.get('lastObject'))) {
           return this.executeQuery(filterList);
         }
@@ -509,7 +537,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
       }
 
-      if (['ArrowLeft', 'ArrowRight', 'Delete', 'Backspace'].includes(event.code)) {
+      if (pressedLeft || pressedRight || pressedDelete || pressedBackspace) {
         run.next(() => {
           let metaLength = 0;
           let operatorLength = 0;

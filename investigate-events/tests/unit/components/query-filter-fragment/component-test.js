@@ -115,3 +115,18 @@ test('it sets isExpensive when metaIndex is anything but value', function(assert
   assert.ok(component.get('operatorOptions').findBy('displayName', '>').isExpensive, 'Expected > to be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', '>=').isExpensive, 'Expected >= to be expensive');
 });
+
+test('it filters metaOptions without an index but allows time and sessionId regardless of index', function(assert) {
+  const component = this.subject({
+    metaOptions: [
+      { metaName: 'time', flags: -2147483135 },
+      { metaName: 'sessionId', flags: -2147483135 },
+      { metaName: 'foo', flags: -2147483135 }
+    ]
+  });
+  const options = component.get('filteredMetaOptions');
+
+  assert.equal(options.get('length'), 2);
+  assert.ok(options.findBy('metaName', 'time'), 'Expected to find time');
+  assert.ok(options.findBy('metaName', 'sessionId'), 'Expected to find sessionId');
+});
