@@ -1,7 +1,6 @@
 import { HostDetails } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
-import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
 
 /**
  * Action creator for fetching all the drivers for given host and scan time
@@ -22,9 +21,6 @@ const getFileContextDrivers = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_DRIVERS,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading(false));
-        },
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_DRIVERS, response)
       }
     });

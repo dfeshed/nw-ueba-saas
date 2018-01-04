@@ -9,6 +9,8 @@ const _treeData = (state) => state.endpoint.process.processTree;
 const _listData = (state) => state.endpoint.process.processList;
 const _dllData = (state) => state.endpoint.process.dllList;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
+const _processDetailsLoading = (state) => state.endpoint.process.processDetailsLoading;
+const _processTreeLoading = (state) => state.endpoint.process.processTreeLoading;
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
@@ -138,4 +140,9 @@ export const processList = createSelector(
 export const isNavigatedFromExplore = createSelector(
   [_selectedTab],
   (selectedTab) => selectedTab && selectedTab.tabName === 'PROCESS'
+);
+
+export const isProcessLoading = createSelector(
+  [ _processDetailsLoading, _processTreeLoading ],
+  (processDetailsLoading, processTreeLoading) => processTreeLoading || processDetailsLoading
 );

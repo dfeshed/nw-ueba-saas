@@ -13,9 +13,9 @@
     {{host-detail/process/process-list}}
   {{/if}}
 </vbox>
-{{#if processDetailsLoading}}
+{{#if isProcessLoading}}
   <centered>
-    {{rsa-loader size='medium'}}
+    {{rsa-loader size='large'}}
   </centered>
 {{else}}
   <vbox xs="6" class="process-content-box panel-shadow">

@@ -16,7 +16,8 @@ const initialState = Immutable.from({
 
   processTree: null,
   processDetails: null,
-  processDetailsLoading: false
+  processDetailsLoading: false,
+  processTreeLoading: false
 
 });
 

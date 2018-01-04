@@ -44,8 +44,6 @@ const resetDetailsInputAndContent = () => {
 
 const resetHostDownloadLink = () => ({ type: ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK });
 
-const isDetailsLoading = (flag) => ({ type: ACTION_TYPES.TOGGLE_HOST_DETAILS_LOADING_INDICATOR, payload: flag });
-
 const arrangeSecurityConfigs = (arrangeBy) => ({ type: ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS, payload: { arrangeBy } });
 
 export {
@@ -65,6 +63,5 @@ export {
   toggleDeleteHostsModal,
   resetDetailsInputAndContent,
   resetHostDownloadLink,
-  arrangeSecurityConfigs,
-  isDetailsLoading
+  arrangeSecurityConfigs
 };

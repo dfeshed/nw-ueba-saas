@@ -1,8 +1,6 @@
 import { HostDetails } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
-import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
-
 
 /**
  * Action creator for fetching all autoruns given host id and scan time
@@ -23,9 +21,6 @@ const getFileContextAutoruns = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_AUTORUNS,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading(false));
-        },
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_AUTORUNS, response)
       }
     });
@@ -51,9 +46,6 @@ const getFileContextServices = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_SERVICES,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading(false));
-        },
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_SERVICES, response)
       }
     });
@@ -79,9 +71,6 @@ const getFileContextTasks = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_TASKS,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading(false));
-        },
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_TASKS, response)
       }
     });

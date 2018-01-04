@@ -1,6 +1,5 @@
 import * as ACTION_TYPES from '../types';
 import { HostFiles } from '../api';
-import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
 import { handleError } from '../creator-utils';
 
 const sortBy = (sortOption) => {
@@ -31,9 +30,6 @@ const _fetchHostFiles = () => {
       type: ACTION_TYPES.GET_HOST_FILES,
       promise: HostFiles.getHostFiles(pageNumber, agentId, scanTime, checksumSha256, key, descending),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading());
-        },
         onFailure: (response) => handleError(ACTION_TYPES.GET_HOST_FILES, response)
       }
     });

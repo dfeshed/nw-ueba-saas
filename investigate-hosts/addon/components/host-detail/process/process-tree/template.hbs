@@ -8,16 +8,21 @@
   {{#rsa-data-table/header as |column|}}
     {{t column.title}}
   {{/rsa-data-table/header}}
-
-  {{#rsa-data-table/body
-    noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
-    as |item index column|}}
-    {{#if column.componentClass}}
-      {{#rsa-data-table/body-cell item=item column=column}}
-        {{host-detail/process/process-tree/process-name item=item index=index onToggleExpand=(action 'handleToggleExpand')}}
-      {{/rsa-data-table/body-cell}}
-    {{else}}
-      {{rsa-data-table/body-cell item=item column=column}}
-    {{/if}}
-  {{/rsa-data-table/body}}
+  {{#if processTreeLoading}}
+    <centered>
+      {{rsa-loader size='medium'}}
+    </centered>
+  {{else}}
+    {{#rsa-data-table/body
+      noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
+      as |item index column|}}
+      {{#if column.componentClass}}
+        {{#rsa-data-table/body-cell item=item column=column}}
+          {{host-detail/process/process-tree/process-name item=item index=index onToggleExpand=(action 'handleToggleExpand')}}
+        {{/rsa-data-table/body-cell}}
+      {{else}}
+        {{rsa-data-table/body-cell item=item column=column}}
+      {{/if}}
+    {{/rsa-data-table/body}}
+  {{/if}}
 {{/rsa-data-table}}

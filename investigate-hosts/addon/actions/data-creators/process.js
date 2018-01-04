@@ -1,7 +1,6 @@
 import * as ACTION_TYPES from '../types';
 import { Process } from '../api';
 import { handleError } from '../creator-utils';
-import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
 
 const toggleProcessView = () => ({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
 
@@ -31,9 +30,6 @@ const _getTree = () => {
       type: ACTION_TYPES.GET_PROCESS_TREE,
       promise: Process.getProcessTree({ agentId, scanTime }),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading(false));
-        },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
       }
     });

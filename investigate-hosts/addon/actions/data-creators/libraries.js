@@ -1,7 +1,6 @@
 import { HostDetails, Process } from '../api';
 import { handleError } from '../creator-utils';
 import * as ACTION_TYPES from '../types';
-import { isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
 
 const getProcessAndLib = () => {
   return (dispatch, getState) => {
@@ -38,9 +37,6 @@ const getFileContextDLLS = () => {
       type: ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onSuccess: () => {
-          dispatch(isDetailsLoading(false));
-        },
         onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS, response)
       }
     });

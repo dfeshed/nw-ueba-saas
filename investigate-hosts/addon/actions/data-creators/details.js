@@ -6,7 +6,7 @@ import { getFileContextAutoruns, getFileContextServices, getFileContextTasks } f
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
-import { toggleExploreSearchResults, isDetailsLoading } from 'investigate-hosts/actions/ui-state-creators';
+import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
 
 import Ember from 'ember';
 const { Logger } = Ember;
@@ -73,9 +73,6 @@ const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
     const { endpoint: { drivers, autoruns, libraries, hostFiles, process, visuals } } = getState();
     const { activeHostDetailTab, activeAutorunTab } = visuals;
-    if (activeHostDetailTab !== 'OVERVIEW') {
-      dispatch(isDetailsLoading(true));
-    }
     switch (activeHostDetailTab) {
       case 'PROCESS':
         if (!process.processList) {

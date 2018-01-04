@@ -10,11 +10,17 @@
       click=(action 'sort' column)
       name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
   {{/rsa-data-table/header}}
-  {{#rsa-data-table/body
-    noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
-    as |item index column|}}
-    {{#rsa-data-table/body-cell column=column}}
-      {{get item column.field}}
-    {{/rsa-data-table/body-cell}}
-  {{/rsa-data-table/body}}
+  {{#if processTreeLoading}}
+    <centered>
+      {{rsa-loader size='medium'}}
+    </centered>
+  {{else}}
+    {{#rsa-data-table/body
+      noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
+      as |item index column|}}
+      {{#rsa-data-table/body-cell column=column}}
+        {{get item column.field}}
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+  {{/if}}
 {{/rsa-data-table}}
