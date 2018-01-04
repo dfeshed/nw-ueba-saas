@@ -1,5 +1,5 @@
 {{#if (is-equal size 'min')}}
-  <div class="mask size default" {{action "safeCallback" defaultSizeAction}}>{{rsa-icon name="arrow-right-9"}}</div>
+  <div class="mask size default" {{action (route-action "metaPanelSize" metaPanelSizes.DEFAULT)}}>{{rsa-icon name="arrow-right-9"}}</div>
 {{/if}}
 <section class="rsa-investigate-meta__content {{if hideDom 'hidden'}}">
   <header class="rsa-investigate-meta__header">
@@ -13,11 +13,11 @@
     </nav>
     <span class="rsa-investigate-meta__tools">
       {{#if (is-equal size 'max')}}
-        <button class="size default" {{action "safeCallback" defaultSizeAction}}>{{rsa-icon name="arrow-left-9"}}</button>
-        <button class="size min" {{action "safeCallback" minSizeAction}}>{{rsa-icon name="close"}}</button>
+        <button class="size default" {{action (route-action "metaPanelSize" metaPanelSizes.DEFAULT)}}>{{rsa-icon name="arrow-left-9"}}</button>
+        <button class="size min" {{action (route-action "metaPanelSize" metaPanelSizes.MIN)}}>{{rsa-icon name="close"}}</button>
       {{else}}
-        <button class="size max" {{action "safeCallback" maxSizeAction}}>{{rsa-icon name="arrow-right-9"}}</button>
-        <button class="size min" {{action "safeCallback" minSizeAction}}>{{rsa-icon name="close"}}</button>
+        <button class="size max" {{action (route-action "metaPanelSize" metaPanelSizes.MAX)}}>{{rsa-icon name="arrow-right-9"}}</button>
+        <button class="size min" {{action (route-action "metaPanelSize" metaPanelSizes.MIN)}}>{{rsa-icon name="close"}}</button>
       {{/if}}
     </span>
   </header>
@@ -26,8 +26,8 @@
       query=query
       group=group
       metaKeyStates=metaKeyStates
-      clickValueAction=(action "safeCallback" clickValueAction)
-      contextLookupAction=(action "safeCallback" contextLookupAction)
-      toggleAction=(action "safeCallback" toggleAction)}}
+      clickValueAction=(action (route-action "navDrill" queryNode))
+      contextLookupAction=(action (route-action "contextPanelOpen"))
+      toggleAction=(action (route-action "metaGroupKeyToggle" queryNode))}}
   </section>
 </section>

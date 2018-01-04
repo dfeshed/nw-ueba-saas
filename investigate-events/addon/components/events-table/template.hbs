@@ -44,8 +44,8 @@
         columnsConfig=columns
         language=language
         aliases=aliases
-        onRowClick=rowClickAction
-        loadLogsAction=loadLogsAction
+        onRowClick=(route-action 'selectEvent')
+        loadLogsAction=(action 'eventsLogsGet')
         scrollToInitialSelectedIndex=true
       }}
         {{#rsa-data-table/header translateTitles=false enableColumnSelector=true as |column|}}
@@ -56,12 +56,12 @@
           {{/with}}
         {{/rsa-data-table/header}}
         {{events-table-body buffer=5 rowComponentClass="events-table-row" showNoResultMessage=false}}
-        {{rsa-data-table/load-more status=status clickAction=loadMoreAction}}
+        {{rsa-data-table/load-more status=status clickAction=(action 'eventsGetMore')}}
       {{/rsa-data-table}}
     {{/events-table-context-menu}}
     {{#if _isStatusError}}
       {{#rsa-panel-message title=(t 'investigate.error.title') message=(t 'investigate.error.description')}}
-        {{#rsa-form-button}}<span {{action 'loadMoreAction'}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
+        {{#rsa-form-button}}<span {{action 'eventsGetMore'}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
       {{/rsa-panel-message}}
     {{else if (is-equal totalCount 0)}}
       {{rsa-panel-message title=(t 'investigate.empty.title') message=(t 'investigate.empty.description')}}

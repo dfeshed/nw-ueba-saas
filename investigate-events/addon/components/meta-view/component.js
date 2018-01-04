@@ -4,10 +4,14 @@ import observer from 'ember-metal/observer';
 
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import safeCallback from 'component-lib/utils/safe-callback';
+import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { META_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
-const stateToComputed = ({ investigate }) => ({
-  size: investigate.data.metaPanelSize
+const stateToComputed = (state) => ({
+  group: defaultMetaGroup(state),
+  size: state.investigate.data.metaPanelSize,
+  query: state.investigate.queryNode,
+  metaKeyStates: state.investigate.eventResults.metaKeyStates
 });
 
 const MetaViewComponent = Component.extend({
@@ -15,78 +19,14 @@ const MetaViewComponent = Component.extend({
   classNames: 'rsa-investigate-meta',
   classNameBindings: ['_sizeClass'],
 
+  metaPanelSizes: META_PANEL_SIZES,
+
   /**
    * Duration (in millisec) of delay between opening of component & revealing
    * its DOM content.
    * @public
    */
   unhideDelay: 250,
-
-  /**
-   * Configurable action; invoked when user clicks UI element to set `size` to `min`.
-   * @type {function}
-   * @public
-   */
-  minSizeAction: undefined,
-
-  /**
-   * Configurable action; invoked when user clicks UI element to set `size` to `max`.
-   * @type {function}
-   * @public
-   */
-  maxSizeAction: undefined,
-
-  /**
-   * Configurable action; invoked when user clicks UI element to set `size` to `default`.
-   * @type {function}
-   * @public
-   */
-  defaultSizeAction: undefined,
-
-  /**
-   * The current query's definition. Used to fetch meta values and to create links for drill-downs on the meta values.
-   * @see state/query
-   * @type {object}
-   * @public
-   */
-  query: undefined,
-
-  /**
-   * Configurable callback to be invoked whenever a meta key is opened/closed.
-   * @type {function}
-   * @public
-   */
-  toggleAction: undefined,
-
-  /**
-   * Configurable callback to be invoked whenever a meta value is clicked.
-   * @type {function}
-   * @public
-   */
-  clickValueAction: undefined,
-
-  /**
-   * Configurable callback to be invoked whenever user requests a context lookup on a meta value.
-   * @type {function}
-   * @public
-   */
-  contextLookupAction: undefined,
-
-  /**
-   * The meta group for user to browse.
-   * @type {{ keys: object[]}}
-   * @public
-   */
-  group: undefined,
-
-  /**
-   * An array of state objects, one for each meta key in `language`. These objects represent the data streams
-   * that fetch the meta values for the meta keys in `language`.
-   * @see state/meta-key
-   * @type {object[]}
-   * @public
-   */
-  metaKeyStates: undefined,
 
   /**
    * Private size tracker.
@@ -159,11 +99,6 @@ const MetaViewComponent = Component.extend({
       run.cancel(this._unhideTimer);
       this._unhideTimer = null;
     }
-  },
-
-  actions: {
-    // Used for invoking actions from template that may be undefined (without throwing an error).
-    safeCallback
   }
 });
 

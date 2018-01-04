@@ -8,7 +8,7 @@
           <div class="capitalize">{{or eventResults.message (t 'investigate.events.error')}}</div>
         {{/rsa-panel-message}}
       {{else}}
-        {{query-container/time-line retryAction=(route-action "eventTimelineGet" queryNode true)}}
+        {{query-container/time-line}}
       {{/if}}
     {{/if}}
   </header>
@@ -16,31 +16,11 @@
     <section class="rsa-investigate-query__body-master">
       {{#if showFutureFeatures}}
         <aside class="rsa-investigate-query__body-master-aside">
-          {{meta-view
-            group=defaultMetaGroup
-            metaKeyStates=eventResults.metaKeyStates
-            query=queryNode
-            minSizeAction=(route-action "metaPanelSize" metaPanelSizes.MIN)
-            maxSizeAction=(route-action "metaPanelSize" metaPanelSizes.MAX)
-            defaultSizeAction=(route-action "metaPanelSize" metaPanelSizes.DEFAULT)
-            onBack=(route-action "metaGroupSet" queryNode)
-            onFwd=(route-action "metaGroupSet" queryNode)
-            clickValueAction=(route-action "navDrill" queryNode)
-            contextLookupAction=(route-action "contextPanelOpen")
-            toggleAction=(route-action "metaGroupKeyToggle" queryNode)}}
+          {{meta-view}}
         </aside>
       {{/if}}
       <section class="rsa-investigate-query__body-master-main">
-        {{events-table
-          items=eventResults.data
-          selectedIndex=selectedIndex
-          status=eventResults.status
-          percent=percentReturned
-          rowClickAction=(route-action 'selectEvent')
-          loadMoreAction=(action 'eventsGetMore')
-          loadLogsAction=(action 'eventsLogsGet')
-          isOpen=isReconOpen
-        }}
+        {{events-table}}
       </section>
     </section>
     <vbox class="rsa-investigate-query__body-slave">

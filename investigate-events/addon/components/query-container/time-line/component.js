@@ -4,7 +4,6 @@ import { isEmberArray } from 'ember-array/utils';
 import get from 'ember-metal/get';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
-import safeCallback from 'component-lib/utils/safe-callback';
 import { computeExtent, dateFormatter } from 'component-lib/utils/chart-utils';
 import { format } from 'd3-format';
 import { scaleTime, scaleUtc } from 'd3-scale';
@@ -15,10 +14,10 @@ const stateToComputed = (state) => ({
   status: state.investigate.eventTimeline.status,
   startTime: state.investigate.queryNode.startTime,
   endTime: state.investigate.queryNode.endTime,
+  queryNode: state.investigate.queryNode,
   isDataEmpty: isDataEmpty(state),
   shouldShowStatus: shouldShowStatus(state)
 });
-
 const TimelineComponent = Component.extend({
   classNames: 'rsa-investigate-timeline',
   classNameBindings: ['status', 'isExpanded'],
@@ -35,12 +34,6 @@ const TimelineComponent = Component.extend({
   hoverIndex: null,
   isExpanded: false,
   masterChartMargin: { top: 8, bottom: 0, left: 5, right: 5 },
-  /**
-   * Configurable callback to be invoked when there is an error and user clicks Retry button.
-   * @type {function}
-   * @public
-   */
-  retryAction: undefined,
   /**
    * The status of the request to fetch the timeline `data`.
    * Either undefined (promise hasn't been executed yet), 'wait' (promise is in progress), 'resolved' or 'rejected'.
@@ -110,8 +103,6 @@ const TimelineComponent = Component.extend({
   xScaleFn: (zone) => (zone === 'UTC') ? scaleUtc : scaleTime,
 
   actions: {
-    safeCallback,
-
     toggleContent() {
       this.toggleProperty('isExpanded');
     }

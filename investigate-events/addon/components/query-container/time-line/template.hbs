@@ -85,7 +85,7 @@
         {{#rsa-panel-message messageType='rejected' testCss='js-test-rejected'}}
           <p>
             <span>{{t 'investigate.error.title'}}</span>
-            <a class="js-test-retry" {{action "safeCallback" retryAction}}>{{t 'investigate.tryAgain'}}</a>
+            <a class="js-test-retry" {{action (route-action "eventTimelineGet" queryNode true)}}>{{t 'investigate.tryAgain'}}</a>
           </p>
         {{/rsa-panel-message}}
       {{else if isDataEmpty}}
