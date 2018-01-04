@@ -43,7 +43,8 @@ test('Get defaultPackagerConfig ', function(assert) {
   const previous = Immutable.from({
     defaultPackagerConfig: {},
     error: false,
-    loading: false
+    loading: false,
+    initialState: {}
   });
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_INFO,
@@ -52,18 +53,17 @@ test('Get defaultPackagerConfig ', function(assert) {
 
   const endState = reducer(previous, action);
   assert.deepEqual(endState.defaultPackagerConfig, data);
+  assert.deepEqual(endState.initialState, data);
 });
 
 test('Update Redux state with UI state ', function(assert) {
   const previous = Immutable.from({
-    defaultPackagerConfig: {},
-    initialState: {}
+    defaultPackagerConfig: {}
   });
   const action = {
     type: ACTION_TYPES.UPDATE_FIELDS,
     payload: fieldsData
   };
   const endState = reducer(previous, action);
-  assert.deepEqual(endState.initialState, previous.defaultPackagerConfig);
   assert.deepEqual(endState.defaultPackagerConfig, fieldsData);
 });
