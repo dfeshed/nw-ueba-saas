@@ -120,7 +120,7 @@ test('it filters metaOptions without an index but allows time and sessionId rega
   const component = this.subject({
     metaOptions: [
       { metaName: 'time', flags: -2147483135 },
-      { metaName: 'sessionId', flags: -2147483135 },
+      { metaName: 'sessionid', flags: -2147483135 },
       { metaName: 'foo', flags: -2147483135 }
     ]
   });
@@ -128,5 +128,5 @@ test('it filters metaOptions without an index but allows time and sessionId rega
 
   assert.equal(options.get('length'), 2);
   assert.ok(options.findBy('metaName', 'time'), 'Expected to find time');
-  assert.ok(options.findBy('metaName', 'sessionId'), 'Expected to find sessionId');
+  assert.ok(options.findBy('metaName', 'sessionid'), 'Expected to find sessionid');
 });

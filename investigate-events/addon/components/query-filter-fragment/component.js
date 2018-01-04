@@ -152,7 +152,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
         const withIndex = keyIndexes[keyIndexType - 1] != 'none';
         const isTime = option.metaName === 'time';
-        const isSessionId = option.metaName === 'sessionId';
+        const isSessionId = option.metaName === 'sessionid';
 
         return withIndex || isTime || isSessionId;
       });
