@@ -164,13 +164,9 @@ def build_clean_logs_operator(cleanup_dag):
 
 
 def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
-    adapter_clean_bash_command = "rm -rf /data/presidio/3p/flume/checkpoint/adapter/ && rm -rf /data/presidio/3p/flume/data/adapter/ %s"
-
-    if is_remove_ca_tables:
-        # we want to delete the adapter files since we won't delete the ca tables
-        adapter_clean_bash_command = adapter_clean_bash_command % "&& rm -rf $PRESIDIO_HOME/flume/counters/source"
-    else:
-        adapter_clean_bash_command = adapter_clean_bash_command % ""
+    adapter_clean_bash_command =  "rm -f /opt/flume/conf/adapter/file_*" \
+                                  " && rm -f /opt/flume/conf/adapter/authentication_*" \
+                                  " && rm -f /opt/flume/conf/adapter/active_directory_*"
 
     clean_adapter_operator = BashOperator(task_id='clean_adapter',
                                           bash_command=adapter_clean_bash_command,
@@ -179,23 +175,23 @@ def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
 
 
 def build_clean_collector_operator(cleanup_dag):
-    collector_stop_service_command = "systemctl stop presidio-collector %s"
+    collector_stop_service_command = "sudo systemctl stop presidio-collector %s"
 
-    collector_clean_bash_command = "&& rm -rf /opt/flume/data/collector/*" \
-                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/file/*" \
-                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/authentication/*" \
-                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/active_directory/*" \
-                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/default/*" \
-                                    " && rm -rf /data/presidio/3p/flume/data/collector/file/*" \
-                                    " && rm -rf /data/presidio/3p/flume/data/collector/authentication/*" \
-                                    " && rm -rf /data/presidio/3p/flume/data/collector/active_directory/*" \
-                                    " && rm -rf /data/presidio/3p/flume/data/collector/default/*" \
-                                    " && rm -rf /opt/flume/conf/adapter/file_*" \
-                                    " && rm -rf /opt/flume/conf/adapter/authentication_*" \
-                                    " && rm -rf /opt/flume/conf/adapter/active_directory_*"
+    collector_clean_bash_command = "&& sudo rm -rf /opt/flume/data/collector/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/file/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/authentication/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/active_directory/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/default/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/file/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/authentication/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/active_directory/*" \
+                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/default/*" \
+                                   " && rm -rf $PRESIDIO_HOME/flume/counters/source %s"
+
+    collector_start_service_command = "&& sudo systemctl start presidio-collector"
 
     clean_collector_operator = BashOperator(task_id='clean_collector',
-                                            bash_command=collector_stop_service_command % collector_clean_bash_command,
+                                            bash_command=collector_stop_service_command % collector_clean_bash_command % collector_start_service_command,
                                             dag=cleanup_dag)
     return clean_collector_operator
 
