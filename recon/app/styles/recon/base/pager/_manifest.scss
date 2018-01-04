@@ -54,6 +54,10 @@
           cursor: default;
         }
       }
+      .rsa-form-button {
+        position: relative;
+        top: -2px;
+      }
       //jump to specific page text box
       .page-text-box {
         display: flex;
@@ -62,10 +66,8 @@
 
         .input-page-number {
           margin-left: rsa-whitespace(less);
-          margin-top: .1rem;
           text-align: center;
           width: 21px;
-          line-height: 1rem;
           -moz-appearance:textfield;
           background-color: background-color(primary,dark);
         }
@@ -91,6 +93,10 @@
           border-bottom: 0;
           font-weight: lighter;
           margin-left: rsa-whitespace(less);
+          .ember-power-select-selected-item {
+          margin-right: 0;
+          }
+
         }
         .label-text {
           margin-left: rsa-whitespace(less);

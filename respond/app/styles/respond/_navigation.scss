@@ -1,11 +1,8 @@
-$navbarHeight: 50px;
+$navbarHeight: 49px;
 
 .respond-engine {
   > .rsa-nav-tab-group {
     height: $navbarHeight;
-    > .rsa-nav-tab {
-      margin: 0 rsa-whitespace();
-    }
   }
 }
 // Hide the Respond nav bar on the incident and alert details page

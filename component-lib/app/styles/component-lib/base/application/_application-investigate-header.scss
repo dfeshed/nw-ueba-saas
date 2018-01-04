@@ -1,14 +1,12 @@
 $investigateReconWidth: 50%;
 $investigateReconExpandedWidth: 75%;
 $investigateReconFullWidth: 100%;
-$investigateNavHeight: 40px;
 $investigateBorderBottomColor: border-color(secondary);
 
 .rsa-investigate__nav {
   @include rsa-vendor-prefix(flex-shrink, 0);
   @include rsa-vendor-prefix(flex-grow, 0);
   background-color: background-color(primary, darker);
-  height: $investigateNavHeight;
   @include rsa-row(justify, middle);
   border-bottom: 1px solid border-color(secondary);
 
@@ -45,9 +43,9 @@ $investigateBorderBottomColor: border-color(secondary);
   }
 
   .investigate-controls {
-    position: absolute;
-    top: 12px;
-    right: 4px;
+    display: flex;
+    align-items: center;
+    margin-right: rsa-whitespace();
     display: inherit;
     .divider {
       display: inline;
@@ -56,9 +54,9 @@ $investigateBorderBottomColor: border-color(secondary);
     }
     .rsa-icon {
       color: text-color(primary, light);
+      margin-left: rsa-whitespace(less);
+      padding: rsa-whitespace(less) rsa-whitespace(least);
       cursor: pointer;
-      margin: 0 rsa-whitespace(least);
-      padding: 0 rsa-whitespace(least) rsa-whitespace(less);
       &:hover {
         color: text-color(primary, lightest);
       }

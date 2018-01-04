@@ -1,11 +1,10 @@
+
 <nav class="rsa-investigate__nav">
-  <ul>
+  <div class="rsa-nav-tab-group">
     {{#each tabs as |tab|}}
-      <li>
+      {{#rsa-nav-tab align='left' isActive=tab.isActive}}
         {{#if tab.isActive}}
-          <span class="is-active">
-            <a href='#'>{{tab.label}}</a>
-          </span>
+          <a href='#'>{{tab.label}}</a>
         {{else if tab.isClassic}}
           <a href={{tab.url}} class={{concat 'js-test-investigate-' tab.label '-classic'}}>{{tab.label}}</a>
         {{else}}
@@ -13,9 +12,10 @@
             {{tab.label}}
           {{/link-to-external}}
         {{/if}}
-      </li>
+      {{/rsa-nav-tab}}
     {{/each}}
-  </ul>
+  </div>
+
   <div class="investigate-controls">
     {{yield iconBar}}
   </div>

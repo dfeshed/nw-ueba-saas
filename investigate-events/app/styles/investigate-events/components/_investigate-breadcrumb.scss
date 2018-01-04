@@ -1,5 +1,4 @@
 .rsa-investigate-breadcrumb {
-  padding: rsa-whitespace(less) 0;
 
   &__crumbs {
     @include rsa-row(left, middle);
@@ -33,9 +32,11 @@
       }
     }
 
-    button {
-      padding: rsa-whitespace(less) rsa-whitespace();
-      padding-left: rsa-whitespace(less) + rsa-whitespace(more);
+    .rsa-form-button {
+      padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
+      padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
+      padding-left: rsa-whitespace();
+      padding-right: rsa-whitespace(less) + rsa-whitespace(more);
       white-space: nowrap;
       margin-right: rsa-whitespace(least);
       @include border(1px, solid, primary);
