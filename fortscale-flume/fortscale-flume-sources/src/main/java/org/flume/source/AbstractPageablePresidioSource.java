@@ -6,15 +6,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.flume.CommonStrings;
-import org.apache.flume.Context;
-import org.apache.flume.Event;
-import org.apache.flume.FlumeException;
+import org.apache.flume.*;
+import org.apache.flume.FlumePresidioExternalMonitoringService.FlumeComponentType;
 import org.apache.flume.conf.MonitorDetails;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.lifecycle.LifecycleState;
-import org.apache.flume.FlumePresidioExternalMonitoringService;
-import org.apache.flume.FlumePresidioExternalMonitoringService.FlumeComponentType;
 import org.apache.flume.marker.MonitorInitiator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,13 +65,12 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     public void start() {
-        if (this.monitorDetails == null){
+        if (this.monitorDetails == null) {
             throw new RuntimeException("Monitor should be already initiated in this phase");
         }
         super.start();
 
     }
-
 
 
     protected void sendDoneControlMessage() {
@@ -87,7 +82,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     }
 
     @Override
-    protected void doPresidioConfigure(Context context){
+    protected void doPresidioConfigure(Context context) {
         schema = context.getString(CommonStrings.SCHEMA_NAME, null);
     }
 
@@ -100,7 +95,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             int pageNum = 0;// first page
             List<AbstractDocument> currentPage = doFetch(pageNum);
             if (currentPage.size() == 0) {
-                logger.warn("Failed to process events for {}: {}, {]: {}. There were no events to process",
+                logger.warn("Failed to process events for {}: {}, {}: {}. There were no events to process",
                         START_DATE, startDate, END_DATE, endDate);
             } else {
                 processPage(currentPage); //handle first event
@@ -125,12 +120,11 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             }
 
         } catch (Exception e) {
-            logger.error("{} has failed to process events for {}: {}, {}: {}.",
-                    getName(), START_DATE, startDate, END_DATE, endDate);
+            logger.error("Failed to process events for {}: {}, {}: {}. There were no events to process",
+                    START_DATE, startDate, END_DATE, endDate);
             logger.error(e.getMessage());
 
-        }
-        finally {
+        } finally {
             this.stop();
         }
     }
@@ -172,16 +166,15 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             final Event flumeEvent = EventBuilder.withBody(eventAsString, Charset.defaultCharset());
             logger.trace("{} has finished processing event {}. Sending event to channel", getName(), flumeEvent);
             getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
-        }
-        catch(JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             failureReason = "CANNOT_SERIALIZE_EVENT";
         }
 
-        if (failureReason==null){
+        if (failureReason == null) {
             flumePresidioExternalMonitoringService.reportSuccessEventMetric(1);
         } else {
 
-            flumePresidioExternalMonitoringService.reportFailedEventMetric(failureReason,1);
+            flumePresidioExternalMonitoringService.reportFailedEventMetric(failureReason, 1);
         }
 
     }
@@ -192,21 +185,21 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         if (CollectionUtils.isNotEmpty(pageEvents)) {
             flumePresidioExternalMonitoringService.reportTotalEventMetric(pageEvents.size());
 
-            totalEvents+=pageEvents.size();
+            totalEvents += pageEvents.size();
         }
         flumePresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.AVG_PAGE_SIZE, 1);
 
         if (!validateEvents(pageEvents)) { //todo
             final String errorMessage = "event validation failed!";
             logger.error(errorMessage);
-            flumePresidioExternalMonitoringService.reportFailedEventMetric(INVALID_EVENTS_ERROR_KEY,pageEvents.size());
-            flumePresidioExternalMonitoringService.reportFailedMetric(NUMBER_OF_PROCESSED_PAGES,  INVALID_EVENTS_ERROR_KEY, MetricEnums.MetricValues.FAILED_PAGES, 1 );
+            flumePresidioExternalMonitoringService.reportFailedEventMetric(INVALID_EVENTS_ERROR_KEY, pageEvents.size());
+            flumePresidioExternalMonitoringService.reportFailedMetric(NUMBER_OF_PROCESSED_PAGES, INVALID_EVENTS_ERROR_KEY, MetricEnums.MetricValues.FAILED_PAGES, 1);
             throw new Exception(errorMessage);
         } else {
             for (AbstractDocument pageEvent : pageEvents) {
                 processEvent(pageEvent);
             }
-            flumePresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.SUCCESS_PAGES, 1 );
+            flumePresidioExternalMonitoringService.reportSuccessAndTotalMetric(NUMBER_OF_PROCESSED_PAGES, MetricEnums.MetricValues.SUCCESS_PAGES, 1);
         }
     }
 
@@ -214,8 +207,6 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     private boolean validateEvents(List<AbstractDocument> events) {
         return events != null; //todo
     }
-
-
 
 
     @Override
@@ -226,7 +217,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             try {
                 presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
                 logger.info("New Monitoring Service has initiated");
-                monitorDetails = new MonitorDetails(this.startDate,presidioExternalMonitoringService , this.schema);
+                monitorDetails = new MonitorDetails(this.startDate, presidioExternalMonitoringService, this.schema);
                 this.flumePresidioExternalMonitoringService = new FlumePresidioExternalMonitoringService(monitorDetails, FlumeComponentType.SOURCE, COLLECTOR_SOURCE_NAME);
             } catch (Exception e) {
                 logger.error("Cannot load external monitoring service");
