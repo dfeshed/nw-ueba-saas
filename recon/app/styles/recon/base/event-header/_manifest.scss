@@ -125,29 +125,18 @@
 }
 
 .recon-event-titlebar {
-  @media (min-width: 1731px) {
-    .heading-select {
-      display: none;
-    }
-    .heading-tabs {
-      display: inherit;
-    }
+  .heading-select {
+    display: block;
   }
-
-  @media (max-width: 1730px) {
-    .heading-select {
-      display: block;
-    }
-    .heading-tabs {
-      display: none;
-    }
+  .heading-tabs {
+    display: none;
   }
 }
 
 .recon-is-full,
 .recon-is-expanded,
 .recon-is-standalone {
-  @media (min-width: 1161px) {
+  @media (min-width: 1361px) {
     .heading-select {
       display: none;
     }
@@ -156,7 +145,7 @@
     }
   }
 
-  @media (max-width: 1160px) {
+  @media (max-width: 1360px) {
     .heading-select {
       display: block;
     }
