@@ -54,6 +54,11 @@ class RerunFullFlowDagBuilder(object):
         clean_adapter_operator >> clean_dags_from_db_operator
         clean_dags_from_db_operator >> clean_logs_operator
 
+        if is_remove_ca_tables:
+            clean_collector_operator = build_clean_collector_operator(dag)
+            kill_dags_task_instances_operator >> clean_collector_operator
+            clean_collector_operator >> clean_dags_from_db_operator
+
         logging.debug("Finished creating dag - %s", dag.dag_id)
 
         return dag
@@ -173,13 +178,38 @@ def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
     return clean_adapter_operator
 
 
+def build_clean_collector_operator(cleanup_dag):
+    collector_stop_service_command = "systemctl stop presidio-collector %s"
+
+    collector_clean_bash_command = "&& rm -rf /opt/flume/data/collector/*" \
+                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/file/*" \
+                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/authentication/*" \
+                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/active_directory/*" \
+                                    " && rm -rf /data/presidio/3p/flume/checkpoint/collector/default/*" \
+                                    " && rm -rf /data/presidio/3p/flume/data/collector/file/*" \
+                                    " && rm -rf /data/presidio/3p/flume/data/collector/authentication/*" \
+                                    " && rm -rf /data/presidio/3p/flume/data/collector/active_directory/*" \
+                                    " && rm -rf /data/presidio/3p/flume/data/collector/default/*" \
+                                    " && rm -rf /opt/flume/conf/adapter/file_*" \
+                                    " && rm -rf /opt/flume/conf/adapter/authentication_*" \
+                                    " && rm -rf /opt/flume/conf/adapter/active_directory_*"
+
+    clean_collector_operator = BashOperator(task_id='clean_collector',
+                                            bash_command=collector_stop_service_command % collector_clean_bash_command,
+                                            dag=cleanup_dag)
+    return clean_collector_operator
+
+
 def clean_elastic_data():
     es = Elasticsearch(hosts=["localhost"])
     indexes = es.cat.indices(h="index").encode("utf-8").split("\n")
 
     for index in indexes:
         if index not in [".kibana", ""]:
-            es.delete_by_query(index=index, body="{\"query\": {\"match_all\": {}}}")
+            if index.startswith(('presidio-monitoring','metricbeat')):
+                es.indices.delete(index=index, ignore=[404], request_timeout=360)
+            else:
+                es.delete_by_query(index=index, body="{\"query\": {\"match_all\": {}}}", request_timeout=360)
 
 
 def build_clean_elastic_operator(cleanup_dag):
