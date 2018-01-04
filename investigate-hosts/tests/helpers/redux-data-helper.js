@@ -65,4 +65,19 @@ export default class DataHelper {
     _set(this.state, 'filter.lastFilterAdded', null);
     return this;
   }
+
+  // Host Details
+  selectedTabComponent(tabName) {
+    _set(this.state, 'visuals.activeHostDetailTab', tabName);
+    return this;
+  }
+  isSnapshotsAvailable(flag) {
+    _set(this.state, 'detailsInput.snapShots', flag ? [0, 1] : []);
+    return this;
+  }
+  hostDetailsLoading(flag) {
+    _set(this.state, 'visuals.hostDetailsLoading', flag);
+    return this;
+  }
+
 }

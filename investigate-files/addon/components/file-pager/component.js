@@ -13,4 +13,4 @@ const Pager = Component.extend({
   tagName: 'section',
   classNames: ['file-pager']
 });
-export default connect(stateToComputed, undefined)(Pager);
+export default connect(stateToComputed)(Pager);

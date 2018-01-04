@@ -44,10 +44,10 @@ const preferences = reduxActions.handleActions({
     const { selected, field } = payload;
     if (selected) {
       const updatedVisibleColumns = visibleColumns.concat([field]);
-      return state.setIn(key, updatedVisibleColumns.uniq());
+      return state.setIn(key, updatedVisibleColumns);
     } else {
       const newColumns = visibleColumns.filter((column) => column !== field);
-      return state.setIn(key, newColumns.uniq());
+      return state.setIn(key, newColumns);
     }
   },
 

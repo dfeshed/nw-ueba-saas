@@ -173,11 +173,11 @@ const DateTimeFilter = Component.extend(FilterMixin, {
     onTimeSelection(option) {
       const { selected } = option;
       set(option, 'selected', !selected);
-      const { propertyName } = this.get('config');
 
       if (option.id === 'Custom') {
         this.set('showListOptions', false);
       } else {
+        const { propertyName } = this.get('config');
         const propertyValues = [{ value: convertToTimeFormat(option), displayValue: option.name }];
         this.send('updateFilter', { propertyName, restrictionType: 'LESS_THAN', isCustom: false, propertyValues });
       }
