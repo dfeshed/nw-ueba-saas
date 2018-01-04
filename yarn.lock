@@ -3984,13 +3984,6 @@ ember-user-activity@0.6.2:
   dependencies:
     ember-cli-babel "^5.1.7"
 
-ember-validator-shim@2.3.3:
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/ember-validator-shim/-/ember-validator-shim-2.3.3.tgz#acbd88632696ca50c0c4f46448b772760b7d9c05"
-  dependencies:
-    ember-cli-babel "^5.1.7"
-    ember-cli-htmlbars "^1.1.1"
-
 ember-wait-for-test-helper@1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/ember-wait-for-test-helper/-/ember-wait-for-test-helper-1.1.0.tgz#db641d309775eb9b78deb32715370551ff80c254"

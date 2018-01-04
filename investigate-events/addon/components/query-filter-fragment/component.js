@@ -8,7 +8,22 @@ import contextMenuMixin from 'ember-context-menu';
 import service from 'ember-service/inject';
 import { validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 import { connect } from 'ember-redux';
-import validator from 'validator';
+
+const isFloat = (value) => {
+  return value.includes('.') && (value - value === 0);
+};
+
+const isIPv4 = (value) => {
+  return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(value);
+};
+
+const isIPv6 = (value) => {
+  return /^((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4}))*::((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4}))*|((?:[0-9A-Fa-f]{1,4}))((?::[0-9A-Fa-f]{1,4})){7}$/g.test(value);
+};
+
+const isInt = (value) => {
+  return !value.includes('.') && (value - value === 0);
+};
 
 const dispatchToActions = {
   validateIndividualQuery
@@ -227,37 +242,37 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
         break;
       case 'IPv4':
-        isValid = validator.isIP(value, 4);
+        isValid = isIPv4(value);
         if (!isValid) {
           message = i18n.t('queryBuilder.validationMessages.ipv4');
         }
         break;
       case 'IPv6':
-        isValid = validator.isIP(value, 6);
+        isValid = isIPv6(value);
         if (!isValid) {
           message = i18n.t('queryBuilder.validationMessages.ipv6');
         }
         break;
       case 'UInt8':
-        isValid = validator.isInt(value);
+        isValid = isInt(value);
         if (!isValid) {
           message = i18n.t('queryBuilder.validationMessages.uint8');
         }
         break;
       case 'UInt16':
-        isValid = validator.isInt(value);
+        isValid = isInt(value);
         if (!isValid) {
           message = i18n.t('queryBuilder.validationMessages.uint16');
         }
         break;
       case 'UInt32':
-        isValid = validator.isInt(value);
+        isValid = isInt(value);
         if (!isValid) {
           message = i18n.t('queryBuilder.validationMessages.uint32');
         }
         break;
       case 'Float32':
-        isValid = validator.isFloat(value);
+        isValid = isFloat(value);
         if (!isValid) {
           message = i18n.t('queryBuilder.validationMessages.float32');
         }
