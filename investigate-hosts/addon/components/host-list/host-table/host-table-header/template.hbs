@@ -63,10 +63,11 @@
         <span class="js-move-handle">{{translate-title column}}</span>
       {{/if}}
       {{#unless column.disableSort}}
-        {{rsa-icon
-          click=(action 'sort' column)
-          name=(if column.isDescending "arrow-down-7" "arrow-up-7")
-          class="sort"}}
+        {{host-list/host-table/sort-button
+          sortField=sortField
+          column=column
+          isSortDescending=isSortDescending
+          sortBy=(action 'setHostColumnSort')}}
       {{/unless}}
     {{/rsa-data-table/header-cell}}
   {{/each}}

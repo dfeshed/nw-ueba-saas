@@ -34,6 +34,15 @@
   .rsa-data-table-body-cell {
     width: 20px;
   }
+  .rsa-data-table-header-cell {
+    button {
+      cursor: pointer;
+      &.column-sort {
+        position: absolute;
+        right: 7px;
+      }
+    }
+  }
 }
 
 .host-table__toolbar {
