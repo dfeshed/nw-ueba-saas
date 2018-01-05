@@ -54,6 +54,7 @@
             value=(unbound dateStartValue)
             placeholder=(t 'investigateHosts.hosts.filters.customStartDate')
             onChange=(action (mut dateStartValue))
+            maxDate=currentDate
             }}
         </div>
         <div class='body__input col-xs-6'>
@@ -61,6 +62,7 @@
           value=dateEndValue
           placeholder=(t 'investigateHosts.hosts.filters.customEndDate')
           onChange=(action (mut dateEndValue))
+          maxDate=currentDate
           }}
         </div>
       {{else}}
@@ -68,6 +70,7 @@
           {{rsa-form-datetime
             placeholder=(t 'investigateHosts.hosts.filters.customDate')
             value=dateValue
+            maxDate=currentDate
             onChange=(action (mut dateValue))
             }}
         </div>
