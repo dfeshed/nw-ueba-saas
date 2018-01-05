@@ -173,10 +173,9 @@ const exportAsFile = () => {
   return (dispatch, getState) => {
     const { filterSelected, hostColumnSort } = getState().endpoint.machines;
     const { schema } = getState().endpoint.schema;
-    const columns = schema.filterBy('visible', true).mapBy('name');
     dispatch({
       type: ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID,
-      promise: Machines.downloadMachine(filterSelected, schema, hostColumnSort, columns),
+      promise: Machines.downloadMachine(filterSelected, schema, hostColumnSort, _getVisibleColumnNames(getState)),
       meta: {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID ${_stringifyObject(response)}`);
@@ -189,6 +188,10 @@ const exportAsFile = () => {
   };
 };
 
+const _getVisibleColumnNames = (getState) => {
+  const { preferences: { machinePreference } } = getState().preferences;
+  return ['machine.machineName', ...machinePreference.visibleColumns];
+};
 
 const _setPreferences = (getState) => {
   const { preferences } = getState().preferences;

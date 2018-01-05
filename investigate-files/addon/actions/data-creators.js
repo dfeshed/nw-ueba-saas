@@ -225,18 +225,22 @@ const exportFileAsCSV = () => {
   return (dispatch, getState) => {
     const { files } = getState();
     const { sortField, isSortDescending } = files.fileList;
-    const { schema } = files.schema;
     const { expressionList } = files.filter;
-    const columns = schema.filter((field) => field.visible).map((field) => field.name);
     dispatch({
       type: ACTION_TYPES.DOWNLOAD_FILE_AS_CSV,
-      promise: File.fileExport({ sortField, isSortDescending }, expressionList, columns),
+      promise: File.fileExport({ sortField, isSortDescending }, expressionList, _getVisibleColumnNames(getState)),
       meta: {
         onSuccess: (response) => Logger.debug(ACTION_TYPES.DOWNLOAD_FILE_AS_CSV, response)
       }
     });
   };
 };
+
+const _getVisibleColumnNames = (getState) => {
+  const { preferences: { filePreference } } = getState().preferences;
+  return filePreference.visibleColumns;
+};
+
 
 /**
  * Action creator for setting the currently active filter.
