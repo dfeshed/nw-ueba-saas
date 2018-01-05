@@ -27,7 +27,7 @@ $maxHeightAlertNamesTable: $alertNamesRowHeight * $minimumRowsBeforeScrollbar;
     height: $alertNamesRowHeight;
     label {
       @include rsa-font(body);
-      color: text-color(neutral);
+      color: text-color(primary, lighter);
     }
   }
 

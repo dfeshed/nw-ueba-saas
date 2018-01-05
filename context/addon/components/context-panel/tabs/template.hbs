@@ -5,9 +5,9 @@
         {{#if tab.loadingIcon}}
           {{rsa-loader class='rsa-context-panel__tabs__icon-loader' size='medium'}}
         {{/if}}
-        <div class="{{unless tab.toolTipText 'rsa-context-panel__tabs__enabled'}}">
+        {{#context-panel/tabs/icon tab=tab}}
           {{rsa-icon style='filled' name=tab.class size='medium'}}
-        </div>
+        {{/context-panel/tabs/icon}}
       {{/rsa-nav-tab}}
     {{/rsa-content-tethered-panel-trigger}}
     {{#rsa-content-tethered-panel panelId=(concat 'tabs' tab.field) style="primary" position='left' displayCloseButton=false}}

@@ -80,6 +80,11 @@
         left: 2px;
       }
 
+      &.is-icon-only.is-standard:hover:not(.is-active):not(.is-disabled) .rsa-form-button {
+        background: background-color(navigation, menuHover);
+        color: text-color(navigation, linkHover);
+      }
+
       .rsa-form-button {
         border-width: 0;
         color: text-color(navigation, linkLighter);
