@@ -9,7 +9,7 @@ import {
   noHostsSelected,
   serviceList,
   allAreEcatAgents,
-  areAnyEcatAgents,
+  hasEcatAgents,
   hostCountForDisplay,
   loadMoreHostStatus } from 'investigate-hosts/reducers/hosts/selectors';
 
@@ -110,8 +110,59 @@ test('allAreEcatAgents, check all are 4.4 agents', function(assert) {
   assert.equal(result, true);
 });
 
-test('areAnyEcatAgents, check some are 4.4 agents', function(assert) {
-  const result = areAnyEcatAgents(Immutable.from({
+test('allAreEcatAgents, when some are not ecat agents', function(assert) {
+  const result = allAreEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [
+          {
+            id: '1',
+            version: '4.2.0.0'
+          },
+          {
+            id: '2',
+            version: '4.4.0.1'
+          }
+        ]
+      }
+    }
+  }));
+  assert.equal(result, false);
+});
+
+test('allAreEcatAgents, when no host is selected', function(assert) {
+  const result = allAreEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: []
+      }
+    }
+  }));
+  assert.equal(result, true);
+});
+
+test('allAreEcatAgents, when no are ecat agent', function(assert) {
+  const result = allAreEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [
+          {
+            id: '1',
+            version: '11.4.0.0'
+          },
+          {
+            id: '2',
+            version: '4.2.0.1'
+          }
+        ]
+      }
+    }
+  }));
+  assert.equal(result, false);
+});
+
+test('hasEcatAgents, check some are 4.4 agents', function(assert) {
+  const result = hasEcatAgents(Immutable.from({
     endpoint: {
       machines: {
         selectedHostList: [
@@ -129,6 +180,38 @@ test('areAnyEcatAgents, check some are 4.4 agents', function(assert) {
   }));
   assert.equal(result, true);
 });
+
+test('hasEcatAgents, when none are ecat agents', function(assert) {
+  const result = hasEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [
+          {
+            id: '1',
+            version: '11.1.0.0'
+          },
+          {
+            id: '2',
+            version: '4.2.0.1'
+          }
+        ]
+      }
+    }
+  }));
+  assert.equal(result, false);
+});
+
+test('hasEcatAgents, when no host is selected', function(assert) {
+  const result = hasEcatAgents(Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: []
+      }
+    }
+  }));
+  assert.equal(result, false);
+});
+
 test('hostCountForDisplay', function(assert) {
   const result = hostCountForDisplay(STATE);
   assert.equal(result, 2, 'expected 2 machines');

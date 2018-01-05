@@ -9,7 +9,7 @@
           message=(t 'investigateHosts.hosts.initiateScan.modal.infoMessage')}}
       </label>
     {{/if}}
-    {{#if areAnyEcatAgents}}
+    {{#if hasEcatAgents}}
       <label class="rsa-form-label">
         {{host-container/host-scan-modal/initiate/host-message-modal
           message=(t 'investigateHosts.hosts.initiateScan.modal.ecatAgentMessage')}}

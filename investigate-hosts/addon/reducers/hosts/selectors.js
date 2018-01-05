@@ -137,7 +137,7 @@ export const allAreEcatAgents = createSelector(
   (selectedHostList, noHost) => noHost || selectedHostList.every((host) => host.version.startsWith('4.4'))
 );
 
-export const areAnyEcatAgents = createSelector(
+export const hasEcatAgents = createSelector(
   hostListForScanning,
   (selectedHostList) => selectedHostList.some((host) => host.version.startsWith('4.4'))
 );

@@ -3,11 +3,11 @@ import { connect } from 'ember-redux';
 import injectService from 'ember-service/inject';
 import { Machines } from 'investigate-hosts/actions/api';
 import { toggleInitiateScanModal } from 'investigate-hosts/actions/ui-state-creators';
-import { areAnyEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
+import { hasEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
 import { getSelectedAgentIds } from 'investigate-hosts/util/util';
 
 const stateToComputed = (state) => ({
-  areAnyEcatAgents: areAnyEcatAgents(state)
+  hasEcatAgents: hasEcatAgents(state)
 });
 
 const dispatchToActions = {

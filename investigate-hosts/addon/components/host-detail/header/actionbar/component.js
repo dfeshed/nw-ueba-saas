@@ -24,7 +24,7 @@ const stateToComputed = (state) => ({
   downloadLink: downloadLink(state),
   isExportDisabled: !isSnapshotsAvailable(state),
   isJsonExportCompleted: isJsonExportCompleted(state),
-  ecatAgent: isEcatAgent(state)
+  isEcatAgent: isEcatAgent(state)
 });
 
 const dispatchToActions = {

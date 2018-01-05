@@ -3,7 +3,7 @@
   label=(t 'investigateHosts.hosts.cancelScan.modal.title' count=selectedHostList.length)
   eventId='cancel-scan'}}
   <div class='modal-content rsa-initiate-scan-modal'>
-    {{#if areAnyEcatAgents}}
+    {{#if hasEcatAgents}}
       <label class="rsa-form-label">
         {{host-container/host-scan-modal/initiate/host-message-modal
           message=(t 'investigateHosts.hosts.initiateScan.modal.ecatAgentMessage')}}
