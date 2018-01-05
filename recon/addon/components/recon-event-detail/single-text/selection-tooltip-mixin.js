@@ -1,6 +1,6 @@
 import Mixin from 'ember-metal/mixin';
 import service from 'ember-service/inject';
-import { throttle } from 'ember-runloop';
+import { next, cancel, throttle } from 'ember-runloop';
 import $ from 'jquery';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 
@@ -36,6 +36,8 @@ export default Mixin.create({
   startDragPosition: null,
   spanClass: null,
   spanEl: null,
+  displayEvent: null,
+  hideEvent: null,
   userInComponent: false,
 
   // Get the handle object of the selected text
@@ -89,12 +91,21 @@ export default Mixin.create({
         selection.removeAllRanges();
 
         const spanEl = this.$(`.${spanClass}`).get(0); // get the raw DOM element used for tethering
-        sendTetherEvent(
-          spanEl,
-          spanClass,
-          this.get('eventBus'),
-          'display'
-        );
+
+        if (this.get('hideEvent')) {
+          cancel(this.get('hideEvent'));
+          this.set('hideEvent', null);
+        }
+        const displayEvent = next(() => {
+          sendTetherEvent(
+            spanEl,
+            spanClass,
+            this.get('eventBus'),
+            'display'
+          );
+        });
+        this.set('displayEvent', displayEvent);
+
         this.setProperties({ didDrag: false, startDragPosition: null, spanEl, spanClass, originalString });
       }
     }
@@ -126,7 +137,21 @@ export default Mixin.create({
     this.ensureOnlyOneTether();
     if (this.get('spanEl')) {
       const { spanEl, spanClass, eventBus } = this.getProperties('spanEl', 'spanClass', 'eventBus');
-      sendTetherEvent(spanEl, spanClass, eventBus, 'hide');
+
+      if (this.get('displayEvent')) {
+        cancel(this.get('displayEvent'));
+        this.set('displayEvent', null);
+      }
+      const hideEvent = next(() => {
+        sendTetherEvent(
+          spanEl,
+          spanClass,
+          eventBus,
+          'hide'
+        );
+      });
+      this.set('hideEvent', hideEvent);
+
       // Delete the span tag that was introduced by mouseUp() without affecting the content
       $(`.text-container > .${spanClass}`).contents().unwrap();
       this.setProperties({ isActionClicked: false, spanEl: null });
