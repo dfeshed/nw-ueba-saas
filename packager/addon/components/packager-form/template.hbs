@@ -29,12 +29,6 @@
       groupValue=configData.packageConfig.certificateValidation}}
     {{t 'packager.none'}}
   </label>
-  <label class="rsa-form-radio-label {{if (eq 'fullchain' configData.packageConfig.certificateValidation) 'checked'}}">
-    {{radio-button
-      value='fullchain'
-      groupValue=configData.packageConfig.certificateValidation}}
-    {{t 'packager.fullChain'}}
-  </label>
   <label class="rsa-form-radio-label {{if (eq 'thumbprint' configData.packageConfig.certificateValidation) 'checked'}}">
     {{radio-button
       value='thumbprint'
