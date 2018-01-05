@@ -35,6 +35,7 @@
     width: 20px;
   }
   .rsa-data-table-header-cell {
+    margin-right: -2px;
     button {
       cursor: pointer;
       &.column-sort {
