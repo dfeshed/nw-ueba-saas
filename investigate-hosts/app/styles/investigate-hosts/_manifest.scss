@@ -17,15 +17,16 @@
 .panel-content.left-bottom {
   section {
     padding-bottom: 0;
-    padding-right: 0;
     section.column-chooser-input {
       margin-right: rsa-whitespace();
     }
     ul.column-chooser-lists {
       height: 30rem;
-      width: 20.2rem;
     }
   }
+}
+.rsa-data-table-column-selector-panel > section {
+  max-width: 18rem;
 }
 
 #rsa-data-table__column-selctor__sorted-columns {

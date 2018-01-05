@@ -31,7 +31,19 @@ export default class DataHelper {
   // in case it needs to be used/checked
   build() {
     const state = Immutable.from({
-      endpoint: this.state
+      endpoint: this.state,
+      preferences: {
+        preferences: {
+          machinePreference: {
+            visibleColumns: [
+              'id',
+              'machine.agentVersion',
+              'machine.scanStartTime',
+              'machine.machineOsType'
+            ]
+          }
+        }
+      }
     });
     this.setState(state);
     return state.asMutable();
@@ -39,6 +51,11 @@ export default class DataHelper {
 
   schema(schema) {
     _set(this.state, 'schema.schema', schema);
+    return this;
+  }
+
+  columns(schema) {
+    this.schema(schema);
     return this;
   }
 
