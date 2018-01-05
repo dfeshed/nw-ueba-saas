@@ -62,7 +62,7 @@ export default handleActions({
       updatedItem = item.set('logStatus', 'rejected');
     } else {
       // set new log and status
-      updatedItem = item.merge({ log: item.log + log, logStatus: 'resolved' });
+      updatedItem = item.merge({ log: (item.log || '') + log, logStatus: 'resolved' });
     }
     // replace event in array
     const newData = _update(state.data, sessionId, updatedItem);
