@@ -45,12 +45,12 @@ const defaultSummaryConfig = [
 const machineOsBasedSummaryConfig = {
   mac: [{
     label: 'investigateHosts.process.creationTime',
-    field: 'process.createTime',
+    field: 'process.createUtcTime',
     format: 'DATE'
   }],
   windows: [{
     label: 'investigateHosts.process.creationTime',
-    field: 'process.createTime',
+    field: 'process.createUtcTime',
     format: 'DATE'
   }],
   linux: []
