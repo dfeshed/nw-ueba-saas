@@ -24,14 +24,14 @@
       </div>
       {{#if (eq restrictionType.type 'BETWEEN')}}
         <div class='number-filter__body__input col-xs-3'>
-          {{rsa-form-input type='number' value=start}}
+          {{rsa-form-input type='number' value=start keyPress=(action 'keyDown')}}
         </div>
         <div class='number-filter__body__input col-xs-3'>
-          {{rsa-form-input type='number' value=end}}
+          {{rsa-form-input type='number' value=end keyPress=(action 'keyDown')}}
         </div>
       {{else}}
         <div class='number-filter__body__input col-xs-6'>
-          {{rsa-form-input type='number' value=value}}
+          {{rsa-form-input type='number' value=value keyPress=(action 'keyDown')}}
         </div>
       {{/if}}
     </hbox>

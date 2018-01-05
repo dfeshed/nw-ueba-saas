@@ -22,6 +22,8 @@ const RESTRICTION_TYPES_BY_TYPE = {};
 
 RESTRICTION_TYPES.forEach((t) => RESTRICTION_TYPES_BY_TYPE[t.type] = t);
 
+const EXPONENT_CHARS = ['e', 'E', '+', '-'];
+
 const dispatchToActions = {
   updateFilter
 };
@@ -133,6 +135,10 @@ const NumberFilter = Component.extend(FilterMixin, {
   },
 
   actions: {
+    keyDown(e) {
+      // Number field allows to input 'e', 'E', '-', '+' to support exponent numbers. Exclude them
+      return !EXPONENT_CHARS.includes(e.key);
+    },
 
     onFilterUpdate() {
       const {
