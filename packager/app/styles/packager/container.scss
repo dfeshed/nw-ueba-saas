@@ -16,7 +16,7 @@ $content-card-color: #bdbdbd;
 }
 // Temp solution to integrate packager into SA
 .iframed-into-classic {
-  .rsa-application-header {
+  .rsa-application-header, .rsa-context-tree-table {
     display: none;
   }
   .rsa-application-content {
