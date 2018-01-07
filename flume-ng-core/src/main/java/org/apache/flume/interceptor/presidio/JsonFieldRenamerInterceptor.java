@@ -68,11 +68,12 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
 
     private boolean handleField(JsonObject eventBodyAsJson, String originField, String destField) {
         JsonElement jsonElement = eventBodyAsJson.get(originField);
-        final boolean originFieldExists = eventBodyAsJson.has(originField);
+        boolean originFieldExists = eventBodyAsJson.has(originField);
         if (originFieldExists) {
             if (jsonElement == null || jsonElement.isJsonNull()) {
                 if (deleteNullFields) {
                     eventBodyAsJson.remove(originField);
+                    originFieldExists = false;
                 }
             } else {
                 if (!originField.equals(destField)) { //when we use the multi orig field option(with []), sometimes the original field can be identical to the dest field
