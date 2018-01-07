@@ -1,10 +1,12 @@
 import logging
+from datetime import timedelta
 
 from presidio.builders.ade.anomaly_detection_engine_scoring_dag_builder import AnomalyDetectionEngineScoringDagBuilder
 from presidio.builders.ade.anomaly_detection_engine_modeling_dag_builder import AnomalyDetectionEngineModelingDagBuilder
 from presidio.builders.input.input_dag_builder import InputDagBuilder
 from presidio.builders.output.output_dag_builder import OutputDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
+from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
@@ -44,12 +46,32 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         output_sub_dag_operator = self._get_output_sub_dag_operator(presidio_core_dag)
         task_sensor_service.add_task_sequential_sensor(output_sub_dag_operator)
 
+        self._push_forwarding(output_sub_dag_operator, presidio_core_dag)
+
         ade_modeling_sub_dag_operator = self._get_ade_modeling_sub_dag_operator(presidio_core_dag)
         
         input_sub_dag_operator >> ade_scoring_sub_dag_operator >> output_sub_dag_operator
         ade_scoring_sub_dag_operator >> ade_modeling_sub_dag_operator
 
         return presidio_core_dag
+
+    def _push_forwarding(self, output_sub_dag_operator, presidio_core_dag):
+        default_args = presidio_core_dag.default_args
+        should_push_data = default_args.get("should_push_data")
+        logging.debug("should_push_data=%s ", should_push_data)
+        if should_push_data:
+            push_forwarding_task = self._should_push_data(presidio_core_dag)
+            output_sub_dag_operator >> push_forwarding_task
+
+    def _should_push_data(self, presidio_core_dag):
+        # Create jar operator
+        data_forwarding_operator = FixedDurationJarOperator(
+            task_id='data_forwarding_operator',
+            fixed_duration_strategy=timedelta(hours=1),
+            command=PresidioDagBuilder.presidio_command,
+            jvm_args=self.jvm_args,
+            dag=presidio_core_dag)
+        return data_forwarding_operator
 
     def _get_input_sub_dag_operator(self, presidio_core_dag):
         input_dag_id = 'input_dag'
@@ -75,7 +97,6 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
         builder = AnomalyDetectionEngineModelingDagBuilder(self.data_sources, hourly_smart_events_confs, daily_smart_events_confs)
         return self._create_sub_dag_operator(builder, ade_modeling_dag_id, presidio_core_dag)
-
 
     def _get_output_sub_dag_operator(self, presidio_core_dag):
         output_dag_id = 'output_dag'
