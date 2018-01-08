@@ -44,7 +44,11 @@
 </section>
 
 {{#if showConfirmationDialog}}
-  {{#rsa-application-modal eventId='delete-journal-entry' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+  {{#rsa-application-modal
+    eventId='delete-journal-entry'
+    onClose=(action 'cancel')
+    label=(t "respond.explorer.confirmation.deleteTitle")
+    style="standard respond-confirmation-dialog"}}
     <div class='modal-content'>
       <p>{{t 'respond.journal.deleteConfirmation'}}</p>
     </div>

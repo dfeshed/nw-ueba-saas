@@ -111,7 +111,11 @@
   </div>
 </section>
 {{#if showConfirmationDialog}}
-  {{#rsa-application-modal eventId='delete-task' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
+  {{#rsa-application-modal
+    eventId='delete-task'
+    onClose=(action 'cancel')
+    label=(t "respond.explorer.confirmation.deleteTitle")
+    style="standard respond-confirmation-dialog"}}
     <div class='modal-content'>
       {{#if confirmationData.warning}}
         <p>{{confirmationData.warning}}</p>
