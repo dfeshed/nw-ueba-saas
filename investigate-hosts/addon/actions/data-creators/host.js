@@ -297,6 +297,14 @@ const initializeHostsPreferences = () => {
   };
 };
 
+const startScan = (agentIds, callbacks = callbacksDefault) => {
+  Machines.startScanRequest(agentIds)
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      callbacks.onFailure(message.message);
+    });
+};
 export {
   getAllServices,
   getAllSchemas,
@@ -308,6 +316,7 @@ export {
   setHostColumnSort,
   deleteHosts,
   initializeHostPage,
-  initializeHostsPreferences
+  initializeHostsPreferences,
+  startScan
 };
 

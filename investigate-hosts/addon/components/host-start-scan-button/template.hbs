@@ -1,0 +1,38 @@
+{{#rsa-form-button
+  style=style
+  isDisabled=isDisabled
+  click=(action 'toggleScanStartModal')
+  isIconOnly=isIconOnly}}
+  {{#if isIconOnly}}
+    {{rsa-icon name='play-button-2'}}
+  {{else}}
+    {{buttonText}}
+  {{/if}}
+{{/rsa-form-button}}
+
+{{#if _showStartScanModal}}
+  {{#rsa-application-modal
+    style='standard start-scan-modal'
+    eventId='start-scan-modal'
+    onClose=(action 'onModalClose')
+    label=modalTitle}}
+    <div class="modal-content">
+      {{#each warningMessage as |message|}}
+        {{host-container/host-scan-modal/initiate/host-message-modal message=message}}
+      {{/each}}
+      <div class="scan-message">
+        <p>{{t 'investigateHosts.hosts.initiateScan.modal.quickScan.description'}}</p>
+      </div>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button style='primary' class='start-scan' click=(action 'handleInitiateScan')}}
+          {{t 'investigateHosts.hosts.button.initiateScan'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button class='close-modal' click=(action 'closeScanModal')}}
+          {{t 'investigateHosts.hosts.button.cancel'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}
