@@ -40,6 +40,12 @@
         .ember-power-select-status-icon {
           right: rsa-whitespace(least)
         }
+        .ember-power-select-selected-item {
+          display: block;
+          overflow-x: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
       }
       div {
         margin-top: rsa-whitespace(less);
