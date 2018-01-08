@@ -5,8 +5,8 @@ from presidio.builders.ade.anomaly_detection_engine_scoring_dag_builder import A
 from presidio.builders.ade.anomaly_detection_engine_modeling_dag_builder import AnomalyDetectionEngineModelingDagBuilder
 from presidio.builders.input.input_dag_builder import InputDagBuilder
 from presidio.builders.output.output_dag_builder import OutputDagBuilder
+from presidio.builders.output.push_forwarder_task_builder import PushForwarderTaskBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
-from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
 
 
@@ -60,19 +60,8 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         should_push_data = default_args.get("should_push_data")
         logging.debug("should_push_data=%s ", should_push_data)
         if should_push_data:
-            push_forwarding_task = self._get_push_data_task(presidio_core_dag)
+            push_forwarding_task = PushForwarderTaskBuilder().build(presidio_core_dag)
             output_sub_dag_operator >> push_forwarding_task
-
-    def _get_push_data_task(self, presidio_core_dag):
-        jvm_args = {'class_path': 'todo', 'jar_path': 'todo', 'main_class': 'todo'}
-        # Create jar operator
-        data_forwarding_operator = FixedDurationJarOperator(
-            task_id='data_forwarding_operator',
-            fixed_duration_strategy=timedelta(hours=1),
-            command=PresidioDagBuilder.presidio_command,
-            jvm_args=jvm_args,
-            dag=presidio_core_dag)
-        return data_forwarding_operator
 
     def _get_input_sub_dag_operator(self, presidio_core_dag):
         input_dag_id = 'input_dag'
