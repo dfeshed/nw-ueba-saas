@@ -11,6 +11,7 @@ dags:
       - userId_hourly
       data_sources: ${dataPipeline.schemas}
       command: run
+      should_push_data: False
     schedule_interval: timedelta(hours=1)
     start_date: ${dataPipeline.startTime}
 

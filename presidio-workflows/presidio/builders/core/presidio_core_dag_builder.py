@@ -60,16 +60,17 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         should_push_data = default_args.get("should_push_data")
         logging.debug("should_push_data=%s ", should_push_data)
         if should_push_data:
-            push_forwarding_task = self._should_push_data(presidio_core_dag)
+            push_forwarding_task = self._get_push_data_task(presidio_core_dag)
             output_sub_dag_operator >> push_forwarding_task
 
-    def _should_push_data(self, presidio_core_dag):
+    def _get_push_data_task(self, presidio_core_dag):
+        jvm_args = {'class_path': 'todo', 'jar_path': 'todo', 'main_class': 'todo'}
         # Create jar operator
         data_forwarding_operator = FixedDurationJarOperator(
             task_id='data_forwarding_operator',
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
-            jvm_args=self.jvm_args,
+            jvm_args=jvm_args,
             dag=presidio_core_dag)
         return data_forwarding_operator
 
