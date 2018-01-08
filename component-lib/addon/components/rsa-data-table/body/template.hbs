@@ -3,7 +3,6 @@
 
   {{!always render the very first item (if any) so that it can be measured}}
   {{#if items.length}}
-
     {{#component rowComponentClass
       isSizeSample=true
       item=items.firstObject
@@ -14,6 +13,8 @@
       as |firstRowItem firstRowIndex column|}}
       {{yield firstRowItem firstRowIndex column}}
     {{/component}}
+  {{else}}
+    {{rsa-data-table/empty-table-header-row}}
   {{/if}}
 
   {{!also render each of the items that fit within the current viewport}}

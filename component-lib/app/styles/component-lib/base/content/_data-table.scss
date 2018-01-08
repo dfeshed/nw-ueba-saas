@@ -106,6 +106,9 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     text-transform: uppercase;
     height: 30px;
     color: text-color(primary, lightest);
+    &-empty {
+      height: 1px;
+    }
   }
 
   &-body-row {

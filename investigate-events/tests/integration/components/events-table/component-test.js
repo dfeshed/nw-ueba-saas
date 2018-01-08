@@ -15,11 +15,11 @@ import RSVP from 'rsvp';
 let setState;
 const prefToSave = { eventAnalysisPreferences: { isReconExpanded: false } };
 
-const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCount, count, selectedOption) => {
+const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCount, count, selectedOption, isNotEmptyRow) => {
   clickTrigger();
   selectChoose('.ember-power-select-trigger', selectedOption);
   return waitFor('.ember-power-select-selected-item').then(() => {
-    assert.equal($('.rsa-data-table-header-cell').length, headerCount, `Should show columns for ${selectedOption}.`);
+    assert.equal($('.rsa-data-table-header-cell').length, headerCount * (isNotEmptyRow ? 1 : 2), `Should show columns for ${selectedOption}.`);
     assert.equal($('.ember-power-select-selected-item').text().trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
     $('.rsa-icon-cog-filled').trigger('mouseover');
     return waitFor('.rsa-form-checkbox-label', { count }).then(() => {
