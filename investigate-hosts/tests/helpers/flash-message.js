@@ -1,6 +1,7 @@
 import FlashObject from 'ember-cli-flash/flash/object';
+import FlashService from 'ember-cli-flash/services/flash-messages';
 
-// NOOP function to replace Ember.K
-const NOOP = () => {};
-
-FlashObject.reopen({ init: NOOP });
+FlashObject.reopen({ init() {} });
+FlashService.reopen({
+  defaultTypes: ['error', 'success']
+});
