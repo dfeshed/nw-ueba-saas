@@ -36,7 +36,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     }
 
     @Override
-    public void retentionClean(Schema schema, Instant startDate, Instant endDate) throws Exception {
+    public void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Starting Adapter retention process with params: schema: {}, {} : {}, {} : {}.", schema,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
                 CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
@@ -71,7 +71,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
             throw e;
         }
     }
-
 
     private void runFlumeExecution(Schema schema, Instant startDate, Instant endDate, String newFilePath) {
         String jobName = flumeConfigurationUtil.createJobName(schema, startDate, endDate);

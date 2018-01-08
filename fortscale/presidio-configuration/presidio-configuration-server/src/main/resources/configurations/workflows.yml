@@ -134,3 +134,14 @@ components:
         build_model_interval_in_days: 1
         accumulate_interval_in_days: 1
         min_data_time_range_for_building_models_in_days: 14
+retention:
+  command: applyRetentionPolicy
+  adapter:
+    min_time_to_start_retention_in_days: 30
+    retention_interval_in_hours: 24
+  input:
+    min_time_to_start_retention_in_days: 2
+    retention_interval_in_hours: 24
+  output:
+    min_time_to_start_retention_in_days: 2
+    retention_interval_in_hours: 24

@@ -24,6 +24,7 @@ import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
+import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
@@ -69,6 +70,10 @@ public class InputExecutionServiceTest {
         mongoTemplate.dropCollection(outputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
         mongoTemplate.dropCollection(adeToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION.toString().toLowerCase()));
         mongoTemplate.dropCollection(inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
+
+        mongoTemplate.dropCollection(outputToCollectionNameTranslator.toCollectionName(Schema.FILE));
+        mongoTemplate.dropCollection(adeToCollectionNameTranslator.toCollectionName(Schema.FILE.toString().toLowerCase()));
+        mongoTemplate.dropCollection(inputToCollectionNameTranslator.toCollectionName(Schema.FILE));
     }
 
     @Test
@@ -91,14 +96,13 @@ public class InputExecutionServiceTest {
         executionService.cleanup(Schema.AUTHENTICATION, startTime, endTime, 1d);
         List<EnrichedRecord> allAdeDocuments = mongoTemplate.findAll(EnrichedRecord.class, adeToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION.toString().toLowerCase()));
         List<AuthenticationEnrichedEvent> allOutputDocuments = mongoTemplate.findAll(AuthenticationEnrichedEvent.class, outputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
-        // TODO: uncomment when the ade cleanup is implemented
-        //Assert.assertEquals(1, allAdeDocuments.size());
+        Assert.assertEquals(1, allAdeDocuments.size());
         Assert.assertEquals(1, allOutputDocuments.size());
     }
 
 
     @Test
-    public void testRetentionClean() throws Exception {
+    public void testApplyRetentionPolicy() throws Exception {
         Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
         Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
 
@@ -108,10 +112,60 @@ public class InputExecutionServiceTest {
         rawEvents.add(createAuthenticationRawEvent(Instant.parse("2017-12-11T14:00:00.000Z")));
         inputPersistencyService.store(Schema.AUTHENTICATION, rawEvents);
 
-        executionService.retentionClean(Schema.AUTHENTICATION, startTime, endTime);
+        executionService.applyRetentionPolicy(Schema.AUTHENTICATION, startTime, endTime);
 
         List<AuthenticationRawEvent> remainingRawEvents = mongoTemplate.findAll(AuthenticationRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.AUTHENTICATION));
         Assert.assertEquals(1, remainingRawEvents.size());
+    }
+
+    @Test
+    public void testRun_isSrcDriveSharedFiledIsNull_shouldKeepNullValue(){
+        FileRawEvent fileRawEvent = createFileRawEvent(Instant.parse("2017-12-10T14:00:00.000Z"));
+        fileRawEvent.setIsSrcDriveShared(null);
+        fileRawEvent.setIsDstDriveShared(null);
+
+        List<FileRawEvent> rawEvents = new ArrayList<>();
+        rawEvents.add(fileRawEvent);
+        inputPersistencyService.store(Schema.FILE, rawEvents);
+
+        Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
+        Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
+        try {
+            executionService.run(Schema.FILE, startTime, endTime, 10D);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+
+        List<FileRawEvent> enrichedEvents = mongoTemplate.findAll(FileRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.FILE));
+        Assert.assertEquals(1, enrichedEvents.size());
+        Assert.assertEquals(null, enrichedEvents.get(0).getIsDstDriveShared());
+        Assert.assertEquals(null, enrichedEvents.get(0).getIsSrcDriveShared());
+    }
+
+    @Test
+    public void testRun_isSrcDriveSharedFiledIsTrue_shouldKeepOriginalValue(){
+        FileRawEvent fileRawEvent = createFileRawEvent(Instant.parse("2017-12-10T14:00:00.000Z"));
+        fileRawEvent.setIsSrcDriveShared(true);
+        fileRawEvent.setIsDstDriveShared(true);
+
+        List<FileRawEvent> rawEvents = new ArrayList<>();
+        rawEvents.add(fileRawEvent);
+        inputPersistencyService.store(Schema.FILE, rawEvents);
+
+        Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
+        Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
+        try {
+            executionService.run(Schema.FILE, startTime, endTime, 10D);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+
+        List<FileRawEvent> enrichedEvents = mongoTemplate.findAll(FileRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.FILE));
+        Assert.assertEquals(1, enrichedEvents.size());
+        Assert.assertEquals(true, enrichedEvents.get(0).getIsDstDriveShared());
+        Assert.assertEquals(true, enrichedEvents.get(0).getIsSrcDriveShared());
     }
 
     private EnrichedEvent createOutputAuthenticationEvent(Instant time) {
@@ -127,4 +181,12 @@ public class InputExecutionServiceTest {
 
         return authenticationRawEvent;
     }
+
+    private FileRawEvent createFileRawEvent(Instant eventTime) {
+        FileRawEvent authenticationRawEvent = new FileRawEvent(eventTime, "eventId", "datasource", "userId",
+                "operationType", null, EventResult.FAILURE, "userName", "displayName",
+                null, "srcFilePath", true, "dstFilePath", true, 10L, "resultCode");
+        return authenticationRawEvent;
+    }
+
 }

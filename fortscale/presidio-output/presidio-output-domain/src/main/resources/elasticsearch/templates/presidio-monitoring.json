@@ -18,12 +18,14 @@
           },
           "name": {
             "type": "text",
+            "index": "not_analyzed",
             "store": true
           },
           "tags": {
             "properties": {
               "APPLICATION_NAME": {
                 "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "keyword",
@@ -33,6 +35,137 @@
               },
               "IS_SYSTEM_METRIC": {
                 "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "FLUME_COMPONENT_INSTANCE_ID": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "FLUME_COMPONENT_TYPE": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "FEATURE_BUCKET": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "TIME": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "GROUP_NAME": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "AGGREGATED_FEATURE_TYPE": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "FEATURE_NAME": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "FAILURE_REASON": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "HOST": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "RESULT": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "ADE_EVENT_TYPE": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "SCORER": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "MODEL": {
+                "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "keyword",
@@ -42,6 +175,7 @@
               },
               "PID": {
                 "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "keyword",
@@ -51,6 +185,7 @@
               },
               "SCHEMA": {
                 "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "keyword",
@@ -60,6 +195,7 @@
               },
               "UNIT": {
                 "type": "text",
+                "fielddata": true,
                 "fields": {
                   "keyword": {
                     "type": "keyword",
@@ -75,10 +211,232 @@
           },
           "value": {
             "properties": {
+              "DEFAULT_METRIC_VALUE": {
+                "type": "long"
+              },
+              "SUM": {
+                "type": "long"
+              },
+              "MAX": {
+                "type": "long"
+              },
+              "AVG": {
+                "type": "long"
+              },
               "COUNT": {
                 "type": "long"
               },
-              "DEFAULT_METRIC_VALUE": {
+              "AMOUNT_OF_SCORED": {
+                "type": "long"
+              },
+              "AMOUNT_OF_NON_ZERO_SCORE": {
+                "type": "long"
+              },
+              "MAX_SCORE": {
+                "type": "long"
+              },
+              "AMOUNT_OF_SUCCEEDED_MODELS": {
+                "type": "long"
+              },
+              "AMOUNT_OF_FAILED_MODELS": {
+                "type": "long"
+              },
+              "AMOUNT_OF_ALL_DATA_FILTERED": {
+                "type": "long"
+              },
+              "MAX_SIZE_OF_FEATURE_VALUES": {
+                "type": "long"
+              },
+              "AVG_SIZE_OF_FEATURE_VALUES": {
+                "type": "long"
+              },
+              "SUM_SIZE_OF_FEATURE_VALUES": {
+                "type": "long"
+              },
+              "AMOUNT_OF_CONTEXTS_WITH_POSITIVE_BUCKET_VALUES": {
+                "type": "long"
+              },
+              "MAX_NUM_OF_PARTITIONS": {
+                "type": "long"
+              },
+              "AVG_NUM_OF_PARTITIONS": {
+                "type": "long"
+              },
+              "SUM_NUM_OF_PARTITIONS": {
+                "type": "long"
+              },
+              "AMOUNT_OF_CONTEXTS": {
+                "type": "long"
+              },
+              "AVG_OF_BUCKET_HITS": {
+                "type": "long"
+              },
+              "SUM_OF_BUCKET_HITS": {
+                "type": "long"
+              },
+              "MAX_OF_BUCKET_HITS": {
+                "type": "long"
+              },
+              "AVG_OF_SMOOTHED_BUCKETS": {
+                "type": "long"
+              },
+              "SUM_OF_SMOOTHED_BUCKETS": {
+                "type": "long"
+              },
+              "MAX_OF_SMOOTHED_BUCKETS": {
+                "type": "long"
+              },
+              "READS": {
+                "type": "long"
+              },
+              "WRITES": {
+                "type": "long"
+              },
+              "HIT": {
+                "type": "long"
+              },
+              "MISS": {
+                "type": "long"
+              },
+              "EMPTY_MODEL": {
+                "type": "long"
+              },
+              "NULL_FEATURE_BUCKET_ID": {
+                "type": "long"
+              },
+              "FEATURE_BUCKETS": {
+                "type": "long"
+              },
+              "FEATURE_BUCKETS_UPDATES": {
+                "type": "long"
+              },
+              "MIN_RESOLUTION": {
+                "type": "long"
+              },
+              "MAX_RESOLUTION": {
+                "type": "long"
+              },
+              "AVG_RESOLUTION": {
+                "type": "long"
+              },
+              "SUM_RESOLUTION": {
+                "type": "long"
+              },
+              "MAX_CONTINUOUS_MEAN": {
+                "type": "long"
+              },
+              "AVG_CONTINUOUS_MEAN": {
+                "type": "long"
+              },
+              "SUM_CONTINUOUS_MEAN": {
+                "type": "long"
+              },
+              "MAX_MAX_CONTINUOUS_MEAN": {
+                "type": "long"
+              },
+              "AVG_MAX_CONTINUOUS_MEAN": {
+                "type": "long"
+              },
+              "SUM_MAX_CONTINUOUS_MEAN": {
+                "type": "long"
+              },
+              "MAX_MAX_CONTINUOUS_SD": {
+                "type": "long"
+              },
+              "AVG_MAX_CONTINUOUS_SD": {
+                "type": "long"
+              },
+              "SUM_MAX_CONTINUOUS_SD": {
+                "type": "long"
+              },
+              "MAX_CONTINUOUS_SD": {
+                "type": "long"
+              },
+              "AVG_CONTINUOUS_SD": {
+                "type": "long"
+              },
+              "SUM_CONTINUOUS_SD": {
+                "type": "long"
+              },
+              "MAX_CONTINUOUS_N": {
+                "type": "long"
+              },
+              "AVG_CONTINUOUS_N": {
+                "type": "long"
+              },
+              "SUM_CONTINUOUS_N": {
+                "type": "long"
+              },
+              "MAX_MAX_CONTINUOUS_N": {
+                "type": "long"
+              },
+              "AVG_MAX_CONTINUOUS_N": {
+                "type": "long"
+              },
+              "SUM_MAX_CONTINUOUS_N": {
+                "type": "long"
+              },
+              "MAX_CONTINUOUS_MAX_VALUE": {
+                "type": "long"
+              },
+              "AVG_CONTINUOUS_MAX_VALUE": {
+                "type": "long"
+              },
+              "SUM_CONTINUOUS_MAX_VALUE": {
+                "type": "long"
+              },
+              "MAX_MAX_CONTINUOUS_MAX_VALUE": {
+                "type": "long"
+              },
+              "AVG_MAX_CONTINUOUS_MAX_VALUE": {
+                "type": "long"
+              },
+              "SUM_MAX_CONTINUOUS_MAX_VALUE": {
+                "type": "long"
+              },
+              "MAX_GLOBAL_SD": {
+                "type": "long"
+              },
+              "AVG_GLOBAL_SD": {
+                "type": "long"
+              },
+              "SUM_GLOBAL_SD": {
+                "type": "long"
+              },
+              "SUCCESS_EVENTS": {
+                "type": "long"
+              },
+              "TOTAL_EVENTS": {
+                "type": "long"
+              },
+              "FAILED_EVENTS": {
+                "type": "long"
+              },
+              "SUCCESS_PAGES": {
+                "type": "long"
+              },
+              "TOTAL_PAGES": {
+                "type": "long"
+              },
+              "FAILED_PAGES": {
+                "type": "long"
+              },
+              "AVG_PAGE_SIZE": {
+                "type": "long"
+              },
+              "MAX_MEAN": {
+                "type": "long"
+              },
+              "AMOUNT_OF_SEGMENT_PRIORS": {
+                "type": "long"
+              },
+              "AGGREGATIONS": {
+                "type": "long"
+              },
+              "AMOUNT_OF_NON_ZERO_FEATURE_VALUES": {
+                "type": "long"
+              },
+              "MAX_FEATURE_VALUE": {
                 "type": "long"
               }
             }

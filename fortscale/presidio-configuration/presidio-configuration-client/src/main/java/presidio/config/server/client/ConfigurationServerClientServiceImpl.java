@@ -3,6 +3,7 @@ package presidio.config.server.client;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.*;
@@ -20,7 +21,13 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
     private final String configServerPassword;
     private final RestTemplate restTemplate;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER;
+
+    static {
+        OBJECT_MAPPER = new ObjectMapper();
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OBJECT_MAPPER.registerModule(new JavaTimeModule());
+    }
 
     public ConfigurationServerClientServiceImpl(RestTemplate restTemplate, String configServerUri, String configServerUserName, String configServerPassword) {
         this.restTemplate = restTemplate;
@@ -93,9 +100,9 @@ public class ConfigurationServerClientServiceImpl implements ConfigurationServer
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class);
 
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        T response = objectMapper.readValue(responseEntity.getBody(), clazz);
+
+        T response = OBJECT_MAPPER.readValue(responseEntity.getBody(), clazz);
         return response;
 
     }

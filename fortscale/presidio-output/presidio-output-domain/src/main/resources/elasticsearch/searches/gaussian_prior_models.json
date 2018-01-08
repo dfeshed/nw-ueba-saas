@@ -15,7 +15,7 @@
       ],
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:\\\"feature-aggregation-record-models\\\" AND name:\\\"modeling-service.gaussian_prior_model_builder\\\"\",\"analyze_wildcard\":true}}}"
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:feature-aggregation* AND name:\\\"modeling-service.gaussian_prior_model_builder\\\"\",\"analyze_wildcard\":true}}}"
       }
     }
   }

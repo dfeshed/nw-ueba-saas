@@ -15,7 +15,7 @@
       ],
       "version": 1,
       "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:\\\"enriched-record-models\\\"\",\"analyze_wildcard\":true}}}"
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:enriched*\",\"analyze_wildcard\":true}}}"
       }
     }
   }
