@@ -32,12 +32,7 @@ const visuals = handleActions({
 
   [ACTION_TYPES.TOGGLE_CANCEL_SCAN_MODAL]: (state) => {
     return state.set('showCancelScanModal', !state.showCancelScanModal);
-  },
-
-  [ACTION_TYPES.TOGGLE_HOST_DETAILS_LOADING_INDICATOR]: (state, { payload }) => {
-    return state.set('hostDetailsLoading', payload);
   }
-
 }, visualsInitialState);
 
 export default visuals;

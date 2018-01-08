@@ -2,18 +2,28 @@ import * as ACTION_TYPES from '../types';
 import { Process } from '../api';
 import { handleError } from '../creator-utils';
 
-const toggleProcessView = () => ({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
+const toggleProcessView = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
+    const { process: { processTree, processList }, visuals: { isTreeView } } = getState().endpoint;
+    if (isTreeView) {
+      dispatch(getProcessDetails(processTree[0].pid));
+    } else {
+      dispatch(getProcessDetails(processList[0].pid));
+    }
+  };
+};
 
-const _getList = (shouldGetFirstRecord) => {
+const _getList = () => {
   return (dispatch, getState) => {
     const { sortField: key, isDescOrder: descending } = getState().endpoint.process;
-    const { agentId, scanTime } = getState().endpoint.detailsInput;
+    const { detailsInput: { agentId, scanTime }, visuals: { isTreeView } } = getState().endpoint;
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_LIST,
       promise: Process.getProcessList({ agentId, scanTime }, { key, descending }),
       meta: {
         onSuccess: (response) => {
-          if (shouldGetFirstRecord && response.data.length) {
+          if (!isTreeView && response.data.length) {
             dispatch(getProcessDetails(response.data[0].pid));
           }
         },
@@ -25,11 +35,16 @@ const _getList = (shouldGetFirstRecord) => {
 
 const _getTree = () => {
   return (dispatch, getState) => {
-    const { agentId, scanTime } = getState().endpoint.detailsInput;
+    const { detailsInput: { agentId, scanTime }, visuals: { isTreeView } } = getState().endpoint;
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_TREE,
       promise: Process.getProcessTree({ agentId, scanTime }),
       meta: {
+        onSuccess: (response) => {
+          if (isTreeView && response.data.length) {
+            dispatch(getProcessDetails(response.data[0].pid));
+          }
+        },
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_TREE, response)
       }
     });
@@ -90,7 +105,6 @@ const _getProcessFileContext = (processId) => {
     });
   };
 };
-
 
 export {
   sortBy,

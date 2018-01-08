@@ -1,7 +1,7 @@
 import * as ACTION_TYPES from '../types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
-import { getAllProcess } from './process';
+import { getAllProcess, toggleProcessView } from './process';
 import { getFileContextAutoruns, getFileContextServices, getFileContextTasks } from './autoruns';
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
@@ -146,11 +146,15 @@ const changeDetailTab = (tabName) => {
 };
 
 const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { isTreeView } = getState().endpoint.visuals;
     dispatch(setScanTime(scanTime));
     dispatch(changeDetailTab(tabName));
     if (secondaryTab) {
       dispatch(setAutorunsTabView(secondaryTab));
+    }
+    if (tabName === 'PROCESS' && !isTreeView) {
+      dispatch(toggleProcessView());
     }
     dispatch(_getHostDetails(true));
     dispatch(toggleExploreSearchResults(false));
