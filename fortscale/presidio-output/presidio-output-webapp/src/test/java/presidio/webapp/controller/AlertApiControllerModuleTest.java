@@ -142,7 +142,36 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void getIndicatorsSortedWithCorectPage() throws Exception {
+    public void getAllAlertsWithMaxScore() throws Exception {
+        //save alerts in elastic
+        Date date = new Date();
+        presidio.output.domain.records.alerts.Alert alert1 = generateAlert("userId1", "smartId1", Arrays.asList("a"), "userName1", 90d, AlertEnums.AlertSeverity.CRITICAL, date);
+        presidio.output.domain.records.alerts.Alert alert2 = generateAlert("userId2", "smartId2", Arrays.asList("a"), "userName2", 91d, AlertEnums.AlertSeverity.MEDIUM, date);
+        alertRepository.save(Arrays.asList(alert1, alert2));
+
+        // init expected response
+        Alert expectedAlert1 = convertDomainAlertToRestAlert(alert1);
+        Alert expectedAlert2 = convertDomainAlertToRestAlert(alert2);
+        AlertsWrapper expectedResponse = new AlertsWrapper();
+        expectedResponse.setTotal(2);
+        List<Alert> alerts = Arrays.asList(expectedAlert1, expectedAlert2);
+        expectedResponse.setAlerts(alerts);
+        expectedResponse.setPage(0);
+
+        // get actual response
+        MvcResult mvcResult = alertsApiMVC.perform(get(ALERTS_URI, alert1.getScore()))
+                .andExpect(status().isOk())
+                .andReturn();
+        String actualResponseStr = mvcResult.getResponse().getContentAsString();
+        AlertsWrapper actualResponse = objectMapper.readValue(actualResponseStr, AlertsWrapper.class);
+
+        Collections.sort(expectedResponse.getAlerts(), defaultAlertComparator);
+        Collections.sort(actualResponse.getAlerts(), defaultAlertComparator);
+        Assert.assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    public void getIndicatorsSortedWithCorrectPage() throws Exception {
         //save alerts in elastic
         Date startDate = new Date();
         Date endDate = new Date();
