@@ -2,7 +2,7 @@
   height: $process-list-header-height;
   line-height: $process-list-header-height;
   font-weight: 100;
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
   background-color: $table-panel-header-color;
   .title {
     padding-left: rsa-whitespace();

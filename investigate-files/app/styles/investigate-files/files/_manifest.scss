@@ -34,16 +34,16 @@ page.investigate-files-engine {
   .filter-list__item {
     cursor: pointer;
     font-weight: 700;
-    color: text-color(primary);
+    color: text-color(primary, light);
     line-height: 27px;
     &.is-active {
-      color: white;
+      color: text-color(primary, lightest);
       transition: color 0.5s ease;
     }
   }
 
   .filter-list__item:hover {
-    color: white;
+    color: text-color(primary, lightest);
     transition: color 0.5s ease;
   }
 
@@ -74,7 +74,7 @@ page.investigate-files-engine {
     overflow-x: hidden;
     opacity: opacity-value(opaque);
     max-width: $filterPanelMinWidth - 50px;
-    color: text-color(neutral);
+    color: text-color(primary, lightest);
     @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
     @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
     @include border-right(1px, solid, primary, dark);

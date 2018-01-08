@@ -9,7 +9,7 @@
     .rsa-form-radio-label {
       &.checked {
         font-weight: bold;
-        color: text-color(neutral);
+        color: text-color(primary, lightest);
       }
     }
   }

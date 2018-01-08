@@ -1,6 +1,6 @@
 .host-message-modal {
   list-style-type: none;
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
   padding: rsa-whitespace();
   &.alert-info {
     background: background-color(secondary);

@@ -6,7 +6,7 @@
   @include border-bottom(1px, solid, primary, dark);
 
   padding: rsa-whitespace(less);
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
 
   .filter-control-extended {
     padding: rsa-whitespace() 0 0;
@@ -21,10 +21,10 @@
   .rsa-form-button-wrapper {
     .rsa-form-button {
       padding: rsa-whitespace(less) rsa-whitespace(less);
-      color: text-color(primary);
+      color: text-color(primary, light);
       &:hover {
         cursor: pointer;
-        color: text-color(neutral);
+        color: text-color(primary, lightest);
       }
       .rsa-icon-remove-circle-2 {
         font-size: .9rem;

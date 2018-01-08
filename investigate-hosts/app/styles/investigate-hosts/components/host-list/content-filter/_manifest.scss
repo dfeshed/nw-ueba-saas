@@ -26,7 +26,7 @@ $filterPanelMinWidth: 200px;
 }
 
 .content-filter {
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
   width: calc(90vw - 200px);
   div {
     float: left;
@@ -43,10 +43,10 @@ $filterPanelMinWidth: 200px;
   .rsa-form-button-wrapper {
     .rsa-form-button {
       padding: rsa-whitespace(less) rsa-whitespace(less);
-      color: text-color(primary);
+      color: text-color(primary, light);
       &:hover {
         cursor: pointer;
-        color: text-color(neutral);
+        color: text-color(primary, lightest);
       }
       .rsa-icon-remove-circle-2 {
         font-size: .9rem;

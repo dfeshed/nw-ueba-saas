@@ -21,7 +21,7 @@ $note-color: #bdbdbd;
     }
     .command-note {
       padding-top: rsa-whitespace(less);
-      color: text-color(neutral);
+      color: text-color(primary, lightest);
     }
     .ember-power-select-dropdown {
       width: 10rem;

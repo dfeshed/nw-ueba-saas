@@ -41,7 +41,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  color: text-color(neutral);
+  color: text-color(primary, lightest);
   background-color: background-color(custom, respond);
   @include rsa-col(justify,fill);
 
@@ -59,7 +59,7 @@
     flex-wrap: nowrap;
     height: 100%;
     a {
-      color: text-color(secondary);
+      color: text-color(secondary, light);
       text-decoration: underline;
     }
   }

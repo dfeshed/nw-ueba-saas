@@ -1,6 +1,6 @@
 $host-explore-min-width: 250px;
 $search-result-content-height: 593px;
-$background-color: background-color(neutral, dark);
+$background-color: background-color(primary, darkest);
 $text-color: text-color(secondary);
 $result-text-color: text-color(primary, light);
 
@@ -63,7 +63,7 @@ $result-text-color: text-color(primary, light);
     }
   }
   &__no-results {
-    color: text-color(neutral);
+    color: text-color(primary, lightest);
     font-weight: bold;
   }
 
@@ -71,7 +71,7 @@ $result-text-color: text-color(primary, light);
     width: calc(100% - 24px);
     input {
       border: none;
-      background: text-color(neutral, dark);
+      background: text-color(primary, darkest);
       line-height: normal;
     }
     .rsa-form-label {
