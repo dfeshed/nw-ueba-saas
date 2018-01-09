@@ -106,10 +106,11 @@
 
     &-body-row {
       cursor: default;
-      border-top: 1px solid border-color(primary, dark);
+      border-top: 0px;
     }
 
     &-body-cell {
+      border-top: 1px solid border-color(primary, dark);
       .meta-key-and-value {
         .key {
           color: text-color(neutral, base, translucent);

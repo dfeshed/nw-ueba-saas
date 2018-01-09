@@ -37,6 +37,8 @@ function applyCellWidth($cell, column, opts) {
   const hasAutoWidth = (width === 'auto');
   if (!hasAutoWidth) {
     width = formatUtil.width(width, opts);
+  } else {
+    width = '100%';
   }
   $cell
     .classed('auto-width', hasAutoWidth)
