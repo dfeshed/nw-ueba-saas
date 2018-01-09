@@ -33,8 +33,10 @@ import {
 import { packetTotal } from 'recon/reducers/header/selectors';
 import CookieStore from 'component-lib/session-stores/application';
 import { getStoredState } from 'redux-persist';
+import _ from 'lodash';
 
 const cookieStore = CookieStore.create();
+const authCookie = {}; // cache this to minimize reading from cookie-store.
 
 /**
  * Will fetch and dispatch event meta
@@ -391,37 +393,53 @@ const _checkForFatalApiError = (code) => {
 const determineReconView = (meta) => {
   return (dispatch, getState) => {
     const { forcedView } = eventTypeFromMetaArray(meta);
+    if (authCookie.reconPrefInitialized) {
+      _reconPreferencesAlreadyInitialized(dispatch, forcedView, getState);
+      return;
+    }
+
     /* Check the flag in authenticated cookie */
-    let authObj = {};
     cookieStore.restore().then(({ authenticated = {} }) => {
-      authObj = authenticated;
+      _.merge(authCookie, authenticated);
     }).finally(() => {
-      if (!authObj.reconPrefInitialized) {
-        const prefService = lookup('service:preferences');
-        /* For the first time after login, get default prefs from backend and override */
-        prefService.getPreferences('investigate-events-preferences').then((data) => {
-          dispatch({
-            type: ACTION_TYPES.RESET_PREFERENCES,
-            payload: data || {}
-          });
-          authObj.reconPrefInitialized = true;
-          cookieStore.persist({ authenticated: authObj });
-          const newView = forcedView || getState().recon.visuals.currentReconView;
-          dispatch(setNewReconView(newView));
-        });
-      } else if (forcedView) {
-        dispatch(setNewReconView(forcedView));
+      if (authCookie.reconPrefInitialized) {
+        _reconPreferencesAlreadyInitialized(dispatch, forcedView, getState);
       } else {
-        getStoredState({}, (err, storedState) => {
-          let newView = getState().recon.visuals.defaultReconView;
-          if (!err && storedState && storedState.recon && storedState.recon.visuals.currentReconView) {
-            newView = RECON_VIEW_TYPES_BY_NAME[storedState.recon.visuals.currentReconView.name];
-          }
-          dispatch(setNewReconView(newView));
-        });
+        _initReconPreferences(dispatch, forcedView);
       }
     });
   };
+};
+
+const _reconPreferencesAlreadyInitialized = (dispatch, forcedView, getState) => {
+  if (forcedView) {
+    dispatch(setNewReconView(forcedView));
+  } else {
+    getStoredState({}, (err, storedState) => {
+      let newView = getState().recon.visuals.defaultReconView;
+      const storedReconView = _.get(storedState, 'recon.visuals.currentReconView.name');
+      if (!err && storedReconView) {
+        newView = RECON_VIEW_TYPES_BY_NAME[storedReconView];
+      }
+      dispatch(setNewReconView(newView));
+    });
+  }
+};
+
+const _initReconPreferences = (dispatch, forcedView) => {
+  const prefService = lookup('service:preferences');
+  /* For the first time after login, get default prefs from backend and override */
+  prefService.getPreferences('investigate-events-preferences').then((data) => {
+    dispatch({
+      type: ACTION_TYPES.RESET_PREFERENCES,
+      payload: data || {}
+    });
+    authCookie.reconPrefInitialized = true;
+    cookieStore.persist({ authenticated: authCookie });
+    const defaultView = _.get(data, 'eventAnalysisPreferences.currentReconView', RECON_VIEW_TYPES_BY_NAME.TEXT.name);
+    const reconView = forcedView || RECON_VIEW_TYPES_BY_NAME[defaultView];
+    dispatch(setNewReconView(reconView));
+  });
 };
 
 /**
@@ -560,5 +578,6 @@ export {
   toggleMetaData,
   togglePayloadOnly,
   jumpToPage,
-  determineReconView
+  determineReconView,
+  cookieStore, authCookie // exported for testing only
 };

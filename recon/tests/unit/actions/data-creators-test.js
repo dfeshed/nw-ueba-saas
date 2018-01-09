@@ -1,19 +1,21 @@
 import { module, test } from 'qunit';
 import * as dataCreators from 'recon/actions/data-creators';
-import CookieStore from 'component-lib/session-stores/application';
 import ACTION_TYPES from 'recon/actions/types';
 import { patchSocket } from '../../helpers/patch-socket';
+import sinon from 'sinon';
 
-const cookieStore = CookieStore.create();
+const { cookieStore } = dataCreators;
 
 module('Unit | Actions | Data Creators', {
-  before() {
+  beforeEach() {
+    dataCreators.authCookie.reconPrefInitialized = false;
     cookieStore.persist({
       authenticated: {}
     });
   },
-  after() {
+  afterEach() {
     cookieStore.clear();
+    dataCreators.authCookie.reconPrefInitialized = false;
   }
 });
 
@@ -52,5 +54,22 @@ test('test that preferences are not set after the first time', function(assert) 
       done();
     };
     callback(dispatchFn, getState);
+  });
+});
+
+test('test that cookie store is read only once', function(assert) {
+  const done = assert.async();
+  const restoreSpy = sinon.spy(cookieStore, 'restore');
+  cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
+    const callback = dataCreators.determineReconView([]);
+    callback(() => ({}), getState);
+    setTimeout(() => { // delay to allow cookieStore to be read.
+      callback(() => ({}), getState);
+      setTimeout(() => { // delay to allow cookieStore to be read.
+        assert.equal(restoreSpy.callCount, 1, 'cookieStore.restore() should be called only once');
+        restoreSpy.restore();
+        done();
+      }, 200);
+    }, 200);
   });
 });

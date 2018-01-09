@@ -23,10 +23,6 @@ const visuals = handleActions({
     let reducerState = {};
     if (payload && payload.recon && payload.recon.visuals) {
       reducerState = payload.recon.visuals;
-      // Ignore currentReconView as that is handled elsewhere
-      if (reducerState.currentReconView) {
-        delete reducerState.currentReconView;
-      }
     }
     return state.merge(reducerState);
   },
@@ -48,6 +44,7 @@ const visuals = handleActions({
     }
     return state.merge({
       currentReconView,
+      defaultReconView: currentReconView,
       defaultLogFormat,
       defaultPacketFormat
     });
@@ -64,6 +61,7 @@ const visuals = handleActions({
       defaultLogFormat,
       defaultPacketFormat,
       currentReconView,
+      defaultReconView: currentReconView,
       isReconOpen: state.isReconOpen
     });
   },

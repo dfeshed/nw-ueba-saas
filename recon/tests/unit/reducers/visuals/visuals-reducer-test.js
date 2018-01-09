@@ -31,7 +31,7 @@ test('test SET_PREFERENCES action handler', function(assert) {
     }
   };
   const result = reducer(initialState, action);
-  assert.equal(result.defaultReconView.name, 'TEXT');
+  assert.equal(result.defaultReconView.name, 'PACKET');
   assert.equal(result.currentReconView.name, 'PACKET');
   assert.equal(result.defaultLogFormat, 'XML');
   assert.equal(result.defaultPacketFormat, 'ALL');
@@ -48,7 +48,7 @@ test('test RESET_PREFERENCES action handler', function(assert) {
       }
     }
   });
-  assert.equal(result.defaultReconView.name, 'TEXT');
+  assert.equal(result.defaultReconView.name, 'PACKET');
   assert.equal(result.defaultLogFormat, 'XML');
   assert.equal(result.defaultPacketFormat, 'ALL');
   assert.equal(result.currentReconView.name, 'PACKET');
@@ -65,4 +65,49 @@ test('test RESET_PREFERENCES action handler when payload is empty', function(ass
     payload: { }
   });
   assert.deepEqual(result, initialState);
+});
+
+test('test SET_PREFERENCES action handler', function(assert) {
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventAnalysisPreferences: {
+        currentReconView: 'PACKET',
+        defaultLogFormat: 'XML',
+        defaultPacketFormat: 'ALL'
+      }
+    }
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.defaultReconView.name, 'PACKET');
+  assert.equal(result.currentReconView.name, 'PACKET');
+  assert.equal(result.defaultLogFormat, 'XML');
+  assert.equal(result.defaultPacketFormat, 'ALL');
+});
+
+test('test REHYDRATE action handler', function(assert) {
+  const action = {
+    type: ACTION_TYPES.REHYDRATE,
+    payload: {
+      recon: {
+        visuals: {
+          defaultReconView: RECON_VIEW_TYPES_BY_NAME.PACKET,
+          currentReconView: RECON_VIEW_TYPES_BY_NAME.FILE,
+          isHeaderOpen: false,
+          isMetaShown: false,
+          defaultLogFormat: 'XML',
+          defaultPacketFormat: 'ALL'
+        }
+      }
+    }
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.defaultReconView.name, 'PACKET');
+  assert.equal(result.currentReconView.name, 'FILE');
+  assert.equal(result.isHeaderOpen, false);
+  assert.equal(result.isMetaShown, false);
+  assert.equal(result.isRequestShown, true);
+  assert.equal(result.isRequestShown, true);
+  assert.equal(result.defaultLogFormat, 'XML');
+  assert.equal(result.defaultPacketFormat, 'ALL');
 });
