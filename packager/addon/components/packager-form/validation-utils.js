@@ -47,7 +47,7 @@ export const validatePackageConfig = (formData) => {
 function _checkForServerErrors(index, eventId, errorObj) {
   let error = null;
   if (errorObj) {
-    if (errorObj.identifier === index + 1 && errorObj.cause.toUpperCase() === 'EVENT_ID_INVALID') {
+    if (errorObj.identifier === index + 1 && errorObj.reason.toUpperCase() === 'EVENT_ID_INVALID') {
       error = {
         invalidTableItem: eventId,
         isError: true
@@ -55,7 +55,7 @@ function _checkForServerErrors(index, eventId, errorObj) {
     }
   }
   if (errorObj && errorObj.identifier == index + 1) {
-    if (errorObj.cause.toUpperCase() === 'FILTER_INVALID' || errorObj.cause.toUpperCase() === 'CHANNEL_EMPTY') {
+    if (errorObj.reason.toUpperCase() === 'FILTER_INVALID' || errorObj.reason.toUpperCase() === 'CHANNEL_EMPTY') {
       error = {
         invalidTableItem: '',
         isError: true

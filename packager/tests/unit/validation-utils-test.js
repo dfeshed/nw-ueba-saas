@@ -89,7 +89,7 @@ test('validateLogConfigFields - eventId out of range', function(assert) {
   };
   const errorObj = {
     identifier: 1,
-    cause: 'EVENT_ID_INVALID'
+    reason: 'EVENT_ID_INVALID'
   };
   const error = validateLogConfigFields(formData, errorObj);
   assert.deepEqual(error, {
