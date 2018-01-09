@@ -1,7 +1,7 @@
 {{host-list/content-filter/filter-trigger
   panelId=config.panelId
   propertyName=config.propertyName
-  showRemoveButton=config.showRemoveButton
+  showRemoveButton=false
   filterLabel=filterLabel}}
 {{#rsa-content-tethered-panel
   anchorWidth=anchorWidth
@@ -22,6 +22,11 @@
         </li>
       {{/each}}
     </ul>
+  </section>
+  <section class="footer">
+    {{#rsa-form-button style='primary' defaultAction=(action 'onUpdate')}}
+      {{t 'investigateHosts.hosts.button.update'}}
+    {{/rsa-form-button}}
   </section>
 {{/rsa-content-tethered-panel}}
 

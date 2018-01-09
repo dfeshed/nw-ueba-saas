@@ -57,7 +57,7 @@ const ListFilter = Component.extend(FilterMixin, {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
       const values = propertyValues.map((item) => item.value);
-      return values.length ? `${filterName}: ${values.join(',')}` : `${filterName}: All`;
+      return values.length ? `${filterName}: ${values.join(', ')}` : `${filterName}: All`;
     }
     return `${filterName}: All`;
   },
@@ -101,6 +101,8 @@ const ListFilter = Component.extend(FilterMixin, {
     onSelection(option) {
       const { selected } = option;
       set(option, 'selected', !selected);
+    },
+    onUpdate() {
       const {
         config: { propertyName },
         restrictionType,
@@ -108,11 +110,11 @@ const ListFilter = Component.extend(FilterMixin, {
       } = this.getProperties('config', 'restrictionType', 'checkBoxOptions');
 
       const values = checkBoxOptions
-        .filterBy('selected', true)
-
+      .filterBy('selected', true)
         .map((item) => {
           return { value: item.name };
         });
+
       this.send('updateFilter', { propertyName, restrictionType, propertyValues: values });
     }
   }
