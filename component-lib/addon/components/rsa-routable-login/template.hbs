@@ -65,6 +65,7 @@
             {{rsa-form-input
               class="js-test-login-old-password-input"
               type="password"
+              autocomplete="current-password"
               label=(t 'login.oldPassword')
               isError=hasError
               value=password}}
@@ -72,6 +73,7 @@
             {{rsa-form-input
               class="js-test-login-new-password-input"
               type="password"
+              autocomplete="new-password"
               label=(t 'login.newPassword')
               isError=hasError
               value=newPassword}}
@@ -79,6 +81,7 @@
             {{rsa-form-input
               class="js-test-login-confirm-new-password-input"
               type="password"
+              autocomplete="new-password"
               label=(t 'login.confirmPassword')
               isError=hasError
               value=newPasswordConfirm}}
@@ -100,8 +103,9 @@
         </vbox>
       </grid>
     {{else}}
-      <form class="login" autocomplete="off" {{action "authenticate" on="submit"}}>
+      <form class="login" autocomplete="on" {{action "authenticate" on="submit"}}>
         {{rsa-form-input
+          autocomplete="username"
           class="js-test-login-username-input"
           label=(t 'login.username')
           testId="loginUsername"
@@ -111,6 +115,7 @@
         {{rsa-form-input
           class="js-test-login-password-input"
           type="password"
+          autocomplete="current-password"
           label=(t 'login.password')
           testId="loginPassword"
           isError=hasError
