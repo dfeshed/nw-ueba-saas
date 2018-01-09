@@ -6,6 +6,7 @@ $dragPadHighlightedColor: background-color(primary, lighter);
    height: calc(100vh - #{$navbarHeight});
 
   .incident-rule-list {
+    overflow: auto;
     height: calc(100% - #{$toolbarHeight});
     padding: 0 rsa-whitespace();
     position: absolute;
@@ -13,42 +14,87 @@ $dragPadHighlightedColor: background-color(primary, lighter);
     left: 0;
     right: 0;
     bottom: 0;
-    > div {
+    > div, centered {
       height: 100%;
     }
   }
-  .rsa-data-table {
-    height: 100%;
+  table {
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+    min-width: 800px;
 
-    // Fix the layout of the rows and cells so that header columns and cells align
-    .rsa-data-table-header-cell:first-child {
-      padding-left: 0.5rem;
+    td, th {
+      vertical-align: middle;
+      line-height: 20px;
+      box-sizing: border-box;
+      padding-left: rsa-whitespace(less);
+      padding-right: rsa-whitespace(less);
     }
 
-    // Fix the layout of the rows and cells so that header columns and cells align
-    .rsa-data-table-body-row {
-      left: 0;
-      right: 0;
+    thead {
+      text-align: left;
+
+      tr {
+        height: 30px;
+      }
+
+      th {
+        @include rsa-font(header, small);
+        color: text-color(primary, lightest);
+        line-height: 30px;
+        border-right: 1px solid border-color(primary, dark);
+        border-left: 1px solid border-color(primary, dark);
+
+        > div {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        &:first-of-type {
+          border-left: none;
+        }
+        &:last-of-type {
+          border-right: none;
+        }
+
+        &.reorder {
+          width: 30px;
+          font-size: 1.5rem;
+        }
+        &.select, &.order {
+          width: 50px;
+        }
+        &.enabled {
+          width: 65px;
+        }
+        &.name {
+          width: 25%;
+        }
+        &.description {
+          width: auto;
+        }
+        &.last-matched {
+          width: 150px;
+        }
+        &.alerts-matched {
+          width: 120px;
+        }
+        &.incidents-created {
+          width: 100px;
+        }
+      }
     }
 
-    .rsa-data-table-body-row:hover, .rsa-data-table-body-row.is-selected, .rsa-data-table-body-row.is-selected:hover {
-      margin: 0 0;
-      padding: 0 0;
-    }
-
-    .rsa-data-table-body-cell {
+    td {
+      color: text-color(primary, lightest);
       centered {
         height: 100%;
         width: 100%;
       }
-      .rsa-form-radio-label::before {
-        font-size: 1.2rem;
-        color: text-color(primary, lighter);
-      }
       a {
         color: text-color(secondary);
       }
-      .drag-handle {
+      .handle {
         display: inline-block;
         cursor: move;
         height: 21px;
@@ -66,15 +112,47 @@ $dragPadHighlightedColor: background-color(primary, lighter);
       }
     }
 
+    tbody {
+      tr {
+        height: 40px;
+        border-top: 1px solid border-color(primary, dark);
+        border-bottom: 1px solid border-color(primary, dark);
 
+        &:first-of-type {
+          border-top: 1px solid transparent;
+        }
 
-    .rsa-data-table-body-row.is-selected .rsa-data-table-body-cell {
-      a {
-        color: text-color(primary, lighter);
-      }
-      .drag-handle {
-        &::before {
-          background-image: radial-gradient($dragPadHighlightedColor 40%, transparent 40%);
+        &:last-of-type {
+          border-bottom: 1px solid transparent;
+        }
+
+        &:hover {
+          background-color: background-color(primary, darker);
+        }
+
+        .rsa-form-radio-label::before {
+          font-size: 1.2rem;
+          color: text-color(primary, lighter);
+        }
+
+        &.is-selected {
+          background-color: background-color(secondary, dark);
+          a {
+            color: text-color(primary, lighter);
+          }
+          .handle {
+            &::before {
+              background-image: radial-gradient($dragPadHighlightedColor 40%, transparent 40%);
+            }
+          }
+        }
+
+        td {
+          > div {
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
       }
     }

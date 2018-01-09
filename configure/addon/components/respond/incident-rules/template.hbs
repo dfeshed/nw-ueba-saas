@@ -3,68 +3,89 @@
 
 {{! Table }}
 <div class="incident-rule-list">
-  {{#sortable-group onChange="reorderRules" as |group|}}
-
-    {{#rsa-data-table
-      sortableGroup=group
-      selectedItemId=selectedRuleId
-      items=(readonly rules)
-      lazy=(readonly useLazyRendering)
-      fitToWidth=false
-      columnsConfig=(readonly columns)
-      onRowClick=(action 'handleRowClick')
-    }}
-
-      {{#rsa-data-table/header translateTitles=true as |column|}}
-        {{#if (eq column.id 'drag')}}
-          <span class="move-column">&varr;</span>
-        {{else}}
-          {{t column.title}}
-        {{/if}}
-      {{/rsa-data-table/header}}
-
-      {{#if (or (eq rulesStatus 'wait') isTransactionUnderway)}}
-        <centered>
-          {{rsa-loader size='larger'}}
-        </centered>
-      {{else if (eq rulesStatus 'error')}}
-        <centered class="rules-error">{{t 'configure.incidentRules.error'}}</centered>
-      {{else}}
-
-          {{#rsa-data-table/body
-            rowComponentClass='respond/incident-rules/row'
-            noResultsMessage=(t 'configure.incidentRules.noResults') as |item index column|}}
-            {{#rsa-data-table/body-cell item=item column=column}}
-              {{#if (eq column.id 'select')}}
+  {{#if (eq rulesStatus 'wait')}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
+  {{else if (eq rulesStatus 'error')}}
+    <centered class="rules-error">{{t 'configure.incidentRules.error'}}</centered>
+  {{else if (eq rules.length 0)}}
+    <centered>
+      <div class="no-results-message">
+        <span class="message">{{t 'configure.incidentRules.noResults'}}</span>
+      </div>
+    </centered>
+  {{else}}
+    {{#sortable-group onChange="reorderRules" as |group|}}
+      <table>
+        <thead>
+          <tr>
+            <th class="reorder">&varr;</th>
+            <th class="select">{{t 'configure.incidentRules.select'}}</th>
+            <th class="order">{{t 'configure.incidentRules.order'}}</th>
+            <th class="enabled">{{t 'configure.incidentRules.enabled'}}</th>
+            <th class="name">{{t 'configure.incidentRules.name'}}</th>
+            <th class="description"><div>{{t 'configure.incidentRules.description'}}</div></th>
+            <th class="last-matched">{{t 'configure.incidentRules.lastMatched'}}</th>
+            <th class="alerts-matched">{{t 'configure.incidentRules.alertsMatchedCount'}}</th>
+            <th class="incidents-created">{{t 'configure.incidentRules.incidentsCreatedCount'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rules as |rule|}}
+            {{#respond/incident-rules/row
+              rule=rule
+              group=group
+              selectedItemId=selectedRuleId onRowClick=(action 'handleRowClick' rule)}}
+              <td>
                 <centered>
-                  <label class="rsa-form-radio-label {{if (eq item.id selectedRuleId) 'checked'}}">
+                  <span class="handle"></span>
+                </centered>
+              </td>
+              <td>
+                <centered>
+                  <label class="rsa-form-radio-label {{if (eq rule.id selectedRuleId) 'checked'}}">
                     {{radio-button
-                      value=item.id
+                      value=rule.id
                       groupValue=(readonly selectedRuleId)
-                      changed=(action 'selectRule' item)
+                      changed=(action 'selectRule' rule)
                     }}
                   </label>
                 </centered>
-              {{else if (eq column.id 'drag')}}
-                <span class="drag-handle"></span>
-              {{else if (eq column.field 'enabled')}}
+              </td>
+              <td>
+                <div>{{rule.order}}</div>
+              </td>
+              <td>
                 <centered>
-                  <div class="{{if (eq item.enabled true) 'enabled-rule' 'disabled-rule'}}"></div>
+                  <div title={{rule.enabled}} class="{{if (eq rule.enabled true) 'enabled-rule' 'disabled-rule'}}"></div>
                 </centered>
-              {{else if (eq column.field 'name')}}
-                {{#link-to 'respond.incident-rule' item.id}}{{item.name}}{{/link-to}}
-              {{else if (eq column.dataType 'date')}}
-                {{#if (get item column.field)}}
-                  {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
-                {{/if}}
-              {{else}}
-                {{get item column.field}}
-              {{/if}}
-            {{/rsa-data-table/body-cell}}
-          {{/rsa-data-table/body}}
-      {{/if}}
-    {{/rsa-data-table}}
-  {{/sortable-group}}
+              </td>
+              <td>
+                <div title="{{rule.name}}">{{#link-to 'respond.incident-rule' rule.id}}{{rule.name}}{{/link-to}}</div>
+              </td>
+              <td>
+                <div title="{{rule.description}}">{{rule.description}}</div>
+              </td>
+              <td>
+                <div>
+                  {{#if rule.lastMatched}}
+                    {{rsa-content-datetime timestamp=rule.lastMatched displayTime=true displayMilliseconds=false}}
+                  {{/if}}
+                </div>
+              </td>
+              <td>
+                <div>{{rule.alertsMatchedCount}}</div>
+              </td>
+              <td>
+                <div>{{rule.incidentsCreatedCount}}</div>
+              </td>
+            {{/respond/incident-rules/row}}
+          {{/each}}
+        </tbody>
+      </table>
+    {{/sortable-group}}
+  {{/if}}
 </div>
 {{! Overlay to prevent interactions during transactions }}
 {{#if isTransactionUnderway}}

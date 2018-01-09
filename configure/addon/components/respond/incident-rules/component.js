@@ -7,7 +7,6 @@ import {
 } from 'configure/reducers/respond/incident-rules/selectors';
 import { selectRule, reorderRules, getRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import { connect } from 'ember-redux';
-import columns from './columns';
 import _ from 'lodash';
 
 const stateToComputed = (state) => ({
@@ -45,21 +44,6 @@ const IncidentRules = Component.extend({
   classNames: ['rsa-incident-rules', 'flexi-fit'],
   classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
 
-  /**
-   * Column configuration for the listing data table
-   * @property columns
-   * @public
-   */
-  columns,
-
-  /**
-   * Configures whether the data table listing uses lazy rendering. Primarily used for integration tests that
-   * benefit from disabling lazy rendering
-   * @property useLazyRendering
-   * @public
-   */
-  useLazyRendering: true,
-
   onInit: function() {
     this.send('getRules');
   }.on('init'),
@@ -70,14 +54,10 @@ const IncidentRules = Component.extend({
      * Here we only send the select action if the cell itself is being clicked (and not the radio button that exists
      * in the select column's cell)
      * @param item
-     * @param index
-     * @param event
      * @private
      */
-    handleRowClick(item, index, event) {
-      if (this.$(event.target).is('.rsa-data-table-body-cell')) {
-        this.send('selectRule', item);
-      }
+    handleRowClick(item) {
+      this.send('selectRule', item);
     }
   }
 });
