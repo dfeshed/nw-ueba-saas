@@ -96,5 +96,9 @@ export default class DataHelper {
     _set(this.state, 'visuals.hostDetailsLoading', flag);
     return this;
   }
-
+  hostName(value) {
+    const machine = { machineName: value };
+    _set(this.state, 'overview.hostDetails', { machine });
+    return this;
+  }
 }
