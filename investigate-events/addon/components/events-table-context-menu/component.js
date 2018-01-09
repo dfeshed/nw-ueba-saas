@@ -42,7 +42,9 @@ const EventsTableContextMenu = RsaContextMenu.extend({
       this.set('metaName', metaName.value);
       this.set('metaValue', metaValue.value);
       this._super(...arguments);
-    } // else do not call super so that the browser right-click event is preserved
+    } else {
+      this.get('contextMenuService').deactivate();
+    } // do not call super so that the browser right-click event is preserved
   }
 });
 
