@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.authentication;
 
+import fortscale.common.general.Schema;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -14,7 +15,7 @@ import java.time.Instant;
  * interactive remote : src machine is original and dst machine is computer.
  */
 @Document
-@AdeRecordMetadata(adeEventType = AdeAuthenticationRecord.AUTHENTICATION_STR)
+@AdeRecordMetadata(adeEventType = Schema.AUTHENTICATION)
 public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
@@ -50,7 +51,7 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     @Override
     public String getAdeEventType() {
-        return AdeAuthenticationRecord.AUTHENTICATION_STR;
+        return Schema.AUTHENTICATION.getName();
     }
 
     public String getUserId() {

@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.dlpfile;
 
+import fortscale.common.general.Schema;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -14,7 +15,7 @@ import java.time.Instant;
  * Created by Lior Govrin on 05/06/2017.
  */
 @Document
-@AdeRecordMetadata(adeEventType = AdeDlpFileRecord.DLP_FILE_STR)
+@AdeRecordMetadata(adeEventType = Schema.DLPFILE)
 public class EnrichedDlpFileRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
@@ -69,7 +70,7 @@ public class EnrichedDlpFileRecord extends EnrichedRecord {
     @Override
     @Transient
     public String getAdeEventType() {
-        return AdeDlpFileRecord.DLP_FILE_STR;
+        return Schema.DLPFILE.getName();
     }
 
     @Override

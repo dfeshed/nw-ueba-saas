@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.file;
 
+import fortscale.common.general.Schema;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,7 +13,7 @@ import java.time.Instant;
  * The enriched file record POJO.
  */
 @Document
-@AdeRecordMetadata(adeEventType = AdeFileRecord.FILE_STR)
+@AdeRecordMetadata(adeEventType = Schema.FILE)
 public class EnrichedFileRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
@@ -116,7 +117,7 @@ public class EnrichedFileRecord extends EnrichedRecord {
     @Override
     @Transient
     public String getAdeEventType() {
-        return AdeFileRecord.FILE_STR;
+        return Schema.FILE.getName();
     }
 
     @Transient
