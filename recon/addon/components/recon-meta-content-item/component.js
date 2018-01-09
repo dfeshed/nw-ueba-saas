@@ -63,14 +63,15 @@ const MetaContentItem = Component.extend({
    * Determines if the meta should be highlighted and selected
    * @param {boolean} isTextView If text view or not, so we can deselect on other views
    * @param {object} metaToHighlight The meta to highlighted, passed down in, grabbed from redux
+   * @param {boolean} hasMetaToHighlight True if the meta exists in the text
    * @param {string} name The name of the meta key
    * @param {*} value The value for the meta
    * @returns {boolean} If selected or not
    * @private
    */
-  @computed('isTextView', 'metaToHighlight', 'name', 'value')
-  isSelected(isTextView, metaToHighlight, name, value) {
-    if (metaToHighlight && isTextView) {
+  @computed('isTextView', 'metaToHighlight', 'hasMetaToHighlight', 'name', 'value')
+  isSelected(isTextView, metaToHighlight, hasMetaToHighlight, name, value) {
+    if (metaToHighlight && hasMetaToHighlight && isTextView) {
       return name === metaToHighlight.name && String(metaToHighlight.value) === String(value);
     }
     return false;
