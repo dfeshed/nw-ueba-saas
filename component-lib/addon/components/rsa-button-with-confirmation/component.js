@@ -26,6 +26,8 @@ export default Component.extend({
 
   confirmationMessage: null,
 
+  noteMessage: null,
+
   title: null,
 
   /**

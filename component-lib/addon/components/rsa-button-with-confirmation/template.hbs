@@ -14,6 +14,11 @@
     onClose=(action 'onModalClose')}}
     <div class='modal-content'>
       <p>{{confirmationMessage}}</p>
+      {{#if noteMessage}}
+        <div class='modal-content__note'>
+          {{noteMessage}}
+        </div>
+      {{/if}}
     </div>
     <footer>
       <hbox class="modal-footer-buttons">

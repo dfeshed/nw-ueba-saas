@@ -13,6 +13,8 @@ import {
   toggleCancelScanModal,
   toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
+import { deleteHosts } from 'investigate-hosts/actions/data-creators/host';
+
 const stateToComputed = (state) => ({
   totalItems: hostCountForDisplay(state),
   noHostsSelected: noHostsSelected(state),
@@ -25,7 +27,8 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   toggleInitiateScanModal,
   toggleCancelScanModal,
-  toggleDeleteHostsModal
+  toggleDeleteHostsModal,
+  deleteHosts
 };
 
 const ActionBar = Component.extend({
@@ -41,6 +44,15 @@ const ActionBar = Component.extend({
   panelId: 'initScan',
 
   actions: {
+    handleDeleteHosts() {
+      const callBackOptions = {
+        onSuccess: () => {
+          this.get('flashMessage').showFlashMessage('investigateHosts.hosts.deleteHosts.success');
+        },
+        onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
+      };
+      this.send('deleteHosts', callBackOptions);
+    },
 
     openInitiateScanModal() {
       if (this.get('tooManyHostsSelected')) {

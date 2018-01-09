@@ -6,9 +6,8 @@ $footerHeight: 43px;
 }
 
 .rsa-application-modal-content.confirmation-modal {
-  width: 25%;
+  width: 30%;
   height: 25%;
-  max-height: 200px;
   min-height: 100px;
 
   .modal-content {
@@ -24,6 +23,11 @@ $footerHeight: 43px;
     p {
       @include rsa-font(paragraph);
       padding: rsa-whitespace();
+    }
+    &__note {
+      padding: rsa-whitespace(less) rsa-whitespace();
+      color: text-color(accentFour, light);
+      font-size: 80%;
     }
   }
 

@@ -63,7 +63,7 @@
   }
 }
 
-.rsa-initiate-scan-modal, .rsa-delete-hosts-modal {
+.rsa-initiate-scan-modal {
   padding: rsa-whitespace(more);
   max-width: 500px;
   line-height: 1.5rem;
@@ -86,11 +86,6 @@
     p {
       padding-left: rsa-whitespace();
     }
-  }
-  &__note {
-    padding: rsa-whitespace() 0 rsa-whitespace() 0;
-    color: text-color(accentFour, light);
-    font-size: 80%;
   }
 }
 
