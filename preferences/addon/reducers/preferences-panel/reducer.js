@@ -8,6 +8,7 @@ const resetState = Immutable.from({
   additionalFilters: null,
   preferences: null,
   isClicked: false,
+  shouldPublishPreferences: false,
   preferencesConfig: {}
 });
 
@@ -46,7 +47,7 @@ const preferenceReducer = handleActions({
   [ACTION_TYPES.SAVE_PREFERENCES]: (state, action) => {
     return handle(state, action, {
       failure: (state) => state.merge({ ...state }),
-      success: (state) => state.merge({ ...state, preferences: action.payload })
+      success: (state) => state.merge({ ...state, preferences: action.payload, shouldPublishPreferences: true })
     });
   },
 

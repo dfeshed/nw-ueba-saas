@@ -1,8 +1,9 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import DataHelper from '../../../helpers/data-helper';
 import preferencesConfig from '../../../data/config';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import wait from 'ember-test-helpers/wait';
 
 moduleForComponent('preferences-panel-trigger', 'Integration | Component | Preferences Panel Trigger', {
   integration: true,
@@ -10,25 +11,82 @@ moduleForComponent('preferences-panel-trigger', 'Integration | Component | Prefe
     this.registry.injection('component', 'i18n', 'service:i18n');
     this.inject.service('redux');
     initialize(this);
+    this.set('preferencesConfig', preferencesConfig);
   }
 });
 
-test('Preferences trigger renders correctly', function(assert) {
-  this.set('preferencesConfig', preferencesConfig);
-  this.render(hbs `{{preferences-panel-trigger preferencesConfig=preferencesConfig}}`);
+const contentToRender = hbs `
+      {{#rsa-application-content}}
+        <grid responsive>
+          <box class="col-xs-3">
+            <aside>
+              {{preferences-panel-trigger
+                preferencesConfig=preferencesConfig
+                publishPreferences=(action 'preferencesUpdated')}}              
+              <div class='testDiv'>
+                Panel Content
+              </div>
+            </aside>
+          </box>
+          <box class="col-xs-9">
+            <page>
+              {{preferences-panel}}
+            </page>
+          </box>
+        </grid>
+      {{/rsa-application-content}}`;
 
+test('Preferences trigger renders correctly', function(assert) {
+  this.render(hbs `{{preferences-panel-trigger preferencesConfig=preferencesConfig}}`);
   assert.equal(this.$('.rsa-preferences-panel-trigger').length, 1, 'Preference trigger component rendered.');
 });
 
-test('Preferences trigger publishes change in preferences', function(assert) {
-  const done = assert.async();
-  this.set('preferencesConfig', preferencesConfig);
+test('preferences trigger does not publish preferences on open', function(assert) {
+  this.on('preferencesUpdated', function() {
+    assert.notOk(true, 'preference should not be published');
+  });
 
-  this.on('preferencesUpdated', function({ somePreference }) {
-    assert.ok(somePreference, 'Correct preferences must be published');
+  this.render(contentToRender);
+
+  return waitFor('.rsa-preferences-panel-trigger').then(() => {
+    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    return waitFor('.ember-power-select-selected-item', { count: 3 }).then(() => {
+      assert.equal(this.$('.is-expanded').length, 1, 'preference panel opened without publishing preferences');
+    });
+  });
+});
+
+test('preferences trigger publishes updates to preferences', function(assert) {
+  const done = assert.async();
+  this.on('preferencesUpdated', function(prefs) {
+    assert.ok(prefs, 'preference should be published');
     done();
   });
-  this.render(hbs `{{preferences-panel-trigger preferencesConfig=preferencesConfig publishPreferences=(action 'preferencesUpdated')}}`);
 
-  new DataHelper(this.get('redux')).initializeData().savePreference({ somePreference: true });
+  this.render(contentToRender);
+
+  return waitFor('.rsa-preferences-panel-trigger').then(() => {
+    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    return waitFor('.rsa-form-radio-group-label').then(() => {
+      this.$('.rsa-form-radio-label.WALL').click();
+    });
+  });
+});
+
+test('preferences trigger does not publish preferences on close', function(assert) {
+  this.on('preferencesUpdated', function() {
+    assert.notOk(true, 'preference should not be published');
+  });
+
+  this.render(contentToRender);
+
+  return waitFor('.rsa-preferences-panel-trigger').then(() => {
+    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    return waitFor('.rsa-form-radio-group-label').then(() => {
+      this.$('.rsa-icon-settings-1-filled').trigger('click');
+      return wait().then(() => {
+        assert.equal(this.$('.is-expanded').length, 0, 'preference panel closed without publishing preferences');
+      });
+    });
+  });
 });

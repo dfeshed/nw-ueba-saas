@@ -26,11 +26,9 @@ const _initialState = Immutable.from({
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
     const {
-      eventAnalysisPreferences = {},
       eventPreferences: { columnGroup } = {}
     } = payload;
     return state.merge({
-      reconSize: eventAnalysisPreferences.isReconExpanded ? RECON_PANEL_SIZES.MAX : RECON_PANEL_SIZES.MIN,
       columnGroup: columnGroup || 'SUMMARY'
     });
   },
