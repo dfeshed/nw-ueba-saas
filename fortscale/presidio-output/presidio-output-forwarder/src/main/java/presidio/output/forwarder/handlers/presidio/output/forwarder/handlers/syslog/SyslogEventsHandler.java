@@ -50,7 +50,7 @@ public class SyslogEventsHandler implements EventsHandler {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
                 syslogServices.send(SyslogEventsEnum.STREAMING_USERS_START, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent),syslogEndpoint.getHost(), syslogEndpoint.getPort() );
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_USERS_START, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.STREAMING_USERS_START, e);
             }
         }
     }
@@ -64,7 +64,7 @@ public class SyslogEventsHandler implements EventsHandler {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
                 syslogServices.send(SyslogEventsEnum.STREAMING_USERS_END, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_USERS_END, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.STREAMING_USERS_END, e);
             }
         }
     }
@@ -78,7 +78,7 @@ public class SyslogEventsHandler implements EventsHandler {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
                 syslogServices.send(SyslogEventsEnum.STREAMING_ALERTS_START, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_ALERTS_START, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.STREAMING_ALERTS_START, e);
             }
         }
     }
@@ -92,7 +92,7 @@ public class SyslogEventsHandler implements EventsHandler {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
                 syslogServices.send(SyslogEventsEnum.STREAMING_ALERTS_END, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_ALERTS_END, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.STREAMING_ALERTS_END, e);
             }
         }
     }
@@ -105,7 +105,7 @@ public class SyslogEventsHandler implements EventsHandler {
             try {
                 syslogServices.send(SyslogEventsEnum.USER_CHANGED, user.getId(), mapper.writeValueAsString(user), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.USER_CHANGED, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.USER_CHANGED, e);
             }
         }
     }
@@ -118,7 +118,7 @@ public class SyslogEventsHandler implements EventsHandler {
             try {
                 syslogServices.send(SyslogEventsEnum.ALERT_ADDED, alert.getId(), mapper.writeValueAsString(alert), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.ALERT_ADDED, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.ALERT_ADDED, e);
             }
         }
     }
@@ -131,7 +131,7 @@ public class SyslogEventsHandler implements EventsHandler {
             try {
                 syslogServices.send(SyslogEventsEnum.INDICATOR_ADDED, indicator.getId(), mapper.writeValueAsString(indicator), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                logger.error("failed to send %s event", SyslogEventsEnum.INDICATOR_ADDED, e);
+                logger.error("failed to send {} event", SyslogEventsEnum.INDICATOR_ADDED, e);
             }
         }
     }
