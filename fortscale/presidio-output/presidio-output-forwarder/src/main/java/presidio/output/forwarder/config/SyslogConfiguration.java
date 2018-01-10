@@ -13,16 +13,16 @@ import presidio.output.forwarder.services.SyslogService;
 @Configuration
 public class SyslogConfiguration {
 
-    @Value("${syslog.users.host}")
+    @Value("${syslog.users.host:}")
     private String syslogUsersHostName;
 
-    @Value("${syslog.users.port}")
+    @Value("${syslog.users.port:0}")
     private int syslogUsersPort;
 
-    @Value("${syslog.alerts.host}")
+    @Value("${syslog.alerts.host:}")
     private String syslogAlertsHostName;
 
-    @Value("${syslog.alerts.port}")
+    @Value("${syslog.alerts.port:0}")
     private int syslogAlertsPort;
 
 
@@ -39,10 +39,10 @@ public class SyslogConfiguration {
     @Bean
     public SyslogEndpoints syslogEndpoints() {
         SyslogEndpoints syslogEndpoints = new SyslogEndpoints();
-        if (StringUtils.isNoneEmpty(syslogUsersHostName)) {
+        if (StringUtils.isNotEmpty(syslogUsersHostName)) {
             syslogEndpoints.addEndPoint("users", syslogUsersHostName, syslogUsersPort);
         }
-        if (StringUtils.isNoneEmpty(syslogAlertsHostName)) {
+        if (StringUtils.isNotEmpty(syslogAlertsHostName)) {
             syslogEndpoints.addEndPoint("alerts", syslogAlertsHostName, syslogAlertsPort);
         }
         return  syslogEndpoints;
