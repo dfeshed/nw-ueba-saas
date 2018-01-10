@@ -4,6 +4,7 @@ import config from 'ember-get-config';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
 import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   queryBodyClass: queryBodyClass(state),
@@ -19,7 +20,16 @@ const stateToComputed = (state) => ({
 
 const QueryContainerComponent = Component.extend({
   reconPanelSizes: RECON_PANEL_SIZES,
-  showFutureFeatures: config.featureFlags.future
+  showFutureFeatures: config.featureFlags.future,
+  @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter.conditions', 'queryNode.serviceId')
+  queryInputs(startTime, endTime, queryConditions, endpointId) {
+    return {
+      startTime,
+      endTime,
+      queryConditions,
+      endpointId
+    };
+  }
 });
 
 export default connect(stateToComputed)(QueryContainerComponent);
