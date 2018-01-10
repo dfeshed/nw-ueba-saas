@@ -13,18 +13,19 @@ import presidio.adapter.util.AdapterConfigurationUtil;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
 import presidio.config.server.client.ConfigurationServerClientService;
+import presidio.config.server.client.ConfigurationServerClientServiceImpl;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 @Configuration
-@Import(value = {ConfigurationServerClientService.class, MongoConfig.class})
+@Import(value = {ConfigurationServerClientServiceImpl.class, MongoConfig.class})
 public class AdapterConfig {
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    ConfigurationServerClientService configurationServerClientService;
+    ConfigurationServerClientServiceImpl configurationServerClientService;
 
     @Bean
     public PresidioExecutionService adapterExecutionService() throws Exception {
