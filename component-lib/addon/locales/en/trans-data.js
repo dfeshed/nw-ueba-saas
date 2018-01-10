@@ -474,6 +474,7 @@ export default {
     services: {
       loading: 'Loading list of available services',
       noData: 'The selected service does not have any data',
+      coreServiceNotUpdated: 'Event Analysis requires all core services to be NetWitness 11.1. Connecting prior versions of services to the 11.1 NetWitness Server results in limited functionality (see \"Investigate in Mixed Mode\" in the Physical Host Upgrade Guide).',
       empty: {
         title: 'Unable to find services.',
         description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'

@@ -27,5 +27,5 @@ const data = {
   'startSessionId': 1,
   'endSessionId': 424349,
   'hostName': 'loki-device',
-  'version': '11.0.0.0'
+  'version': '11.1.0.0'
 };

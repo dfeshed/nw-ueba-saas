@@ -17,7 +17,6 @@ import Ember from 'ember';
 
 const { Logger } = Ember;
 const { log } = console;
-const prefService = lookup('service:preferences');
 
 const _showFutureFeatures = config.featureFlags.future;
 
@@ -118,6 +117,7 @@ const _initializeServices = (dispatch, getState) => {
  * @private
  */
 const _getPreferences = (dispatch, modelName) => {
+  const prefService = lookup('service:preferences');
   return prefService.getPreferences(modelName).then((data) => {
     if (data) {
       // Only if preferences is sent from api, set the preference state.
@@ -145,6 +145,7 @@ const _getPreferences = (dispatch, modelName) => {
  * @public
  */
 export const savePreferences = (state) => {
+  const prefService = lookup('service:preferences');
   prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state),
     getDefaultPreferences(state)).then(() => {
       Logger.info('Successfully persisted Value');

@@ -5,7 +5,8 @@ import service from 'ember-service/inject';
 import {
   hasSummaryData,
   selectedService,
-  isSummaryDataInvalid
+  isSummaryDataInvalid,
+  coreServiceNotUpdated
 } from 'investigate-events/reducers/investigate/services/selectors';
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
@@ -19,6 +20,7 @@ const stateToComputed = (state) => ({
   selectedService: selectedService(state),
   selectedTimeRange: selectedTimeRange(state),
   isSummaryDataInvalid: isSummaryDataInvalid(state),
+  coreServiceNotUpdated: coreServiceNotUpdated(state),
   summaryErrorMessage: state.investigate.services.summaryErrorMessage,
   services: state.investigate.services.serviceData
 });
@@ -41,9 +43,9 @@ const QueryBarComponent = Component.extend({
    * Returns a string that is used to wire the triggerClass property on the powerSelect.
    * Setting class `is-error` shows the service in red color.
    */
-  @computed('selectedService.id', 'isSummaryDataInvalid')
-  powerSelectClass(id, isSummaryDataInvalid) {
-    return (id && isSummaryDataInvalid) ? 'is-error' : 'null';
+  @computed('selectedService.id', 'isSummaryDataInvalid', 'coreServiceNotUpdated')
+  powerSelectClass(id, isSummaryDataInvalid, coreServiceNotUpdated) {
+    return (id && isSummaryDataInvalid) || (id && coreServiceNotUpdated) ? 'is-error' : 'null';
   },
 
   /**
@@ -51,15 +53,20 @@ const QueryBarComponent = Component.extend({
    * Tooltip (browser title attribute) for the services icon.
    * Using regex to trim any content before the first colon from the error message.
    */
-  @computed('hasSummaryData', 'summaryErrorMessage', 'i18n')
-  summaryErrorTooltip: (hasSummaryData, errMsg, i18n) => {
-    // Check if error message is set and return that after trimming.
+  @computed('hasSummaryData', 'summaryErrorMessage', 'i18n', 'isSummaryDataInvalid', 'coreServiceNotUpdated')
+  summaryErrorTooltip: (hasSummaryData, errMsg, i18n, isSummaryDataInvalid, coreServiceNotUpdated) => {
+
+    if (isSummaryDataInvalid) {
+      // Check if error message is set and return that after trimming.
     // Before regex - rsa.com.nextgen.classException: Failed to connect to broker:50003
     // After regex - Failed to connect to broker:50003
-    if (!hasSummaryData && errMsg) {
-      return errMsg.match(/:(.*)/g).pop().replace(':', '');
+      if (!hasSummaryData && errMsg) {
+        return errMsg.match(/:(.*)/g).pop().replace(':', '');
+      }
+      return i18n.t('investigate.services.noData');
+    } else if (coreServiceNotUpdated) {
+      return i18n.t('investigate.services.coreServiceNotUpdated');
     }
-    return i18n.t('investigate.services.noData');
   },
 
   @and('selectedService.id', 'hasSummaryData', 'selectedTimeRange')

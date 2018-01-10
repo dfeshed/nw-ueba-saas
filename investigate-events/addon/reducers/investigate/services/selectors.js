@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { uriEncodeEventQuery } from 'investigate-events/actions/helpers/query-utils';
+import { lookup } from 'ember-dependency-lookup';
 
 const { createSelector } = reselect;
 
@@ -8,6 +9,10 @@ const _services = (state) => state.investigate.services.serviceData;
 const _queryNode = (state) => state.investigate.queryNode;
 const _summaryData = (state) => state.investigate.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
+
+// this pattern filters out numbers after the first decimal place
+//  a serviceId like 11.1.0.0 will be changed to 11.1
+const serviceIdRegex = new RegExp(/\d*\.\d/);
 
 export const getDbEndTime = (state) => {
   const { summaryData } = state.investigate.services;
@@ -59,6 +64,19 @@ export const isSummaryDataInvalid = createSelector(
       ret = true;
     }
     return ret;
+  }
+);
+
+export const coreServiceNotUpdated = createSelector(
+  [_summaryData],
+  (summaryData) => {
+    if (summaryData) {
+      const coreVersion = Number(summaryData.version.match(serviceIdRegex)[0]);
+      const appVersion = Number(lookup('service:appVersion').version.match(serviceIdRegex)[0]);
+      if (coreVersion < appVersion) {
+        return true;
+      }
+    }
   }
 );
 

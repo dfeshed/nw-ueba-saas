@@ -1,5 +1,5 @@
 {{#if selectedService.id}}
-  {{#if isSummaryDataInvalid}}
+  {{#if (or isSummaryDataInvalid coreServiceNotUpdated)}}
     {{#rsa-form-button title=summaryErrorTooltip}}
       <div class="disclaimer">
         {{rsa-icon name='report-problem-triangle'}}
