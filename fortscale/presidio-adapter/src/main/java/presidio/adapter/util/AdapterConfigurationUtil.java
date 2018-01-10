@@ -2,7 +2,10 @@ package presidio.adapter.util;
 
 import fortscale.domain.adapter.CollectorProperties;
 import fortscale.domain.adapter.SchemaMapping;
+import org.springframework.beans.factory.annotation.Value;
 import presidio.config.server.client.ConfigurationServerClientService;
+
+import java.util.List;
 
 /**
  * Created by tomerd on 12/27/2017.
@@ -10,7 +13,10 @@ import presidio.config.server.client.ConfigurationServerClientService;
 public class AdapterConfigurationUtil {
 
     public static final String MOUDLE_NAME = "collector-properties";
-    public static final String PROFILE = "";
+
+    @Value("#{'${spring.profiles.active:default}'.split(',')}")
+    private List<String> activeProfiles;
+
     private final ConfigurationServerClientService configurationServerClientService;
 
     private String collectionName;
@@ -22,7 +28,7 @@ public class AdapterConfigurationUtil {
     }
 
     public void loadConfiguration(String schemaName) throws Exception {
-        final CollectorProperties properties = (CollectorProperties) configurationServerClientService.readConfiguration(CollectorProperties.class, MOUDLE_NAME, PROFILE).getBody();
+        final CollectorProperties properties = (CollectorProperties) configurationServerClientService.readConfiguration(CollectorProperties.class, MOUDLE_NAME, getProfile()).getBody();
         final SchemaMapping schema = properties.getSchema(schemaName);
         if (schema != null) {
             this.collectionName = schema.getCollectionName();
@@ -41,5 +47,9 @@ public class AdapterConfigurationUtil {
 
     public int getNumberOfRetainedDays() {
         return numberOfRetainedDays;
+    }
+
+    private String getProfile(){
+        return activeProfiles.get(0);
     }
 }
