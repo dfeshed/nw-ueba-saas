@@ -2,7 +2,6 @@ package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.metrics.MaxContinuousModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.MaxContinuousModelRetrieverMetricsContainer;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataReader;
@@ -39,7 +38,7 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                 getStartTime(endTime).toInstant(),
                 endTime.toInstant()
         );
-        maxContinuousModelRetrieverMetricsContainer.updateMetric(accumulatedAggregationFeatureRecords.size());
+        maxContinuousModelRetrieverMetricsContainer.updateReadMetric(accumulatedAggregationFeatureRecords.size());
 
         TreeMap<Instant, Double> startInstantToValue = new TreeMap<>();
 

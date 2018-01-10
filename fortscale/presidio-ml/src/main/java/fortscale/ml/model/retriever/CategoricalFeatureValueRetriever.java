@@ -8,7 +8,6 @@ import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
-import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.CategoryRarityModelRetrieverMetricsContainer;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -71,7 +70,7 @@ public class CategoricalFeatureValueRetriever extends AbstractDataRetriever {
 
     protected ModelBuilderData doRetrieve(String contextId, Date endTime, String featureValue) {
         List<FeatureBucket> featureBuckets = getFeatureBuckets(contextId, endTime);
-        categoryRarityModelRetrieverMetricsContainer.updateMetric(featureBuckets.size());
+        categoryRarityModelRetrieverMetricsContainer.updateReadMetric(featureBuckets.size());
 
         if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 
