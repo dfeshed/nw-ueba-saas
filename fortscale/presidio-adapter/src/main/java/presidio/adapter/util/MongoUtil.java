@@ -1,11 +1,11 @@
 package presidio.adapter.util;
 
+import com.mongodb.WriteResult;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
-import java.util.List;
 
 public class MongoUtil {
 
@@ -14,12 +14,8 @@ public class MongoUtil {
         Query query = new Query(); // Build query
         query.addCriteria(Criteria.where(timestampField).lt(startDate));
 
-        final List<Object> removedDocuments = template.findAllAndRemove(query, collectionName);
+        final WriteResult writeResult = template.remove(query, collectionName);
 
-        if (removedDocuments != null) {
-            return removedDocuments.size();
-        }
-
-        return 0;
+        return writeResult.getN();
     }
 }
