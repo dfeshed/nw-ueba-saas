@@ -7,9 +7,12 @@ import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface IndicatorEventRepository extends ElasticsearchRepository<IndicatorEvent, String> {
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, Pageable pageRequest);
 
-    List<Indicator> removeByIndicatorId(String indicatorId);
+    Stream<IndicatorEvent> findByIndicatorId(String indicatorId);
+
+    List<IndicatorEvent> removeByIndicatorId(String indicatorId);
 }
