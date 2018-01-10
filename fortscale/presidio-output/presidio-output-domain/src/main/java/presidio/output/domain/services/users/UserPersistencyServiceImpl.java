@@ -7,9 +7,11 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.repositories.UserRepository;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by efratn on 21/08/2017.
@@ -60,5 +62,10 @@ public class UserPersistencyServiceImpl implements UserPersistencyService {
     @Override
     public Page<User> find(UserQuery userQuery) {
         return userRepository.search(new UserElasticsearchQueryBuilder(userQuery).build());
+    }
+
+    @Override
+    public Stream<User> findUsersByUpdatedDate(Instant startDate, Instant endDate) {
+        return userRepository.findByUpdatedByLogicalStartDateGreaterThanEqualAndUpdatedByLogicalEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
     }
 }

@@ -170,7 +170,8 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         return removedAlerts;
     }
 
-    private Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate) {
+    @Override
+    public Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate) {
         if (startDate.equals(Instant.EPOCH)) {
             return alertRepository.findByEndDateLessThan(endDate.toEpochMilli());
         } else {
@@ -178,6 +179,19 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
         }
     }
 
+    @Override
+    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate){
+        return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
+    }
+
+    @Override
+    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId){
+        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)){
+             events = stream.collect(Collectors.toList());
+        }
+        return events;
+    }
 
     @Override
     public List<Alert> findByUserId(String userId) {

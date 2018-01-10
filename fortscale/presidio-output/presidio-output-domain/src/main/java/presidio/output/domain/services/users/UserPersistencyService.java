@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by efratn on 21/08/2017.
@@ -28,4 +30,7 @@ public interface UserPersistencyService {
     Page<User> find(UserQuery userQuery);
 
     Page<User> findByIds(Collection<String> ids, PageRequest pageRequest);
+
+    Stream<User> findUsersByUpdatedDate(Instant startDate, Instant endDate);
+
 }
