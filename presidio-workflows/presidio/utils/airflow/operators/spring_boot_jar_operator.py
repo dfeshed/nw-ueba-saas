@@ -3,21 +3,29 @@ from subprocess import Popen, STDOUT, PIPE
 from tempfile import gettempdir, NamedTemporaryFile
 
 import os
+import functools
+
 from airflow.exceptions import AirflowException
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
 from airflow.utils.file import TemporaryDirectory
+from airflow.models import Variable
+
 
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.string_service import is_blank
-from datetime import timedelta
+from datetime import timedelta 
 
 RETRY_ARGS_CONF_KEY = "retry_args"
 
 JVM_ARGS_CONF_KEY = "jvm_args"
 
 DAGS_CONF_KEY = "dags"
+
+RETRY_RUNNING_STATE = "RUNNING"
+RETRY_FAIL_STATE = "FAIL"
+RETRY_SUCCESS_STATE = "SUCCESS"
 
 
 class SpringBootJarOperator(BashOperator):
@@ -48,8 +56,7 @@ class SpringBootJarOperator(BashOperator):
     java_args_prefix = '--'
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
-    # def __init__(self):
-    #     self.conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
+
 
     @apply_defaults
     def __init__(self, command, jvm_args={}, java_args={}, *args, **kwargs):
@@ -72,10 +79,10 @@ class SpringBootJarOperator(BashOperator):
         if 'retry_extra_params' in kwargs:
             kwargs['params']['retry_extra_params'] = kwargs['retry_extra_params']
         if 'retry_callback' in kwargs:
-            retry_callback = kwargs['retry_callback']
+            retry_fn = kwargs['retry_callback']
         else:
-            retry_callback = SpringBootJarOperator.handle_retry
-
+            retry_fn = SpringBootJarOperator.clean_before_retry
+        retry_callback = self.get_retry_callback(retry_fn=retry_fn)
         if self._should_run_clean_command_before_retry(kwargs):
             kwargs['params']['retry_command'] = self.get_retry_command()
 
@@ -87,6 +94,19 @@ class SpringBootJarOperator(BashOperator):
                                                     bash_command=bash_command, on_retry_callback=retry_callback,
                                                     *args, **kwargs)
 
+    def get_retry_callback(self, retry_fn):
+        return functools.partial(SpringBootJarOperator.handle_retry, retry_fn=retry_fn)
+
+    def execute(self, context):
+        retry_task_state = SpringBootJarOperator.get_task_retry_value(context,RETRY_SUCCESS_STATE)
+        if(retry_task_state == RETRY_SUCCESS_STATE):
+            super(SpringBootJarOperator, self).execute(context)
+        else:
+            ti = context['task_instance']
+            skip_msg = 'skipping try attempt %s: last retry did not succeed. retry state: %s' % (ti.try_number, retry_task_state)
+            logging.info(skip_msg)
+            raise AirflowException(skip_msg)
+
     def _should_run_clean_command_before_retry(self, kwargs):
         if 'run_clean_command_before_retry' in kwargs and not kwargs['run_clean_command_before_retry']:
             return False
@@ -97,14 +117,13 @@ class SpringBootJarOperator(BashOperator):
         retry_args = {}
         if self.task_id:
             # read task jvm args
-            retry_args = SpringBootJarOperator.conf_reader.read(
-                conf_key=self.get_retry_args_task_instance_conf_key_prefix())
+            retry_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_retry_args_task_instance_conf_key_prefix())
         if not retry_args:
             # read operator jvm args
             logging.debug((
                 "did not found task retry configuration for task_id=%s. settling for operator=%s configuration" % (
                     self.task_id, self.__class__.__name__)))
-            retry_args = SpringBootJarOperator.conf_reader.read(conf_key=self.get_retry_args_operator_conf_key_prefix())
+            retry_args = SpringBootJarOperator.conf_reader.read(conf_key = self.get_retry_args_operator_conf_key_prefix())
         if not retry_args:
             # read default jvm args
             logging.debug((
@@ -120,22 +139,22 @@ class SpringBootJarOperator(BashOperator):
             if self.task_id:
                 # read task jvm args
                 self.final_conf_path = self.get_jvm_args_task_instance_conf_key_prefix()
-                self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.final_conf_path)
+                self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key= self.final_conf_path)
             if not self.jvm_args:
                 # read operator jvm args
                 logging.debug((
-                    "did not found task configuration for task_id=%s. settling for operator=%s configuration" % (
-                        self.task_id, self.__class__.__name__)))
+                             "did not found task configuration for task_id=%s. settling for operator=%s configuration" % (
+                             self.task_id, self.__class__.__name__)))
                 self.final_conf_path = self.get_jvm_args_operator_conf_key_prefix()
                 self.jvm_args = SpringBootJarOperator.conf_reader.read(conf_key=self.final_conf_path)
             if not self.jvm_args:
                 # read default jvm args
                 logging.debug((
                     "did not found operator configuration for operator=%s. settling for default configuration" % (
-                        self.__class__.__name__)))
+                         self.__class__.__name__)))
                 self.final_conf_path = self.get_default_jvm_args_conf_key()
                 self.jvm_args = SpringBootJarOperator.conf_reader.read(
-                    conf_key=self.final_conf_path)
+                        conf_key=self.final_conf_path)
 
         else:
             self.jvm_args = jvm_args
@@ -267,9 +286,9 @@ class SpringBootJarOperator(BashOperator):
         Validate that main_class, jar_path or class_path exist in merged_args, 
         otherwise throw an error
         
-        :param command:
         :param bash_command: list of bash comments
         :type bash_command: []
+        :param command:
         :raise ValueError: main_class, class path or jar path were not defined
         :return: 
         """
@@ -277,8 +296,7 @@ class SpringBootJarOperator(BashOperator):
         class_path = self.merged_args.get(JVM_ARGS_CONF_KEY).get(jar_path_conf_key)
 
         if not is_blank(self.merged_args.get(JVM_ARGS_CONF_KEY).get(class_path)):
-            class_path = '%s;%s' % (self.merged_args.get(JVM_ARGS_CONF_KEY).get(jar_path_conf_key),
-                                    self.merged_args.get(JVM_ARGS_CONF_KEY).get(class_path))
+            class_path = '%s;%s' % (self.merged_args.get(JVM_ARGS_CONF_KEY).get(jar_path_conf_key), self.merged_args.get(JVM_ARGS_CONF_KEY).get(class_path))
         if is_blank(class_path):
             logging.error('Could not run jar file without class path or jar path')
             raise ValueError('Please set class path or jar path')
@@ -292,8 +310,7 @@ class SpringBootJarOperator(BashOperator):
             bash_command.extend(['org.springframework.boot.loader.PropertiesLauncher'])
 
         if not is_blank(self.java_args):
-            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in
-                                 self.java_args.iteritems())
+            java_args = ' '.join(SpringBootJarOperator.java_args_prefix + '%s %s' % (key, val) for (key, val) in self.java_args.iteritems())
             bash_command.append(command)
             bash_command.append(java_args)
 
@@ -454,7 +471,39 @@ class SpringBootJarOperator(BashOperator):
         return ' '.join(bash_command)
 
     @staticmethod
-    def handle_retry(context):
+    def handle_retry(context, retry_fn):
+        SpringBootJarOperator.set_task_retry_value(context, RETRY_RUNNING_STATE)
+
+        logging.info("running retry_fn")
+        try:
+            retry_fn(context)
+            SpringBootJarOperator.set_task_retry_value(context, RETRY_SUCCESS_STATE)
+        except Exception as e:
+            logging.exception("failed running retry function")
+            SpringBootJarOperator.set_task_retry_value(context, RETRY_FAIL_STATE)
+            raise AirflowException("Retry function failed")
+
+        logging.info("end handle_retry")
+
+
+    @staticmethod
+    def get_task_retry_value(context, default_value):
+        task_retry_key = SpringBootJarOperator.get_task_retry_key(context)
+        return Variable.get(task_retry_key, default_value)
+
+    @staticmethod
+    def set_task_retry_value(context, value):
+        task_retry_key = SpringBootJarOperator.get_task_retry_key(context)
+        logging.info('Setting task retry key %s with value %s' % (task_retry_key, value))
+        Variable.set(task_retry_key, value)
+
+    @staticmethod
+    def get_task_retry_key(context):
+        ti = context['task_instance']
+        return 'retry_state_%s_%s_%s' % (ti.dag_id, ti.task_id, ti.execution_date)
+
+    @staticmethod
+    def clean_before_retry(context):
         logging.info("executing default retry handler")
 
         if 'retry_command' in context['params']:

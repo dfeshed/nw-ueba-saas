@@ -77,7 +77,7 @@ def build_and_run_task(jvm_args, dag, java_args, expected_bash_comment, expected
     :param expected_java_args: 
     :return: 
     """
-    task = SpringBootJarOperator(
+    task = TestOperator(
         task_id='run_jar_file',
         command='run',
         jvm_args=jvm_args,
@@ -345,7 +345,7 @@ class TestSpringBootJarOperator(object):
         dag = DAG(
             "test_java_args_update", default_args=default_args, schedule_interval=timedelta(1))
 
-        task = SpringBootJarOperator(
+        task = TestOperator(
             task_id='run_jar_file',
             command='run',
             jvm_args=jvm_args,
@@ -400,6 +400,12 @@ class TestSpringBootJarOperator(object):
 
 class TestOperator (SpringBootJarOperator):
     cleanup_cnt = 0
+
+    def execute(self, context):
+        super(SpringBootJarOperator, self).execute(context)
+
+    def get_retry_callback(self, retry_fn):
+        return retry_fn
     def get_retry_command(self):
         self.cleanup_cnt=self.cleanup_cnt+1
         return "echo hiiiiiii"
