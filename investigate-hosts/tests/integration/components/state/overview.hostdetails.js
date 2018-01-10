@@ -43,15 +43,15 @@ const linux = {
         ],
         users: [
           {
-            name: 'root',
+            name: 'sharms74',
             sessionId: 0,
             host: 'inenbhatr9l1c.corp.emc.com',
             deviceName: 'pts/0',
-            administrator: false
+            administrator: true
           },
           {
             name: 'root',
-            sessionId: 0,
+            sessionId: 1,
             host: 'inkumarp102l1c.corp.emc.com',
             deviceName: 'pts/1',
             administrator: false
