@@ -13,9 +13,7 @@ import java.util.List;
 public class AdapterConfigurationUtil {
 
     public static final String MOUDLE_NAME = "collector-properties";
-
-    @Value("#{'${spring.profiles.active:default}'.split(',')}")
-    private List<String> activeProfiles;
+    public static final String PROFILE = "default";
 
     private final ConfigurationServerClientService configurationServerClientService;
 
@@ -28,7 +26,7 @@ public class AdapterConfigurationUtil {
     }
 
     public void loadConfiguration(String schemaName) throws Exception {
-        final CollectorProperties properties = (CollectorProperties) configurationServerClientService.readConfiguration(CollectorProperties.class, MOUDLE_NAME, getProfile()).getBody();
+        final CollectorProperties properties = (CollectorProperties) configurationServerClientService.readConfiguration(CollectorProperties.class, MOUDLE_NAME, PROFILE).getBody();
         final SchemaMapping schema = properties.getSchema(schemaName);
         if (schema != null) {
             this.collectionName = schema.getCollectionName();
@@ -47,9 +45,5 @@ public class AdapterConfigurationUtil {
 
     public int getNumberOfRetainedDays() {
         return numberOfRetainedDays;
-    }
-
-    private String getProfile(){
-        return activeProfiles.get(0);
     }
 }
