@@ -40,7 +40,7 @@ function runEmberTestWithMockServer {
 
   # now run the tests
   info "Running 'ember exam' for $1 on port $testemPort"
-  NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
+  COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 
   # kill mock server
@@ -59,7 +59,7 @@ function runEmberTestWithMockServer {
 function runEmberTestNoMockServer {
   testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
   info "Running 'ember exam' for $1 on port $testemPort"
-  NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
+  COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
 }
@@ -75,6 +75,12 @@ function runEmberBuild {
 # $2 = whether or not `ember build` is necessary, it is necessary
 #      when the app is deployable
 # $3 = whether or not a mock server is needed
+# $4 = Used for coverage.
+
+# TO_DO Fix code coverage
+# For some apps/addons within `sa-ui` coverage fails as it is not able to parse ES6/ES7 syntax.
+# Hence passing 4th parameter as false for those addons. There is a WIP PR
+# https://github.com/kategengler/ember-cli-code-coverage/pull/141 that should address parsing issues.
 function buildEmberApp {
 
   cd $1
@@ -92,9 +98,9 @@ function buildEmberApp {
     # 'ember test'
     if [ "$3" = true ]
     then
-      runEmberTestWithMockServer $1
+      runEmberTestWithMockServer $1 $4
     else
-      runEmberTestNoMockServer $1
+      runEmberTestNoMockServer $1 $4
     fi
 
     # 'ember build' when running full build
@@ -188,22 +194,23 @@ cd $CWD
 node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
 checkError "Translations do not sync up between languages"
 
+# Code coverage does not work for investigate-events, investigate-hosts and respond, so passing false for the 4th option
 buildMockServer
-buildEmberApp streaming-data false true
-buildEmberApp component-lib false
-buildEmberApp packager false true
-buildEmberApp recon false true
-buildEmberApp context false true
-buildEmberApp preferences false true
-buildEmberApp test-helpers false false
-buildEmberApp hosts-scan-configure false true
-buildEmberApp style-guide true
-buildEmberApp investigate-events false true
-buildEmberApp investigate-hosts false true
-buildEmberApp investigate-files false true
-buildEmberApp respond false true
-buildEmberApp configure false true
-buildEmberApp sa true true
+buildEmberApp streaming-data false true true
+buildEmberApp component-lib false false true
+buildEmberApp packager false true true
+buildEmberApp recon false true true
+buildEmberApp context false true true
+buildEmberApp preferences false true true
+buildEmberApp test-helpers false false false
+buildEmberApp hosts-scan-configure false true true
+buildEmberApp style-guide true false false
+buildEmberApp investigate-events false true false
+buildEmberApp investigate-hosts false true false
+buildEmberApp investigate-files false true true
+buildEmberApp respond false true false
+buildEmberApp configure false true true
+buildEmberApp sa true true true
 buildLibrary broccoli-theme
 
 success "All apps built"
