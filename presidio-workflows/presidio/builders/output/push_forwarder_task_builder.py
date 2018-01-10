@@ -7,7 +7,7 @@ from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOpera
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
-FORWARDER_JVM_ARGS_CONFIG_PATH = 'components.forwarder.jvm_args'
+FORWARDER_JVM_ARGS_CONFIG_PATH = 'components.output_forwarder.jvm_args'
 
 
 class PushForwarderTaskBuilder(object):
@@ -33,7 +33,7 @@ class PushForwarderTaskBuilder(object):
 
         # Create jar operator
         data_forwarding_operator = FixedDurationJarOperator(
-            task_id='data_forwarding_operator',
+            task_id='output_forwarding_task',
             fixed_duration_strategy=timedelta(hours=1),
             command=PresidioDagBuilder.presidio_command,
             jvm_args=self.jvm_args,

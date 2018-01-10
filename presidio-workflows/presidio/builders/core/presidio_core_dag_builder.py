@@ -57,9 +57,9 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
 
     def _push_forwarding(self, output_sub_dag_operator, presidio_core_dag):
         default_args = presidio_core_dag.default_args
-        should_push_data = default_args.get("should_push_data")
-        logging.debug("should_push_data=%s ", should_push_data)
-        if should_push_data:
+        enable_output_forwarder = default_args.get("enable_output_forwarder")
+        logging.debug("enable_output_forwarder=%s ", enable_output_forwarder)
+        if enable_output_forwarder:
             push_forwarding_task = PushForwarderTaskBuilder().build(presidio_core_dag)
             output_sub_dag_operator >> push_forwarding_task
 

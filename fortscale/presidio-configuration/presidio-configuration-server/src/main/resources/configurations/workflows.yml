@@ -11,7 +11,7 @@ dags:
       - userId_hourly
       data_sources: ${dataPipeline.schemas}
       command: run
-      should_push_data: False
+      enable_output_forwarder: False
     schedule_interval: timedelta(hours=1)
     start_date: ${dataPipeline.startTime}
 
@@ -121,7 +121,7 @@ components:
       main_class: presidio.output.processor.FortscaleOutputProcessorApplication
       xmx: 2048
       xms: 2048
-  forwarder:
+  output_forwarder:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/forwarder-*.jar
         main_class: presidio.forwarder.processor.Forwarder

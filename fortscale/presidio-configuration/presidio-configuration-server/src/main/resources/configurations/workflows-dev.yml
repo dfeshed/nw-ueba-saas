@@ -12,7 +12,7 @@ dags:
       command: run
       data_sources: AUTHENTICATION,FILE,ACTIVE_DIRECTORY
       schedule_interval: timedelta(hours=1)
-      should_push_data: False
+      enable_output_forwarder: False
     start_date: '2017-01-01 10:00:00'
     end_date: '2017-01-01 11:00:00'
   tasks_instances:
@@ -120,7 +120,7 @@ components:
       main_class: presidio.output.processor.FortscaleOutputProcessorApplication
       xmx: 500
       xms: 70
-  forwarder:
+  output_forwarder:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/forwarder-*.jar
         main_class: presidio.forwarder.processor.Forwarder
