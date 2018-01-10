@@ -4,7 +4,8 @@ import Immutable from 'seamless-immutable';
 import {
   isFetchingSchedule,
   weekOptions,
-  runIntervalConfig
+  runIntervalConfig,
+  startDate
 } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
 
 module('Unit | selectors | schedule');
@@ -75,4 +76,21 @@ test('runIntervalConfig', function(assert) {
     'runLabel': 'hostsScanConfigure.recurrenceInterval.intervalText.WEEKS'
   };
   assert.deepEqual(result, expected, 'should return the processed run interval configuration');
+});
+test('startDate', function(assert) {
+  assert.expect(1);
+  const schedule = Immutable.from(
+    {
+      hostsScan: {
+        config: {
+          scheduleConfig: {
+            scheduleOptions: {
+            }
+          }
+        }
+      }
+    });
+  const result = startDate(schedule);
+
+  assert.deepEqual(result, 'today', 'should return today if start date is empty');
 });

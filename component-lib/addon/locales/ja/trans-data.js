@@ -2619,6 +2619,7 @@ export default {
     save: 'js_Save',
     enable: 'ja_Enable',
     saveSuccess: 'ja_Saved successfully',
+    startDate: 'ja_Start Date',
     recurrenceInterval: {
       title: 'ja_Recurrence Interval',
       options: {

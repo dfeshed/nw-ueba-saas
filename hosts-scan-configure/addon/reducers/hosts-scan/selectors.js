@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import _ from 'lodash';
+import moment from 'moment';
 const { createSelector } = reselect;
 
 const weeks = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -46,6 +47,16 @@ const intervalType = createSelector(
 const runOnDays = createSelector(
   scheduleData,
   (schedule) => schedule.runOnDays || []
+);
+
+export const startDate = createSelector(
+  scheduleData,
+  (schedule) => {
+    if (schedule.startDate) {
+      return moment(schedule.startDate).toISOString();
+    }
+    return 'today';
+  }
 );
 
 export const isWeeklyInterval = createSelector(

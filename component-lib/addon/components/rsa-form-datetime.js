@@ -37,6 +37,8 @@ export default Component.extend({
 
   static: false,
 
+  enableTime: true,
+
   @equal('timeFormat.selected.key', 'HR24') time24HR: null,
 
   @computed('i18n.locale')

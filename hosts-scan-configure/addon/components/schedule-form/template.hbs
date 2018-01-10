@@ -18,6 +18,17 @@
           {{toggle.onLabel value=(readonly (not enabled))}}
         {{/x-toggle}}
       </div>
+      <box class='schedule-time'>
+        {{rsa-form-datetime
+          label=(t 'startDate')
+          enableTime=false
+          minDate='today'
+          static=true
+          yearRange="currentYear, 2050"
+          value=(readonly startDate)
+          onChange=(action 'onDateChange')
+        }}
+      </box>
       {{recurrence-interval}}
       {{schedule-time}}
       {{cpu-throttling}}

@@ -29,7 +29,7 @@ const ScheduleTime = Component.extend({
 
   timeFormat: service(),
 
-  classNames: 'schedule-time',
+  classNames: 'schedule-time time-field',
 
   @computed('i18n.locale')
   locale: (locale) => {

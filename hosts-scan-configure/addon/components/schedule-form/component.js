@@ -2,9 +2,11 @@ import Component from 'ember-component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
-import { isFetchingSchedule, isEnabled } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
+import { isFetchingSchedule, isEnabled, startDate } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
 import { updateScheduleProperty, saveScheduleConfig } from 'hosts-scan-configure/actions/data-creators';
 import computed from 'ember-computed-decorators';
+import { isEmpty } from 'ember-utils';
+import moment from 'moment';
 
 const FLASH_MESSAGE_TYPES = {
   SUCCESS: {
@@ -21,6 +23,7 @@ const FLASH_MESSAGE_TYPES = {
 const stateToComputed = (state) => ({
   isFetchingSchedule: isFetchingSchedule(state),
   enabled: isEnabled(state),
+  startDate: startDate(state),
   config: state.hostsScan.config
 });
 
@@ -79,6 +82,12 @@ const Form = Component.extend({
     toggleEnable() {
       this.toggleProperty('isDirty');
       this.send('updateScheduleProperty', 'enabled', !this.get('enabled'));
+    },
+
+    onDateChange(selectedDates, dateString) {
+      if (!isEmpty(dateString)) {
+        this.send('updateScheduleProperty', 'startDate', moment(dateString).format('MM/DD/YYYY'));
+      }
     },
 
     saveConfig() {

@@ -2619,6 +2619,7 @@ export default {
     save: 'Save',
     enable: 'Enable',
     saveSuccess: 'Saved successfully',
+    startDate: 'Start Date',
     recurrenceInterval: {
       title: 'Recurrence Interval',
       options: {
