@@ -11,6 +11,8 @@ import java.util.Date;
 public class SyslogService {
 
     private static final String APP_NAME = "presidio";
+    private static final String METADATA_TAG = "meta@presidio";
+    private static final String EVENT_ID = "eventID";
 
     private String hostName = "localhost";
     private String pid;
@@ -40,8 +42,8 @@ public class SyslogService {
                     .withMsg(message);
 
 
-            SDElement sdElement = new SDElement("meta@presidio");
-            SDParam sdParam = new SDParam("eventID", id);
+            SDElement sdElement = new SDElement(METADATA_TAG);
+            SDParam sdParam = new SDParam(EVENT_ID, id);
             sdElement.addSDParam(sdParam);
             syslogMessage.withSDElement(sdElement);
 
