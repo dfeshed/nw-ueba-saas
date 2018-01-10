@@ -184,8 +184,10 @@ const formComponent = Component.extend({
     generateAgent() {
       this.resetProperties();
       const { autoUninstall } = this.get('configData.packageConfig');
-      if (autoUninstall && !isEmpty(autoUninstall[0])) {
+      if (autoUninstall && autoUninstall.length) {
         this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
+      } else {
+        this.set('configData.packageConfig.autoUninstall', null);
       }
       if (!this.get('isLogCollectionEnabled')) {
         // only package data need to be send when windows log collection is not enable
