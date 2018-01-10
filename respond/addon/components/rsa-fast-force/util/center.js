@@ -3,6 +3,15 @@ import { easeCubicInOut } from 'd3-ease';
 import { zoomIdentity } from 'd3-zoom';
 import boundingBox from 'respond/utils/force-layout/bounding-box';
 
+function applyCentering(i, isCentering) {
+  if (this.isDestroyed || this.isDestroying) {
+    return;
+  }
+  if (i === 0) {  // only do this once per transition, not once per data point
+    this.set('isCentering', isCentering);
+  }
+}
+
 // Maximum zoom factor that should be used to center nodes.
 // Helpful for cosmetic reasons; sometimes zooming too large looks awkward.
 const MAX_ZOOM = 1;
@@ -85,20 +94,17 @@ export default function(easing, duration = 300) {
     selection.interrupt();
 
   } else {
-
     // Overwrites any previous transition that may still be on-going.
     selection = selection.transition()
       .ease(easing)
       .duration(duration)
       .on('end interrupt', (d, i) => {
-        if (i === 0) {  // only do this once per transition, not once per data point
-          this.set('isCentering', false);
-        }
+        const isCentering = false;
+        applyCentering.call(this, i, isCentering);
       })
       .on('start', (d, i) => {
-        if (i === 0) {  // only do this once per transition, not once per data point
-          this.set('isCentering', true);
-        }
+        const isCentering = true;
+        applyCentering.call(this, i, isCentering);
       });
   }
 

@@ -518,6 +518,9 @@ export default Component.extend({
   // Triggers a restart of the layout algorithm when new data arrives.
   // Stops current simulation (if any), updates DOM then (re-)starts simulation.
   _dataDidChange() {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
 
     // Reset flag that tells us if user has manually dragged this dataset around.
     this.set('dataHasBeenDragged', false);
@@ -571,6 +574,10 @@ export default Component.extend({
    * @private
    */
   _filterDidChange(skipCentering) {
+    if (this.isDestroyed || this.isDestroying) {
+      return;
+    }
+
     const data = this.get('data');
     if (!data) {
       return;
