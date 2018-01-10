@@ -461,6 +461,11 @@ export default {
     },
     events: {
       title: 'All Events',
+      columnGroups: {
+        custom: 'Custom Column Group',
+        default: 'Default Column Group',
+        searchPlaceholder: 'Type to filter column group'
+      },
       error: 'An unexpected error occurred when executing this query.',
       shrink: 'Shrink Events Panel',
       expand: 'Expand Events Panel',

@@ -64,10 +64,16 @@ test('it provides option to select column groups', function(assert) {
   renderDefaultEventTable(assert, this);
   assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Summary List', 'Default Column group is Summary List.');
   clickTrigger();
-  return waitFor('.ember-power-select-options').then(() => {
-    const $options = $('.ember-power-select-option');
-    assert.equal($options.text().trim().replace(/\s+/g, ''), 'Custom1Custom2SummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
-  });
+  assert.equal($('.ember-power-select-option').text().trim().replace(/\s+/g, ''), 'Custom1Custom2SummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
+  assert.equal($('.ember-power-select-group').length, 2, 'render two column groups');
+  assert.equal($('.ember-power-select-group-name')[0].textContent, 'Custom Column Group', 'render custom column group');
+  assert.equal($('.ember-power-select-group-name')[1].textContent, 'Default Column Group', 'render default column group');
+});
+
+test('it provides option for search filter', function(assert) {
+  renderDefaultEventTable(assert, this);
+  clickTrigger();
+  assert.equal($('.ember-power-select-search').length, 1, 'Show search filter option in drop down');
 });
 
 test('it should show columns for Event Analysis', function(assert) {
@@ -115,27 +121,5 @@ test('persisted column group is preselected in the drop down', function(assert) 
   this.render(hbs`{{events-table}}`);
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Expected Malware Analysis to be selected');
-  });
-});
-
-test('Check for OOTB column groups style', function(assert) {
-  const custom = {
-    id: 'SUMMARY1',
-    name: 'Summary List1',
-    ootb: false,
-    columns: [
-      { field: 'custom.theme', title: 'Theme' }
-    ]
-  };
-  new ReduxDataHelper(setState).columnGroup('MALWARE').columnGroups(EventColumnGroups.concat(custom)).build();
-  this.render(hbs`{{events-table}}`);
-  clickTrigger();
-  return waitFor('.ember-power-select-options').then(() => {
-    // To check fixed width for column group dropdown.
-    assert.equal($('.ember-power-select-trigger').get(0).clientWidth, 216);
-    // To check tooltip for column group options.
-    assert.equal($('.rsa-investigate-events-table__header__columns').first().attr('title'), 'Custom 1');
-    assert.equal($('.rsa-investigate-events-table__header__columns').length, 3);
-    assert.equal($('.rsa-investigate-events-table__header__ootb-columns').length, 7);
   });
 });

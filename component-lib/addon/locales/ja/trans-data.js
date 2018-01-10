@@ -460,6 +460,11 @@ export default {
     },
     events: {
       title: 'ja_All Events',
+      columnGroups: {
+        custom: 'ja_Custom Column Group',
+        default: 'ja_Default Column Group',
+        searchPlaceholder: 'ja_Type to filter column group'
+      },
       error: 'ja_An unexpected error occurred when executing this query.',
       shrink: 'ja_Shrink Events Panel',
       expand: 'ja_Expand Events Panel',

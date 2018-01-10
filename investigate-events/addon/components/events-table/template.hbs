@@ -5,13 +5,16 @@
         {{t "investigate.events.title"}}
         {{events-table/event-counter}}
       </h2>
-      <label class="rsa-form-label power-select">
+      <label class="rsa-form-label is-small power-select">
         {{#power-select
           options=columnGroups
           selected=selectedColumnGroup
-          searchEnabled=false
+          triggerClass='is-small'
+          searchEnabled=true
+          searchPlaceholder=(t 'investigate.events.columnGroups.searchPlaceholder')
+          searchField='name'
           onchange=(action 'setColumnGroup') as |option|}}
-          <span class="{{concat 'rsa-investigate-events-table__header__' (if option.ootb 'ootb-columns' 'columns')}}" title="{{option.name}}">{{option.name}}</span>
+          <span title="{{option.name}}">{{option.name}}</span>
         {{/power-select}}
       </label>
     </div>
