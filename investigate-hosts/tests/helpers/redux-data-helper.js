@@ -64,11 +64,6 @@ export default class DataHelper {
     return this;
   }
 
-  userProjectionChanged(flag) {
-    _set(this.state, 'schema.userProjectionChanged', flag);
-    return this;
-  }
-
   updateFilterExpressionList(expressionList) {
     _set(this.state, 'filter.expressionList', expressionList);
     return this;
@@ -80,6 +75,31 @@ export default class DataHelper {
   }
   lastFilterAdded() {
     _set(this.state, 'filter.lastFilterAdded', null);
+    return this;
+  }
+
+  hasMachineId(id) {
+    _set(this.state, 'detailsInput.agentId', id);
+    return this;
+  }
+
+  columnsConfig(osType) {
+    const hostDetails = { machine: { machineOsType: osType } };
+    _set(this.state, 'overview', { hostDetails });
+    return this;
+  }
+
+  // host Files
+  filesLoadMoreStatus(status) {
+    _set(this.state, 'hostFiles.filesLoadMoreStatus', status);
+    return this;
+  }
+  files(items) {
+    _set(this.state, 'hostFiles.files', items);
+    return this;
+  }
+  totalItems(fileCount) {
+    _set(this.state, 'hostFiles.totalItems', fileCount);
     return this;
   }
 
