@@ -217,8 +217,10 @@ public class User extends AbstractElasticDocument {
     @Override
     public void updateFieldsBeforeSave() {
         super.updateFieldsBeforeSave();
-        setUpdatedByLogicalStartDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getStartAsDate());
-        setUpdatedByLogicalEndDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getEndAsDate());
+        if (ThreadLocalWithBatchInformation.getCurrentProcessedTime()!=null) {
+            setUpdatedByLogicalStartDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getStartAsDate());
+            setUpdatedByLogicalEndDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getEndAsDate());
+        }
     }
 
     @Override
