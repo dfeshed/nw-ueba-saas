@@ -74,7 +74,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             usersPage = getNextUserPage(userQueryBuilder, usersPage);
         }
 
-        log.info("Reseting " + clearedUsersList.size() + " users scores and severity");
+        log.info("Resetting " + clearedUsersList.size() + " users scores and severity");
         userPersistencyService.save(clearedUsersList);
     }
 
@@ -90,7 +90,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays);
 
         Map<String, UsersAlertData> aggregatedUserScore = new HashMap<>();
-        //TODO: alsom filter by status >
+        //TODO: also filter by status >
 
         if (days != null && days.size() > 0) {
             for (LocalDateTime startOfDay : days) {
