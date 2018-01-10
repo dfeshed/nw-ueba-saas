@@ -30,7 +30,6 @@ public class SyslogService {
         messageSender.setSyslogServerHostname(host);
         messageSender.setSyslogServerPort(port);
         messageSender.setMessageFormat(MessageFormat.RFC_5424); // optional, default is RFC 3164
-        messageSender.setSsl(false);
 
         SyslogMessage syslogMessage = new SyslogMessage()
                     .withFacility(Facility.USER)
