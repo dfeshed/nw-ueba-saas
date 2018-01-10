@@ -3,9 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * For documentation and explanation of how this model works refer to:
@@ -15,7 +13,7 @@ import java.util.Map;
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements PartitionedDataModel {
-	private double[] buckets;
+	private List<Double> buckets;
 	private long numOfSamples;
 	private long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
@@ -34,15 +32,15 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		this.numDistinctFeatures = numDistinctFeatures;
 		featureOccurrences = new HashMap<>();
 		this.numOfPartitions = numOfPartitions;
-		buckets = new double[numOfBuckets];
+		buckets = new ArrayList<>(numOfBuckets);
 
 		this.numOfSamples = 0;
 		for (Map.Entry<Long, Integer> entry : occurrencesToNumOfPartitions.entrySet()) {
 			long occurrences = entry.getKey();
 			int occurencesNumOfPartitions = entry.getValue();
 
-			if (occurrences <= buckets.length) {
-				buckets[(int)(occurrences - 1)] = occurencesNumOfPartitions;
+			if (occurrences <= buckets.size()) {
+				buckets.add((int)(occurrences - 1), (double) occurencesNumOfPartitions);
 			}
 			this.numOfSamples += occurencesNumOfPartitions * occurrences;
 		}
@@ -55,11 +53,11 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		{
 			featureOccurencessStr = featureOccurrences.toString();
 		}
-		return String.format("<CategoryRarityModel: buckets=%s, numOfSamples=%d, numDistinctFeatures=%d, featureOccurrences=%s>", Arrays.toString(buckets),numOfSamples,numDistinctFeatures, featureOccurencessStr);
+		return String.format("<CategoryRarityModel: buckets=%s, numOfSamples=%d, numDistinctFeatures=%d, featureOccurrences=%s>", buckets.toString(),numOfSamples,numDistinctFeatures, featureOccurencessStr);
 
 	}
 
-	public double[] getBuckets() {
+	public List<Double> getBuckets() {
 		return buckets;
 	}
 
@@ -126,13 +124,13 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		if (numDistinctFeatures != that.numDistinctFeatures) return false;
 		if (numOfPartitions != that.numOfPartitions) return false;
 		if (numberOfEntriesToSaveInModel != that.numberOfEntriesToSaveInModel) return false;
-		if (!Arrays.equals(buckets, that.buckets)) return false;
+		if (!buckets.equals(that.buckets)) return false;
 		return featureOccurrences.equals(that.featureOccurrences);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Arrays.hashCode(buckets);
+		int result = Arrays.hashCode(buckets.toArray());
 		result = 31 * result + (int)(numOfSamples ^ (numOfSamples >>> 32));
 		result = 31 * result + (int)(numDistinctFeatures ^ (numDistinctFeatures >>> 32));
 		result = 31 * result + featureOccurrences.hashCode();
