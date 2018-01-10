@@ -3,6 +3,8 @@ package presidio.output.forwarder.shell;
 import fortscale.common.shell.PresidioShellableApplication;
 import fortscale.utils.logging.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import presidio.output.forwarder.config.OutputForwarderConfiguration;
 
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.List;
 
 
 @SpringBootApplication
-//@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
+@ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {"fortscale.*", "presidio.*"}))
 public class OutputForwarderApplication {
     private static final Logger logger = Logger.getLogger(OutputForwarderApplication.class);
 
