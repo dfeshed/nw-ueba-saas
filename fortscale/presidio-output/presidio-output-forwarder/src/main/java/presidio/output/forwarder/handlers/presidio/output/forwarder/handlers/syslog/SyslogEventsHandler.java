@@ -138,10 +138,16 @@ public class SyslogEventsHandler implements EventsHandler {
 
     @JsonIgnoreProperties({"smartId","indexedUserName","lastUpdatedBy","updatedBy","feedback","preferredClassification","userTags","createdDate","updatedDate"})
     class AlertJsonMixin extends Alert {
+
+        @JsonProperty("vendorUserId")
+        String userName;
     }
 
     @JsonIgnoreProperties({"indexedUserName","userDisplayName","tags","startDate","endDate","indicators","alertClassifications","updatedBy","createdDate","updatedDate"})
     class UserJsonMixin extends User {
+
+        @JsonProperty("vendorUserId")
+        String userId;
     }
 
     @JsonIgnoreProperties({"historicalData","updatedBy","lastUpdatedBy","createdDate","endDate","updatedDate"})
@@ -179,6 +185,7 @@ public class SyslogEventsHandler implements EventsHandler {
         module.addSerializer(Date.class, new CustomDateSerializer());
         module.addSerializer(IndicatorEvent.class, new CustomEventSerializer());
         mapper.registerModule(module);
+
         return  mapper;
     }
 

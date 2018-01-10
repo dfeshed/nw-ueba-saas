@@ -1,12 +1,11 @@
 package presidio.output.forwarder.handlers;
 
-import java.time.Instant;
 import java.util.Date;
 
 public class StreamingEvent {
 
-    Date from;
-    Date to;
+    private Date from;
+    private Date to;
 
     public StreamingEvent(Date from, Date to) {
         this.from = from;
