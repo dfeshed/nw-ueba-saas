@@ -25,7 +25,7 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "SECURITY_SENSITIVE_OPERATION,GROUP_MEMBERSHIP",
+              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP"],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
@@ -59,7 +59,7 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdObjectChange.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "OBJECT_CHANGE_OPERATION",
+              "conditional-value": ["OBJECT_CHANGE_OPERATION"],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdObjectChange.activeDirectory.score",
