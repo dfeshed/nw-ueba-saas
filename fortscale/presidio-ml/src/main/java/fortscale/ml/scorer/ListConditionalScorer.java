@@ -16,7 +16,8 @@ public class ListConditionalScorer extends ConditionalScorer {
     public ListConditionalScorer(String name, Scorer scorer, String conditionalField, List<String> conditionalValue) {
         super(name, scorer);
         Assert.hasText(conditionalField, "condition field should not be blank");
-        Assert.notEmpty(conditionalValue, "condition value should not be blank");
+        Assert.notEmpty(conditionalValue, "condition value should not be empty");
+        conditionalValue.forEach(v-> Assert.hasText(v,"condition value should not be blank"));
         this.conditionalField = conditionalField;
         this.conditionalValues = conditionalValue;
     }
