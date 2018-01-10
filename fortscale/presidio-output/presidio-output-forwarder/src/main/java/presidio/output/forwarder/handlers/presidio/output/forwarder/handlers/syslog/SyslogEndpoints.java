@@ -1,4 +1,4 @@
-package presidio.output.forwarder.handlers;
+package presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog;
 
 import java.util.HashMap;
 import java.util.Map;

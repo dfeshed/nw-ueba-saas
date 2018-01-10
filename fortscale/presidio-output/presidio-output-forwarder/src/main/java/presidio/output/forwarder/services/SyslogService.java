@@ -2,6 +2,7 @@ package presidio.output.forwarder.services;
 
 import com.cloudbees.syslog.*;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
+import presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog.SyslogEventsEnum;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,7 +24,7 @@ public class SyslogService {
     }
 
 
-    public void send(String type, String id, String message, String host, int port) throws IOException {
+    public void send(SyslogEventsEnum type, String id, String message, String host, int port) throws IOException {
 
         TcpSyslogMessageSender  messageSender = new TcpSyslogMessageSender();
         messageSender.setSyslogServerHostname(host);
@@ -38,7 +39,7 @@ public class SyslogService {
                     .withAppName(APP_NAME)
                     .withSeverity(Severity.INFORMATIONAL)
                     .withProcId(pid)
-                    .withMsgId(type)
+                    .withMsgId(type.getValue())
                     .withMsg(message);
 
 

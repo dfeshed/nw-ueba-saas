@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import presidio.output.forwarder.handlers.EventsHandler;
-import presidio.output.forwarder.handlers.SyslogEndpoints;
-import presidio.output.forwarder.handlers.SyslogEventsHandler;
+import presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog.SyslogEndpoints;
+import presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog.SyslogEventsHandler;
 import presidio.output.forwarder.services.SyslogService;
 
 @Configuration

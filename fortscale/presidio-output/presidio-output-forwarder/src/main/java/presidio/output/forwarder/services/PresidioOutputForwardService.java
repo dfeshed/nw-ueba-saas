@@ -12,6 +12,7 @@ import presidio.output.forwarder.shell.OutputForwarderApplication;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class PresidioOutputForwardService {
@@ -33,16 +34,33 @@ public class PresidioOutputForwardService {
     public void forward(Instant startDate, Instant endDate) {
         logger.info(String.format("about to forward data from %s to %s", startDate, endDate));
 
+        forwardUsers(startDate, endDate);
+
+        forwardAlerts(startDate, endDate);
+
+        logger.info("finish to forward data");
+
+    }
+
+    private void forwardUsers(Instant startDate, Instant endDate) {
         // forward user changed events
+        final AtomicInteger forwardedUsers = new AtomicInteger();
         eventsHandler.onUserStartStreaming(startDate, endDate);
         try (Stream<User> users = userPersistencyService.findUsersByUpdatedDate(startDate, endDate)) {
             users.forEach(user -> {
                 eventsHandler.onUserChanged(user);
+                forwardedUsers.incrementAndGet();
             });
         }
         eventsHandler.onUserEndStreaming(startDate, endDate);
 
+        logger.info(String.format("%d users were sent to syslog", forwardedUsers.get()));
+    }
 
+
+    private void forwardAlerts(Instant startDate, Instant endDate) {
+        final AtomicInteger forwardedAlerts = new AtomicInteger();
+        final AtomicInteger forwardedIndicators = new AtomicInteger();
 
         eventsHandler.onAlertStartStreaming(startDate, endDate);
 
@@ -50,6 +68,7 @@ public class PresidioOutputForwardService {
         try (Stream<Alert> alerts = alertPersistencyService.findAlertsByDate(startDate, endDate)) {
             alerts.forEach(alert -> {
                 eventsHandler.onAlertChanged(alert);
+                forwardedAlerts.incrementAndGet();
             });
         }
 
@@ -59,13 +78,13 @@ public class PresidioOutputForwardService {
                 List<IndicatorEvent> events = alertPersistencyService.findIndicatorEventByIndicatorId(indicator.getId());
                 indicator.setEvents(events);
                 eventsHandler.onIndicatorChanged(indicator);
+                forwardedIndicators.incrementAndGet();
             });
         }
 
         eventsHandler.onAlertEndStreaming(startDate, endDate);
 
-        logger.info("finish to forward data");
-
+        logger.info(String.format("%d alerts and %d indicators were sent to syslog", forwardedAlerts.get(), forwardedIndicators.get()));
     }
 
 }

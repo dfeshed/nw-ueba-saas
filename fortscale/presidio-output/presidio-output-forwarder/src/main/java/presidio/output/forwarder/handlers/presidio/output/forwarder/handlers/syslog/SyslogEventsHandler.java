@@ -1,4 +1,4 @@
-package presidio.output.forwarder.handlers;
+package presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,10 +9,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
+import fortscale.utils.logging.Logger;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
 import presidio.output.domain.records.users.User;
+import presidio.output.forwarder.handlers.EventsHandler;
+import presidio.output.forwarder.handlers.StreamingEvent;
 import presidio.output.forwarder.services.SyslogService;
 
 import java.io.IOException;
@@ -22,7 +25,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class SyslogEventsHandler implements  EventsHandler{
+public class SyslogEventsHandler implements EventsHandler {
+
+    private static final Logger logger = Logger.getLogger(SyslogEventsHandler.class);
 
     private SyslogService syslogServices;
     private ObjectMapper mapper;
@@ -43,9 +48,9 @@ public class SyslogEventsHandler implements  EventsHandler{
         if (syslogEndpoint != null) {
             try {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
-                syslogServices.send("STREAMING-USERS-START", UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent),syslogEndpoint.getHost(), syslogEndpoint.getPort() );
+                syslogServices.send(SyslogEventsEnum.STREAMING_USERS_START, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent),syslogEndpoint.getHost(), syslogEndpoint.getPort() );
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_USERS_START, e);
             }
         }
     }
@@ -57,9 +62,9 @@ public class SyslogEventsHandler implements  EventsHandler{
         if (syslogEndpoint != null) {
             try {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
-                syslogServices.send("STREAMING-USERS-END", UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
+                syslogServices.send(SyslogEventsEnum.STREAMING_USERS_END, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_USERS_END, e);
             }
         }
     }
@@ -71,9 +76,9 @@ public class SyslogEventsHandler implements  EventsHandler{
         if (syslogEndpoint != null) {
             try {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
-                syslogServices.send("STREAMING-ALERTS-START", UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
+                syslogServices.send(SyslogEventsEnum.STREAMING_ALERTS_START, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_ALERTS_START, e);
             }
         }
     }
@@ -85,9 +90,9 @@ public class SyslogEventsHandler implements  EventsHandler{
         if (syslogEndpoint != null) {
             try {
                 StreamingEvent streamingEvent = new StreamingEvent(Date.from(start), Date.from(end));
-                syslogServices.send("STREAMING-ALERTS-END", UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
+                syslogServices.send(SyslogEventsEnum.STREAMING_ALERTS_END, UUID.randomUUID().toString(), mapper.writeValueAsString(streamingEvent), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.STREAMING_ALERTS_END, e);
             }
         }
     }
@@ -98,9 +103,9 @@ public class SyslogEventsHandler implements  EventsHandler{
 
         if (syslogEndpoint != null) {
             try {
-                syslogServices.send("USER", user.getId(), mapper.writeValueAsString(user), syslogEndpoint.getHost(), syslogEndpoint.getPort());
+                syslogServices.send(SyslogEventsEnum.USER_CHANGED, user.getId(), mapper.writeValueAsString(user), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.USER_CHANGED, e);
             }
         }
     }
@@ -111,9 +116,9 @@ public class SyslogEventsHandler implements  EventsHandler{
 
         if (syslogEndpoint != null) {
             try {
-                syslogServices.send("ALERT", alert.getId(), mapper.writeValueAsString(alert), syslogEndpoint.getHost(), syslogEndpoint.getPort());
+                syslogServices.send(SyslogEventsEnum.ALERT_ADDED, alert.getId(), mapper.writeValueAsString(alert), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.ALERT_ADDED, e);
             }
         }
     }
@@ -124,9 +129,9 @@ public class SyslogEventsHandler implements  EventsHandler{
 
         if (syslogEndpoint != null) {
             try {
-                syslogServices.send("INDICATOR", indicator.getId(), mapper.writeValueAsString(indicator), syslogEndpoint.getHost(), syslogEndpoint.getPort());
+                syslogServices.send(SyslogEventsEnum.INDICATOR_ADDED, indicator.getId(), mapper.writeValueAsString(indicator), syslogEndpoint.getHost(), syslogEndpoint.getPort());
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("failed to send %s event", SyslogEventsEnum.INDICATOR_ADDED, e);
             }
         }
     }
