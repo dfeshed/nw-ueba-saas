@@ -41,7 +41,7 @@ class PresidioDagBuilder(object):
 
     def _create_sub_dag_operator(self, sub_dag_builder, sub_dag_id, dag):
         """
-        create a sub dag of the recieved "dag" fill it with a flow using the sub_dag_builder
+        create a sub dag of the received "dag" fill it with a flow using the sub_dag_builder
         and wrap it with a sub dag operator.
         :param sub_dag_builder: 
         :type sub_dag_builder: PresidioDagBuilder
