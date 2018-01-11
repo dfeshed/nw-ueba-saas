@@ -4,18 +4,18 @@ import ACTION_TYPES from 'recon/actions/types';
 import { patchSocket } from '../../helpers/patch-socket';
 import sinon from 'sinon';
 
-const { cookieStore } = dataCreators;
+const { _cookieStore } = dataCreators;
 
 module('Unit | Actions | Data Creators', {
   beforeEach() {
-    dataCreators.authCookie.reconPrefInitialized = false;
-    cookieStore.persist({
+    dataCreators._authCookie.reconPrefInitialized = false;
+    _cookieStore.persist({
       authenticated: {}
     });
   },
   afterEach() {
-    cookieStore.clear();
-    dataCreators.authCookie.reconPrefInitialized = false;
+    _cookieStore.clear();
+    dataCreators._authCookie.reconPrefInitialized = false;
   }
 });
 
@@ -46,7 +46,7 @@ test('test if preferences are initialized for the first time after login', funct
 
 test('test that preferences are not set after the first time', function(assert) {
   const done = assert.async();
-  cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
+  _cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
     const callback = dataCreators.determineReconView([]);
     assert.equal(typeof callback, 'function');
     const dispatchFn = function(action) {
@@ -59,8 +59,8 @@ test('test that preferences are not set after the first time', function(assert) 
 
 test('test that cookie store is read only once', function(assert) {
   const done = assert.async();
-  const restoreSpy = sinon.spy(cookieStore, 'restore');
-  cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
+  const restoreSpy = sinon.spy(_cookieStore, 'restore');
+  _cookieStore.persist({ authenticated: { reconPrefInitialized: true } }).then(() => {
     const callback = dataCreators.determineReconView([]);
     callback(() => ({}), getState);
     setTimeout(() => { // delay to allow cookieStore to be read.

@@ -579,5 +579,6 @@ export {
   togglePayloadOnly,
   jumpToPage,
   determineReconView,
-  cookieStore, authCookie // exported for testing only
+  cookieStore as _cookieStore, // exported for testing only
+  authCookie as _authCookie // exported for testing only
 };

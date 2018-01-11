@@ -38,6 +38,10 @@ const packetReducer = handleActions({
     });
   },
 
+  [ACTION_TYPES.RESET_PREFERENCES]: (state) => {
+    return state.set('packetsPageSize', packetsInitialState.packetsPageSize);
+  },
+
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('packetFields', null),

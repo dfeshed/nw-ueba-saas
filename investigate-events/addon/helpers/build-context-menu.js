@@ -62,18 +62,6 @@ export function buildContextMenu() {
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.livelookup'),
-      action(selection) {
-        _openUrl(`/live/search?metaValue=${selection[0].metaValue}`);
-      }
-    },
-    {
-      label: _getTranslated('recon.contextmenu.endpointIoc'),
-      action(selection) {
-        _openUrl(`ecatui://${selection[0].metaValue}`);
-      }
-    },
-    {
       label: _getTranslated('recon.contextmenu.refocus'),
       action(selection, contextDetails) {
         // Current query is discarded in case of refocus
@@ -96,6 +84,18 @@ export function buildContextMenu() {
       label: _getTranslated('recon.contextmenu.hostslookup'),
       action(selection, contextDetails) {
         _openUrl(_buildHostsUrl(selection[0], contextDetails));
+      }
+    },
+    {
+      label: _getTranslated('recon.contextmenu.endpointIoc'),
+      action(selection) {
+        _openUrl(`ecatui://${selection[0].metaValue}`);
+      }
+    },
+    {
+      label: _getTranslated('recon.contextmenu.livelookup'),
+      action(selection) {
+        _openUrl(`/live/search?metaValue=${selection[0].metaValue}`);
       }
     },
     {
