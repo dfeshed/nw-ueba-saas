@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.smart_weights;
 
 
 import fortscale.ml.model.SmartWeightsModel;
+import fortscale.ml.model.metrics.WeightModelBuilderMetricsContainer;
 import fortscale.ml.model.retriever.smart_data.SmartWeightsModelBuilderData;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
@@ -15,6 +16,8 @@ import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
+
 /**
  * Created by barak_schuster on 31/08/2017.
  */
@@ -23,6 +26,8 @@ public class WeightsModelBuilderTest {
     private List<ClusterConf> clusterConfs;
     private WeightsModelBuilderAlgorithm modelBuilderAlgorithm;
     private SmartRecordConfService smartRecordConfService;
+    private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer = mock(WeightModelBuilderMetricsContainer.class);
+
     @Before
     public void setup() {
         smartRecordConfService = Mockito.mock(SmartRecordConfService.class);
@@ -52,17 +57,17 @@ public class WeightsModelBuilderTest {
     }
 
     private WeightsModelBuilder createModelBuilder(WeightsModelBuilderAlgorithm algorithm) {
-        return new WeightsModelBuilder(createAndRegisterWeightsModelBuilderConf(), algorithm,smartRecordConfService);
+        return new WeightsModelBuilder(createAndRegisterWeightsModelBuilderConf(), algorithm,smartRecordConfService, weightModelBuilderMetricsContainer);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNullAsConf() {
-        new WeightsModelBuilder(null, modelBuilderAlgorithm,smartRecordConfService);
+        new WeightsModelBuilder(null, modelBuilderAlgorithm,smartRecordConfService, weightModelBuilderMetricsContainer);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNullAsWeightsModelBuilderAlgorithm() {
-        new WeightsModelBuilder(createAndRegisterWeightsModelBuilderConf(), null,smartRecordConfService);
+        new WeightsModelBuilder(createAndRegisterWeightsModelBuilderConf(), null,smartRecordConfService, weightModelBuilderMetricsContainer);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -70,7 +75,7 @@ public class WeightsModelBuilderTest {
         String entityEventConfName = "smartRecordConfName";
         Mockito.when(smartRecordConfService.getSmartRecordConf(Mockito.eq(entityEventConfName))).thenReturn(null);
 
-        new WeightsModelBuilder(new WeightsModelBuilderConf(entityEventConfName, null, Collections.emptyList()), modelBuilderAlgorithm,smartRecordConfService);
+        new WeightsModelBuilder(new WeightsModelBuilderConf(entityEventConfName, null, Collections.emptyList()), modelBuilderAlgorithm,smartRecordConfService, weightModelBuilderMetricsContainer);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -87,7 +92,8 @@ public class WeightsModelBuilderTest {
                 Mockito.eq(this.clusterConfs),
                 Mockito.eq(modelBuilderData.getSmartAggregatedRecordDataContainers()),
                 Mockito.eq(modelBuilderData.getNumOfContexts()),
-                Mockito.anyInt(), Mockito.anyList()
+                Mockito.anyInt(), Mockito.anyList(),
+                weightModelBuilderMetricsContainer
         )).thenReturn(clusterConfs);
 
         SmartWeightsModel model = (SmartWeightsModel) createModelBuilder(algorithm).build(modelBuilderData);
