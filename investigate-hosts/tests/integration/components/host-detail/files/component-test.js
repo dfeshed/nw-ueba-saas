@@ -29,7 +29,9 @@ moduleForComponent('host-detail/files', 'Integration | Component | endpoint host
 
 test('table still loading', function(assert) {
   this.render(hbs`{{host-detail/files}}`);
-  assert.equal(this.$('.rsa-data-table div.rsa-loader').length, 1, 'RSA loader displayed initially');
+  new ReduxDataHelper(setState)
+    .filesLoadMoreStatus('wait').build();
+  assert.equal(this.$('.rsa-data-table div.rsa-loader').length, 1, 'RSA loader displayed');
 });
 
 test('table with no data', function(assert) {
@@ -48,7 +50,7 @@ test('windows specific columns are rendered', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-data-table-header-cell').length, 6, '6 columns rendered for windows');
-    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns');
+    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns, others have sort disabled');
   });
 });
 
@@ -59,7 +61,7 @@ test('mac specific columns are rendered', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-data-table-header-cell').length, 6, '6 columns rendered for windows');
-    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns');
+    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns, others have sort disabled');
   });
 });
 
@@ -70,13 +72,28 @@ test('linux specific columns are rendered', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-data-table-header-cell').length, 7, '7 columns rendered for windows');
-    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 2, '2 sortable columns');
+    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 2, '2 sortable columns, others have sort disabled');
+  });
+});
+
+sinon.stub(DataCreators, 'sortBy');
+test('check sortyBy action is called', function(assert) {
+  new ReduxDataHelper(setState)
+    .filesLoadMoreStatus('stopped')
+    .files(hostFiles.files).build();
+  this.render(hbs`{{host-detail/files}}`);
+
+  return wait().then(() => {
+    this.$('.rsa-data-table-header-row').find('.rsa-icon')[0].click();
+    assert.equal(DataCreators.sortBy.calledOnce, true, 'sortBy action is called');
+    assert.equal(DataCreators.sortBy.args[0][0].sortField, 'fileName', 'sortField is fileName');
+    assert.equal(DataCreators.sortBy.args[0][0].isDescOrder, true, 'isDescOrder is true');
+    DataCreators.sortBy.restore();
   });
 });
 
 sinon.stub(DataCreators, 'setSelectedFile');
-sinon.stub(DataCreators, 'sortBy');
-test('check actions are called', function(assert) {
+test('check setSelectedFile action is called', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files).build();
@@ -85,15 +102,26 @@ test('check actions are called', function(assert) {
   return wait().then(() => {
     this.$('.rsa-data-table-body-row')[2].click();
     assert.equal(DataCreators.setSelectedFile.calledOnce, true, 'setSelectedFile action is called');
+    assert.equal(DataCreators.setSelectedFile.args[0][0],
+      '29772d95b2488a5a7715a96270f827fbf2b2e1e0a627ae041a54a6faddd2686c', 'checksum is provided');
     DataCreators.setSelectedFile.restore();
-
-    this.$('.rsa-data-table-header-row').find('.rsa-icon')[0].click();
-    assert.equal(DataCreators.sortBy.calledOnce, true, 'sortBy action is called');
-    DataCreators.sortBy.restore();
   });
 });
 
 sinon.stub(DataCreators, 'getHostFiles');
+test('load more calls getHostFiles', function(assert) {
+  new ReduxDataHelper(setState)
+    .filesLoadMoreStatus('stopped')
+    .files(hostFiles.files).build();
+  this.render(hbs`{{host-detail/files}}`);
+
+  return wait().then(() => {
+    this.$('.rsa-data-table-load-more button.rsa-form-button').click();
+    assert.equal(DataCreators.getHostFiles.calledOnce, true, 'Load More click calls an action');
+    DataCreators.getHostFiles.restore();
+  });
+});
+
 test('table with data', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
@@ -119,10 +147,6 @@ test('table with data', function(assert) {
     assert.equal(fileInfoText, '6 of 500 files', 'Footer displayed correctly');
     assert.equal(fileName, 'systemd-journald.service', 'First column is file name');
     assert.equal(firstRowOwnerText, 'root (0)', 'last column is owner (for linux)');
-
-    this.$('.rsa-data-table-load-more button.rsa-form-button').click();
-    assert.equal(DataCreators.getHostFiles.calledOnce, true, 'Load More click calls an action');
-    DataCreators.getHostFiles.restore();
   });
 });
 
