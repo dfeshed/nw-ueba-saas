@@ -7,18 +7,38 @@ import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
 import { eventsGetFirst } from './events-creators';
-import { parseEventQueryUri } from 'investigate-events/actions/helpers/query-utils';
+import { parseQueryParams } from 'investigate-events/actions/utils';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { lookup } from 'ember-dependency-lookup';
 import { SET_PREFERENCES } from 'recon/actions/types';
 import { getCurrentPreferences, getDefaultPreferences } from 'investigate-events/reducers/investigate/data-selectors';
-import Ember from 'ember';
 
-const { Logger } = Ember;
-const { log } = console;
+const noop = () => {};
 
 const _showFutureFeatures = config.featureFlags.future;
+
+/**
+ * Promise version of `getServices()`.
+ * @see getServices
+ * @private
+ */
+const _getServicesPromise = (dispatch, getState) => {
+  return new RSVP.Promise((resolve, reject) => {
+    getServices(resolve, reject)(dispatch, getState);
+  });
+};
+
+/**
+ * Promise version of `getServiceSummary()`.
+ * @see getServiceSummary
+ * @private
+ */
+// const _getServiceSummaryPromise = (dispatch, getState) => {
+//   return new RSVP.Promise((resolve, reject) => {
+//     getServiceSummary(resolve, reject)(dispatch, getState);
+//   });
+// };
 
 /**
  * Initializes the dictionaries (language and aliases). If we've already
@@ -28,7 +48,7 @@ const _showFutureFeatures = config.featureFlags.future;
  * @return {RSVP.Promise}
  * @private
  */
-const _initializeDictionaries = (dispatch, getState) => {
+const _getDictionariesPromise = (dispatch, getState) => {
   return new RSVP.Promise((resolve, reject) => {
     const { serviceId } = getState().investigate.queryNode;
     const { aliasesCache, languageCache } = getState().investigate.dictionaries;
@@ -39,7 +59,6 @@ const _initializeDictionaries = (dispatch, getState) => {
           promise: fetchLanguage(serviceId),
           meta: {
             onFailure(response) {
-              log('languagePromise, onFailure', response);
               reject(response);
             },
             onFinish() {
@@ -48,8 +67,10 @@ const _initializeDictionaries = (dispatch, getState) => {
           }
         });
       } else {
-        dispatch({ type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE, payload: serviceId });
-        log('languagePromise, pull from cache');
+        dispatch({
+          type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE,
+          payload: serviceId
+        });
         resolve();
       }
     });
@@ -60,7 +81,6 @@ const _initializeDictionaries = (dispatch, getState) => {
           promise: fetchAliases(serviceId),
           meta: {
             onFailure(response) {
-              log('aliasesPromise, onFailure', response);
               reject(response);
             },
             onFinish() {
@@ -70,39 +90,13 @@ const _initializeDictionaries = (dispatch, getState) => {
         });
       } else {
         dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
-        log('aliasesPromise, pull from cache');
         resolve();
       }
     });
-    RSVP.all([languagePromise, aliasesPromise]).then(resolve, reject);
-  });
-};
-
-/**
- * Initializes the list of services (aka endpoints). This list shouldn't really
- * change much, so we only retrieve it once.
- * @param {function} dispatch
- * @param {function} getState
- * @return {RSVP.Promise}
- * @private
- */
-const _initializeServices = (dispatch, getState) => {
-  return new RSVP.Promise((resolve, reject) => {
-    const { services } = getState().investigate;
-    if (!services.data) {
-      dispatch({
-        type: ACTION_TYPES.SERVICES_RETRIEVE,
-        promise: fetchServices(),
-        meta: {
-          onFailure(response) {
-            log('initializeServices, onFailure', response);
-            reject(response);
-          },
-          onFinish() {
-            resolve();
-          }
-        }
-      });
+    if (serviceId) {
+      RSVP.all([languagePromise, aliasesPromise]).then(() => {
+        resolve();
+      }, reject);
     } else {
       resolve();
     }
@@ -116,57 +110,51 @@ const _initializeServices = (dispatch, getState) => {
  * @return void
  * @private
  */
-const _getPreferences = (dispatch, modelName) => {
-  const prefService = lookup('service:preferences');
-  return prefService.getPreferences(modelName).then((data) => {
-    if (data) {
-      // Only if preferences is sent from api, set the preference state.
-      // Otherwise, initial state will be used.
-      dispatch({
-        type: ACTION_TYPES.SET_PREFERENCES,
-        payload: data
-      });
+const _getPreferencesPromise = (dispatch, getState, modelName) => {
+  return new RSVP.Promise((resolve, reject) => {
+    const { queryTimeFormat } = getState().investigate.queryNode;
+    if (queryTimeFormat) {
+      // We already have preferences, just resolve
+      resolve();
     } else {
-      // Since there is no preference data for the current user, set the default column group.
-      // This cannot be set as initial state in redux, since it results in the entire events table
-      // rendering twice - the first time for default, then again for the persisted group when
-      // we get preference data from backend.
-      dispatch({
-        type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
-        payload: 'SUMMARY'
-      });
+      const prefService = lookup('service:preferences');
+      prefService.getPreferences(modelName).then((data) => {
+        if (data) {
+          // Only if preferences is sent from api, set the preference state.
+          // Otherwise, initial state will be used.
+          dispatch({
+            type: ACTION_TYPES.SET_PREFERENCES,
+            payload: data
+          });
+        } else {
+          // Since there is no preference data for the current user, set the default column group.
+          // This cannot be set as initial state in redux, since it results in the entire events table
+          // rendering twice - the first time for default, then again for the persisted group when
+          // we get preference data from backend.
+          dispatch({
+            type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
+            payload: 'SUMMARY'
+          });
+        }
+        resolve();
+      }, reject);
     }
   });
 };
 
 /**
- * Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
- * @param state the redux state
- * @public
- */
-export const savePreferences = (state) => {
-  const prefService = lookup('service:preferences');
-  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state),
-    getDefaultPreferences(state)).then(() => {
-      Logger.info('Successfully persisted Value');
-    });
-};
-
-/**
- * Prepare state for a fresh query. We're only checking if `serviceId` or
- * `sessionId` are set. If they are, then state is probably "dirty", so we'll
- * reset it to a default state.
- * @return {function} A Redux thunk
+ * This dispatches a Recon action to update preference state.
+ * TODO: This action creator would move to recon eventually when the preferences
+ * are split
+ * @see preferencesUpdated
+ * @param {object} preferences - The preferences data
+ * @return {object} An action object
  * @private
  */
-export const _initializeQuery = () => {
-  return (dispatch, getState) => {
-    const { serviceId, sessionId } = getState().investigate.queryNode;
-    if (serviceId || sessionId) {
-      dispatch({ type: ACTION_TYPES.RESET_QUERYNODE });
-    }
-  };
-};
+const _reconPreferenceUpdated = (preferences) => ({
+  type: SET_PREFERENCES,
+  payload: preferences
+});
 
 
 /**
@@ -182,8 +170,8 @@ export const getColumnGroups = () => {
         type: ACTION_TYPES.COLUMNS_RETRIEVE,
         promise: fetchColumnGroups(),
         meta: {
-          onFailure(response) {
-            log('getColumnGroups, onFailure', response);
+          onFailure() {
+            // log('getColumnGroups, onFailure', response);
           }
         }
       });
@@ -192,24 +180,41 @@ export const getColumnGroups = () => {
 };
 
 /**
- * Redux thunk to get services. This is the same as `_initializeServices`, but
- * is not wrapped in a promise.
+ * Retrieves the list of services (aka endpoints). This list shouldn't really
+ * change much.
+ * @param {function} [resolve=NOOP] - A Promise resolve
+ * @param {function} [reject=NOOP]  - A Promise reject
  * @return {function} A Redux thunk
  * @public
  */
-export const initializeServices = () => {
+export const getServices = (resolve = noop, reject = noop) => {
   return (dispatch, getState) => {
-    const { services } = getState().investigate;
-    if (!services.data) {
+    const { serviceData } = getState().investigate.services;
+    if (!serviceData) {
       dispatch({
         type: ACTION_TYPES.SERVICES_RETRIEVE,
         promise: fetchServices(),
         meta: {
+          onSuccess(response) {
+            const { data } = response;
+            if (data && Array.isArray(data)) {
+              // grab first service in array
+              const [ service ] = data;
+              dispatch({
+                type: ACTION_TYPES.SERVICE_SELECTED,
+                payload: service.id
+              });
+              dispatch(getServiceSummary());
+            }
+            resolve();
+          },
           onFailure(response) {
-            log('initializeServices, onFailure', response);
+            reject(response);
           }
         }
       });
+    } else {
+      resolve();
     }
   };
 };
@@ -218,28 +223,51 @@ export const initializeServices = () => {
  * Get attribute summary for a selected service. Results include aggregation
  * times that change frequently. So we are not caching these results and instead
  * making a server call everytime.
+ * @param {function} [resolve=NOOP] - A Promise resolve
+ * @param {function} [reject=NOOP]  - A Promise reject
  * @return {function} A Redux thunk
  * @public
  */
-export const getServiceSummary = () => {
+export const getServiceSummary = (resolve = noop, reject = noop) => {
   return (dispatch, getState) => {
     const { serviceId } = getState().investigate.queryNode;
-    dispatch({
-      type: ACTION_TYPES.SUMMARY_RETRIEVE,
-      promise: fetchSummary(serviceId),
-      meta: {
-        onFailure(response) {
-          log('getServiceSummary, onFailure', response);
-        },
-        onSuccess() {
-          // We always have a valid time range whether it's the default of
-          // 24 hours or a value pulled from localstorage. So get that range and
-          // set the query time range.
-          const range = selectedTimeRange(getState());
-          dispatch(setQueryTimeRange(range));
+    if (serviceId) {
+      dispatch({
+        type: ACTION_TYPES.SUMMARY_RETRIEVE,
+        promise: fetchSummary(serviceId),
+        meta: {
+          onSuccess() {
+            // We always have a valid time range whether it's the default of
+            // 24 hours or a value pulled from localstorage. So get that range
+            // and set the query time range.
+            const range = selectedTimeRange(getState());
+            dispatch(setQueryTimeRange(range));
+            resolve();
+          },
+          onFailure() {
+            reject();
+          }
         }
+      });
+    } else {
+      resolve();
+    }
+  };
+};
+
+export const fetchInvestigateData = () => {
+  return (dispatch, getState) => {
+    const { serviceId, startTime, endTime } = getState().investigate.queryNode;
+    if (serviceId && startTime && endTime) {
+      dispatch(getEventCount());
+      if (_showFutureFeatures) {
+        dispatch(getEventTimeline());
+        // TODO - Later on, we'll get meta values, but skip for now
+        // dispatch(metaGet());
       }
-    });
+      // Get first batch of results
+      dispatch(eventsGetFirst());
+    }
   };
 };
 
@@ -252,60 +280,34 @@ export const getServiceSummary = () => {
  * @return {function} A Redux thunk
  * @public
  */
-export const initializeInvestigate = (params) => {
+export const initializeInvestigate = (params, hardReset = false) => {
   return (dispatch, getState) => {
-    const parsedQueryParams = {
-      sessionId: params.eventId,
-      metaPanelSize: params.metaPanelSize,
-      reconSize: params.reconSize,
-      ...parseEventQueryUri(params.filter)
-    };
     const { modelName } = getState().investigate.data.eventsPreferencesConfig;
-    // Initialize all the things
+    // Initialize state from query params
     dispatch({
       type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-      payload: parsedQueryParams
+      payload: parseQueryParams(params),
+      hardReset
     });
-
     dispatch(getColumnGroups());
-    // Get data
-    _getPreferences(dispatch, modelName).then(() => {
-      _initializeServices(dispatch, getState);
-      _initializeDictionaries(dispatch, getState).then(() => {
-        // TEMP FIX: Until index and query routes are merged, we can't land on
-        // this route without a selected service. We need to get the summary
-        // for the selected service to handle the case where the user might
-        // update their DB/WALL preference.
-        dispatch(getServiceSummary());
-        // TEMP FIX: end
-        dispatch(getEventCount());
-        if (_showFutureFeatures) {
-          dispatch(getEventTimeline());
-          // TODO - Later on, we'll get meta values, but skip for now
-          // dispatch(metaGet());
-        }
-        // Get first batch of results
-        dispatch(eventsGetFirst());
-      });
-    });
+    // Get all the things
+    return RSVP.all([
+      _getPreferencesPromise(dispatch, getState, modelName),
+      _getServicesPromise(dispatch, getState),
+      _getDictionariesPromise(dispatch, getState)
+    ]);
   };
 };
 
 /**
- * Kick off a series of events to initialize the index page of Investigate
- * Events.
- * @return {function} A Redux thunk
+ * Extracts (and merges) all the preferences from redux state and sends to the
+ * backend for persisting.
+ * @param state the redux state
  * @public
  */
-export const initializeIndexRoute = () => {
-  return (dispatch, getState) => {
-    const { modelName } = getState().investigate.data.eventsPreferencesConfig;
-    getColumnGroups(dispatch, getState);
-    _getPreferences(dispatch, modelName).then(() => {
-      _initializeServices(dispatch, getState);
-      _initializeQuery(dispatch, getState);
-    });
-  };
+export const savePreferences = (state) => {
+  const prefService = lookup('service:preferences');
+  prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state), getDefaultPreferences(state));
 };
 
 /**
@@ -327,21 +329,24 @@ export const preferencesUpdated = (preferences) => {
     if (preferences.queryTimeFormat !== currentTimeFormat) {
       const range = selectedTimeRange(getState());
       dispatch(setQueryTimeRange(range));
+      dispatch(fetchInvestigateData());
     }
     dispatch(_reconPreferenceUpdated(preferences));
   };
 };
 
 /**
- * This dispatches a Recon action to update preference state.
- * TODO: This action creator would move to recon eventually when the preferences
- * are split
- * @see preferencesUpdated
- * @param {object} preferences - The preferences data
- * @return {object} An action object
+ * Prepare state for a fresh query. We're only checking if `serviceId` or
+ * `sessionId` are set. If they are, then state is probably "dirty", so we'll
+ * reset it to a default state.
+ * @return {function} A Redux thunk
  * @private
  */
-export const _reconPreferenceUpdated = (preferences) => ({
-  type: SET_PREFERENCES,
-  payload: preferences
-});
+// const _initializeQuery = () => {
+//   return (dispatch, getState) => {
+//     const { serviceId, sessionId } = getState().investigate.queryNode;
+//     if (serviceId || sessionId) {
+//       dispatch({ type: ACTION_TYPES.RESET_QUERYNODE });
+//     }
+//   };
+// };

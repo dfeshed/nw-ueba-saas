@@ -46,7 +46,7 @@
   overflow-y: auto;
 
   p {
-    @include rsa-font(body, small);
+    @include rsa-font(body);
     color: text-color(primary, light);
     position: absolute;
     right: rsa-whitespace(less);
@@ -60,7 +60,7 @@
 
   > .controls {
     white-space: nowrap;
-    display: none;
+    display: flex;
     justify-content: flex-end;
     align-content: center;
 
@@ -75,10 +75,8 @@
     }
   }
 
-  &.queryable {
-    .controls {
-      display: flex;
-    }
+  input {
+    width: 100
   }
 
   input,
@@ -97,6 +95,11 @@
     @include border(1px, solid, primary, lighter);
     color: text-color(primary, lightest);
 
+    &:not(.edit-active) {
+      margin-top: calc(#{rsa-whitespace(least)} - 1px});
+      margin-bottom: calc(#{rsa-whitespace(least)} - 2px});
+    }
+
     .rsa-icon.expensive-operator-indicator {
       color: text-color(primary, lightest);
     }
@@ -110,7 +113,7 @@
       }
 
       &.typing {
-        max-width: inherit;
+        max-width: 100%;
       }
     }
 
@@ -183,7 +186,7 @@
     }
 
     .meta {
-      @include rsa-font(body, small);
+      @include rsa-font(body);
       display: block;
       text-align: center;
       padding: rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace(less);

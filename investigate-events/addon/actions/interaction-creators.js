@@ -1,11 +1,9 @@
 import * as ACTION_TYPES from './types';
+import moment from 'moment';
 import { getServiceSummary } from './data-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
-import moment from 'moment';
-import {
-  savePreferences
-} from 'investigate-events/actions/data-creators';
+import { savePreferences } from 'investigate-events/actions/data-creators';
 
 export const setMetaPanelSize = (size) => {
   if (size) {

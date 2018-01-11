@@ -15,7 +15,8 @@ const _initialState = Immutable.from({
   queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
-  startTime: 0
+  startTime: 0,
+  atLeastOneQueryIssued: false
 });
 
 export default handleActions({
@@ -39,20 +40,20 @@ export default handleActions({
     return _initialState.merge(payload.queryNode, { deep: true });
   },
 
-  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
-    let sessionId;
-    if (payload.sessionId && !Number.isNaN(payload.sessionId)) {
-      sessionId = parseInt(payload.sessionId, 10);
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload, hardReset }) => {
+    if (hardReset) {
+      return _initialState;
+    } else {
+      return state.merge({
+        endTime: payload.endTime && parseInt(payload.endTime, 10) || 0,
+        eventMetas: undefined,
+        metaFilter: payload.metaFilter,
+        queryString: '',
+        serviceId: payload.serviceId,
+        sessionId: payload.sessionId && parseInt(payload.sessionId, 10) || undefined,
+        startTime: payload.startTime && parseInt(payload.startTime, 10) || 0
+      }, { deep: true });
     }
-    return state.merge({
-      endTime: payload.endTime,
-      eventMetas: undefined,
-      metaFilter: payload.metaFilter,
-      queryString: '',
-      serviceId: payload.serviceId,
-      sessionId,
-      startTime: payload.startTime
-    }, { deep: true });
   },
 
   [ACTION_TYPES.RESET_QUERYNODE]: (state) => {
@@ -84,5 +85,9 @@ export default handleActions({
 
   [ACTION_TYPES.SET_SELECTED_EVENT]: (state, { payload }) => {
     return state.merge(payload);
+  },
+
+  [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {
+    return state.set('atLeastOneQueryIssued', true);
   }
 }, _initialState);

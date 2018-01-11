@@ -1,6 +1,5 @@
 import EmberObject from 'ember-object';
 import run from 'ember-runloop';
-import layout from './template';
 import { isEmpty } from 'ember-utils';
 import computed, { filterBy, notEmpty, gt } from 'ember-computed-decorators';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
@@ -8,7 +7,6 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 import on from 'ember-evented/on';
-
 import { setQueryFilterMeta } from 'investigate-events/actions/interaction-creators';
 import { queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';
 
@@ -65,11 +63,9 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
 
   i18n: service(),
 
-  layout,
-
   classNames: ['rsa-query-meta'],
 
-  classNameBindings: ['withSelected', 'queryable'],
+  classNameBindings: ['withSelected'],
 
   @filterBy('filters', 'selected', true)
   selectedList: null,
@@ -86,39 +82,37 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
   processedPreloadedFilters: null,
   filters: null,
 
-  @computed('filters.length', 'queryable', 'i18n')
-  placeholder(filtersLength, queryable, i18n) {
-    if (!queryable && filtersLength === 1) {
+  @computed('filters.length', 'i18n')
+  placeholder(filtersLength, i18n) {
+    if (filtersLength === 1) {
       return i18n.t('queryBuilder.placeholder');
     }
   },
 
-  @computed('filters', 'filters.length', 'preloadedFilters', 'preloadedFilters.length', 'filters.@each.meta', 'filters.@each.operator', 'filters.@each.value')
-  queryable(filters, filtersLength, preloadedFilters, preloadedFiltersLength) {
-    let queryable = false;
+  @computed('preloadedFilters', 'preloadedFilters.length')
+  processFilters(preloadedFilters) {
+    run.schedule('afterRender', () => {
+      const filters = this.set('filters', []);
+      const processedPreloadedFilters = this.set('processedPreloadedFilters', []);
 
-    if (isEmpty(filters) || (preloadedFiltersLength === 0 && (filtersLength - 1) === 0)) {
-      return queryable;
-    }
+      if (preloadedFilters) {
+        preloadedFilters.map((filter, index) => {
+          const obj = EmberObject.create({
+            meta: filter.meta,
+            operator: filter.operator,
+            value: filter.value,
+            filterIndex: index,
+            editActive: false,
+            selected: false,
+            saved: true
+          });
 
-    filters = filters.filterBy('editActive', false);
-    if (preloadedFiltersLength && preloadedFiltersLength === filters.get('length')) {
-
-      preloadedFilters.forEach((filter, i) => {
-
-        const filterAStr = `${filter.meta} ${filter.operator} ${filter.value}`;
-        const filterB = filters.objectAt(i);
-        const filterBStr = `${filterB.get('meta')} ${filterB.get('operator')} ${filterB.get('value')}`;
-
-        if (filterAStr != filterBStr) {
-          queryable = true;
-        }
-      });
-    } else {
-      queryable = true;
-    }
-
-    return queryable;
+          filters.pushObject(obj);
+          processedPreloadedFilters.pushObject(obj);
+        });
+      }
+      insertEmptyFilter(filters, preloadedFilters.length);
+    });
   },
 
   prev: on(keyUp('ArrowLeft'), function() {
@@ -261,6 +255,11 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
         if (this.isDestroyed || this.isDestroying) {
           return;
         }
+
+        if (this.$('input') && firstSelected != filters.get('lastObject')) {
+          this.$('input').width(this.$('input').val().length * 8);
+        }
+
         this.$('input').first().focus();
       });
     }
@@ -275,32 +274,6 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       filters.removeObjects(selectedList);
     }
   }),
-
-  didInsertElement() {
-    const filters = this.set('filters', []);
-    const processedPreloadedFilters = this.set('processedPreloadedFilters', []);
-
-    const preloadedFilters = this.get('preloadedFilters');
-
-    if (preloadedFilters) {
-      preloadedFilters.map((filter, index) => {
-        const obj = EmberObject.create({
-          meta: filter.meta,
-          operator: filter.operator,
-          value: filter.value,
-          filterIndex: index,
-          editActive: false,
-          selected: false,
-          saved: true
-        });
-
-        filters.pushObject(obj);
-        processedPreloadedFilters.pushObject(obj);
-      });
-    }
-
-    insertEmptyFilter(filters, preloadedFilters.length);
-  },
 
   actions: {
     deleteSelected(filter) {
@@ -319,20 +292,17 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
         filters = this.get('filters');
       }
 
-      const completeFilters = filters.without(this.get('filters.lastObject'));
-      this.set('processedPreloadedFilters', completeFilters);
-      this.executeQuery(completeFilters, externalLink);
+      this.set('processedPreloadedFilters', filters);
+      this.executeQuery(filters, externalLink);
     },
 
-    insertFilter(index) {
+    insertFilter(filter, filterList) {
+      const index = filterList.indexOf(filter);
       insertEmptyFilter(this.get('filters'), index);
+
       run.next(() => {
-        if (this.isDestroyed || this.isDestroying) {
-          return;
-        }
         this.$('.rsa-query-fragment').eq(index).find('input').focus();
       });
-
     },
 
     setKeyboardPriority(value) {

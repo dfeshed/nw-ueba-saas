@@ -1,7 +1,6 @@
-export const DEFAULT_TIME_RANGE_ID = 'LAST_24_HOURS';
-export const DATABASE_TIME = 'DB';
-
-export default [
+const DEFAULT_TIME_RANGE_ID = 'LAST_24_HOURS';
+const DATABASE_TIME = 'DB';
+const RANGES = [
   { id: 'LAST_5_MINUTES', name: 'Last 5 Minutes', value: 5, unit: 'minutes' },
   { id: 'LAST_10_MINUTES', name: 'Last 10 Minutes', value: 10, unit: 'minutes' },
   { id: 'LAST_15_MINUTES', name: 'Last 15 Minutes', value: 15, unit: 'minutes' },
@@ -18,3 +17,18 @@ export default [
   { id: 'LAST_30_DAYS', name: 'Last 30 Days', value: 1, unit: 'months' },
   { id: 'ALL_DATA', name: 'All Data', value: 0, unit: 'all' }
 ];
+
+const getById = (id) => RANGES.find((d) => d.id === id);
+
+const getNameById = (id) => {
+  const range = getById(id);
+  return range ? range.name : null;
+};
+
+export default {
+  DATABASE_TIME,
+  DEFAULT_TIME_RANGE_ID,
+  RANGES,
+  getById,
+  getNameById
+};

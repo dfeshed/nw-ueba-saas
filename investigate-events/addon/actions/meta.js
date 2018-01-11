@@ -12,7 +12,7 @@ import MetaKeyState from 'investigate-events/state/meta-key';
 import {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest
-} from './helpers/query-utils';
+} from './utils';
 
 const {
   get,

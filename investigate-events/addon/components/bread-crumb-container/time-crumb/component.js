@@ -1,14 +1,27 @@
 
+import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import Component from 'ember-component';
+import TIME_RANGES from 'investigate-events/constants/time-ranges';
+import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
+import { selectedTimeRangeName } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 const stateToComputed = (state) => ({
+  selectedTimeRangeName: selectedTimeRangeName(state),
   queryNode: state.investigate.queryNode
 });
 
+const dispatchToActions = { setQueryTimeRange };
+
 const TimeCrumb = Component.extend({
   classNames: 'rsa-investigate-breadcrumb',
+
+  /**
+   * Array of available time ranges for user to pick from.
+   * @type {object[]}
+   * @private
+   */
+  timeRanges: TIME_RANGES.RANGES,
 
   @computed()
   panelId() {
@@ -17,4 +30,4 @@ const TimeCrumb = Component.extend({
 
 });
 
-export default connect(stateToComputed)(TimeCrumb);
+export default connect(stateToComputed, dispatchToActions)(TimeCrumb);

@@ -1,9 +1,17 @@
 .rsa-investigate-breadcrumb {
-
   &__crumbs {
     @include rsa-row(left, middle);
     flex-wrap: nowrap;
     align-items: flex-start;
+
+    .execute-query-button {
+      margin-left: rsa-whitespace(least);
+
+      button {
+        padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
+        padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
+      }
+    }
   }
 
   .disabled-meta-breadcrumb-title {
@@ -32,15 +40,24 @@
       }
     }
 
+    .disclaimer {
+      color:text-color(accentThree);
+    }
+
     .rsa-form-button {
       padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
       padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
       padding-left: rsa-whitespace();
-      padding-right: rsa-whitespace(less) + rsa-whitespace(more);
       white-space: nowrap;
       margin-right: rsa-whitespace(least);
       @include border(1px, solid, primary);
       color: text-color(primary, lighter)!important;
+    }
+
+    .rsa-loader {
+      height: 0.9rem;
+      margin-right: rsa-whitespace(less);
+      margin-left: -(rsa-whitespace(least));
     }
 
     &:hover,

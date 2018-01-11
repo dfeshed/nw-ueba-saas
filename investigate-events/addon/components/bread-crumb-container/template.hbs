@@ -2,4 +2,11 @@
 
 {{bread-crumb-container/time-crumb}}
 
-{{query-filters executeQuery=(route-action 'executeQuery')}}
+{{query-filters filters=filters executeQuery=(route-action 'executeQuery')}}
+
+{{#rsa-form-button
+  class='execute-query-button'
+  style='primary'
+  defaultAction=(route-action 'executeQuery' filters)}}
+  Query Events
+{{/rsa-form-button}}

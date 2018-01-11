@@ -64,16 +64,6 @@ test('it renders with no fragments by defauls', function(assert) {
   assert.equal(this.$('.rsa-query-meta input:focus').length, 0, 'Expected .rsa-query-meta to not have focus');
 });
 
-test('it renders with proper class when queryable', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData()
-    .setQueryParamsForTests(queryA);
-
-  this.render(hbs`{{query-filters queryable=true}}`);
-
-  assert.equal(this.$('.rsa-query-meta.queryable').length, 1, 'Expected 1 .rsa-query-meta');
-});
-
 test('focusing expands dropdown immediately', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData()
@@ -117,29 +107,4 @@ test('it allows fragment editing via keyboard', function(assert) {
 
   triggerKeyUp('Enter', $queryBuilder[0]);
   assert.ok($fragment.hasClass('edit-active'));
-});
-
-test('it can be submitted via submit button', function(assert) {
-  let submitted = false;
-  this.set('submit', () => {
-    submitted = true;
-  });
-
-  this.render(hbs`{{query-filters queryable=true executeQuery=submit}}`);
-  this.$('.execute-query').first().click();
-
-  assert.ok(submitted);
-});
-
-test('check the recon size value', function(assert) {
-  let submitted = false;
-  this.set('submit', () => {
-    submitted = true;
-  });
-
-  this.render(hbs`{{query-filters queryable=true executeQuery=submit}}`);
-  this.$('.execute-query').first().click();
-
-  assert.ok(submitted);
-  assert.equal(this.get('redux').getState().investigate.data.reconSize, 'max');
 });

@@ -42,6 +42,25 @@ $investigateReconFullWidth: 100%;
     position: relative;   /* enables positioning of children */
     @include rsa-vendor-prefix(flex-grow, 1);
 
+    &-tips {
+      position: relative;
+      @include rsa-vendor-prefix(flex-grow,1);
+      @include rsa-col(center, middle);
+      @include rsa-font(body);
+      color: text-color(primary);
+      section {
+        @include rsa-font(body, small);
+        @include border(1px, solid, primary, darker);
+        border-radius: rsa-whitespace(less);
+        padding: rsa-whitespace();
+        margin: rsa-whitespace(more);;
+        background-color: background-color(neutral, dark);
+        li {
+          padding: rsa-whitespace() 0 0;
+        }
+      }
+    }
+
     &-status {
       position: absolute;
       top: 0;

@@ -110,10 +110,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         {
           label: i18n.t('queryBuilder.querySelected'),
           action() {
-            const toRemove = filterList.filterBy('selected', false);
+            const toRemove = filterList.without(filterList.get('lastObject')).filterBy('selected', false);
             if (toRemove.length) {
               deleteFilter(toRemove);
-              executeQuery(filterList);
+              executeQuery(filterList.filterBy('selected', true));
             }
           }
         },
@@ -190,7 +190,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     }
   },
 
-  @computed('filterList', 'filterIndex')
+  @computed('filterList', 'filterIndex', 'filterList.@each.editActive')
   prevIsEditing(filterList, filterIndex) {
     if (!isEmpty(filterList)) {
       const prev = filterList.objectAt(filterIndex - 1);
@@ -386,11 +386,15 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           value: null,
           typing: false
         });
+
+        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
+          input.width(8);
+        }
       } else {
         this.set('typing', true);
 
-        if (filterRecord != filterList.get('lastObject')) {
-          input.width(inputVal.length * 8);
+        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
+          input.width((inputVal.length + 1) * 8);
         }
       }
 
@@ -460,7 +464,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
       if (pressedEnter) {
         if (isEmpty(select.highlighted) && isEmpty(inputVal) && (filterRecord === filterList.get('lastObject'))) {
-          return this.executeQuery(filterList);
+          return this.executeQuery([]);
         }
 
         if (!isEmpty(inputVal)) {
@@ -491,6 +495,8 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
                 return option.displayName === '<=';
               } else if (inputVal.includes('>=')) {
                 return option.displayName === '>=';
+              } else if (inputVal.includes('!=')) {
+                return option.displayName === '!=';
               } else {
                 return inputVal.includes(option.displayName);
               }
@@ -527,7 +533,9 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
                 this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
               }
 
-              this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
+              if (filterRecord === filterList.get('lastObject')) {
+                this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
+              }
 
               run.next(() => {
                 this.$().next('.rsa-query-fragment').find('input').focus();
@@ -551,6 +559,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
           const updatedCursorPosition = input.get(0).selectionStart;
           const metaAndOperatorLength = metaLength + operatorLength;
+
+          if (this.get('empty')) {
+            return;
+          }
 
           if (updatedCursorPosition <= metaLength) {
             this.set('type', 'meta');
@@ -605,6 +617,8 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     // User makes selection via typeahead
     updateFilter(selection, select) {
       const { filterList, type, filterRecord } = this.getProperties('filterList', 'type', 'filterRecord');
+      const input = this.$('input');
+      const inputVal = input.val();
 
       if (isEmpty(selection) && select.results.length === 1) {
         selection = select.results[0];
@@ -613,8 +627,20 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
       }
 
       if (type === 'meta') {
+        if (inputVal.indexOf(this.get('value')) === -1) {
+          this.set('value', null);
+        }
+
+        if (inputVal.indexOf(this.get('operator')) === -1) {
+          this.set('operator', null);
+        }
+
         const keyIndexes = ['none', 'key', 'value'];
         const keyIndexType = selection.flags & '0xF';
+
+        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
+          this.$('input').width(selection.metaName.length * 8);
+        }
 
         this.setProperties({
           meta: selection.metaName,
@@ -623,6 +649,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           type: 'operator'
         });
       } else if (type === 'operator') {
+        if (inputVal.indexOf(this.get('value')) === -1) {
+          this.set('value', null);
+        }
+
         this.setProperties({
           isExpensive: selection.isExpensive,
           operator: selection.displayName
@@ -630,6 +660,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
         if (selection.displayName === 'exists' || selection.displayName === '!exists') {
           this.setProperties({
+            value: null,
             editActive: false
           });
 
@@ -650,6 +681,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
       run.next(() => {
         this.$('input').prop('type', 'text').prop('spellcheck', false).focus();
+
+        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
+          this.$('input').width(this.$('input').val().length * 8);
+        }
       });
     },
 

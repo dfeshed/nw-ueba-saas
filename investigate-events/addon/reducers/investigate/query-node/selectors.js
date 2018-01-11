@@ -1,5 +1,5 @@
 import reselect from 'reselect';
-import timeRanges, { DATABASE_TIME, DEFAULT_TIME_RANGE_ID } from 'investigate-events/constants/time-ranges';
+import TIME_RANGES from 'investigate-events/constants/time-ranges';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
@@ -29,18 +29,24 @@ export const selectedTimeRangeId = createSelector(
   [_serviceId, _previouslySelectedTimeRanges],
   (serviceId, previouslySelectedTimeRanges) => {
     const last = previouslySelectedTimeRanges[serviceId];
-    return last ? last : DEFAULT_TIME_RANGE_ID;
+    return last ? last : TIME_RANGES.DEFAULT_TIME_RANGE_ID;
+  }
+);
+
+export const selectedTimeRangeName = createSelector(
+  [_serviceId, _previouslySelectedTimeRanges],
+  (serviceId, previouslySelectedTimeRanges) => {
+    const last = previouslySelectedTimeRanges[serviceId];
+    return last ? TIME_RANGES.getNameById(last) : '';
   }
 );
 
 export const selectedTimeRange = createSelector(
   [selectedTimeRangeId],
-  (id) => {
-    return timeRanges.find((el) => el.id === id);
-  }
+  (id) => TIME_RANGES.getById(id)
 );
 
 export const useDatabaseTime = createSelector(
   [_queryTimeFormat],
-  (queryTimeFormat) => queryTimeFormat === DATABASE_TIME
+  (queryTimeFormat) => queryTimeFormat === TIME_RANGES.DATABASE_TIME
 );

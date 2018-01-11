@@ -4,7 +4,13 @@
     {{#each tabs as |tab|}}
       {{#rsa-nav-tab align='left' isActive=tab.isActive}}
         {{#if tab.isActive}}
-          <a href='#'>{{tab.label}}</a>
+          {{#if (eq tab.name 'protected.investigate.investigate-events')}}
+            {{#link-to (query-params sid=undefined st=undefined et=undefined eid=undefined mf=undefined mps=undefined rs=undefined)}}
+              {{tab.label}}
+            {{/link-to}}
+          {{else}}
+            <a href='#'>{{tab.label}}</a>
+          {{/if}}
         {{else if tab.isClassic}}
           <a href={{tab.url}} class={{concat 'js-test-investigate-' tab.label '-classic'}}>{{tab.label}}</a>
         {{else}}

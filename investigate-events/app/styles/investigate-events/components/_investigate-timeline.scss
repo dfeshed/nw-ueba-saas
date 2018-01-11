@@ -1,5 +1,6 @@
 .rsa-investigate-timeline {
   @include rsa-col(justify,fill);
+  margin-top: rsa-whitespace(less);
 
   &__header {
     @include rsa-vendor-prefix(flex-shrink,0);

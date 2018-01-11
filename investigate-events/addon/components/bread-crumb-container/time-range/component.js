@@ -1,12 +1,6 @@
-/**
- * @file Time Range component
- * Displays the time range for an investigation.
- * Initially just a readonly display, but eventually may grow into an interactive time range picker.
- * @public
- */
+import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
 
 const stateToComputed = (state) => ({
   startTime: state.investigate.queryNode.startTime,
