@@ -15,7 +15,7 @@ const defaultSummaryConfig = [
     field: 'process.parentPid'
   },
   {
-    label: 'investigateHosts.process.userName',
+    label: 'investigateHosts.process.owner',
     field: 'process.owner'
   },
   {

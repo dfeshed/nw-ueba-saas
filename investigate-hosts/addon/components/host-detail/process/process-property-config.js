@@ -19,7 +19,7 @@ const fileProperty = [
         field: 'process.parentPath'
       },
       {
-        field: 'process.floatingThreadCount'
+        field: 'process.threadCount'
       },
       {
         field: 'process.sessionId'
