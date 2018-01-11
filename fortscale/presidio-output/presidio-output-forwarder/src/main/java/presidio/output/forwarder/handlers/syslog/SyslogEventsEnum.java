@@ -1,4 +1,4 @@
-package presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog;
+package presidio.output.forwarder.handlers.syslog;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
