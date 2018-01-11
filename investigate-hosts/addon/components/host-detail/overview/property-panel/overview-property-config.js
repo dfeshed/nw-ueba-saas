@@ -151,7 +151,7 @@ export default [
         labelKey: 'machine.users.sessionId'
       },
       {
-        field: 'isAdministrator',
+        field: 'administrator',
         labelKey: 'machine.users.isAdministrator'
       }
     ]
