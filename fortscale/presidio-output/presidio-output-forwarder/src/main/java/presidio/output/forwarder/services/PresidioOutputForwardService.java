@@ -12,6 +12,7 @@ import presidio.output.forwarder.shell.OutputForwarderApplication;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -44,15 +45,16 @@ public class PresidioOutputForwardService {
 
     private void forwardUsers(Instant startDate, Instant endDate) {
         // forward user changed events
+        String syslogEventId = UUID.randomUUID().toString();
         final AtomicInteger forwardedUsers = new AtomicInteger();
-        eventsHandler.onUserStartStreaming(startDate, endDate);
+        eventsHandler.onUserStartStreaming(startDate, endDate, syslogEventId);
         try (Stream<User> users = userPersistencyService.findUsersByUpdatedDate(startDate, endDate)) {
             users.forEach(user -> {
                 eventsHandler.onUserChanged(user);
                 forwardedUsers.incrementAndGet();
             });
         }
-        eventsHandler.onUserEndStreaming(startDate, endDate);
+        eventsHandler.onUserEndStreaming(startDate, endDate, syslogEventId);
 
         logger.info(String.format("%d users were sent to syslog", forwardedUsers.get()));
     }
@@ -61,8 +63,9 @@ public class PresidioOutputForwardService {
     private void forwardAlerts(Instant startDate, Instant endDate) {
         final AtomicInteger forwardedAlerts = new AtomicInteger();
         final AtomicInteger forwardedIndicators = new AtomicInteger();
+        String syslogEventId = UUID.randomUUID().toString();
 
-        eventsHandler.onAlertStartStreaming(startDate, endDate);
+        eventsHandler.onAlertStartStreaming(startDate, endDate, syslogEventId);
 
         // forward alert changed events
         try (Stream<Alert> alerts = alertPersistencyService.findAlertsByDate(startDate, endDate)) {
@@ -82,7 +85,7 @@ public class PresidioOutputForwardService {
             });
         }
 
-        eventsHandler.onAlertEndStreaming(startDate, endDate);
+        eventsHandler.onAlertEndStreaming(startDate, endDate, syslogEventId);
 
         logger.info(String.format("%d alerts and %d indicators were sent to syslog", forwardedAlerts.get(), forwardedIndicators.get()));
     }
