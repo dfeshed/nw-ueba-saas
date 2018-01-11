@@ -401,11 +401,11 @@ class TestSpringBootJarOperator(object):
 class TestOperator (SpringBootJarOperator):
     cleanup_cnt = 0
 
-    def execute(self, context):
-        super(SpringBootJarOperator, self).execute(context)
-
-    def get_retry_callback(self, retry_fn):
-        return retry_fn
+    # def execute(self, context):
+    #     super(SpringBootJarOperator, self).execute(context)
+    #
+    # def get_retry_callback(self, retry_fn):
+    #     return retry_fn
     def get_retry_command(self):
         self.cleanup_cnt=self.cleanup_cnt+1
         return "echo hiiiiiii"
