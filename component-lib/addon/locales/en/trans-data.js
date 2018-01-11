@@ -455,6 +455,10 @@ export default {
       title: 'Unable to load data.',
       description: 'An unexpected error occurred when attempting to fetch the data records.'
     },
+    invalidQueryError: {
+      title: 'No events found.',
+      description: 'Your filter criteria is invalid. Examine query for syntax errors.'
+    },
     meta: {
       title: 'Meta',
       clickToOpen: 'Click to open'

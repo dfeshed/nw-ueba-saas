@@ -454,6 +454,10 @@ export default {
       title: 'ja_Unable to load data.',
       description: 'ja_An unexpected error occurred when attempting to fetch the data records.'
     },
+    invalidQueryError: {
+      title: 'ja_No events found.',
+      description: 'ja_Your filter criteria is invalid. Examine query for syntax errors.'
+    },
     meta: {
       title: 'ja_Meta',
       clickToOpen: 'ja_Click to open'

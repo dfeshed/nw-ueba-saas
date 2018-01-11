@@ -69,4 +69,26 @@ export default class DataHelper {
     return this;
   }
 
+  eventCountStatus(status) {
+    _set(this.state, 'eventCount.status', status);
+    return this;
+  }
+
+  eventCountReason(code) {
+    _set(this.state, 'eventCount.reason', code);
+    return this;
+  }
+
+  isInvalidQuery(flag) {
+    if (flag) {
+      _set(this.state, 'eventCount.status', 'rejected');
+      _set(this.state, 'eventCount.reason', 11);
+      return this;
+    } else {
+      _set(this.state, 'eventCount.status', 'resolved');
+      _set(this.state, 'eventCount.reason', 0);
+      return this;
+    }
+  }
+
 }

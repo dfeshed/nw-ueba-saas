@@ -37,31 +37,35 @@
       percent=percent
       enabled=(is-equal status 'streaming')
     }}
-    {{#events-table-context-menu contextItems=(build-context-menu)}}
-      {{#rsa-data-table
-        keyboardActivated=true
-        lazy=true
-        fitToWidth=true
-        items=items
-        selectedIndex=selectedIndex
-        columnsConfig=columns
-        language=language
-        aliases=aliases
-        onRowClick=(route-action 'selectEvent')
-        loadLogsAction=(action 'eventsLogsGet')
-        scrollToInitialSelectedIndex=true
-      }}
-        {{#rsa-data-table/header translateTitles=false enableColumnSelector=true as |column|}}
-          {{#with (meta-key-alias column.field language) as |names|}}
-            <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-              <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
-            </h2>
-          {{/with}}
-        {{/rsa-data-table/header}}
-        {{events-table-body buffer=5 rowComponentClass="events-table-row" noResultsMessage=(t 'investigate.empty.description')}}
-        {{rsa-data-table/load-more status=status clickAction=(action 'eventsGetMore')}}
-      {{/rsa-data-table}}
-    {{/events-table-context-menu}}
+    {{#if isInvalidQuery}}
+      {{rsa-panel-message title=(t 'investigate.invalidQueryError.title') message=(t 'investigate.invalidQueryError.description')}}
+    {{else}}
+      {{#events-table-context-menu contextItems=(build-context-menu)}}
+        {{#rsa-data-table
+          keyboardActivated=true
+          lazy=true
+          fitToWidth=true
+          items=items
+          selectedIndex=selectedIndex
+          columnsConfig=columns
+          language=language
+          aliases=aliases
+          onRowClick=(route-action 'selectEvent')
+          loadLogsAction=(action 'eventsLogsGet')
+          scrollToInitialSelectedIndex=true
+        }}
+          {{#rsa-data-table/header translateTitles=false enableColumnSelector=true as |column|}}
+            {{#with (meta-key-alias column.field language) as |names|}}
+              <h2 class="title" title="{{if column.title column.title names.bothNames}}">
+                <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
+              </h2>
+            {{/with}}
+          {{/rsa-data-table/header}}
+          {{events-table-body buffer=5 rowComponentClass="events-table-row" noResultsMessage=(t 'investigate.empty.description')}}
+          {{rsa-data-table/load-more status=status clickAction=(action 'eventsGetMore')}}
+        {{/rsa-data-table}}
+      {{/events-table-context-menu}}
+    {{/if}}
   </section>
 {{else}}
   <centered>

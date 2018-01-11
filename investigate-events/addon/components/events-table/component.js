@@ -8,6 +8,7 @@ import {
   percentageOfEventsDataReturned,
   selectedIndex
 } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { isInvalidQuery } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
 
 const stateToComputed = (state) => ({
@@ -22,7 +23,8 @@ const stateToComputed = (state) => ({
   isOpen: state.investigate.data.isReconOpen,
   columnGroups: getColumnGroups(state),
   selectedColumnGroup: getSelectedColumnGroup(state),
-  columns: getColumns(state)
+  columns: getColumns(state),
+  isInvalidQuery: isInvalidQuery(state)
 });
 
 const dispatchToActions = {
