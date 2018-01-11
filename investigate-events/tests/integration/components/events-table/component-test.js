@@ -21,7 +21,7 @@ const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCoun
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal($('.rsa-data-table-header-cell').length, headerCount * (isNotEmptyRow ? 1 : 2), `Should show columns for ${selectedOption}.`);
     assert.equal($('.ember-power-select-selected-item').text().trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
-    $('.rsa-icon-cog-filled').trigger('mouseover');
+    $('.rsa-icon-cog-filled').trigger('click');
     return waitFor('.rsa-form-checkbox-label', { count }).then(() => {
       assert.equal($('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);
     });

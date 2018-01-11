@@ -1,13 +1,21 @@
 {{#if enableColumnSelector}}
 
-  {{#rsa-content-tethered-panel-trigger panel='columnSelectorpanel' class='rsa-data-table-header__column-selector'}}
-    {{rsa-icon name='cog' style='filled'}}
+  {{#rsa-content-tethered-panel-trigger
+    panel='columnSelectorpanel'
+    triggerEvent='click'
+    class='rsa-data-table-header__column-selector'}}
+    {{rsa-icon name='cog' style='filled' click=(action 'clearSearchTerm') }}
   {{/rsa-content-tethered-panel-trigger}}
 
   {{#rsa-content-tethered-panel displayCloseButton=false position='left-bottom' panelClass="rsa-data-table-column-selector-panel" panelId='columnSelectorpanel'}}
     <section>
+      {{#if enableColumnSearch}}
+        <section class='search-text-field'>
+          {{rsa-form-input value=searchTerm placeholder=(t 'tables.columnChooser.filterPlaceHolder')}}
+        </section>
+      {{/if}}
       <ul>
-        {{#each table.sortedColumns as |column|}}
+        {{#each filterColumnChooser as |column|}}
           {{#if (not-eq column.dataType "checkbox")}}
             <li>
               <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">

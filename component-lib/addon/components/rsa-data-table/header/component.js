@@ -3,12 +3,22 @@ import Component from 'ember-component';
 import observer from 'ember-metal/observer';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import layout from './template';
+import computed from 'ember-computed-decorators';
 
 export default Component.extend(HasTableParent, {
   layout,
   tagName: 'header',
   classNames: 'rsa-data-table-header',
   classNameBindings: ['enableColumnSelector'],
+
+  searchTerm: '',
+
+  /**
+   * Whether or not to show the column filter in column chooser
+   * @public
+   */
+  enableColumnSearch: true,
+
   /**
    * CSS selector for the (optional) DOM nodes that can be used to drag-move header cells.
    * If not specified, or if matching node cannot be found, then moving will be disabled.
@@ -45,6 +55,26 @@ export default Component.extend(HasTableParent, {
   }),
 
   /**
+   * Filter the column chooser based column name with contains search
+   * @public
+   */
+  @computed('table.sortedColumns', 'searchTerm')
+  filterColumnChooser(allFilters, searchTerm) {
+    const list = [ ...allFilters ];
+    const { i18n, translateTitles } = this.getProperties('i18n', 'translateTitles');
+    if (searchTerm && searchTerm.length > 2) {
+      return list.filter((item) => {
+        let name = item.title;
+        if (translateTitles) {
+          name = i18n.t(item.title) || '';
+        }
+        return name.toString().toUpperCase().includes(searchTerm.toUpperCase());
+      });
+    }
+    return list;
+  },
+
+  /**
    * Initialize this element's horizontal translation when it first renders.
    * This ensures its aligns horizontally with the table body's scrollLeft initially, even if this component finishes r
    * endering AFTER the table.body, which is not typical but nevertheless possible.
@@ -61,9 +91,14 @@ export default Component.extend(HasTableParent, {
     this._super(...arguments);
   },
 
+
   actions: {
     toggleColumn(col) {
       col.toggleProperty('selected');
+    },
+
+    clearSearchTerm() {
+      this.set('searchTerm', '');
     }
   }
 });
