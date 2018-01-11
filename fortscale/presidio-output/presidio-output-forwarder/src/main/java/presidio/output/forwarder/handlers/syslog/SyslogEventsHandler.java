@@ -1,4 +1,4 @@
-package presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog;
+package presidio.output.forwarder.handlers.syslog;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -99,7 +99,7 @@ public class SyslogEventsHandler implements EventsHandler {
 
     @Override
     public void onUserChanged(User user) {
-        SyslogEndpoints.SyslogEndpoint syslogEndpoint = endpoints.getEndPoint("user");
+        SyslogEndpoints.SyslogEndpoint syslogEndpoint = endpoints.getEndPoint("users");
 
         if (syslogEndpoint != null) {
             try {

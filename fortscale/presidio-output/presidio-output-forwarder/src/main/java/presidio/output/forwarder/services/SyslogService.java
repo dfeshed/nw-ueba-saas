@@ -2,7 +2,7 @@ package presidio.output.forwarder.services;
 
 import com.cloudbees.syslog.*;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
-import presidio.output.forwarder.handlers.presidio.output.forwarder.handlers.syslog.SyslogEventsEnum;
+import presidio.output.forwarder.handlers.syslog.SyslogEventsEnum;
 
 import java.io.IOException;
 import java.net.InetAddress;
