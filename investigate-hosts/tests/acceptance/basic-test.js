@@ -11,7 +11,7 @@ const {
   RSVP
 } = Ember;
 
-const deleteButton = '.host-table__toolbar-buttons .rsa-form-button-wrapper:last-child button';
+const deleteButton = '.host-table__toolbar-buttons .delete-host-button button';
 const popUpCont = '.rsa-application-modal-content';
 
 moduleForAcceptance('Acceptance | basic', {

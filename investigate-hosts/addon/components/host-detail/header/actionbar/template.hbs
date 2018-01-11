@@ -16,11 +16,7 @@
 <div class="divider"/>
 <hbox class="rsa-button-group host-action-buttons">
   <div class="action-button">
-    {{#rsa-form-button
-      click=(action 'toggleInitiateScanModal')
-      isDisabled=isEcatAgent}}
-      {{t 'investigateHosts.hosts.button.initiateScan'}}
-    {{/rsa-form-button}}
+    {{host-scan/scan-command command='START_SCAN'}}
   </div>
   <div class="action-button ecatUI">
     {{#rsa-form-button

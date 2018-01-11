@@ -8,10 +8,6 @@
   </vbox>
 {{/liquid-if}}
 
-{{#if showInitiateScanModal}}
-  {{host-container/host-scan-modal/initiate selectedHostList=selectedHostList showScanningMessage=areSomeScanning}}
-{{/if}}
-
 {{#if showCancelScanModal}}
   {{host-container/host-scan-modal/cancel selectedHostList=selectedHostList}}
 {{/if}}

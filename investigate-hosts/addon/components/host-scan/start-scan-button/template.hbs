@@ -1,5 +1,4 @@
 {{#rsa-form-button
-  style=style
   isDisabled=isDisabled
   click=(action 'toggleScanStartModal')
   isIconOnly=isIconOnly}}
@@ -18,7 +17,7 @@
     label=modalTitle}}
     <div class="modal-content">
       {{#each warningMessage as |message|}}
-        {{host-container/host-scan-modal/initiate/host-message-modal message=message}}
+        {{host-scan/start-scan-button/host-message-modal message=message}}
       {{/each}}
       <div class="scan-message">
         <p>{{t 'investigateHosts.hosts.initiateScan.modal.quickScan.description'}}</p>

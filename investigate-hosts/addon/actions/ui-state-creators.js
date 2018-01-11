@@ -29,7 +29,6 @@ const toggleExploreSearchResults = (flag) => ({ type: ACTION_TYPES.TOGGLE_EXPLOR
 
 const selectAllHosts = () => ({ type: ACTION_TYPES.SELECT_ALL_HOSTS });
 const deSelectAllHosts = () => ({ type: ACTION_TYPES.DESELECT_ALL_HOSTS });
-const toggleInitiateScanModal = () => ({ type: ACTION_TYPES.TOGGLE_INITIATE_SCAN_MODAL });
 const toggleCancelScanModal = () => ({ type: ACTION_TYPES.TOGGLE_CANCEL_SCAN_MODAL });
 const toggleDeleteHostsModal = () => ({ type: ACTION_TYPES.TOGGLE_DELETE_HOSTS_MODAL });
 const _resetInputData = () => ({ type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -57,7 +56,6 @@ export {
   toggleExploreSearchResults,
   selectAllHosts,
   deSelectAllHosts,
-  toggleInitiateScanModal,
   toggleCancelScanModal,
   toggleShowOnlyWithValues,
   toggleDeleteHostsModal,

@@ -5,9 +5,8 @@ import moment from 'moment';
 import {
   isJsonExportCompleted,
   isSnapshotsAvailable,
-  downloadLink,
-  isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
-import { toggleInitiateScanModal } from 'investigate-hosts/actions/ui-state-creators';
+  downloadLink
+} from 'investigate-hosts/reducers/details/overview/selectors';
 
 import {
   exportFileContext,
@@ -23,15 +22,13 @@ const stateToComputed = (state) => ({
   snapShots: state.endpoint.detailsInput.snapShots,
   downloadLink: downloadLink(state),
   isExportDisabled: !isSnapshotsAvailable(state),
-  isJsonExportCompleted: isJsonExportCompleted(state),
-  isEcatAgent: isEcatAgent(state)
+  isJsonExportCompleted: isJsonExportCompleted(state)
 });
 
 const dispatchToActions = {
   setTransition,
   initializeAgentDetails,
-  exportFileContext,
-  toggleInitiateScanModal
+  exportFileContext
 };
 
 const ActionBar = Component.extend({

@@ -13,8 +13,6 @@ export default Component.extend({
 
   isDisabled: false,
 
-  style: '',
-
   isIconOnly: false,
 
   _showStartScanModal: false,

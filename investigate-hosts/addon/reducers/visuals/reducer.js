@@ -6,7 +6,6 @@ const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',
   activeHostDetailTab: 'OVERVIEW',
   isTreeView: true,
-  showInitiateScanModal: false,
   showCancelScanModal: false,
   showDeleteHostsModal: false,
   hostDetailsLoading: false
@@ -23,9 +22,6 @@ const visuals = handleActions({
     return state.set('activeHostDetailTab', tabName);
   },
 
-  [ACTION_TYPES.TOGGLE_INITIATE_SCAN_MODAL]: (state) => {
-    return state.set('showInitiateScanModal', !state.showInitiateScanModal);
-  },
   [ACTION_TYPES.TOGGLE_DELETE_HOSTS_MODAL]: (state) => {
     return state.set('showDeleteHostsModal', !state.showDeleteHostsModal);
   },

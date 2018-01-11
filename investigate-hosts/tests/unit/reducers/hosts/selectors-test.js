@@ -11,6 +11,9 @@ import {
   allAreEcatAgents,
   hasEcatAgents,
   hostCountForDisplay,
+  warningMessages,
+  isScanStartButtonDisabled,
+  extractAgentIds,
   loadMoreHostStatus } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
@@ -249,4 +252,140 @@ test('loadMoreHostStatus', function(assert) {
   assert.equal(result, 'completed', 'load more status is completed');
 });
 
+test('warningMessages', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: [ { id: 1, version: '4.4' }]
+      }
+    }
+  });
+  const result = warningMessages(state);
+  assert.equal(result.length, 2, 'should contain two error message');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'idle'
+            }
+          }
+        ],
+        selectedHostList: [ { id: 1, version: '4.4' }]
+      }
+    }
+  });
+  assert.equal(warningMessages(state2).length, 1, 'should contain one error message');
+
+  const state3 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: [ { id: 1, version: '11.1' }]
+      }
+    }
+  });
+  assert.equal(warningMessages(state3).length, 1, 'should contain one error message');
+
+  const state4 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'idle'
+            }
+          }
+        ],
+        selectedHostList: [ { id: 1, version: '11.1' }]
+      }
+    }
+  });
+  assert.equal(warningMessages(state4).length, 0, 'should contain one error message');
+});
+
+test('isScanStartButtonDisabled', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: []
+      }
+    }
+  });
+  const result = isScanStartButtonDisabled(state);
+  assert.equal(result, true, 'should be true');
+
+  const state2 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: [{ id: 1 }]
+      }
+    }
+  });
+  assert.equal(isScanStartButtonDisabled(state2), false, 'should be false when some host are selected');
+
+  const state3 = Immutable.from({
+    endpoint: {
+      machines: {
+        hostList: [
+          {
+            id: 1,
+            agentStatus: {
+              scanStatus: 'scanning'
+            }
+          }
+        ],
+        selectedHostList: new Array(200)
+      }
+    }
+  });
+  assert.equal(isScanStartButtonDisabled(state3), true, 'should be true when more host selected');
+});
+
+test('extractAgentIds', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      machines: {
+        selectedHostList: [ { id: 1, version: '4.4' }, { id: 2, version: '11.1' }]
+      }
+    }
+  });
+  const result = extractAgentIds(state);
+  assert.equal(result.length, 1, 'Should extract only one agent');
+});
 

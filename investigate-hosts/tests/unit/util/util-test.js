@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 
-import { generateColumns } from 'investigate-hosts/util/util';
+import { generateColumns, getSelectedAgentIds } from 'investigate-hosts/util/util';
 
 module('Unit | Util');
 
@@ -68,4 +68,14 @@ test('Generate OS specific Columns', function(assert) {
   assert.equal(generateColumns(customColumns, defaultColumns),
                createExpectedResult(customColumns, defaultColumns),
                'Generate OS specific Columns');
+});
+
+test('Extract the agent id', function(assert) {
+  const list1 = [{ id: 1, version: '4.4' }, { id: 2, version: '4.4' }];
+  assert.equal(getSelectedAgentIds(list1).length, 0, 'All are legacy ecat agent');
+  const list2 = [{ id: 1, version: '4.4' }, { id: 2, version: '11.1' }];
+  assert.equal(getSelectedAgentIds(list2).length, 1, 'Some are legacy ecat agent');
+  const list3 = [{ id: 1, version: '11.1' }, { id: 2, version: '11.1' }];
+  assert.equal(getSelectedAgentIds(list3).length, 2, 'No legacy ecat agent');
+
 });

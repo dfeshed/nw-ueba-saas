@@ -1,15 +1,12 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { areSomeScanning, hostListForScanning, hasMachineId } from 'investigate-hosts/reducers/hosts/selectors';
+import { hostListForScanning, hasMachineId } from 'investigate-hosts/reducers/hosts/selectors';
 import service from 'ember-service/inject';
 
 const stateToComputed = (state) => ({
   selectedHostList: hostListForScanning(state),
   hasMachineId: hasMachineId(state),
-  showInitiateScanModal: state.endpoint.visuals.showInitiateScanModal,
-  showCancelScanModal: state.endpoint.visuals.showCancelScanModal,
-  areSomeScanning: areSomeScanning(state),
-  showDeleteHostsModal: state.endpoint.visuals.showDeleteHostsModal
+  showCancelScanModal: state.endpoint.visuals.showCancelScanModal
 });
 
 const Container = Component.extend({

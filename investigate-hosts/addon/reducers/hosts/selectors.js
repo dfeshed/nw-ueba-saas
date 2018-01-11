@@ -1,8 +1,8 @@
 import reselect from 'reselect';
 import { isValidExpression } from 'investigate-hosts/reducers/filters/selectors';
+import { getSelectedAgentIds } from 'investigate-hosts/util/util';
 
 const { createSelector } = reselect;
-
 
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
 
@@ -38,8 +38,18 @@ export const serviceList = createSelector(
   }
  );
 
+export const hostListForScanning = createSelector(
+  [ _selectedHostList, _hostDetailId, _agentVersion ],
+  (selectedHostList, hostDetailId, agentVersion) => {
+    if (hostDetailId) {
+      return [{ id: hostDetailId, version: agentVersion }];
+    }
+    return selectedHostList;
+  }
+);
+
 export const areSomeScanning = createSelector(
-  [ _hostList, _selectedHostList, _hostDetailId ],
+  _hostList, hostListForScanning, _hostDetailId,
   (machines, selectedHostList, hostDetailId) => {
     if (hostDetailId) {
       return false;
@@ -101,15 +111,6 @@ export const noHostsSelected = createSelector(
   }
 );
 
-export const hostListForScanning = createSelector(
-  [ _selectedHostList, _hostDetailId, _agentVersion ],
-  (selectedHostList, hostDetailId, agentVersion) => {
-    if (hostDetailId) {
-      return [{ id: hostDetailId, version: agentVersion }];
-    }
-    return selectedHostList;
-  }
-);
 
 export const hasMachineId = createSelector(
   _agentId,
@@ -134,12 +135,12 @@ export const warningClass = createSelector(
 
 export const allAreEcatAgents = createSelector(
   [ hostListForScanning, noHostsSelected ],
-  (selectedHostList, noHost) => noHost || selectedHostList.every((host) => host.version.startsWith('4.4'))
+  (selectedHostList, noHost) => noHost || selectedHostList.every((host) => host.version && host.version.startsWith('4.4'))
 );
 
 export const hasEcatAgents = createSelector(
   hostListForScanning,
-  (selectedHostList) => selectedHostList.some((host) => host.version.startsWith('4.4'))
+  (selectedHostList) => selectedHostList.some((host) => host.version && host.version.startsWith('4.4'))
 );
 
 export const hostCountForDisplay = createSelector(
@@ -175,5 +176,33 @@ export const isSortDescending = createSelector(
     if (_columnSort.length) {
       return _columnSort[0].descending;
     }
+  }
+);
+
+export const warningMessages = createSelector(
+  [hasEcatAgents, areSomeScanning],
+  (hasEcatAgents, areSomeScanning) => {
+    const messages = [];
+    if (areSomeScanning) {
+      messages.push('investigateHosts.hosts.initiateScan.modal.infoMessage');
+    }
+    if (hasEcatAgents) {
+      messages.push('investigateHosts.hosts.initiateScan.modal.ecatAgentMessage');
+    }
+    return messages;
+  }
+);
+
+export const isScanStartButtonDisabled = createSelector(
+  [tooManyHostsSelected, hostListForScanning],
+  (tooManyHostsSelected, hostListForScanning) => {
+    return !hostListForScanning.length || tooManyHostsSelected;
+  }
+);
+
+export const extractAgentIds = createSelector(
+  _selectedHostList,
+  (_selectedHostList) => {
+    return getSelectedAgentIds(_selectedHostList);
   }
 );

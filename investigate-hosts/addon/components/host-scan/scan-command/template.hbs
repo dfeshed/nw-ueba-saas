@@ -1,0 +1,10 @@
+{{#if (eq command 'START_SCAN')}}
+  {{host-scan/start-scan-button
+    warningMessage=warningMessages
+    isDisabled=isScanStartButtonDisabled
+    agentIds=agentIds
+    modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.title' count=agentIds.length)
+    buttonText=(t 'investigateHosts.hosts.button.initiateScan')}}
+{{else if (eq command 'STOP_SCAN')}}
+
+{{/if}}

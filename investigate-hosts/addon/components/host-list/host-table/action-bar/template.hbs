@@ -2,14 +2,9 @@
   {{t 'investigateHosts.hosts.title'}} {{#if totalItems }} ({{totalItems}}) {{/if}}
 </label>
 <hbox class='host-table__toolbar-buttons'>
-  {{#rsa-form-button click=(action 'openInitiateScanModal') style=warningClass isDisabled=allAreEcatAgents}}
-    {{t 'investigateHosts.hosts.button.initiateScan'}}
-  {{/rsa-form-button}}
-  {{#if tooManyHostsSelected}}
-    {{#rsa-content-tethered-panel displayCloseButton=false style='error' position='bottom' panelId=panelId}}
-      <p>{{t 'investigateHosts.hosts.initiateScan.modal.error2'}}</p>
-    {{/rsa-content-tethered-panel}}
-  {{/if}}
+
+  {{host-scan/scan-command command='START_SCAN'}}
+
   {{#rsa-form-button click=(action 'openCancelScanModal' ) isDisabled=allAreEcatAgents}}
     {{t 'investigateHosts.hosts.moreActions.cancelScan'}}
   {{/rsa-form-button}}
@@ -22,6 +17,7 @@
 
   {{#rsa-button-with-confirmation
     isDisabled=noHostsSelected
+    class='delete-host-button'
     title=(t 'investigateHosts.hosts.deleteHosts.modal.title' count=selectedHostList.length)
     confirmationMessage=(t 'investigateHosts.hosts.deleteHosts.modal.message')
     noteMessage=(t 'investigateHosts.hosts.deleteHosts.modal.note')
