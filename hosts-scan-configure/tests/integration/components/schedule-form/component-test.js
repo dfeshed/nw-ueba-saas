@@ -31,6 +31,8 @@ moduleForComponent('schedule-form', 'Integration | Component | schedule form', {
   integration: true,
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
+    this.inject.service('dateFormat');
+    this.set('dateFormat.selected', 'MM/dd/yyyy', 'MM/dd/yyyy');
   },
   afterEach() {
     revertPatch();

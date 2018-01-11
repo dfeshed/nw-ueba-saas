@@ -69,9 +69,11 @@ export default Component.extend({
     return time24HR ? 'H:i:S' : 'h:i:S K';
   },
 
-
-  @computed('convertedTimeFormat', 'convertedDateFormat')
-  convertedFullFormat: (timeFormat, dateFormat) => {
+  @computed('convertedTimeFormat', 'convertedDateFormat', 'enableTime')
+  convertedFullFormat: (timeFormat, dateFormat, enableTime) => {
+    if (!enableTime) {
+      return dateFormat;
+    }
     return `${dateFormat} ${timeFormat}`;
   },
 

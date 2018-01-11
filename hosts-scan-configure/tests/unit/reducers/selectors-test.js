@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
+import moment from 'moment';
 
 import {
   isFetchingSchedule,
@@ -78,7 +79,7 @@ test('runIntervalConfig', function(assert) {
   assert.deepEqual(result, expected, 'should return the processed run interval configuration');
 });
 test('startDate', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
   const schedule = Immutable.from(
     {
       hostsScan: {
@@ -93,4 +94,19 @@ test('startDate', function(assert) {
   const result = startDate(schedule);
 
   assert.deepEqual(result, 'today', 'should return today if start date is empty');
+
+  const schedule2 = Immutable.from(
+    {
+      hostsScan: {
+        config: {
+          scheduleConfig: {
+            scheduleOptions: {
+              startDate: '01/10/2018'
+            }
+          }
+        }
+      }
+    });
+  const result2 = startDate(schedule2);
+  assert.deepEqual(result2, moment('01/10/2018').toISOString(), 'should return iso format date');
 });

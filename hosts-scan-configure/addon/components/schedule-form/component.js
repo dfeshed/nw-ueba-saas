@@ -92,6 +92,11 @@ const Form = Component.extend({
 
     saveConfig() {
       this.toggleProperty('isDirty');
+
+      if (this.get('startDate') === 'today') {
+        this.send('updateScheduleProperty', 'startDate', moment().format('MM/DD/YYYY'));
+      }
+
       const callBackOptions = {
         onSuccess: () => {
           this.showFlashMessage(FLASH_MESSAGE_TYPES.SUCCESS, 'hostsScanConfigure.saveSuccess');
