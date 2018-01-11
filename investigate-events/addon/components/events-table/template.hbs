@@ -58,17 +58,10 @@
             </h2>
           {{/with}}
         {{/rsa-data-table/header}}
-        {{events-table-body buffer=5 rowComponentClass="events-table-row" showNoResultMessage=false}}
+        {{events-table-body buffer=5 rowComponentClass="events-table-row" noResultsMessage=(t 'investigate.empty.description')}}
         {{rsa-data-table/load-more status=status clickAction=(action 'eventsGetMore')}}
       {{/rsa-data-table}}
     {{/events-table-context-menu}}
-    {{#if _isStatusError}}
-      {{#rsa-panel-message title=(t 'investigate.error.title') message=(t 'investigate.error.description')}}
-        {{#rsa-form-button}}<span {{action 'eventsGetMore'}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
-      {{/rsa-panel-message}}
-    {{else if (is-equal totalCount 0)}}
-      {{rsa-panel-message title=(t 'investigate.empty.title') message=(t 'investigate.empty.description')}}
-    {{/if}}
   </section>
 {{else}}
   <centered>

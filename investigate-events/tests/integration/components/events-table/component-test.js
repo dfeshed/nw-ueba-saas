@@ -33,6 +33,8 @@ const renderDefaultEventTable = (assert, _this) => {
   assert.equal(_this.$('.rsa-investigate-events-table').length, 1);
   assert.equal(_this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
   assert.equal(_this.$('.rsa-icon-cog-filled').length, 1, 'There should be column selector icon.');
+  assert.equal(_this.$('.rsa-panel-message.no-results-message.center.ember-view').length, 1);
+  assert.equal(_this.$('.rsa-panel-message.no-results-message.center.ember-view').text().trim(), 'Your filter criteria did not match any records.');
 };
 
 moduleForComponent('events-table', 'Integration | Component | events table', {
