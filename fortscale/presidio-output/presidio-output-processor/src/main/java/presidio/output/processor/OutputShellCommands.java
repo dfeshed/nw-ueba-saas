@@ -1,6 +1,8 @@
 package presidio.output.processor;
 
 import fortscale.common.general.CommonStrings;
+import fortscale.common.general.ThreadLocalWithBatchInformation;
+import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
@@ -33,7 +35,7 @@ public class OutputShellCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
 
     ) throws Exception {
-        Thread.currentThread().setName(HOURLY_OUTPUT_PROCESSOR_RUN + startTime.toString());
+        ThreadLocalWithBatchInformation.storeBatchInformation(HOURLY_OUTPUT_PROCESSOR_RUN + startTime.toString(), new TimeRange(startTime, endTime));
         executionService.run(startTime, endTime);
     }
 
