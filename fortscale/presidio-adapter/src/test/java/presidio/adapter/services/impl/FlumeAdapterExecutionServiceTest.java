@@ -2,7 +2,6 @@ package presidio.adapter.services.impl;
 
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
-import fortscale.domain.core.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.adapter.util.AdapterConfigurationUtil;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
-import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.File;
