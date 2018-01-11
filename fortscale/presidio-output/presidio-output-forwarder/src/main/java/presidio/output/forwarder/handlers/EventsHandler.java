@@ -15,12 +15,12 @@ public interface EventsHandler {
 
     void onIndicatorChanged(Indicator indicator);
 
-    void onUserStartStreaming(Instant start, Instant end);
+    void onUserStartStreaming(Instant start, Instant end, String syslogEventId);
 
-    void onUserEndStreaming(Instant start, Instant end);
+    void onUserEndStreaming(Instant start, Instant end, String syslogEventId);
 
-    void onAlertStartStreaming(Instant start, Instant end);
+    void onAlertStartStreaming(Instant start, Instant end, String syslogEventId);
 
-    void onAlertEndStreaming(Instant start, Instant end);
+    void onAlertEndStreaming(Instant start, Instant end, String syslogEventId);
 
 }
