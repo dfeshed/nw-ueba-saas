@@ -18,8 +18,6 @@ public class ConstantScorerTest {
 
     @Test
     public void testGettingConstantScore(){
-        String conditionalField = "context.operationTypeCategories";
-        String conditionalValue = "FILE_ACTION";
         String name = "myConstantScorer";
         double expectedScore = 92;
         ConstantScorer constantScorer = new ConstantScorer(name, expectedScore);

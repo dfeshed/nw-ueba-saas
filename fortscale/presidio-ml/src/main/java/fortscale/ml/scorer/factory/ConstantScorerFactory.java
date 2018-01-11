@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 @Component
 public class ConstantScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
     private static final String FACTORY_CONFIG_TYPE_ERROR_MSG = String.format(
-            "factoryConfig must be an instance of %s.", ConstantScorerFactory.class.getSimpleName());
+            "factoryConfig must be an instance of %s.", ConstantScorerConf.class.getSimpleName());
 
     @Override
     public String getFactoryName() {

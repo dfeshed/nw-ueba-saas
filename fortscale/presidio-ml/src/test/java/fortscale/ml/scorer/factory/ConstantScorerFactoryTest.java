@@ -23,17 +23,6 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ConstantScorerFactoryTest {
-
-    public static final JSONObject constantRegexScorerConfJsonObject;
-
-    static {
-        constantRegexScorerConfJsonObject = new JSONObject();
-        constantRegexScorerConfJsonObject.put("type", ConstantRegexScorerConf.SCORER_TYPE);
-        constantRegexScorerConfJsonObject.put("name", "myConstantRegexScorer");
-        constantRegexScorerConfJsonObject.put("regex", "42");
-        constantRegexScorerConfJsonObject.put("regex-field-name", "myRegexField");
-        constantRegexScorerConfJsonObject.put("constant-score", 100);
-    }
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
     @Autowired
@@ -67,7 +56,7 @@ public class ConstantScorerFactoryTest {
     }
 
     @Configuration
-    public static class ConditionalScorerFactoryTestConfig{
+    public static class ConstantScorerFactoryTestConfig{
         @Autowired
         public List<AbstractServiceAutowiringFactory<Scorer>> scorersFactories;
 
