@@ -35,7 +35,7 @@
     width: 20px;
   }
   .rsa-data-table-header-cell {
-    margin-right: -2px;
+    margin-right: -1px;
     button {
       cursor: pointer;
       &.column-sort {
@@ -43,7 +43,14 @@
         right: 7px;
       }
     }
+    &:last-child {
+      margin-left: -8px;
+      .js-move-handle {
+        margin-left: 8px;
+      }
+    }
   }
+ 
 }
 
 .host-table__toolbar {
