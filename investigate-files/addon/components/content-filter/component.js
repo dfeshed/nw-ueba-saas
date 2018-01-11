@@ -5,6 +5,7 @@ import computed from 'ember-computed-decorators';
 import run from 'ember-runloop';
 import service from 'ember-service/inject';
 import { listWithoutDefault, appliedFilters } from 'investigate-files/reducers/filter/selectors';
+import _ from 'lodash';
 import {
   removeFilter,
   resetFilters,
@@ -69,15 +70,17 @@ const ContentFilter = Component.extend({
    */
   @computed('allFilters', 'searchTerm')
   filterList(allFilters, searchTerm) {
-    const list = [ ...allFilters ]; // Don't want to modify the orignal filter list
+    const i18n = this.get('i18n');
+    let list = [ ...allFilters ]; // Don't want to modify the orignal filter list
     if (searchTerm && searchTerm.length > 3) {
-      return list.filter((item) => {
-        const name = this.get('i18n').t(item.get('decorator.label')) || '';
+      list = list.filter((item) => {
+        const name = i18n.t(item.label) || '';
         return capitalize(name.toString()).includes(capitalize(searchTerm));
       });
-    } else {
-      return list;
     }
+    return _.sortBy(list, [(column) => {
+      return i18n.t(column.label).toString();
+    }]);
   },
 
   actions: {

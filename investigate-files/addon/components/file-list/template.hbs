@@ -1,7 +1,7 @@
 {{#rsa-data-table
   lazy=true
   items=files
-  columnsConfig=columnConfig}}
+  columnsConfig=updatedColumns}}
   {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
     {{#if column.headerComponentClass}}
       <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">

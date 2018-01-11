@@ -3,6 +3,9 @@
 $filter-panel-width: 250px;
 
 .host-container {
+  .host-container-list {
+    width: 100%;
+  }
   .filters {
     @include border-bottom(1px, solid, primary, dark);
     padding: rsa-whitespace(less);

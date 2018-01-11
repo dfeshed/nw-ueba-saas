@@ -2,6 +2,8 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { loadMoreStatus } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
+import computed from 'ember-computed-decorators';
+import _ from 'lodash';
 import {
   sortBy,
   getPageOfFiles
@@ -27,7 +29,19 @@ const dispatchToActions = {
  * @public
  */
 const FileList = Component.extend({
-  classNames: ['file-list']
+  classNames: ['file-list'],
+
+  @computed('columnConfig')
+  updatedColumns(columns) {
+    return this._sortList(columns);
+  },
+
+  _sortList(columnList) {
+    const i18n = this.get('i18n');
+    return _.sortBy(columnList, [(column) => {
+      return i18n.t(column.title).toString();
+    }]);
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(FileList);
