@@ -20,9 +20,9 @@
       color: $user-icon-color;
     }
     &__administrator {
-      padding-top: rsa-whitespace(less);
       font-size:0.8rem;
       color: $user-icon-color;
+      line-height: 0px;
     }
     .label {
       @include rsa-font();
