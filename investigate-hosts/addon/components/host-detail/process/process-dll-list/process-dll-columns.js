@@ -14,11 +14,6 @@ const defaultColumnsConfig = [
     width: 65
   },
   {
-    field: 'hashLookup',
-    title: 'investigateHosts.process.hashlookup',
-    width: 43
-  },
-  {
     field: 'path',
     title: 'investigateHosts.process.dll.filePath',
     width: 200

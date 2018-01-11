@@ -19,14 +19,6 @@ const defaultSummaryConfig = [
     field: 'process.owner'
   },
   {
-    label: 'investigateHosts.process.hostCount',
-    field: 'process.hostCount'
-  },
-  {
-    label: 'investigateHosts.process.hashlookup',
-    field: 'hashlookup'
-  },
-  {
     label: 'investigateHosts.process.signature',
     field: 'process.signature',
     format: 'SIGNATURE'

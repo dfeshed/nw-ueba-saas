@@ -1,5 +1,5 @@
 {{#if hasBlock}}
-  {{yield label item.value}}
+  {{yield item.label item.value}}
 {{else}}
   {{#rsa-content-definition label=(t item.label) value=item.value}}
     {{host-detail/base-property-panel/host-text value=item.value format=item.format}}

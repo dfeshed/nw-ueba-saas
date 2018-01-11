@@ -116,6 +116,14 @@ export default class DataHelper {
     _set(this.state, 'visuals.hostDetailsLoading', flag);
     return this;
   }
+  dllList(dllData) {
+    _set(this.state, 'process.dllList', dllData);
+    return this;
+  }
+  host(host) {
+    _set(this.state, 'overview.hostDetails', host);
+    return this;
+  }
   hostName(value) {
     const machine = { machineName: value };
     _set(this.state, 'overview.hostDetails', { machine });
