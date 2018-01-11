@@ -14,11 +14,11 @@ import java.util.*;
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements PartitionedDataModel {
 	private List<Double> buckets;
-	private long numOfSamples;
-	private long numDistinctFeatures;
+	private Long numOfSamples;
+	private Long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
 	// number of partitions we found data on. can be used for certainty calculation.
-	private long numOfPartitions;
+	private Long numOfPartitions;
 
 	// The entriesToSaveInModel value from the model conf from which this model was built.
 	// We store this information in the model to help us reduce the number of calls to
@@ -34,7 +34,7 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		this.numOfPartitions = numOfPartitions;
 		buckets = new ArrayList<>(numOfBuckets);
 
-		this.numOfSamples = 0;
+		this.numOfSamples = 0L;
 		for (Map.Entry<Long, Integer> entry : occurrencesToNumOfPartitions.entrySet()) {
 			long occurrences = entry.getKey();
 			int occurencesNumOfPartitions = entry.getValue();

@@ -12,8 +12,8 @@ import java.time.Instant;
 		isGetterVisibility = Visibility.NONE
 )
 public class SMARTValuesPriorModel implements Model {
-	private double prior;
-	private long numOfPartitions;
+	private Double prior;
+	private Long numOfPartitions;
 	private Instant weightsModelEndTime;
 
 	public SMARTValuesPriorModel init(double prior) {

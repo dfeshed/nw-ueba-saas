@@ -18,11 +18,11 @@ import java.util.stream.IntStream;
 public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
 
-	private int timeResolution;
-	private int bucketSize;
+	private Integer timeResolution;
+	private Integer bucketSize;
 	private List<Double> smoothedBuckets;
 	private CategoryRarityModel categoryRarityModel;
-	private long numOfSamples;
+	private Long numOfSamples;
 
 	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions,
 					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer, TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer) {
