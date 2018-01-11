@@ -173,9 +173,12 @@ const formComponent = Component.extend({
         this.set('selectedProtocol', responseConfiguration.protocol);
         this.set('configData.logCollectionConfig', responseConfiguration);
         this._validateDestinationFields(responseConfiguration.primaryDestination, responseConfiguration.secondaryDestination);
-      }).catch(({ meta: { reason } }) => {
-        const i18nMessage = `packager.errorMessages.${reason}`;
-        this.get('flashMessages').error(this.get('i18n').t(i18nMessage));
+        if (responseConfiguration.hasErrors) {
+          const warningMessage = `packager.errorMessages.${responseConfiguration.errorMessage}`;
+          this.get('flashMessages').warning(this.get('i18n').t(warningMessage));
+        }
+      }).catch(() => {
+        this.get('flashMessages').error(this.get('i18n').t('packager.upload.failure'));
       });
   },
 
