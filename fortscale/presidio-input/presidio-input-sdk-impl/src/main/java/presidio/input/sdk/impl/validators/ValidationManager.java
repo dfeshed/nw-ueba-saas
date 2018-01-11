@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static presidio.sdk.api.domain.AbstractInputDocument.EVENT_ID_FIELD_NAME;
+
 public class ValidationManager {
 
     private static final Logger logger = Logger.getLogger(ValidationManager.class);
@@ -40,7 +42,13 @@ public class ValidationManager {
             if (CollectionUtils.isEmpty(violations)) {
                 validResults.add(document);
             } else {
-                logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());
+                try {
+                    final java.lang.reflect.Field eventIdField = document.getClass().getField(EVENT_ID_FIELD_NAME);
+                    final String eventIdValue = (String) eventIdField.get(document);
+                    logger.warn("Validation for event with id {} and eventId {} failed. There were {} violations.", document.getId(), eventIdValue, violations.size());
+                } catch (Exception e) {
+                    logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());
+                }
                 for (ConstraintViolation<AbstractAuditableDocument> violation : violations) {
                     final Path propertyPath = violation.getPropertyPath();
                     final String message = violation.getMessage();
