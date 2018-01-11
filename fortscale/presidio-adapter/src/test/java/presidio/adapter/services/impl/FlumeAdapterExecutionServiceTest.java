@@ -2,6 +2,7 @@ package presidio.adapter.services.impl;
 
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.domain.core.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.adapter.util.AdapterConfigurationUtil;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
+import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.File;
@@ -19,6 +21,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FlumeAdapterExecutionServiceTest {
@@ -38,7 +43,6 @@ public class FlumeAdapterExecutionServiceTest {
     private String mockedJobName;
     private String mockedFlumeExecutionScriptPath;
 
-
     @Before
     public void setUp() throws Exception {
 
@@ -47,6 +51,7 @@ public class FlumeAdapterExecutionServiceTest {
 
         mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
         mockAdapterConfigurationUtil = Mockito.mock(AdapterConfigurationUtil.class);
+        mockPresidioInputPersistencyService = Mockito.mock(PresidioInputPersistencyService.class);
         mockedMongoTemplate = Mockito.mock(MongoTemplate.class);
         mockedFlumeHome = "some_flume_home" + File.separator;
         mockedConfFolder = mockedFlumeHome + "conf" + File.separator;
@@ -72,9 +77,15 @@ public class FlumeAdapterExecutionServiceTest {
 
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void clean() throws Exception {
-        flumeAdapterExecutionService.applyRetentionPolicy(null, null, null);
+
+        Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
+        Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
+
+        flumeAdapterExecutionService.cleanup(Schema.AUTHENTICATION, startTime, endTime, 3600.0);
+
+        verify(mockPresidioInputPersistencyService, times(1)).clean(Schema.AUTHENTICATION, startTime,endTime);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -91,5 +102,4 @@ public class FlumeAdapterExecutionServiceTest {
         final List<String> expectedArgumentList = Arrays.asList(mockedFlumeExecutionScriptPath, "agent", "--name " + mockedAgent, "--conf", mockedConfFolder, "--conf-file", mockedAfterTestsFilePath);
         Mockito.verify(mockProcessExecutor).executeProcess(mockedJobName, expectedArgumentList, mockedFlumeHome);
     }
-
 }
