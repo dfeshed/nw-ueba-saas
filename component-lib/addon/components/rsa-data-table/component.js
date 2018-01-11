@@ -245,7 +245,7 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
    */
   visibleColumns: computed('columns.@each.selected', function() {
-    return this.get('columns').filterBy('selected', true);
+    return this.get('columns').filterBy('selected', true).sortBy('displayIndex');
   }),
 
   /**
