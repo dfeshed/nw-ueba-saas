@@ -5,6 +5,22 @@ import {
 } from 'investigate-files/actions/utils/query-util';
 
 /**
+ * Executes a websocket fetch call for all services and returns a Promise.
+ *
+ * @method getAllServices
+ * @param data
+ * @public
+ * @returns {Promise}
+ */
+const getAllServices = () => {
+  return promiseRequest({
+    method: 'findAll',
+    modelName: 'investigate-service',
+    query: {}
+  });
+};
+
+/**
  * Retrieves all matching global files from the server.
  * @returns Promise that will resolve with the server response.
  * @public
@@ -110,5 +126,6 @@ export default {
   getSavedFilters,
   deleteFilter,
   getPreferences,
-  setPreferences
+  setPreferences,
+  getAllServices
 };

@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { loadMoreStatus } from 'investigate-files/reducers/file-list/selectors';
+import { loadMoreStatus, serviceList } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
@@ -10,6 +10,7 @@ import {
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
+  serviceList: serviceList(state),
   columnConfig: columns(state),
   loadMoreStatus: loadMoreStatus(state),
   areFilesLoading: state.files.fileList.areFilesLoading,
@@ -29,7 +30,8 @@ const dispatchToActions = {
  * @public
  */
 const FileList = Component.extend({
-  classNames: ['file-list'],
+
+  tagName: '',
 
   @computed('columnConfig')
   updatedColumns(columns) {

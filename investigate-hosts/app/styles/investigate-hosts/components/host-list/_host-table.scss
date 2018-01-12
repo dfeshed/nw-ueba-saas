@@ -3,16 +3,6 @@
   display: none;
 }
 
-.pivot-to-investigate {
-  margin-left: auto;
-  display: none;
-}
-
-.rsa-data-table-body-cell:hover {
-  .pivot-to-investigate {
-    display: block;
-  }
-}
 
 .host-table {
   position: relative;
@@ -50,7 +40,18 @@
       }
     }
   }
- 
+  .pivot-to-investigate {
+    margin-left: auto;
+    display: none;
+  }
+
+  .rsa-data-table-body-cell:hover {
+    .pivot-to-investigate {
+      display: block;
+    }
+  }
+
+
 }
 
 .host-table__toolbar {

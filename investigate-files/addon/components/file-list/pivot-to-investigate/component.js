@@ -5,11 +5,12 @@ import { next } from 'ember-runloop';
 import injectService from 'ember-service/inject';
 import get from 'ember-metal/get';
 import { connect } from 'ember-redux';
-import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
+import { getAllServices } from 'investigate-files/actions/data-creators';
 import $ from 'jquery';
 
 const INVESTIGATE_META_MAPPING = {
-  'machine.machineName': 'alias.host'
+  'checksumSha256': 'checksum',
+  'checksumMd5': 'checksum'
 };
 
 const dispatchToActions = {
@@ -47,7 +48,6 @@ const PivotToInvestigate = Component.extend({
   isLoadingServices(serviceList) {
     return !serviceList;
   },
-
   columnsConfig: [
     {
       field: 'displayName',

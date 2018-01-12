@@ -317,6 +317,14 @@ const setFilesFilter = (filterId) => {
 
 const setSystemFilterFlag = (systemFilterFlag) => ({ type: ACTION_TYPES.SET_SYSTEM_FILTER_FLAG, payload: systemFilterFlag });
 
+const getAllServices = () => ({
+  type: ACTION_TYPES.GET_LIST_OF_SERVICES,
+  promise: File.getAllServices(),
+  meta: {
+    onFailure: (response) => _handleError(ACTION_TYPES.GET_LIST_OF_SERVICES, response)
+  }
+});
+
 export {
   addSystemFilter,
   removeFilter,
@@ -334,6 +342,7 @@ export {
   resetDownloadId,
   createCustomSearch,
   setFilesFilter,
+  getAllServices,
   setSystemFilterFlag,
   initializeFilesPreferences
 };

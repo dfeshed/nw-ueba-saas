@@ -1,0 +1,41 @@
+{{rsa-icon
+  name='binoculars'
+  title=(t 'investigateHosts.pivotToInvestigate.iconTitle')
+  click=(action 'toggleServiceSelection')}}
+
+{{#if showServiceModal}}
+  {{#rsa-application-modal
+    style='standard service-modal'
+    eventId='service-modal'
+    label=(t 'investigateHosts.pivotToInvestigate.title')
+    onClose=(action 'onModalClose')}}
+    <div class="modal-content">
+      {{#rsa-data-table
+        items=serviceList
+        onRowClick=(action 'onToggleRowSelection')
+        columnsConfig=columnsConfig}}
+        {{rsa-data-table/header}}
+        {{#if isLoadingServices}}
+          <centered>
+            {{rsa-loader size='small'}}
+          </centered>
+        {{else}}
+          {{#rsa-data-table/body as |item index column|}}
+            {{rsa-data-table/body-cell item=item column=column}}
+          {{/rsa-data-table/body}}
+        {{/if}}
+      {{/rsa-data-table}}
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button defaultAction='onCancel'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button isDisabled=isDisabled style='primary' click=(action 'pivotToInvestigate')}}
+          {{t 'investigateHosts.pivotToInvestigate.buttonText'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}
+

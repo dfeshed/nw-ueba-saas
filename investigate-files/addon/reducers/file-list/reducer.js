@@ -14,7 +14,8 @@ const fileListState = Immutable.from({
   sortField: 'firstSeenTime',
   isSortDescending: true,
   downloadStatus: 'completed',
-  downloadId: null
+  downloadId: null,
+  listOfServices: null
 });
 
 const _handleAppendFiles = (action) => {
@@ -67,6 +68,12 @@ const fileListReducer = handleActions({
     totalItems: 0,
     areFilesLoading: 'sorting'
   }),
+
+  [ACTION_TYPES.GET_LIST_OF_SERVICES]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('listOfServices', action.payload.data)
+    });
+  },
 
   [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
 

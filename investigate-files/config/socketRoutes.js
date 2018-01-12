@@ -13,6 +13,13 @@ const filesConfigGen = function(environment) {
     'endpoint-server-ping': {
       socketUrl
     },
+    'investigate-service': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/endpoint/investigate/servers',
+        requestDestination: '/ws/endpoint/investigate/servers'
+      }
+    },
     'files': {
       socketUrl,
       'schema': {

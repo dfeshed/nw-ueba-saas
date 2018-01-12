@@ -1,11 +1,13 @@
 import { createSelector } from 'reselect';
 import { isValidExpression } from 'investigate-files/reducers/filter/selectors';
 
+const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
 // Contains all the expression saved + newly added expression from the UI
 const files = (state) => state.files.fileList.files;
 const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _totalItems = (state) => state.files.fileList.totalItems;
 const _hasNext = (state) => state.files.fileList.hasNext;
+const _serviceList = (state) => state.files.fileList.listOfServices;
 
 export const fileCount = createSelector(
   files,
@@ -47,5 +49,15 @@ export const loadMoreStatus = createSelector(
   [_hasNext, fileCountForDisplay],
   (hasNext, fileCountForDisplay) => {
     return fileCountForDisplay.includes('+') || hasNext ? 'stopped' : 'completed';
+  }
+);
+
+export const serviceList = createSelector(
+  _serviceList,
+  (serviceList) => {
+    if (serviceList) {
+      return serviceList.filter((service) => SUPPORTED_SERVICES.includes(service.name));
+    }
+    return null;
   }
 );

@@ -34,7 +34,8 @@ test('should return the initial state', function(assert) {
     sortField: 'firstSeenTime',
     isSortDescending: true,
     downloadStatus: 'completed',
-    downloadId: null
+    downloadId: null,
+    listOfServices: null
   });
 });
 

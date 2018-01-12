@@ -1,5 +1,6 @@
 $zoneBorderColor: border-color(primary, darker, nearly-transparent);
 $filterPanelMinWidth: 300px;
+@import "service-modal";
 
 page.investigate-files-engine {
   min-height: 100vh;
@@ -7,11 +8,14 @@ page.investigate-files-engine {
 }
 
 .rsa-investigate-files {
-  overflow: hidden;
   @include rsa-vendor-prefix(transition-property, background-color, color);
   @include rsa-vendor-prefix(transition-duration, 0.3s);
-  height: calc(100vh - 82px);
-
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
   .main-zone {
     overflow: hidden;
     flex-wrap: nowrap;
@@ -113,9 +117,21 @@ page.investigate-files-engine {
       }
     }
   }
-  .rsa-data-table-body-row{
+  .rsa-data-table-body-row {
     width: fit-content;
     min-width: 98%
+  }
+
+  .pivot-to-investigate {
+    margin-left: auto;
+    display: none;
+  }
+
+  .rsa-data-table-body-cell:hover {
+    .pivot-to-investigate {
+      cursor: pointer;
+      display: block;
+    }
   }
 
 }

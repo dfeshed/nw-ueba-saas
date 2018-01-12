@@ -46,6 +46,13 @@
               {{rsa-content-datetime timestamp=(get item column.field)}}
             {{else if (eq column.field 'signature.timeStamp')}}
               {{rsa-content-datetime timestamp=(get item column.field)}}
+            {{else if (or (eq column.field 'checksumSha256')(eq column.field 'checksumMd5'))}}
+              <hbox>
+                {{get item column.field}}
+                <div class="pivot-to-investigate">
+                  {{file-list/pivot-to-investigate item=item metaName=column.field serviceList=serviceList}}
+                </div>
+              </hbox>
             {{else}}
               {{get item column.field}}
             {{/if}}
