@@ -25,7 +25,7 @@ const TimeCrumb = Component.extend({
 
   @computed()
   panelId() {
-    return `breadCrumbServiceTooltip-${this.get('elementId')}`;
+    return `breadCrumbTimerangeTooltip-${this.get('elementId')}`;
   }
 
 });

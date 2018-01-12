@@ -30,76 +30,13 @@ const _getServicesPromise = (dispatch, getState) => {
 };
 
 /**
- * Promise version of `getServiceSummary()`.
- * @see getServiceSummary
- * @private
- */
-// const _getServiceSummaryPromise = (dispatch, getState) => {
-//   return new RSVP.Promise((resolve, reject) => {
-//     getServiceSummary(resolve, reject)(dispatch, getState);
-//   });
-// };
-
-/**
- * Initializes the dictionaries (language and aliases). If we've already
- * retrieved the dictionaries for a specific service, we reuse that data.
- * @param {function} dispatch
- * @param {function} getState
- * @return {RSVP.Promise}
+ * Promise version of `getDictionaries()`.
+ * @see getDictionaries
  * @private
  */
 const _getDictionariesPromise = (dispatch, getState) => {
   return new RSVP.Promise((resolve, reject) => {
-    const { serviceId } = getState().investigate.queryNode;
-    const { aliasesCache, languageCache } = getState().investigate.dictionaries;
-    const languagePromise = new RSVP.Promise((resolve, reject) => {
-      if (!languageCache[serviceId]) {
-        dispatch({
-          type: ACTION_TYPES.LANGUAGE_RETRIEVE,
-          promise: fetchLanguage(serviceId),
-          meta: {
-            onFailure(response) {
-              reject(response);
-            },
-            onFinish() {
-              resolve();
-            }
-          }
-        });
-      } else {
-        dispatch({
-          type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE,
-          payload: serviceId
-        });
-        resolve();
-      }
-    });
-    const aliasesPromise = new RSVP.Promise((resolve, reject) => {
-      if (!aliasesCache[serviceId]) {
-        dispatch({
-          type: ACTION_TYPES.ALIASES_RETRIEVE,
-          promise: fetchAliases(serviceId),
-          meta: {
-            onFailure(response) {
-              reject(response);
-            },
-            onFinish() {
-              resolve();
-            }
-          }
-        });
-      } else {
-        dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
-        resolve();
-      }
-    });
-    if (serviceId) {
-      RSVP.all([languagePromise, aliasesPromise]).then(() => {
-        resolve();
-      }, reject);
-    } else {
-      resolve();
-    }
+    getDictionaries(resolve, reject)(dispatch, getState);
   });
 };
 
@@ -198,12 +135,15 @@ export const getServices = (resolve = noop, reject = noop) => {
           onSuccess(response) {
             const { data } = response;
             if (data && Array.isArray(data)) {
-              // grab first service in array
-              const [ service ] = data;
-              dispatch({
-                type: ACTION_TYPES.SERVICE_SELECTED,
-                payload: service.id
-              });
+              const { serviceId } = getState().investigate.queryNode;
+              if (!serviceId) {
+                // grab first service in array if one isn't already selected
+                const [ service ] = data;
+                dispatch({
+                  type: ACTION_TYPES.SERVICE_SELECTED,
+                  payload: service.id
+                });
+              }
               dispatch(getServiceSummary());
             }
             resolve();
@@ -213,6 +153,69 @@ export const getServices = (resolve = noop, reject = noop) => {
           }
         }
       });
+    } else {
+      resolve();
+    }
+  };
+};
+
+/**
+ * Initializes the dictionaries (language and aliases). If we've already
+ * retrieved the dictionaries for a specific service, we reuse that data.
+ * @param {function} dispatch
+ * @param {function} getState
+ * @return {RSVP.Promise}
+ * @private
+ */
+export const getDictionaries = (resolve = noop, reject = noop) => {
+  return (dispatch, getState) => {
+    const { serviceId } = getState().investigate.queryNode;
+    const { aliasesCache, languageCache } = getState().investigate.dictionaries;
+    const languagePromise = new RSVP.Promise((resolve, reject) => {
+      if (!languageCache[serviceId]) {
+        dispatch({
+          type: ACTION_TYPES.LANGUAGE_RETRIEVE,
+          promise: fetchLanguage(serviceId),
+          meta: {
+            onFailure(response) {
+              reject(response);
+            },
+            onFinish() {
+              resolve();
+            }
+          }
+        });
+      } else {
+        dispatch({
+          type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE,
+          payload: serviceId
+        });
+        resolve();
+      }
+    });
+    const aliasesPromise = new RSVP.Promise((resolve, reject) => {
+      if (!aliasesCache[serviceId]) {
+        dispatch({
+          type: ACTION_TYPES.ALIASES_RETRIEVE,
+          promise: fetchAliases(serviceId),
+          meta: {
+            onFailure(response) {
+              reject(response);
+            },
+            onFinish() {
+              resolve();
+            }
+          }
+        });
+      } else {
+        dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
+        resolve();
+      }
+    });
+    if (serviceId) {
+      RSVP.all([languagePromise, aliasesPromise]).then(() => {
+        resolve();
+      }, reject);
     } else {
       resolve();
     }
@@ -293,9 +296,11 @@ export const initializeInvestigate = (params, hardReset = false) => {
     // Get all the things
     return RSVP.all([
       _getPreferencesPromise(dispatch, getState, modelName),
-      _getServicesPromise(dispatch, getState),
-      _getDictionariesPromise(dispatch, getState)
-    ]);
+      _getServicesPromise(dispatch, getState)
+    ])
+    .then(() => {
+      _getDictionariesPromise(dispatch, getState);
+    });
   };
 };
 
@@ -334,19 +339,3 @@ export const preferencesUpdated = (preferences) => {
     dispatch(_reconPreferenceUpdated(preferences));
   };
 };
-
-/**
- * Prepare state for a fresh query. We're only checking if `serviceId` or
- * `sessionId` are set. If they are, then state is probably "dirty", so we'll
- * reset it to a default state.
- * @return {function} A Redux thunk
- * @private
- */
-// const _initializeQuery = () => {
-//   return (dispatch, getState) => {
-//     const { serviceId, sessionId } = getState().investigate.queryNode;
-//     if (serviceId || sessionId) {
-//       dispatch({ type: ACTION_TYPES.RESET_QUERYNODE });
-//     }
-//   };
-// };

@@ -1,6 +1,6 @@
 import * as ACTION_TYPES from './types';
 import moment from 'moment';
-import { getServiceSummary } from './data-creators';
+import { getServiceSummary, getDictionaries } from './data-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
 import { savePreferences } from 'investigate-events/actions/data-creators';
@@ -88,12 +88,17 @@ export const setSelectedEvent = (event) => {
 };
 
 export const setService = (service) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.SERVICE_SELECTED,
-      payload: service.id
-    });
-    dispatch(getServiceSummary());
+  return (dispatch, getState) => {
+    const { serviceId } = getState().investigate.queryNode;
+    if (serviceId !== service.id) {
+      dispatch({
+        type: ACTION_TYPES.SERVICE_SELECTED,
+        payload: service.id
+      });
+      dispatch(setQueryFilterMeta([]));
+      dispatch(getDictionaries());
+      dispatch(getServiceSummary());
+    }
   };
 };
 

@@ -85,7 +85,6 @@ export default Route.extend({
 
     executeQuery(metaFilters, externalLink = false) {
       // Save the metaFilters to state
-      this.get('redux').dispatch(setQueryFilterMeta(metaFilters.without(metaFilters.get('lastObject'))));
       const { data, queryNode } = this.get('redux').getState().investigate;
       const qp = {
         eid: queryNode.sessionId,
@@ -98,14 +97,17 @@ export default Route.extend({
 
       Object.keys(qp).forEach((key) => isEmpty(qp[key]) && delete qp[key]);
 
-      qp.mf = uriEncodeMetaFilters(metaFilters);
-
       if (externalLink) {
+        qp.mf = encodeURIComponent(uriEncodeMetaFilters(metaFilters));
+
         const query = serializeQueryParams(qp);
         const { location } = window;
         const path = `${location.origin}${location.pathname}?${query}`;
         window.open(path, '_blank');
       } else {
+        this.get('redux').dispatch(setQueryFilterMeta(metaFilters.without(metaFilters.get('lastObject'))));
+
+        qp.mf = uriEncodeMetaFilters(metaFilters);
         this.transitionTo({ queryParams: qp });
       }
     },

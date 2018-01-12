@@ -45,14 +45,14 @@ const ServiceCrumb = Component.extend({
     return coreServiceNotUpdated || isSummaryDataInvalid ? 'report-problem-triangle' : 'server-3';
   },
 
-  @computed('isServicesLoading', 'isSummaryLoading')
-  selectedServiceName(isServicesLoading, isSummaryLoading) {
+  @computed('isServicesLoading', 'isSummaryLoading', 'serviceDisplayName')
+  selectedServiceName(isServicesLoading, isSummaryLoading, serviceDisplayName) {
     if (isServicesLoading) {
       return 'Loading Services';
     } else if (isSummaryLoading) {
       return 'Loading Summary';
     } else {
-      return this.get('serviceDisplayName');
+      return serviceDisplayName;
     }
   },
 
