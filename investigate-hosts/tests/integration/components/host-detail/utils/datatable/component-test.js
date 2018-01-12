@@ -3,10 +3,10 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import engineResolver from '../../../../../helpers/engine-resolver';
 
-
 const dataItems = [
   {
     'fileName': 'systemd-journald.service',
+    'timeModified': '2015-09-15T13:21:10.000Z',
     'signature': {
       'timeStamp': '2016-09-14T09:43:27.000Z',
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
@@ -16,12 +16,30 @@ const dataItems = [
   },
   {
     'fileName': 'vmwgfx.ko',
+    'timeModified': '2015-08-17T03:21:10.000Z',
     'signature': {
       'timeStamp': '2016-10-14T07:43:39.000Z',
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
       'features': ['signed', 'valid'],
       'signer': 'XYZ'
     }
+  }
+];
+
+const config = [
+  {
+    field: 'fileName',
+    title: 'File Name'
+  },
+  {
+    field: 'timeModified',
+    title: 'LAST MODIFIED TIME',
+    format: 'DATE'
+  },
+  {
+    field: 'signature',
+    title: 'Signature',
+    format: 'SIGNATURE'
   }
 ];
 
@@ -40,29 +58,117 @@ test('Should apply appropriate class label for rsa-loader', function(assert) {
 });
 
 test('Should return the length of items in the datatable', function(assert) {
-  const config = [
-    {
-      field: 'fileName',
-      title: 'File Name'
-    },
-    {
-      field: 'signature',
-      title: 'Signature',
-      format: 'SIGNATURE'
-    }
-  ];
-
   this.set('data', dataItems);
   this.set('columnsConfig', config);
-  this.set('value', false);
   this.render(hbs`
   <style>
       box, section {
         min-height: 1000px
       }
     </style>
-  {{host-detail/utils/datatable items=data columnsConfig=columnsConfig isDataLoading=value}}`);
+  {{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
   return wait().then(() => {
-    assert.equal(this.$('.rsa-data-table-body-row').length, 2, 'It should return the number of rows/length of the datatable');
+    assert.equal(this.$('.rsa-data-table-body-row').length, 2, 'Returned the number of rows/length of the datatable');
   });
+});
+
+test('Should return the length of columns in the datatable', function(assert) {
+  this.set('data', dataItems);
+  this.set('columnsConfig', config);
+  this.render(hbs`{{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-data-table-header-cell').length, 3, 'Returned the number of columns of the datatable');
+  });
+});
+
+test('Should return the number of cells in datatable body', function(assert) {
+  this.set('data', dataItems);
+  this.set('columnsConfig', config);
+  this.set('value', 0);
+  this.render(hbs`
+  <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+  {{#host-detail/utils/datatable items=data selectedIndex=value columnsConfig=columnsConfig as |item index column|}}{{/host-detail/utils/datatable}}`);
+  assert.equal(this.$('.rsa-data-table-body-cell').length, dataItems.length * config.length, 'Returned the number of cells in data-table body');
+});
+
+test('Check that no results message rendered if no dataitems', function(assert) {
+  const dataItems2 = [];
+  this.set('data', dataItems2);
+  this.set('columnsConfig', config);
+  this.set('value', 0);
+  this.render(hbs`{{#host-detail/utils/datatable items=data selectedIndex=0 columnsConfig=columnsConfig as |item index column|}}{{/host-detail/utils/datatable}}`);
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No Results Found.', 'No results message rendered for no dataitems');
+});
+
+test('Should toggle to the selected row by clicking it', function(assert) {
+  assert.expect(3);
+  this.set('data', dataItems);
+  this.set('columnsConfig', config);
+  this.set('value', 0);
+  this.set('selectRowAction', () => {
+    assert.ok(1, 'action is called on click');
+  });
+  this.render(hbs`
+  <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+  {{host-detail/utils/datatable items=data columnsConfig=columnsConfig selectedIndex=value click=(action selectRowAction)}}`);
+  assert.equal(this.$('.rsa-data-table-body-row:eq(1)').hasClass('is-selected'), false, 'Row is not selected before click');
+  this.$('.rsa-data-table-body-row:eq(1)').click();
+  assert.equal(this.$('.rsa-data-table-body-row:eq(1)').hasClass('is-selected'), true, 'Row gets selected on clicking it');
+});
+
+test('Check that columns passed for sorting are rendered', function(assert) {
+  assert.expect(4);
+  this.set('data', dataItems);
+  this.set('columnsConfig', config);
+  this.render(hbs`{{#host-detail/utils/datatable items=data columnsConfig=columnsConfig as |column|}}{{/host-detail/utils/datatable}}`);
+  assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns');
+  assert.equal(this.$('.rsa-data-table-header-cell.sortable-item:eq(0)').text().trim(), 'File Name', 'First column should be File Name');
+  assert.equal(this.$('.rsa-data-table-header-cell.sortable-item:eq(1)').text().trim(), 'LAST MODIFIED TIME', 'Second column should be LAST MODIFIED TIME');
+  assert.equal(this.$('.rsa-data-table-header-cell.sortable-item:eq(2)').text().trim(), 'Signature', 'Third column should be Signature');
+
+});
+
+test('Check that sort action is called', function(assert) {
+  assert.expect(2);
+  this.set('data', dataItems);
+  this.set('columnsConfig', config);
+  this.render(hbs`{{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
+  assert.equal(this.$('.rsa-data-table-header-cell:eq(0)').find('i').hasClass('rsa-icon-arrow-up-7-filled'), true, 'rsa arrow-up icon before sorting');
+  this.$('.rsa-data-table-header-cell:eq(0)').find('.rsa-icon').click();
+  this.$('.rsa-data-table-header-cell:eq(0)').find('.rsa-icon').click();
+  assert.equal(this.$('.rsa-data-table-header-cell:eq(0)').find('i').hasClass('rsa-icon-arrow-down-7-filled'), true, 'rsa arrow-down icon after sorting');
+});
+
+test('Check that disable sort is working', function(assert) {
+  assert.expect(2);
+  const config2 = [
+    {
+      field: 'fileName',
+      title: 'File Name'
+    },
+    {
+      field: 'timeModified',
+      title: 'LAST MODIFIED TIME',
+      format: 'DATE'
+    },
+    {
+      field: 'signature',
+      title: 'Signature',
+      format: 'SIGNATURE',
+      disableSort: true
+    }
+  ];
+  this.set('data', dataItems);
+  this.set('columnsConfig', config2);
+  this.render(hbs`{{#host-detail/utils/datatable items=data columnsConfig=columnsConfig as |column|}}{{/host-detail/utils/datatable}}`);
+  assert.equal(this.$('.rsa-data-table-header-cell').length, 3, '3 number of columns');
+  assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 2, '2 sortable columns');
 });
