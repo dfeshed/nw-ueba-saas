@@ -124,14 +124,6 @@ const formComponent = Component.extend({
     });
   },
 
-  _validate() {
-    let error = validatePackageConfig(this.get('configData.packageConfig'));
-    if (!error) {
-      error = validateLogConfigFields(this.get('configData.logCollectionConfig'));
-    }
-    return error;
-  },
-
   _scrollTo(target) {
     $(target)[0].scrollIntoView();
   },
@@ -162,6 +154,11 @@ const formComponent = Component.extend({
       onFailure: (response) => {
         const error = validateLogConfigFields(this.get('configData.logCollectionConfig'), response.meta);
         this.setProperties(error);
+      },
+      onSuccess: () => {
+        this.resetProperties();
+        this.set('selectedProtocol', 'TCP');
+        this.send('resetForm');
       }
     };
   },
@@ -203,16 +200,22 @@ const formComponent = Component.extend({
           this._scrollTo('.server-input-group');
         }
       } else {
+        let error;
         this.set('configData.logCollectionConfig.enabled', true);
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
-        const error = this._validate();
+        const packageConfigError = error = validatePackageConfig(this.get('configData.packageConfig'));
+        if (!packageConfigError) {
+          error = validateLogConfigFields(this.get('configData.logCollectionConfig'));
+        }
         this.setProperties(error);
         if (!error) {
           this.send('saveUIState', this.get('configData'));
           this.send('setConfig', this.get('configData'), false, this._getCallbackFunction());
         } else {
-          this._scrollTo('.server-input-group');
+          if (packageConfigError) {
+            this._scrollTo('.server-input-group');
+          }
         }
       }
     },

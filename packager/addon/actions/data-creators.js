@@ -61,6 +61,7 @@ const setConfig = (configData, configType, callback) => {
             }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
+          callback.onSuccess();
         },
         onFailure: (response) => {
           callback.onFailure(response);
