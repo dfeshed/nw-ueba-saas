@@ -129,4 +129,28 @@ export default class DataHelper {
     _set(this.state, 'overview.hostDetails', { machine });
     return this;
   }
+  snapShot(snapShot) {
+    _set(this.state, 'detailsInput.snapShots', snapShot);
+    return this;
+  }
+  scanTime(time) {
+    _set(this.state, 'detailsInput.scanTime', time);
+    return this;
+  }
+  agentId(id) {
+    _set(this.state, 'detailsInput.agentId', id);
+    return this;
+  }
+  agentVersion(version) {
+    this.host({
+      machine: {
+        agentVersion: `${version}`
+      }
+    });
+    return this;
+  }
+  isJsonExportCompleted(status) {
+    _set(this.state, 'overview.exportJSONStatus', status ? 'completed' : 'streaming');
+    return this;
+  }
 }

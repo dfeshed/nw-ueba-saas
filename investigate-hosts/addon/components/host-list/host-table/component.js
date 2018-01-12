@@ -3,7 +3,6 @@ import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
 import { getNextMachines, setHostColumnSort } from 'investigate-hosts/actions/data-creators/host';
 import { processedHostList, serviceList, hostCountForDisplay } from 'investigate-hosts/reducers/hosts/selectors';
-import { isValidExpression } from 'investigate-hosts/reducers/filters/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 
@@ -19,8 +18,7 @@ const stateToComputed = (state) => ({
   columns: getHostTableColumns(state),
   hostTotal: hostCountForDisplay(state), // Total number of hosts in search result
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
-  loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus,
-  isValidExpression: isValidExpression(state)
+  loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus
 });
 
 const dispatchToActions = {
