@@ -128,27 +128,6 @@ const formComponent = Component.extend({
     $(target)[0].scrollIntoView();
   },
 
-  _validateDestinationFields(primaryDestination, secondaryDestination) {
-    const listOfDest = [];
-    const flashMessage = this.get('flashMessages');
-    const listOfService = this.get('listOfService');
-    const i18nMessages = this.get('i18n');
-    const isPrimaryDestinationAvailable = (listOfService.some((service) => primaryDestination === service.id));
-    const isSecondaryDestinationAvailable = (listOfService.some((service) => secondaryDestination === service.id));
-    if (!isPrimaryDestinationAvailable) {
-      listOfDest.push(primaryDestination);
-    }
-    if (!isSecondaryDestinationAvailable) {
-      listOfDest.push(secondaryDestination);
-    }
-    if (!isEmpty(listOfDest)) {
-      const dest = i18nMessages.t('packager.upload.warning', { id: listOfDest.join(',') });
-      flashMessage.warning(`${i18nMessages.t('packager.upload.success')} ${dest}`);
-    } else {
-      flashMessage.success(i18nMessages.t('packager.upload.success'));
-    }
-  },
-
   _getCallbackFunction() {
     return {
       onFailure: (response) => {
@@ -166,13 +145,16 @@ const formComponent = Component.extend({
   _fetchLogConfigFromServer(formContent) {
     getConfiguration(formContent)
       .then((response) => {
+        const flashMessage = this.get('flashMessages');
+        const i18nMessages = this.get('i18n');
         const responseConfiguration = response.data;
         this.set('selectedProtocol', responseConfiguration.protocol);
         this.set('configData.logCollectionConfig', responseConfiguration);
-        this._validateDestinationFields(responseConfiguration.primaryDestination, responseConfiguration.secondaryDestination);
         if (responseConfiguration.hasErrors) {
           const warningMessage = `packager.errorMessages.${responseConfiguration.errorMessage}`;
-          this.get('flashMessages').warning(this.get('i18n').t(warningMessage));
+          flashMessage.warning(`${i18nMessages.t('packager.upload.success')} ${i18nMessages.t(warningMessage)}`);
+        } else {
+          flashMessage.success(i18nMessages.t('packager.upload.success'));
         }
       }).catch(() => {
         this.get('flashMessages').error(this.get('i18n').t('packager.upload.failure'));

@@ -1613,18 +1613,18 @@ export default {
       invalidPort: 'ja_Please enter valid port number',
       invalidName: 'ja_Please enter a valid name without special characters',
       passwordEmptyMessage: 'ja_Please enter certificate password',
-      NAME_EMPTY: 'ja_However, The configuration name is empty.',
-      SERVERS_EMPTY: 'ja_However, no servers are found.',
-      EVENT_ID_INVALID: 'ja_However, event ID is invalid.',
-      CHANNEL_EMPTY: 'ja_However, channel is empty.',
-      FILTER_EMPTY: 'ja_However filter is empty.',
-      FILTER_INVALID: 'ja_However filter is invalid.',
-      INVALID_HOST: 'ja_However, host is invalid.',
-      CONFIG_NAME_INVALID: 'ja_However, the config name is invalid.',
-      INVALID_PROTOCOL: 'ja_However, the protocol is invalid.',
-      CHANNEL_NAME_INVALID: 'ja_However, the channel name is invalid.',
-      EMPTY_CHANNELS: 'ja_However, the channel name is empty.',
-      CHANNEL_FILTER_INVALID: 'ja_However, the channel filter is invalid.'
+      NAME_EMPTY: 'ja_Warning: The configuration name is empty.',
+      SERVERS_EMPTY: 'ja_Warning: No servers are found.',
+      EVENT_ID_INVALID: 'ja_Warning: Event ID is invalid.',
+      CHANNEL_EMPTY: 'ja_Warning: Channel is empty.',
+      FILTER_EMPTY: 'ja_Warning: Filter is empty.',
+      FILTER_INVALID: 'ja_Warning: Filter is invalid.',
+      INVALID_HOST: 'ja_Warning: Host is invalid.',
+      CONFIG_NAME_INVALID: 'ja_Warning: The config name is invalid.',
+      INVALID_PROTOCOL: 'ja_Warning: The protocol is invalid.',
+      CHANNEL_NAME_INVALID: 'ja_Warning: The channel name is invalid.',
+      EMPTY_CHANNELS: 'ja_Warning: The channel name is empty.',
+      CHANNEL_FILTER_INVALID: 'ja_Warning: The channel filter is invalid.'
     },
     packagerTitle: 'ja_Packager',
     serviceName: 'ja_Service Name*',
@@ -1645,8 +1645,7 @@ export default {
     displayName: 'ja_Display Name*',
     upload: {
       success: 'ja_Configuration file loaded successfully.',
-      failure: 'ja_Unable to upload Configuration file.',
-      warning: ' ja_However, The Log Decoder/Virtual Log Collector with {{id}} does not exist. Please select from the available choices.'
+      failure: 'ja_Unable to upload Configuration file.'
     },
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.'

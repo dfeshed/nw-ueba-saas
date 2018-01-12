@@ -80,6 +80,19 @@ test('validateLogConfigFields - invalid config name', function(assert) {
   });
 });
 
+test('validateLogConfigFields - empty primaryDestination', function(assert) {
+  const formData = {
+    configName: 'TEST',
+    protocol: 'Test',
+    channels: []
+  };
+  const error = validateLogConfigFields(formData);
+  assert.deepEqual(error, {
+    'errorClass': 'is-error',
+    'className': 'rsa-form-label is-error power-select'
+  });
+});
+
 test('validateLogConfigFields - eventId out of range', function(assert) {
   const formData = {
     configName: 'TEST@!',

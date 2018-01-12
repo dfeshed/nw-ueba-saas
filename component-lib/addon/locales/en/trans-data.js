@@ -1614,18 +1614,18 @@ export default {
       invalidPort: 'Please enter valid port number',
       invalidName: 'Please enter a valid name without special characters',
       passwordEmptyMessage: 'Please enter certificate password',
-      NAME_EMPTY: 'However, The configuration name is empty.',
-      SERVERS_EMPTY: 'However, no servers are found.',
-      EVENT_ID_INVALID: 'However, event ID is invalid.',
-      CHANNEL_EMPTY: 'However, channel is empty.',
-      FILTER_EMPTY: 'However filter is empty.',
-      FILTER_INVALID: 'However filter is invalid.',
-      INVALID_HOST: 'However, host is invalid.',
-      CONFIG_NAME_INVALID: 'However, the config name is invalid.',
-      INVALID_PROTOCOL: 'However, the protocol is invalid.',
-      CHANNEL_NAME_INVALID: 'However, the channel name is invalid.',
-      EMPTY_CHANNELS: 'However, the channel name is empty.',
-      CHANNEL_FILTER_INVALID: 'However, the channel filter is invalid.'
+      NAME_EMPTY: 'Warning: The configuration name is empty.',
+      SERVERS_EMPTY: 'Warning: No servers are found.',
+      EVENT_ID_INVALID: 'Warning: Event ID is invalid.',
+      CHANNEL_EMPTY: 'Warning: Channel is empty.',
+      FILTER_EMPTY: 'Warning: Filter is empty.',
+      FILTER_INVALID: 'Warning: Filter is invalid.',
+      INVALID_HOST: 'Warning: Host is invalid.',
+      CONFIG_NAME_INVALID: 'Warning: The config name is invalid.',
+      INVALID_PROTOCOL: 'Warning: The protocol is invalid.',
+      CHANNEL_NAME_INVALID: 'Warning: The channel name is invalid.',
+      EMPTY_CHANNELS: 'Warning: The channel name is empty.',
+      CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.'
     },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',
@@ -1646,8 +1646,7 @@ export default {
     displayName: 'Display Name*',
     upload: {
       success: 'Configuration file loaded successfully.',
-      failure: 'Unable to upload Configuration file.',
-      warning: ' However, The Log Decoder/Virtual Log Collector with {{id}} does not exist. Please select from the available choices.'
+      failure: 'Unable to upload Configuration file.'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.'
