@@ -16,7 +16,6 @@ import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 
 /**
  * Created by barak_schuster on 31/08/2017.
@@ -26,11 +25,11 @@ public class WeightsModelBuilderTest {
     private List<ClusterConf> clusterConfs;
     private WeightsModelBuilderAlgorithm modelBuilderAlgorithm;
     private SmartRecordConfService smartRecordConfService;
-    private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer = mock(WeightModelBuilderMetricsContainer.class);
-
+    private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer;
     @Before
     public void setup() {
         smartRecordConfService = Mockito.mock(SmartRecordConfService.class);
+        weightModelBuilderMetricsContainer = Mockito.mock(WeightModelBuilderMetricsContainer.class);
         clusterConfs =
                 Collections.singletonList(new ClusterConf(Collections.singletonList("F1"), 0.1))
         ;
@@ -86,7 +85,7 @@ public class WeightsModelBuilderTest {
     @Test
     public void shouldCreateModelWithClusterConfsSpecifiedByAlgorithm() {
         SmartWeightsModelBuilderData modelBuilderData = new SmartWeightsModelBuilderData();
-        List<ClusterConf> clusterConfs = Mockito.mock(List.class);
+        List<ClusterConf> clusterConfs = Collections.emptyList();
         WeightsModelBuilderAlgorithm algorithm = Mockito.mock(WeightsModelBuilderAlgorithm .class);
         Mockito.when(algorithm.createWeightsClusterConfs(
                 Mockito.eq(this.clusterConfs),
