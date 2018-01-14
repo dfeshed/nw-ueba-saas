@@ -22,11 +22,15 @@ public interface DataPipelineSDK {
      * @return a merged result of {@link this#getStatus()} & {@link this#getCurrentlyRunningCursor()}
      */
     default PipelineState getPipelineState() {
-        List<PipelineStateDataProcessingCursor> currentlyRunningCursor = getCurrentlyRunningCursor();
-        PipelineState.StatusEnum status = getStatus();
         PipelineState pipelineState = new PipelineState();
-        pipelineState.setDataProcessingCursor(currentlyRunningCursor);
+        PipelineState.StatusEnum status = getStatus();
         pipelineState.setStatus(status);
+
+        if(!status.equals(PipelineState.StatusEnum.CLEANING))
+        {
+            List<PipelineStateDataProcessingCursor> currentlyRunningCursor = getCurrentlyRunningCursor();
+            pipelineState.setDataProcessingCursor(currentlyRunningCursor);
+        }
 
         return pipelineState;
     }
