@@ -1,6 +1,5 @@
 package fortscale.ml.model.metrics;
 
-import fortscale.ml.model.retriever.CategoricalFeatureValueRetrieverConf;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
@@ -29,7 +28,7 @@ public abstract class ModelRetrieverMetricsContainer extends ModelMetricsContain
      * Updates modeling metrics by provided data
      * @param reads amount of read data
      */
-    public void updateMetric(int reads) {
+    public void updateReadMetric(int reads) {
         Metric metric = getMetric();
         metric.getValue().compute(MetricEnums.MetricValues.READS, (k, v) -> v.doubleValue() + reads);
     }

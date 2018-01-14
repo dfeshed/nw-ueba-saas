@@ -63,11 +63,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         List<Double> maxValues = maxValuesResult.getMaxValues();
         ContinuousDataModel continuousDataModelOfMaxValues = buildContinuousDataModel(getMaxValuesHistogram(createGenericHistogram(maxValues).getHistogramMap()));
 
-        maxContinuousModelBuilderMetricsContainer.updateMetric(numOfPartitions,
-                continuousDataModel.getMean(), continuousDataModelOfMaxValues.getMean(),
-                continuousDataModel.getSd(), continuousDataModelOfMaxValues.getSd(),
-                continuousDataModel.getN(),  continuousDataModelOfMaxValues.getN(),
-                continuousDataModel.getMaxValue(), continuousDataModelOfMaxValues.getMaxValue());
+        maxContinuousModelBuilderMetricsContainer.updateMetric(numOfPartitions, continuousDataModel, continuousDataModelOfMaxValues);
         return new ContinuousMaxDataModel(continuousDataModel, continuousDataModelOfMaxValues,numOfPartitions);
     }
 
@@ -99,7 +95,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         }
 
         int metricResolution = resolution + 1;
-        maxContinuousModelBuilderMetricsContainer.incResolution(metricResolution);
+        maxContinuousModelBuilderMetricsContainer.updateMaxValuesResult(metricResolution);
 
         return new MaxValuesResult(resolutionInSeconds,maxValues);
     }

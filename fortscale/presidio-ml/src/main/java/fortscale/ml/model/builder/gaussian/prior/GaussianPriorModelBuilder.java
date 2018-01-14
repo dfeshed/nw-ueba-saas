@@ -48,7 +48,6 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		models = getModelsWithEnoughSamples(models);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		LearningSegments segments = new LearningSegments(models, segmentCenters, segmentor);
-		double maxPriorAtMean = 0;
 		for (LearningSegments.Segment segment : segments) {
 			Double priorAtMean = priorBuilder.calcPrior(
 					segment.getModels(),
@@ -61,11 +60,10 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 						segment.getCenter() - segment.getLeftMean(),
 						segment.getRightMean() - segment.getCenter())
 				);
-				maxPriorAtMean = priorAtMean > maxPriorAtMean ? priorAtMean : maxPriorAtMean;
 			}
 		}
 
-		gaussianPriorModelBuilderMetricsContainer.updateMetric(maxPriorAtMean, segmentPriors.size());
+		gaussianPriorModelBuilderMetricsContainer.updateMetric(segmentPriors);
 
 		if(segmentPriors.isEmpty()){
 			return new GaussianPriorModel().initMinPrior(priorBuilder.getMinAllowedPrior());
