@@ -42,6 +42,7 @@ public class LifecycleSupervisor implements LifecycleAware {
     private static volatile long totalSinkedEvents = 0L;
 
     public static Options options = new Options();
+    public static String agentName = null;
 
     private Map<LifecycleAware, Supervisoree> supervisedProcesses;
     private Map<LifecycleAware, ScheduledFuture<?>> monitorFutures;

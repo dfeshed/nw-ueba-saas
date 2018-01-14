@@ -258,6 +258,7 @@ public class Application {
             }
 
             String agentName = commandLine.getOptionValue('n');
+            LifecycleSupervisor.agentName = agentName;
             boolean reload = !commandLine.hasOption("no-reload-conf");
 
             if (commandLine.hasOption('z') || commandLine.hasOption("zkConnString")) {

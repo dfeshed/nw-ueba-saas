@@ -188,8 +188,7 @@ public class SinkRunner implements LifecycleAware {
         }
 
         private void shutdownFlume() {
-            final String agentName = LifecycleSupervisor.options.getOption("name").getValue();
-            logger.info("Flume agent {} is shutting down...", agentName);
+            logger.info("Flume agent {} is shutting down...", LifecycleSupervisor.agentName);
             sinkRunner.lifecycleState = LifecycleState.STOP;
             shouldStop.set(true);
             SinkRunner.lifecycleSupervisor.stop();
