@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 /**
  * This interceptor is used to modify the of values in the received JSON according to the given patterns/replace-strings.
  * Returns the same JSON with the updated values
+ * <p>
+ * * The difference between this interceptor and {@link JsonFieldValueReplacerInterceptor} is that this interceptor changes the whole (field) value, the other finds the regex and replaces that part only.
  */
 public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterceptor {
 

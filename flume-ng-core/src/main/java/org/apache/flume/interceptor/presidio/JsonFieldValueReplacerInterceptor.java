@@ -20,8 +20,10 @@ import java.util.regex.Pattern;
 /**
  * This interceptor is used to replace certain values (regex) in the received JSON.
  * Returns the same JSON without with the new values.
- * i.e (using default delimiters) - the given input 'type#fileDelete>file_delete' means - for field 'type' change value from 'fileDelete' to 'file_delete'.
+ * i.e (using default delimiters) - the given input 'type#->_' means - for field 'type' change value from 'some-file-Delete' to 'some_file_delete'.
  * removeEscapeChars = true (default = false) will remove escape characters that java properties added before ':' and '=' chars. use if the regex-es you use contain  ':' or '='
+ * <p>
+ * The difference between this interceptor and {@link JsonSearchAndReplaceInterceptor} is that this interceptor finds the regex and replaces that part only, the other changes the whole (field) value.
  */
 public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInterceptor {
 
