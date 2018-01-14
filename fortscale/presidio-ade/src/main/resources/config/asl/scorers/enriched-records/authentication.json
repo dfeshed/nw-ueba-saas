@@ -52,7 +52,7 @@
               "type": "list-conditional-scorer",
               "name": "dstMachine.userIdInteractiveRemote.authentication.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "INTERACTIVE_REMOTE",
+              "conditional-value": ["INTERACTIVE_REMOTE"],
               "scorer": {
                 "type": "reduction-scorer",
                 "name": "dstMachine.userIdInteractiveRemote.authentication.score",
