@@ -168,7 +168,7 @@
               "type": "list-conditional-scorer",
               "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "SECURITY_SENSITIVE_OPERATION,GROUP_MEMBERSHIP_ADD",
+              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_ADD"],
               "scorer": {
                 "type": "constant-scorer",
                 "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
