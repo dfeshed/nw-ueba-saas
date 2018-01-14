@@ -8,200 +8,78 @@
     },
     "mappings": {
       "metric": {
+        "_all": {
+          "enabled": false
+        },
         "properties": {
           "id": {
-            "type": "keyword"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "logicTime": {
             "type": "date",
             "store": true
           },
           "name": {
-            "type": "keyword",
+            "type": "string",
             "index": "not_analyzed",
             "store": true
           },
           "tags": {
             "properties": {
               "APPLICATION_NAME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "IS_SYSTEM_METRIC": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "FLUME_COMPONENT_INSTANCE_ID": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "FLUME_COMPONENT_TYPE": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "FEATURE_BUCKET": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "TIME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "GROUP_NAME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "AGGREGATED_FEATURE_TYPE": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "FEATURE_NAME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "FAILURE_REASON": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "HOST": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "RESULT": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "ADE_EVENT_TYPE": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "SCORER": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "MODEL": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "PID": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "SCHEMA": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               },
               "UNIT": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "keyword"
               }
             }
           },

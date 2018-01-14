@@ -24,10 +24,10 @@ public final class MetricDocument {
     public static final String TYPE = "metric";
 
     @Id
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     private String id;
 
-    @Field(type = FieldType.String, store = true)
+    @Field(type = FieldType.String, store = true, index = FieldIndex.not_analyzed)
     private String name;
 
     @Field(type = FieldType.Object, store = true, index = FieldIndex.analyzed)

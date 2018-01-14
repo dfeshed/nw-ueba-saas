@@ -1,5 +1,8 @@
 {
   "alert": {
+    "_all": {
+      "enabled": false
+    },
     "properties": {
       "id": {
         "type": "string",
