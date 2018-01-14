@@ -1,6 +1,7 @@
 package presidio.output.domain.records.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.common.general.ThreadLocalWithBatchInformation;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -8,10 +9,7 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
 @Mapping(mappingPath = "elasticsearch/mappings/presidio-output-user.json")
@@ -30,6 +28,9 @@ public class User extends AbstractElasticDocument {
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String TAGS_FIELD_NAME = "tags";
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
+    public static final String UPDATED_BY_LOGICAL_START_DATE_FIELD_NAME = "updatedByLogicalStartDate";
+    public static final String UPDATED_BY_LOGICAL_END_DATE_FIELD_NAME = "updatedByLogicalEndDate";
+
 
     @JsonProperty(USER_ID_FIELD_NAME)
     private String userId;
@@ -61,6 +62,13 @@ public class User extends AbstractElasticDocument {
 
     @JsonProperty(ALERTS_COUNT_FIELD_NAME)
     private int alertsCount;
+
+    @JsonProperty(UPDATED_BY_LOGICAL_START_DATE_FIELD_NAME)
+    private Date updatedByLogicalStartDate;
+
+    @JsonProperty(UPDATED_BY_LOGICAL_END_DATE_FIELD_NAME)
+    private Date updatedByLogicalEndDate;
+
 
     public User() {
         // empty const for JSON deserialization
@@ -171,6 +179,21 @@ public class User extends AbstractElasticDocument {
         this.alertClassifications = alertClassifications;
     }
 
+    public Date getUpdatedByLogicalStartDate() {
+        return updatedByLogicalStartDate;
+    }
+
+    public void setUpdatedByLogicalStartDate(Date updatedByLogicalStartDate) {
+        this.updatedByLogicalStartDate = updatedByLogicalStartDate;
+    }
+
+    public Date getUpdatedByLogicalEndDate() {
+        return updatedByLogicalEndDate;
+    }
+
+    public void setUpdatedByLogicalEndDate(Date updatedByLogicalEndDate) {
+        this.updatedByLogicalEndDate = updatedByLogicalEndDate;
+    }
 
     public void addAlertClassifications(List<String> alertClassifications) {
         Set<String> newAlertClassifications = new HashSet<>(this.alertClassifications);
@@ -189,6 +212,15 @@ public class User extends AbstractElasticDocument {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public void updateFieldsBeforeSave() {
+        super.updateFieldsBeforeSave();
+        if (ThreadLocalWithBatchInformation.getCurrentProcessedTime()!=null) {
+            setUpdatedByLogicalStartDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getStartAsDate());
+            setUpdatedByLogicalEndDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getEndAsDate());
+        }
     }
 
     @Override
