@@ -79,19 +79,18 @@ public class ActiveDirectoryEventsGeneratorTest {
     @Test
     public void OperationTypeTest () {
         // Operation types - see that all included, in the same order as enum
-        Assert.assertEquals(AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value, events.get(0).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value, events.get(1).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_COMPUTER_OBJECT.value, events.get(2).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.DACL_CHANGED_ON_COMPUTER_OBJECT.value, events.get(3).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_RENAMED.value, events.get(4).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_REMOVED.value, events.get(5).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_MOVED.value, events.get(6).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ADDED.value, events.get(7).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_ENABLED.value, events.get(8).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_DISABLED.value, events.get(9).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_GROUP_OBJECT.value, events.get(10).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_REMOVED_FROM_GROUP.value, events.get(11).getOperation().getOperationType().getName());
-        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_GROUP.value, events.get(12).getOperation().getOperationType().getName());
+        int i = 0;
+        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_COMPUTER_OBJECT.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.DACL_CHANGED_ON_COMPUTER_OBJECT.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_RENAMED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_REMOVED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_MOVED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ADDED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_ENABLED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.COMPUTER_ACCOUNT_DISABLED.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.OWNER_CHANGED_ON_GROUP_OBJECT.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_REMOVED_FROM_GROUP.value, events.get(i++).getOperation().getOperationType().getName());
+        Assert.assertEquals(AD_OPERATION_TYPE.NESTED_MEMBER_ADDED_TO_GROUP.value, events.get(i++).getOperation().getOperationType().getName());
     }
 
     @Test
@@ -127,7 +126,7 @@ public class ActiveDirectoryEventsGeneratorTest {
 
         List<String> opCategories = events.get(0).getOperation().getOperationType().getCategories();
         Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.SECURITY_SENSITIVE_OPERATION.value));
-        Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP.value));
+        Assert.assertTrue(opCategories.contains(ACTIVEDIRECTORY_OP_TYPE_CATEGORIES.GROUP_MEMBERSHIP_OPERATION.value));
 
     }
 
