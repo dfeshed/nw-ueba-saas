@@ -129,6 +129,30 @@ export default class DataHelper {
     _set(this.state, 'overview.hostDetails', { machine });
     return this;
   }
+  isProcessTreeLoading(value) {
+    _set(this.state, 'process.processTreeLoading', value);
+    return this;
+  }
+  processList(value) {
+    _set(this.state, 'process.processList', value);
+    return this;
+  }
+  processTree(value) {
+    _set(this.state, 'process.processTree', value);
+    return this;
+  }
+  selectedTab(tabName) {
+    _set(this.state, 'explore.selectedTab', tabName);
+    return this;
+  }
+  sortField(field) {
+    _set(this.state, 'process.sortField', field);
+    return this;
+  }
+  isDescOrder(sortOrder) {
+    _set(this.state, 'process.isDescOrder', sortOrder);
+    return this;
+  }
   snapShot(snapShot) {
     _set(this.state, 'detailsInput.snapShots', snapShot);
     return this;
