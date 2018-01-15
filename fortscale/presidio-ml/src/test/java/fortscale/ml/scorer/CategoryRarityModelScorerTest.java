@@ -41,6 +41,8 @@ public class CategoryRarityModelScorerTest {
     @Autowired
     EventModelsCacheService eventModelsCacheService;
 
+    private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
+
     private void assertScorer(CategoryRarityModelScorer scorer, CategoryRarityModelScorerParams params) {
 
         Assert.assertEquals(params.getName(), scorer.getName());
@@ -70,7 +72,9 @@ public class CategoryRarityModelScorerTest {
                 params.getMinimumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
-                params.getMaxNumOfRareFeatures(), eventModelsCacheService);
+                params.getMaxNumOfRareFeatures(),
+                X_WITH_VALUE_HALF_FACTOR,
+                eventModelsCacheService);
     }
 
     //==================================================================================================================

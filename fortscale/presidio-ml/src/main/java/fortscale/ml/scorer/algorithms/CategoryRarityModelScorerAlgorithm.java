@@ -17,9 +17,10 @@ public class CategoryRarityModelScorerAlgorithm {
 
     private int maxRareCount;
     private int maxNumOfRareFeatures;
+    private double xWithValueHalfFactor;
 
 
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures) {
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor) {
         assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {
@@ -32,6 +33,7 @@ public class CategoryRarityModelScorerAlgorithm {
         }
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
+        this.xWithValueHalfFactor = xWithValueHalfFactor;
     }
 
     public static void assertMaxRareCountValue(Integer maxRareCount) {
@@ -75,7 +77,7 @@ public class CategoryRarityModelScorerAlgorithm {
         // make sure getMaxRareCount() will be scored less than MIN_POSSIBLE_SCORE - so once we multiply
         // by MAX_POSSIBLE_SCORE (inside calculateScore function) we get a rounded score of 0
         return Sigmoid.calcLogisticFunc(
-                maxRareCount * 0.3333333333333333,
+                maxRareCount * xWithValueHalfFactor,
                 maxRareCount,
                 (MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) * 0.99999999,
                 occurrence - 1);

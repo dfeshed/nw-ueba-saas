@@ -19,6 +19,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private static final int DAILY_BUCKET_SIZE = 60 * 10;
     private static final int MAX_RARE_TIMESTAMP_COUNT = 10;
     private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 5;
+    private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
     TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
     TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 
@@ -38,7 +39,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private Double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
         TimeModel model = new TimeModel();
         model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
-        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS);
+        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS, X_WITH_VALUE_HALF_FACTOR);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }
 
