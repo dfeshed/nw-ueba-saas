@@ -30,7 +30,7 @@
                 "model": {
                   "name": "srcMachineNameRegexCluster.userId.authentication"
                 },
-                "max-rare-count": 5,
+                "max-rare-count": 8,
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
@@ -42,7 +42,7 @@
                   "model": {
                     "name": "userId.srcMachineId.authentication"
                   },
-                  "max-rare-count": 5,
+                  "max-rare-count": 8,
                   "max-num-of-rare-features": 15
                 }
               },
@@ -62,7 +62,7 @@
                   "model": {
                     "name": "dstMachineNameRegexCluster.userIdInteractiveRemote.authentication"
                   },
-                  "max-rare-count": 5,
+                  "max-rare-count": 8,
                   "max-num-of-rare-features": 15
                 },
                 "reduction-scorer": {
@@ -74,7 +74,7 @@
                     "model": {
                       "name": "userId.dstMachineIdInteractiveRemote.authentication"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15
                   }
                 },
@@ -90,7 +90,7 @@
                 "model": {
                   "name": "site.userId.authentication"
                 },
-                "max-rare-count": 5,
+                "max-rare-count": 8,
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
@@ -102,7 +102,7 @@
                   "model": {
                     "name": "userId.site.authentication"
                   },
-                  "max-rare-count": 5,
+                  "max-rare-count": 8,
                   "max-num-of-rare-features": 15
                 }
               },
