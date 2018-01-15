@@ -78,7 +78,8 @@ public class MetricEnums {
         AMOUNT_OF_SEGMENT_PRIORS("amountOfSegmentPriors"),
         AGGREGATIONS("aggregations"),
         AMOUNT_OF_NON_ZERO_FEATURE_VALUES("amountOfNonZeroFeatureValue"),
-        MAX_FEATURE_VALUE("maxFeatureValue");
+        MAX_FEATURE_VALUE("maxFeatureValue"),
+        WEIGHT("weight");
 
         private String value;
 

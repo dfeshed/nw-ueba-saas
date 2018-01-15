@@ -1,5 +1,6 @@
 package fortscale.ml.model.builder.smart_weights;
 
+import fortscale.ml.model.metrics.WeightModelBuilderMetricsContainer;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.ClusterConf;
@@ -18,6 +19,7 @@ import java.util.function.BiFunction;
 
 import static fortscale.ml.model.builder.smart_weights.SmartWeightModelTestUtils.createClusterConf;
 import static fortscale.ml.model.builder.smart_weights.SmartWeightModelTestUtils.createClusterConfs;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by barak_schuster on 31/08/2017.
@@ -26,16 +28,17 @@ public class WeightsModelBuilderAlgorithmTest {
     private WeightsModelBuilderAlgorithm builderAlgorithm;
     private AggregatedFeatureReliability aggregatedFeaturesReliabilityMock;
     private ClustersContributionsSimulator clustersContributionsSimulator;
+    private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer = mock(WeightModelBuilderMetricsContainer.class);
 
     /**
      * Create a {@link WeightsModelBuilderAlgorithm} with all its dependencies mocked.
      */
     @Before
     public void createBuilderAlgorithm() {
-        aggregatedFeaturesReliabilityMock = Mockito.mock(AggregatedFeatureReliability.class);
+        aggregatedFeaturesReliabilityMock = mock(AggregatedFeatureReliability.class);
         BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureEventsReliabilityFactory =
                 (smartAggregatedRecordDataContainers, numOfContexts) -> aggregatedFeaturesReliabilityMock;
-        clustersContributionsSimulator = Mockito.mock(ClustersContributionsSimulator.class);
+        clustersContributionsSimulator = mock(ClustersContributionsSimulator.class);
         builderAlgorithm = new WeightsModelBuilderAlgorithm(
                 aggregatedFeatureEventsReliabilityFactory,
                 clustersContributionsSimulator
@@ -48,7 +51,7 @@ public class WeightsModelBuilderAlgorithmTest {
 
     private List<ClusterConf> calculateClusterConfsViaReliability(List<ClusterConf> clusterConfs) {
         return builderAlgorithm.calculateClusterConfsViaReliability(
-                Mockito.mock(List.class),
+                mock(List.class),
                 clusterConfs,
                 0
         );
@@ -153,7 +156,7 @@ public class WeightsModelBuilderAlgorithmTest {
 
         }
         return builderAlgorithm.calculateClusterConfsViaSimulations(
-                Mockito.mock(List.class),
+                mock(List.class),
                 initialClusterConfs,
                 clusterSpecsToContributionSimulations.length
         );
@@ -198,7 +201,7 @@ public class WeightsModelBuilderAlgorithmTest {
          * calling {@link ClusterConfToContributionBuilder::append}
          */
         public Map<ClusterConf, Double> build() {
-            Map<ClusterConf, Double> clusterToContribution = Mockito.mock(Map.class);
+            Map<ClusterConf, Double> clusterToContribution = mock(Map.class);
             aggregatedFeatureEventNamesToContribution.forEach((aggregatedFeatureEventNames, contribution) ->
                     Mockito.when(clusterToContribution.get(Mockito.argThat(new ArgumentMatcher<ClusterConf>() {
                         @Override
@@ -354,7 +357,7 @@ public class WeightsModelBuilderAlgorithmTest {
     public void shouldReturnClusterSpecsPrototypeWhenEmptyModelBuilderData() {
         List<ClusterConf> clusterConfsPrototype = createClusterConfs(createClusterConf("F1"));
 
-        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(clusterConfsPrototype, Collections.emptyList(), 0, 100, null);
+        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(clusterConfsPrototype, Collections.emptyList(), 0, 100, null, weightModelBuilderMetricsContainer);
 
         Assert.assertEquals(clusterConfsPrototype, clusterConfs);
     }
@@ -370,7 +373,7 @@ public class WeightsModelBuilderAlgorithmTest {
                 AggregatedFeatureReliability::new,
                 new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm())
         );
-        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"));
+        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"), weightModelBuilderMetricsContainer);
 
         Assert.assertEquals(0.0256554137983594, clusterConfs.get(0).getWeight(), 0.00000001);
         Assert.assertEquals(0.0256554137983594, clusterConfs.get(1).getWeight(), 0.00000001);
