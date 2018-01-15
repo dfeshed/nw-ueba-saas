@@ -25,7 +25,7 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP"],
+              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_OPERATION"],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
