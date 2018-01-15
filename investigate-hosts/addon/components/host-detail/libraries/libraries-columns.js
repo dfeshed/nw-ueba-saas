@@ -49,7 +49,7 @@ let columnsConfig = {
     {
       field: 'timeModified',
       title: 'LAST MODIFIED TIME',
-      width: '20%'
+      format: 'DATE'
     }
   ]
 };
