@@ -97,6 +97,9 @@ $entityFileHashColor: $cyan;
       }
 
       &.is-hidden {
+        use {
+          fill: text-color(primary,base,nearly-transparent);
+        }
         .line {
           stroke: text-color(primary,base,nearly-transparent);
         }

@@ -27,6 +27,16 @@
 
     .controls {
       right: rsa-whitespace(less);
+
+      .rsa-form-button-wrapper.is-icon-only.is-standard:active:not(.is-disabled) {
+        background-color: text-color(navigation, menu);
+      }
+
+      .rsa-form-button-wrapper.is-icon-only.is-standard:hover:not(.is-active):not(.is-disabled) {
+        .rsa-form-button {
+          color: text-color(navigation, linkHover);
+        }
+      }
     }
   }
 
