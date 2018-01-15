@@ -270,8 +270,8 @@
                             chmod 666 /home/presidio/presidio-core/configurations/airflow/
                             chmod 666 /home/presidio/presidio-core/configurations/
                             chmod 666 /home/presidio/presidio-core/
-                            chmod 666 /home/presidio/
-                            chmod 666 /home/
+                            chmod 777 /home/presidio/
+                            chmod 777 /home/
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
