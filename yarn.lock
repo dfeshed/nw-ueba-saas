@@ -3776,11 +3776,11 @@ ember-redux-saga-shim@1.1.0:
     ember-cli-babel "^6.1.0"
     ember-cli-htmlbars "^1.1.1"
 
-ember-redux@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-3.0.0.tgz#e5769280207e222e88a020b26451c16ba3a21efb"
+ember-redux@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-3.1.0.tgz#2497e1e7b487b55439112808596ab5d8913ba59f"
   dependencies:
-    ember-cli-babel "^6.7.2"
+    ember-cli-babel "^6.8.2"
 
 ember-resolver@^4.0.0:
   version "4.3.0"

@@ -28,7 +28,7 @@
     "ember-cli-htmlbars": "^2.0.1",
     "ember-math-helpers": "2.0.5",
     "ember-moment": "7.2.0",
-    "ember-redux": "3.0.0",
+    "ember-redux": "3.1.0",
     "ember-cli-seamless-immutable-shim": "1.0.0",
     "flexi": "2.0.1"
   },

@@ -76,7 +76,7 @@
     "ember-power-select": "1.9.6",
     "ember-power-select-typeahead": "^0.6.0",
     "ember-radio-button": "1.1.1",
-    "ember-redux": "3.0.0",
+    "ember-redux": "3.1.0",
     "ember-redux-actions": "0.3.0",
     "ember-redux-saga-shim": "1.1.0",
     "ember-resolver": "^4.0.0",
