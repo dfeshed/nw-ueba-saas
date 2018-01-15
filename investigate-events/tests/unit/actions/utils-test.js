@@ -1,5 +1,7 @@
-import queryUtils from 'investigate-events/actions/utils';
 import { module, test } from 'qunit';
+
+import queryUtils from 'investigate-events/actions/utils';
+import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
 
 module('Unit | Helper | query utils');
 
@@ -13,6 +15,20 @@ const params = {
   st: 3
 };
 
+const conditions = [{
+  meta: 'foo',
+  operator: '=',
+  value: 'bar'
+}, {
+  meta: 'foo',
+  operator: 'exists',
+  value: 'bar'
+}, {
+  meta: 'foo',
+  operator: 'begins',
+  value: 'bar'
+}];
+
 test('parseQueryParams correctly parses URI', function(assert) {
   assert.expect(8);
   const result = queryUtils.parseQueryParams(params);
@@ -24,4 +40,11 @@ test('parseQueryParams correctly parses URI', function(assert) {
   assert.equal(result.reconSize, params.rs, '"rs" was not parsed to "reconSize"');
   assert.equal(result.serviceId, params.sid, '"sid" was not parsed to "serviceId"');
   assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
+});
+
+test('encodeMetaFilterConditions correctly encodes conditions', function(assert) {
+  assert.expect(1);
+  const result = encodeMetaFilterConditions(conditions);
+
+  assert.equal(result, 'foo=bar && foo exists && foo begins bar');
 });

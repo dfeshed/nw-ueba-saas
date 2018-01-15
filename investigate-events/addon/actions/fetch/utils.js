@@ -150,7 +150,14 @@ export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
     .map((condition) => {
       const { meta, value, operator } = condition;
-      return `${meta}${operator}${value}`;
+
+      if (['contains', 'ends', 'begins'].includes(operator)) {
+        return `${meta} ${operator} ${value}`;
+      } else if (['!exists', 'exists'].includes(operator)) {
+        return `${meta} ${operator}`;
+      } else {
+        return `${meta}${operator}${value}`;
+      }
     })
     .join(' && ');
 };
