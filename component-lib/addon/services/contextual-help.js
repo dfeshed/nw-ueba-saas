@@ -33,6 +33,7 @@ export default Service.extend({
   respRemTasksVw: 'respRemTasksVw',
   incRulesListVw: 'incRulesListVw',
   incRulesDetailVw: 'incRulesDetailVw',
+  respNotifSetVw: 'respNotifSetVw',
 
   module: null,
   topic: null,

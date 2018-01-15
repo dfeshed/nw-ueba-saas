@@ -67,6 +67,17 @@ const configureConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/users/all',
         requestDestination: '/ws/respond/users/all'
       }
+    },
+    'notification-settings': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/notifications',
+        requestDestination: '/ws/respond/notifications'
+      },
+      updateRecord: {
+        subscriptionDestination: '/user/queue/notifications/update',
+        requestDestination: '/ws/respond/notifications/update'
+      }
     }
   };
 };

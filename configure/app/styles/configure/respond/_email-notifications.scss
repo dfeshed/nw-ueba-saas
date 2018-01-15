@@ -1,0 +1,97 @@
+.respond-notifications {
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: calc(100vh - #{$navbarHeight});
+  color: text-color(primary, lighter);
+  padding: rsa-whitespace(more);
+  h1 {
+    @include rsa-font(header, larger);
+  }
+  h2 {
+    @include rsa-font(header, large);
+  }
+  .notifications {
+    height: 100%;
+    padding: 0 rsa-whitespace(more);
+
+    .section {
+      padding: rsa-whitespace(more) 0;
+    }
+
+    .email-server-settings {
+      .ember-power-select-trigger {
+        max-width: 300px;
+      }
+      a {
+        display: block;
+        margin-top: rsa-whitespace();
+        color: text-color(secondary);
+      }
+    }
+
+    .soc-manager-emails {
+      width: 500px;
+      .rsa-form-input {
+        max-width: 430px;
+        min-width: 430px;
+        display: inline-block;
+      }
+      > ul {
+        min-height: 100px;
+        padding: rsa-whitespace(less);
+        margin: rsa-whitespace(less) 0 0 0;
+        border: 1px solid border-color(primary);
+
+        > li {
+          position: relative;
+          padding: rsa-whitespace(less) 0;
+
+          .remove-email {
+            position: absolute;
+            right: 0;
+            .rsa-form-button {
+              padding: 0;
+              i {
+                font-size: 0.8rem;
+              }
+            }
+          }
+
+          border-bottom: 1px solid border-color(primary);
+        }
+        > li:last-of-type {
+          border: none;
+        }
+        .no-soc-emails {
+          font-style: italic;
+          text-align: center;
+        }
+      }
+      .soc-email-controls {
+        padding: 0 0 rsa-whitespace(least) rsa-whitespace(least);
+        border: 1px solid border-color(primary);
+        border-top: none;
+        width: 494px;
+      }
+    }
+
+    .notification-details {
+      table {
+        width: 100%;
+        margin: rsa-whitespace() 0;
+
+        thead {
+          @include rsa-font(header);
+          border-bottom: 1px solid border-color(primary);
+        }
+        td, th {
+          padding: rsa-whitespace(less) 0;
+        }
+
+        tr {
+          border-bottom: 1px solid border-color(primary);
+        }
+      }
+    }
+  }
+}

@@ -23,7 +23,8 @@ const Eng = Engine.extend({
       'timezone',
       'i18n',
       'flashMessages',
-      'eventBus'
+      'eventBus',
+      'router'
     ],
     externalRoutes: [
       'protected'

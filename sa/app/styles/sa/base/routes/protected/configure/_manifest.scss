@@ -3,7 +3,7 @@ $configureNavigationHeight: 48px;
 
 .rsa-protected page.configure-engine {
   min-height: calc(100vh - #{$appNavigationHeaderHeight});
-  .rsa-incident-rules, .rsa-incident-rule {
+  .rsa-incident-rules, .rsa-incident-rule, .respond-notifications {
     height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight});
   }
 }

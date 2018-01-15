@@ -495,8 +495,10 @@ export default {
     }
   },
   configure: {
+    title: 'Configure',
     liveContent: 'Live Content',
     esaRules: 'ESA Rules',
+    respondNotifications: 'Respond Notifications',
     incidentRulesTitle: 'Incident Rules',
     subscriptions: 'Subscriptions',
     customFeeds: 'Custom Feeds',
@@ -613,6 +615,28 @@ export default {
         saveFailure: 'There was a problem saving the changes to the rule'
       },
       missingRequiredInfo: 'There is required information missing from the incident rule'
+    },
+    notifications: {
+      settings: 'Respond Notification Settings',
+      emailServer: 'Email Server',
+      socEmailAddresses: 'SOC Manager Email Addresses',
+      noSocEmails: 'There are no SOC Manager emails configured',
+      emailAddressPlaceholder: 'Enter an email address to add',
+      addEmail: 'Add',
+      notificationTypes: 'Notification Types',
+      type: 'Type',
+      sendToAssignee: 'Send to Assignee',
+      sendToSOCManagers: 'Send to SOC Managers',
+      types: {
+        'incident-created': 'Incident Created',
+        'incident-state-changed': 'Incident Updated'
+      },
+      emailServerSettings: 'Email Server Settings',
+      actionMessages: {
+        fetchFailure: 'There was a problem loading the Respond notification settings',
+        updateSuccess: 'You successfully updated the Respond notification settings',
+        updateFailure: 'There was a problem updating the Respond notification settings'
+      }
     }
   },
   respond: {

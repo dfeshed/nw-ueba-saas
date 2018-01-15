@@ -494,8 +494,10 @@ export default {
     }
   },
   configure: {
+    title: 'ja_Configure',
     liveContent: 'ja_Live Content',
     esaRules: 'ja_ESA Rules',
+    respondNotifications: 'ja_Respond Notifications',
     incidentRulesTitle: 'ja_Incident Rules',
     subscriptions: 'ja_Subscriptions',
     customFeeds: 'ja_Custom Feeds',
@@ -612,6 +614,28 @@ export default {
         saveFailure: 'ja_There was a problem saving the changes to the rule'
       },
       missingRequiredInfo: 'ja_There is required information missing from the incident rule'
+    },
+    notifications: {
+      settings: 'ja_Respond Notification Settings',
+      emailServer: 'ja_Email Server',
+      socEmailAddresses: 'ja_SOC Manager Email Addresses',
+      noSocEmails: 'ja_There are no SOC Manager emails configured',
+      emailAddressPlaceholder: 'ja_Enter an email address to add',
+      addEmail: 'ja_Add',
+      notificationTypes: 'ja_Notification Types',
+      type: 'ja_Type',
+      sendToAssignee: 'ja_Send to Assignee',
+      sendToSOCManagers: 'ja_Send to SOC Managers',
+      types: {
+        'incident-created': 'ja_Incident Created',
+        'incident-state-changed': 'ja_Incident Updated'
+      },
+      emailServerSettings: 'ja_Email Server Settings',
+      actionMessages: {
+        fetchFailure: 'ja_There was a problem loading the Respond notification settings',
+        updateSuccess: 'ja_You successfully updated the Respond notification settings',
+        updateFailure: 'ja_There was a problem updating the Respond notification settings'
+      }
     }
   },
   respond: {

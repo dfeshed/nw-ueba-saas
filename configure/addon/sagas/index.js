@@ -10,6 +10,11 @@ import {
   createRule
 } from './incident-rules/rules';
 
+import {
+  fetchNotificationSettings,
+  updateNotificationSettings
+} from './respond-notifications/notifications';
+
 export default function* root() {
   yield [
     fork(fetchRules),
@@ -19,6 +24,8 @@ export default function* root() {
     fork(reorderRules),
     fork(cloneRule),
     fork(saveRule),
-    fork(createRule)
+    fork(createRule),
+    fork(fetchNotificationSettings),
+    fork(updateNotificationSettings)
   ];
 }
