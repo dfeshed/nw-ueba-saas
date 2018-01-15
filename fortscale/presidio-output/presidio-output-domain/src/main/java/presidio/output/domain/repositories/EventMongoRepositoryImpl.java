@@ -30,8 +30,8 @@ public class EventMongoRepositoryImpl implements EventRepository {
     @Autowired
     private MongoDbBulkOpUtil mongoDbBulkOpUtil;
 
-    private final List<String> collectionNames = new ArrayList<>(Arrays.asList(
-            "output_active_directory_enriched_events", "output_authentication_enriched_events", "output_file_enriched_events"));
+    private final List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events",
+            "output_active_directory_enriched_events", "output_file_enriched_events"));
 
     public EventMongoRepositoryImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
