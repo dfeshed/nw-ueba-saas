@@ -24,7 +24,9 @@ export default {
     apply: 'ja_Apply',
     ok: 'ja_OK',
     delete: 'ja_Delete',
-    save: 'ja_Save'
+    save: 'ja_Save',
+    yes: 'ja_Yes',
+    no: 'ja_No'
   },
   tables: {
     noResults: 'ja_No Results',
@@ -912,7 +914,7 @@ export default {
           placeholders: {
             IP: 'ja_Enter an IP address',
             MAC_ADDRESS: 'ja_Enter a MAC address',
-            HOST: 'ja_Enter a host name',
+            HOST: 'ja_Enter a hostname',
             DOMAIN: 'ja_Enter a domain name',
             FILE_NAME: 'ja_Enter a file name',
             FILE_HASH: 'ja_Enter a file hash',
@@ -1304,7 +1306,7 @@ export default {
       lastUpdated: 'ja_Last Updated',
       adminStatus: 'ja_Admin Status',
       lastLogin: 'ja_Last Login',
-      macAddress: 'ja_Mac Address',
+      macAddress: 'ja_MAC Address',
       operatingSystem: 'ja_Operating System',
       machineStatus: 'ja_Machine Status',
       ipAddress: 'ja_IPAddress',
@@ -1332,7 +1334,7 @@ export default {
       criticalityRating: 'ja_Criticality Rating',
       riskRating: 'ja_Risk Rating',
       deviceName: 'ja_Device Name',
-      hostName: 'ja_Host Name',
+      hostName: 'ja_Hostname',
       deviceId: 'ja_Device Id',
       deviceType: 'ja_Device Type',
       deviceOwner: 'ja_Device Owner',
@@ -1664,7 +1666,7 @@ export default {
     heartbeatFrequency: 'ja_Heartbeat Frequency',
     testLog: 'ja_Send Test Log',
     placeholder: 'ja_Make a selection',
-    searchPlaceholder: 'ja_Type to filter options',
+    searchPlaceholder: 'ja_Enter the filter option',
     emptyName: 'ja_Configuration name is empty',
     channelFilter: 'ja_Channel Filters',
     specialCharacter: 'ja_Configuration name contains special character.',
@@ -1757,7 +1759,7 @@ export default {
         sectionNames: 'ja_PE.Section Names',
         importedLibraries: 'ja_PE.Imported Librabries',
         resources: {
-          originalFileName: 'ja_PE.Resources.File Name',
+          originalFileName: 'ja_PE.Resources.Filename',
           company: 'ja_PE.Resources.Company',
           description: 'ja_PE.Resources.Description',
           version: 'ja_PE.Resources.Version'
@@ -1800,8 +1802,8 @@ export default {
 
     },
     sort: {
-      fileNameDescending: 'ja_File Name (descending)',
-      fileNameAscending: 'ja_File Name (ascending)',
+      fileNameDescending: 'ja_Filename (descending)',
+      fileNameAscending: 'ja_Filename (ascending)',
       sizeAscending: 'ja_Size (ascending)',
       sizeDescending: 'ja_Size (descending)',
       formatAscending: 'ja_Format (ascending)',
@@ -1865,7 +1867,7 @@ export default {
           sectionNames: 'ja_Section Names',
           importedLibraries: 'ja_Imported Libraries',
           resources: {
-            originalFileName: 'ja_File Name',
+            originalFileName: 'ja_Filename',
             company: 'ja_Company',
             description: 'ja_Description',
             version: 'ja_Version'
@@ -1896,7 +1898,7 @@ export default {
           parentPath: 'ja_Parent Path',
           threadCount: 'ja_Thread Count',
           owner: 'ja_Owner',
-          sessionId: 'ja_Session Id',
+          sessionId: 'ja_Session ID',
           createUtcTime: 'ja_Created',
           imageBase: 'ja_Image Base',
           imageSize: 'ja_Image Size'
@@ -1995,7 +1997,7 @@ export default {
         addMore: 'ja_Add more...',
         loadMore: 'Load More',
         exportCSV: 'ja_Export to CSV',
-        export: 'ja_Export to JSON...',
+        export: 'ja_Export to JSON',
         exportTooltip: 'ja_Exports all scan data categories for the host.',
         downloading: 'ja_Downloading',
         initiateScan: 'ja_Start Scan',
@@ -2038,15 +2040,15 @@ export default {
       },
       explore: {
         input: {
-          placeholder: 'ja_Search by file name, path or hash'
+          placeholder: 'ja_Search by filename, path or hash'
         },
         noResultsFound: 'ja_No Results Found.',
-        fileName: 'ja_File Name: ',
+        fileName: 'ja_Filename: ',
         path: 'ja_Path: ',
         hash: 'ja_Hash: ',
         search: {
           minimumtext: {
-            required: 'ja_For file name or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
+            required: 'ja_For filename or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
           }
         }
       },
@@ -2063,7 +2065,7 @@ export default {
       summary: {
         snapshotTime: 'ja_Snapshot Time',
         overview: {
-          typeToFilterOptions: 'ja_Type to filter options',
+          typeToFilterOptions: 'ja_Enter the filter option',
           noSnapShots: 'ja_No snapshots available'
         },
         body: {
@@ -2095,7 +2097,7 @@ export default {
         customEndDate: 'ja_End Date',
         customDate: 'ja_Custom Date',
         operator: 'ja_Operator',
-        searchPlaceHolder: 'ja_Type to filter options',
+        searchPlaceHolder: 'ja_Enter the filter option',
         mutlipleValuesNote: 'ja_Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'ja_Invalid filter input',
         inTimeRange: 'ja_In',
@@ -2149,7 +2151,7 @@ export default {
         },
         machine: {
           machineOsType: 'ja_Operating System',
-          machineName: 'Host Name',
+          machineName: 'ja_Hostname',
           id: 'ja_Agent ID',
           agentVersion: 'ja_Agent Version',
           scanStartTime: 'ja_Last Scan Time',
@@ -2163,9 +2165,9 @@ export default {
           },
           users: {
             name: 'ja_Username',
-            sessionId: 'ja_Users - SessionID',
+            sessionId: 'ja_Users - Session ID',
             sessionType: 'ja_Users - Session Type',
-            isAdministrator: 'ja_Users - IsAdmin',
+            isAdministrator: 'ja_Users - Is Admin',
             groups: 'ja_Users - Groups',
             domainUserQualifiedName: 'ja_Users - QualifiedName',
             domainUserId: 'ja_Users - Domain UserID',
@@ -2226,7 +2228,7 @@ export default {
           highestScoringModules: 'ja_Highest Scoring Module'
         },
         machineIdentity: {
-          machineName: 'ja_Host Name',
+          machineName: 'ja_Hostname',
           group: 'ja_Agent Group',
           agentMode: 'ja_Agent Mode',
           agent: {
@@ -2236,18 +2238,18 @@ export default {
             installTime: 'ja_Agent - Install Time',
             serviceStartTime: 'ja_Agent - Service Start Time',
             serviceEprocess: 'ja_Agent - Service Eprocess',
-            serviceProcessId: 'ja_Agent - Service ProcessId',
-            serviceErrorCode: 'ja_Agent - Service ErrorCode',
+            serviceProcessId: 'ja_Agent - Service Process ID',
+            serviceErrorCode: 'ja_Agent - Service Error Code',
             serviceStatus: 'ja_Agent - Service Status',
             driverStatus: 'ja_Agent - Driver Status',
-            driverErrorCode: 'ja_Agent - Driver ErrorCode',
+            driverErrorCode: 'ja_Agent - Driver Error Code',
             blockingEnabled: 'ja_Agent - Blocking Enabled',
             blockingUpdateTime: 'ja_Agent - Blocking Update Time'
           },
           operatingSystem: {
             description: 'ja_OS - Description',
-            buildNumber: 'ja_OS - BuildNumber',
-            servicePack: 'ja_OS - ServicePack',
+            buildNumber: 'ja_OS - Build Number',
+            servicePack: 'ja_OS - Service Pack',
             directory: 'ja_OS - Directory',
             kernelId: 'ja_OS - Kernel Id',
             kernelName: 'ja_OS - Kernel Name',
@@ -2276,7 +2278,7 @@ export default {
           locale: {
             defaultLanguage: 'ja_Locale - Default Language',
             isoCountryCode: 'ja_Locale - Country Code',
-            timeZone: 'ja_Locale - TimeZone'
+            timeZone: 'ja_Locale - Time Zone'
           },
           knownFolder: {
             appData: 'ja_Folder - AppData',
@@ -2318,9 +2320,9 @@ export default {
           users: {
             title: 'ja_User',
             name: 'ja_Name',
-            sessionId: 'ja_SessionID',
+            sessionId: 'ja_Session ID',
             sessionType: 'ja_Session Type',
-            isAdministrator: 'ja_IsAdmin',
+            isAdministrator: 'ja_Is Admin',
             administrator: 'ja_Is Admin',
             groups: 'ja_Groups',
             domainUserQualifiedName: 'ja_QualifiedName',
@@ -2333,7 +2335,7 @@ export default {
           networkInterfaces: {
             title: 'ja_Network Interfaces',
             name: 'ja_Name',
-            macAddress: 'ja_MacAddress',
+            macAddress: 'ja_MAC Address',
             networkId: 'ja_NerworkID',
             ipv4: 'ja_IPv4',
             ipv6: 'ja_IPv6',
@@ -2344,7 +2346,7 @@ export default {
         },
         machineIdentity: {
           agent: {
-            agentId: 'ja_Agent Id',
+            agentId: 'ja_Agent ID',
             agentMode: 'ja_Agent Mode',
             agentVersion: 'ja_Agent Version',
             title: 'ja_Agent',
@@ -2354,19 +2356,19 @@ export default {
             installTime: 'ja_Install Time',
             serviceStartTime: 'ja_Service Start Time',
             serviceEprocess: 'ja_Service Eprocess',
-            serviceProcessId: 'ja_Service ProcessId',
-            serviceErrorCode: 'ja_Service ErrorCode',
+            serviceProcessId: 'ja_Service Process ID',
+            serviceErrorCode: 'ja_Service Error Code',
             serviceStatus: 'ja_Service Status',
             driverStatus: 'ja_Driver Status',
-            driverErrorCode: 'ja_Driver ErrorCode',
+            driverErrorCode: 'ja_Driver Error Code',
             blockingEnabled: 'ja_Blocking Enabled',
             blockingUpdateTime: 'ja_Blocking Update Time'
           },
           operatingSystem: {
             title: 'ja_Operating System',
             description: 'ja_Description',
-            buildNumber: 'ja_BuildNumber',
-            servicePack: 'ja_ServicePack',
+            buildNumber: 'ja_Build Number',
+            servicePack: 'ja_Service Pack',
             directory: 'ja_Directory',
             kernelId: 'ja_Kernel Id',
             kernelName: 'ja_Kernel Name',
@@ -2397,7 +2399,7 @@ export default {
             title: 'ja_Locale',
             defaultLanguage: 'ja_Default Language',
             isoCountryCode: 'ja_Country Code',
-            timeZone: 'ja_TimeZone'
+            timeZone: 'ja_Time Zone'
           }
         }
       },
@@ -2491,8 +2493,8 @@ export default {
       deleteHosts: {
         modal: {
           title: 'ja_Delete {{count}} host(s)',
-          message: 'ja_Deletes all data for selected host(s). Do you want to continue?',
-          note: 'ja_Note : Use this option for uninstalled agents for which you do not need host data for analysis.'
+          message: 'ja_Delete the host if the agent is uninstalled or scan data is not required. ' +
+          'Deletes all scan data related to the host. Are you sure you want to continue?'
         },
         success: 'ja_Host(s) are deleted successfully',
         error: 'ja_Host(s) deletion failed'
@@ -2584,7 +2586,7 @@ export default {
           sectionNames: 'ja_PE.Section Names',
           importedLibraries: 'ja_PE.Imported Librabries',
           resources: {
-            originalFileName: 'ja_PE.Resources.File Name',
+            originalFileName: 'ja_PE.Resources.Filename',
             company: 'ja_PE.Resources.Company',
             description: 'ja_PE.Resources.Description',
             version: 'ja_PE.Resources.Version'

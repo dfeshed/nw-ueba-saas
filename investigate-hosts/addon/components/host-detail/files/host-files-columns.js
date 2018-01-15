@@ -3,12 +3,6 @@ import { generateColumns } from 'investigate-hosts/util/util';
 let columnsConfig = {
   linux: [
     {
-      field: 'rpm.packagename',
-      label: 'investigateHosts.files.fields.rpm.packageName',
-      width: 45,
-      disableSort: true
-    },
-    {
       field: 'derivedOwner.username',
       label: 'investigateHosts.files.fields.owner.userName',
       width: 45,
@@ -17,7 +11,7 @@ let columnsConfig = {
     {
       field: 'derivedOwner.groupname',
       label: 'investigateHosts.files.fields.owner.groupName',
-      width: 85,
+      width: 90,
       disableSort: true
     }
   ],
@@ -80,7 +74,7 @@ const defaultColumns = [
   {
     'field': 'path',
     'label': 'investigateHosts.files.fields.path',
-    'width': 315
+    'width': 400
   }
 ];
 

@@ -24,7 +24,9 @@ export default {
     apply: 'Apply',
     ok: 'OK',
     delete: 'Delete',
-    save: 'Save'
+    save: 'Save',
+    yes: 'Yes',
+    no: 'No'
   },
   tables: {
     noResults: 'No Results',
@@ -913,7 +915,7 @@ export default {
           placeholders: {
             IP: 'Enter an IP address',
             MAC_ADDRESS: 'Enter a MAC address',
-            HOST: 'Enter a host name',
+            HOST: 'Enter a hostname',
             DOMAIN: 'Enter a domain name',
             FILE_NAME: 'Enter a file name',
             FILE_HASH: 'Enter a file hash',
@@ -1305,7 +1307,7 @@ export default {
       lastUpdated: 'Last Updated',
       adminStatus: 'Admin Status',
       lastLogin: 'Last Login',
-      macAddress: 'Mac Address',
+      macAddress: 'MAC Address',
       operatingSystem: 'Operating System',
       machineStatus: 'Machine Status',
       ipAddress: 'IPAddress',
@@ -1350,7 +1352,7 @@ export default {
       criticalityRating: 'Criticality Rating',
       riskRating: 'Risk Rating',
       deviceName: 'Device Name',
-      hostName: 'Host Name',
+      hostName: 'Hostname',
       deviceId: 'Device Id',
       deviceType: 'Device Type',
       deviceOwner: 'Device Owner',
@@ -1665,7 +1667,7 @@ export default {
     heartbeatFrequency: 'Heartbeat Frequency',
     testLog: 'Send Test Log',
     placeholder: 'Make a selection',
-    searchPlaceholder: 'Type to filter options',
+    searchPlaceholder: 'Enter the filter option',
     emptyName: 'Configuration name is empty',
     channelFilter: 'Channel Filters',
     specialCharacter: 'Configuration name contains special character.',
@@ -1703,7 +1705,7 @@ export default {
       mac: 'MAC',
       linux: 'LINUX',
       favouriteFilters: 'Favorite Filters',
-      addMore: 'Add Filter(s)...',
+      addMore: 'Add Filter',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',
@@ -1758,7 +1760,7 @@ export default {
         sectionNames: 'PE.Section Names',
         importedLibraries: 'PE.Imported Libraries',
         resources: {
-          originalFileName: 'PE.Resources.File Name',
+          originalFileName: 'PE.Resources.Filename',
           company: 'PE.Resources.Company',
           description: 'PE.Resources.Description',
           version: 'PE.Resources.Version'
@@ -1800,8 +1802,8 @@ export default {
       size: 'Size'
     },
     sort: {
-      fileNameDescending: 'File Name (descending)',
-      fileNameAscending: 'File Name (ascending)',
+      fileNameDescending: 'Filename (descending)',
+      fileNameAscending: 'Filename (ascending)',
       sizeAscending: 'Size (ascending)',
       sizeDescending: 'Size (descending)',
       formatAscending: 'Format (ascending)',
@@ -1865,7 +1867,7 @@ export default {
           sectionNames: 'Section Names',
           importedLibraries: 'Imported Libraries',
           resources: {
-            originalFileName: 'File Name',
+            originalFileName: 'Filename',
             company: 'Company',
             description: 'Description',
             version: 'Version'
@@ -1896,7 +1898,7 @@ export default {
           parentPath: 'Parent Path',
           threadCount: 'Thread Count',
           owner: 'Owner',
-          sessionId: 'Session Id',
+          sessionId: 'Session ID',
           createUtcTime: 'Created',
           imageBase: 'Image Base',
           imageSize: 'Image Size'
@@ -1991,10 +1993,10 @@ export default {
       title: 'Hosts',
       search: 'Filter',
       button: {
-        addMore: 'Add Filter(s)...',
+        addMore: 'Add Filter',
         loadMore: 'Load More',
         exportCSV: 'Export to CSV',
-        export: 'Export to JSON...',
+        export: 'Export to JSON',
         exportTooltip: 'Exports all scan data categories for the host.',
         downloading: 'Downloading',
         initiateScan: 'Start Scan',
@@ -2037,15 +2039,15 @@ export default {
       },
       explore: {
         input: {
-          placeholder: 'Search by file name, path or hash'
+          placeholder: 'Search by filename, path or hash'
         },
         noResultsFound: 'No Results Found.',
-        fileName: 'File Name: ',
+        fileName: 'Filename: ',
         path: 'Path: ',
         hash: 'Hash: ',
         search: {
           minimumtext: {
-            required: 'For file name or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
+            required: 'For filename or path, enter minimum 3 characters. For hash, enter entire SHA-256 hash string'
           }
         }
       },
@@ -2062,7 +2064,7 @@ export default {
       summary: {
         snapshotTime: 'Snapshot Time',
         overview: {
-          typeToFilterOptions: 'Type to filter options',
+          typeToFilterOptions: 'Enter the filter option',
           noSnapShots: 'No snapshots available'
         },
         body: {
@@ -2094,7 +2096,7 @@ export default {
         customEndDate: 'End Date',
         customDate: 'Custom Date',
         operator: 'Operator',
-        searchPlaceHolder: 'Type to filter options',
+        searchPlaceHolder: 'Enter the filter option',
         mutlipleValuesNote: 'Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'Invalid filter input',
         inTimeRange: 'In',
@@ -2148,7 +2150,7 @@ export default {
         },
         machine: {
           machineOsType: 'Operating System',
-          machineName: 'Host Name',
+          machineName: 'Hostname',
           id: 'Agent ID',
           agentVersion: 'Agent Version',
           scanStartTime: 'Last Scan Time',
@@ -2162,9 +2164,9 @@ export default {
           },
           users: {
             name: 'Username',
-            sessionId: 'User SessionID',
+            sessionId: 'User Session ID',
             sessionType: 'User Session Type',
-            isAdministrator: 'User IsAdmin',
+            isAdministrator: 'User Is Admin',
             groups: 'User Groups',
             domainUserQualifiedName: 'User QualifiedName',
             domainUserId: 'User Domain UserID',
@@ -2225,7 +2227,7 @@ export default {
           highestScoringModules: 'Highest Scoring Module'
         },
         machineIdentity: {
-          machineName: 'Host Name',
+          machineName: 'Hostname',
           group: 'Agent Group',
           agentMode: 'Agent Mode',
           agent: {
@@ -2235,18 +2237,18 @@ export default {
             installTime: 'Agent - Install Time',
             serviceStartTime: 'Agent - Service Start Time',
             serviceEprocess: 'Agent - Service Eprocess',
-            serviceProcessId: 'Agent - Service ProcessId',
-            serviceErrorCode: 'Agent - Service ErrorCode',
+            serviceProcessId: 'Agent - Service Process ID',
+            serviceErrorCode: 'Agent - Service Error Code',
             serviceStatus: 'Agent - Service Status',
             driverStatus: 'Agent - Driver Status',
-            driverErrorCode: 'Agent - Driver ErrorCode',
+            driverErrorCode: 'Agent - Driver Error Code',
             blockingEnabled: 'Agent - Blocking Enabled',
             blockingUpdateTime: 'Agent - Blocking Update Time'
           },
           operatingSystem: {
             description: 'OS - Description',
-            buildNumber: 'OS - BuildNumber',
-            servicePack: 'OS - ServicePack',
+            buildNumber: 'OS - Build Number',
+            servicePack: 'OS - Service Pack',
             directory: 'OS - Directory',
             kernelId: 'OS - Kernel Id',
             kernelName: 'OS - Kernel Name',
@@ -2275,7 +2277,7 @@ export default {
           locale: {
             defaultLanguage: 'Locale - Default Language',
             isoCountryCode: 'Locale - Country Code',
-            timeZone: 'Locale - TimeZone'
+            timeZone: 'Locale - Time Zone'
           },
           knownFolder: {
             appData: 'Folder - AppData',
@@ -2318,9 +2320,9 @@ export default {
           users: {
             title: 'User',
             name: 'Name',
-            sessionId: 'SessionID',
+            sessionId: 'Session ID',
             sessionType: 'Session Type',
-            isAdministrator: 'IsAdmin',
+            isAdministrator: 'Is Admin',
             administrator: 'Is Admin',
             groups: 'Groups',
             domainUserQualifiedName: 'QualifiedName',
@@ -2333,7 +2335,7 @@ export default {
           networkInterfaces: {
             title: 'Network Interfaces',
             name: 'Name',
-            macAddress: 'MacAddress',
+            macAddress: 'MAC Address',
             networkId: 'NerworkID',
             ipv4: 'IPv4',
             ipv6: 'IPv6',
@@ -2344,7 +2346,7 @@ export default {
         },
         machineIdentity: {
           agent: {
-            agentId: 'Agent Id',
+            agentId: 'Agent ID',
             agentMode: 'Agent Mode',
             agentVersion: 'Agent Version',
             title: 'Agent',
@@ -2354,19 +2356,19 @@ export default {
             installTime: 'Install Time',
             serviceStartTime: 'Service Start Time',
             serviceEprocess: 'Service Eprocess',
-            serviceProcessId: 'Service ProcessId',
-            serviceErrorCode: 'Service ErrorCode',
+            serviceProcessId: 'Service Process ID',
+            serviceErrorCode: 'Service Error Code',
             serviceStatus: 'Service Status',
             driverStatus: 'Driver Status',
-            driverErrorCode: 'Driver ErrorCode',
+            driverErrorCode: 'Driver Error Code',
             blockingEnabled: 'Blocking Enabled',
             blockingUpdateTime: 'Blocking Update Time'
           },
           operatingSystem: {
             title: 'Operating System',
             description: 'Description',
-            buildNumber: 'BuildNumber',
-            servicePack: 'ServicePack',
+            buildNumber: 'Build Number',
+            servicePack: 'Service Pack',
             directory: 'Directory',
             kernelId: 'Kernel Id',
             kernelName: 'Kernel Name',
@@ -2397,7 +2399,7 @@ export default {
             title: 'Locale',
             defaultLanguage: 'Default Language',
             isoCountryCode: 'Country Code',
-            timeZone: 'TimeZone'
+            timeZone: 'Time Zone'
           }
         }
       },
@@ -2491,8 +2493,8 @@ export default {
       deleteHosts: {
         modal: {
           title: 'Delete {{count}} host(s)',
-          message: 'Deletes all data for selected host(s). Do you want to continue?',
-          note: 'Note : Use this option for uninstalled agents for which you do not need host data for analysis.'
+          message: 'Delete the host if the agent is uninstalled or scan data is not required. ' +
+          'Deletes all scan data related to the host. Are you sure you want to continue?'
         },
         success: 'Host(s) are deleted successfully',
         error: 'Host(s) deletion failed'
@@ -2584,7 +2586,7 @@ export default {
           sectionNames: 'PE.Section Names',
           importedLibraries: 'PE.Imported Libraries',
           resources: {
-            originalFileName: 'PE.Resources.File Name',
+            originalFileName: 'PE.Resources.Filename',
             company: 'PE.Resources.Company',
             description: 'PE.Resources.Description',
             version: 'PE.Resources.Version'

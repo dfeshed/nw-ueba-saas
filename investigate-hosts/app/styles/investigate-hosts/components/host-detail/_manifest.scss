@@ -19,6 +19,18 @@
 }
 .host-detail-wrapper {
   background-color: $host-detail-background;
+  .rsa-content-definition {
+    .label {
+      @include rsa-font(header, small);
+      vertical-align: bottom;
+      box-sizing: border-box;
+      color: $host-detail-label-color;
+      margin-bottom: rsa-whitespace(less);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: left;
+    }
+  }
 }
 .host-overview {
   padding-left: rsa-whitespace();
@@ -31,22 +43,22 @@
     padding-right: rsa-whitespace(most);
     text-transform: uppercase;
     height: 4rem;
-    &.rsa-content-definition {
-      .label {
-        @include rsa-font(header, small);
-        vertical-align: bottom;
-        box-sizing: border-box;
-        color: $host-detail-label-color;
-        margin-bottom: rsa-whitespace(less);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-align: left;
-      }
-      .value {
-        color: text-color(primary, lightest);
-        font-weight: bold;
-      }
+  &.rsa-content-definition {
+    .label {
+      @include rsa-font(header, small);
+      vertical-align: bottom;
+      box-sizing: border-box;
+      color: $host-detail-label-color;
+      margin-bottom: rsa-whitespace(less);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: left;
+    }
+    .value {
+      color: text-color(primary, lightest);
+      font-weight: bold;
     }
   }
+}
 
 }

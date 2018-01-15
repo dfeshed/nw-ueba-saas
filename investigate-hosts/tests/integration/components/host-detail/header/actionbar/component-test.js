@@ -167,5 +167,5 @@ test('when JSON export is completed', function(assert) {
     .snapShot(snapShot)
     .build();
   this.render(hbs `{{host-detail/header/actionbar}}`);
-  assert.equal($('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').text().trim(), 'Export to JSON...', 'In initial state and when previous export is completed, button is active');
+  assert.equal($('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').text().trim(), 'Export to JSON', 'In initial state and when previous export is completed, button is active');
 });

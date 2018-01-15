@@ -29,7 +29,7 @@ test('it renders data table with column sorted by name', function(assert) {
     .build();
   this.render(hbs`{{host-list/host-table}}`);
   return wait().then(() => {
-    assert.equal(this.$('.rsa-data-table-header-cell:eq(1)').text().trim(), 'Host Name', 'Second column should be host name');
+    assert.equal(this.$('.rsa-data-table-header-cell:eq(1)').text().trim(), 'Hostname', 'Second column should be hostname');
     assert.equal(this.$('.rsa-data-table-header-cell:eq(3)').text().trim(), 'Agent Version', 'Fourth column should be Agent Version');
     assert.equal(this.$('.rsa-data-table-header-cell:eq(5)').text().trim(), 'Operating System', 'Fourth column should be Operating System');
   });

@@ -18,9 +18,10 @@
   background-color: background-color(primary, darkest, nearly-opaque);
 
   .divider {
-    @include border-left(1px, solid, primary, lightest);
+    @include border-left(1px, solid, primary);
     height: 1.5rem;
     margin: rsa-whitespace(least);
+    margin-left: rsa-whitespace();
   }
 }
 
@@ -37,10 +38,9 @@
     text-transform: capitalize;
     border-bottom-width: 3px;
     line-height: 2.25rem;
-    &.seperator {
-      padding: 0;
-      margin: rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace();
-      border-right-width: .1rem;
+
+    .divider {
+      height: 1.75rem;
     }
   }
   .host-title-icon {

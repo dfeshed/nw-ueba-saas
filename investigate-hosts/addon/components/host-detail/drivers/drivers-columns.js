@@ -13,11 +13,6 @@ const defaultColumns = [
     disableSort: true
   },
   {
-    field: 'machineCount',
-    title: 'Machine Count',
-    disableSort: true
-  },
-  {
     field: 'path',
     title: 'Path',
     width: '20%',
