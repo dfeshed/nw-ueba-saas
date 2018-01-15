@@ -185,6 +185,9 @@ export default Component.extend(DomWatcher, EKMixin, {
     if (typeof columnsConfig === 'string') {
       columnsConfig = columnsConfig.split(',');
     }
+    // Complete table need to re-render in case column config is changing.
+    // Ensuring table starts from left (Scrollbar needs to start from begining).
+    this.$('.rsa-data-table-body').scrollLeft(0);
 
     if (!columnsConfig || !columnsConfig.map) {
       return [];
