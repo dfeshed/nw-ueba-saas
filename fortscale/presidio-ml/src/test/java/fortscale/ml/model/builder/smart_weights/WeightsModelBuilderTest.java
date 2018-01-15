@@ -92,7 +92,7 @@ public class WeightsModelBuilderTest {
                 Mockito.eq(modelBuilderData.getSmartAggregatedRecordDataContainers()),
                 Mockito.eq(modelBuilderData.getNumOfContexts()),
                 Mockito.anyInt(), Mockito.anyList(),
-                weightModelBuilderMetricsContainer
+                Mockito.eq(weightModelBuilderMetricsContainer)
         )).thenReturn(clusterConfs);
 
         SmartWeightsModel model = (SmartWeightsModel) createModelBuilder(algorithm).build(modelBuilderData);
