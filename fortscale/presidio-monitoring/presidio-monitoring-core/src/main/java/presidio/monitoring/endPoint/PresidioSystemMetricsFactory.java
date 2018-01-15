@@ -1,69 +1,149 @@
 package presidio.monitoring.endPoint;
 
 
+import com.google.common.collect.ImmutableSet;
 import fortscale.utils.logging.Logger;
-import org.springframework.util.StringUtils;
+import presidio.monitoring.DefaultPublicMetricsNames;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
-import java.lang.management.GarbageCollectorMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
-import java.lang.management.ThreadMXBean;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import static presidio.monitoring.DefaultPublicMetricsNames.*;
+import java.lang.management.*;
+import java.util.*;
 
 public class PresidioSystemMetricsFactory {
 
     private static final Logger logger = Logger.getLogger(PresidioSystemMetricsFactory.class);
 
-    private MemoryUsage heapMemoryUsage;
-    private MemoryUsage nonHeapMemoryUsage;
-    private Runtime runtime;
-    private List<GarbageCollectorMXBean> garbageCollectorMxBeans;
+    private static final Set<String> youngGenCollectors = ImmutableSet.of("Copy","PS Scavenge","ParNew","G1 Young Generation");
+    private static final Set<String> oldGenCollectors = ImmutableSet.of( "MarkSweepCompact ","PS MarkSweep","ConcurrentMarkSweep","G1 Mixed Generation");
+
+    private List<GarbageCollectorMXBean> garbageCollectorMXBeans;
     private ThreadMXBean threadMxBean;
+    private MemoryMXBean memoryMXBean;
+    private com.sun.management.OperatingSystemMXBean operatingSystemMXBean;
+
     private String applicationName;
 
     public PresidioSystemMetricsFactory(String applicationName) {
         this.applicationName = applicationName;
-        runtime = Runtime.getRuntime();
-        garbageCollectorMxBeans = ManagementFactory.getGarbageCollectorMXBeans();
+
+        garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
         threadMxBean = ManagementFactory.getThreadMXBean();
+        memoryMXBean = ManagementFactory.getMemoryMXBean();
+        operatingSystemMXBean = (com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean();
     }
 
-    private Metric createMemoryMetric(String name, long value, MetricEnums.MetricUnitType metricUnitType) {
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(metricUnitType);
+    public List<Metric> metrics() {
+        List<Metric> metricsForExport = new LinkedList<>();
+        metricsForExport.add(createMemoryMetric(DefaultPublicMetricsNames.SYSTEM_MEMORY));
+        metricsForExport.add(createThreadsMetric(DefaultPublicMetricsNames.SYSTEM_THREADS));
+        metricsForExport.add(createPerformanceMetric(DefaultPublicMetricsNames.SYSTEM_PERFORMANCE));
+        metricsForExport.add(createGarbageCollectionMetric(DefaultPublicMetricsNames.SYSTEM_GC));
+        metricsForExport.add(createCPUMetric(DefaultPublicMetricsNames.SYSTEM_CPU));
+        return metricsForExport;
+    }
+
+    /**
+     * Memory metrics
+     */
+    private Metric createMemoryMetric(String name) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(MetricEnums.MetricUnitType.B);
+
+        MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        MemoryUsage nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
+        map.put(MetricEnums.MetricValues.SYSTEM_HEAP_COMMITTED, heapMemoryUsage.getCommitted());
+        map.put(MetricEnums.MetricValues.SYSTEM_HEAP_INIT, heapMemoryUsage.getInit());
+        map.put(MetricEnums.MetricValues.SYSTEM_HEAP_USED, heapMemoryUsage.getUsed());
+        map.put(MetricEnums.MetricValues.SYSTEM_HEAP, heapMemoryUsage.getMax());
+        map.put(MetricEnums.MetricValues.SYSTEM_NONHEAP_COMMITTED, nonHeapMemoryUsage.getCommitted());
+        map.put(MetricEnums.MetricValues.SYSTEM_NONHEAP_INIT, nonHeapMemoryUsage.getInit());
+        map.put(MetricEnums.MetricValues.SYSTEM_NONHEAP_USED, nonHeapMemoryUsage.getUsed());
+        map.put(MetricEnums.MetricValues.SYSTEM_NONHEAP, nonHeapMemoryUsage.getMax());
+
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();
     }
 
-    private Metric createSystemMetric(String name, long value, MetricEnums.MetricUnitType metricUnitType) {
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(metricUnitType);
+    /**
+     * Threads metrics
+     */
+    private Metric createThreadsMetric(String name) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(MetricEnums.MetricUnitType.NUMBER);
+
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
+        map.put(MetricEnums.MetricValues.SYSTEM_THREADS_PEAK, (long) threadMxBean.getPeakThreadCount());
+        map.put(MetricEnums.MetricValues.SYSTEM_THREADS_DAEMON, (long) threadMxBean.getDaemonThreadCount());
+        map.put(MetricEnums.MetricValues.SYSTEM_THREADS_TOTAL_STARTED, threadMxBean.getTotalStartedThreadCount());
+        map.put(MetricEnums.MetricValues.SYSTEM_THREADS, (long) threadMxBean.getThreadCount());
+
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();
     }
 
-    private Metric createThreadsMetric(String name, long value, MetricEnums.MetricUnitType metricUnitType) {
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(metricUnitType);
+    /**
+     * Garbage collection metrics
+     */
+    private Metric createGarbageCollectionMetric(String name) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(MetricEnums.MetricUnitType.NUMBER);
+
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
-        map.put(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE, value);
+
+        for (GarbageCollectorMXBean garbageCollectorMXBean : garbageCollectorMXBeans) {
+
+            if (youngGenCollectors.contains(garbageCollectorMXBean.getName())) {
+                tags.put(MetricEnums.MetricTagKeysEnum.GC_YOUNG_COLLECTOR, garbageCollectorMXBean.getName());
+                map.put(MetricEnums.MetricValues.SYSTEM_GC_YOUNG_COUNT, (long) garbageCollectorMXBean.getCollectionCount());
+                map.put(MetricEnums.MetricValues.SYSTEM_GC_YOUNG_TIME, (long) garbageCollectorMXBean.getCollectionTime());
+            }
+            else if (oldGenCollectors.contains(garbageCollectorMXBean.getName())) {
+                tags.put(MetricEnums.MetricTagKeysEnum.GC_OLD_COLLECTOR, garbageCollectorMXBean.getName());
+                map.put(MetricEnums.MetricValues.SYSTEM_GC_OLD_COUNT, (long) garbageCollectorMXBean.getCollectionCount());
+                map.put(MetricEnums.MetricValues.SYSTEM_GC_OLD_TIME, (long) garbageCollectorMXBean.getCollectionTime());
+            }
+        }
+
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
                 setMetricTags(tags).
                 build();
     }
+
+    /**
+     * Performance metrics
+     */
+    private Metric createPerformanceMetric(String name) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(MetricEnums.MetricUnitType.MILLI_SECOND);
+        return new Metric.MetricBuilder().setMetricName(name).
+                setMetricValue(ManagementFactory.getRuntimeMXBean().getUptime()).
+                setMetricTags(tags).
+                setMetricReportOnce(true).
+                build();
+
+    }
+
+    /**
+     * CPU metrics
+     */
+    private Metric createCPUMetric(String name) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = createTagsForMetric(MetricEnums.MetricUnitType.NUMBER);
+
+        Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
+        map.put(MetricEnums.MetricValues.SYSTEM_CPU_LOAD, (long) operatingSystemMXBean.getProcessCpuLoad());
+        map.put(MetricEnums.MetricValues.SYSTEM_CPU_TIME, (long) operatingSystemMXBean.getProcessCpuTime());
+
+        return new Metric.MetricBuilder().setMetricName(name).
+                setMetricMultipleValues(map).
+                setMetricTags(tags).
+                build();
+
+    }
+
 
     private Map<MetricEnums.MetricTagKeysEnum, String> createTagsForMetric(MetricEnums.MetricUnitType metricUnitType) {
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
@@ -73,73 +153,6 @@ public class PresidioSystemMetricsFactory {
         return tags;
     }
 
-    public List<Metric> metrics() {
-        heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
-        List<Metric> metricsForExport = new LinkedList<>();
-        addMemoryMetrics(metricsForExport);
-        addManagementMetrics(metricsForExport);
-        addThreadMetrics(metricsForExport);
-        return metricsForExport;
-    }
-
-
-    private void addMemoryMetrics(List<Metric> metricsForExport) {
-        metricsForExport.add(createMemoryMetric(MEM, runtime.totalMemory() + getTotalNonHeapMemoryIfPossible(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(MEM_FREE, runtime.freeMemory(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(HEAP_COMMITTED, heapMemoryUsage.getCommitted(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(HEAP_INIT, heapMemoryUsage.getInit(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(HEAP_USED, heapMemoryUsage.getUsed(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(HEAP, heapMemoryUsage.getMax(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(NONHEAP_COMMITTED, nonHeapMemoryUsage.getCommitted(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(NONHEAP_INIT, nonHeapMemoryUsage.getInit(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(NONHEAP_USED, nonHeapMemoryUsage.getUsed(), MetricEnums.MetricUnitType.B));
-        metricsForExport.add(createMemoryMetric(NONHEAP, nonHeapMemoryUsage.getMax(), MetricEnums.MetricUnitType.B));
-    }
-
-    private void addManagementMetrics(List<Metric> metricsForExport) {
-        try {
-            metricsForExport.add(createSystemMetric(UPTIME, ManagementFactory.getRuntimeMXBean().getUptime(), MetricEnums.MetricUnitType.MILLI_SECOND));
-            metricsForExport.add(createSystemMetric(SYSTEMLOAD_AVERAGE, ((Double) ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()).longValue(), MetricEnums.MetricUnitType.NUMBER));
-            for (GarbageCollectorMXBean garbageCollectorMXBean : garbageCollectorMxBeans) {
-                String name = beautifyGcName(garbageCollectorMXBean.getName());
-                metricsForExport.add(createSystemMetric("gc." + name + ".count", garbageCollectorMXBean.getCollectionCount(), MetricEnums.MetricUnitType.NUMBER));
-                metricsForExport.add(createSystemMetric("gc." + name + ".time", garbageCollectorMXBean.getCollectionTime(), MetricEnums.MetricUnitType.NUMBER));
-            }
-            metricsForExport.add(createSystemMetric(PROCESSORS, runtime.availableProcessors(), MetricEnums.MetricUnitType.MILLI_SECOND));
-        } catch (Exception ex) {
-            logger.info("Error when trying to collect metric.", ex);
-        }
-    }
-
-
-    private void addThreadMetrics(List<Metric> metricsForExport) {
-        metricsForExport.add(createThreadsMetric(THREADS_PEAK, (long) threadMxBean.getPeakThreadCount(), MetricEnums.MetricUnitType.NUMBER));
-        metricsForExport.add(createThreadsMetric(THREADS_DAEMON, (long) threadMxBean.getDaemonThreadCount(), MetricEnums.MetricUnitType.NUMBER));
-        metricsForExport.add(createThreadsMetric(THREADS_TOTAL_STARTED, threadMxBean.getTotalStartedThreadCount(), MetricEnums.MetricUnitType.NUMBER));
-        metricsForExport.add(createThreadsMetric(THREADS, (long) threadMxBean.getThreadCount(), MetricEnums.MetricUnitType.NUMBER));
-    }
-
-
-    /**
-     * Turn GC names like 'PS Scavenge' or 'PS MarkSweep' into something that is more
-     * metrics friendly.
-     *
-     * @param name the source name
-     * @return a metric friendly name
-     */
-    private String beautifyGcName(String name) {
-        return StringUtils.replace(name, " ", ".").toLowerCase();
-    }
-
-    private long getTotalNonHeapMemoryIfPossible() {
-        try {
-            return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed();
-        } catch (Throwable ex) {
-            logger.info("Error when trying to collect default metrics.", ex);
-            return 0;
-        }
-    }
 
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName;
