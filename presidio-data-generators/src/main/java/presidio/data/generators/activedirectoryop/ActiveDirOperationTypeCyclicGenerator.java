@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
  */
 public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator<OperationType> implements IOperationTypeGenerator {
     private static final String[] DEFAULT_AD_OPERATION_TYPE_NAMES = {
-            AD_OPERATION_TYPE.ACCOUNT_MANAGEMENT.value,
-            AD_OPERATION_TYPE.GROUP_MEMBERSHIP.value,
-
             AD_OPERATION_TYPE.OWNER_CHANGED_ON_COMPUTER_OBJECT.value,
             AD_OPERATION_TYPE.DACL_CHANGED_ON_COMPUTER_OBJECT.value,
             AD_OPERATION_TYPE.COMPUTER_RENAMED.value,
