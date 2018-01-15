@@ -32,7 +32,7 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		this.numDistinctFeatures = numDistinctFeatures;
 		featureOccurrences = new HashMap<>();
 		this.numOfPartitions = numOfPartitions;
-		buckets = new ArrayList<>(numOfBuckets);
+		buckets = new ArrayList<>(Collections.nCopies(numOfBuckets,0.0));
 
 		this.numOfSamples = 0L;
 		for (Map.Entry<Long, Integer> entry : occurrencesToNumOfPartitions.entrySet()) {
@@ -124,13 +124,15 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		if (numDistinctFeatures != that.numDistinctFeatures) return false;
 		if (numOfPartitions != that.numOfPartitions) return false;
 		if (numberOfEntriesToSaveInModel != that.numberOfEntriesToSaveInModel) return false;
-		if (!buckets.equals(that.buckets)) return false;
+		if (buckets == null && that.buckets != null) return false;
+		if (buckets != null && that.buckets == null) return false;
+		if (buckets != that.buckets && !buckets.equals(that.buckets)) return false;
 		return featureOccurrences.equals(that.featureOccurrences);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Arrays.hashCode(buckets.toArray());
+		int result =  buckets.hashCode();
 		result = 31 * result + (int)(numOfSamples ^ (numOfSamples >>> 32));
 		result = 31 * result + (int)(numDistinctFeatures ^ (numDistinctFeatures >>> 32));
 		result = 31 * result + featureOccurrences.hashCode();

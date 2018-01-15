@@ -54,7 +54,7 @@ public class TimeModelBuilderMetricsContainer extends ModelMetricsContainer {
             metric.getValue().compute(MetricEnums.MetricValues.AVG_OF_SMOOTHED_BUCKETS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
         }
 
-        if (buckets.stream().mapToDouble(Double::doubleValue).sum() > 0.0) {
+        if (buckets.stream().mapToDouble(Double::doubleValue).limit(5).sum() > 0.0) {
             metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_CONTEXTS_WITH_POSITIVE_BUCKET_VALUES, (k, v) -> v.longValue() + 1);
         }
     }
