@@ -1,5 +1,6 @@
 package fortscale.ml.scorer;
 
+import com.google.common.collect.Lists;
 import fortscale.domain.feature.score.FeatureScore;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class ListConditionalScorerTest {
         String conditionalField = "context.operationTypeCategories";
         String conditionalValue = "FILE_ACTION";
         double expectedScore = 98;
-        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
+        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, Collections.singletonList(conditionalValue));
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
         List<String> fieldValues = new ArrayList<>();
         fieldValues.add(conditionalValue);
@@ -42,7 +43,7 @@ public class ListConditionalScorerTest {
         String conditionalFilePermissionValue = "FILE_PERMISSION";
         double expectedScore = 98;
         ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField,
-                conditionalFileActionValue + ListConditionalScorer.CONDITIONAL_VALUE_CHAR_SPLIT + conditionalFilePermissionValue);
+                Lists.newArrayList(conditionalFileActionValue ,conditionalFilePermissionValue));
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
         List<String> fieldValues = new ArrayList<>();
         fieldValues.add("someCategoryValue");
@@ -64,7 +65,7 @@ public class ListConditionalScorerTest {
         String conditionalFilePermissionValue = "FILE_PERMISSION";
         double expectedScore = 98;
         ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField,
-                conditionalFileActionValue + ListConditionalScorer.CONDITIONAL_VALUE_CHAR_SPLIT + conditionalFilePermissionValue);
+                Lists.newArrayList(conditionalFileActionValue ,conditionalFilePermissionValue));
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
         List<String> fieldValues = new ArrayList<>();
         fieldValues.add("someCategoryValue");
@@ -82,7 +83,7 @@ public class ListConditionalScorerTest {
         String conditionalField = "context.operationTypeCategories";
         String conditionalValue = "FILE_ACTION";
         double expectedScore = 98;
-        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
+        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, Lists.newArrayList(conditionalValue));
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
         List<String> fieldValues = new ArrayList<>();
         fieldValues.add("Value");
@@ -98,7 +99,7 @@ public class ListConditionalScorerTest {
         String conditionalField = "context.operationTypeCategories";
         String conditionalValue = "FILE_ACTION";
         double expectedScore = 98;
-        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, conditionalValue);
+        ConditionalScorer conditionalScorer = new ListConditionalScorer("myConditionalScorer", getScorerMock(expectedScore), conditionalField, Lists.newArrayList(conditionalValue));
         AdeRecordReader adeRecordReader = mock(AdeRecordReader.class);
         when(adeRecordReader.get(conditionalField, List.class)).thenReturn(null);
 
