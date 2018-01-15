@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.factories;
 
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.builder.smart_weights.*;
+import fortscale.ml.model.metrics.WeightModelBuilderMetricsContainer;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.ml.scorer.algorithms.SmartWeightsScorerAlgorithm;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -34,6 +35,8 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
     private Double penaltyLogBase;
     @Value("${presidio.ade.model.smart.weights.builder.simulation.weight.decay.factor:0.97}")
     private Double simulationWeightDecayFactor;
+    @Autowired
+    private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer;
 
 
     @Override
@@ -48,6 +51,6 @@ public class WeightsModelBuilderFactory extends AbstractServiceAutowiringFactory
         WeightsModelBuilderAlgorithm algorithm = new WeightsModelBuilderAlgorithm(listIntegerAggregatedFeatureReliabilityBiFunction, clustersContributionsSimulator,
                 maxAllowedWeight, minAllowedWeight,
                 penaltyLogBase, simulationWeightDecayFactor);
-        return new WeightsModelBuilder((WeightsModelBuilderConf) factoryConfig, algorithm, smartRecordConfService);
+        return new WeightsModelBuilder((WeightsModelBuilderConf) factoryConfig, algorithm, smartRecordConfService, weightModelBuilderMetricsContainer);
     }
 }
