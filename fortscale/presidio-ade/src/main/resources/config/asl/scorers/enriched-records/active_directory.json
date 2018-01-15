@@ -165,11 +165,15 @@
               "constant-score": 10
             },
             {
-              "type": "constant-regex-scorer",
+              "type": "list-conditional-scorer",
               "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
-              "regex": "MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP",
-              "regex-field-name": "operationType",
-              "constant-score": 10
+              "conditional-field": "operationTypeCategories",
+              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_ADD"],
+              "scorer": {
+                "type": "constant-scorer",
+                "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
+                "constant-score": 10
+              }
             }
           ]
         }
