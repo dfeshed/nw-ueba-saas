@@ -110,11 +110,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         {
           label: i18n.t('queryBuilder.querySelected'),
           action() {
-            const toRemove = filterList.without(filterList.get('lastObject')).filterBy('selected', false);
-            if (toRemove.length) {
-              deleteFilter(toRemove);
-              executeQuery(filterList.filterBy('selected', true));
-            }
+            executeQuery(filterList.filterBy('selected', true));
           }
         },
         {
