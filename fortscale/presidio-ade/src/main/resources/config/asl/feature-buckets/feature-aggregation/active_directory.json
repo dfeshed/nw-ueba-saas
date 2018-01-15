@@ -71,7 +71,7 @@
       ]
     },
     {
-      "name": "userChangeSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "name": "UserManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -82,7 +82,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "userChangeSecuritySensitiveOperationResultHistogram",
+          "name": "UserManagementSecuritySensitiveOperationResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "name": "objectChangeOperationResultHistogramUserIdActiveDirectoryHourly",
+      "name": "ObjectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -109,7 +109,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "objectChangeOperationResultHistogram",
+          "name": "ObjectManagementOperationResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
