@@ -1,5 +1,4 @@
 import reselect from 'reselect';
-import { lookup } from 'ember-dependency-lookup';
 
 const { createSelector } = reselect;
 
@@ -7,7 +6,6 @@ const { createSelector } = reselect;
 const _services = (state) => state.investigate.services.serviceData;
 const _summaryData = (state) => state.investigate.services.summaryData;
 const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
-const _summaryErrorMessage = (state) => state.investigate.services.summaryErrorMessage;
 
 // This pattern filters out numbers after the first decimal place
 // A serviceId like 11.1.0.0 will be changed to 11.1
@@ -48,6 +46,18 @@ export const getServiceDisplayName = createSelector(
   }
 );
 
+/**
+ * Need to get core version from endpoint (service) rather than summary
+ * as summary will always return an error if there is mixed mode
+ * @public
+ */
+export const getCoreDeviceVersion = createSelector(
+  [selectedService],
+  (selectedSvc) => {
+    return selectedSvc === null ? null : selectedSvc.version;
+  }
+);
+
 export const hasServices = createSelector(
   [_services],
   (services) => !!(services && services.length)
@@ -79,44 +89,12 @@ export const isSummaryDataInvalid = createSelector(
   }
 );
 
-export const coreServiceNotUpdated = createSelector(
-  [_summaryData],
-  (summaryData) => {
-    if (summaryData) {
-      const coreVersion = Number(summaryData.version.match(serviceIdRegex)[0]);
-      const appVersion = Number(lookup('service:appVersion').version.match(serviceIdRegex)[0]);
-      return coreVersion < appVersion;
-    }
+export const isCoreServiceNotUpdated = (state, appVersionService) => {
+  const coreDeviceVersion = getCoreDeviceVersion(state);
+  if (coreDeviceVersion && appVersionService) {
+    const coreVersion = Number(coreDeviceVersion.match(serviceIdRegex)[0]);
+    const appVersion = Number(appVersionService.match(serviceIdRegex)[0]);
+    return coreVersion < appVersion;
   }
-);
-
-/**
- * For a selected service, we could have several messages. These are:
- * 1. Some error message returned from the server
- * 2. There is "No Data" for the service
- * 3. No message at all
- *
- * The error message from the server is trimmed like so:
- * Before - rsa.com.nextgen.classException: Failed to connect to broker:50003
- * After  - Failed to connect to broker:50003
- * Before - java.lang.NullPointerException
- * After  - java.lang.NullPointerException
- * @public
- */
-export const selectedServiceMessage = createSelector(
-  [coreServiceNotUpdated, isSummaryDataInvalid, hasSummaryData, _summaryErrorMessage],
-  (coreServiceNotUpdated, isSummaryDataInvalid, hasSummaryData, summaryErrorMessage) => {
-    const i18n = lookup('service:i18n');
-    let title = null;
-    if (isSummaryDataInvalid && summaryErrorMessage) {
-      // Regex explained - `.*?` Makes the `.*` quantifier lazy, causing it to
-      // match as few characters as possible.
-      title = summaryErrorMessage.replace(/(.*?:)/, '');
-    } else if (coreServiceNotUpdated) {
-      title = i18n.t('investigate.services.coreServiceNotUpdated');
-    } else if (!hasSummaryData) {
-      title = i18n.t('investigate.services.noData');
-    }
-    return title;
-  }
-);
+  return false;
+};
