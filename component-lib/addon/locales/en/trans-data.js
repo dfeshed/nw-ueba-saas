@@ -2097,6 +2097,8 @@ export default {
         searchPlaceHolder: 'Type to filter options',
         mutlipleValuesNote: 'Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'Invalid filter input',
+        inTimeRange: 'In',
+        notInTimeRange: 'Not In',
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         }
@@ -2453,12 +2455,12 @@ export default {
           errorMessage: 'The search cannot be saved. ',
           emptyMessage: 'Name field is empty.',
           nameExistsMessage: 'A saved search with the same name.',
-          success: 'Search query saved successfully. Date/time is not saved.',
+          success: 'Search query saved successfully.',
           filterFieldEmptyMessage: 'One or more of the newly added filter fields are empty. Please add the filters or remove the fields to save.',
           invalidInput: 'Only \'-\' and \'_\' special characters are allowed.'
         },
         update: {
-          success: 'Search query updated successfully. Date/time is not saved.'
+          success: 'Search query updated successfully.'
         }
       },
       initiateScan: {

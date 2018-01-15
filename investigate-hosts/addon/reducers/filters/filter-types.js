@@ -50,15 +50,24 @@ const FILTER_TYPES = [
     'propertyName': 'machine.scanStartTime',
     'label': 'investigateHosts.hosts.column.machine.scanStartTime',
     'options': [
-      { label: '1 Hour', id: 'LAST_ONE_HOUR', selected: true, value: 1, unit: 'hours' },
-      { label: '24 Hours', id: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'hours' },
-      { label: '5 Days', id: 'LAST_FIVE_DAYS', value: 5, unit: 'days' }
+      { label: '5 Minute', id: 'LAST_FIVE_MINUTES', selected: true, value: 5, unit: 'Minutes' },
+      { label: '10 Minutes', id: 'LAST_TEN_MINUTES', value: 10, unit: 'Minutes' },
+      { label: '15 Minutes', id: 'LAST_FIFTEEN_MINUTES', value: 15, unit: 'Minutes' },
+      { label: '30 Minutes', id: 'LAST_THIRTY_MINUTES', value: 30, unit: 'Minutes' },
+      { label: '1 Hour', id: 'LAST_ONE_HOUR', value: 1, unit: 'Hours' },
+      { label: '3 Hours', id: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
+      { label: '6 Hours', id: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
+      { label: '12 Hours', id: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
+      { label: '24 Hours', id: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
+      { label: '2 Days', id: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
+      { label: '5 Days', id: 'LAST_FIVE_DAYS', value: 5, unit: 'Days' }
     ],
     'filterControl': 'host-list/content-filter/datetime-filter',
     'showDateRange': true,
     'selected': false,
     'panelId': 'scanStartTime',
-    'isDefault': false
+    'isDefault': false,
+    'showRadioButtons': true
   },
   {
     'propertyName': 'machine.securityConfigurations',
@@ -192,15 +201,21 @@ const FILTER_TYPES = [
     'propertyName': 'agentStatus.lastSeenTime',
     'label': 'investigateHosts.hosts.filters.agentStatus.lastSeenTime',
     'options': [
-      { label: '1 Hour', id: 'LAST_ONE_HOUR', selected: true, value: 1, unit: 'hours' },
-      { label: '24 Hours', id: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'hours' },
-      { label: '5 Days', id: 'LAST_FIVE_DAYS', value: 5, unit: 'days' }
+      { label: '1 Hour', id: 'LAST_ONE_HOUR', selected: true, value: 1, unit: 'Hours' },
+      { label: '3 Hours', id: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
+      { label: '6 Hours', id: 'LAST_SIX_HOURS', value: 6, unit: 'Hours' },
+      { label: '12 Hours', id: 'LAST_TWELVE_HOURS', value: 12, unit: 'Hours' },
+      { label: '24 Hours', id: 'LAST_TWENTY_FOUR_HOURS', value: 24, unit: 'Hours' },
+      { label: '2 Days', id: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
+      { label: '5 Days', id: 'LAST_FIVE_DAYS', value: 5, unit: 'Days' }
     ],
     'filterControl': 'host-list/content-filter/datetime-filter',
     'showDateRange': false,
     'selected': false,
     'panelId': 'lastSeenTime',
-    'isDefault': false
+    'isDefault': false,
+    'showRadioButtons': false,
+    'restrictionTypeForRelativeTime': 'LESS_THAN'
   },
   {
     'propertyName': 'agentStatus.scanStatus',

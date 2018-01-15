@@ -2098,6 +2098,8 @@ export default {
         searchPlaceHolder: 'ja_Type to filter options',
         mutlipleValuesNote: 'ja_Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'ja_Invalid filter input',
+        inTimeRange: 'ja_In',
+        notInTimeRange: 'ja_Not In',
         agentStatus: {
           lastSeenTime: 'ja_Agent Not Seen Since'
         }
@@ -2453,12 +2455,12 @@ export default {
           errorMessage: 'ja_The search cannot be saved. ',
           emptyMessage: 'ja_Name field is empty.',
           nameExistsMessage: 'ja_A saved search with the same name.',
-          success: 'ja_Search query saved successfully. Date/time is not saved.',
+          success: 'ja_Search query saved successfully.',
           filterFieldEmptyMessage: 'ja_Filter fields are empty',
           invalidInput: 'ja_Only \'-\' and \'_\' special characters are allowed.'
         },
         update: {
-          success: 'ja_Search query updated successfully. Date/time is not saved.'
+          success: 'ja_Search query updated successfully.'
         }
       },
       initiateScan: {

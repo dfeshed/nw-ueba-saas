@@ -12,10 +12,28 @@
   <section class="datetime-filter__content">
     {{#unless isCustomChecked}}
       <div class="body">
-        <label class="rsa-form-label power-select datetime-filter__content__list-options">
+        <div class="rsa-form-label power-select datetime-filter__content__list-options">
           <div class="label-text">
             {{t config.label}}
           </div>
+          {{#if config.showRadioButtons}}
+            <div class="field rsa-form-radio-group">
+              <label class="rsa-form-radio-label {{if (eq restrictionType.type 'GREATER_THAN') 'checked'}}">
+                {{radio-button
+                  value='GREATER_THAN'
+                  groupValue=restrictionType.type
+                  changed=(action 'setRelativeTimeRestrictionType' 'GREATER_THAN')}}
+                {{t 'investigateHosts.hosts.filters.inTimeRange'}}
+              </label>
+              <label class="rsa-form-radio-label {{if (eq restrictionType.type 'LESS_THAN') 'checked'}}">
+                {{radio-button
+                  value='LESS_THAN'
+                  groupValue=restrictionType.type
+                  changed=(action 'setRelativeTimeRestrictionType' 'LESS_THAN')}}
+                {{t 'investigateHosts.hosts.filters.notInTimeRange'}}
+              </label>
+            </div>
+          {{/if}}
           {{#power-select
               options=listOptions
               selected= selectedDateRangeOption
@@ -23,7 +41,7 @@
               onchange=(action 'onTimeSelection') as |option|}}
             {{option.name}}
           {{/power-select}}
-        </label>
+        </div>
       </div>
     {{else}}
     <label class="rsa-from-label power-select">

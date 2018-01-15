@@ -1,12 +1,7 @@
 import { module, test } from 'qunit';
-import { convertToTimeFormat, getTimezoneTime } from 'investigate-hosts/components/host-list/content-filter/datetime-filter/utils';
+import { getTimezoneTime, getSelectedTimeOption } from 'investigate-hosts/components/host-list/content-filter/datetime-filter/utils';
 
 module('Unit | Util | Date time filter');
-
-const calculateTimeDurationInMilliSec = function(timeDuration, currentDateTime) {
-  currentDateTime = currentDateTime.setHours(currentDateTime.getHours(), currentDateTime.getMinutes(), 0, 0);
-  return currentDateTime.valueOf() - (timeDuration * 60 * 60 * 1000);
-};
 
 test('Custom Date time filter util test', function(assert) {
 
@@ -18,31 +13,18 @@ test('Custom Date time filter util test', function(assert) {
 
 });
 
-test('Last 1hr Date time filter util test', function(assert) {
+test('Returns selected time option based on value and unit passed', function(assert) {
+  const selectOptions = [
+    { label: '5 Minute', id: 'LAST_FIVE_MINUTES', selected: true, value: 5, unit: 'Minutes' },
+    { label: '10 Minutes', id: 'LAST_TEN_MINUTES', value: 10, unit: 'Minutes' },
+    { label: '1 Hour', id: 'LAST_ONE_HOUR', value: 1, unit: 'Hours' },
+    { label: '3 Hours', id: 'LAST_THREE_HOURS', value: 3, unit: 'Hours' },
+    { label: '2 Days', id: 'LAST_TWO_DAYS', value: 2, unit: 'Days' },
+    { label: '5 Days', id: 'LAST_FIVE_DAYS', value: 5, unit: 'Days' }
+  ];
 
-  const currentDateTime = new Date();
-  const filterAccordingToLast1Hr = { value: 1, unit: 'hours' };
+  const selectedValue = { relativeValueType: 'Days', value: 5 };
+  const result = getSelectedTimeOption(selectOptions, selectedValue);
+  assert.equal(result[0].label, '5 Days', 'Label of the selected value is 5 Days');
 
-  const result1hr = convertToTimeFormat(filterAccordingToLast1Hr);
-  assert.equal(result1hr, calculateTimeDurationInMilliSec(1, currentDateTime), 'Gives the UTC time for 1hr back');
-
-});
-
-test('Last 24hrs Date time filter util test', function(assert) {
-
-  const currentDateTime = new Date();
-  const filterAccordingToLast24Hrs = { value: 24, unit: 'hours' };
-
-  const result24hr = convertToTimeFormat(filterAccordingToLast24Hrs);
-  assert.equal(result24hr, calculateTimeDurationInMilliSec(24, currentDateTime), 'Gives the UTC time for 24hr back');
-
-});
-
-test('Last 5days Date time filter util test', function(assert) {
-
-  const currentDateTime = new Date();
-  const filterAccordingToLastFiveDays = { value: 5, unit: 'days' };
-
-  const result5Days = convertToTimeFormat(filterAccordingToLastFiveDays);
-  assert.equal(result5Days, calculateTimeDurationInMilliSec(120, currentDateTime), 'Gives the UTC time for 120hr (5 Days) back');
 });

@@ -4,14 +4,13 @@ import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import FilterMixin from 'investigate-hosts/mixins/content-filter-mixins';
 import set from 'ember-metal/set';
-import { convertToTimeFormat, getTimezoneTime } from './utils';
+import { getTimezoneTime, getSelectedTimeOption } from './utils';
 import _ from 'lodash';
 import moment from 'moment';
 
 import {
   updateFilter
 } from 'investigate-hosts/actions/data-creators/filter';
-
 
 const dispatchToActions = {
   updateFilter
@@ -63,6 +62,8 @@ const DateTimeFilter = Component.extend(FilterMixin, {
 
   timezone: service(),
 
+  restrictionTypeForRelativeTime: RESTRICTION_TYPES[1].type,
+
    /**
    * Restriction type for the list filter
    * @public
@@ -113,8 +114,14 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   filterLabel(expression) {
     const filterName = this.get('i18n').t(this.get('config.label'));
     if (expression && expression.propertyValues) {
+      let values = '';
       const { propertyValues } = expression;
-      const values = propertyValues.map((item) => item.displayValue);
+      if (!propertyValues[0].displayValue) {
+        const selectedOptionObj = getSelectedTimeOption(this.get('config.options'), propertyValues[0]);
+        values = selectedOptionObj.mapBy('label');
+      } else {
+        values = propertyValues.map((item) => item.displayValue);
+      }
 
       this.set('restrictionType', RESTRICTION_TYPES_BY_TYPE[expression.restrictionType]);
       if (expression.isCustom) {
@@ -151,7 +158,12 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   parseExpression(expression) {
     if (expression && expression.propertyValues) {
       const { propertyValues } = expression;
-      this.set('config.selected', propertyValues.mapBy('displayValue'));
+      if (!propertyValues[0].displayValue) {
+        const selectedOptionObj = getSelectedTimeOption(this.get('config.options'), propertyValues[0]);
+        this.set('config.selected', selectedOptionObj.mapBy('label'));
+      } else {
+        this.set('config.selected', propertyValues.mapBy('displayValue'));
+      }
     } else {
       this.set('config.selected', []);
     }
@@ -169,17 +181,23 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   },
 
   actions: {
+    setRelativeTimeRestrictionType(value) {
+      this.set('restrictionTypeForRelativeTime', value);
+    },
 
     onTimeSelection(option) {
-      const { selected } = option;
+      const { selected, value, unit } = option;
+      const restrictionTypeForRelativeTime = this.get('config.showRadioButtons') ?
+                                               this.get('restrictionTypeForRelativeTime') : this.get('config.restrictionTypeForRelativeTime');
+
       set(option, 'selected', !selected);
 
       if (option.id === 'Custom') {
         this.set('showListOptions', false);
       } else {
         const { propertyName } = this.get('config');
-        const propertyValues = [{ value: convertToTimeFormat(option), displayValue: option.name }];
-        this.send('updateFilter', { propertyName, restrictionType: 'LESS_THAN', isCustom: false, propertyValues });
+        const propertyValues = [{ value, relativeValueType: unit, relative: true, valueType: 'DATE' }];
+        this.send('updateFilter', { propertyName, restrictionType: restrictionTypeForRelativeTime, isCustom: false, propertyValues });
       }
     },
 
@@ -198,7 +216,7 @@ const DateTimeFilter = Component.extend(FilterMixin, {
       const { zoneId } = this.get('timezone.selected');
 
       if (!isCustomChecked) {
-        const propertyValues = [{ value: convertToTimeFormat(selectedDateRangeOption), displayValue: selectedDateRangeOption.name }];
+        const propertyValues = [{ value: selectedDateRangeOption.value, relativeValueType: selectedDateRangeOption.unit, relative: true, valueType: 'DATE' }];
         this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues });
       } else {
         if (type === 'BETWEEN') {
