@@ -14,7 +14,7 @@ const stateToComputed = (state) => ({
 const dispatchToActions = { setQueryTimeRange };
 
 const TimeCrumb = Component.extend({
-  classNames: 'rsa-investigate-breadcrumb',
+  classNames: ['rsa-investigate-breadcrumb', 'js-test-investigate-events-time-breadcrumb'],
 
   /**
    * Array of available time ranges for user to pick from.

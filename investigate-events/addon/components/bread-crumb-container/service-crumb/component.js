@@ -19,7 +19,7 @@ const stateToComputed = (state) => ({
 });
 
 const ServiceCrumb = Component.extend({
-  classNames: 'rsa-investigate-breadcrumb',
+  classNames: ['rsa-investigate-breadcrumb', 'js-test-investigate-events-service-breadcrumb'],
 
   i18n: service(),
 
