@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import presidio.input.sdk.impl.factory.PresidioInputPersistencyServiceFactory;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
+import presidio.sdk.api.validation.InvalidInputDocument;
+import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -145,7 +147,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     protected void monitorUnknownError(int number, Instant logicalHour) {
-        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS", number);
+        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS", 1);
     }
 
 
@@ -155,15 +157,18 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
             logger.trace("0 events were saved successfully.");
             return 0;
         }
-        final boolean allSavedSuccessfully = presidioInputPersistencyService.store(schema, records);
-        final int size = records.size();
-        if (allSavedSuccessfully) {
-            logger.debug("{} events were saved successfully.", size);
-//            sinkCounter.addToEventDrainSuccessCount(size);
-        } else {
-            logger.warn("Not all records out of {} total records were saved successfully", size);
+        ValidationResults storeResults = presidioInputPersistencyService.store(schema, records);
+        logger.debug("{} events were saved successfully.", storeResults.validDocuments.size());
+        if (storeResults.invalidDocuments.isEmpty()) {
+            logger.warn("only {} out of {} total records were saved successfully, other {} were filtered", storeResults.validDocuments.size(), records.size(), storeResults.invalidDocuments.size());
         }
-        return size;
+
+        //publish metric for the number of filtered events by the input SDK-
+        for (InvalidInputDocument invalidEvent: storeResults.invalidDocuments) {
+            monitoringService.reportFailedEventMetric(invalidEvent.getViolations().toString(), 1);
+        }
+
+        return storeResults.validDocuments.size();
     }
 
 
