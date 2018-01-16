@@ -37,10 +37,10 @@ const setSelectedEmailServer = (selectedEmailServerId) => {
   };
 };
 
-const toggleNotification = (type, property) => {
+const toggleNotification = (reason, property) => {
   return {
     type: ACTION_TYPES.TOGGLE_NOTIFICATION,
-    payload: { type, property }
+    payload: { reason, property }
   };
 };
 

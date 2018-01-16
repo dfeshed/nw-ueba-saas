@@ -54,13 +54,13 @@
       <tbody>
         {{#each notificationSettings as |setting|}}
           <tr>
-            <td>{{t (concat 'configure.notifications.types.' setting.type)}}</td>
+            <td>{{t (concat 'configure.notifications.types.' setting.reason)}}</td>
             <td>
               <centered>
                 <label class="rsa-form-checkbox-label {{if setting.sendToAssignee 'checked'}}">
                   {{rsa-form-checkbox
                     checked=setting.sendToSocManagers
-                    change=(action 'toggle' setting.type 'sendToAssignee')}}
+                    change=(action 'toggle' setting.reason 'sendToAssignee')}}
                 </label>
               </centered>
             </td>
@@ -70,7 +70,7 @@
                   {{rsa-form-checkbox
                     checked=setting.sendToSocManagers
                     disabled=(not hasSocManagerEmails)
-                    change=(action 'toggle' setting.type 'sendToSocManagers')}}
+                    change=(action 'toggle' setting.reason 'sendToSocManagers')}}
                 </label>
               </centered>
             </td>

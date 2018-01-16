@@ -64,12 +64,12 @@ test('With TOGGLE_NOTIFICATION, the boolean property for the notification settin
     ...initialState,
     notificationSettings: [
       {
-        type: 'incident-created',
+        reason: 'incident-created',
         sendToAssignee: true,
         sendToSocManagers: false // starts as false
       },
       {
-        type: 'incident-state-changed',
+        reason: 'incident-state-changed',
         sendToAssignee: false,
         sendToSocManagers: true
       }
@@ -79,12 +79,12 @@ test('With TOGGLE_NOTIFICATION, the boolean property for the notification settin
     ...initialState,
     notificationSettings: [
       {
-        type: 'incident-created',
+        reason: 'incident-created',
         sendToAssignee: true,
         sendToSocManagers: true // ends as true
       },
       {
-        type: 'incident-state-changed',
+        reason: 'incident-state-changed',
         sendToAssignee: false,
         sendToSocManagers: true
       }
@@ -94,7 +94,7 @@ test('With TOGGLE_NOTIFICATION, the boolean property for the notification settin
   const endState = reducer(Immutable.from(initState), {
     type: ACTION_TYPES.TOGGLE_NOTIFICATION,
     payload: {
-      type: 'incident-created',
+      reason: 'incident-created',
       property: 'sendToSocManagers'
     }
   });

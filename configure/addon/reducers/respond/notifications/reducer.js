@@ -36,9 +36,9 @@ export default reduxActions.handleActions({
       notificationsStatus: 'error'
     });
   },
-  [ACTION_TYPES.TOGGLE_NOTIFICATION]: (state, { payload: { type, property } }) => {
+  [ACTION_TYPES.TOGGLE_NOTIFICATION]: (state, { payload: { reason, property } }) => {
     const notificationSettings = state.notificationSettings.map((setting) => {
-      return setting.type === type ? setting.set(property, !setting[property]) : setting;
+      return setting.reason === reason ? setting.set(property, !setting[property]) : setting;
     });
     return state.set('notificationSettings', notificationSettings);
   },

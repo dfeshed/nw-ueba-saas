@@ -23,12 +23,12 @@ export default {
   socManagers: ['soc@rsa.com'],
   notificationSettings: [
     {
-      type: 'incident-created',
+      reason: 'incident-created',
       sendToAssignee: true,
       sendToSocManagers: false
     },
     {
-      type: 'incident-state-changed',
+      reason: 'incident-state-changed',
       sendToAssignee: false,
       sendToSocManagers: true
     }

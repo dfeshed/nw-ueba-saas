@@ -38,8 +38,8 @@ const dispatchToActions = function(dispatch) {
     updateEmailServer: (server) => {
       dispatch(setSelectedEmailServer(server.id));
     },
-    toggle: (type, property) => {
-      dispatch(toggleNotification(type, property));
+    toggle: (reason, property) => {
+      dispatch(toggleNotification(reason, property));
     },
     addSOCManagerEmail: (email) => {
       dispatch(addSOCManagerEmail(email));
