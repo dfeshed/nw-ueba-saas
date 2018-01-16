@@ -22,14 +22,14 @@
                 {{radio-button
                   value='GREATER_THAN'
                   groupValue=restrictionType.type
-                  changed=(action 'setRelativeTimeRestrictionType' 'GREATER_THAN')}}
+                  changed=(action (mut restrictionType.type))}}
                 {{t 'investigateHosts.hosts.filters.inTimeRange'}}
               </label>
               <label class="rsa-form-radio-label {{if (eq restrictionType.type 'LESS_THAN') 'checked'}}">
                 {{radio-button
                   value='LESS_THAN'
                   groupValue=restrictionType.type
-                  changed=(action 'setRelativeTimeRestrictionType' 'LESS_THAN')}}
+                  changed=(action (mut restrictionType.type))}}
                 {{t 'investigateHosts.hosts.filters.notInTimeRange'}}
               </label>
             </div>

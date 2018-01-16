@@ -62,13 +62,11 @@ const DateTimeFilter = Component.extend(FilterMixin, {
 
   timezone: service(),
 
-  restrictionTypeForRelativeTime: RESTRICTION_TYPES[1].type,
-
    /**
    * Restriction type for the list filter
    * @public
    */
-  restrictionType: RESTRICTION_TYPES[1],
+  restrictionType: { ...RESTRICTION_TYPES[1] },
 
   /**
    * Prepared List option for displaying
@@ -123,7 +121,7 @@ const DateTimeFilter = Component.extend(FilterMixin, {
         values = propertyValues.map((item) => item.displayValue);
       }
 
-      this.set('restrictionType', RESTRICTION_TYPES_BY_TYPE[expression.restrictionType]);
+      this.set('restrictionType', { ...RESTRICTION_TYPES_BY_TYPE[expression.restrictionType] });
       if (expression.isCustom) {
         this.set('isCustomChecked', true);
         if (expression.restrictionType === 'GREATER_THAN' || expression.restrictionType === 'LESS_THAN') {
@@ -181,23 +179,12 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   },
 
   actions: {
-    setRelativeTimeRestrictionType(value) {
-      this.set('restrictionTypeForRelativeTime', value);
-    },
-
     onTimeSelection(option) {
-      const { selected, value, unit } = option;
-      const restrictionTypeForRelativeTime = this.get('config.showRadioButtons') ?
-                                               this.get('restrictionTypeForRelativeTime') : this.get('config.restrictionTypeForRelativeTime');
-
-      set(option, 'selected', !selected);
-
+      set(option, 'selected', !option.selected);
       if (option.id === 'Custom') {
         this.set('showListOptions', false);
       } else {
-        const { propertyName } = this.get('config');
-        const propertyValues = [{ value, relativeValueType: unit, relative: true, valueType: 'DATE' }];
-        this.send('updateFilter', { propertyName, restrictionType: restrictionTypeForRelativeTime, isCustom: false, propertyValues });
+        this.set('selectedDateRangeOption', option);
       }
     },
 
@@ -216,8 +203,20 @@ const DateTimeFilter = Component.extend(FilterMixin, {
       const { zoneId } = this.get('timezone.selected');
 
       if (!isCustomChecked) {
-        const propertyValues = [{ value: selectedDateRangeOption.value, relativeValueType: selectedDateRangeOption.unit, relative: true, valueType: 'DATE' }];
-        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: false, propertyValues });
+        let restrictionType = (type === 'BETWEEN') ? 'GREATER_THAN' : type;
+        const { showRadioButtons, restrictionTypeForRelativeTime } = this.get('config');
+
+        restrictionType = showRadioButtons ? restrictionType : restrictionTypeForRelativeTime;
+
+        const propertyValues = [
+          {
+            value: selectedDateRangeOption.value,
+            relativeValueType: selectedDateRangeOption.unit,
+            relative: true,
+            valueType: 'DATE'
+          }
+        ];
+        this.send('updateFilter', { propertyName, restrictionType, isCustom: false, propertyValues });
       } else {
         if (type === 'BETWEEN') {
           const startTime = getTimezoneTime(dateStartValue[0], zoneId);
