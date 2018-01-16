@@ -28,58 +28,76 @@
           "tags": {
             "properties": {
               "APPLICATION_NAME": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "IS_SYSTEM_METRIC": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FLUME_COMPONENT_INSTANCE_ID": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FLUME_COMPONENT_TYPE": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FEATURE_BUCKET": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "TIME": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "GROUP_NAME": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "AGGREGATED_FEATURE_TYPE": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FEATURE_NAME": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FAILURE_REASON": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "HOST": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "RESULT": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "ADE_EVENT_TYPE": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "SCORER": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "MODEL": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "PID": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "SCHEMA": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               },
               "UNIT": {
-                "type": "keyword"
+                "type": "string",
+                "index": "not_analyzed"
               }
             }
           },
