@@ -26,4 +26,11 @@ public class SimplePathGeneratorTest {
         Assert.assertEquals(generator.getNext(), "/folder2/subfolder");
 
     }
+
+    @Test
+    public void PathGeneratorNullPathTest() {
+        String[] listOfFolders = {null};
+        SimplePathGenerator generator = new SimplePathGenerator(listOfFolders);
+        Assert.assertNull(generator.getNext());
+     }
 }
