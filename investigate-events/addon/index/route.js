@@ -12,13 +12,22 @@ export default Route.extend({
   redux: service(),
   _routing: service('-routing'),
 
-  // refreshModel = re-run the model hook
-  // replace = replace browser's history
+  /**
+   * The `queryParams` property controls how changes to query params in the URL
+   * effect application or browser state.
+   *
+   * If we set `refreshModel` to `true`, it will re-run all the
+   * model hooks. This will effectively look like a page refresh. We refresh
+   * the model for parameters that will effect the contents of the data table.
+   *
+   * If `replace` is set to `true`, then the browser's history will be
+   * over-written when that query param changes.
+   * @public
+   */
   queryParams: {
     sid: { refreshModel: true }, // serviceId
     st: { refreshModel: true },  // startTime
     et: { refreshModel: true },  // endTime
-    eid: { refreshModel: true }, // sessionId
     mf: { refreshModel: true },  // metaFilters
     mps: { replace: true },      // metaPanelSize
     rs: { replace: true }        // reconSize
