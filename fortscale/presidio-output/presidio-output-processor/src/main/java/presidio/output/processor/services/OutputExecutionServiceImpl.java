@@ -18,6 +18,7 @@ import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.processor.services.alert.AlertService;
+import presidio.output.processor.services.user.UserPropertiesUpdateService;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.services.user.UsersAlertData;
 
@@ -44,10 +45,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final AlertService alertService;
     private final UserService userService;
     private final EventPersistencyService eventPersistencyService;
+    private final UserPropertiesUpdateService userPropertiesUpdateService;
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
     private final long retentionEnrichedEventsDays;
     private final long retentionResultEventsDays;
+
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
@@ -61,13 +64,14 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
-                                      UserSeverityService userSeverityService, EventPersistencyService eventPersistencyService,
+                                      UserSeverityService userSeverityService, EventPersistencyService eventPersistencyService, UserPropertiesUpdateService userPropertiesUpdateService,
                                       int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionResultEventsDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
         this.userSeverityService = userSeverityService;
         this.eventPersistencyService = eventPersistencyService;
+        this.userPropertiesUpdateService = userPropertiesUpdateService;
         this.smartPageSize = smartPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
         this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;

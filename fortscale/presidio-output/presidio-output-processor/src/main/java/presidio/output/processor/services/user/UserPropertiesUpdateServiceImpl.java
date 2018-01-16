@@ -1,5 +1,6 @@
 package presidio.output.processor.services.user;
 
+import fortscale.utils.logging.Logger;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -9,6 +10,7 @@ import java.util.List;
 
 
 public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateService {
+    private static final Logger log = Logger.getLogger(UserPropertiesUpdateServiceImpl.class);
 
     private EventPersistencyService eventPersistencyService;
     private final String TAG_ADMIN = "admin";
@@ -39,6 +41,8 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
                 tags.add(TAG_ADMIN);
                 user.setTags(tags);
             }
+        } else {
+            log.debug("No events where found for this user");
         }
         return user;
     }
