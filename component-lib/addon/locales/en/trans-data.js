@@ -261,6 +261,7 @@ export default {
     fatalError: {
       115: 'Session is unavailable for viewing.',
       124: 'Invalid session ID: {{eventId}}',
+      11: 'The session id is too large to be handled: {{eventId}}',
       permissions: 'You do not have the required permissions to view this content.'
     },
     toggles: {

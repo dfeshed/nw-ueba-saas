@@ -260,6 +260,7 @@ export default {
     fatalError: {
       115: 'ja_Session is unavailable for viewing.',
       124: 'ja_Invalid session ID: {{eventId}}',
+      11: 'ja_The session id is too large to be handled: {{eventId}}',
       permissions: 'ja_You do not have the required permissions to view this content.'
     },
     toggles: {

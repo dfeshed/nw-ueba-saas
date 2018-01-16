@@ -22,6 +22,12 @@ const _ERROR_CODES = [
     description: 'Invalid sessionId',
     isFatal: true,
     isContent: false
+  },
+  {
+    code: 11,
+    description: 'SessionId too long',
+    isFatal: true,
+    isContent: false
   }
 ];
 

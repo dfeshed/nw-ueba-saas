@@ -135,4 +135,9 @@ export default class DataHelper {
     _set(this.state, 'packets.packetsPageSize', setTo);
     return this;
   }
+
+  apiFatalErrorCode(code) {
+    _set(this.state, 'data.apiFatalErrorCode', code);
+    return this;
+  }
 }
