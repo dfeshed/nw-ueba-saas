@@ -18,22 +18,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.commons.services.user.UserSeverityServiceImpl;
-import presidio.output.domain.records.UserScorePercentilesDocument;
+import presidio.output.domain.records.PresidioRange;
+import presidio.output.domain.records.UserSeveritiesRangeDocument;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.repositories.UserScorePercentilesRepository;
+import presidio.output.domain.repositories.UserSeveritiesRangeRepository;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.proccesor.spring.TestConfig;
-import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.processor.spring.UserServiceConfig;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shays on 27/08/2017.
@@ -54,7 +57,7 @@ public class UserScoreServiceImplTest {
     private UserPersistencyService mockUserPresistency;
 
     @MockBean
-    private UserScorePercentilesRepository mockPercentilesRepository;
+    private UserSeveritiesRangeRepository userSeveritiesRangeRepository;
 
     @Autowired
     private UserSeverityService userSeverityService;
@@ -85,42 +88,35 @@ public class UserScoreServiceImplTest {
         Pageable pageable3 = new PageRequest(2, 10);
         Page<User> page3 = new PageImpl(page3Users, pageable3, 25);
 
-        Mockito.when(mockUserPresistency.find(Mockito.any(UserQuery.class))).thenAnswer(new Answer<Page>() {
-            @Override
-            public Page answer(InvocationOnMock invocation) throws Throwable {
-                UserQuery query = (UserQuery) invocation.getArguments()[0];
-                if (query.getPageNumber() == 0) {
-                    return page1;
-                } else if (query.getPageNumber() == 1) {
-                    return page2;
-                } else {
-                    return page3;
-                }
+        Mockito.when(mockUserPresistency.find(Mockito.any(UserQuery.class))).thenAnswer(invocation -> {
+            UserQuery query = (UserQuery) invocation.getArguments()[0];
+            if (query.getPageNumber() == 0) {
+                return page1;
+            } else if (query.getPageNumber() == 1) {
+                return page2;
+            } else {
+                return page3;
             }
         });
 
-        Mockito.verify(Mockito.spy(UserScorePercentilesRepository.class), Mockito.times(0)).findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
+        Mockito.verify(Mockito.spy(UserSeveritiesRangeRepository.class), Mockito.times(0)).findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(true);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(55D));
-        Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(2D));
-        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(56D));
-        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(120D));
-        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(185D));
-        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(122D));
-        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(186D));
-        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(240D));
+        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(270D));
+        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(350D));
+        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(520D));
 
         //Special cases
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(-5D));
-        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(300D));
+        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(700D));
     }
 
     @Test
     public void testGetSeveritiesMap_NoRecalcSeverities_DefaultSeverities() {
 
-        Iterable<UserScorePercentilesDocument> percentileScores = new ArrayList<>();
-        Mockito.when(mockPercentilesRepository.findAll()).thenReturn(percentileScores);
+        Iterable<UserSeveritiesRangeDocument> percentileScores = new ArrayList<>();
+        Mockito.when(userSeveritiesRangeRepository.findAll()).thenReturn(percentileScores);
 
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(false);
 
@@ -141,22 +137,26 @@ public class UserScoreServiceImplTest {
     @Test
     public void testGetSeveritiesMap_NoRecalcSeverities_ExistingSeverities() {
 
-        UserScorePercentilesDocument percentileDoc = new UserScorePercentilesDocument();
-        percentileDoc.setCeilScoreForHighSeverity(150);
-        percentileDoc.setCeilScoreForMediumSeverity(100);
-        percentileDoc.setCeilScoreForLowSeverity(50);
-        Mockito.when(mockPercentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID)).thenReturn(percentileDoc);
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = new UserSeveritiesRangeDocument();
+        Map<UserSeverity, PresidioRange<Double>> map = new LinkedHashMap<>();
+        map.put(UserSeverity.LOW, new PresidioRange<>(0d, 240d));
+        map.put(UserSeverity.MEDIUM, new PresidioRange<>(264d, 264d));
+        map.put(UserSeverity.HIGH, new PresidioRange<>(343.2d, 343.2d));
+        map.put(UserSeverity.CRITICAL, new PresidioRange<>(518.8d, 514.8d));
+        userSeveritiesRangeDocument.setSeverityToScoreRangeMap(map);
+
+        Mockito.when(userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID)).thenReturn(userSeveritiesRangeDocument);
 
         UserSeverityServiceImpl.UserScoreToSeverity severityTreeMap = userSeverityService.getSeveritiesMap(false);
 
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(50D));
-        Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(2D));
-        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(56D));
-        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(100D));
-        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(150));
-        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(122D));
-        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(188D));
-        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(240D));
+        Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(250D));
+        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(270D));
+        Assert.assertEquals(UserSeverity.MEDIUM, severityTreeMap.getUserSeverity(340D));
+        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(350));
+        Assert.assertEquals(UserSeverity.HIGH, severityTreeMap.getUserSeverity(500D));
+        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(520D));
+        Assert.assertEquals(UserSeverity.CRITICAL, severityTreeMap.getUserSeverity(600D));
 
         //Special cases
         Assert.assertEquals(UserSeverity.LOW, severityTreeMap.getUserSeverity(-5D));
@@ -224,7 +224,12 @@ public class UserScoreServiceImplTest {
         Page<User> page1 = new PageImpl(page, pageable1, 10);
 
 
-        UserSeverityServiceImpl.UserScoreToSeverity userScoreToSeverity = new UserSeverityServiceImpl.UserScoreToSeverity(20D, 40D, 80D);
+        Map<UserSeverity, PresidioRange<Double>> map = new LinkedHashMap<>();
+        map.put(UserSeverity.LOW, new PresidioRange<>(0d, 300d));
+        map.put(UserSeverity.MEDIUM, new PresidioRange<>(30d, 50d));
+        map.put(UserSeverity.HIGH, new PresidioRange<>(50d, 90d));
+        map.put(UserSeverity.CRITICAL, new PresidioRange<>(90d, 90d));
+        UserSeverityServiceImpl.UserScoreToSeverity userScoreToSeverity = new UserSeverityServiceImpl.UserScoreToSeverity(map);
         Whitebox.invokeMethod(userSeverityService, "updateSeveritiesForUsersList", userScoreToSeverity, page1.getContent(), true);
 
 
@@ -238,6 +243,5 @@ public class UserScoreServiceImplTest {
         Assert.assertEquals(UserSeverity.HIGH, page.get(7).getSeverity());
         Assert.assertEquals(UserSeverity.HIGH, page.get(8).getSeverity());
         Assert.assertEquals(UserSeverity.CRITICAL, page.get(9).getSeverity());
-
     }
 }

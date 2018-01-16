@@ -1,21 +1,21 @@
 package presidio.output.commons.services.user;
 
 import fortscale.utils.logging.Logger;
-import org.apache.commons.math3.stat.descriptive.rank.Percentile;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import presidio.output.domain.records.UserScorePercentilesDocument;
+import presidio.output.domain.records.PresidioRange;
+import presidio.output.domain.records.UserSeveritiesRangeDocument;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.repositories.UserScorePercentilesRepository;
+import presidio.output.domain.repositories.UserSeveritiesRangeRepository;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -25,12 +25,10 @@ public class UserSeverityServiceImpl implements UserSeverityService {
 
     private static final Logger logger = Logger.getLogger(UserSeverityServiceImpl.class);
 
-    private int percentThresholdCritical;
-    private int percentThresholdHigh;
-    private int percentThresholdMedium;
+    private Map<UserSeverity, UserSeverityComputeData> severityToComputeDataMap;
 
     @Autowired
-    private UserScorePercentilesRepository percentilesRepository;
+    private UserSeveritiesRangeRepository userSeveritiesRangeRepository;
 
     @Autowired
     private UserPersistencyService userPersistencyService;
@@ -38,14 +36,9 @@ public class UserSeverityServiceImpl implements UserSeverityService {
     @Value("${user.batch.size:2000}")
     private int defaultUsersBatchSize;
 
-    public UserSeverityServiceImpl(int percentThresholdCritical,
-                                int percentThresholdHigh,
-                                int percentThresholdMedium) {
-        this.percentThresholdCritical = percentThresholdCritical;
-        this.percentThresholdHigh = percentThresholdHigh;
-        this.percentThresholdMedium = percentThresholdMedium;
+    public UserSeverityServiceImpl(Map<UserSeverity, UserSeverityComputeData> severityToComputeDataMap) {
+        this.severityToComputeDataMap = severityToComputeDataMap;
     }
-
 
     /**
      * Calculate severities map which defines the right user severity per user score calculated according to percentiles
@@ -53,47 +46,137 @@ public class UserSeverityServiceImpl implements UserSeverityService {
      * @return map from score to getSeverity
      */
     @Override
-    public UserScoreToSeverity getSeveritiesMap(boolean recalcUserScorePercentiles) {
-        if(!recalcUserScorePercentiles) {
+    public UserScoreToSeverity getSeveritiesMap(boolean recalculateUserScorePercentiles) {
+        if (!recalculateUserScorePercentiles) {
             return getExistingUserScoreToSeverity();
         }
 
         //calculating percentiles according all user scores
         double[] userScores = getScoresArray();
-        Percentile p = new Percentile();
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = getUserSeveritiesRangeDocument(userScores);
 
-        p.setData(userScores);
+        return new UserScoreToSeverity(userSeveritiesRangeDocument.getSeverityToScoreRangeMap());
+    }
 
-        double ceilScoreForLowSeverity = p.evaluate(percentThresholdMedium); //The maximum score that user score still considered low
-        double ceilScoreForMediumSeverity = p.evaluate(percentThresholdHigh);//The maximum score that user score still considered medium
-        double ceilScoreForHighSeverity = p.evaluate(percentThresholdCritical); //The maximum score that user score still considered high
+    /**
+     * Create the user score percentile document from the received scores
+     *
+     * @param userScores
+     * @return
+     */
+    protected UserSeveritiesRangeDocument getUserSeveritiesRangeDocument(double[] userScores) {
 
-        //Storing the new percentiles doc-
-        UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
-        if(percentileDoc == null) {
-            percentileDoc = new UserScorePercentilesDocument();
+        Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = getUserSeverityRangeMap(userScores);
+
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = new UserSeveritiesRangeDocument(severityToScoreRangeMap);
+        return userSeveritiesRangeDocument;
+    }
+
+    protected Map<UserSeverity, PresidioRange<Double>> getUserSeverityRangeMap(double[] userScores) {
+
+        if (ArrayUtils.isEmpty(userScores)) {
+            return createEmptyMap();
         }
-        percentileDoc.setCeilScoreForHighSeverity(ceilScoreForHighSeverity);
-        percentileDoc.setCeilScoreForMediumSeverity(ceilScoreForMediumSeverity);
-        percentileDoc.setCeilScoreForLowSeverity(ceilScoreForLowSeverity);
-        percentilesRepository.save(percentileDoc);
 
-        return new UserScoreToSeverity(ceilScoreForLowSeverity, ceilScoreForMediumSeverity, ceilScoreForHighSeverity);
+        Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = new LinkedHashMap<>();
 
+        // sorting the scores
+        Arrays.sort(userScores);
+        ArrayUtils.reverse(userScores);
+
+        // Get the severities in desc order
+        List<UserSeverity> severitiesOrderedAsc = UserSeverity.getSeveritiesOrderedAsc();
+        List<UserSeverity> severitiesOrderedDesc = new LinkedList<>(severitiesOrderedAsc);
+        Collections.reverse(severitiesOrderedDesc);
+
+        Integer index = 0;
+
+        // Go over all the severities from Critical to Low
+        for (UserSeverity userSeverity : severitiesOrderedDesc) {
+
+            // Get the details
+            UserSeverityComputeData userSeverityComputeData = severityToComputeDataMap.get(userSeverity);
+
+            // Calculate the max users that can get the severity as percentage from the users
+            int numberOfCalculatedFromPercent = (int) Math.ceil(userSeverityComputeData.getPercentageIfUsers() * ((double) userScores.length) / 100);
+            int finalIndex = index + numberOfCalculatedFromPercent;
+
+            // If maxUsers set check that the amount calculated from percentage is not bigger that the users allowed
+            if (userSeverityComputeData.getMaximumUsers() != null && numberOfCalculatedFromPercent > userSeverityComputeData.getMaximumUsers()) {
+                finalIndex = (int) (index + userSeverityComputeData.getMaximumUsers());
+            }
+
+            // Make sure we wont get out of the array boundaries
+            if (finalIndex >= userScores.length || userSeverity.equals(UserSeverity.LOW)) {
+                finalIndex = userScores.length - 1;
+            }
+
+            // Looking for the separation point between the severities
+            for (int i = finalIndex; i > index; i--) {
+
+                // The delta between the scores is big enough to separate the severities
+                if (userScores[i] * userSeverityComputeData.getMinimumDelta() <= userScores[i - 1]) {
+                    double minSeverityScore = userScores[i - 1];
+                    if (i == userScores.length - 1) {
+                        minSeverityScore = userScores[i];
+                    }
+
+                    // Set the severity boundaries
+                    severityToScoreRangeMap.put(userSeverity, new PresidioRange<>(minSeverityScore, userScores[index]));
+                    index = i;
+
+                    break;
+                }
+            }
+        }
+
+        if (severityToScoreRangeMap.get(UserSeverity.LOW) == null) {
+            severityToScoreRangeMap.put(UserSeverity.LOW, new PresidioRange<>(userScores[userScores.length - 1], userScores[userScores.length - 1]));
+        }
+
+        // Fix the mapping by going from low to critical and calculating the lower bound of each severity according to the
+        // upper bound of the lower severity
+        for (int i = 0; i < severitiesOrderedAsc.size() - 1; i++) {
+            UserSeverity severity = severitiesOrderedAsc.get(i);
+            UserSeverity higherSeverity = severitiesOrderedAsc.get(i + 1);
+
+            Double upperBound = severityToScoreRangeMap.get(severity).getUpperBound();
+            double minimumDelta = severityToComputeDataMap.get(higherSeverity).getMinimumDelta();
+
+            PresidioRange<Double> higherSeverityRange = severityToScoreRangeMap.get(higherSeverity);
+
+            // If no range set it
+            if (higherSeverityRange == null) {
+                severityToScoreRangeMap.put(higherSeverity, new PresidioRange<>(upperBound * minimumDelta, upperBound * minimumDelta));
+            } else if (upperBound * minimumDelta < severityToScoreRangeMap.get(higherSeverity).getLowerBound()) {
+                // Set the new lower and upper bound
+                severityToScoreRangeMap.replace(higherSeverity, new PresidioRange<>(upperBound * minimumDelta, Math.max(higherSeverityRange.getUpperBound(), upperBound * minimumDelta)));
+            }
+        }
+
+        return severityToScoreRangeMap;
     }
 
     private UserScoreToSeverity getExistingUserScoreToSeverity() {
-        UserScorePercentilesDocument userSeverityPercentilesDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
 
-        if(userSeverityPercentilesDoc == null) { //no existing percentiles were found
+        if (userSeveritiesRangeDocument == null) { //no existing percentiles were found
             logger.debug("No user score percentile calculation results were found, setting scores thresholds to zero (all users will get LOW severity (till next daily calculation)");
-            return new UserScoreToSeverity(-1, -1, -1);
+
+            Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = createEmptyMap();
+            return new UserScoreToSeverity(severityToScoreRangeMap);
         }
 
-        return new UserScoreToSeverity(
-                userSeverityPercentilesDoc.getCeilScoreForLowSeverity(),
-                userSeverityPercentilesDoc.getCeilScoreForMediumSeverity(),
-                userSeverityPercentilesDoc.getCeilScoreForHighSeverity());
+        return new UserScoreToSeverity(userSeveritiesRangeDocument.getSeverityToScoreRangeMap());
+    }
+
+    private Map<UserSeverity, PresidioRange<Double>> createEmptyMap() {
+        Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = new LinkedHashMap<>();
+        severityToScoreRangeMap.put(UserSeverity.LOW, new PresidioRange<>(-1d, -1d));
+        severityToScoreRangeMap.put(UserSeverity.MEDIUM, new PresidioRange<>(-1d, -1d));
+        severityToScoreRangeMap.put(UserSeverity.HIGH, new PresidioRange<>(-1d, -1d));
+        severityToScoreRangeMap.put(UserSeverity.CRITICAL, new PresidioRange<>(-1d, -1d));
+        return severityToScoreRangeMap;
     }
 
     @Override
@@ -129,7 +212,6 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         double[] scores = new double[numberOfElements];
         AtomicInteger courser = new AtomicInteger(0);
 
-
         while (page != null && page.hasContent()) {
             page.getContent().forEach(user -> {
                 scores[courser.getAndAdd(1)] = user.getScore();
@@ -137,7 +219,6 @@ public class UserSeverityServiceImpl implements UserSeverityService {
             page = getNextUserPage(userQueryBuilder, page);
 
         }
-
         return scores;
     }
 
@@ -182,31 +263,26 @@ public class UserSeverityServiceImpl implements UserSeverityService {
     }
 
     public static class UserScoreToSeverity {
-        private double ceilScoreForLowSeverity;
-        private double ceilScoreForMediumSeverity;
-        private double ceilScoreForHighSeverity;
+        private Map<UserSeverity, PresidioRange<Double>> userSeverityRangeMap;
 
-        public UserScoreToSeverity(double ceilScoreForLowSeverity, double ceilScoreForMediumSeverity, double ceilScoreForHighSeverity) {
-            this.ceilScoreForLowSeverity = ceilScoreForLowSeverity;
-            this.ceilScoreForMediumSeverity = ceilScoreForMediumSeverity;
-            this.ceilScoreForHighSeverity = ceilScoreForHighSeverity;
+        public UserScoreToSeverity(Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap) {
+            this.userSeverityRangeMap = severityToScoreRangeMap;
         }
 
         public UserSeverity getUserSeverity(double score) {
-            if(ceilScoreForHighSeverity == -1) {
+            if (userSeverityRangeMap.get(UserSeverity.LOW).getUpperBound() == -1) {
                 return UserSeverity.LOW;
             }
 
-            if (score <= ceilScoreForLowSeverity) {
-                return UserSeverity.LOW;
-            } else if (score <= ceilScoreForMediumSeverity) {
-                return UserSeverity.MEDIUM;
-            } else if (score <= ceilScoreForHighSeverity) {
-                return UserSeverity.HIGH;
-            } else {
+            if (score >= userSeverityRangeMap.get(UserSeverity.CRITICAL).getLowerBound()) {
                 return UserSeverity.CRITICAL;
+            } else if (score >= userSeverityRangeMap.get(UserSeverity.HIGH).getLowerBound()) {
+                return UserSeverity.HIGH;
+            } else if (score >= userSeverityRangeMap.get(UserSeverity.MEDIUM).getLowerBound()) {
+                return UserSeverity.MEDIUM;
+            } else {
+                return UserSeverity.LOW;
             }
-
         }
     }
 }

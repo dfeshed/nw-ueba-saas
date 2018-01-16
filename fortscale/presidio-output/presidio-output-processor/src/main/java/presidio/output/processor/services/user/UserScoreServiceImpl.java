@@ -144,9 +144,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     }
 
 
-
-
-
     /**
      * Return the next user page or null if no next
      *
@@ -184,7 +181,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
         return page;
     }
-
 
 
 }

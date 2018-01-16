@@ -26,9 +26,10 @@ public class TestConfig {
         properties.put("number.of.classifications", 19);
         properties.put("output.events.limit", 100);
         properties.put("output.events.page.size", 10);
-        properties.put("user.severities.percent.threshold.critical", 75);
-        properties.put("user.severities.percent.threshold.high", 50);
-        properties.put("user.severities.percent.threshold.medium", 25);
+        properties.put("user.severity.compute.data.critical", "1,1.5,5");
+        properties.put("user.severity.compute.data.high", "4,1.3,10");
+        properties.put("user.severity.compute.data.medium", "10,1.1,9999");
+        properties.put("user.severity.compute.data.low", "80,0,9999");
         properties.put("indicators.contribution.limit.to.classification.percent", 0.3);
         properties.put("output.enriched.events.retention.in.days", 2);
         properties.put("output.result.events.retention.in.days", 90);

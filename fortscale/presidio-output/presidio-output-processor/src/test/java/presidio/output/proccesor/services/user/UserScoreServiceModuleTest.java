@@ -6,25 +6,28 @@ import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.commons.services.user.UserSeverityServiceImpl;
-import presidio.output.domain.records.UserScorePercentilesDocument;
-import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.commons.services.alert.AlertSeverityService;
 import presidio.output.domain.records.AbstractElasticDocument;
+import presidio.output.domain.records.PresidioRange;
+import presidio.output.domain.records.UserSeveritiesRangeDocument;
 import presidio.output.domain.records.alerts.Alert;
+import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.AlertQuery;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.records.users.UserSeverity;
-import presidio.output.domain.repositories.UserScorePercentilesRepository;
+import presidio.output.domain.repositories.UserSeveritiesRangeRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
@@ -43,7 +46,7 @@ import java.util.*;
 public class UserScoreServiceModuleTest {
 
     @Autowired
-    private UserScorePercentilesRepository percentilesRepository;
+    private UserSeveritiesRangeRepository userSeveritiesRangeRepository;
 
     @Autowired
     private UserPersistencyService userPersistencyService;
@@ -75,7 +78,7 @@ public class UserScoreServiceModuleTest {
                 .source(AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE)
                 .get();
         DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
-                .source(AbstractElasticDocument.INDEX_NAME + "-" + UserScorePercentilesDocument.USER_SEVERITY_THRESHOLDS_DOC_TYPE)
+                .source(AbstractElasticDocument.INDEX_NAME + "-" + UserSeveritiesRangeDocument.USER_SEVERITY_RANGE_DOC_TYPE)
                 .get();
     }
 
@@ -101,7 +104,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals("userId1", usersPageResult.getContent().get(0).getUserId());
         Assert.assertEquals("userName1", usersPageResult.getContent().get(0).getUserName());
         Assert.assertEquals(40, usersPageResult.getContent().get(0).getScore(), 0.00001);
-        Assert.assertNotEquals(null, usersPageResult.getContent().get(0).getSeverity());
+        Assert.assertEquals(UserSeverity.LOW, usersPageResult.getContent().get(0).getSeverity());
 
     }
 
@@ -115,16 +118,19 @@ public class UserScoreServiceModuleTest {
         String userId = savedUser.getId();
 
 
-
         List<Alert> alerts = new ArrayList<>();
         alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 15D));
         alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(10), getMinusDay(9), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D));
         alerts.add(new Alert(userId, "smartId", null, "userName1", getMinusDay(100), getMinusDay(99), 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.LOW, null, 5D));
         alertPersistencyService.save(alerts);
 
-        //generate percentiles results
-        percentilesRepository.save(new UserScorePercentilesDocument(150D, 100D, 50D));
 
+        Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = new LinkedHashMap<>();
+        severityToScoreRangeMap.put(UserSeverity.LOW, new PresidioRange<>(0d, 50d));
+        severityToScoreRangeMap.put(UserSeverity.MEDIUM, new PresidioRange<>(500d, 100d));
+        severityToScoreRangeMap.put(UserSeverity.HIGH, new PresidioRange<>(100d, 150d));
+        severityToScoreRangeMap.put(UserSeverity.CRITICAL, new PresidioRange<>(150d, 200d));
+        userSeveritiesRangeRepository.save(new UserSeveritiesRangeDocument(severityToScoreRangeMap));
         userService.updateAllUsersAlertData();
         userSeverityService.updateSeverities();
 
@@ -134,11 +140,11 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(20, updatedUser.getScore(), 0.00001);
         Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
 
-        UserScorePercentilesDocument percentileDoc = percentilesRepository.findOne(UserScorePercentilesDocument.USER_SCORE_PERCENTILES_DOC_ID);
-        Assert.assertEquals(percentileDoc.getCeilScoreForHighSeverity(), 20D, 0.01);
-        Assert.assertEquals(percentileDoc.getCeilScoreForMediumSeverity(), 20D, 0.01);
-        Assert.assertEquals(percentileDoc.getCeilScoreForLowSeverity(), 20D, 0.01);
-
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
+        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.LOW), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.LOW));
+        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.MEDIUM), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.MEDIUM));
+        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.HIGH), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.HIGH));
+        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.CRITICAL), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.CRITICAL));
     }
 
     @Test
@@ -205,12 +211,12 @@ public class UserScoreServiceModuleTest {
 
         User user60 = getUserById("userId60");
         Assert.assertEquals(915D, user60.getScore(), 0.00001); //61 medium alert
-        Assert.assertEquals(UserSeverity.HIGH, user60.getSeverity());
+        Assert.assertEquals(UserSeverity.LOW, user60.getSeverity());
 
 
         User user99 = getUserById("userId99");
         Assert.assertEquals(1500D, user99.getScore(), 0.00001); //100 Medium Alerts
-        Assert.assertEquals(UserSeverity.CRITICAL, user99.getSeverity());
+        Assert.assertEquals(UserSeverity.LOW, user99.getSeverity());
     }
 
     @Test
@@ -261,10 +267,12 @@ public class UserScoreServiceModuleTest {
 
     @Test
     public void calculateScorePercentilesTwice_shouldCreatePercentilesDocOnce() {
+        Assert.fail("Talk to Efrat - what this test does");
+
         //calculate percentiles with 0 users (all users should get low severity)
         userSeverityService.updateSeverities();
-        Iterable<UserScorePercentilesDocument> all = percentilesRepository.findAll();
-        Assert.assertEquals(1, ((ScrolledPage<UserScorePercentilesDocument>) all).getNumberOfElements());
+        Iterable<UserSeveritiesRangeDocument> all = userSeveritiesRangeRepository.findAll();
+        Assert.assertEquals(1, ((ScrolledPage<UserSeveritiesRangeDocument>) all).getNumberOfElements());
 
         //creating new users
         for (int i = 0; i < 100; i++) {
@@ -279,8 +287,8 @@ public class UserScoreServiceModuleTest {
         userSeverityService.updateSeverities();
 
         UserSeverityServiceImpl.UserScoreToSeverity severitiesMap = userSeverityService.getSeveritiesMap(false);
-        all = percentilesRepository.findAll();
-        Assert.assertEquals(1, ((ScrolledPage<UserScorePercentilesDocument>) all).getNumberOfElements());
+        all = userSeveritiesRangeRepository.findAll();
+        Assert.assertEquals(1, ((ScrolledPage<UserSeveritiesRangeDocument>) all).getNumberOfElements());
 
     }
 
