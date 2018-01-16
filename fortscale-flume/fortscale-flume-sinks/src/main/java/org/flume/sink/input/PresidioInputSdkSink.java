@@ -147,7 +147,7 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
 
     @Override
     protected void monitorUnknownError(int number, Instant logicalHour) {
-        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS", 1);
+        monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS", number);
     }
 
 
