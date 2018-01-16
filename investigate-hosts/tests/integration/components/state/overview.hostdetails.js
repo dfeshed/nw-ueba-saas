@@ -126,10 +126,7 @@ const linux = {
         agent: {
           installTime: '2017-06-20T07:09:01.000Z',
           serviceStartTime: '2017-06-28T04:19:45.000Z',
-          serviceEprocess: 0,
           serviceProcessId: 0,
-          serviceErrorCode: 0,
-          driverErrorCode: 0,
           blockingEnabled: false
         },
         operatingSystem: {
@@ -452,9 +449,7 @@ const windows = {
           packageTime: 1515149873444,
           installTime: 1515149921290,
           serviceStartTime: 1515149921923,
-          serviceEprocess: 0,
           serviceProcessId: 3084,
-          serviceErrorCode: 0,
           driverStatus: [
             255,
             255,
@@ -489,7 +484,6 @@ const windows = {
             255,
             255
           ],
-          driverErrorCode: 0,
           blockingEnabled: false,
           blockingUpdateTime: ''
         },
@@ -756,10 +750,7 @@ const mac = {
         agent: {
           installTime: '2017-06-20T07:09:01.000Z',
           serviceStartTime: '2017-06-28T04:19:45.000Z',
-          serviceEprocess: 0,
           serviceProcessId: 0,
-          serviceErrorCode: 0,
-          driverErrorCode: 0,
           blockingEnabled: false
         },
         operatingSystem: {

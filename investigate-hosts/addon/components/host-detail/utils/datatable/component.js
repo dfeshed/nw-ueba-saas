@@ -31,11 +31,7 @@ const HostDetailsDataTable = Component.extend({
 
   actions: {
     sort(column) {
-      if (column.isDescending !== undefined && column.isDescending === false) {
-        column.set('isDescending', true);
-      } else {
-        column.set('isDescending', false);
-      }
+      column.set('isDescending', !column.isDescending);
       this.send('setHostDetailsDataTableSortConfig', {
         isDescending: column.isDescending,
         field: column.field

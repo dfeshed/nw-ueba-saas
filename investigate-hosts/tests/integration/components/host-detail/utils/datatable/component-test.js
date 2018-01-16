@@ -143,7 +143,6 @@ test('Check that sort action is called', function(assert) {
   this.render(hbs`{{host-detail/utils/datatable items=data columnsConfig=columnsConfig}}`);
   assert.equal(this.$('.rsa-data-table-header-cell:eq(0)').find('i').hasClass('rsa-icon-arrow-up-7-filled'), true, 'rsa arrow-up icon before sorting');
   this.$('.rsa-data-table-header-cell:eq(0)').find('.rsa-icon').click();
-  this.$('.rsa-data-table-header-cell:eq(0)').find('.rsa-icon').click();
   assert.equal(this.$('.rsa-data-table-header-cell:eq(0)').find('i').hasClass('rsa-icon-arrow-down-7-filled'), true, 'rsa arrow-down icon after sorting');
 });
 

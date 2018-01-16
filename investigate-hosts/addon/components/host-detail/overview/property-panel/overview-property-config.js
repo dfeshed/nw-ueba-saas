@@ -17,21 +17,8 @@ export default [
         format: 'DATE'
       },
       {
-        field: 'machineIdentity.agent.serviceEprocess',
-        labelKey: 'machineIdentity.agent.serviceEprocess'
-      },
-      {
         field: 'machineIdentity.agent.serviceProcessId',
         labelKey: 'machineIdentity.agent.serviceProcessId'
-      },
-      {
-        field: 'machineIdentity.agent.serviceErrorCode',
-        labelKey: 'machineIdentity.agent.serviceErrorCode'
-      },
-      {
-        field: 'machineIdentity.agent.driverErrorCode',
-        labelKey: 'machineIdentity.agent.driverErrorCode',
-        format: 'HEX'
       },
       {
         field: 'machineIdentity.agentMode',
@@ -41,7 +28,6 @@ export default [
         field: 'machine.agentVersion',
         labelKey: 'machineIdentity.agent.agentVersion'
       }
-
     ]
   },
   {

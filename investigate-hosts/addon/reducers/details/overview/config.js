@@ -97,35 +97,11 @@ const SECURITY_CONFIG = {
       }
     },
     {
-      keyword: 'noAntivirusNotification',
-      value: 'Anti-virus Notification',
-      label: {
-        red: 'No notification if Antivirus software is not installed.',
-        green: 'Notifies if Antivirus software is not installed by default.'
-      }
-    },
-    {
-      keyword: 'noFirewallNotification',
-      value: 'Firewall Notification',
-      label: {
-        red: 'No notification if Firewall is disabled.',
-        green: 'Users will be notified if firewall is off. This is the default.'
-      }
-    },
-    {
       keyword: 'noWindowsUpdate',
       value: 'Windows Update',
       label: {
         red: 'Can connect to Windows update website.',
         green: 'Cannot connect to Windows update website.'
-      }
-    },
-    {
-      keyword: 'noUacNotification',
-      value: 'UAC Notification',
-      label: {
-        red: 'User Access Control notifications disabled.',
-        green: 'User Access Control notifications enabled by default.'
       }
     },
     {

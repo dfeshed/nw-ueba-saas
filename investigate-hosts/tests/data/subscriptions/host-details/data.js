@@ -190,10 +190,7 @@ module.exports = {
     'agent': {
       'installTime': '2017-06-20T07:09:01.000Z',
       'serviceStartTime': '2017-06-28T04:19:45.000Z',
-      'serviceEprocess': 0,
       'serviceProcessId': 0,
-      'serviceErrorCode': 0,
-      'driverErrorCode': 0,
       'blockingEnabled': false
     },
     'operatingSystem': {

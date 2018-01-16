@@ -18,10 +18,7 @@ export default {
       'agent': {
         'installTime': '2017-03-22T09:24:26.000Z',
         'serviceStartTime': '2017-03-22T09:24:26.756Z',
-        'serviceEprocess': 0,
-        'serviceProcessId': 0,
-        'serviceErrorCode': 0,
-        'driverErrorCode': 0x241
+        'serviceProcessId': 0
       },
       'operatingSystem': {
         'description': 'Mac OS X 10.11.4',
@@ -167,10 +164,7 @@ export default {
       'agent': {
         'installTime': '2017-03-22T09:24:26.000Z',
         'serviceStartTime': '2017-03-22T09:24:26.756Z',
-        'serviceEprocess': 0,
-        'serviceProcessId': 0,
-        'serviceErrorCode': 0,
-        'driverErrorCode': 0
+        'serviceProcessId': 0
       },
       'operatingSystem': {
         'description': 'Mac OS X 10.11.4',
@@ -288,16 +282,13 @@ export default {
         'packageTime': '2017-03-17T13:48:52.3890618+05:30',
         'installTime': '2017-03-19T13:48:52.3890618+05:30',
         'serviceStartTime': '2017-03-23T13:48:52.3890618+05:30',
-        'serviceEprocess': 118,
         'serviceProcessId': 4136,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -395,14 +386,12 @@ export default {
         'serviceStartTime': '2017-03-18T16:31:22.5213432+05:30',
         'serviceEprocess': 138,
         'serviceProcessId': 9957,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -500,14 +489,12 @@ export default {
         'serviceStartTime': '2017-03-15T16:33:19.9620604+05:30',
         'serviceEprocess': 123,
         'serviceProcessId': 6387,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -609,14 +596,12 @@ export default {
         'serviceStartTime': '2017-03-19T16:33:19.3290242+05:30',
         'serviceEprocess': 43,
         'serviceProcessId': 3613,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -712,14 +697,12 @@ export default {
         'serviceStartTime': '2017-03-18T16:33:24.1523001+05:30',
         'serviceEprocess': 78,
         'serviceProcessId': 9312,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -815,14 +798,12 @@ export default {
         'serviceStartTime': '2017-03-15T16:33:19.9920621+05:30',
         'serviceEprocess': 140,
         'serviceProcessId': 5395,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -918,14 +899,12 @@ export default {
         'serviceStartTime': '2017-03-16T16:33:20.9261155+05:30',
         'serviceEprocess': 113,
         'serviceProcessId': 2337,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',
@@ -1021,14 +1000,12 @@ export default {
         'serviceStartTime': '2017-03-18T16:33:20.8441108+05:30',
         'serviceEprocess': 82,
         'serviceProcessId': 2801,
-        'serviceErrorCode': 0,
         'serviceStatus': [
           'LowLevelReads'
         ],
         'driverStatus': [
           0
-        ],
-        'driverErrorCode': 0
+        ]
       },
       'operatingSystem': {
         'description': 'Mac',

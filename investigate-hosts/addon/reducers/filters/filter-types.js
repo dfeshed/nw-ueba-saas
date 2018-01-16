@@ -126,14 +126,6 @@ const FILTER_TYPES = [
     'isDefault': false
   },
   {
-    'propertyName': 'machineIdentity.agent.driverErrorCode',
-    'label': 'investigateHosts.hosts.column.machineIdentity.agent.driverErrorCode',
-    'filterControl': 'host-list/content-filter/text-filter',
-    'selected': false,
-    'panelId': 'driverErrorCode',
-    'isDefault': false
-  },
-  {
     'propertyName': 'machineIdentity.agent.blockingEnabled',
     'label': 'investigateHosts.hosts.column.machineIdentity.agent.blockingEnabled',
     'filterControl': 'host-list/content-filter/text-filter',
