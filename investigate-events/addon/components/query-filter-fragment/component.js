@@ -195,7 +195,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   },
 
   doubleClick() {
-    if (this.get('completed') && !this.get('editActive')) {
+    if (this.get('saved') && !this.get('editActive')) {
       this.send('editFilter');
     }
   },
@@ -337,8 +337,13 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           .without(list.get('lastObject'))
           .without(list.get('filterRecord'));
 
-        const toDelete = prunedList.filterBy('editActive', true);
-        this.deleteFilter(toDelete);
+        prunedList.forEach((filter) => {
+          if (filter.get('editActive') && isEmpty(filter.get('meta'))) {
+            this.deleteFilter(filter);
+          } else if (filter.get('editActive')) {
+            filter.set('editActive', false);
+          }
+        });
       }
     },
 
@@ -350,8 +355,14 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         .without(list.get('lastObject'))
         .without(this.get('filterRecord'));
 
-      prunedList.setEach('selected', false);
-      prunedList.setEach('editActive', false);
+      prunedList.forEach((filter) => {
+        if (filter.get('editActive') && isEmpty(filter.get('meta'))) {
+          this.deleteFilter(filter);
+        } else {
+          filter.set('selected', false);
+          filter.set('editActive', false);
+        }
+      });
 
       this.$('input').prop('type', 'text').prop('spellcheck', false);
       select.actions.open();
@@ -464,7 +475,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         }
 
         if (!isEmpty(inputVal)) {
-          if (this.get('complete') && (filter === inputVal)) {
+          if (this.get('saved') && (filter === inputVal)) {
             this.set('editActive', false);
           } else {
             let updatedValue;
@@ -504,6 +515,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
               updatedValue = inputVal.slice(operatorIndex + updatedOperator.displayName.length, textLength).trim();
               this.set('operator', updatedOperator.displayName);
               this.set('isExpensive', updatedOperator.isExpensive);
+
+              if (['exists', '!exists'].includes(updatedOperator.displayName)) {
+                this.set('saved', true);
+              }
             }
 
             const isExistsOperator = inputVal.includes('exists');
@@ -645,7 +660,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           type: 'operator'
         });
       } else if (type === 'operator') {
-        if (inputVal.indexOf(this.get('value')) === -1) {
+        if (inputVal && inputVal.indexOf(this.get('value')) === -1) {
           this.set('value', null);
         }
 
@@ -654,9 +669,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           operator: selection.displayName
         });
 
-        if (selection.displayName === 'exists' || selection.displayName === '!exists') {
+        if (['exists', '!exists'].includes(selection.displayName)) {
           this.setProperties({
             value: null,
+            saved: true,
             editActive: false
           });
 
