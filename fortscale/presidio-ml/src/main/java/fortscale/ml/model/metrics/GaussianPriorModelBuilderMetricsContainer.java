@@ -10,6 +10,7 @@ import presidio.monitoring.services.export.MetricsExporter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 
 /**
  * Metrics on gaussian prior model builder
@@ -32,7 +33,9 @@ public class GaussianPriorModelBuilderMetricsContainer extends ModelMetricsConta
     public void updateMetric(List<GaussianPriorModel.SegmentPrior> segmentPriors) {
 
         int segmentPriorSize =  segmentPriors.size();
-        double maxMean =  segmentPriors.stream().mapToDouble(segmentPrior -> segmentPrior.mean).max().getAsDouble();
+        OptionalDouble optional =  segmentPriors.stream().mapToDouble(segmentPrior -> segmentPrior.mean).max();
+
+        double maxMean =  optional.isPresent() ? optional.getAsDouble() : 0.0;
 
         Metric metric = getMetric();
         metric.getValue().compute(MetricEnums.MetricValues.MAX_MEAN, (k, v) -> maxMean);
