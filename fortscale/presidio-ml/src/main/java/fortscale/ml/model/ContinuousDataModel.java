@@ -48,7 +48,7 @@ public class ContinuousDataModel implements IContinuousDataModel {
 		if (N == 0) {
 			return o.N == 0;
 		}
-		return o.N == N && o.mean == mean && o.sd == sd && o.maxValue == maxValue;
+		return o.N == N && o.mean.equals(mean) && o.sd.equals(sd) && o.maxValue.equals(maxValue);
 	}
 
 	@Override
