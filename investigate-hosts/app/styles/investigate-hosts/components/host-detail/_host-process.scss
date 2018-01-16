@@ -73,6 +73,9 @@
       background-color: $host-details-table-row-color;
       min-height: 130px;
       height: auto;
+      .rsa-data-table-body-row {
+        cursor: default !important;
+      }
     }
     .accordion-content-title {
       h3 {

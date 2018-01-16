@@ -2008,7 +2008,7 @@ export default {
         type: 'Type',
         instance: 'Instance',
         displayName: 'Display Name',
-        companyName: 'CompanyName',
+        companyName: 'Company Name',
         version: 'Version',
         features: 'Features'
       }
@@ -2524,7 +2524,7 @@ export default {
         error: 'Host(s) deletion failed'
       },
       moreActions: {
-        openIn: 'Open in NWE Thick Client',
+        openIn: 'Pivot to Endpoint',
         openInErrorMessage: 'Select at least one host',
         notAnEcatAgent: 'Select only the 4.4 agent(s)',
         cancelScan: 'Stop Scan'

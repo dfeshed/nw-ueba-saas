@@ -2524,7 +2524,7 @@ export default {
         error: 'ja_Host(s) deletion failed'
       },
       moreActions: {
-        openIn: 'ja_Open in NWE Thick Client',
+        openIn: 'ja_Pivot to Endpoint',
         openInErrorMessage: 'ja_Select at least one host',
         notAnEcatAgent: 'ja_Select only the 4.4 agent(s)',
         cancelScan: 'ja_Stop Scan'

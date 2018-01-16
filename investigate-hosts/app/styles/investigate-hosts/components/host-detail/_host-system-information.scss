@@ -13,6 +13,9 @@ $note-color: #bdbdbd;
     max-height: 100vh;
     min-height: 130px;
     background-color: $host-details-table-row-color;
+    .rsa-data-table-body-row {
+      cursor: default !important;
+    }
   }
   .user-filter {
     padding-bottom: rsa-whitespace();
