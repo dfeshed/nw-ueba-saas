@@ -26,7 +26,6 @@ public class PresidioSystemMetricsFactory {
 
     public PresidioSystemMetricsFactory(String applicationName) {
         this.applicationName = applicationName;
-
         garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
         threadMxBean = ManagementFactory.getThreadMXBean();
         memoryMXBean = ManagementFactory.getMemoryMXBean();
