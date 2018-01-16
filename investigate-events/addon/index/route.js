@@ -4,7 +4,6 @@ import { fetchInvestigateData, initializeInvestigate } from 'investigate-events/
 import { setMetaPanelSize, setQueryFilterMeta, setReconClosed, setReconOpen, setReconPanelSize, setSelectedEvent } from 'investigate-events/actions/interaction-creators';
 import { serializeQueryParams, uriEncodeMetaFilters } from 'investigate-events/actions/utils';
 import { META_PANEL_SIZES, RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
-import { isEmpty } from 'ember-utils';
 
 export default Route.extend({
   accessControl: service(),
@@ -96,27 +95,26 @@ export default Route.extend({
       // Save the metaFilters to state
       const { data, queryNode } = this.get('redux').getState().investigate;
       const qp = {
-        eid: queryNode.sessionId,
+        eid: undefined,
         et: queryNode.endTime,
+        mf: uriEncodeMetaFilters(metaFilters),
         mps: data.metaPanelSize,
         rs: data.reconSize,
         sid: queryNode.serviceId,
         st: queryNode.startTime
       };
 
-      Object.keys(qp).forEach((key) => isEmpty(qp[key]) && delete qp[key]);
-
       if (externalLink) {
-        qp.mf = encodeURIComponent(uriEncodeMetaFilters(metaFilters));
-
+        if (qp.mf) {
+          qp.mf = encodeURIComponent(qp.mf);
+        }
         const query = serializeQueryParams(qp);
         const { location } = window;
         const path = `${location.origin}${location.pathname}?${query}`;
         window.open(path, '_blank');
       } else {
+        this.send('reconClose');
         this.get('redux').dispatch(setQueryFilterMeta(metaFilters.without(metaFilters.get('lastObject'))));
-
-        qp.mf = uriEncodeMetaFilters(metaFilters);
         this.transitionTo({ queryParams: qp });
       }
     },
