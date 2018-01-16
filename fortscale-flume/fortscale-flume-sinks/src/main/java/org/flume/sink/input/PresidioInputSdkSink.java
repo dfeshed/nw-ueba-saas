@@ -159,13 +159,13 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         }
         ValidationResults storeResults = presidioInputPersistencyService.store(schema, records);
         logger.debug("{} events were saved successfully.", storeResults.validDocuments.size());
-        if (storeResults.invalidDocuments.isEmpty()) {
+        if (! storeResults.invalidDocuments.isEmpty()) {
             logger.warn("only {} out of {} total records were saved successfully, other {} were filtered", storeResults.validDocuments.size(), records.size(), storeResults.invalidDocuments.size());
-        }
 
-        //publish metric for the number of filtered events by the input SDK-
-        for (InvalidInputDocument invalidEvent: storeResults.invalidDocuments) {
-            monitoringService.reportFailedEventMetric(invalidEvent.getViolations().toString(), 1);
+            //publish metric for the number of filtered events by the input SDK-
+            for (InvalidInputDocument invalidEvent : storeResults.invalidDocuments) {
+                monitoringService.reportFailedEventMetric(invalidEvent.getViolations().toString(), 1);
+            }
         }
 
         return storeResults.validDocuments.size();
