@@ -10,7 +10,8 @@ import {
   removeFilter,
   resetFilters,
   addFilter,
-  createCustomSearch
+  createCustomSearch,
+  setActiveFilter
 } from 'investigate-files/actions/data-creators';
 
 
@@ -22,6 +23,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
+  setActiveFilter,
   removeFilter,
   resetFilters,
   addFilter,
@@ -93,9 +95,9 @@ const ContentFilter = Component.extend({
      */
     onSelection({ selected, panelId, propertyName }) {
       if (!selected) {
-        this.set('activeButton', panelId);
         this.get('eventBus').trigger('rsa-content-tethered-panel-toggle-moreOptions');
         this.send('addFilter', { propertyName, propertyValues: null });
+        this.send('setActiveFilter', panelId);
       } else {
         run.next(() => {
           this.send('removeFilter', propertyName);

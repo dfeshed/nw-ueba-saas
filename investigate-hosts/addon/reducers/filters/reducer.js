@@ -92,6 +92,7 @@ const filterReducer = handleActions({
   [ACTION_TYPES.UPDATE_HOST_FILTER]: (state, { payload }) => state.merge({
     isFilterReset: false,
     lastFilterAdded: null,
+    activeFilter: null,
     expressionList: _updateExpressionList(state.expressionList, payload)
   }),
 

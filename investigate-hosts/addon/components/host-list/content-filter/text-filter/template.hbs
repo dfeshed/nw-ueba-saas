@@ -5,14 +5,14 @@
   filterLabel=filterLabel}}
 {{#rsa-content-tethered-panel
   isPopover=true
-  displayCloseButton=true
+  displayCloseButton=false
   position='bottom-right' panelId=config.panelId}}
   <section class="text-filter__content">
     <div class='body__input body-input-js'>
-      {{rsa-form-input 
-        value=value 
-        placeholder=(t config.label) 
-        isError=isError 
+      {{rsa-form-input
+        value=value
+        placeholder=(t config.label)
+        isError=isError
         errorMessage=(t 'investigateHosts.hosts.filters.invalidFilterInput')}}
     </div>
     {{#if showRestrictionType}}

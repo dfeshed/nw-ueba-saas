@@ -13,7 +13,7 @@ const COLUMN_WIDTH = {
   'signature.features': 130,
   'entropy': 150,
   'pe.resources.company': 150,
-  'checksumMd5': 220,
+  'checksumMd5': 275,
   'checksumSha1': 275,
   'checksumSha256': 450
 };

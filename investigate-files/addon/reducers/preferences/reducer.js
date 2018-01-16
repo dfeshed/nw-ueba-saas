@@ -14,7 +14,7 @@ const DEFAULT_FILE_PREFERENCES = {
       'checksumSha256',
       'entropy'
     ],
-    sortField: 'firstSeenTime'
+    sortField: { sortField: 'firstSeenTime', isSortDescending: false }
   }
 };
 

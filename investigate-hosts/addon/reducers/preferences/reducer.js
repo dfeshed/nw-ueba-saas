@@ -18,7 +18,7 @@ const DEFAULT_HOSTS_PREFERENCE = {
       'agentStatus.lastSeenTime',
       'agentStatus.scanStatus'
     ],
-    sortField: 'machine.scanStartTime:desc'
+    sortField: { key: 'machine.scanStartTime', descending: true }
   }
 };
 

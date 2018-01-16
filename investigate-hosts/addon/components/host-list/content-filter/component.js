@@ -12,7 +12,8 @@ import {
   removeFilter,
   resetFilters,
   addFilter,
-  createCustomSearch
+  createCustomSearch,
+  setActiveFilter
 } from 'investigate-hosts/actions/data-creators/filter';
 
 
@@ -28,7 +29,8 @@ const dispatchToActions = {
   removeFilter,
   resetFilters,
   addFilter,
-  createCustomSearch
+  createCustomSearch,
+  setActiveFilter
 };
 
 const idRegex = /^[a-z0-9-_ ]+$/i;
@@ -106,9 +108,9 @@ const ContentFilter = Component.extend({
      */
     onSelection({ selected, panelId, propertyName }) {
       if (!selected) {
-        this.set('activeButton', panelId);
         this.get('eventBus').trigger('rsa-content-tethered-panel-toggle-hostMoreOptions');
         this.send('addFilter', { propertyName, propertyValues: null });
+        this.send('setActiveFilter', panelId);
       } else {
         run.next(() => {
           this.send('removeFilter', propertyName);

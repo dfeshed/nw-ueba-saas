@@ -80,6 +80,7 @@ const filterReducer = handleActions({
     areFilesLoading: 'sorting',
     isFilterReset: false,
     lastFilterAdded: null,
+    activeFilter: null,
     expressionList: _updateExpressionList(state.expressionList, payload)
   }),
 

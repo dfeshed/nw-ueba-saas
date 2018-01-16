@@ -1,6 +1,6 @@
 <span class='filter-search-icon'> Filter:</span>
 {{#each appliedFilters as |control|}}
-  {{component control.filterControl config=control}}
+  {{component control.filterControl config=control setActiveFilter=setActiveFilter}}
 {{/each}}
 
 {{host-list/content-filter/filter-trigger

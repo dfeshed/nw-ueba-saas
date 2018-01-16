@@ -65,7 +65,7 @@ const TriggerButton = Button.extend({
     if (!$(target).closest('.rsa-form-button').length > 0) {
       run.next(() => {
         if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-          this.sendAction('setActiveButton', null); // remove active class from all the button
+          this.send('setActiveFilter', null); // remove active class from all the button
         }
       });
     }
