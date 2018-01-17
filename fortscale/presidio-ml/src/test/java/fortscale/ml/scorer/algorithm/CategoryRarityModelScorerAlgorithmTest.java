@@ -12,7 +12,6 @@ import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
