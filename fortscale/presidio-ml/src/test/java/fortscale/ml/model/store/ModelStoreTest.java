@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {MongodbTestConfig.class, ModelStoreConfig.class})
-@Ignore
+
 public class ModelStoreTest {
 	@Autowired
 	private MongoTemplate mongoTemplate;
