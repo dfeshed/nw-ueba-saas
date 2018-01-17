@@ -52,13 +52,13 @@
     {
       "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "UserManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "userManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "UserManagementSecuritySensitiveOperationResultHistogram"
+          "userManagementSecuritySensitiveOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

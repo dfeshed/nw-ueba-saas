@@ -71,7 +71,7 @@
       ]
     },
     {
-      "name": "UserManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "name": "userManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -82,7 +82,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "UserManagementSecuritySensitiveOperationResultHistogram",
+          "name": "userManagementSecuritySensitiveOperationResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
