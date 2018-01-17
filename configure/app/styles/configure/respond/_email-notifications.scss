@@ -23,7 +23,7 @@
         max-width: 300px;
       }
       a {
-        display: block;
+        display: inline-block;
         margin-top: rsa-whitespace();
         color: text-color(secondary);
       }
@@ -93,5 +93,8 @@
         }
       }
     }
+  }
+  footer {
+    margin-bottom: rsa-whitespace(most);
   }
 }
