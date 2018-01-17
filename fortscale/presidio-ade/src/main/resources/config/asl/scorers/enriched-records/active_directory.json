@@ -57,18 +57,18 @@
             },
             {
               "type": "list-conditional-scorer",
-              "name": "operationType.userIdObjectChange.activeDirectory.score",
+              "name": "operationType.userIdObjectManagement.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
               "conditional-value": ["OBJECT_MANAGEMENT"],
               "scorer": {
                 "type": "max-scorer-container",
-                "name": "operationType.userIdObjectChange.activeDirectory.score",
+                "name": "operationType.userIdObjectManagement.activeDirectory.score",
                 "scorers": [
                   {
                     "type": "category-rarity-model-scorer",
-                    "name": "operationType.userIdObjectChange.activeDirectory.score",
+                    "name": "operationType.userIdObjectManagement.activeDirectory.score",
                     "model": {
-                      "name": "operationType.userIdObjectChange.activeDirectory"
+                      "name": "operationType.userIdObjectManagement.activeDirectory"
                     },
                     "max-rare-count": 8,
                     "max-num-of-rare-features": 15,

@@ -175,7 +175,8 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
+                            <recurseDirectories>true</recurseDirectories>
                             <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
@@ -267,9 +268,9 @@
 
                             chown -R -v tomcat:tomcat /home/presidio/presidio-core/configurations/airflow/*
 
-                            chmod 666 /home/presidio/presidio-core/configurations/airflow/
-                            chmod 666 /home/presidio/presidio-core/configurations/
-                            chmod 666 /home/presidio/presidio-core/
+                            chmod 777 /home/presidio/presidio-core/configurations/airflow/
+                            chmod 777 /home/presidio/presidio-core/configurations/
+                            chmod 777 /home/presidio/presidio-core/
                             chmod 777 /home/presidio/
                             chmod 777 /home/
                             <!--end of post installation -->

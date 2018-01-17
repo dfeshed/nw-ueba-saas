@@ -3,6 +3,7 @@ package presidio.sdk.api.services;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface DataService {
 
-    boolean store(List<? extends AbstractAuditableDocument> documents, Schema schema);
+    ValidationResults store(List<? extends AbstractAuditableDocument> documents, Schema schema);
 
     List<? extends AbstractAuditableDocument> find(Instant startDate, Instant endDate, Schema schema);
 
