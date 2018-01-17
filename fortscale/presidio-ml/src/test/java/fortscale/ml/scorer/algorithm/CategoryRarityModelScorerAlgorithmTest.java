@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.mockito.Mockito.mock;
-@Ignore
+
 public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private CategoryRarityModelBuilderMetricsContainer categoryRarityMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
@@ -652,7 +652,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         Assert.assertEquals(0, score, 0);
 
         long[] rareFeatureCounts = new long[]{1, 2, 3, 4, 5, 8};
-        double[] rareFeatureScores = new double[]{95, 93, 80, 53, 28, 2};
+        double[] rareFeatureScores = new double[]{70, 69, 59, 39, 19, 1};
         for (int i = 0; i < rareFeatureScores.length; i++) {
             featureValueToCountMap.put("rareFeature", rareFeatureCounts[i]);
             score = calcScore(maxRareCount, maxNumOfRareFeatures, featureValueToCountMap, rareFeatureCounts[i]);
