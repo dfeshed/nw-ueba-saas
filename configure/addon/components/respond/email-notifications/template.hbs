@@ -9,14 +9,18 @@
 {{else}}
   <h1>{{t 'configure.notifications.settings'}}</h1>
   <div class="email-server-settings section">
-    <h2>{{t 'configure.notifications.emailServer'}}</h2>
-    {{#power-select
-      options=emailServers
-      selected=selectedEmailServer
-      searchEnabled=false
-      onchange=(action 'updateEmailServer') as |server|}}
-      {{server.name}}
-    {{/power-select}}
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'configure.notifications.emailServer'}}
+      </div>
+      {{#power-select
+        options=emailServers
+        selected=selectedEmailServer
+        searchEnabled=false
+        onchange=(action 'updateEmailServer') as |server|}}
+        {{server.name}}
+      {{/power-select}}
+    </label>
     <a href="/admin/system#notifications">{{t 'configure.notifications.emailServerSettings'}}</a>
   </div>
 
@@ -29,7 +33,7 @@
         {{#each socManagerEmailAddresses as |email|}}
           <li>
             <span class="soc-manager-email">{{email}}</span>
-            <span class="remove-email">{{#rsa-form-button style='danger' isIconOnly=true defaultAction=(action 'removeSOCManagerEmail' email)}}{{rsa-icon name='bin-1'}}{{/rsa-form-button}}</span>
+            <span class="remove-email">{{#rsa-form-button isIconOnly=true defaultAction=(action 'removeSOCManagerEmail' email)}}{{rsa-icon name='bin-1'}}{{/rsa-form-button}}</span>
           </li>
         {{/each}}
       {{/if}}

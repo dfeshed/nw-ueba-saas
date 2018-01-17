@@ -21,6 +21,10 @@
     .email-server-settings {
       .ember-power-select-trigger {
         max-width: 300px;
+        text-transform: none;
+        font-weight: normal;
+        font-size: 1rem;
+
       }
       a {
         display: inline-block;
@@ -81,7 +85,8 @@
         margin: rsa-whitespace() 0;
 
         thead {
-          @include rsa-font(header);
+          @include rsa-font(header, small);
+          color: text-color(primary, light);
           border-bottom: 1px solid border-color(primary);
         }
         td, th {
