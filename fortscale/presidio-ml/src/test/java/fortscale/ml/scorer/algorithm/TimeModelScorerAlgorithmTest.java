@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.mock;
-@Ignore
+
 public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
     private static final int DAILY_BUCKET_SIZE = 60 * 10;
@@ -94,7 +94,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             times.add((long)(rnd.nextDouble( ) * 6000));
         }
         long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-        double scores[] = new double[]{100, 94, 80, 59};
+        double scores[] = new double[]{100, 66, 39, 19};
         for (int i = 0; i < scores.length; i++) {
             assertScore(times, isolatedTimes[i], scores[i]);
             times.add(isolatedTimes[i]);
@@ -132,8 +132,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             times.add(epochSeconds);
         }
 
-        double scores[] = new double[]{100, 94, 80, 59};
-        double finalScore = 32;
+        double scores[] = new double[]{100, 66, 39, 18};
+        double finalScore = 5;
         long dispersedTimes[] = new long[scores.length];
         for (int i = 0; i < scores.length; i++) {
             dispersedTimes[i] = 3000 + (i + 1) * 9000;
