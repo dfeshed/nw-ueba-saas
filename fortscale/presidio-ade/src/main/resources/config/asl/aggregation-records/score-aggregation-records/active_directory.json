@@ -35,9 +35,9 @@
       }
     },
     {
-      "name": "sumOfHighestOperationTypeScoresUserIdObjectChangeActiveDirectoryHourly",
+      "name": "sumOfHighestOperationTypeScoresUserIdObjectManagementActiveDirectoryHourly",
       "type": "P",
-      "bucketConfName": "operationTypeToHighestScoreMapUserIdObjectChangeActiveDirectoryHourly",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,

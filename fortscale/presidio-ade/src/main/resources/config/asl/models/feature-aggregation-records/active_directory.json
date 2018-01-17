@@ -65,16 +65,16 @@
       }
     },
     {
-      "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly",
+      "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -82,12 +82,12 @@
       }
     },
     {
-      "name": "numberOfSuccessfulObjectChangeOperation.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.global.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly"
+        "modelConfName": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
@@ -129,16 +129,16 @@
       }
     },
     {
-      "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.activeDirectory.hourly",
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly"
       },
       "retriever": {
         "type": "accumulated_aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly"
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly"
       },
       "builder": {
         "type": "continuous_max_histogram_model_builder",
@@ -146,12 +146,12 @@
       }
     },
     {
-      "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "modelConfName": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.activeDirectory.hourly"
+        "modelConfName": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly"
       },
       "builder": {
         "type": "gaussian_prior_model_builder",
