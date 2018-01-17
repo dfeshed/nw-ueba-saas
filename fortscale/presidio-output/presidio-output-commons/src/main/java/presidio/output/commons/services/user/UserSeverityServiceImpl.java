@@ -98,7 +98,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
             UserSeverityComputeData userSeverityComputeData = severityToComputeDataMap.get(userSeverity);
 
             // Calculate the max users that can get the severity as percentage from the users
-            int numberOfCalculatedFromPercent = (int) Math.ceil(userSeverityComputeData.getPercentageIfUsers() * ((double) userScores.length) / 100);
+            int numberOfCalculatedFromPercent = (int) Math.ceil(userSeverityComputeData.getPercentageOfUsers() * ((double) userScores.length) / 100);
             int finalIndex = index + numberOfCalculatedFromPercent;
 
             // If maxUsers set check that the amount calculated from percentage is not bigger that the users allowed
