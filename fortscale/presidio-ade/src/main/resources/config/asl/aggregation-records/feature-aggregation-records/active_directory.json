@@ -75,7 +75,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "ObjectManagementOperationResultHistogram"
+          "objectManagementOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

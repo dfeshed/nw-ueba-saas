@@ -98,7 +98,7 @@
       ]
     },
     {
-      "name": "ObjectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
+      "name": "objectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -109,7 +109,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "ObjectManagementOperationResultHistogram",
+          "name": "objectManagementOperationResultHistogram",
           "featureNamesMap": {
             "groupBy": [
               "result"
