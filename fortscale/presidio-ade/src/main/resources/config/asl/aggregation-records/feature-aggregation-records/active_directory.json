@@ -69,7 +69,7 @@
     {
       "name": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "ObjectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "objectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
