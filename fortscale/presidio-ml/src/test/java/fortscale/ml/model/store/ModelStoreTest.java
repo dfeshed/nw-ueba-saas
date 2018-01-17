@@ -6,6 +6,7 @@ import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {MongodbTestConfig.class, ModelStoreConfig.class})
+@Ignore
 public class ModelStoreTest {
 	@Autowired
 	private MongoTemplate mongoTemplate;
