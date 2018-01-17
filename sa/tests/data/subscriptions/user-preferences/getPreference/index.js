@@ -14,7 +14,7 @@ export default {
         'spacingType': 'LOOSE',
         'themeType': 'DARK',
         'notificationEnabled': true,
-        'defaultInvestigatePage': '/eventanalysis'
+        'defaultInvestigatePage': '/navigate'
       }
     };
   }

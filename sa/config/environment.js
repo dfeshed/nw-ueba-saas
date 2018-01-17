@@ -21,7 +21,7 @@ module.exports = function(environment) {
     timeFormatDefault: 'HR24',
     timezoneDefault: 'UTC',
     landingPageDefault: '/respond',
-    investigatePageDefault: '/eventanalysis',
+    investigatePageDefault: '/navigate',
     i18n: {
       defaultLocale: 'en',
       includedLocales: ['en']
