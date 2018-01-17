@@ -106,27 +106,23 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   @computed('selected', 'filterList', 'deleteFilter', 'i18n', 'executeQuery')
   contextItems(selected, filterList, deleteFilter, i18n, executeQuery) {
     if (selected) {
-      return [
-        {
-          label: i18n.t('queryBuilder.querySelected'),
-          action() {
-            executeQuery(filterList.filterBy('selected', true));
-          }
-        },
-        {
-          label: i18n.t('queryBuilder.querySelectedNewTab'),
-          action() {
-            executeQuery(filterList.filterBy('selected', true), true);
-          }
-        },
-        {
-          label: i18n.t('queryBuilder.delete'),
-          action() {
-            deleteFilter(filterList.filterBy('selected', true));
-            executeQuery(filterList);
-          }
+      return [{
+        label: i18n.t('queryBuilder.querySelected'),
+        action() {
+          executeQuery(filterList.filterBy('selected', true));
         }
-      ];
+      }, {
+        label: i18n.t('queryBuilder.querySelectedNewTab'),
+        action() {
+          executeQuery(filterList.filterBy('selected', true), true);
+        }
+      }, {
+        label: i18n.t('queryBuilder.delete'),
+        action() {
+          deleteFilter(filterList.filterBy('selected', true));
+          executeQuery(filterList);
+        }
+      }];
     }
   },
 
@@ -317,7 +313,8 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
       meta: null,
       operator: null,
       value: null,
-      selected: null
+      selected: null,
+      saved: false
     });
   },
 
@@ -331,19 +328,28 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     onblur() {
       this.setKeyboardPriority(0);
 
-      if (!this.get('completed') && !this.get('saved')) {
+      if (!this.get('saved')) {
         const list = this.get('filterList');
+        const filterRecord = this.get('filterRecord');
+        const lastObject = list.get('lastObject');
         const prunedList = list
-          .without(list.get('lastObject'))
-          .without(list.get('filterRecord'));
+          .without(lastObject)
+          .without(filterRecord);
 
         prunedList.forEach((filter) => {
-          if (filter.get('editActive') && isEmpty(filter.get('meta'))) {
+          const isActive = filter.get('editActive');
+
+          if (isActive && isEmpty(filter.get('meta'))) {
             this.deleteFilter(filter);
-          } else if (filter.get('editActive')) {
+          } else if (isActive) {
             filter.set('editActive', false);
           }
         });
+
+        if (filterRecord === lastObject && isEmpty(this.$('input').val())) {
+          this.deleteFilter(filterRecord);
+          this._insertEmptyFilter(-1);
+        }
       }
     },
 
@@ -375,10 +381,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
       const cursorPosition = input.get(0).selectionStart;
       const {
         filter, filterRecord, filterList, type, filterIndex,
-        meta, operator, completed, saved
+        meta, operator, saved
       } = this.getProperties(
         'filter', 'filterRecord', 'type', 'filterList', 'filterIndex',
-        'meta', 'operator', 'completed', 'saved'
+        'meta', 'operator', 'saved'
       );
 
       if (isEmpty(input.get(0))) {
@@ -418,7 +424,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           if (filterIndex !== 0) {
             select.actions.close();
 
-            if (!completed && !saved) {
+            if (!saved) {
               this._resetFilter();
             }
           }
@@ -588,8 +594,6 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
     // Filter displayed options
     lookup(searchTerm) {
-      searchTerm = searchTerm.toLowerCase();
-
       const {
         options, type, onMeta, meta, operator, completed,
         value, onOperator, withMeta, withOperator, withValue
@@ -598,9 +602,15 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         'value', 'onMeta', 'withMeta', 'withOperator', 'withValue'
       );
 
-      if (isEmpty(options) || isEmpty(searchTerm)) {
+      if (isEmpty(options)) {
         return;
       }
+
+      if (isEmpty(searchTerm)) {
+        return;
+      }
+
+      searchTerm = searchTerm.toLowerCase();
 
       return options.filter((option) => {
         if (completed) {

@@ -128,6 +128,9 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
     if (isEmpty(this.get('filters'))) {
       return;
     } else if (focusInput.length && !withSelected && isEmpty(focusInput.val()) && filters.objectAt(focusIndex - 1)) {
+      if (filters.get('lastObject') != filters.objectAt(focusIndex)) {
+        removeFilters(filters, filters.objectAt(focusIndex));
+      }
       return blurEdit(filters, focusInput, focusIndex, -1);
     } else if (!withEditActive && this.get('filters.length')) {
       if (withSelected) {
@@ -165,6 +168,10 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
     if (isEmpty(this.get('filters'))) {
       return;
     } else if (focusInput.length && !withSelected && isEmpty(focusInput.val()) && filters.objectAt(focusIndex)) {
+      if (filters.get('lastObject') != filters.objectAt(focusIndex)) {
+        removeFilters(filters, filters.objectAt(focusIndex));
+      }
+
       return blurEdit(filters, focusInput, focusIndex, 0);
     } else if (!withEditActive && this.get('filters.length')) {
       const isLast = filters.get('length') === (selectedIndex + 2);
@@ -175,9 +182,6 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
         insertEmptyFilter(filters, selectedIndex + 1);
 
         run.next(() => {
-          if (this.isDestroyed || this.isDestroying) {
-            return;
-          }
           this.$('.rsa-query-fragment.edit-active').first().find('input').focus();
         });
       } else {
