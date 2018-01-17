@@ -116,7 +116,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         String collectionName = adapterConfigurationUtil.getCollectionName();
         String timestampField = adapterConfigurationUtil.getTimestampField();
         int numberOfRetainedDays = adapterConfigurationUtil.getNumberOfRetainedDays();
-        startDate.plusSeconds(numberOfRetainedDays * 24 * 60);
+        startDate = startDate.minusSeconds(numberOfRetainedDays * 24 * 60);
 
         MongoUtil.deleteOlderThan(mongoTemplate, collectionName, timestampField, startDate);
     }
