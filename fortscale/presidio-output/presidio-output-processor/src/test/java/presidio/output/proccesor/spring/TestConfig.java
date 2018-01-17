@@ -32,6 +32,7 @@ public class TestConfig {
         properties.put("indicators.contribution.limit.to.classification.percent", 0.3);
         properties.put("output.enriched.events.retention.in.days", 2);
         properties.put("output.result.events.retention.in.days", 90);
+        properties.put("user.batch.size", 1000);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

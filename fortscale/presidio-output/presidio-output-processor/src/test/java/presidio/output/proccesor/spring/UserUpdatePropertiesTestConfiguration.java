@@ -3,6 +3,7 @@ package presidio.output.proccesor.spring;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +24,9 @@ import presidio.output.processor.services.user.UserPropertiesUpdateServiceImpl;
 @ContextConfiguration(classes = {TestConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class})
 public class UserUpdatePropertiesTestConfiguration {
 
+    @Value("${user.batch.size}")
+    private int defaultUsersBatchSize;
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -33,7 +37,7 @@ public class UserUpdatePropertiesTestConfiguration {
 
     @Bean
     public UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService());
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService(), userPersistencyService(), defaultUsersBatchSize);
     }
 
     @Bean

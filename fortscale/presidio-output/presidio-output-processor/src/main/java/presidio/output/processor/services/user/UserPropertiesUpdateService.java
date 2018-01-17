@@ -7,5 +7,7 @@ import presidio.output.domain.records.users.User;
  */
 public interface UserPropertiesUpdateService {
 
+    void updateAllUsers();
+
     User userPropertiesUpdate(User user);
 }

@@ -81,8 +81,7 @@ public class UserUpdatePropertiesServiceImplTest {
         userPersistencyService.save(userList);
     }
 
-    private EnrichedEvent generateFileEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName) {
-        Map<String, String> additionalInfo = new HashMap<String, String>();
+    private EnrichedEvent generateFileEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
         return new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
                 userId, userName, userDisplayName, "dataSource", "oppType", new ArrayList<String>(),
                 EventResult.FAILURE, "resultCode", additionalInfo, "absoluteSrcFilePath", "absoluteDstFilePath",
@@ -90,15 +89,13 @@ public class UserUpdatePropertiesServiceImplTest {
 
     }
 
-    private EnrichedEvent generateActiveDirectoryEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName) {
-        Map<String, String> additionalInfo = new HashMap<String, String>();
-        return new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId" + "_only_static", Schema.ACTIVE_DIRECTORY.toString(),
+    private EnrichedEvent generateActiveDirectoryEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
+        return new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId", Schema.ACTIVE_DIRECTORY.toString(),
                 userId, userName, userDisplayName, "dataSource", "USER_ACCOUNT_TYPE_CHANGED",
                 new ArrayList<String>(), EventResult.SUCCESS, "resultCode", additionalInfo, Boolean.FALSE, "objectId");
     }
 
-    private EnrichedEvent generateAuthenticationEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName) {
-        Map<String, String> additionalInfo = new HashMap<String, String>();
+    private EnrichedEvent generateAuthenticationEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
         return new AuthenticationEnrichedEvent(eventDate, eventDate, "eventId1", Schema.AUTHENTICATION.toString(), userId, userName, userDisplayName,
                 "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS,
                 "SUCCESS", additionalInfo);

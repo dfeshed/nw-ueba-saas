@@ -18,13 +18,14 @@ import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserPropertiesUpdateService;
+import presidio.output.processor.services.user.UserPropertiesUpdateServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
 /**
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({EventPersistencyServiceConfig.class, MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class, UserPropertiesUpdateServiceConfiguration.class})
+@Import({EventPersistencyServiceConfig.class, MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class})
 public class OutputProcessorConfiguration {
 
     @Autowired
@@ -45,8 +46,6 @@ public class OutputProcessorConfiguration {
     @Autowired
     private EventPersistencyService eventPersistencyService;
 
-    @Autowired
-    private UserPropertiesUpdateService userPropertiesUpdateService;
 
     @Value("${smart.threshold.score}")
     private int smartThreshold;
@@ -60,8 +59,16 @@ public class OutputProcessorConfiguration {
     @Value("${output.result.events.retention.in.days}")
     private long retentionResultEventsDays;
 
+    @Value("${user.batch.size}")
+    private int defaultUsersBatchSize;
+
+    @Bean
+    private UserPropertiesUpdateService userPropertiesUpdateService() {
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService, userPersistencyService, defaultUsersBatchSize);
+    }
+
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, userPropertiesUpdateService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, userPropertiesUpdateService(), smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
     }
 }

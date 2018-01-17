@@ -187,6 +187,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.info("Start Updating UserSeverity");
         this.userSeverityService.updateSeverities();
         logger.info("Finish Updating Users Severity");
+        logger.info("Start updating users properties");
+        userPropertiesUpdateService.updateAllUsers();
+        logger.info("Finish updating users properties");
     }
 
     private void storeAlerts(List<Alert> alerts) {
