@@ -17,6 +17,7 @@ export default Component.extend(DomWatcher, EKMixin, {
   tagName: 'section',
   classNames: 'rsa-data-table',
   classNameBindings: ['fitToWidth'],
+  whitespace: 14,
 
   /**
    * Used by descendant components to find their data table ancestor.
@@ -24,6 +25,13 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @private
    */
   isDataTable: true,
+
+  /**
+   * Used for cell width adjustment in case view port width is more than total cell width.
+   * @type {Array}
+   * @private
+   */
+  columnWidths: [],
 
   /**
    * If truthy, indicates that rows should match the width of the table, growing if need be.
@@ -181,6 +189,7 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
    */
   columns: computed('columnsConfig', function() {
+    const columnWidths = [];
     let columnsConfig = this.get('columnsConfig');
     if (typeof columnsConfig === 'string') {
       columnsConfig = columnsConfig.split(',');
@@ -203,6 +212,7 @@ export default Component.extend(DomWatcher, EKMixin, {
           if (isEmpty(get(column, 'width'))) {
             set(column, 'width', DEFAULT_COLUMN_WIDTH);
           }
+          columnWidths.push(get(column, 'width'));
           if (isEmpty(get(column, 'visible'))) {
             set(column, 'visible', DEFAULT_COLUMN_VISIBILITY);
           }
@@ -238,6 +248,7 @@ export default Component.extend(DomWatcher, EKMixin, {
           return null;
         }
       });
+      this.set('columnWidths', columnWidths);
       return columns.compact();
     }
   }).readOnly(),
@@ -248,8 +259,82 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
    */
   visibleColumns: computed('columns.@each.selected', function() {
-    return this.get('columns').filterBy('selected', true).sortBy('displayIndex');
+    const columns = this.get('columns').filterBy('selected', true).sortBy('displayIndex');
+    this._applyColumnWidth(columns);
+    return columns;
   }),
+
+  /**
+   * @description This method is to adjust widths of
+   * remaining cells whenever user tries to resize any
+   * cell manually.
+   * @public
+   */
+  _adjustWidthDiff(resizeColumn, resizeWidth) {
+    const diff = get(resizeColumn, 'width') - resizeWidth;
+    const columns = this.get('columns').filterBy('selected', true);
+    const len = columns.length > 1 ? (columns.length - 1) : 1;
+    const adjust = diff / len;
+    columns.forEach((column) => {
+      if (column.displayIndex === resizeColumn.displayIndex) {
+        set(column, 'width', resizeWidth);
+      } else {
+        // Every other time cell width will be addition of current width + adjustWidth.
+        const width = adjust + get(column, 'width');
+        set(column, 'width', width);
+      }
+    });
+  },
+
+  /**
+   * @description This method is to adjust the cell width
+   * in case total cell width is less than viewPort width.
+   * This adjustment will be done only in following 2 scenarios
+   *   Scenario1: User does not provide any width
+   *   Scenario2: User provides width in 'px' or without any unit
+   * @public
+  */
+  _applyColumnWidth(columns) {
+    const columnWidth = this._getColumnWidthSum(columns);
+    const sum = columnWidth.reduce((a, b) => a + b, 0);
+    if (isNaN(sum)) {
+      // No need to adjust width in case of any other units except 'px'
+      return;
+    }
+    const noOfColumns = columns.length;
+    // Get view port width.
+    const rowWidth = this.$().width();
+    const diff = rowWidth - sum;
+    // Need to adjust width only if view port is more than total cell width.
+    if (diff > 0) {
+      // Need to adjust only difference from view port.
+      const adjustWidth = (diff / noOfColumns - this.whitespace);
+      columns.forEach((column, index) => {
+        // Every time cell width will be addition of original width + adjustWidth.
+        const width = adjustWidth + columnWidth[index];
+        set(column, 'width', width);
+      });
+    }
+  },
+
+  /**
+   * @description This method returns the array
+   * containing original widths of visible columns
+   * @public
+   */
+  _getColumnWidthSum(columns) {
+    const columnWidths = this.get('columnWidths');
+    const columnWidth = columns.map((column) => {
+      const currentColumnWidth = columnWidths[column.displayIndex];
+      // No need to adjust width in case of any other units except 'px'
+      if (isNaN(currentColumnWidth) && !currentColumnWidth.includes('px')) {
+        return;
+      }
+      const match = String(currentColumnWidth).match(/([\d\.]+)([^\d]*)/);
+      return match && Number(match[1]);
+    });
+    return columnWidth;
+  },
 
   /**
    * @description Returns a list of all columns sorted by its default order regardless if the user moved columns,
@@ -407,7 +492,7 @@ export default Component.extend(DomWatcher, EKMixin, {
           return;
         }
       }
-      set(column, 'width', width);
+      this._adjustWidthDiff(column, width);
     },
 
     /**
