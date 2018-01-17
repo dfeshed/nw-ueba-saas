@@ -84,7 +84,7 @@ const _getProcessList = createSelector(
     }
     const tabName = 'PROCESS';
     const list = getValues(selectedTab, tabName, listData);
-    const tree = _getTree(selectedTab, tabName, treeData);
+    const tree = _getTree(selectedTab, tabName, treeData.asMutable());
     return {
       list,
       tree

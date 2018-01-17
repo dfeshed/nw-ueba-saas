@@ -38,7 +38,6 @@
     text-transform: capitalize;
     border-bottom-width: 3px;
     line-height: 2.25rem;
-
     .divider {
       height: 1.75rem;
     }
@@ -107,23 +106,32 @@
       float: left;
     }
   }
+  .ember-basic-dropdown-trigger {
+    min-width: 160px;
+  }
 }
 
 .titlebar {
-  @media (min-width: 1731px) {
+  @media (max-width: 1500px) {
     .heading-select {
       display: block;
     }
     .heading-tabs {
       display: inherit;
     }
-  }
 
-  @media (max-width: 1730px) {
-    .heading-tabs {
-      display: inherit;
+    .host-title {
+      max-width: 300px;
+      .host-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
+      }
+
     }
   }
+
+
 }
 
 
