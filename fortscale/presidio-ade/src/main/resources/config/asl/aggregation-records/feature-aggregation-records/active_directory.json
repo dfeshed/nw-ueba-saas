@@ -50,15 +50,15 @@
       }
     },
     {
-      "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "userChangeSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "userManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "userChangeSecuritySensitiveOperationResultHistogram"
+          "userManagementSecuritySensitiveOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -67,15 +67,15 @@
       }
     },
     {
-      "name": "numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly",
+      "name": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly",
       "type": "F",
-      "bucketConfName": "objectChangeOperationResultHistogramUserIdActiveDirectoryHourly",
+      "bucketConfName": "objectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
-          "objectChangeOperationResultHistogram"
+          "objectManagementOperationResultHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {

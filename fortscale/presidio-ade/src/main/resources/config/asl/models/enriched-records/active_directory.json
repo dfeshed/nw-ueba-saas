@@ -42,16 +42,16 @@
       }
     },
     {
-      "name" : "operationType.userIdObjectChange.activeDirectory",
+      "name" : "operationType.userIdObjectManagement.activeDirectory",
       "selector" : {
         "type" : "feature_bucket_context_selector",
-        "featureBucketConfName" : "operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily"
+        "featureBucketConfName" : "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily"
       },
       "retriever" : {
         "type" : "categorical_feature_value_retriever",
         "timeRangeInSeconds" : 7776000,
         "functions" : [ ],
-        "featureBucketConfName" : "operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily",
+        "featureBucketConfName" : "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily",
         "featureName" : "operationTypeHistogram"
       },
       "builder" : {

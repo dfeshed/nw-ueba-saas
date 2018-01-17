@@ -235,10 +235,10 @@ indicators:
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
-- id: sumOfHighestOperationTypeScoresUserIdObjectChangeActiveDirectoryHourly
+- id: sumOfHighestOperationTypeScoresUserIdObjectManagementActiveDirectoryHourly
   type: SCORE_AGGREGATION
   name: abnormal_object_change_operation
-  adeEventType: scored_enriched.active_directory.operationType.userIdObjectChange.activeDirectory.score
+  adeEventType: scored_enriched.active_directory.operationType.userIdObjectManagement.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
@@ -247,7 +247,7 @@ indicators:
       fieldValue: OBJECT_MANAGEMENT
   historicalData:
     type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily
+    featureBucketConfName: operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
@@ -275,7 +275,7 @@ indicators:
     type: hourly_aggregations
   classification: mass_changes_to_groups
 
-- id: numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_object_change_operations
   adeEventType: active_directory
@@ -291,7 +291,7 @@ indicators:
   classification: abnormal_ad_changes
 
 
-- id: numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_user_change_security_sensitive_operations
   adeEventType: active_directory

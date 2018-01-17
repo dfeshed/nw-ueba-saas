@@ -4,12 +4,13 @@ package presidio.sdk.api.services;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import presidio.sdk.api.domain.AbstractInputDocument;
+import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
 
 public interface PresidioInputPersistencyService {
-    boolean store(Schema schema, List<? extends AbstractAuditableDocument> records);
+    ValidationResults store(Schema schema, List<? extends AbstractAuditableDocument> records);
 
     List<? extends AbstractAuditableDocument> find(Schema schema, Instant startTime, Instant endTime) throws Exception; //todo: we can discuss the name. for now using spring's terminology
 
