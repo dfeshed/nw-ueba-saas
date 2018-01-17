@@ -40,7 +40,7 @@ public class CategoryRarityModel implements PartitionedDataModel {
 			int occurencesNumOfPartitions = entry.getValue();
 
 			if (occurrences <= buckets.size()) {
-				buckets.add((int)(occurrences - 1), (double) occurencesNumOfPartitions);
+				buckets.set((int)(occurrences - 1), (double) occurencesNumOfPartitions);
 			}
 			this.numOfSamples += occurencesNumOfPartitions * occurrences;
 		}
