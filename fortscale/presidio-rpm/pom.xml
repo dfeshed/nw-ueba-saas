@@ -175,7 +175,8 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
+                            <recurseDirectories>true</recurseDirectories>
                             <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
