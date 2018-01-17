@@ -10,6 +10,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.index.CompoundIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -174,8 +175,11 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
             aggregationOperations.add(limit(limit));
         }
 
+        Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
+                allowDiskUse(true).build());
+
         return mongoTemplate
-                .aggregate(newAggregation(aggregationOperations), collectionName, ContextIdToNumOfItems.class)
+                .aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
                 .getMappedResults();
     }
 

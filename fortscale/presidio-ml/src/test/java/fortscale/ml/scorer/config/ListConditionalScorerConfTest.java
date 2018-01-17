@@ -2,6 +2,7 @@ package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class ListConditionalScorerConfTest {
         Assert.assertEquals(name, scorerConf.getName());
         Assert.assertEquals(getScorerConf(defaultScorerConfJsonObject), ((ListConditionalScorerConf)scorerConf).getScorer());
         Assert.assertEquals(conditionalField, ((ListConditionalScorerConf)scorerConf).getConditionalField());
-        Assert.assertEquals(conditionalValue, ((ListConditionalScorerConf)scorerConf).getConditionalValue());
+        Assert.assertEquals(conditionalValue, ((ListConditionalScorerConf)scorerConf).getConditionalValue().get(0));
     }
 
     @Test(expected = JsonMappingException.class)
@@ -149,7 +150,7 @@ public class ListConditionalScorerConfTest {
         if (name != null) jsonObject.put("name", name);
         if (scorer != null) jsonObject.put("scorer", scorer);
         if (conditionalField != null) jsonObject.put("conditional-field", conditionalField);
-        if (conditionalValue != null) jsonObject.put("conditional-value", conditionalValue);
+        if (conditionalValue != null) jsonObject.put("conditional-value", Lists.newArrayList(conditionalValue));
         return jsonObject;
     }
 

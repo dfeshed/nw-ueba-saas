@@ -11,6 +11,7 @@ import presidio.output.domain.records.alerts.IndicatorSummary;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface AlertPersistencyService {
 
@@ -51,6 +52,12 @@ public interface AlertPersistencyService {
     Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest);
 
     List<Alert> removeByTimeRange(Instant startDate, Instant endDate);
+
+    Stream<Alert> findAlertsByDate(Instant startDate, Instant endDate);
+
+    Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate);
+
+    List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId);
 
     long countAlerts();
 

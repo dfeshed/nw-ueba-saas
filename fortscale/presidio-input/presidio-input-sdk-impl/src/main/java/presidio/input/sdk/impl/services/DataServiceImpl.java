@@ -9,6 +9,7 @@ import presidio.input.sdk.impl.repositories.DataSourceRepository;
 import presidio.input.sdk.impl.validators.ValidationManager;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.DataService;
+import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,12 +30,12 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public boolean store(List<? extends AbstractAuditableDocument> documents, Schema schema) {
-        logger.trace("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
-        final ValidationManager.ValidationResults validationResults = validationManager.validate(documents);
+    public ValidationResults store(List<? extends AbstractAuditableDocument> documents, Schema schema) {
+        logger.debug("Storing {} documents.", documents.isEmpty() ? 0 : documents.size());
+        final ValidationResults validationResults = validationManager.validate(documents);
         dataSourceRepository.insertDataSource(toCollectionNameTranslator.toCollectionName(schema), validationResults.validDocuments);
         dataSourceRepository.insertDataSource(INVALID_DOCUMENTS_COLLECTION_NAME, validationResults.invalidDocuments);
-        return true;
+        return validationResults;
     }
 
     @Override

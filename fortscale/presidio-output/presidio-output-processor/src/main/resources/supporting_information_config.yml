@@ -228,26 +228,26 @@ indicators:
     anomalyField: operationType
     anomalyFilters:
       fieldName: operationTypeCategories
-      fieldValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
+      fieldValue: GROUP_MEMBERSHIP_OPERATION,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
-- id: sumOfHighestOperationTypeScoresUserIdObjectChangeActiveDirectoryHourly
+- id: sumOfHighestOperationTypeScoresUserIdObjectManagementActiveDirectoryHourly
   type: SCORE_AGGREGATION
   name: abnormal_object_change_operation
-  adeEventType: scored_enriched.active_directory.operationType.userIdObjectChange.activeDirectory.score
+  adeEventType: scored_enriched.active_directory.operationType.userIdObjectManagement.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationType
     anomalyFilters:
       fieldName: operationTypeCategories
-      fieldValue: OBJECT_CHANGE_OPERATION
+      fieldValue: OBJECT_MANAGEMENT
   historicalData:
     type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily
+    featureBucketConfName: operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: abnormal_ad_changes
 
@@ -258,7 +258,7 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: GROUP_MEMBERSHIP,SECURITY_SENSITIVE_OPERATION
+    anomalyValue: GROUP_MEMBERSHIP_OPERATION,SECURITY_SENSITIVE_OPERATION
   historicalData:
     type: hourly_aggregations
   classification: mass_changes_to_critical_enterprise_groups
@@ -270,19 +270,19 @@ indicators:
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: GROUP_MEMBERSHIP
+    anomalyValue: GROUP_MEMBERSHIP_OPERATION
   historicalData:
     type: hourly_aggregations
   classification: mass_changes_to_groups
 
-- id: numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_object_change_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: OBJECT_CHANGE_OPERATION
+    anomalyValue: OBJECT_MANAGEMENT
     anomalyFilters:
        fieldName: result
        fieldValue: SUCCESS
@@ -291,14 +291,14 @@ indicators:
   classification: abnormal_ad_changes
 
 
-- id: numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly
+- id: numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_user_change_security_sensitive_operations
   adeEventType: active_directory
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
     anomalyField: operationTypeCategories
-    anomalyValue: USER_CHANGE_OPERATION,SECURITY_SENSITIVE_OPERATION
+    anomalyValue: USER_MANAGEMENT,SECURITY_SENSITIVE_OPERATION
     anomalyFilters:
       fieldName: result
       fieldValue: SUCCESS

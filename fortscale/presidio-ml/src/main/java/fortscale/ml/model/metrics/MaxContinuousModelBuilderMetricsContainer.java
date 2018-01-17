@@ -1,12 +1,12 @@
 package fortscale.ml.model.metrics;
 
+import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,18 +27,22 @@ public class MaxContinuousModelBuilderMetricsContainer extends ModelMetricsConta
 
     /**
      * Updates modeling metrics by provided data
+     *
      * @param numOfPartitions
-     * @param continuousMean
-     * @param maxContinuousMean
-     * @param continuousSd
-     * @param maxContinuousSd
-     * @param continuousN
-     * @param maxContinuousN
-     * @param continuousMaxValue
-     * @param maxContinuousMaxValue
+     * @param continuous
+     * @param maxContinuous
      */
-    public void updateMetric(long numOfPartitions, double continuousMean, double maxContinuousMean,
-                             double continuousSd, double maxContinuousSd, double continuousN, long maxContinuousN, double continuousMaxValue, double maxContinuousMaxValue) {
+    public void updateMetric(long numOfPartitions, ContinuousDataModel continuous, ContinuousDataModel maxContinuous) {
+
+        double continuousMean = continuous.getMean();
+        double maxContinuousMean = maxContinuous.getMean();
+        double continuousSd = continuous.getSd();
+        double maxContinuousSd = maxContinuous.getSd();
+        long continuousN = continuous.getN();
+        long maxContinuousN = maxContinuous.getN();
+        double continuousMaxValue = continuous.getMaxValue();
+        double maxContinuousMaxValue = maxContinuous.getMaxValue();
+
         Metric metric = getMetric();
 
         metric.getValue().compute(MetricEnums.MetricValues.MAX_NUM_OF_PARTITIONS, (k, v) -> Math.max(v.doubleValue(), numOfPartitions));
@@ -80,7 +84,7 @@ public class MaxContinuousModelBuilderMetricsContainer extends ModelMetricsConta
     }
 
 
-    public void incResolution(int resolution) {
+    public void updateMaxValuesResult(int resolution) {
         Metric metric = getMetric();
         metric.getValue().compute(MetricEnums.MetricValues.MIN_RESOLUTION, (k, v) -> Math.max(v.doubleValue(), resolution));
         metric.getValue().compute(MetricEnums.MetricValues.MAX_RESOLUTION, (k, v) -> Math.max(v.doubleValue(), resolution));

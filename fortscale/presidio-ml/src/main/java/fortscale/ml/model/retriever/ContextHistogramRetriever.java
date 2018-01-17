@@ -85,7 +85,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 				featureBucketConf.getName(), contextId,
 				new TimeRange(startTimeInSeconds, endTimeInSeconds));
 		int featureBucketSize = featureBuckets.size();
-		timeModelRetrieverMetricsContainer.updateMetric(featureBucketSize);
+		timeModelRetrieverMetricsContainer.updateReadMetric(featureBucketSize);
 
 //		metrics.featureBuckets += featureBuckets.size();
 		long numOfPartitionsOfFeatureBuckets = calcNumOfPartitionsOfFeatureBuckets(featureBuckets);

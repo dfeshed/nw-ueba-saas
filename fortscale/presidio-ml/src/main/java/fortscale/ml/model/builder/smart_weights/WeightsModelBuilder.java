@@ -3,6 +3,7 @@ package fortscale.ml.model.builder.smart_weights;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.builder.IModelBuilder;
+import fortscale.ml.model.metrics.WeightModelBuilderMetricsContainer;
 import fortscale.ml.model.retriever.smart_data.SmartWeightsModelBuilderData;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
@@ -21,8 +22,10 @@ public class WeightsModelBuilder implements IModelBuilder {
     private SmartRecordConf smartRecordConf;
     private List<String> zeroWeightFeatures;
     private WeightsModelBuilderAlgorithm algorithm;
+    private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer;
 
-    public WeightsModelBuilder(WeightsModelBuilderConf conf, WeightsModelBuilderAlgorithm algorithm, SmartRecordConfService smartRecordConfService) {
+    public WeightsModelBuilder(WeightsModelBuilderConf conf, WeightsModelBuilderAlgorithm algorithm,
+                               SmartRecordConfService smartRecordConfService, WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer) {
         Assert.notNull(conf, "conf must be not null");
         Assert.notNull(algorithm, "algorithm must be not null");
         String smartRecordConfName = conf.getSmartRecordConfName();
@@ -32,6 +35,7 @@ public class WeightsModelBuilder implements IModelBuilder {
         this.smartRecordConf = entityEventConf;
         this.zeroWeightFeatures = conf.getZeroWeightFeatures();
         this.algorithm = algorithm;
+        this.weightModelBuilderMetricsContainer = weightModelBuilderMetricsContainer;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class WeightsModelBuilder implements IModelBuilder {
                 smartWeightsModelBuilderData.getSmartAggregatedRecordDataContainers(),
                 smartWeightsModelBuilderData.getNumOfContexts(),
                 numOfSimulations,
-                zeroWeightFeatures
+                zeroWeightFeatures,
+                weightModelBuilderMetricsContainer
         )).setNumOfPartitions(numOfPartitions);
     }
 

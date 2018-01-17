@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import presidio.adapter.util.AdapterConfigurationUtil;
 import presidio.adapter.util.FlumeConfigurationUtil;
 import presidio.adapter.util.ProcessExecutor;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -18,6 +20,9 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FlumeAdapterExecutionServiceTest {
 
@@ -25,6 +30,8 @@ public class FlumeAdapterExecutionServiceTest {
     private PresidioExecutionService flumeAdapterExecutionService;
     private ProcessExecutor mockProcessExecutor;
     private FlumeConfigurationUtil mockFlumeConfigurationUtil;
+    private AdapterConfigurationUtil mockAdapterConfigurationUtil;
+    private MongoTemplate mockedMongoTemplate;
     private PresidioInputPersistencyService mockPresidioInputPersistencyService;
     private String mockedFlumeHome;
     private String mockedConfFolder;
@@ -34,7 +41,6 @@ public class FlumeAdapterExecutionServiceTest {
     private String mockedJobName;
     private String mockedFlumeExecutionScriptPath;
 
-
     @Before
     public void setUp() throws Exception {
 
@@ -42,6 +48,9 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockProcessExecutor.executeProcess(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.anyString())).thenReturn(0);
 
         mockFlumeConfigurationUtil = Mockito.mock(FlumeConfigurationUtil.class);
+        mockAdapterConfigurationUtil = Mockito.mock(AdapterConfigurationUtil.class);
+        mockPresidioInputPersistencyService = Mockito.mock(PresidioInputPersistencyService.class);
+        mockedMongoTemplate = Mockito.mock(MongoTemplate.class);
         mockedFlumeHome = "some_flume_home" + File.separator;
         mockedConfFolder = mockedFlumeHome + "conf" + File.separator;
         mockedPropertiesFile = Paths.get("active_directory.properties").normalize().toString();
@@ -62,13 +71,19 @@ public class FlumeAdapterExecutionServiceTest {
         Mockito.when(mockFlumeConfigurationUtil.getFlumeExecutionConfFileArgument(mockedAfterTestsFilePath)).thenReturn("--conf-file " + mockedAfterTestsFilePath);
         Mockito.when(mockFlumeConfigurationUtil.createExecutionConfFile(Mockito.any(Schema.class), Mockito.any(Instant.class), Mockito.any(Instant.class))).thenReturn(mockedAfterTestsFilePath);
 
-        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, mockPresidioInputPersistencyService);
+        flumeAdapterExecutionService = new FlumeAdapterExecutionService(mockProcessExecutor, mockFlumeConfigurationUtil, mockAdapterConfigurationUtil, mockPresidioInputPersistencyService, mockedMongoTemplate);
 
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void clean() throws Exception {
-        flumeAdapterExecutionService.applyRetentionPolicy(null, null, null);
+
+        Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
+        Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
+
+        flumeAdapterExecutionService.cleanup(Schema.AUTHENTICATION, startTime, endTime, 3600.0);
+
+        verify(mockPresidioInputPersistencyService, times(1)).clean(Schema.AUTHENTICATION, startTime,endTime);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -85,5 +100,4 @@ public class FlumeAdapterExecutionServiceTest {
         final List<String> expectedArgumentList = Arrays.asList(mockedFlumeExecutionScriptPath, "agent", "--name " + mockedAgent, "--conf", mockedConfFolder, "--conf-file", mockedAfterTestsFilePath);
         Mockito.verify(mockProcessExecutor).executeProcess(mockedJobName, expectedArgumentList, mockedFlumeHome);
     }
-
 }

@@ -121,11 +121,11 @@ components:
       xmx: 500
       xms: 70
   output_forwarder:
-      jvm_args:
-        jar_path: ${general.deployment.bins.base_path}/forwarder-*.jar
-        main_class: presidio.forwarder.processor.Forwarder
-        xmx: 2048
-        xms: 2048
+    jvm_args:
+      jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder-*.jar
+      main_class: presidio.output.forwarder.shell.OutputForwarderApplication
+      xmx: 2048
+      xms: 2048
   ade:
     models:
       feature_aggregation_records:

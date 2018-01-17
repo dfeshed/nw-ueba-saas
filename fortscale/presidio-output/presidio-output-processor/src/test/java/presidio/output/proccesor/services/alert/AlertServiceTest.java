@@ -255,7 +255,7 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
-        List<String> categories = Arrays.asList("GROUP_MEMBERSHIP","SECURITY_SENSITIVE_OPERATION");
+        List<String> categories = Arrays.asList("GROUP_MEMBERSHIP_OPERATION","SECURITY_SENSITIVE_OPERATION");
         generateActiveDirectoryEvents(2, eventTime,"scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score","PASSWORD_CHANGED",categories);
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
@@ -313,11 +313,11 @@ public class AlertServiceTest {
         mongoTemplate.save(activeDirectoryEvent1, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         // event
-        EnrichedEvent activeDirectoryEvent2 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(20, ChronoUnit.MINUTES), "eventId2", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "OWNER_CHANGED_ON_GROUP_OBJECT", Arrays.asList(new String[]{"GROUP_MEMBERSHIP"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
+        EnrichedEvent activeDirectoryEvent2 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(20, ChronoUnit.MINUTES), "eventId2", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "OWNER_CHANGED_ON_GROUP_OBJECT", Arrays.asList(new String[]{"GROUP_MEMBERSHIP_OPERATION"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
         mongoTemplate.save(activeDirectoryEvent2, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         // event
-        EnrichedEvent activeDirectoryEvent3 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(30, ChronoUnit.MINUTES), "eventId3", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP", Arrays.asList(new String[]{"GROUP_MEMBERSHIP", "SECURITY_SENSITIVE_OPERATION"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
+        EnrichedEvent activeDirectoryEvent3 = new ActiveDirectoryEnrichedEvent(Instant.now(), startDate.plus(30, ChronoUnit.MINUTES), "eventId3", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP", Arrays.asList(new String[]{"GROUP_MEMBERSHIP_OPERATION", "SECURITY_SENSITIVE_OPERATION"}), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
         mongoTemplate.save(activeDirectoryEvent3, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);

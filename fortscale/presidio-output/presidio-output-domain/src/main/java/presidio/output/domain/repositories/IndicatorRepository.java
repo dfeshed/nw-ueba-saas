@@ -3,6 +3,7 @@ package presidio.output.domain.repositories;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorSummary;
 
@@ -26,5 +27,7 @@ public interface IndicatorRepository extends ElasticsearchRepository<Indicator, 
     List<Indicator> removeByAlertId(String alertId);
 
     Stream<Indicator> findByAlertId(String alertId);
+
+    Stream<Indicator> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(long startDate, long endDate); // the stream must be closed after usage
 
 }

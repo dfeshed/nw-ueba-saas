@@ -1,5 +1,6 @@
 package fortscale.ml.model.builder.smart_weights;
 
+import fortscale.ml.model.metrics.WeightModelBuilderMetricsContainer;
 import fortscale.ml.model.retriever.smart_data.SmartAggregatedRecordDataContainer;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.utils.logging.Logger;
@@ -63,7 +64,12 @@ public class WeightsModelBuilderAlgorithm {
      * @param numOfSimulations the number of simulations to perform in the simulations phase.
      * @return a new list of {@link ClusterConf} , or clusterConfsPrototype if no data available in smartAggregatedRecordDataContainers.
      */
-    public List<ClusterConf> createWeightsClusterConfs(List<ClusterConf> clusterConfsPrototype, List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers, int numOfContexts, int numOfSimulations, List<String> zeroWeightFeatures) {
+    public List<ClusterConf> createWeightsClusterConfs(List<ClusterConf> clusterConfsPrototype,
+                                                       List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers,
+                                                       int numOfContexts,
+                                                       int numOfSimulations,
+                                                       List<String> zeroWeightFeatures,
+                                                       WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer) {
         if(smartAggregatedRecordDataContainers.isEmpty())
         {
             logger.warn("building model from empty data");
@@ -87,6 +93,8 @@ public class WeightsModelBuilderAlgorithm {
         clusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()>0).collect(Collectors.toList());
         clusterConfs = calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
         clusterConfs.addAll(zeroWeightFeaturesClusterConfs);
+
+        weightModelBuilderMetricsContainer.updateMetric(clusterConfs);
         return clusterConfs;
     }
 

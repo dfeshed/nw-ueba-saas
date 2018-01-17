@@ -25,7 +25,7 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdFilePermissionChange.file.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "FILE_PERMISSION_CHANGE",
+              "conditional-value": ["FILE_PERMISSION_CHANGE"],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdFilePermissionChange.file.score",
@@ -59,7 +59,7 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdFileAction.file.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": "FILE_ACTION",
+              "conditional-value": ["FILE_ACTION"],
               "scorer": {
                 "type": "field-value-score-reducer",
                 "name": "operationType.userIdFileAction.file.score",

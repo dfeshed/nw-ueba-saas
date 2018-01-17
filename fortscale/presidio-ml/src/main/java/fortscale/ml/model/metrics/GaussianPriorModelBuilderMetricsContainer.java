@@ -1,5 +1,6 @@
 package fortscale.ml.model.metrics;
 
+import fortscale.ml.model.GaussianPriorModel;
 import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
@@ -7,7 +8,9 @@ import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 
 /**
  * Metrics on gaussian prior model builder
@@ -27,7 +30,13 @@ public class GaussianPriorModelBuilderMetricsContainer extends ModelMetricsConta
     /**
      * Updates modeling metrics by provided data
      */
-    public void updateMetric(double maxMean, int segmentPriorSize) {
+    public void updateMetric(List<GaussianPriorModel.SegmentPrior> segmentPriors) {
+
+        int segmentPriorSize =  segmentPriors.size();
+        OptionalDouble optional =  segmentPriors.stream().mapToDouble(segmentPrior -> segmentPrior.mean).max();
+
+        double maxMean =  optional.isPresent() ? optional.getAsDouble() : 0.0;
+
         Metric metric = getMetric();
         metric.getValue().compute(MetricEnums.MetricValues.MAX_MEAN, (k, v) -> maxMean);
         metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_SEGMENT_PRIORS, (k, v) -> v.doubleValue() + segmentPriorSize);

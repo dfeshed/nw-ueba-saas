@@ -16,7 +16,37 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static presidio.manager.api.service.ManagerServiceImpl.RESET_PRESIDIO_DAG_ID;
+
 public class ManagerServiceImplTest {
+
+
+    @Test
+    public void shouldReturnCleanningStatus() {
+        Duration buildingBaselineDuration = Duration.ofDays(30);
+        String managerDagIdPrefix = "full_flow";
+        AirflowApiClient airflowApiClient = Mockito.mock(AirflowApiClient.class);
+        DagState dagState = DagState.RUNNING;
+        Mockito.when(airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(dagState, managerDagIdPrefix)).thenReturn(new HashMap<>());
+        HashMap<String, DagExecutionStatus> resetDagExecutionStatusMap = new HashMap<>();
+        DagExecutionStatus resetDagExecutionStatus = new DagExecutionStatus(RESET_PRESIDIO_DAG_ID, Instant.parse("2017-07-20T07:00:00.000Z"),
+                Lists.newArrayList(
+                        new TimeRange(Instant.parse("2017-07-24T19:00:00.000Z"), Instant.parse("2017-07-24T20:00:00.000Z")),
+                        new TimeRange(Instant.parse("2017-07-24T20:00:00.000Z"), Instant.parse("2017-07-24T21:00:00.000Z")),
+                        new TimeRange(Instant.parse("2017-07-24T21:00:00.000Z"), Instant.parse("2017-07-24T22:00:00.000Z")))
+                , dagState);
+        resetDagExecutionStatusMap.put(RESET_PRESIDIO_DAG_ID,resetDagExecutionStatus);
+        Mockito.when(airflowApiClient.getDagExecutionDatesByStateAndDagIdPrefix(dagState, RESET_PRESIDIO_DAG_ID)).thenReturn(resetDagExecutionStatusMap);
+        ManagerServiceImpl managerService = new ManagerServiceImpl(managerDagIdPrefix, airflowApiClient, buildingBaselineDuration);
+        PipelineState.StatusEnum actualStatus = managerService.getStatus();
+        PipelineState.StatusEnum expectedStatus = PipelineState.StatusEnum.CLEANING;
+        Assert.assertEquals(expectedStatus, actualStatus);
+        PipelineState expectedPipelineState = new PipelineState();
+        expectedPipelineState.setStatus(expectedStatus);
+        PipelineState actualPipelineState = managerService.getPipelineState();
+        Assert.assertEquals(expectedPipelineState, actualPipelineState);
+    }
+
     @Test
     public void shouldReturnStoppedStatus() {
         Duration buildingBaselineDuration = Duration.ofDays(30);
