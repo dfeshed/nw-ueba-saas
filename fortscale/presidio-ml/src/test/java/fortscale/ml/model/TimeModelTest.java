@@ -8,9 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.mockito.Mockito.mock;
 
@@ -21,14 +25,11 @@ public class TimeModelTest extends AbstractScorerTest {
 	TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 
 	private TimeModel createModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Long... times) {
-		Map<Long, Double> timeToCounter = Stream.of(times).collect(Collectors.groupingBy(
-						o -> o,
-						Collectors.reducing(
-								0D,
-								o -> 1D,
-								(o1, o2) -> o1 + o2)
-				)
-		);
+		Map<Long, Double> timeToCounter = new HashMap<>();
+
+		for (int i = 0; i < times.length; i++) {
+			timeToCounter.put(times[i],times[i].doubleValue());
+		}
 
 		TimeModel timeModel = new TimeModel();
 		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
@@ -45,7 +46,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		int timeResolution = 100;
 		int bucketSize = 1;
 		int maxRareTimestampCount = 10;
-		long time = 0;
+		long time = 1;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
 
 		Assert.assertEquals(1, model.getNumOfSamples());
@@ -60,8 +61,8 @@ public class TimeModelTest extends AbstractScorerTest {
 		int timeResolution = 100;
 		int bucketSize = 10;
 		int maxRareTimestampCount = 10;
-		long time1 = 0;
-		long time2 = 1;
+		long time1 = 1;
+		long time2 = 2;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
@@ -76,8 +77,8 @@ public class TimeModelTest extends AbstractScorerTest {
 		int timeResolution = 100;
 		int bucketSize = 10;
 		int maxRareTimestampCount = 10;
-		long time1 = 0;
-		long time2 = bucketSize;
+		long time1 = 1;
+		long time2 = 102+bucketSize;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
@@ -92,7 +93,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		int timeResolution = 100;
 		int bucketSize = 1;
 		int maxRareTimestampCount = 10;
-		long time = 0;
+		long time = 1;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
 
 		Assert.assertEquals(1, model.getSmoothedTimeCounter(time));
@@ -103,7 +104,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		int timeResolution = 100;
 		int bucketSize = timeResolution;
 		int maxRareTimestampCount = 10;
-		long time = 0;
+		long time = 1;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
 
 		Assert.assertEquals(1, model.getSmoothedTimeCounter(time));
@@ -114,7 +115,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		int timeResolution = 100;
 		int bucketSize = 1;
 		int maxRareTimestampCount = 10;
-		long time = 0;
+		long time = 1;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time);
 
 		Assert.assertEquals(model.getSmoothedTimeCounter(time), model.getSmoothedTimeCounter(time + timeResolution));

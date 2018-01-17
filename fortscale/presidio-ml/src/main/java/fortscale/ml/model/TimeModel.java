@@ -30,7 +30,7 @@ public class TimeModel implements PartitionedDataModel {
 
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
-
+		timeToCounter = reduceSamplingResolution(timeToCounter);
 		numOfSamples = (long) timeToCounter.values().stream().mapToDouble(Double::doubleValue).sum();
 
 		List<Double> bucketHits = calcBucketHits(timeToCounter);
@@ -61,6 +61,21 @@ public class TimeModel implements PartitionedDataModel {
 		long numOfSmoothedBuckets = smoothedBuckets.stream().filter(smooth -> smooth > 0).count();
 		timeModelBuilderMetricsContainer.updateMetric(numOfDistinctSamples, numberOfPartitions, categoryRarityModel.getBuckets(), numDistinctFeatures, numOfSmoothedBuckets);
 
+	}
+
+	private Map<?, Double> reduceSamplingResolution(Map<?, Double> timeToCounter) {
+		Map<Long, Double> result = new HashMap<>();
+		for (Map.Entry<?, Double> entry: timeToCounter.entrySet()){
+			if(entry.getValue()>0)
+			{
+				result.put(ConversionUtils.convertToLong(entry.getKey()),1D);
+			}
+			else
+			{
+				result.put(ConversionUtils.convertToLong(entry.getKey()),0D);
+			}
+		}
+		return result;
 	}
 
 	private List<Double> createInitializedBuckets() {

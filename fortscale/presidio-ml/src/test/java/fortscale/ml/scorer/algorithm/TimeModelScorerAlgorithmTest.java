@@ -65,11 +65,16 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void elementaryCheckWithOneOutlier() {
         List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 5; i++) {
             times.add(1000L);
         }
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < times.size() ; i++) {
+            timeToCounter.put(i*times.get(i)*DAILY_TIME_RESOLUTION,times.get(i).doubleValue());
+        }
         long epochSeconds = 5000;
-        assertScore(times, epochSeconds, 60);
+
+        Assert.assertEquals(67D,calcScore(timeToCounter,epochSeconds),0.001);
     }
 
     @Test
@@ -150,7 +155,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     public void testNewWorkingTimeScore() {
         int scenarioSteps[] = new int[]{450, 900, 900};
         int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
-        int scenarioScoreThresholds[] = new int[]{0, 7, 16};
+        int scenarioScoreThresholds[] = new int[]{0, 7, 26};
         for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
             List<Long> times = new ArrayList<>();
             int step = 200;
