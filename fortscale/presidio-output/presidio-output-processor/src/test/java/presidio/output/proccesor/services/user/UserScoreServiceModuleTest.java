@@ -267,8 +267,6 @@ public class UserScoreServiceModuleTest {
 
     @Test
     public void calculateScorePercentilesTwice_shouldCreatePercentilesDocOnce() {
-        Assert.fail("Talk to Efrat - what this test does");
-
         //calculate percentiles with 0 users (all users should get low severity)
         userSeverityService.updateSeverities();
         Iterable<UserSeveritiesRangeDocument> all = userSeveritiesRangeRepository.findAll();

@@ -25,7 +25,7 @@ public class UserSeverityServiceTest {
     @Test
     public void test() {
         double[] scores = {167, 37, 15, 15, 11, 10, 10, 10, 10, 10, 4, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        Map<UserSeverity, PresidioRange<Double>> userSeverityRangeMap = userSeverityService.getUserSeverityRangeMap(scores);
+        Map<UserSeverity, PresidioRange<Double>> userSeverityRangeMap = userSeverityService.calculateUserSeverityRangeMap(scores);
         System.out.println("Critical " + userSeverityRangeMap.get(UserSeverity.CRITICAL));
         System.out.println("High " + userSeverityRangeMap.get(UserSeverity.HIGH));
         System.out.println("Medium " + userSeverityRangeMap.get(UserSeverity.MEDIUM));
@@ -44,7 +44,7 @@ public class UserSeverityServiceTest {
     @Test
     public void test1() {
         double[] scores = {15, 10, 8, 7, 6};
-        Map<UserSeverity, PresidioRange<Double>> userSeverityRangeMap = userSeverityService.getUserSeverityRangeMap(scores);
+        Map<UserSeverity, PresidioRange<Double>> userSeverityRangeMap = userSeverityService.calculateUserSeverityRangeMap(scores);
         System.out.println("Critical " + userSeverityRangeMap.get(UserSeverity.CRITICAL));
         System.out.println("High " + userSeverityRangeMap.get(UserSeverity.HIGH));
         System.out.println("Medium " + userSeverityRangeMap.get(UserSeverity.MEDIUM));

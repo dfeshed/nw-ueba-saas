@@ -46,33 +46,34 @@ public class UserSeverityServiceImpl implements UserSeverityService {
      * @return map from score to getSeverity
      */
     @Override
-    public UserScoreToSeverity getSeveritiesMap(boolean recalculateUserScorePercentiles) {
-        if (!recalculateUserScorePercentiles) {
+    public UserScoreToSeverity getSeveritiesMap(boolean recalculateUserSeveritiesRange) {
+        if (!recalculateUserSeveritiesRange) {
             return getExistingUserScoreToSeverity();
         }
 
         //calculating percentiles according all user scores
         double[] userScores = getScoresArray();
-        UserSeveritiesRangeDocument userSeveritiesRangeDocument = getUserSeveritiesRangeDocument(userScores);
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = createUserSeveritiesRangeDocument(userScores);
+        userSeveritiesRangeRepository.save(userSeveritiesRangeDocument);
 
         return new UserScoreToSeverity(userSeveritiesRangeDocument.getSeverityToScoreRangeMap());
     }
 
     /**
-     * Create the user score percentile document from the received scores
+     * Create the user severities range document from the received scores
      *
      * @param userScores
      * @return
      */
-    protected UserSeveritiesRangeDocument getUserSeveritiesRangeDocument(double[] userScores) {
+    protected UserSeveritiesRangeDocument createUserSeveritiesRangeDocument(double[] userScores) {
 
-        Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = getUserSeverityRangeMap(userScores);
+        Map<UserSeverity, PresidioRange<Double>> severityToScoreRangeMap = calculateUserSeverityRangeMap(userScores);
 
         UserSeveritiesRangeDocument userSeveritiesRangeDocument = new UserSeveritiesRangeDocument(severityToScoreRangeMap);
         return userSeveritiesRangeDocument;
     }
 
-    protected Map<UserSeverity, PresidioRange<Double>> getUserSeverityRangeMap(double[] userScores) {
+    protected Map<UserSeverity, PresidioRange<Double>> calculateUserSeverityRangeMap(double[] userScores) {
 
         if (ArrayUtils.isEmpty(userScores)) {
             return createEmptyMap();
