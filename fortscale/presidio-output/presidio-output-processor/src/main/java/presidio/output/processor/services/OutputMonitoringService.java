@@ -16,6 +16,7 @@ import java.util.Map;
 public class OutputMonitoringService {
 
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
+    private final String NUMBER_OF_USERS_METRIC_NAME = "number_of_users_created";
     private final String ALERT_WITH_SEVERITY_METRIC_PREFIX = "alert_created_with_severity.";
     private final String ALERT_WITH_CLASSIFICATION_METRIC_PREFIX = "alert_created_with_classification.";
     private final String LAST_SMART_TIME_METRIC_NAME = "last_smart_time";
@@ -57,6 +58,16 @@ public class OutputMonitoringService {
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
                 setMetricValue(value).
+                setMetricTags(tags).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                setMetricLogicTime(startDate).
+                build());
+    }
+
+    public void reportTotalUsersCount(int count, Instant startDate) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUMBER_OF_USERS_METRIC_NAME).
+                setMetricValue(count).
                 setMetricTags(tags).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 setMetricLogicTime(startDate).
