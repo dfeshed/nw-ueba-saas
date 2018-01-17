@@ -114,9 +114,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
 
-                    outputMonitoringService.reportAlertWithSeverity(1, alertEntity.getSeverity(), startDate);
-                    outputMonitoringService.reportAlertWithClassification(1, alertEntity.getClassifications().get(0), startDate);
-
+                    outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), alertEntity.getClassifications().get(0), startDate);
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
@@ -128,7 +126,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         storeAlerts(alerts);
 
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        outputMonitoringService.reportTotalAlertCount(alerts.size(), startDate);
         outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {

@@ -93,6 +93,26 @@
                   }
                 }
               },
+              "ALERT_SEVERITY": {
+                "type": "text",
+                "fielddata": true,
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "ALERT_CLASSIFICATION": {
+                  "type": "text",
+                  "fielddata": true,
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 256
+                    }
+                  }
+                },
               "AGGREGATED_FEATURE_TYPE": {
                 "type": "text",
                 "fielddata": true,
@@ -213,6 +233,9 @@
             "properties": {
               "DEFAULT_METRIC_VALUE": {
                 "type": "long"
+              },
+              "TIMESTAMP": {
+                "type": "date"
               },
               "SUM": {
                 "type": "long"
