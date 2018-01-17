@@ -1,7 +1,7 @@
 import Component from 'ember-component';
 import computed, { or } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { isCoreServiceNotUpdated, isSummaryDataInvalid, getServiceDisplayName } from 'investigate-events/reducers/investigate/services/selectors';
+import { isCoreServiceNotUpdated, isSummaryDataInvalid, getServiceDisplayName, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 import { setService } from 'investigate-events/actions/interaction-creators';
 import { lookup } from 'ember-dependency-lookup';
 import service from 'ember-service/inject';
@@ -15,7 +15,8 @@ const stateToComputed = (state) => ({
   isServicesLoading: state.investigate.services.isServicesLoading,
   isSummaryLoading: state.investigate.services.isSummaryLoading,
   services: state.investigate.services.serviceData,
-  summaryErrorMessage: state.investigate.services.summaryErrorMessage
+  summaryErrorMessage: state.investigate.services.summaryErrorMessage,
+  hasSummaryData: hasSummaryData(state)
 });
 
 const ServiceCrumb = Component.extend({
