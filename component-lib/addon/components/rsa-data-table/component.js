@@ -387,7 +387,9 @@ export default Component.extend(DomWatcher, EKMixin, {
       if (this.get('selectedIndex') < 1) {
         selectedItemIndex = this.get('items.length') - 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
-        scrollTop = $('.rsa-data-table-body').outerHeight();
+        // when vertical scroll is present, it will scroll to bottom,
+        // which was not happening before.
+        scrollTop = $('.rsa-data-table-body')[0].scrollHeight;
       } else {
         selectedItemIndex = this.get('selectedIndex') - 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
