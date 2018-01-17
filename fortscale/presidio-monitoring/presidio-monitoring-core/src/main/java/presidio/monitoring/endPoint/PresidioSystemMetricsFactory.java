@@ -9,6 +9,7 @@ import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.lang.management.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class PresidioSystemMetricsFactory {
 
@@ -134,7 +135,7 @@ public class PresidioSystemMetricsFactory {
 
         Map<MetricEnums.MetricValues, Number> map = new HashMap<>();
         map.put(MetricEnums.MetricValues.SYSTEM_CPU_LOAD, (long) operatingSystemMXBean.getProcessCpuLoad());
-        map.put(MetricEnums.MetricValues.SYSTEM_CPU_TIME, (long) operatingSystemMXBean.getProcessCpuTime());
+        map.put(MetricEnums.MetricValues.SYSTEM_CPU_TIME, (long) TimeUnit.SECONDS.convert(operatingSystemMXBean.getProcessCpuTime(), TimeUnit.NANOSECONDS));
 
         return new Metric.MetricBuilder().setMetricName(name).
                 setMetricMultipleValues(map).
