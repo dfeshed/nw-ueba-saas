@@ -115,7 +115,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
             for (int i = finalIndex; i > index; i--) {
 
                 // The delta between the scores is big enough to separate the severities
-                if (userScores[i] * userSeverityComputeData.getMinimumDelta() <= userScores[i - 1]) {
+                if (userScores[i] * userSeverityComputeData.getMinimumDeltaFactor() <= userScores[i - 1]) {
                     double minSeverityScore = userScores[i - 1];
                     if (i == userScores.length - 1) {
                         minSeverityScore = userScores[i];
@@ -141,7 +141,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
             UserSeverity higherSeverity = severitiesOrderedAsc.get(i + 1);
 
             Double upperBound = severityToScoreRangeMap.get(severity).getUpperBound();
-            double minimumDelta = severityToComputeDataMap.get(higherSeverity).getMinimumDelta();
+            double minimumDelta = severityToComputeDataMap.get(higherSeverity).getMinimumDeltaFactor();
 
             PresidioRange<Double> higherSeverityRange = severityToScoreRangeMap.get(higherSeverity);
 

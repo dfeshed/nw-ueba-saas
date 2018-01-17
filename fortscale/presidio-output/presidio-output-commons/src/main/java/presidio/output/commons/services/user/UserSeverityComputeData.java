@@ -2,18 +2,18 @@ package presidio.output.commons.services.user;
 
 public class UserSeverityComputeData {
     private double percentageOfUsers;
-    private double minimumDelta;
+    private double minimumDeltaFactor;
     private Double maximumUsers;
 
-    public UserSeverityComputeData(double percentageOfUsers, double minimumDelta, Double maximumUser) {
+    public UserSeverityComputeData(double percentageOfUsers, double minimumDeltaFactor, Double maximumUser) {
         this.percentageOfUsers = percentageOfUsers;
-        this.minimumDelta = minimumDelta;
+        this.minimumDeltaFactor = minimumDeltaFactor;
         this.maximumUsers = maximumUser;
     }
 
-    public UserSeverityComputeData(double percentageOfUsers, double minimumDelta) {
+    public UserSeverityComputeData(double percentageOfUsers, double minimumDeltaFactor) {
         this.percentageOfUsers = percentageOfUsers;
-        this.minimumDelta = minimumDelta;
+        this.minimumDeltaFactor = minimumDeltaFactor;
     }
 
     public double getPercentageOfUsers() {
@@ -24,12 +24,12 @@ public class UserSeverityComputeData {
         this.percentageOfUsers = percentageOfUsers;
     }
 
-    public double getMinimumDelta() {
-        return minimumDelta;
+    public double getMinimumDeltaFactor() {
+        return minimumDeltaFactor;
     }
 
-    public void setMinimumDelta(double minimumDelta) {
-        this.minimumDelta = minimumDelta;
+    public void setMinimumDeltaFactor(double minimumDeltaFactor) {
+        this.minimumDeltaFactor = minimumDeltaFactor;
     }
 
     public Double getMaximumUsers() {
