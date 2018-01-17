@@ -9,6 +9,7 @@ import presidio.data.generators.authenticationop.IAuthenticationOperationGenerat
 import presidio.data.generators.common.GeneratorException;
 import presidio.data.generators.common.IStringGenerator;
 import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.StringCyclicValuesGenerator;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
@@ -55,7 +56,7 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         resultGenerator = new OperationResultPercentageGenerator();                 // 100% "Success"
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
-        siteGenerator = new RandomStringGenerator();
+        siteGenerator = new StringCyclicValuesGenerator(new String[] {"SiteA", "SiteB", "SiteC"});
     }
 
     @Override
