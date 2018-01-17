@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
@@ -51,21 +53,16 @@ public class UserUpdatePropertiesServiceImplTest {
 
 
     @Test
-    public void updateUserPropertiesWithAuthenticationEvent() {
+    public void updateUserPropertiesWithFileEvent() {
         Instant eventDate = Instant.now();
-        FileEnrichedEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
-                "userId", "username", "userDisplayName", "dataSource", "oppType", new ArrayList<String>(),
-                EventResult.FAILURE, "resultCode", new HashMap<String, String>(), "absoluteSrcFilePath", "absoluteDstFilePath",
-                "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
-        List<FileEnrichedEvent> events = new ArrayList<>();
-        events.add(event);
-
-        //store the events into mongp
-        try {
-            eventPersistencyService.store(Schema.FILE, events);
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateFileEnrichedEvent(eventDate, "userName1", "userId1", "userDisplayName1", additionalInfo);
+        generateUserAndSave("userId", "userName", "userDisplayName", false);
+        userPropertiesUpdateService.updateAllUsers();
+        PageRequest pageRequest = new PageRequest(0, 10);
+        Page<User> page = userPersistencyService.findByUserId("userId1", pageRequest);
+        Assert.assertNotNull(page.getContent());
     }
 
     private void generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
@@ -75,29 +72,39 @@ public class UserUpdatePropertiesServiceImplTest {
             tags.add(TAG_ADMIN);
         }
         User user1 = new User(userId, userName, displayName, 0d, null, null, tags, UserSeverity.LOW, 0);
-        List<User> userList = new ArrayList<>();
-        userList.add(user1);
-
-        userPersistencyService.save(userList);
+        userPersistencyService.save(user1);
     }
 
-    private EnrichedEvent generateFileEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
-        return new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
+    private void saveEvent(EnrichedEvent event, Schema schema) {
+        List<EnrichedEvent> events = new ArrayList<>();
+        events.add(event);
+        try {
+            eventPersistencyService.store(schema, events);
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    private void generateFileEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
+        EnrichedEvent event = new FileEnrichedEvent(eventDate, eventDate, "eventId", Schema.FILE.toString(),
                 userId, userName, userDisplayName, "dataSource", "oppType", new ArrayList<String>(),
                 EventResult.FAILURE, "resultCode", additionalInfo, "absoluteSrcFilePath", "absoluteDstFilePath",
                 "absoluteSrcFolderFilePath", "absoluteDstFolderFilePath", 20L, true, true);
+        saveEvent(event, Schema.FILE);
 
     }
 
-    private EnrichedEvent generateActiveDirectoryEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
-        return new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId", Schema.ACTIVE_DIRECTORY.toString(),
+    private void generateActiveDirectoryEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
+        EnrichedEvent event = new ActiveDirectoryEnrichedEvent(eventDate, eventDate, "eventId", Schema.ACTIVE_DIRECTORY.toString(),
                 userId, userName, userDisplayName, "dataSource", "USER_ACCOUNT_TYPE_CHANGED",
                 new ArrayList<String>(), EventResult.SUCCESS, "resultCode", additionalInfo, Boolean.FALSE, "objectId");
+        saveEvent(event, Schema.ACTIVE_DIRECTORY);
     }
 
-    private EnrichedEvent generateAuthenticationEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
-        return new AuthenticationEnrichedEvent(eventDate, eventDate, "eventId1", Schema.AUTHENTICATION.toString(), userId, userName, userDisplayName,
+    private void generateAuthenticationEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
+        EnrichedEvent event = new AuthenticationEnrichedEvent(eventDate, eventDate, "eventId1", Schema.AUTHENTICATION.toString(), userId, userName, userDisplayName,
                 "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS,
                 "SUCCESS", additionalInfo);
+        saveEvent(event, Schema.AUTHENTICATION);
     }
 }
