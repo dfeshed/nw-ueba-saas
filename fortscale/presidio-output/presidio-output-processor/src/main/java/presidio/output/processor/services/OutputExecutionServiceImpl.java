@@ -47,7 +47,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
     private final long retentionEnrichedEventsDays;
-    private final long retentionResultEventsDays;
+    private final long retentionOutputDataDays;
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
@@ -62,7 +62,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                                       AlertService alertService,
                                       UserService userService,
                                       UserSeverityService userSeverityService, EventPersistencyService eventPersistencyService,
-                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionResultEventsDays) {
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
@@ -71,7 +71,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         this.smartPageSize = smartPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
         this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
-        this.retentionResultEventsDays = retentionResultEventsDays;
+        this.retentionOutputDataDays = retentionOutputDataDays;
     }
 
     /**
@@ -222,7 +222,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             logger.debug("Start retention clean to mongo for schema {}", schema);
             eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
         });
-        clean(Instant.EPOCH, endDate.minus(retentionResultEventsDays, ChronoUnit.DAYS));
+        clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS));
     }
 
     private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
