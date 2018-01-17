@@ -2,6 +2,8 @@
   background: $applicationHeaderBackground;
   height: $applicationHeaderHeight;
   overflow: hidden;
+  position: relative;
+  z-index: 2;
 
   > a {
     float: left;
