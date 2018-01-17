@@ -80,60 +80,64 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void testUniformlyRandomDistribution() {
         Random rnd = new Random(1);
-        List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            times.add((long)(rnd.nextDouble( ) * DAILY_TIME_RESOLUTION));
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < 100 ; i++) {
+            timeToCounter.put((long)(rnd.nextDouble( )* DAILY_TIME_RESOLUTION),1D);
         }
-
-        for (int i = 0; i < times.size(); i++) {
-            assertScore(times, times.get(i), 0);
+        for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
+            Double score = calcScore(timeToCounter, entry.getKey());
+            Assert.assertEquals(score,0,0.001);
         }
     }
 
     @Test
     public void testScoreOfIsolatedTimes() {
         Random rnd = new Random(1);
-        List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            times.add((long)(rnd.nextDouble( ) * 6000));
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < 50 ; i++) {
+            timeToCounter.put((long)(rnd.nextDouble( )* 6000),1D);
         }
         long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-        double scores[] = new double[]{100, 94, 80, 59};
+        double scores[] = new double[]{93, 79, 59, 32};
         for (int i = 0; i < scores.length; i++) {
-            assertScore(times, isolatedTimes[i], scores[i]);
-            times.add(isolatedTimes[i]);
+            timeToCounter.put(isolatedTimes[i],scores[i]);
+            Double score = calcScore(timeToCounter, isolatedTimes[i]);
+            Assert.assertEquals(scores[i],score,0.01);
+            timeToCounter.put(isolatedTimes[i],1D);
         }
-        assertScore(times, 500, 0);
+        Assert.assertEquals(0,calcScore(timeToCounter,500),0.001);
     }
 
     @Test
     public void testScoresInDifferentDistancesFromTheClusters() {
         Random rnd = new Random(1);
-        List<Long> timesClustered = new ArrayList<>();
+        Map<Long, Double> timeToCounter = new HashMap<>();
         int clusterSizes[] = new int[]{2, 2, 46};
         int clusterSpans[] = new int[]{600, 600, 2400};
         int clusterOffsets[] = new int[]{0, 6600, 2400};
         for (int cluster = 0; cluster < clusterSizes.length; cluster++) {
             for (int i = 0; i < clusterSizes[cluster]; i++) {
                 long epochSeconds = (long)(rnd.nextDouble( ) * clusterSpans[cluster] + clusterOffsets[cluster]);
-                timesClustered.add(epochSeconds);
+                timeToCounter.put(epochSeconds,1D);
             }
         }
 
         long[] timesToScore = new long[]{14000, 10500, 10000, 9000, 8500};
         double[] scores = new double[]{100, 100, 99, 89, 60};
         for (int i = 0; i < timesToScore.length; i++) {
-            assertScore(timesClustered, timesToScore[i], scores[i]);
+            Double score = calcScore(timeToCounter, timesToScore[i]);
+            Assert.assertEquals(scores[i],score,0.01);
         }
     }
 
     @Test
     public void testScoresOfOneBigClusterAndManyDispersedTimes() {
         Random rnd = new Random(1);
-        List<Long> times = new ArrayList<>();
+        Map<Long, Double> timeToCounter = new HashMap<>();
+
         for (int i = 0; i < 50; i++) {
             long epochSeconds = (long)(rnd.nextDouble( ) * 3000);
-            times.add(epochSeconds);
+            timeToCounter.put(epochSeconds,1D);
         }
 
         double scores[] = new double[]{100, 94, 80, 59};
@@ -141,12 +145,12 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         long dispersedTimes[] = new long[scores.length];
         for (int i = 0; i < scores.length; i++) {
             dispersedTimes[i] = 3000 + (i + 1) * 9000;
-            assertScore(times, dispersedTimes[i], scores[i]);
-            times.add(dispersedTimes[i]);
+            Assert.assertEquals(scores[i],calcScore(timeToCounter,dispersedTimes[i]),0.001);
+            timeToCounter.put(dispersedTimes[i],1D);
         }
 
         for (int i = 0; i < scores.length; i++) {
-            assertScore(times, dispersedTimes[i], finalScore);
+            Assert.assertEquals(finalScore,calcScore(timeToCounter,dispersedTimes[i]),0.001);
         }
     }
 
