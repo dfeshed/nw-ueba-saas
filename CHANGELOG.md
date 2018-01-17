@@ -1,3 +1,24 @@
+# [7.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.7.0)
+## Features
+* [ASOC-21094](https://bedfordjira.na.rsa.net/browse/ASOC-21094):&emsp;Edit Breadcrumb
+* [ASOC-36088](https://bedfordjira.na.rsa.net/browse/ASOC-36088):&emsp;Pivot to Investigate Events
+* [ASOC-44911](https://bedfordjira.na.rsa.net/browse/ASOC-44911):&emsp;Validate Individual Query Pill
+* [ASOC-45231](https://bedfordjira.na.rsa.net/browse/ASOC-45231):&emsp;Display permission warning when access restricted
+* [ASOC-45232](https://bedfordjira.na.rsa.net/browse/ASOC-45232):&emsp;Combine Investigate landing page and Investigate Event Analysis page
+* [ASOC-45815](https://bedfordjira.na.rsa.net/browse/ASOC-45815):&emsp;Configure Email Notifications for Incident Created/Updated Events
+* [ASOC-46851](https://bedfordjira.na.rsa.net/browse/ASOC-46851):&emsp;Rename Certificate validation to Server Validation
+* [ASOC-47583](https://bedfordjira.na.rsa.net/browse/ASOC-47583):&emsp;Remove Host Count / Hash Lookup in Process Props
+* [ASOC-47597](https://bedfordjira.na.rsa.net/browse/ASOC-47597):&emsp;Support for relative time based filters on Host and Files page
+* [ASOC-47609](https://bedfordjira.na.rsa.net/browse/ASOC-47609):&emsp;Fresh Install - Virtual/OVA (HouseStark / Drogon)
+* [ASOC-47723](https://bedfordjira.na.rsa.net/browse/ASOC-47723):&emsp;Configuration and health metrics for accepted mongo disk usage percentage
+* [ASOC-47736](https://bedfordjira.na.rsa.net/browse/ASOC-47736):&emsp;Schedule Scan Start Time
+* [ASOC-47854](https://bedfordjira.na.rsa.net/browse/ASOC-47854):&emsp;Endpoint Theme Refinement
+* [ASOC-47969](https://bedfordjira.na.rsa.net/browse/ASOC-47969):&emsp;Provide more relative time options for LAST SCAN TIME
+* [ASOC-48010](https://bedfordjira.na.rsa.net/browse/ASOC-48010):&emsp;Grouping of Column Groups
+* [ASOC-48063](https://bedfordjira.na.rsa.net/browse/ASOC-48063):&emsp;Pivot to Investigate Events from Files
+* [ASOC-48070](https://bedfordjira.na.rsa.net/browse/ASOC-48070):&emsp;UI improvements
+
+
 # [7.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.6.0)
 ## Features
 * [ASOC-46101](https://bedfordjira.na.rsa.net/browse/ASOC-46101):&emsp;Create context-sensitive HELP for Incident Rules List and Detail pages
