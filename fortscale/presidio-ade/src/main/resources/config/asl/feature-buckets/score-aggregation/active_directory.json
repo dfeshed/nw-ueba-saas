@@ -52,13 +52,13 @@
       ]
     },
     {
-      "name": "operationTypeToHighestScoreMapUserIdObjectChangeActiveDirectoryHourly",
+      "name": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.active_directory.operationType.userIdObjectChange.activeDirectory.score"
+        "scored_enriched.active_directory.operationType.userIdObjectManagement.activeDirectory.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
