@@ -513,5 +513,28 @@ SSLSessionCacheTimeout  300
      RewriteRule /(.*) "http://localhost:7777/api/v1.0/heartbeat" [P,L]
   </Location>
 
+# Upgrade rest api (upload,status,progress,start...)
+  <Location /upgrade>
+     #Deny from all
+     AuthName Configuration
+     AuthType Basic
+     #Satisfy Any
+     AuthUserFile /etc/httpd/conf/.htpasswd
+     require valid-user
+     RewriteEngine on
+     RewriteRule /(.*) "http://localhost:7788/upgrade/$1" [P,L]
+  </Location>
+
+# version rest api
+  <Location /version>
+       #Deny from all
+       AuthName Configuration
+       AuthType Basic
+       #Satisfy Any
+       AuthUserFile /etc/httpd/conf/.htpasswd
+       require valid-user
+       RewriteEngine on
+       RewriteRule / "http://localhost:7788/version" [P,L]
+    </Location>
 </VirtualHost>
 

@@ -21,7 +21,8 @@
 		<module>presidio-output-webapp</module>
 		<module>presidio-output-sdk-api</module>
 		<module>presidio-output-sdk-api-impl</module>
-	</modules>
+        <module>presidio-output-forwarder</module>
+    </modules>
 
 
 </project>

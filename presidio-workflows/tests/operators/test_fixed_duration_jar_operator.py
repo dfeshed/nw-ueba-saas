@@ -109,7 +109,7 @@ class TestFixedDurationJarOpertor():
             dag=dag)
 
         task.clear()
-        task.execute(context={'execution_date': default})
+        task.execute(context={'execution_date': default, 'task_instance': DummyTaskInstance(dag_id=dag.dag_id,task_id=task.task_id, execution_date=default)})
         tis = get_task_instances(dag)
         assert_task_success_state(tis, task.task_id)
 
@@ -117,3 +117,10 @@ class TestFixedDurationJarOpertor():
         expected_java_args = {'a': 'one', 'b': 'two', 'fixed_duration_strategy': '3600.0',
                               'start_date': '2014-05-13T13:00:00Z', 'end_date': '2014-05-13T14:00:00Z'}
         assert_bash_comment(task, expected_bash_comment, expected_java_args)
+
+
+class DummyTaskInstance(object):
+    def __init__(self,dag_id, task_id, execution_date):
+        self.dag_id = dag_id
+        self.task_id = task_id
+        self.execution_date = execution_date
