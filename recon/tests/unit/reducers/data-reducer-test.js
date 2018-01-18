@@ -19,15 +19,3 @@ test('test SET_FATAL_API_ERROR_FLAG action handler', function(assert) {
 
   assert.equal(result.apiFatalErrorCode, 124);
 });
-
-test('test ACTION_TYPES.INITIALIZE action handler - should return a truncated eventId', function(assert) {
-  const action = {
-    type: ACTION_TYPES.INITIALIZE,
-    payload: {
-      eventId: 7.77
-    }
-  };
-  const result = reducer(initialState, action);
-
-  assert.equal(result.eventId, 7);
-});

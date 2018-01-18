@@ -302,6 +302,13 @@ const initializeRecon = (reconInputs) => {
       type: ACTION_TYPES.OPEN_RECON
     });
 
+    // Truncating eventId after decimal, if user enter a decimal eventId
+    // This is just one particular case that we are handling here, not fair to the numerous other edge cases
+    // In the future, we should display an error message if the user tries to alter the url
+    // and not try to present something relevant if user purposely manipulates it
+    const truncatedEvent = reconInputs.eventId;
+    reconInputs.eventId = truncatedEvent.toString().replace(/[.][0-9]+$/, '');
+
     // If its the same eventId, there is nothing to do
     // as previous state will be intact
     if (dataState.eventId !== reconInputs.eventId) {

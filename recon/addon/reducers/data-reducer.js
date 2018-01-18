@@ -19,12 +19,7 @@ const dataReceivedDoneLoading = (state) => state.set('contentLoading', false);
 
 const data = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload: { endpointId, eventId, isStandalone, contextMenuItems, queryInputs } }) => {
-    return dataInitialState.merge({
-      endpointId,
-      eventId: parseInt(eventId, 10),
-      isStandalone,
-      contextMenuItems,
-      queryInputs });
+    return dataInitialState.merge({ endpointId, eventId, isStandalone, contextMenuItems, queryInputs });
   },
 
   // Generic content handling
