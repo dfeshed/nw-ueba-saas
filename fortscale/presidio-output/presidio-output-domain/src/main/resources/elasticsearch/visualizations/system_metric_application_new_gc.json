@@ -1,14 +1,16 @@
-{
-  "_id": "1f2e1430-f9e5-11e7-9884-edac053b34fe",
-  "_type": "visualization",
-  "_source": {
-    "title": "System metric: Young Garbage collection time per application (in ms.)",
-    "visState": "{\"title\":\"System metric: Young Garbage collection time per application (in ms.)\",\"type\":\"metrics\",\"params\":{\"id\":\"bf9a2720-f9e4-11e7-9884-edac053b34fe\",\"type\":\"timeseries\",\"series\":[{\"id\":\"bf9a2721-f9e4-11e7-9884-edac053b34fe\",\"color\":\"rgba(104,188,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"bf9a2722-f9e4-11e7-9884-edac053b34fe\",\"type\":\"max\",\"field\":\"value.SYSTEM_GC_YOUNG_TIME\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"bar\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"label\":\"GC time Young\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_color_mode\":\"rainbow\"}],\"time_field\":\"timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:garbageCollection\"},\"aggs\":[],\"listeners\":{}}",
-    "uiStateJSON": "{}",
-    "description": "",
-    "version": 1,
-    "kibanaSavedObjectMeta": {
-      "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+[
+  {
+    "_id": "1f2e1430-f9e5-11e7-9884-edac053b34fe",
+    "_type": "visualization",
+    "_source": {
+      "title": "System metric: Young Garbage collection time per application (in ms.)",
+      "visState": "{\"title\":\"System metric: Young Garbage collection time per application (in ms.)\",\"type\":\"metrics\",\"params\":{\"id\":\"bf9a2720-f9e4-11e7-9884-edac053b34fe\",\"type\":\"timeseries\",\"series\":[{\"id\":\"bf9a2721-f9e4-11e7-9884-edac053b34fe\",\"color\":\"rgba(104,188,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"bf9a2722-f9e4-11e7-9884-edac053b34fe\",\"type\":\"max\",\"field\":\"value.SYSTEM_GC_YOUNG_TIME\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":\"3\",\"fill\":\"0\",\"stacked\":\"none\",\"label\":\"GC time Young\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_color_mode\":\"rainbow\"}],\"time_field\":\"timestamp\",\"index_pattern\":\"presidio-monitoring\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:garbageCollection\",\"background_color_rules\":[{\"id\":\"c70c9d30-fc2d-11e7-b0ca-8f0b7b8f14ab\"}]},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
     }
   }
-}
+]
