@@ -106,6 +106,18 @@
               "ALERT_CLASSIFICATION": {
                 "type": "string",
                 "index": "not_analyzed"
+              },
+              "GC_YOUNG_COLLECTOR": {
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "GC_OLD_COLLECTOR": {
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "HOUR_CLOSED": {
+                "type": "string",
+                "index": "not_analyzed"
               }
             }
           },
@@ -343,7 +355,7 @@
               "MAX_FEATURE_VALUE": {
                 "type": "long"
               },
-              "SYSTEM_HEAP_COMMITTED" : {
+              "SYSTEM_HEAP_COMMITTED": {
                 "type": "long"
               },
               "SYSTEM_HEAP_INIT": {
@@ -410,6 +422,9 @@
                 "type": "long"
               },
               "SYSTEM_SYSTEMLOAD_AVERAGE": {
+                "type": "long"
+              },
+              "WEIGHT": {
                 "type": "long"
               }
             }
