@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.base.Preconditions;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.flume.*;
 import org.apache.flume.FlumePresidioExternalMonitoringService.FlumeComponentType;
 import org.apache.flume.conf.MonitorDetails;
@@ -84,7 +86,9 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     protected void doPresidioConfigure(Context context) {
-        schema = Schema.createSchema(context.getString(CommonStrings.SCHEMA_NAME, null));
+        final String schemaName = context.getString(CommonStrings.SCHEMA_NAME, null);
+        Preconditions.checkArgument(StringUtils.isNotEmpty(schemaName), CommonStrings.SCHEMA_NAME + " can not be empty.");
+        schema = Schema.createSchema(schemaName);
     }
 
 
