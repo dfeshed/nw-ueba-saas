@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "d9a4b060-f9e7-11e7-b522-cb9b8f7be7ca",
+    "_type": "visualization",
+    "_source": {
+      "title": "System metric: Application Runtime",
+      "visState": "{\"title\":\"System metric: Application Runtime\",\"type\":\"prelert_swimlane\",\"params\":{\"alphabetSortLaneLabels\":\"off\",\"criticalThreshold\":1200000,\"criticalThresholdColor\":\"#fe5050\",\"interval\":{\"display\":\"Auto\",\"val\":\"auto\",\"description\":\"30 minutes\"},\"lowThreshold\":0,\"lowThresholdColor\":\"#d2e9f7\",\"majorThreshold\":600000,\"majorThresholdColor\":\"#ff7e00\",\"minorThreshold\":300000,\"minorThresholdColor\":\"#ffdd00\",\"showLegend\":true,\"tooltipNumberFormat\":\"0.0\",\"warningThreshold\":120000,\"warningThresholdColor\":\"#8bc8fb\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.DEFAULT_METRIC_VALUE\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"viewBy\",\"params\":{\"field\":\"tags.APPLICATION_NAME\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"timeSplit\",\"params\":{\"field\":\"timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"query\":{\"query_string\":{\"query\":\"name=performance\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]
