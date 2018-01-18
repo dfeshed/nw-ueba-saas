@@ -26,13 +26,18 @@ public class TestConfig {
         properties.put("number.of.classifications", 19);
         properties.put("output.events.limit", 100);
         properties.put("output.events.page.size", 10);
-        properties.put("user.severity.compute.data.critical", "1,1.5,5");
-        properties.put("user.severity.compute.data.high", "4,1.3,10");
-        properties.put("user.severity.compute.data.medium", "10,1.1,9999");
-        properties.put("user.severity.compute.data.low", "80,0,9999");
         properties.put("indicators.contribution.limit.to.classification.percent", 0.3);
         properties.put("output.enriched.events.retention.in.days", 2);
         properties.put("output.data.retention.in.days", 90);
+        properties.put("user.severity.compute.data.critical.percentage.of.users", 1);
+        properties.put("user.severity.compute.data.critical.minimum.delta.factor", 1.5);
+        properties.put("user.severity.compute.data.critical.maximum.users", 5);
+        properties.put("user.severity.compute.data.high.percentage.of.users", 4);
+        properties.put("user.severity.compute.data.high.minimum.delta.factor", 1.3);
+        properties.put("user.severity.compute.data.high.maximum.users", 10);
+        properties.put("user.severity.compute.data.medium.percentage.of.users", 10);
+        properties.put("user.severity.compute.data.medium.minimum.delta.factor", 1.1);
+        properties.put("user.severity.compute.data.low.percentage.of.users", 80);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
