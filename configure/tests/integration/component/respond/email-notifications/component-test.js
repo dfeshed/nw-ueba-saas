@@ -1,4 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
+import { getOwner } from '@ember/application';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
@@ -7,6 +8,7 @@ import Immutable from 'seamless-immutable';
 import notifications from '../../../../data/subscriptions/notification-settings/findAll/data';
 import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
 import $ from 'jquery';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const initialState = {
   emailServers: [],
@@ -27,6 +29,7 @@ const selectors = {
   addEmailInput: '.soc-manager-emails .soc-email-controls input',
   addEmailButton: '.soc-manager-emails .soc-email-controls button',
   notificationSettingRow: '.notification-details table tbody tr',
+  formWarning: 'footer .form-warning',
   applyButton: '.form-save-controls button'
 };
 
@@ -40,6 +43,7 @@ moduleForComponent('respond/email-notifications', 'Integration | Component | Res
       applyPatch(Immutable.from(fullState));
       this.inject.service('redux');
     };
+    initialize(this);
   },
   afterEach() {
     revertPatch();
@@ -207,7 +211,7 @@ test('Removing all soc manager emails unchecks and disables all send to soc mana
   });
 });
 
-test('Removing all soc manager emails unchecks and disables all send to soc manager checkboxes', function(assert) {
+test('The apply button is disabled if the email server is not selected', function(assert) {
   setState({
     ...initialState,
     emailServers: notifications.emailServers,
@@ -231,6 +235,43 @@ test('Removing all soc manager emails unchecks and disables all send to soc mana
   clickTrigger(selectors.emailServerSettings);
   selectChoose(selectors.emailServerSettings, 'My Email Server');
   return wait().then(() => {
+    assert.equal(this.$(selectors.applyButton).is(':disabled'), false, 'The Apply button is enabled after the email server is selected');
+  });
+});
+
+test('The apply button is disabled if there are changes to the form', function(assert) {
+  const settings = {
+    selectedEmailServer: 'my-favorite-server',
+    socManagers: ['admin@rsa.com'],
+    notificationSettings: [
+      {
+        reason: 'incident-created',
+        sendToAssignee: true,
+        sendToSocManagers: true
+      },
+      {
+        reason: 'incident-state-changed',
+        sendToAssignee: true,
+        sendToSocManagers: true
+      }
+    ]
+  };
+  setState({
+    ...initialState,
+    emailServers: notifications.emailServers,
+    ...settings,
+    originalSettings: {
+      ...settings
+    }
+  });
+  this.render(hbs`{{respond/email-notifications}}`);
+  assert.equal(this.$(selectors.applyButton).is(':disabled'), true, 'The Apply button is disabled when there are no changes');
+  assert.equal(this.$(selectors.formWarning).text().trim(), '', 'There is no warning displayed to the user about unsaved changes');
+  this.$(`${selectors.notificationSettingRow}:eq(0) td:eq(1) input`).click();
+  return wait().then(() => {
+    const translation = getOwner(this).lookup('service:i18n');
+    const warningMessage = translation.t('configure.notifications.hasUnsavedChanges');
+    assert.equal(this.$(selectors.formWarning).text().trim(), warningMessage, 'A warning is displayed to users that they have unsaved changes');
     assert.equal(this.$(selectors.applyButton).is(':disabled'), false, 'The Apply button is enabled after the email server is selected');
   });
 });

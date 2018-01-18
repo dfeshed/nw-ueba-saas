@@ -8,7 +8,8 @@ const initialState = {
   notificationsStatus: null, // wait, completed, error
   socManagers: [],
   notificationSettings: [],
-  isTransactionUnderway: false
+  isTransactionUnderway: false,
+  originalSettings: {} // allows us to keep track of whether the settings have changed (i.e., whether there are unsaved changes)
 };
 
 export default reduxActions.handleActions({
@@ -28,7 +29,12 @@ export default reduxActions.handleActions({
       emailServers,
       selectedEmailServer: selectedEmailServer || null,
       socManagers,
-      notificationSettings
+      notificationSettings,
+      originalSettings: {
+        selectedEmailServer: selectedEmailServer || null,
+        socManagers,
+        notificationSettings
+      }
     });
   },
   [ACTION_TYPES.FETCH_NOTIFICATION_SETTINGS_FAILED]: (state) => {
@@ -65,9 +71,19 @@ export default reduxActions.handleActions({
       isTransactionUnderway: true
     });
   },
-  [ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS]: (state) => {
+  [ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS]: (state, action) => {
+    const { payload: { selectedEmailServer, notificationSettings, socManagers } } = action;
+    const updatedSettings = {
+      selectedEmailServer: selectedEmailServer || state.selectedEmailServer,
+      notificationSettings,
+      socManagers
+    };
     return state.merge({
-      isTransactionUnderway: false
+      isTransactionUnderway: false,
+      ...updatedSettings,
+      originalSettings: {
+        ...updatedSettings
+      }
     });
   },
   [ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS_FAILED]: (state) => {

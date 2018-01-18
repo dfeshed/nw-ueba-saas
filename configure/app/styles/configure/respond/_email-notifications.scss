@@ -3,7 +3,7 @@
   overflow-y: auto;
   height: calc(100vh - #{$navbarHeight});
   color: text-color(primary, lighter);
-  padding: rsa-whitespace(more);
+
   h1 {
     @include rsa-font(header, larger);
   }
@@ -12,94 +12,113 @@
   }
   .notifications {
     height: 100%;
-    padding: 0 rsa-whitespace(more);
 
-    .section {
-      padding: rsa-whitespace(more) 0;
-    }
-
-    .email-server-settings {
-      .ember-power-select-trigger {
-        max-width: 300px;
-        text-transform: none;
-        font-weight: normal;
-        font-size: 1rem;
-
+    .notification-form {
+      padding: rsa-whitespace(more) rsa-whitespace(most) 0 rsa-whitespace(most);
+      height: calc(100% - 83px);
+      overflow-x: hidden;
+      overflow-y: auto;
+      .section {
+        padding: rsa-whitespace(more) 0;
       }
-      a {
-        display: inline-block;
-        margin-top: rsa-whitespace();
-        color: text-color(secondary);
+
+      .email-server-settings {
+        .ember-power-select-trigger {
+          max-width: 300px;
+          text-transform: none;
+          font-weight: normal;
+          font-size: 1rem;
+
+        }
+        a {
+          display: inline-block;
+          margin-top: rsa-whitespace();
+          color: text-color(secondary);
+        }
       }
-    }
 
-    .soc-manager-emails {
-      width: 500px;
-      .rsa-form-input {
-        max-width: 430px;
-        min-width: 430px;
-        display: inline-block;
-      }
-      > ul {
-        min-height: 100px;
-        padding: rsa-whitespace(less);
-        margin: rsa-whitespace(less) 0 0 0;
-        border: 1px solid border-color(primary);
+      .soc-manager-emails {
+        width: 500px;
+        .rsa-form-input {
+          max-width: 430px;
+          min-width: 430px;
+          display: inline-block;
+        }
+        > ul {
+          min-height: 100px;
+          padding: rsa-whitespace(less);
+          margin: rsa-whitespace(less) 0 0 0;
+          border: 1px solid border-color(primary);
 
-        > li {
-          position: relative;
-          padding: rsa-whitespace(less) 0;
+          > li {
+            position: relative;
+            padding: rsa-whitespace(less) 0;
 
-          .remove-email {
-            position: absolute;
-            right: 0;
-            .rsa-form-button {
-              padding: 0;
-              i {
-                font-size: 0.8rem;
+            .remove-email {
+              position: absolute;
+              right: 0;
+              .rsa-form-button {
+                padding: 0;
+                i {
+                  font-size: 0.8rem;
+                }
               }
             }
+
+            border-bottom: 1px solid border-color(primary);
+          }
+          > li:last-of-type {
+            border: none;
+          }
+          .no-soc-emails {
+            font-style: italic;
+            text-align: center;
+          }
+        }
+        .soc-email-controls {
+          padding: 0 0 rsa-whitespace(least) rsa-whitespace(least);
+          border: 1px solid border-color(primary);
+          border-top: none;
+          width: 494px;
+        }
+      }
+
+      .notification-details {
+        table {
+          width: 100%;
+          margin: rsa-whitespace() 0;
+
+          thead {
+            @include rsa-font(header, small);
+            color: text-color(primary, light);
+            border-bottom: 1px solid border-color(primary);
+          }
+          td, th {
+            padding: rsa-whitespace(less) 0;
           }
 
-          border-bottom: 1px solid border-color(primary);
-        }
-        > li:last-of-type {
-          border: none;
-        }
-        .no-soc-emails {
-          font-style: italic;
-          text-align: center;
-        }
-      }
-      .soc-email-controls {
-        padding: 0 0 rsa-whitespace(least) rsa-whitespace(least);
-        border: 1px solid border-color(primary);
-        border-top: none;
-        width: 494px;
-      }
-    }
-
-    .notification-details {
-      table {
-        width: 100%;
-        margin: rsa-whitespace() 0;
-
-        thead {
-          @include rsa-font(header, small);
-          color: text-color(primary, light);
-          border-bottom: 1px solid border-color(primary);
-        }
-        td, th {
-          padding: rsa-whitespace(less) 0;
-        }
-
-        tr {
-          border-bottom: 1px solid border-color(primary);
+          tr {
+            border-bottom: 1px solid border-color(primary);
+          }
         }
       }
     }
   }
   footer {
-    margin-bottom: rsa-whitespace(most);
+    box-sizing: border-box;
+    position: relative;
+    background-color: background-color(primary, darker);
+
+    .form-warning {
+      position: absolute;
+      color: text-color(accentFour);
+      top: 20px;
+      left: 50px;
+    }
+
+    .form-save-controls {
+      padding: rsa-whitespace();
+      justify-content: flex-end;
+    }
   }
 }

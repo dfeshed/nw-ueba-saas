@@ -39,7 +39,12 @@ test('With FETCH_NOTIFICATION_SETTINGS, the state is properly updated', function
     emailServers: notifications.emailServers,
     selectedEmailServer: notifications.selectedEmailServer,
     socManagers: notifications.socManagers,
-    notificationSettings: notifications.notificationSettings
+    notificationSettings: notifications.notificationSettings,
+    originalSettings: {
+      selectedEmailServer: notifications.selectedEmailServer,
+      socManagers: notifications.socManagers,
+      notificationSettings: notifications.notificationSettings
+    }
   };
 
   const endState = reducer(Immutable.from(initialState), action);
@@ -177,15 +182,31 @@ test('With UPDATE_NOTIFICATION_SETTINGS_STARTED, the state is properly set', fun
 
 test('With UPDATE_NOTIFICATION_SETTINGS, the state is properly updated', function(assert) {
   const action = {
-    type: ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS
+    type: ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS,
+    payload: {
+      selectedEmailServer: 'my-email-server',
+      socManagers: ['admin@rsa.com'],
+      notificationSettings: notifications.notificationSettings
+    }
   };
   const initState = {
     ...initialState,
+    selectedEmailServer: 'mailhog',
+    socManagers: [],
     isTransactionUnderway: true
   };
   const expectedEndState = {
     ...initialState,
-    isTransactionUnderway: false
+    selectedEmailServer: 'my-email-server',
+    socManagers: ['admin@rsa.com'],
+    notificationSettings: notifications.notificationSettings,
+    isTransactionUnderway: false,
+    // the original settings are updated when the update operation is successful.
+    originalSettings: {
+      selectedEmailServer: 'my-email-server',
+      socManagers: ['admin@rsa.com'],
+      notificationSettings: notifications.notificationSettings
+    }
   };
 
   const endState = reducer(Immutable.from(initState), action);
@@ -194,7 +215,7 @@ test('With UPDATE_NOTIFICATION_SETTINGS, the state is properly updated', functio
 
 test('With UPDATE_NOTIFICATION_SETTINGS_FAILED, the state is properly updated', function(assert) {
   const action = {
-    type: ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS
+    type: ACTION_TYPES.UPDATE_NOTIFICATION_SETTINGS_FAILED
   };
   const initState = {
     ...initialState,

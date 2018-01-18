@@ -9,7 +9,8 @@ import {
   getNotificationsStatus,
   isTransactionUnderway,
   hasSocManagerEmails,
-  isMissingRequiredData
+  isMissingRequiredData,
+  hasUnsavedChanges
 } from 'configure/reducers/respond/notifications/selectors';
 
 import {
@@ -29,7 +30,8 @@ const stateToComputed = (state) => {
     socManagerEmailAddresses: getSocManagerEmailAddresses(state),
     hasSocManagerEmails: hasSocManagerEmails(state),
     notificationSettings: getNotificationSettings(state),
-    isMissingRequiredData: isMissingRequiredData(state)
+    isMissingRequiredData: isMissingRequiredData(state),
+    hasUnsavedChanges: hasUnsavedChanges(state)
   };
 };
 

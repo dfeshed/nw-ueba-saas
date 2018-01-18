@@ -631,6 +631,7 @@ export default {
         'incident-created': 'ja_Incident Created',
         'incident-state-changed': 'ja_Incident Updated'
       },
+      hasUnsavedChanges: 'ja_You have unsaved changes. Click Apply to save.',
       emailServerSettings: 'ja_Email Server Settings',
       actionMessages: {
         fetchFailure: 'ja_There was a problem loading the Respond notification settings',

@@ -7,85 +7,93 @@
     {{t 'configure.notifications.actionMessages.fetchFailure'}}
   </centered>
 {{else}}
-  <h1>{{t 'configure.notifications.settings'}}</h1>
-  <div class="email-server-settings section">
-    <label class="rsa-form-label power-select">
-      <div class="label-text">
-        {{t 'configure.notifications.emailServer'}}
-      </div>
-      {{#power-select
-        options=emailServers
-        selected=selectedEmailServer
-        searchEnabled=false
-        onchange=(action 'updateEmailServer') as |server|}}
-        {{server.name}}
-      {{/power-select}}
-    </label>
-    <a href="/admin/system#notifications">{{t 'configure.notifications.emailServerSettings'}}</a>
-  </div>
+  <div class="notification-form">
+    <h1>{{t 'configure.notifications.settings'}}</h1>
+    <div class="email-server-settings section">
+      <label class="rsa-form-label power-select">
+        <div class="label-text">
+          {{t 'configure.notifications.emailServer'}}
+        </div>
+        {{#power-select
+          options=emailServers
+          selected=selectedEmailServer
+          searchEnabled=false
+          onchange=(action 'updateEmailServer') as |server|}}
+          {{server.name}}
+        {{/power-select}}
+      </label>
+      <a href="/admin/system#notifications">{{t 'configure.notifications.emailServerSettings'}}</a>
+    </div>
 
-  <div class="soc-manager-emails section">
-    <h2>{{t 'configure.notifications.socEmailAddresses'}}</h2>
-    <ul>
-      {{#if (not hasSocManagerEmails)}}
-        <li class="no-soc-emails">{{t 'configure.notifications.noSocEmails'}}</li>
-      {{else}}
-        {{#each socManagerEmailAddresses as |email|}}
-          <li>
-            <span class="soc-manager-email">{{email}}</span>
-            <span class="remove-email">{{#rsa-form-button isIconOnly=true defaultAction=(action 'removeSOCManagerEmail' email)}}{{rsa-icon name='bin-1'}}{{/rsa-form-button}}</span>
-          </li>
-        {{/each}}
-      {{/if}}
-    </ul>
-    <div class="soc-email-controls">
-      {{rsa-form-input value=emailToAdd placeholder=(t 'configure.notifications.emailAddressPlaceholder')}}
-      {{#rsa-form-button isDisabled=isEmailInvalid defaultAction='addEmail'}}{{t 'configure.notifications.addEmail'}}{{/rsa-form-button}}
+    <div class="soc-manager-emails section">
+      <h2>{{t 'configure.notifications.socEmailAddresses'}}</h2>
+      <ul>
+        {{#if (not hasSocManagerEmails)}}
+          <li class="no-soc-emails">{{t 'configure.notifications.noSocEmails'}}</li>
+        {{else}}
+          {{#each socManagerEmailAddresses as |email|}}
+            <li>
+              <span class="soc-manager-email">{{email}}</span>
+              <span class="remove-email">{{#rsa-form-button isIconOnly=true defaultAction=(action 'removeSOCManagerEmail' email)}}{{rsa-icon name='bin-1'}}{{/rsa-form-button}}</span>
+            </li>
+          {{/each}}
+        {{/if}}
+      </ul>
+      <div class="soc-email-controls">
+        {{rsa-form-input value=emailToAdd placeholder=(t 'configure.notifications.emailAddressPlaceholder')}}
+        {{#rsa-form-button isDisabled=isEmailInvalid defaultAction='addEmail'}}{{t 'configure.notifications.addEmail'}}{{/rsa-form-button}}
+      </div>
+    </div>
+
+    <div class="notification-details section">
+      <h2>{{t 'configure.notifications.notificationTypes'}}</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <td>{{t 'configure.notifications.type'}}</td>
+            <td><centered>{{t 'configure.notifications.sendToAssignee'}}</centered></td>
+            <td><centered>{{t 'configure.notifications.sendToSOCManagers'}}</centered></td>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each notificationSettings as |setting|}}
+            <tr>
+              <td>{{t (concat 'configure.notifications.types.' setting.reason)}}</td>
+              <td>
+                <centered>
+                  <label class="rsa-form-checkbox-label {{if setting.sendToAssignee 'checked'}}">
+                    {{rsa-form-checkbox
+                      checked=setting.sendToSocManagers
+                      change=(action 'toggle' setting.reason 'sendToAssignee')}}
+                  </label>
+                </centered>
+              </td>
+              <td>
+                <centered>
+                  <label class="rsa-form-checkbox-label {{if (not hasSocManagerEmails) 'disabled'}} {{if setting.sendToSocManagers  'checked'}}">
+                    {{rsa-form-checkbox
+                      checked=setting.sendToSocManagers
+                      disabled=(not hasSocManagerEmails)
+                      change=(action 'toggle' setting.reason 'sendToSocManagers')}}
+                  </label>
+                </centered>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <div class="notification-details section">
-    <h2>{{t 'configure.notifications.notificationTypes'}}</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <td>{{t 'configure.notifications.type'}}</td>
-          <td><centered>{{t 'configure.notifications.sendToAssignee'}}</centered></td>
-          <td><centered>{{t 'configure.notifications.sendToSOCManagers'}}</centered></td>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each notificationSettings as |setting|}}
-          <tr>
-            <td>{{t (concat 'configure.notifications.types.' setting.reason)}}</td>
-            <td>
-              <centered>
-                <label class="rsa-form-checkbox-label {{if setting.sendToAssignee 'checked'}}">
-                  {{rsa-form-checkbox
-                    checked=setting.sendToSocManagers
-                    change=(action 'toggle' setting.reason 'sendToAssignee')}}
-                </label>
-              </centered>
-            </td>
-            <td>
-              <centered>
-                <label class="rsa-form-checkbox-label {{if (not hasSocManagerEmails) 'disabled'}} {{if setting.sendToSocManagers  'checked'}}">
-                  {{rsa-form-checkbox
-                    checked=setting.sendToSocManagers
-                    disabled=(not hasSocManagerEmails)
-                    change=(action 'toggle' setting.reason 'sendToSocManagers')}}
-                </label>
-              </centered>
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  </div>
   <footer>
+    <span class="form-warning">
+      {{#if hasUnsavedChanges}}
+        {{rsa-icon name='report-problem-triangle'}}
+        {{t 'configure.notifications.hasUnsavedChanges'}}
+      {{/if}}
+    </span>
     <hbox class="form-save-controls">
-      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=isMissingRequiredData}}
+      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=(or isMissingRequiredData (not hasUnsavedChanges))}}
         {{t 'forms.apply'}}
       {{/rsa-form-button}}
     </hbox>

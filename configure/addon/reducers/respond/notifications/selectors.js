@@ -57,3 +57,16 @@ export const isMissingRequiredData = createSelector(
   getSelectedEmailServerId,
   (selectedEmailServerId) => !_.isString(selectedEmailServerId)
 );
+
+export const getOriginalSettings = createSelector(
+  notificationsState,
+  (notificationsState) => notificationsState.originalSettings
+);
+
+export const hasUnsavedChanges = createSelector(
+  [getSelectedEmailServerId, getSocManagerEmailAddresses, getNotificationSettings, getOriginalSettings],
+  (selectedEmailServer, socManagers, notificationSettings, originalSettings) => {
+    const currentSettings = { selectedEmailServer, socManagers, notificationSettings };
+    return !_.isEqual(currentSettings, originalSettings);
+  }
+);
