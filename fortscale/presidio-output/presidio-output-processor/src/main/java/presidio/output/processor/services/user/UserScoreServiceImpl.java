@@ -14,7 +14,12 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by shays on 27/08/2017.
@@ -118,10 +123,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                             UsersAlertData usersAlertData = aggregatedUserScore.get(userId);
                             usersAlertData.incrementUserScore(alert.getContributionToUserScore());
                             usersAlertData.incrementAlertsCount();
-                            usersAlertData.addClassification(alert.getPreferredClassification());
+                            usersAlertData.addClassification(alert.alertPrimaryClassification());
                             usersAlertData.addIndicators(alert.getIndicatorsNames());
                         } else {
-                            aggregatedUserScore.put(userId, new UsersAlertData(alert.getContributionToUserScore(), 1, alert.getPreferredClassification(), alert.getIndicatorsNames()));
+                            aggregatedUserScore.put(userId, new UsersAlertData(alert.getContributionToUserScore(), 1, alert.alertPrimaryClassification(), alert.getIndicatorsNames()));
                         }
 
                     });
@@ -142,9 +147,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
         return dates;
     }
-
-
-
 
 
     /**
@@ -184,7 +186,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
         return page;
     }
-
 
 
 }
