@@ -214,9 +214,6 @@
               "DEFAULT_METRIC_VALUE": {
                 "type": "long"
               },
-              "TIMESTAMP": {
-                "type": "date"
-              },
               "SUM": {
                 "type": "long"
               },
