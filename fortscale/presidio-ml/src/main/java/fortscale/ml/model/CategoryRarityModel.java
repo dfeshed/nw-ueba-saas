@@ -120,9 +120,9 @@ public class CategoryRarityModel implements PartitionedDataModel {
 		if (this == o) return true;
 		if (!(o instanceof CategoryRarityModel)) return false;
 		CategoryRarityModel that = (CategoryRarityModel)o;
-		if (numOfSamples != that.numOfSamples) return false;
-		if (numDistinctFeatures != that.numDistinctFeatures) return false;
-		if (numOfPartitions != that.numOfPartitions) return false;
+		if (!numOfSamples.equals(that.numOfSamples)) return false;
+		if (!numDistinctFeatures.equals(that.numDistinctFeatures)) return false;
+		if (!numOfPartitions.equals(that.numOfPartitions)) return false;
 		if (numberOfEntriesToSaveInModel != that.numberOfEntriesToSaveInModel) return false;
 		if (buckets == null && that.buckets != null) return false;
 		if (buckets != null && that.buckets == null) return false;

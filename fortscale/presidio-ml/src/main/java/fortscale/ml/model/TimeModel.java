@@ -146,9 +146,9 @@ public class TimeModel implements PartitionedDataModel {
 		if (this == o) return true;
 		if (!(o instanceof TimeModel)) return false;
 		TimeModel timeModel = (TimeModel)o;
-		if (timeResolution != timeModel.timeResolution) return false;
-		if (bucketSize != timeModel.bucketSize) return false;
-		if (numOfSamples != timeModel.numOfSamples) return false;
+		if (!timeResolution.equals(timeModel.timeResolution)) return false;
+		if (!bucketSize.equals(timeModel.bucketSize)) return false;
+		if (!numOfSamples.equals(timeModel.numOfSamples)) return false;
 		if (!smoothedBuckets.equals(timeModel.smoothedBuckets)) return false;
 		return categoryRarityModel.equals(timeModel.categoryRarityModel);
 	}
