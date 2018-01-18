@@ -17,11 +17,14 @@ import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
 import presidio.output.processor.services.alert.AlertService;
+import presidio.output.processor.services.user.UserPropertiesUpdateService;
+import presidio.output.processor.services.user.UserPropertiesUpdateServiceImpl;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
 
@@ -87,10 +90,22 @@ public class OutputProcessorTestConfiguration {
     private long retentionResultEventsDays;
 
     @Autowired
+    private UserPersistencyService userPersistencyService;
+
+
+    @Value("${user.batch.size}")
+    private int defaultUsersBatchSize;
+
+    @Autowired
     private UserSeverityService userSeverityService;
 
     @Bean
+    private UserPropertiesUpdateService userPropertiesUpdateService() {
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService, userPersistencyService, defaultUsersBatchSize);
+    }
+
+    @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, userPropertiesUpdateService(), smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
     }
 }

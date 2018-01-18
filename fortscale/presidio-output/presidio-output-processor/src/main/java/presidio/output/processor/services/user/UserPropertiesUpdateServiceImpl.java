@@ -11,6 +11,7 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,10 +30,20 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
         this.defaultUsersBatchSize = defaultUsersBatchSize;
     }
 
+    /**
+     * When trying to update user properties we search for the latest AuthenticationEnrichedEven if exist, if not we
+     * search for FileEnrichedEvent if exist, if not we search for ActiveDirectoryEnrichedEvent.
+     * If the user properties have change we return the updated user if not we return null.
+     *
+     * @param user - User object that maybe need to update properties
+     * @return User with updated properties or null if there is no change.
+     */
     @Override
     public User userPropertiesUpdate(User user) {
         boolean isUpdated = false;
-        EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId());
+        List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events",
+                "output_active_directory_enriched_events", "output_file_enriched_events"));
+        EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
         if (!ObjectUtils.isEmpty(enrichedEvent)) {
             if (!user.getUserDisplayName().equals(enrichedEvent.getUserDisplayName())) {
                 user.setUserDisplayName(enrichedEvent.getUserDisplayName());
