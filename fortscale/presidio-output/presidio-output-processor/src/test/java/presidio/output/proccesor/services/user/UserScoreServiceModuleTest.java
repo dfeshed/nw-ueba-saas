@@ -141,10 +141,14 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(UserSeverity.LOW, updatedUser.getSeverity());
 
         UserSeveritiesRangeDocument userSeveritiesRangeDocument = userSeveritiesRangeRepository.findOne(UserSeveritiesRangeDocument.USER_SEVERITIES_RANGE_DOC_ID);
-        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.LOW), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.LOW));
-        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.MEDIUM), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.MEDIUM));
-        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.HIGH), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.HIGH));
-        Assert.assertEquals(severityToScoreRangeMap.get(UserSeverity.CRITICAL), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.CRITICAL));
+        Assert.assertEquals(new Double(0), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.LOW).getLowerBound());
+        Assert.assertEquals(new Double(20), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.LOW).getUpperBound());
+        Assert.assertEquals(new Double(22), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.MEDIUM).getLowerBound());
+        Assert.assertEquals(new Double(22), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.MEDIUM).getUpperBound());
+        Assert.assertEquals(new Double(28.6), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.HIGH).getLowerBound());
+        Assert.assertEquals(new Double(28.6), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.HIGH).getUpperBound());
+        Assert.assertEquals(new Double(42.900000000000006), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.CRITICAL).getLowerBound());
+        Assert.assertEquals(new Double(42.900000000000006), userSeveritiesRangeDocument.getSeverityToScoreRangeMap().get(UserSeverity.CRITICAL).getUpperBound());
     }
 
     @Test

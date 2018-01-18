@@ -90,49 +90,42 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         List<UserSeverity> severitiesOrderedDesc = new LinkedList<>(severitiesOrderedAsc);
         Collections.reverse(severitiesOrderedDesc);
 
-        Integer index = 0;
+        Integer rangeStartIndex = 0;
 
         // Go over all the severities from Critical to Low
         for (UserSeverity userSeverity : severitiesOrderedDesc) {
 
-            // Get the details
-            UserSeverityComputeData userSeverityComputeData = severityToComputeDataMap.get(userSeverity);
+            if (userSeverity.equals(UserSeverity.LOW)) {
+                severityToScoreRangeMap.put(UserSeverity.LOW, new PresidioRange<>(0d, userScores[rangeStartIndex]));
+            } else {
 
-            // Calculate the max users that can get the severity as percentage from the users
-            int numberOfCalculatedFromPercent = (int) Math.ceil(userSeverityComputeData.getPercentageOfUsers() * ((double) userScores.length) / 100);
-            int finalIndex = index + numberOfCalculatedFromPercent;
+                // Get the details
+                UserSeverityComputeData userSeverityComputeData = severityToComputeDataMap.get(userSeverity);
 
-            // If maxUsers set check that the amount calculated from percentage is not bigger that the users allowed
-            if (userSeverityComputeData.getMaximumUsers() != null && numberOfCalculatedFromPercent > userSeverityComputeData.getMaximumUsers()) {
-                finalIndex = (int) (index + userSeverityComputeData.getMaximumUsers());
-            }
+                // Calculate the max users that can get the severity as percentage from the users
+                int numberOfCalculatedFromPercent = (int) Math.floor(userSeverityComputeData.getPercentageOfUsers() * ((double) userScores.length) / 100);
+                int rangeEndIndex = rangeStartIndex + numberOfCalculatedFromPercent;
 
-            // Make sure we wont get out of the array boundaries
-            if (finalIndex >= userScores.length || userSeverity.equals(UserSeverity.LOW)) {
-                finalIndex = userScores.length - 1;
-            }
+                // If maxUsers set check that the amount calculated from percentage is not bigger that the users allowed
+                if (userSeverityComputeData.getMaximumUsers() != null && numberOfCalculatedFromPercent > userSeverityComputeData.getMaximumUsers()) {
+                    rangeEndIndex = (int) (rangeStartIndex + userSeverityComputeData.getMaximumUsers());
+                }
 
-            // Looking for the separation point between the severities
-            for (int i = finalIndex; i > index; i--) {
+                // Looking for the separation point between the severities
+                for (int i = rangeEndIndex; i > rangeStartIndex; i--) {
 
-                // The delta between the scores is big enough to separate the severities
-                if (userScores[i] * userSeverityComputeData.getMinimumDeltaFactor() <= userScores[i - 1]) {
-                    double minSeverityScore = userScores[i - 1];
-                    if (i == userScores.length - 1) {
-                        minSeverityScore = userScores[i];
+                    // The delta between the scores is big enough to separate the severities
+                    if (userScores[i] * userSeverityComputeData.getMinimumDeltaFactor() <= userScores[i - 1]) {
+                        double minSeverityScore = userScores[i - 1];
+
+                        // Set the severity boundaries
+                        severityToScoreRangeMap.put(userSeverity, new PresidioRange<>(minSeverityScore, userScores[rangeStartIndex]));
+                        rangeStartIndex = i;
+
+                        break;
                     }
-
-                    // Set the severity boundaries
-                    severityToScoreRangeMap.put(userSeverity, new PresidioRange<>(minSeverityScore, userScores[index]));
-                    index = i;
-
-                    break;
                 }
             }
-        }
-
-        if (severityToScoreRangeMap.get(UserSeverity.LOW) == null) {
-            severityToScoreRangeMap.put(UserSeverity.LOW, new PresidioRange<>(userScores[userScores.length - 1], userScores[userScores.length - 1]));
         }
 
         // Fix the mapping by going from low to critical and calculating the lower bound of each severity according to the
