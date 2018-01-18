@@ -126,6 +126,7 @@ $entityFileHashColor: $cyan;
 
     &--disabled {
       fill: text-color(primary, darker);
+      stroke: text-color(primary, darker);
     }
 
     &--selected {
