@@ -54,14 +54,14 @@ public class OutputProcessorConfiguration {
     @Value("${output.enriched.events.retention.in.days}")
     private long retentionEnrichedEventsDays;
 
-    @Value("${output.result.events.retention.in.days}")
-    private long retentionResultEventsDays;
+    @Value("${output.data.retention.in.days}")
+    private long retentionOutputDataDays;
 
     @Autowired
     private OutputMonitoringService outputMonitoringService;
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }

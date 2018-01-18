@@ -441,6 +441,75 @@
               },
               "MAX_FEATURE_VALUE": {
                 "type": "long"
+              },
+              "SYSTEM_HEAP_COMMITTED" : {
+                "type": "long"
+              },
+              "SYSTEM_HEAP_INIT": {
+                "type": "long"
+              },
+              "SYSTEM_HEAP_USED": {
+                "type": "long"
+              },
+              "SYSTEM_HEAP": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP_COMMITTED": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP_INIT": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP_USED": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS_PEAK": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS_DAEMON": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS_TOTAL_STARTED": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS": {
+                "type": "long"
+              },
+              "SYSTEM_GC_YOUNG_COUNT": {
+                "type": "long"
+              },
+              "SYSTEM_GC_YOUNG_TIME": {
+                "type": "long"
+              },
+              "SYSTEM_GC_OLD_COUNT": {
+                "type": "long"
+              },
+              "SYSTEM_GC_OLD_TIME": {
+                "type": "long"
+              },
+              "SYSTEM_CPU_LOAD": {
+                "type": "long"
+              },
+              "SYSTEM_CPU_TIME": {
+                "type": "long"
+              },
+              "SYSTEM_MEM": {
+                "type": "long"
+              },
+              "SYSTEM_MEM_FREE": {
+                "type": "long"
+              },
+              "SYSTEM_PROCESSORS": {
+                "type": "long"
+              },
+              "SYSTEM_UPTIME": {
+                "type": "long"
+              },
+              "SYSTEM_SYSTEMLOAD_AVERAGE": {
+                "type": "long"
               }
             }
           }
