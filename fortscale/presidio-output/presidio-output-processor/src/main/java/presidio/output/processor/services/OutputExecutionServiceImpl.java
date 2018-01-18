@@ -114,7 +114,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
 
-                    String classification = alertEntity.getPreferredClassification();
+                    String classification = alertEntity.alertPrimaryClassification();
                     outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
