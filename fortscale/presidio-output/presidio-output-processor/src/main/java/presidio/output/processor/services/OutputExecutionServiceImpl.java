@@ -116,7 +116,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                     String classification = null;
                     if(alertEntity.getClassifications() == null || alertEntity.getClassifications().isEmpty()) {
-                        logger.error("Alert {} generated with out classification");
+                        logger.error("Alert {} generated with out classification", alertEntity);
                     }
                     else {
                         classification = alertEntity.getClassifications().get(0);
