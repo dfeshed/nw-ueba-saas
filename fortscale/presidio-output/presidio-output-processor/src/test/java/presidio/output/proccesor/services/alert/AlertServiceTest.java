@@ -184,7 +184,7 @@ public class AlertServiceTest {
                 +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
         // event
-        generateActiveDirectoryEvents(1, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_TYPE_CHANGED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
+        generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_TYPE_CHANGED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
         generateActiveDirectoryEvents(1, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_LOCKED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
 
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(staticAggregationRecord);
