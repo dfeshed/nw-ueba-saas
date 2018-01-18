@@ -61,14 +61,14 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
     private SupportingInformationUtils supportingInfoUtils;
 
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils SupportingInfoUtils) {
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils) {
         this.config = supportingInformationConfig;
         this.adeManagerSdk = adeManagerSdk;
         this.eventPersistencyService = eventPersistencyService;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
-        this.supportingInfoUtils = SupportingInfoUtils;
+        this.supportingInfoUtils = supportingInfoUtils;
     }
 
 
