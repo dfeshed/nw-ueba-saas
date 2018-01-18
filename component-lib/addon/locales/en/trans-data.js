@@ -2487,6 +2487,7 @@ export default {
       initiateScan: {
         modal: {
           title: 'Start Scan for {{count}} host(s)',
+          modalTitle: 'Start Scan for {{name}}',
           description: 'Select the type of scan for the selected host(s).',
           error1: '*Select at least one host',
           error2: 'Maximum 100 hosts allowed to start scan',

@@ -41,7 +41,7 @@ export const serviceList = createSelector(
 export const hostListForScanning = createSelector(
   [ _selectedHostList, _hostDetailId, _agentVersion ],
   (selectedHostList, hostDetailId, agentVersion) => {
-    if (hostDetailId) {
+    if (hostDetailId && agentVersion && !agentVersion.startsWith('4.4')) {
       return [{ id: hostDetailId, version: agentVersion }];
     }
     return selectedHostList;

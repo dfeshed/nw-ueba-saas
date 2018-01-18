@@ -16,7 +16,9 @@
 <div class="divider"/>
 <hbox class="rsa-button-group host-action-buttons">
   <div class="action-button">
-    {{host-scan/scan-command command='START_SCAN'}}
+    {{host-scan/scan-command
+      modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
+      command='START_SCAN'}}
   </div>
   <div class="action-button ecatUI">
     {{#rsa-form-button

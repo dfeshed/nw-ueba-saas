@@ -16,7 +16,7 @@
   <section class="column-chooser-input">
     {{rsa-form-input value=searchTerm placeholder=(t 'investigateHosts.hosts.filters.searchPlaceHolder')}}
   </section>
-  <ul class="filter-options">
+  <ul class="filter-options rsa-dropdown-action-list">
     {{#each filterList as |option|}}
       <li>
         <label class="rsa-form-checkbox-label {{if (or option.selected (gte option.selected.length 0)) 'checked'}}">

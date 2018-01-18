@@ -12,9 +12,9 @@ $filterPanelMinWidth: 200px;
 }
 
 .filter-options {
-  height: 350px;
-  overflow: hidden;
+  max-height: 350px;
   overflow-y: scroll;
+  overflow: auto;
 }
 
 .save-button {

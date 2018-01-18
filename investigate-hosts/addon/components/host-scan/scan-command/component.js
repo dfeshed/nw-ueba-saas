@@ -1,5 +1,7 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
+
 import {
   isScanStartButtonDisabled,
   warningMessages,
@@ -13,8 +15,15 @@ const stateToComputed = (state) => ({
 const ScanCommand = Component.extend({
   tagName: '',
 
-  command: null
+  command: null,
 
+  @computed('modalTitle', 'agentIds')
+  title(modalTitle, agentIds) {
+    if (modalTitle) {
+      return modalTitle;
+    }
+    return this.get('i18n').t('investigateHosts.hosts.initiateScan.modal.title', { count: agentIds.length });
+  }
 });
 
 export default connect(stateToComputed)(ScanCommand);

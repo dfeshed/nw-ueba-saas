@@ -5,7 +5,8 @@ import moment from 'moment';
 import {
   isJsonExportCompleted,
   isSnapshotsAvailable,
-  downloadLink
+  downloadLink,
+  hostName
 } from 'investigate-hosts/reducers/details/overview/selectors';
 
 import {
@@ -16,6 +17,7 @@ import {
 
 
 const stateToComputed = (state) => ({
+  hostName: hostName(state),
   scanTime: state.endpoint.detailsInput.scanTime,
   host: state.endpoint.overview.hostDetails,
   agentId: state.endpoint.detailsInput.agentId,
