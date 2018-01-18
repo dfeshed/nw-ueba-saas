@@ -202,6 +202,13 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
         // get distinct values of all the scored events
         List<Pair<String, Object>> features = new ArrayList<>();
+        String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
+        String anomalyValue = indicatorConfig.getAnomalyDescriptior().getAnomalyValue();
+        if (StringUtils.isNoneEmpty(anomalyValue, anomalyField)) {
+            Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
+            features.add(Pair.of(anomalyField, featureValue));
+        }
+
         AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
         if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
             String fieldName = anomalyFiltersConfig.getFieldName();
