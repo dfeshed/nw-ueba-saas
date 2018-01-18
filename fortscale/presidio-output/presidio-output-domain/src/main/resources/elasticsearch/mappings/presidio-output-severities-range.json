@@ -1,0 +1,26 @@
+{
+  "user-severities-range": {
+    "properties": {
+      "id": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
+      "createdDate": {
+        "store": true,
+        "type": "date"
+      },
+      "updatedDate": {
+        "store": true,
+        "type": "date"
+      },
+      "updatedBy": {
+        "store": true,
+        "type": "string"
+      },
+      "severityToScoreRangeMap": {
+        "store": true,
+        "type": "object"
+      }
+    }
+  }
+}

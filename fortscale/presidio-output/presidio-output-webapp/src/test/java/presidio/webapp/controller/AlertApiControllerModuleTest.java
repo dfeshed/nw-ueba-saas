@@ -21,7 +21,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import presidio.output.domain.records.UserScorePercentilesDocument;
+import presidio.output.domain.records.PresidioRange;
+import presidio.output.domain.records.UserSeveritiesRangeDocument;
 import presidio.output.domain.records.alerts.AlertEnums;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -29,26 +30,14 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.UserRepository;
-import presidio.output.domain.repositories.UserScorePercentilesRepository;
+import presidio.output.domain.repositories.UserSeveritiesRangeRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQueryEnums;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.EventsWrapper;
-import presidio.webapp.model.IndicatorsWrapper;
-import presidio.webapp.model.UpdateFeedbackRequest;
+import presidio.webapp.model.*;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -83,7 +72,7 @@ public class AlertApiControllerModuleTest {
     private AlertPersistencyServiceImpl alertPersistencyService;
 
     @Autowired
-    private UserScorePercentilesRepository userScorePercentilesRepository;
+    private UserSeveritiesRangeRepository userSeveritiesRangeRepository;
 
     private ObjectMapper objectMapper;
 
@@ -111,7 +100,7 @@ public class AlertApiControllerModuleTest {
         userRepository.delete(userRepository.findAll());
 
         //delete the created user score percentile documents
-        userScorePercentilesRepository.delete(userScorePercentilesRepository.findAll());
+        userSeveritiesRangeRepository.delete(userSeveritiesRangeRepository.findAll());
     }
 
     @Test
@@ -490,7 +479,7 @@ public class AlertApiControllerModuleTest {
     @Test
     public void testUpdateAlertFeedback_NONEtoRISK_noExistingPercentilesDoc() throws Exception {
 
-        Mockito.verify(Mockito.spy(UserScorePercentilesRepository.class), Mockito.times(0)).findAll();
+        Mockito.verify(Mockito.spy(UserSeveritiesRangeRepository.class), Mockito.times(0)).findAll();
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
@@ -534,8 +523,7 @@ public class AlertApiControllerModuleTest {
     @Test
     public void testUpdateFeedbackForMultipleAlertSameUser_existingPercentilesDoc() throws Exception {
 
-        UserScorePercentilesDocument percentilesDoc = new UserScorePercentilesDocument(150, 100, 50);
-        userScorePercentilesRepository.save(percentilesDoc);
+        userSeveritiesRangeRepository.save(createUserSeveritiesRangeDocument(50d, 100d, 150d));
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
@@ -589,7 +577,7 @@ public class AlertApiControllerModuleTest {
     @Test
     public void testUpdateFeedbackForMultipleAlertSameUser_noExistingPercentilesDoc() throws Exception {
 
-        Mockito.verify(Mockito.spy(UserScorePercentilesRepository.class), Mockito.times(0)).findAll();
+        Mockito.verify(Mockito.spy(UserSeveritiesRangeRepository.class), Mockito.times(0)).findAll();
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
@@ -642,8 +630,8 @@ public class AlertApiControllerModuleTest {
 
     @Test
     public void testUpdateAlertFeedback_RISKtoNOT_RISK_userScorePercentilesExists() throws Exception {
-        UserScorePercentilesDocument percentilesDoc = new UserScorePercentilesDocument(150, 100, 50);
-        userScorePercentilesRepository.save(percentilesDoc);
+
+        userSeveritiesRangeRepository.save(createUserSeveritiesRangeDocument(50d, 100d, 150d));
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
@@ -688,8 +676,9 @@ public class AlertApiControllerModuleTest {
 
     @Test
     public void testUpdateAlertFeedback_NOT_RISKtoRISK_userScorePercentilesExists() throws Exception {
-        UserScorePercentilesDocument percentilesDoc = new UserScorePercentilesDocument(150, 100, 50);
-        userScorePercentilesRepository.save(percentilesDoc);
+
+        UserSeveritiesRangeDocument userSeveritiesRangeDocument = createUserSeveritiesRangeDocument(50d, 100d, 150d);
+        userSeveritiesRangeRepository.save(userSeveritiesRangeDocument);
 
         //save user in elastic
         presidio.output.domain.records.users.User user = new User();
@@ -730,6 +719,15 @@ public class AlertApiControllerModuleTest {
         User updatedUser = userRepository.findOne(savedUser.getId());
         Assert.assertEquals(savedUser.getScore() + updatedAlert.getContributionToUserScore(), updatedUser.getScore(), 0.01);
         Assert.assertEquals(UserSeverity.CRITICAL, updatedUser.getSeverity());
+    }
+
+    private UserSeveritiesRangeDocument createUserSeveritiesRangeDocument(double lowSeverityUpperBound, double mediumSeverityUpperBound, double highSeverityUpperBound) {
+        Map<UserSeverity, PresidioRange<Double>> userSeveritiesRangeMap = new LinkedHashMap<>();
+        userSeveritiesRangeMap.put(UserSeverity.LOW, new PresidioRange<>(0d, lowSeverityUpperBound));
+        userSeveritiesRangeMap.put(UserSeverity.MEDIUM, new PresidioRange<>(lowSeverityUpperBound, mediumSeverityUpperBound));
+        userSeveritiesRangeMap.put(UserSeverity.HIGH, new PresidioRange<>(mediumSeverityUpperBound, highSeverityUpperBound));
+        userSeveritiesRangeMap.put(UserSeverity.CRITICAL, new PresidioRange<>(highSeverityUpperBound, highSeverityUpperBound * 1.5));
+        return new UserSeveritiesRangeDocument(userSeveritiesRangeMap);
     }
 
     @Test
