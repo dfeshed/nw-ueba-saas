@@ -39,6 +39,12 @@
         "store": true,
         "type": "string"
       },
+      "userDisplayNameSortLowercase": {
+        "store": true,
+        "type": "string",
+        "fielddata": true,
+        "analyzer": "case_insensitive_sort"
+      },
       "score": {
         "store": true,
         "type": "double"
