@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,12 +31,7 @@ import presidio.output.domain.repositories.UserRepository;
 import presidio.output.domain.repositories.UserScorePercentilesRepository;
 import presidio.output.domain.services.alerts.AlertPersistencyServiceImpl;
 import presidio.webapp.controllers.alerts.AlertsApi;
-import presidio.webapp.model.Alert;
-import presidio.webapp.model.AlertQueryEnums;
-import presidio.webapp.model.AlertsWrapper;
-import presidio.webapp.model.EventsWrapper;
-import presidio.webapp.model.IndicatorsWrapper;
-import presidio.webapp.model.UpdateFeedbackRequest;
+import presidio.webapp.model.*;
 import presidio.webapp.spring.ApiControllerModuleTestConfig;
 
 import java.math.BigDecimal;
@@ -436,16 +432,23 @@ public class AlertApiControllerModuleTest {
         EventsWrapper actualResponse = objectMapper.readValue(actualResponseStr, EventsWrapper.class);
 
         Assert.assertEquals(102, actualResponse.getTotal().intValue());
-        Assert.assertEquals(10, actualResponse.getEvents().size()); //default result size is 10
+        List<Event> events = actualResponse.getEvents();
+        Assert.assertEquals(10, events.size()); //default result size is 10
+        //verify that the events are sorted by evnet time descending-
+        for (int i=0; i < events.size() - 2; i++) {
+            Assert.assertEquals(events.get(i).getTime().compareTo(events.get(i + 1).getTime()), 1);
+        }
+        
     }
 
 
     private List<IndicatorEvent> generateEvents(int eventsNum, String indicatorId) {
+        Date baseDate = new Date();
         List<IndicatorEvent> events = new ArrayList<>();
         for (int i = 1; i <= eventsNum; i++) {
             IndicatorEvent event = new IndicatorEvent();
             event.setSchema(Schema.ACTIVE_DIRECTORY);
-            event.setEventTime(new Date());
+            event.setEventTime(DateUtils.addDays(baseDate, i));
             event.setIndicatorId(indicatorId);
             event.setFeatures(new HashMap<>());
             events.add(event);
