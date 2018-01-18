@@ -1,0 +1,118 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfSuccessfulPrintsUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "resultHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "resultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "SUCCESS"
+      }
+    },
+    {
+      "name": "numberOfFailedPrintsUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "resultHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "resultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_histogram_key_value_func",
+        "key": "FAILURE"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineIdUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "srcMachineIdHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcMachineIdHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineIdUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineIdHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "dstMachineIdHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineNameRegexClusterUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "srcMachineNameRegexClusterHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineNameRegexClusterHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "dstMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctAbsoluteFolderPathUserIdPrintHourly",
+      "type": "F",
+      "bucketConfName": "absoluteFolderPathHistogramUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "absoluteFolderPathHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func"
+      }
+    }
+  ]
+}

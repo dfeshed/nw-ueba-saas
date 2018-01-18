@@ -1,0 +1,228 @@
+{
+  "ModelConfs": [
+    {
+      "name": "numberOfSuccessfulPrints.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulPrintsUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulPrintsUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSuccessfulPrints.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulPrints.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFailedPrints.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFailedPrintsUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFailedPrintsUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFailedPrints.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedPrints.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineId.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineIdUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineIdUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineId.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctSrcMachineId.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 4,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineId.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineIdUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineIdUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineId.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctDstMachineId.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 4,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineNameRegexClusterUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctSrcMachineNameRegexClusterUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 4,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 4,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctAbsoluteFolderPathUserIdPrintHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctAbsoluteFolderPathUserIdPrintHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctAbsoluteFolderPath.userId.prior.print.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    }
+  ]
+}

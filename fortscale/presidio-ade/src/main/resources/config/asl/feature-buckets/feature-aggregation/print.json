@@ -1,0 +1,148 @@
+{
+  "BucketConfs": [
+    {
+      "name": "resultHistogramUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "print"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "resultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineIdHistogramUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "print"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcMachineIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcMachineId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineIdHistogramUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "print"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstMachineIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstMachineId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineNameRegexClusterHistogramUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "print"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcMachineNameRegexClusterHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineNameRegexClusterHistogramUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "print"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstMachineNameRegexClusterHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "absoluteFolderPathHistogramUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "print"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "absoluteFolderPathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "absoluteFolderPath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}

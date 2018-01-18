@@ -1,0 +1,187 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.startInstant.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineNameRegexClusterToHighestScoreMapUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.srcMachineNameRegexCluster.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcMachineNameRegexClusterToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcMachineNameRegexCluster"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineIdToHighestScoreMapUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.dstMachineId.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstMachineIdToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstMachineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineNameRegexClusterToHighestScoreMapUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.dstMachineNameRegexCluster.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstMachineNameRegexClusterToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstMachineNameRegexCluster"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "highestNumOfPagesScoreUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.numOfPages.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestNumOfPagesScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "absoluteFolderPathToHighestScoreMapUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.absoluteFolderPath.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "absoluteFolderPathToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.absoluteFolderPath"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileExtensionToHighestScoreMapUserIdPrintHourly",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.print.fileExtension.userId.print.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileExtensionToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.fileExtension"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    }
+  ]
+}
