@@ -79,7 +79,28 @@ public class MetricEnums {
         AGGREGATIONS("aggregations"),
         AMOUNT_OF_NON_ZERO_FEATURE_VALUES("amountOfNonZeroFeatureValue"),
         MAX_FEATURE_VALUE("maxFeatureValue"),
-        WEIGHT("weight");
+        WEIGHT("weight"),
+        SYSTEM_MEM("mem"),
+        SYSTEM_MEM_FREE("mem.free"),
+        SYSTEM_UPTIME("uptime"),
+        SYSTEM_HEAP_COMMITTED("heap.committed"),
+        SYSTEM_HEAP_INIT("heap.init"),
+        SYSTEM_HEAP_USED("heap.used"),
+        SYSTEM_HEAP("heap"),
+        SYSTEM_NONHEAP_COMMITTED("nonheap.committed"),
+        SYSTEM_NONHEAP_INIT("nonheap.init"),
+        SYSTEM_NONHEAP_USED("nonheap.used"),
+        SYSTEM_NONHEAP("nonheap"),
+        SYSTEM_THREADS_PEAK("threads.peak"),
+        SYSTEM_THREADS_DAEMON("threads.daemon"),
+        SYSTEM_THREADS_TOTAL_STARTED("threads.totalStarted"),
+        SYSTEM_THREADS("threads"),
+        SYSTEM_GC_YOUNG_COUNT("gc.young.count"),
+        SYSTEM_GC_YOUNG_TIME("gc.young.time"),
+        SYSTEM_GC_OLD_COUNT("gc.old.count"),
+        SYSTEM_GC_OLD_TIME("gc.old.time"),
+        SYSTEM_CPU_LOAD("cpu.load"),
+        SYSTEM_CPU_TIME("cpu.time");
 
         private String value;
 
@@ -107,7 +128,9 @@ public class MetricEnums {
     }
 
     public enum MetricTagKeysEnum {
-        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON, FEATURE_NAME, AGGREGATED_FEATURE_TYPE,GROUP_NAME, TIME, FEATURE_BUCKET,FLUME_COMPONENT_TYPE,FLUME_COMPONENT_INSTANCE_ID;
+        HOST, SCHEMA, UNIT, RESULT, APPLICATION_NAME, PID, IS_SYSTEM_METRIC,ADE_EVENT_TYPE,SCORER,MODEL,FAILURE_REASON,
+        FEATURE_NAME, AGGREGATED_FEATURE_TYPE,GROUP_NAME, TIME, FEATURE_BUCKET,FLUME_COMPONENT_TYPE,
+        FLUME_COMPONENT_INSTANCE_ID,GC_YOUNG_COLLECTOR, GC_OLD_COLLECTOR,HOUR_CLOSED;
     }
 
     public enum MetricUnitType {
