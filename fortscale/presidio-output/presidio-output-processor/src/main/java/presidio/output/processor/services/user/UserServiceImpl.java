@@ -235,7 +235,7 @@ public class UserServiceImpl implements UserService {
         if (CollectionUtils.isNotEmpty(alerts)) {
             alerts.forEach(alert -> {
                 if (alert.getContributionToUserScore() > 0) {
-                    usersAlertData.addClassification(alert.getPreferredClassification());
+                    usersAlertData.addClassification(alert.alertPrimaryClassification());
                     usersAlertData.addIndicators(alert.getIndicatorsNames());
                     usersAlertData.incrementAlertsCount();
                     usersAlertData.incrementUserScore(alert.getContributionToUserScore());

@@ -15,21 +15,25 @@ public class SyslogService {
     private static final String METADATA_TAG = "meta@presidio";
     private static final String EVENT_ID = "eventID";
 
+    private static final int SOCKET_CONNECT_TIMEOUT_IN_MILLIS = 60000;
+
     private String hostName = "localhost";
     private String pid;
+
+    private TcpSyslogMessageSender  messageSender;
 
     public SyslogService() {
         try {hostName = InetAddress.getLocalHost().getHostName();} catch (UnknownHostException ex) {};
         pid = java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        messageSender = new TcpSyslogMessageSender();
+        messageSender.setMessageFormat(MessageFormat.RFC_5424); // optional, default is RFC 3164
+        messageSender.setSocketConnectTimeoutInMillis(SOCKET_CONNECT_TIMEOUT_IN_MILLIS);
     }
-
 
     public void send(SyslogEventsEnum type, String id, String message, String host, int port) throws IOException {
 
-        TcpSyslogMessageSender  messageSender = new TcpSyslogMessageSender();
         messageSender.setSyslogServerHostname(host);
         messageSender.setSyslogServerPort(port);
-        messageSender.setMessageFormat(MessageFormat.RFC_5424); // optional, default is RFC 3164
 
         SyslogMessage syslogMessage = new SyslogMessage()
                     .withFacility(Facility.USER)

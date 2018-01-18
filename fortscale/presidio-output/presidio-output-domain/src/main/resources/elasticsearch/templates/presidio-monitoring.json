@@ -8,200 +8,116 @@
     },
     "mappings": {
       "metric": {
+        "_all": {
+          "enabled": false
+        },
         "properties": {
           "id": {
-            "type": "keyword"
+            "type": "string",
+            "index": "not_analyzed"
           },
           "logicTime": {
             "type": "date",
             "store": true
           },
           "name": {
-            "type": "text",
+            "type": "string",
             "index": "not_analyzed",
             "store": true
           },
           "tags": {
             "properties": {
               "APPLICATION_NAME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "IS_SYSTEM_METRIC": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FLUME_COMPONENT_INSTANCE_ID": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FLUME_COMPONENT_TYPE": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FEATURE_BUCKET": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "TIME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "GROUP_NAME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "AGGREGATED_FEATURE_TYPE": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FEATURE_NAME": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "FAILURE_REASON": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "HOST": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "RESULT": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "ADE_EVENT_TYPE": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "SCORER": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "MODEL": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "PID": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "SCHEMA": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
               },
               "UNIT": {
-                "type": "text",
-                "fielddata": true,
-                "fields": {
-                  "keyword": {
-                    "type": "keyword",
-                    "ignore_above": 256
-                  }
-                }
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "ALERT_SEVERITY": {
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "ALERT_CLASSIFICATION": {
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "GC_YOUNG_COLLECTOR": {
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "GC_OLD_COLLECTOR": {
+                "type": "string",
+                "index": "not_analyzed"
+              },
+              "HOUR_CLOSED": {
+                "type": "string",
+                "index": "not_analyzed"
               }
             }
           },
@@ -437,6 +353,78 @@
                 "type": "long"
               },
               "MAX_FEATURE_VALUE": {
+                "type": "long"
+              },
+              "SYSTEM_HEAP_COMMITTED": {
+                "type": "long"
+              },
+              "SYSTEM_HEAP_INIT": {
+                "type": "long"
+              },
+              "SYSTEM_HEAP_USED": {
+                "type": "long"
+              },
+              "SYSTEM_HEAP": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP_COMMITTED": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP_INIT": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP_USED": {
+                "type": "long"
+              },
+              "SYSTEM_NONHEAP": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS_PEAK": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS_DAEMON": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS_TOTAL_STARTED": {
+                "type": "long"
+              },
+              "SYSTEM_THREADS": {
+                "type": "long"
+              },
+              "SYSTEM_GC_YOUNG_COUNT": {
+                "type": "long"
+              },
+              "SYSTEM_GC_YOUNG_TIME": {
+                "type": "long"
+              },
+              "SYSTEM_GC_OLD_COUNT": {
+                "type": "long"
+              },
+              "SYSTEM_GC_OLD_TIME": {
+                "type": "long"
+              },
+              "SYSTEM_CPU_LOAD": {
+                "type": "long"
+              },
+              "SYSTEM_CPU_TIME": {
+                "type": "long"
+              },
+              "SYSTEM_MEM": {
+                "type": "long"
+              },
+              "SYSTEM_MEM_FREE": {
+                "type": "long"
+              },
+              "SYSTEM_PROCESSORS": {
+                "type": "long"
+              },
+              "SYSTEM_UPTIME": {
+                "type": "long"
+              },
+              "SYSTEM_SYSTEMLOAD_AVERAGE": {
+                "type": "long"
+              },
+              "WEIGHT": {
                 "type": "long"
               }
             }
