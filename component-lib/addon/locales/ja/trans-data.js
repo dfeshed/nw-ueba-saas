@@ -2425,13 +2425,13 @@ export default {
       },
       propertyPanelTitles: {
         autoruns: {
-          autorun: 'ja_Autoruns Properties',
-          services: 'ja_Services Properties',
-          tasks: 'ja_Tasks Properties'
+          autorun: 'ja_Autorun Properties',
+          services: 'ja_Service Properties',
+          tasks: 'ja_Task Properties'
         },
-        files: 'ja_Files Properties',
-        drivers: 'ja_Drivers Properties',
-        libraries: 'ja_Libraries Properties'
+        files: 'ja_File Properties',
+        drivers: 'ja_Driver Properties',
+        libraries: 'ja_Library Properties'
       },
       medium: {
         network: 'ja_Network',

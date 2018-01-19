@@ -134,7 +134,7 @@ test('table with data', function(assert) {
   });
 });
 
-test('Property panel is rendered', function(assert) {
+test('suraj Property panel is rendered', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files).build();
@@ -142,7 +142,7 @@ test('Property panel is rendered', function(assert) {
 
   return wait().then(() => {
     const propPanelItemWithText = this.$('.host-property-panel .host-text:contains("systemd-journald.service")');
-    assert.equal(this.$('.header-section__title').text().trim(), 'Files Properties', 'Panel title displayed');
+    assert.equal(this.$('.header-section__title').text().trim(), 'File Properties', 'Panel title displayed');
     assert.equal(propPanelItemWithText.length, 1, 'First property is File name');
   });
 });
