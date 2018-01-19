@@ -6,6 +6,7 @@
 
     .execute-query-button {
       margin-left: rsa-whitespace(least);
+      white-space: nowrap;
 
       button {
         padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});

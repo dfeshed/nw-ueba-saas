@@ -185,10 +185,28 @@ function _parseMetaFilterUri(uri) {
   const operators = [
     '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
   ];
+
+  // look for forward slashes inside a set of double quotes
+  // replace found slashes with a temp placeholder because forward slashes are used to split the uri
+  const matches = uri.match(/"[^"]*\/"/g);
+  if (matches) {
+    matches.forEach((match) => {
+      uri = uri.replace(match, match.replace(/\//g, '__slash_place_holder__'));
+    });
+  }
+
   return uri.split('/')
     .filter((segment) => !!segment)
     .map((queryString) => {
+      // replace slash placeholders with forward slash now that uri has already been split
+      queryString = queryString.replace(/__slash_place_holder__/g, '/');
+
       const decodedQuery = decodeURIComponent(queryString);
+      if (queryString.includes('||') || queryString.includes('&&')) {
+        return {
+          complexFilter: queryString
+        };
+      }
 
       const operator = operators.find((option) => {
         if (decodedQuery.includes('!exists')) {
@@ -227,12 +245,17 @@ function uriEncodeMetaFilters(filters = []) {
   const encodedFilters = filters
     .map((d) => {
       let ret;
-      if (d.operator === 'exists' || d.operator === '!exists') {
-        ret = `${d.meta} ${d.operator}`;
-      } else if (d.meta && d.operator && d.value) {
-        ret = `${d.meta}${d.operator}${d.value}`;
+
+      if (d.complexFilter) {
+        return d.complexFilter;
+      } else {
+        if (d.operator === 'exists' || d.operator === '!exists') {
+          ret = `${d.meta} ${d.operator}`;
+        } else if (d.meta && d.operator && d.value) {
+          ret = `${d.meta}${d.operator}${d.value}`;
+        }
+        return ret;
       }
-      return ret;
     })
     .filter((d) => !!d)
     .join('/');

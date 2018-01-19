@@ -1,13 +1,17 @@
+import Ember from 'ember';
 import EmberObject from 'ember-object';
 import Component from 'ember-component';
 import layout from './template';
 import run from 'ember-runloop';
 import { isEmpty } from 'ember-utils';
-import computed, { equal, notEmpty, and, not } from 'ember-computed-decorators';
-import contextMenuMixin from 'ember-context-menu';
+import computed, { equal, notEmpty } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 import { connect } from 'ember-redux';
+
+const {
+  set
+} = Ember;
 
 const isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
@@ -29,7 +33,7 @@ const dispatchToActions = {
   validateIndividualQuery
 };
 
-const QueryFragmentComponent = Component.extend(contextMenuMixin, {
+const QueryFragmentComponent = Component.extend({
   i18n: service(),
 
   layout,
@@ -76,11 +80,17 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   @notEmpty('operator') withOperator: false,
   @notEmpty('value') withValue: false,
 
-  @and('withMeta', 'withOperator', 'withValue') completed: false,
-  @not('withMeta', 'withOperator', 'withValue') empty: false,
+  @computed('withMeta', 'withOperator', 'withValue', 'complexFilter')
+  empty(withMeta, withOperator, withValue, complexFilter) {
+    if (isEmpty(complexFilter)) {
+      return !withMeta && !withOperator && !withValue;
+    } else {
+      return false;
+    }
+  },
 
-  @computed('metaFormat', 'metaIndex')
-  operatorOptions(metaFormat, metaIndex) {
+  @computed('metaFormat', 'metaIndex', 'metaOptions', 'meta')
+  operatorOptions(metaFormat, metaIndex, metaOptions, meta) {
     const efficientIndex = metaIndex === 'value';
     const eq = { displayName: '=', isExpensive: !efficientIndex };
     const notEq = { displayName: '!=', isExpensive: !efficientIndex };
@@ -93,6 +103,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     const contains = { displayName: 'contains', isExpensive: !efficientIndex };
     const begins = { displayName: 'begins', isExpensive: !efficientIndex };
     const ends = { displayName: 'ends', isExpensive: !efficientIndex };
+
+    if (isEmpty(metaFormat) && !isEmpty(metaOptions) && !isEmpty(meta)) {
+      metaFormat = metaOptions.findBy('metaName', meta.trim()).format;
+    }
 
     if (metaFormat === 'Text') {
       return [ eq, notEq, exists, notExists, contains, begins, ends ];
@@ -126,9 +140,18 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     }
   },
 
-  @computed('meta', 'operator', 'value')
-  filter(meta, operator, value) {
-    return `${meta || ''} ${operator || ''} ${value || ''}`.trim();
+  @computed('filterRecord', 'filterList.lastObject')
+  isLastInList(filter, lastFilter) {
+    return filter === lastFilter;
+  },
+
+  @computed('meta', 'operator', 'value', 'complexFilter')
+  filter(meta, operator, value, complexFilter) {
+    if (complexFilter) {
+      return complexFilter;
+    } else {
+      return `${meta || ''} ${operator || ''} ${value || ''}`.trim();
+    }
   },
 
   @computed('metaOptions', 'metaOptions.length')
@@ -171,8 +194,12 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     }
   },
 
-  @computed('type', 'sortedMetaOptions', 'operatorOptions', 'sortedMetaOptions.length', 'valueOptions', 'valueOptions.length', 'operatorOptions.length')
-  options(type, sortedMetaOptions, operatorOptions) {
+  @computed('type', 'sortedMetaOptions', 'operatorOptions', 'complexFilter', 'sortedMetaOptions.length', 'valueOptions', 'valueOptions.length', 'operatorOptions.length')
+  options(type, sortedMetaOptions, operatorOptions, complexFilter) {
+    if (!isEmpty(complexFilter)) {
+      return [];
+    }
+
     if (type == 'value') {
       return [];
     } else if (type === 'meta') {
@@ -191,29 +218,42 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   },
 
   doubleClick() {
-    if (this.get('saved') && !this.get('editActive')) {
+    if (this.get('saved') && !this.get('editActive') && isEmpty(this.get('complexFilter'))) {
       this.send('editFilter');
     }
   },
 
   didInsertElement() {
     this._super(...arguments);
-    this.$('input').prop('type', 'text').prop('spellcheck', false);
+
+    this.$('input')
+      .prop('type', 'text')
+      .prop('spellcheck', false);
   },
 
   didReceiveAttrs() {
     this._super(...arguments);
 
-    const { meta, operator, value } = this;
+    const { meta, operator, value, complexFilter } = this;
+
     // checking for null as this hook is called with null values multiple times.
-    if (meta != null && operator != null && value != null) {
-      // api needs a string instead of object
-      const filterText = `${meta} ${operator} ${value}`;
-      if (this.get('validateWithServer') && (!this.get('wasValidated') || filterText != this.get('filter'))) {
+    let filterText;
+    if (isEmpty(complexFilter)) {
+      if (meta != null && operator != null && value != null) {
+        // api needs a string instead of object
+        filterText = `${meta} ${operator} ${value}`;
+      }
+    } else {
+      filterText = complexFilter;
+    }
+
+    if (this.get('validateWithServer') && (!this.get('wasValidated') || filterText != this.get('filter'))) {
+      if (isEmpty(complexFilter)) {
         this._prevalidation();
-        if (!this.get('queryFragmentInvalid')) {
-          this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
-        }
+      }
+
+      if (!isEmpty(filterText) && !this.get('queryFragmentInvalid')) {
+        this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
       }
     }
   },
@@ -232,7 +272,6 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
   _prevalidation() {
     let isValid = true;
     let message = '';
-    const i18n = this.get('i18n');
     const value = this.get('value');
     const format = this.get('metaFormat');
 
@@ -244,49 +283,49 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
       case 'TimeT':
         isValid = new Date(value) != 'Invalid Date';
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.time');
+          message = this.get('i18n').t('queryBuilder.validationMessages.time');
         }
         break;
       case 'Text':
         isValid = value.slice(0) != '"' || value.slice(-1) != '"';
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.text');
+          message = this.get('i18n').t('queryBuilder.validationMessages.text');
         }
         break;
       case 'IPv4':
         isValid = isIPv4(value);
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.ipv4');
+          message = this.get('i18n').t('queryBuilder.validationMessages.ipv4');
         }
         break;
       case 'IPv6':
         isValid = isIPv6(value);
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.ipv6');
+          message = this.get('i18n').t('queryBuilder.validationMessages.ipv6');
         }
         break;
       case 'UInt8':
         isValid = isInt(value);
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.uint8');
+          message = this.get('i18n').t('queryBuilder.validationMessages.uint8');
         }
         break;
       case 'UInt16':
         isValid = isInt(value);
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.uint16');
+          message = this.get('i18n').t('queryBuilder.validationMessages.uint16');
         }
         break;
       case 'UInt32':
         isValid = isInt(value);
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.uint32');
+          message = this.get('i18n').t('queryBuilder.validationMessages.uint32');
         }
         break;
       case 'Float32':
         isValid = isFloat(value);
         if (!isValid) {
-          message = i18n.t('queryBuilder.validationMessages.float32');
+          message = this.get('i18n').t('queryBuilder.validationMessages.float32');
         }
         break;
     }
@@ -328,49 +367,44 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     onblur() {
       this.setKeyboardPriority(0);
 
-      if (!this.get('saved')) {
-        const list = this.get('filterList');
-        const filterRecord = this.get('filterRecord');
-        const lastObject = list.get('lastObject');
-        const prunedList = list
-          .without(lastObject)
-          .without(filterRecord);
-
-        prunedList.forEach((filter) => {
-          const isActive = filter.get('editActive');
-
-          if (isActive && isEmpty(filter.get('meta'))) {
-            this.deleteFilter(filter);
-          } else if (isActive) {
-            filter.set('editActive', false);
+      if (!this.get('saved') && !this.get('isLastInList') && this.get('empty')) {
+        run.next(() => {
+          const input = this.$('input');
+          if (!isEmpty(input)) {
+            const val = this.$('input').val();
+            if (isEmpty(val)) {
+              this.deleteFilter(this.get('filterRecord'));
+            }
           }
         });
-
-        if (filterRecord === lastObject && isEmpty(this.$('input').val())) {
-          this.deleteFilter(filterRecord);
-          this._insertEmptyFilter(-1);
-        }
       }
     },
 
     onfocus(select) {
       this.setKeyboardPriority(1);
 
+      const options = this.get('options');
+      if (!isEmpty(options)) {
+        set(select, 'results', options);
+      }
+
+      if (this.get('saved') && ['exists', '!exists'].includes(this.get('operator'))) {
+        this.set('type', 'operator');
+      } else if (this.get('saved')) {
+        this.set('type', 'value');
+      }
+
       const list = this.get('filterList');
       const prunedList = list
         .without(list.get('lastObject'))
         .without(this.get('filterRecord'));
 
-      prunedList.forEach((filter) => {
-        if (filter.get('editActive') && isEmpty(filter.get('meta'))) {
-          this.deleteFilter(filter);
-        } else {
-          filter.set('selected', false);
-          filter.set('editActive', false);
-        }
-      });
+      prunedList.setEach('selected', false);
+      prunedList.setEach('editActive', false);
 
-      this.$('input').prop('type', 'text').prop('spellcheck', false);
+      this.$('input')
+        .prop('type', 'text')
+        .prop('spellcheck', false);
       select.actions.open();
     },
 
@@ -381,10 +415,10 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
       const cursorPosition = input.get(0).selectionStart;
       const {
         filter, filterRecord, filterList, type, filterIndex,
-        meta, operator, saved
+        meta, operator, value, saved
       } = this.getProperties(
         'filter', 'filterRecord', 'type', 'filterList', 'filterIndex',
-        'meta', 'operator', 'saved'
+        'meta', 'operator', 'value', 'saved'
       );
 
       if (isEmpty(input.get(0))) {
@@ -393,6 +427,9 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
       if (isEmpty(inputVal)) {
         this.setProperties({
+          storedMeta: meta,
+          storedOperator: operator,
+          storedValue: value,
           type: 'meta',
           meta: null,
           operator: null,
@@ -423,10 +460,6 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         if (cursorPosition === 0 && isEmpty(inputVal)) {
           if (filterIndex !== 0) {
             select.actions.close();
-
-            if (!saved) {
-              this._resetFilter();
-            }
           }
         }
       }
@@ -436,15 +469,24 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         input.blur();
 
         if (!saved) {
-          this._resetFilter();
           this.set('type', 'meta');
 
           if (filterRecord != filterList.get('lastObject')) {
             filterList.removeObject(filterRecord);
           }
         } else {
-          this.set('type', 'value');
-          this.set('editActive', false);
+          this.setProperties({
+            type: 'value',
+            editActive: false
+          });
+
+          if (!isEmpty(this.get('storedMeta')) && !isEmpty(this.get('storedOperator')) && !isEmpty(this.get('storedValue'))) {
+            this.setProperties({
+              meta: this.get('storedMeta'),
+              operator: this.get('storedOperator'),
+              value: this.get('storedValue')
+            });
+          }
         }
       }
 
@@ -550,7 +592,7 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
                 this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
               }
 
-              if (filterRecord === filterList.get('lastObject')) {
+              if (this.get('isLastInList')) {
                 this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
               }
 
@@ -595,25 +637,21 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
     // Filter displayed options
     lookup(searchTerm) {
       const {
-        options, type, onMeta, meta, operator, completed,
+        options, type, onMeta, meta, operator, saved,
         value, onOperator, withMeta, withOperator, withValue
       } = this.getProperties(
-        'options', 'type', 'onOperator', 'meta', 'operator', 'completed',
+        'options', 'type', 'onOperator', 'meta', 'operator', 'saved',
         'value', 'onMeta', 'withMeta', 'withOperator', 'withValue'
       );
 
-      if (isEmpty(options)) {
-        return;
-      }
-
-      if (isEmpty(searchTerm)) {
+      if (isEmpty(options) || isEmpty(searchTerm)) {
         return;
       }
 
       searchTerm = searchTerm.toLowerCase();
 
       return options.filter((option) => {
-        if (completed) {
+        if (saved) {
           if (onMeta) {
             searchTerm = searchTerm.replace(` ${operator}`, '').replace(` ${value}`, '');
           } else if (onOperator) {
@@ -637,10 +675,15 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
 
     // User makes selection via typeahead
     updateFilter(selection, select) {
-      const { filterList, type, filterRecord } = this.getProperties('filterList', 'type', 'filterRecord');
+      const {
+        filterList, type, filterRecord
+      } = this.getProperties(
+        'filterList', 'type', 'filterRecord'
+      );
       const input = this.$('input');
       const inputVal = input.val();
 
+      // select on Enter key press when only one dropdown option
       if (isEmpty(selection) && select.results.length === 1) {
         selection = select.results[0];
       } else if (isEmpty(selection)) {
@@ -659,15 +702,25 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
         const keyIndexes = ['none', 'key', 'value'];
         const keyIndexType = selection.flags & '0xF';
 
-        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
-          this.$('input').width(selection.metaName.length * 8);
-        }
-
         this.setProperties({
           meta: selection.metaName,
           metaFormat: selection.format,
           metaIndex: keyIndexes[keyIndexType - 1],
           type: 'operator'
+        });
+
+        if (this.get('saved') && ['exists', '!exists'].includes(this.get('operator'))) {
+          this.set('editActive', false);
+        } else if (this.get('saved') && !isEmpty(this.get('operator')) && !isEmpty(this.get('value'))) {
+          this.set('editActive', false);
+        } else {
+          this.set('editActive', true);
+        }
+
+        run.next(() => {
+          if (!this.get('isLastInList')) {
+            input.width((input.val().length + 1) * 8);
+          }
         });
       } else if (type === 'operator') {
         if (inputVal && inputVal.indexOf(this.get('value')) === -1) {
@@ -679,6 +732,14 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
           operator: selection.displayName
         });
 
+        if (this.get('saved') && ['exists', '!exists'].includes(this.get('operator'))) {
+          this.set('editActive', false);
+        } else if (this.get('saved') && !isEmpty(this.get('value'))) {
+          this.set('editActive', false);
+        } else {
+          this.set('editActive', true);
+        }
+
         if (['exists', '!exists'].includes(selection.displayName)) {
           this.setProperties({
             value: null,
@@ -686,32 +747,56 @@ const QueryFragmentComponent = Component.extend(contextMenuMixin, {
             editActive: false
           });
 
-          this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
+          if (this.get('isLastInList')) {
+            this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
+          }
 
           run.next(() => {
+            input.width((input.val().length + 1) * 8);
             this.$().next('.rsa-query-fragment').find('input').focus();
           });
         } else {
           this.set('type', 'value');
+
+          run.next(() => {
+            const input = this.$('input');
+
+            if (isEmpty(input)) {
+              return;
+            }
+
+            input.width((input.val().length + 1) * 8);
+            const position = `${this.get('meta')} ${this.get('operator')}`.length;
+            input[0].setSelectionRange(position, position);
+            input.focus();
+          });
         }
       }
     },
 
     editFilter() {
       this.toggleProperty('editActive');
-      this.set('type', 'value');
 
       run.next(() => {
-        this.$('input').prop('type', 'text').prop('spellcheck', false).focus();
+        const input = this.$('input');
+        input
+          .prop('type', 'text')
+          .prop('spellcheck', false)
+          .focus();
 
-        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
-          this.$('input').width(this.$('input').val().length * 8);
+        if (!this.get('isLastInList')) {
+          const px = 8;
+          const valLength = input.val().length;
+          const newInputWidth = valLength * px;
+
+          input.width(newInputWidth);
         }
       });
     },
 
     deleteFilter() {
       this.deleteFilter(this.get('filterRecord'));
+      this.$().closest('.rsa-query-meta').find('.rsa-query-fragment').last().find('input').focus();
     }
   }
 

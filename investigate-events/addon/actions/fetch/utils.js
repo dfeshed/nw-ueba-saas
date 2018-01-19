@@ -149,14 +149,18 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
 export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
     .map((condition) => {
-      const { meta, value, operator } = condition;
+      const { meta, value, operator, complexFilter } = condition;
 
-      if (['contains', 'ends', 'begins'].includes(operator)) {
-        return `${meta} ${operator} ${value}`;
-      } else if (['!exists', 'exists'].includes(operator)) {
-        return `${meta} ${operator}`;
+      if (complexFilter) {
+        return complexFilter;
       } else {
-        return `${meta}${operator}${value}`;
+        if (['contains', 'ends', 'begins'].includes(operator)) {
+          return `${meta} ${operator} ${value}`;
+        } else if (['!exists', 'exists'].includes(operator)) {
+          return `${meta} ${operator}`;
+        } else {
+          return `${meta}${operator}${value}`;
+        }
       }
     })
     .join(' && ');

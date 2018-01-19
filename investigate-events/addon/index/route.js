@@ -92,10 +92,12 @@ export default Route.extend({
     },
 
     executeQuery(metaFilters, externalLink = false) {
+
+      metaFilters = metaFilters.filterBy('saved', true);
+
       // Save the metaFilters to state
       const { data, queryNode } = this.get('redux').getState().investigate;
       const qp = {
-        eid: undefined,
         et: queryNode.endTime,
         mf: uriEncodeMetaFilters(metaFilters),
         mps: data.metaPanelSize,
@@ -113,8 +115,9 @@ export default Route.extend({
         const path = `${location.origin}${location.pathname}?${query}`;
         window.open(path, '_blank');
       } else {
+        qp.eid = undefined;
         this.send('reconClose');
-        this.get('redux').dispatch(setQueryFilterMeta(metaFilters.without(metaFilters.get('lastObject'))));
+        this.get('redux').dispatch(setQueryFilterMeta(metaFilters));
         this.transitionTo({ queryParams: qp });
       }
     },

@@ -137,6 +137,7 @@ export default {
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     expensive: 'Performing this operation might take more time.',
+    notEditable: 'Complex query filters are not editable.',
     validationMessages: {
       time: 'You must enter a valid date.',
       text: 'Strings must be quoted with "',

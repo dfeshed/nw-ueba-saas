@@ -4,7 +4,6 @@ import engineResolverFor from '../../../helpers/engine-resolver';
 moduleForComponent('query-filter-fragment', 'Unit | Component | query filter fragment', {
   unit: true,
   needs: [
-    'service:context-menu',
     'service:i18n',
     'service:redux'
   ],
@@ -13,6 +12,7 @@ moduleForComponent('query-filter-fragment', 'Unit | Component | query filter fra
 
 test('it sets operatorOptions', function(assert) {
   const component = this.subject();
+
   const options = component.get('operatorOptions');
 
   assert.equal(options.get('length'), 8);

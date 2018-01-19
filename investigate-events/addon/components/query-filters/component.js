@@ -104,7 +104,8 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
             filterIndex: index,
             editActive: false,
             selected: false,
-            saved: true
+            saved: true,
+            complexFilter: filter.complexFilter
           });
 
           filters.pushObject(obj);
@@ -250,22 +251,24 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
   select: on(keyUp('Enter'), function() {
     if (this.get('withSelected')) {
       const filters = this.get('filters');
-      const firstSelected = filters.filterBy('selected', true).get('firstObject');
+      const selected = filters.filterBy('selected', true);
 
-      filters.setEach('selected', false);
-      firstSelected.set('editActive', true);
+      if (selected.get('length') === 1 && isEmpty(selected.get('firstObject.complexFilter'))) {
+        filters.setEach('selected', false);
+        selected.get('firstObject').set('editActive', true);
 
-      run.next(() => {
-        if (this.isDestroyed || this.isDestroying) {
-          return;
-        }
+        run.next(() => {
+          if (this.isDestroyed || this.isDestroying) {
+            return;
+          }
 
-        if (this.$('input') && firstSelected != filters.get('lastObject')) {
-          this.$('input').width(this.$('input').val().length * 8);
-        }
+          if (this.$('input') && selected.get('firstObject') != filters.get('lastObject')) {
+            this.$('input').width(this.$('input').val().length * 8);
+          }
 
-        this.$('input').first().focus();
-      });
+          this.$('input').first().focus();
+        });
+      }
     }
   }),
 
@@ -276,6 +279,7 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
 
     if (selectedList.get('length') && !withEditActive) {
       filters.removeObjects(selectedList);
+      this.$('.rsa-query-fragment').last().find('input').focus();
     }
   }),
 

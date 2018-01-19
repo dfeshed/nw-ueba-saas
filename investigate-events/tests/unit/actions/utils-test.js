@@ -8,7 +8,7 @@ module('Unit | Helper | query utils');
 const params = {
   et: 0,
   eid: 1,
-  mf: 'a%3Db',
+  mf: 'a%3D"/b/"',
   mps: 'default',
   rs: 'max',
   sid: 2,
@@ -26,7 +26,13 @@ const conditions = [{
 }, {
   meta: 'foo',
   operator: 'begins',
-  value: 'bar'
+  value: '"//"'
+}];
+
+const complexConditions = [{
+  complexFilter: 'foo="bar"||foo=baz'
+}, {
+  complexFilter: 'bar="foo"||baz=foo'
 }];
 
 test('parseQueryParams correctly parses URI', function(assert) {
@@ -42,9 +48,24 @@ test('parseQueryParams correctly parses URI', function(assert) {
   assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
 });
 
+test('parseQueryParams correctly parses forward slashes in text format conditions', function(assert) {
+  assert.expect(3);
+  const result = queryUtils.parseQueryParams(params);
+  assert.equal(result.metaFilter.conditions[0].meta, 'a', 'forward slash was not parsed correctly');
+  assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
+  assert.equal(result.metaFilter.conditions[0].value, '"/b/"', 'forward slash was not parsed correctly');
+});
+
 test('encodeMetaFilterConditions correctly encodes conditions', function(assert) {
   assert.expect(1);
   const result = encodeMetaFilterConditions(conditions);
 
-  assert.equal(result, 'foo=bar && foo exists && foo begins bar');
+  assert.equal(result, 'foo=bar && foo exists && foo begins "//"');
+});
+
+test('encodeMetaFilterConditions correctly encodes complex filters', function(assert) {
+  assert.expect(1);
+  const result = encodeMetaFilterConditions(complexConditions);
+
+  assert.equal(result, 'foo="bar"||foo=baz && bar="foo"||baz=foo');
 });
