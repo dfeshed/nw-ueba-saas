@@ -479,8 +479,11 @@ export default {
       expand: 'Expand Events Panel',
       close: 'Close Events Panel'
     },
+    generic: {
+      loading: 'Loading data...'
+    },
     services: {
-      loading: 'Loading list of available services',
+      loading: 'Loading Services',
       noData: 'The selected service does not have any data',
       coreServiceNotUpdated: 'Event Analysis requires all core services to be NetWitness 11.1. Connecting prior versions of services to the 11.1 NetWitness Server results in limited functionality (see \"Investigate in Mixed Mode\" in the Physical Host Upgrade Guide).',
       empty: {
@@ -488,9 +491,12 @@ export default {
         description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
       },
       error: {
-        title: 'Unable to load services.',
+        label: 'Services Unavailable',
         description: 'Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
       }
+    },
+    summary: {
+      loading: 'Loading Summary'
     },
     customQuery: {
       title: 'Enter a query.'

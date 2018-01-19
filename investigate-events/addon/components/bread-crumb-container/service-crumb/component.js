@@ -13,6 +13,7 @@ const stateToComputed = (state) => ({
   isSummaryDataInvalid: isSummaryDataInvalid(state),
   serviceDisplayName: getServiceDisplayName(state),
   isServicesLoading: state.investigate.services.isServicesLoading,
+  isServicesRetrieveError: state.investigate.services.isServicesRetrieveError,
   isSummaryLoading: state.investigate.services.isSummaryLoading,
   services: state.investigate.services.serviceData,
   summaryErrorMessage: state.investigate.services.summaryErrorMessage,
@@ -20,7 +21,7 @@ const stateToComputed = (state) => ({
 });
 
 const ServiceCrumb = Component.extend({
-  classNames: ['rsa-investigate-breadcrumb', 'js-test-investigate-events-service-breadcrumb'],
+  classNames: ['rsa-investigate-breadcrumb', 'service-breadcrumb', 'js-test-investigate-events-service-breadcrumb'],
 
   i18n: service(),
 
@@ -29,10 +30,10 @@ const ServiceCrumb = Component.extend({
     return `breadCrumbServiceTooltip-${this.get('elementId')}`;
   },
 
-  @computed('isLoading', 'selectedServiceMessage', 'serviceDisplayName')
-  title(isLoading, selectedServiceMessage, serviceDisplayName) {
+  @computed('isLoading', 'selectedServiceMessage', 'serviceDisplayName', 'i18n')
+  title(isLoading, selectedServiceMessage, serviceDisplayName, i18n) {
     if (isLoading) {
-      return 'Loading data...';
+      return i18n.t('investigate.generic.loading');
     } else if (selectedServiceMessage) {
       return selectedServiceMessage;
     } else {
@@ -40,22 +41,22 @@ const ServiceCrumb = Component.extend({
     }
   },
 
-  @computed('isCoreServiceNotUpdated', 'isSummaryDataInvalid')
-  iconClass: (isCoreServiceNotUpdated, isSummaryDataInvalid) => {
-    return isCoreServiceNotUpdated || isSummaryDataInvalid ? 'disclaimer' : '';
+  @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid')
+  iconClass: (isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid) => {
+    return isCoreServiceNotUpdated || isServicesRetrieveError || isSummaryDataInvalid ? 'disclaimer' : '';
   },
 
-  @computed('isCoreServiceNotUpdated', 'isSummaryDataInvalid')
-  iconName: (isCoreServiceNotUpdated, isSummaryDataInvalid) => {
-    return isCoreServiceNotUpdated || isSummaryDataInvalid ? 'report-problem-triangle' : 'server-3';
+  @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid')
+  iconName: (isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid) => {
+    return isCoreServiceNotUpdated || isServicesRetrieveError || isSummaryDataInvalid ? 'report-problem-triangle' : 'server-3';
   },
 
-  @computed('isServicesLoading', 'isSummaryLoading', 'serviceDisplayName')
-  selectedServiceName(isServicesLoading, isSummaryLoading, serviceDisplayName) {
+  @computed('isServicesLoading', 'isSummaryLoading', 'serviceDisplayName', 'i18n')
+  selectedServiceName(isServicesLoading, isSummaryLoading, serviceDisplayName, i18n) {
     if (isServicesLoading) {
-      return 'Loading Services';
+      return i18n.t('investigate.services.loading');
     } else if (isSummaryLoading) {
-      return 'Loading Summary';
+      return i18n.t('investigate.summary.loading');
     } else {
       return serviceDisplayName;
     }
@@ -63,7 +64,6 @@ const ServiceCrumb = Component.extend({
 
   @or('isSummaryLoading', 'isServicesLoading')
   isLoading: false,
-
 
 /**
  * For a selected service, we could have several messages. These are:
@@ -82,22 +82,23 @@ const ServiceCrumb = Component.extend({
  * After  - java.lang.NullPointerException
  * @public
  */
-  @computed('isCoreServiceNotUpdated', 'isSummaryDataInvalid', 'hasSummaryData', 'summaryErrorMessage', 'i18n')
-  selectedServiceMessage(isCoreServiceNotUpdated, isSummaryDataInvalid, hasSummaryData, summaryErrorMessage, i18n) {
-
+  @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid', 'hasSummaryData', 'summaryErrorMessage', 'i18n')
+  selectedServiceMessage(isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid, hasSummaryData, summaryErrorMessage, i18n) {
     let title = null;
     if (isCoreServiceNotUpdated) {
       title = i18n.t('investigate.services.coreServiceNotUpdated');
+    } else if (isServicesRetrieveError) {
+      title = i18n.t('investigate.services.error.description');
     } else if (isSummaryDataInvalid && summaryErrorMessage) {
       // Regex explained - `.*?` Makes the `.*` quantifier lazy, causing it to
       // match as few characters as possible.
-      title = summaryErrorMessage.replace(/(.*?:)/, '');
+      const classPath = /(.*?:)/;
+      title = summaryErrorMessage.replace(classPath, '');
     } else if (!hasSummaryData) {
       title = i18n.t('investigate.services.noData');
     }
     return title;
   }
-
 });
 
 export default connect(stateToComputed, dispatchToActions)(ServiceCrumb);

@@ -478,8 +478,11 @@ export default {
       expand: 'ja_Expand Events Panel',
       close: 'ja_Close Events Panel'
     },
+    generic: {
+      loading: 'ja_Loading data...'
+    },
     services: {
-      loading: 'ja_Loading list of available services',
+      loading: 'ja_Loading Services',
       noData: 'ja_The selected service does not have any data',
       coreServiceNotUpdated: 'ja_Event Analysis requires all core services to be NetWitness 11.1. Connecting prior versions of services to the 11.1 NetWitness Server results in limited functionality (see \"Investigate in Mixed Mode\" in the Physical Host Upgrade Guide).',
       empty: {
@@ -487,9 +490,12 @@ export default {
         description: 'ja_No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
       },
       error: {
-        title: 'ja_Unable to load services.',
+        label: 'ja_Services Unavailable',
         description: 'ja_Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
       }
+    },
+    summary: {
+      loading: 'ja_Loading Summary'
     },
     customQuery: {
       title: 'ja_Enter a query.'

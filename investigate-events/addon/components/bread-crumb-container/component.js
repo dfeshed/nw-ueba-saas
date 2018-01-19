@@ -1,8 +1,14 @@
 import Component from 'ember-component';
+import { connect } from 'ember-redux';
+import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 
-const BreadCrumbContainer = Component.extend({
-  tagName: 'nav',
-  classNames: 'rsa-investigate-breadcrumb__crumbs rsa-button-group'
+const stateToComputed = (state) => ({
+  hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
 });
 
-export default BreadCrumbContainer;
+const BreadCrumbContainer = Component.extend({
+  classNames: ['rsa-investigate-breadcrumb__crumbs', 'rsa-button-group'],
+  tagName: 'nav'
+});
+
+export default connect(stateToComputed)(BreadCrumbContainer);

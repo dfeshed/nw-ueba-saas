@@ -6,7 +6,8 @@
 
 {{#rsa-form-button
   class='execute-query-button'
-  style='primary'
-  defaultAction=(route-action 'executeQuery' filters)}}
+  defaultAction=(route-action 'executeQuery' filters)
+  isDisabled=(not hasRequiredValuesToQuery)
+  style='primary'}}
   Query Events
 {{/rsa-form-button}}

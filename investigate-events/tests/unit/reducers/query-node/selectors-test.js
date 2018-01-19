@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import {
   hasMetaFilters,
+  hasRequiredValuesToQuery,
   queryParams,
   selectedTimeRange,
   selectedTimeRangeId,
+  selectedTimeRangeName,
   useDatabaseTime
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
@@ -167,4 +169,102 @@ test('not using database time is specified correctly', function(assert) {
     }
   };
   assert.notOk(useDatabaseTime(state), 'time range specified to use database');
+});
+
+test('get time range name when one was previously selected', function(assert) {
+  const name = TIME_RANGES.getNameById(TIME_RANGES.DEFAULT_TIME_RANGE_ID);
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: '1',
+        previouslySelectedTimeRanges: {
+          '1': TIME_RANGES.DEFAULT_TIME_RANGE_ID
+        }
+      }
+    }
+  };
+  assert.equal(selectedTimeRangeName(state), name, `should be ${name}`);
+});
+
+test('return empty string when time range wasn\'t previously selected', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: '1',
+        previouslySelectedTimeRanges: {
+          '2': TIME_RANGES.DEFAULT_TIME_RANGE_ID
+        }
+      }
+    }
+  };
+  assert.equal(selectedTimeRangeName(state), '', 'should be blank');
+});
+
+test('need services to query', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: '1',
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {}
+      },
+      services: {
+        serviceData: null,
+        summaryData: { startTime: 1 }
+      }
+    }
+  };
+  assert.notOk(hasRequiredValuesToQuery(state), 'serviceData was set');
+});
+
+test('need summary data to query', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: '1',
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {}
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: null
+      }
+    }
+  };
+  assert.notOk(hasRequiredValuesToQuery(state), 'summaryData was set');
+});
+
+test('aggregation was not performed, so we cannot query', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        serviceId: '1',
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {}
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: { startTime: 0 }
+      }
+    }
+  };
+  assert.notOk(hasRequiredValuesToQuery(state), 'summaryData.startTime was not "0"');
+});
+
+test('has required inputs to query', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        // serviceId can be undefined because we select a default service
+        serviceId: undefined,
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {}
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: { startTime: 1 }
+      }
+    }
+  };
+  assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
 });

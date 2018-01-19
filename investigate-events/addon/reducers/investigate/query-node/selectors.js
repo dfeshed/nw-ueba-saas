@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
+import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
@@ -49,4 +50,11 @@ export const selectedTimeRange = createSelector(
 export const useDatabaseTime = createSelector(
   [_queryTimeFormat],
   (queryTimeFormat) => queryTimeFormat === TIME_RANGES.DATABASE_TIME
+);
+
+export const hasRequiredValuesToQuery = createSelector(
+  [selectedService, hasSummaryData, selectedTimeRange],
+  (selectedService, hasSummaryData, selectedTimeRange) => {
+    return selectedService && selectedService.id && hasSummaryData && selectedTimeRange;
+  }
 );

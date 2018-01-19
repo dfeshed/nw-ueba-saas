@@ -1,36 +1,39 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
-import DataHelper, { getConcentratorService } from '../../../helpers/data-helper';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
-moduleForComponent('bread-crumb-container', 'Integration | Component | bread-crumb', {
+let setState;
+
+moduleForComponent('bread-crumb-container', 'Integration | Component | bread-crumb-container', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
-    this.inject.service('redux');
     initialize(this);
+    setState = (state) => {
+      applyPatch(state);
+      this.inject.service('redux');
+    };
+  },
+  afterEach() {
+    revertPatch();
   }
 });
 
-test('it renders', function(assert) {
+test('it disables the submit button when required values are missing', function(assert) {
+  new ReduxDataHelper(setState)
+    .hasRequiredValuesToQuery(false)
+    .build();
   this.render(hbs`{{bread-crumb-container}}`);
-  const $el = this.$('.rsa-investigate-breadcrumb');
-  assert.equal($el.length, 2, 'Expected root DOM element.');
+  assert.ok(this.$('.execute-query-button').hasClass('is-disabled'), 'Expected is-disabled CSS class on the submit button.');
 });
 
-test('service name displayed', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData();
-
+test('it enables the submit button when required values are present', function(assert) {
+  new ReduxDataHelper(setState)
+    .hasRequiredValuesToQuery(true)
+    .build();
   this.render(hbs`{{bread-crumb-container}}`);
-  const $el = this.$('.rsa-investigate-breadcrumb');
-  const { displayName } = getConcentratorService();
-  assert.equal($el.find('.js-test-service').text().trim(), displayName, `Expected service name in DOM to match "${displayName}".`);
-});
-
-test('query builder is found', function(assert) {
-  this.render(hbs`{{bread-crumb-container}}`);
-
-  assert.equal(this.$('.rsa-query-meta').length, 1, 'Expected to find .rsa-query-meta');
+  assert.notOk(this.$('.execute-query-button').hasClass('is-disabled'), 'Expected is-disabled CSS class on the submit button.');
 });
