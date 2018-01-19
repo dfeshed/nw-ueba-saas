@@ -196,7 +196,7 @@ export default {
       downloadCsv: 'Download CSV',
       downloadEndpointEvent: 'Download Endpoint',
       pivotToEndpoint: 'Pivot to Endpoint',
-      pivotToEndpointTitle: 'To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.',
+      pivotToEndpointTitle: 'Applicable for hosts with 4.x Endpoint agents installed, please install the Netwitness Endpoint Thick Client.',
       downloadJson: 'Download JSON',
       downloadLog: 'Download Log',
       downloadXml: 'Download XML',

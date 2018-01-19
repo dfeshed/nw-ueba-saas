@@ -195,7 +195,7 @@ export default {
       downloadCsv: 'ja_Download CSV',
       downloadEndpointEvent: 'ja_Download Endpoint Event',
       pivotToEndpoint: 'ja_Pivot to Endpoint',
-      pivotToEndpointTitle: 'ja_To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.',
+      pivotToEndpointTitle: 'ja_Applicable for hosts with 4.x Endpoint agents installed, please install the Netwitness Endpoint Thick Client.',
       downloadJson: 'ja_Download JSON',
       downloadLog: 'ja_Download Log',
       downloadXml: 'ja_Download XML',
