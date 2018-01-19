@@ -184,17 +184,8 @@ public class AlertServiceTest {
                 +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
         // event
-        EnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(Instant.now(), eventTime, "eventId", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "USER_ACCOUNT_TYPE_CHANGED", new ArrayList<String>(), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
-        mongoTemplate.save(fileEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
-
-        // enriched event
-        EnrichedRecord activeDirectoryEnrichedRecord = new EnrichedActiveDirectoryRecord(eventTime);
-        activeDirectoryEnrichedRecord.setEventId("eventId");
-        mongoTemplate.save(activeDirectoryEnrichedRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName("active_directory"));
-
-        // scored enriched event
-        AdeScoredEnrichedRecord activeDirectoryScoredEnrichedEvent = new AdeScoredActiveDirectoryRecord(eventTime, "startInstant.userId.file.score", "file", 10.0d, new ArrayList<FeatureScore>(), activeDirectoryEnrichedRecord);
-        mongoTemplate.save(activeDirectoryScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName("scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score"));
+        generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_TYPE_CHANGED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
+        generateActiveDirectoryEvents(1, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_LOCKED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
 
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(staticAggregationRecord);
         SmartAggregationRecord smartAggregationRecord2 = new SmartAggregationRecord(notStaticAggregationRecord);
@@ -499,7 +490,7 @@ public class AlertServiceTest {
         for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
-            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId1" + i, schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), false,"");
+            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId" + UUID.randomUUID(), schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), false,"");
             mongoTemplate.save(activeDirectoryEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
             // generate ade events
