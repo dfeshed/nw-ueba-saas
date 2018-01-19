@@ -1,5 +1,4 @@
 import { connect } from 'ember-redux';
-import { capitalize } from 'ember-string';
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import run from 'ember-runloop';
@@ -66,10 +65,10 @@ const ContentFilter = Component.extend({
   filterList(allFilters, searchTerm) {
     const i18n = this.get('i18n');
     let list = [ ...allFilters ]; // Don't want to modify the orignal filter list
-    if (searchTerm && searchTerm.length > 3) {
+    if (searchTerm) {
       list = list.filter((item) => {
         const name = i18n.t(item.label) || '';
-        return capitalize(name.toString()).includes(capitalize(searchTerm));
+        return name.toString().toUpperCase().includes(searchTerm.toUpperCase());
       });
     }
     return _.sortBy(list, [(column) => {
